@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyNet - Progetto Ingegneria del Software</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <nav>
+    <img id="header-logo" src="./Img/logo.jpg"
+      alt="Logo del gruppo SkyNet, un triangolo azzurro con la scritta SkyNet in nero">
+    <div id="nav-navigation">
+      <p><a href="#candidatura">Candidatura</a></p>
+      <p><a href="#verbali">Verbali</a></p>
+      <p><a href="#contatti">Contatti</a></p>
+      <p><a href="#about">About</a></p>
+    </div>
+  </nav>
+
+  <header>
+    <h1>SkyNet</h1>
+    <p>Documentazione ufficiale e risorse utili per il progetto del corso di Ingegneria del Software</p>
+  </header>
+
+  <section id="candidatura">
+    <h1>CANDIDATURA</h1>
+    <div class="indented">
+      <p><a href="Documentazione/Candidatura/lettera_di_presentazione_2026-03-27.pdf" target="_blank">Lettera di Presentazione</a></p>
+      <p><a href="Documentazione/Candidatura/valutazione_capitolati_v1.0.pdf" target="_blank">Valutazione dei Capitolati v1.0</a></p>
+      <p><a href="Documentazione/Candidatura/preventivo_costi_v1.0.pdf" target="_blank">Preventivo costi e assunzione impegni v1.0</a></p>
+    </div>
+  </section>
+
+  <section id="verbali">
+    <h1>VERBALI</h1>
+    
+    <div class="verbali-container">
+      <h3>Verbali Esterni</h3>
+      <div class="indented">
+        {{VERBALI_ESTERNI}}
+      </div>
+
+      <h3>Verbali Interni</h3>
+      <div class="indented">
+        {{VERBALI_INTERNI}}
+      </div>
+
+    </div>
+  </section>
+
+  <section id="contatti">
+    <h1>CONTATTI</h1>
+    <p>Repository GitHub: <a id="link-github" href="https://github.com/SkynetUniGroup/Code_Guardian" target="_blank">https://github.com/SkynetUniGroup/Code_Guardian</a></p>
+    <p>Email: <span class="monospace">skynetunigroup@gmail.com</span></p>
+  </section>
+
+  <section id="about">
+    <h1>ABOUT</h1>
+    <p>Il gruppo <strong>SkyNet</strong> nasce per affrontare il progetto didattico del corso di Ingegneria del Software dell'<a class="red_unipd" href="https://www.unipd.it/" target="_blank">Università di Padova</a>.</p>
+    <p>I componenti del team sono:
+      <ul>
+        <li>Marco Barbiero</li>
+        <li>Samuele Bertin</li>
+        <li>Andrea Fistarol</li>
+        <li>Edoardo Granziero</li>
+        <li>Dario Pirrone</li>
+        <li>Sara Ristovic</li>
+      </ul>
+    </p>
+  </section>
+
+  <footer>
+    <p id="last-update">Ultimo aggiornamento: {{DATA_OGGI}}</p>
+  </footer>
+
+</body>
+
+</html>

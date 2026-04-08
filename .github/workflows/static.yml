@@ -1,28 +1,20 @@
-# Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: read # In questo caso basta read perché non facciamo push sulla repo
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
@@ -31,17 +23,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # STEP 1: Prepariamo la cartella del sito copiando i documenti
       - name: Includi Documentazione nel sito
         run: |
           mkdir -p ./Website/Documentazione
           cp -r ./Documentazione/. ./Website/Documentazione/
+
+      # STEP 2: Generiamo l'index leggendo i file appena copiati
+      - name: Genera Index HTML
+        run: python Website/generate_index.py
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      # STEP 3: Carichiamo la cartella Website (che ora contiene tutto)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: './Website'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
