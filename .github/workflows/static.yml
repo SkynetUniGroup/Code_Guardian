@@ -1,15 +1,19 @@
+# Workflow per il deploy di contenuti statici su GitHub Pages
 name: Deploy static content to Pages
 
 on:
   push:
     branches: ["main"]
+  # Permette l'esecuzione manuale dalla tab Actions
   workflow_dispatch:
 
+# Imposta i permessi minimi necessari per GitHub Pages
 permissions:
-  contents: read # In questo caso basta read perché non facciamo push sulla repo
+  contents: read
   pages: write
   id-token: write
 
+# Evita deploy multipli contemporanei, ma non cancella quelli in corso per evitare build corrotte
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -21,33 +25,56 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout del repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Configurazione Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      # STEP 1: Prepariamo la cartella del sito copiando i documenti
+      # STEP 1: Prepariamo la cartella del sito copiando la documentazione
       - name: Includi Documentazione nel sito
         run: |
           mkdir -p ./Website/Documentazione
-          cp -r ./Documentazione/. ./Website/Documentazione/
+          if [ -d "./Documentazione" ]; then
+            cp -r ./Documentazione/. ./Website/Documentazione/
+            echo "Documentazione copiata correttamente."
+          else
+            echo "Cartella ./Documentazione non trovata, salto la copia."
+          fi
 
-      # STEP 2: Generiamo l'index leggendo i file appena copiati
+      # STEP 2: Generazione dell'Index tramite script Python
       - name: Genera Index HTML
-        run: python Website/generate_index.py
+        run: |
+          if [ -f "Website/generate_index.py" ]; then
+            python Website/generate_index.py
+          else
+            echo "ERRORE: Website/generate_index.py non trovato!"
+            exit 1
+          fi
+
+      # STEP 3: Verifica Cruciale - Se questo fallisce, il deployment non può funzionare
+      - name: Verifica creazione index.html
+        run: |
+          if [ -f "./Website/index.html" ]; then
+            echo "index.html trovato. Procedo con l'upload."
+            ls -l ./Website/index.html
+          else
+            echo "ERRORE: index.html non è stato generato nella cartella ./Website"
+            exit 1
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # STEP 3: Carichiamo la cartella Website (che ora contiene tutto)
+      # STEP 4: Caricamento dell'artifact (la cartella Website)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './Website'
 
+      # STEP 5: Deploy effettivo sui server GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
