@@ -1,0 +1,1122 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Analisi dei requisiti},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{\protect\phantomsection\label{_gwvbjzmnw5ec}{}Analisi dei
+requisiti}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+Slide per l'analisi:
+\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{\ul{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T05.pdf}}
+
+Esempi:
+
+\begin{itemize}
+\item
+  GammardX:
+  \href{https://gammardx.github.io/Documents/Documenti\%20esterni/Analisi\%20dei\%20Requisiti\%20v2.0.0.pdf}{\ul{https://gammardx.github.io/Documents/Documenti\%20esterni/Analisi\%20dei\%20Requisiti\%20v2.0.0.pdf}}
+\item
+  Torchlight:
+  \href{https://torchlight-swe2324.github.io/docs/pb/Documentazione\%20Esterna/analisi_requisiti_v2.0.0.pdf}{\ul{https://torchlight-swe2324.github.io/docs/pb/Documentazione\%20Esterna/analisi\_requisiti\_v2.0.0.pdf}}
+\item
+  Merl:
+  \href{https://merlunipd.github.io/login-warrior/output_documenti/esterni/AdR_V2.pdf}{\ul{https://merlunipd.github.io/login-warrior/output\_documenti/esterni/AdR\_V2.pdf}}
+\end{itemize}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0885}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1336}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.3670}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1964}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1819}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Ver.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Descrizione
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Autore
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verificatore
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+0.3.0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+15/04/2026
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Inizio scrittura della sezione ``Requisiti''
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Sara Ristovic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+0.2.0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+12/04/2026
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Scrittura della sezione 2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Dario Pirrone
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+0.1.0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+08/04/2026
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Creazione documento e scrittura della sezione 1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Dario Pirrone
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\end{longtable}
+}
+
+\hyperref[introduzione]{\textbf{Introduzione 3}}
+
+\begin{quote}
+\hyperref[scopo-del-documento]{Scopo del documento 3}
+
+\hyperref[scopo-del-prodotto]{Scopo del prodotto {[}?{]} 3}
+
+\hyperref[glossario]{Glossario 3}
+
+\hyperref[riferimenti]{Riferimenti 3}
+
+\hyperref[riferimenti-nominativi]{Riferimenti nominativi 3}
+
+\hyperref[riferimenti-informativi]{Riferimenti informativi 3}
+\end{quote}
+
+\hyperref[descrizione-generale]{\textbf{Descrizione generale 4}}
+
+\begin{quote}
+\hyperref[obiettivi-del-prodotto]{Obiettivi del prodotto 4}
+
+\hyperref[funzioni-del-prodotto]{Funzioni del prodotto 4}
+
+\hyperref[caratteristiche-degli-utenti]{Caratteristiche degli utenti 5}
+
+\hyperref[piattaforma-di-esecuzione]{Piattaforma di esecuzione {[}?{]}
+5}
+\end{quote}
+
+\hyperref[casi-duso]{\textbf{Casi d'uso 5}}
+
+\begin{quote}
+\hyperref[introduzione-1]{Introduzione 5}
+
+\hyperref[attori]{Attori 5}
+
+\hyperref[elenco-dei-casi-duso]{Elenco dei casi d'uso 5}
+
+\hyperref[agente-1]{Agente 1: 5}
+
+\hyperref[agente-3]{Agente 3: 7}
+
+\hyperref[agente-4]{Agente 4: 9}
+\end{quote}
+
+\hyperref[requisiti]{\textbf{Requisiti 10}}
+
+\begin{quote}
+\hyperref[requisiti-funzionali]{Requisiti funzionali 10}
+
+\hyperref[requisiti-qualitativi]{Requisiti qualitativi 10}
+
+\hyperref[_px8bqwk31ax4]{Requisiti di vincolo 10}
+
+\hyperref[requisiti-di-sistema-operativo]{Requisiti di sistema operativo
+{[}??{]} 10}
+
+\hyperref[requisiti-prestazionali]{Requisiti prestazionali {[}?{]} 10}
+
+\hyperref[requisiti-di-sicurezza]{Requisiti di sicurezza {[}?{]} 10}
+
+\hyperref[tracciamento]{Tracciamento 10}
+
+\hyperref[fonte---requisito]{Fonte - Requisito 10}
+
+\hyperref[requisito---fonte]{Requisito - Fonte 10}
+
+\hyperref[riepilogo-requisiti]{Riepilogo requisiti 10}
+\end{quote}
+
+\section{Introduzione}\label{introduzione}
+
+\subsection{Scopo del documento}\label{scopo-del-documento}
+
+Il presente documento, denominato \textbf{Analisi dei Requisiti}, ha
+l\textquotesingle obiettivo di esporre in modo dettagliato e non ambiguo
+i requisiti funzionali, qualitativi e di vincolo individuati per il
+progetto \textbf{Code Guardian}. Tali requisiti sono stati delineati a
+seguito di un\textquotesingle attenta analisi del capitolato e dei
+successivi incontri con il proponente. Il documento si avvale
+dell\textquotesingle uso di diagrammi e descrizioni dei \textbf{Casi
+d\textquotesingle Uso (UC)} per illustrare le interazioni tra gli attori
+esterni e il sistema, fornendo una base solida per le successive fasi di
+progettazione, codifica e verifica.
+
+\subsection{Scopo del prodotto {[}?{]}}\label{scopo-del-prodotto}
+
+\subsection{Glossario}\label{glossario}
+
+Per evitare ambiguità terminologiche e garantire una comprensione
+univoca del documento, i termini tecnici, gli acronimi e le parole che
+assumono un significato specifico nel contesto del progetto sono
+riportati nel documento \emph{Glossario}. Questi termini sono
+contrassegnati nel presente documento da una "G" a pedice ed è un
+collegamento ipertestuale che rimanda direttamente alla definizione
+corrispondente nel \emph{Glossario}. Tali parole vengono contrassegnate
+solamente alla loro prima occorrenza in questo documento.
+
+\subsection{Riferimenti}\label{riferimenti}
+
+\subsubsection{Riferimenti nominativi}\label{riferimenti-nominativi}
+
+\begin{itemize}
+\item
+  Norme di Progetto v1.0.0
+\item
+  Piano di Qualifica v1.0.0
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2p.pdf}{\ul{Capitolato
+  d'appalto C2 - Code Guardian}}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{\ul{Regolamento
+  del Progetto Didattico}}
+\end{itemize}
+
+\subsubsection{Riferimenti informativi}\label{riferimenti-informativi}
+
+\begin{itemize}
+\item
+  Glossario v1.0.0
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{\ul{Dispense
+  Analisi dei Requisiti}}
+\item
+  \href{https://www.math.unipd.it/~rcardin/swea/2022/Diagrammi\%20Use\%20Case.pdf}{\ul{Dispense
+  Casi d'Uso}}
+\end{itemize}
+
+\section{Descrizione generale}\label{descrizione-generale}
+
+\subsection{Obiettivi del prodotto}\label{obiettivi-del-prodotto}
+
+L\textquotesingle obiettivo principale del progetto è lo sviluppo di un
+set di agenti intelligenti basati su modelli linguistici di grandi
+dimensioni (\emph{LLM}), progettati per integrarsi in
+un\textquotesingle architettura di orchestrazione già esistente fornita
+dal proponente \emph{Var Group}. Il sistema, denominato \textbf{Code
+Guardian}, mira ad automatizzare i processi di audit, manutenzione e
+documentazione dei repository software, riducendo il carico di lavoro
+manuale dei team di sviluppo e migliorando la qualità complessiva del
+codice.
+
+Nello specifico, il prodotto si prefigge di:
+
+\begin{itemize}
+\item
+  \textbf{Garantire la coerenza documentale}: assicurando che il README
+  di progetto e la documentazione tecnica (inline e API) siano
+  costantemente allineati all\textquotesingle evoluzione funzionale
+  della piattaforma.
+\item
+  \textbf{Elevare gli standard di sicurezza}: introducendo il paradigma
+  di \emph{policy-as-code}, attraverso il quale gli agenti verificano
+  non solo le vulnerabilità generiche OWASP, ma anche
+  l\textquotesingle aderenza alle specifiche pratiche di sviluppo sicuro
+  definite dal team.
+\item
+  \textbf{Migliorare la trasparenza verso il business}: automatizzando
+  la redazione di changelog comprensibili al cliente finale, traducendo
+  i progressi tecnici emersi dalle user stories in valore di business
+  tangibile.
+\end{itemize}
+
+\subsection{Funzioni del prodotto}\label{funzioni-del-prodotto}
+
+Il prodotto offre le sue funzionalità attraverso tre agenti
+specializzati coordinati dall\textquotesingle orchestratore centrale:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Agente di Documentazione e README}:
+
+  \begin{itemize}
+  \item
+    \textbf{Manutenzione README}: creazione e aggiornamento dinamico del
+    file README di progetto in base alle modifiche apportate alla
+    piattaforma.
+  \item
+    \textbf{Gestione documentazione tecnica}: generazione e
+    aggiornamento di documentazione inline (\emph{docstring},
+    \emph{JSDoc}) e delle \emph{API docs} per riflettere lo stato
+    attuale del codice.
+  \end{itemize}
+\item
+  \textbf{Agente di Security Review (Policy-as-Code)}:
+
+  \begin{itemize}
+  \item
+    \textbf{Analisi vulnerabilità}: utilizzo delle API di \emph{Claude
+    Code} per l\textquotesingle identificazione di vulnerabilità
+    standard \emph{OWASP}.
+  \item
+    \textbf{Verifica policy interne}: controllo
+    dell\textquotesingle adozione di pratiche di sviluppo sicuro
+    specifiche del team, utilizzando i file di configurazione
+    \emph{CLAUDE.md} presenti nel repository come contesto operativo.
+  \end{itemize}
+\item
+  \textbf{Agente di Changelog da User Stories}:
+
+  \begin{itemize}
+  \item
+    \textbf{Analisi Sprint}: lettura e filtraggio delle \emph{user
+    stories} completate durante uno specifico sprint di sviluppo.
+  \item
+    \textbf{Traduzione Business-Oriented:} conversione del linguaggio
+    tecnico delle task in un linguaggio chiaro e comprensibile per il
+    cliente, producendo \emph{changelog} sia tecnici che di business.
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Caratteristiche degli
+utenti}\label{caratteristiche-degli-utenti}
+
+Il sistema è progettato per inserirsi in un flusso di lavoro di sviluppo
+software moderno, interagendo con diverse figure professionali che
+operano all\textquotesingle interno di un team IT o nel rapporto con il
+cliente finale.
+
+L\textquotesingle utente principale è rappresentato dallo
+\textbf{sviluppatore}, il quale interagisce con il sistema
+indirettamente attraverso il repository Git. Egli beneficia
+dell\textquotesingle automatizzazione della documentazione tecnica e del
+feedback immediato sulla sicurezza, che gli permette di correggere
+eventuali vulnerabilità o difformità rispetto alle policy aziendali in
+tempo reale, senza attendere revisioni manuali.
+
+Una seconda figura chiave è il \textbf{Team Lead} o lo \textbf{Security
+Auditor}. Questi utenti utilizzano il sistema come strumento di
+monitoraggio e governance: definiscono le regole di "sviluppo sicuro"
+all\textquotesingle interno dei file CLAUDE.md e delegano
+all\textquotesingle agente di sicurezza il compito di verificarne
+l\textquotesingle adozione costante su tutto il codice prodotto.
+
+Infine, il sistema si rivolge agli \textbf{Stakeholder di business}
+(come Project Manager o il cliente finale). Questi soggetti non
+necessitano di competenze tecniche approfondite, ma hanno bisogno di
+visibilità sull\textquotesingle andamento del progetto. Per loro,
+l\textquotesingle agente di changelog funge da "traduttore",
+trasformando il gergo tecnico delle user stories in report di valore che
+sintetizzano i progressi funzionali raggiunti al termine di ogni sprint.
+
+\subsection{Piattaforma di esecuzione
+{[}?{]}}\label{piattaforma-di-esecuzione}
+
+Il prodotto è concepito come un ecosistema di agenti integrati in
+un\textquotesingle infrastruttura già esistente, operante principalmente
+in ambiente \textbf{cloud AWS}. Essendo il sistema basato su interfacce
+di programmazione e automazione, l\textquotesingle esecuzione è
+garantita attraverso i principali ambienti di runtime come
+\textbf{Node.js} e \textbf{Python}. L\textquotesingle interazione con il
+codice sorgente avviene tramite la piattaforma \textbf{GitHub},
+sfruttando le \textbf{GitHub Actions} come principale motore di
+esecuzione per l\textquotesingle analisi e
+l\textquotesingle aggiornamento automatico dei repository.
+
+\section{Casi d'uso}\label{casi-duso}
+
+\subsection{Introduzione}\label{introduzione-1}
+
+\subsection{Attori}\label{attori}
+
+\subsection{Elenco dei casi d'uso}\label{elenco-dei-casi-duso}
+
+\subsubsection{Agente 1:}\label{agente-1}
+
+UC 1: Gestione del README di Progetto
+
+Questo caso d\textquotesingle uso riguarda il mantenimento del file
+README.md principale per riflettere lo stato attuale del software.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore.
+\item
+  Attori Secondari: Orchestratore, Repository Git.
+\item
+  Trigger: Lo Sviluppatore effettua un commit/push di modifiche
+  strutturali o richiede esplicitamente l\textquotesingle aggiornamento
+  tramite l\textquotesingle Orchestratore.
+\item
+  Precondizioni: L\textquotesingle Agente 1 è attivo e ha i permessi di
+  lettura/scrittura sul repository. Esiste un file README.md (anche
+  vuoto).
+\item
+  Scenario Principale:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Orchestratore notifica l\textquotesingle Agente 1
+    della necessità di aggiornare il README.
+  \item
+    L\textquotesingle Agente analizza i file di configurazione (es.
+    package.json, requirements.txt) e la struttura delle cartelle.
+  \item
+    L\textquotesingle Agente identifica le modifiche (nuove dipendenze,
+    nuovi moduli, cambio versione).
+  \item
+    L\textquotesingle Agente rigenera le sezioni interessate del file
+    README.md.
+  \item
+    L\textquotesingle Agente propone la modifica o sovrascrive il file
+    (a seconda della configurazione).
+  \end{itemize}
+\item
+  Post-condizioni: Il file README.md è aggiornato e coerente con
+  l\textquotesingle ultima versione del codice sorgente.
+\item
+  Sottocasi:
+
+  \begin{itemize}
+  \item
+    UC 1.1: Aggiornamento della guida all\textquotesingle installazione.
+  \item
+    UC 1.2: Aggiornamento della descrizione
+    dell\textquotesingle architettura/moduli.
+  \end{itemize}
+\end{itemize}
+
+UC 2: Generazione Documentazione Inline (Docstring/JSDoc)
+
+L\textquotesingle agente interviene direttamente nel codice sorgente per
+garantire che ogni componente sia documentato correttamente.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore.
+\item
+  Attori Secondari: Orchestratore.
+\item
+  Trigger: Lo Sviluppatore invia un file di codice
+  all\textquotesingle Agente o l\textquotesingle Orchestratore rileva
+  una funzione/classe priva di documentazione.
+\item
+  Precondizioni: Il file sorgente è scritto in un linguaggio supportato
+  (es. JavaScript, Python).
+\item
+  Scenario Principale:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Agente analizza il file sorgente alla ricerca di
+    blocchi di codice non documentati o obsoleti.
+  \item
+    L\textquotesingle Agente interpreta la logica della funzione, i
+    parametri di input e il valore di ritorno.
+  \item
+    L\textquotesingle Agente genera il blocco di commento standardizzato
+    (es. JSDoc per TS/JS o Docstring per Python).
+  \item
+    L\textquotesingle Agente inserisce il commento sopra la firma della
+    funzione/classe.
+  \end{itemize}
+\item
+  Post-condizioni: Il codice sorgente presenta commenti inline
+  aggiornati e conformi agli standard di progetto.
+\item
+  Sottocasi:
+
+  \begin{itemize}
+  \item
+    UC 2.1: Correzione di documentazione esistente non più coerente con
+    il codice (es. parametri cambiati).
+  \item
+    UC 2.2: Segnalazione allo Sviluppatore di logiche troppo complesse
+    da documentare automaticamente.
+  \end{itemize}
+\end{itemize}
+
+UC 3: Generazione Documentazione API
+
+L\textquotesingle agente estrae le definizioni degli endpoint per creare
+una guida tecnica per i consumatori delle API.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore.
+\item
+  Attori Secondari: Orchestratore.
+\item
+  Trigger: Lo Sviluppatore richiede la generazione della documentazione
+  tecnica finale prima di un rilascio.
+\item
+  Precondizioni: Il sistema espone degli endpoint API definiti nel
+  codice (es. tramite decorator o rotte espresse).
+\item
+  Scenario Principale:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Agente scansiona i file dei controller e dei
+    modelli dei dati.
+  \item
+    L\textquotesingle Agente estrae per ogni endpoint: metodo HTTP, URL,
+    header, corpo della richiesta e possibili risposte.
+  \item
+    L\textquotesingle Agente formatta queste informazioni in un
+    documento Markdown dedicato (es. API.md).
+  \item
+    L\textquotesingle Agente pubblica o salva il documento nella
+    cartella di documentazione predefinita.
+  \end{itemize}
+\item
+  Post-condizioni: È disponibile un documento tecnico aggiornato che
+  descrive il funzionamento di tutte le API della piattaforma.
+\item
+  Sottocasi:
+
+  \begin{itemize}
+  \item
+    UC 3.1: Validazione della conformità delle API rispetto a uno
+    standard definito (es. nomi in camelCase).
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{\texorpdfstring{Agente 3: }{Agente 3: }}\label{agente-3}
+
+UC 4: Esecuzione Scansione Vulnerabilità (OWASP)
+
+L\textquotesingle agente utilizza le API di Claude Code per identificare
+vulnerabilità standard nel codice sorgente.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore.
+\item
+  Attori Secondari: Orchestratore, API Claude Code.
+\item
+  Trigger: Lo Sviluppatore richiede una scansione di sicurezza o
+  l\textquotesingle Orchestratore avvia il processo dopo un commit nel
+  repository.
+\item
+  Precondizioni:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Agente 3 è correttamente configurato con le API
+    Key di Claude Code.
+  \item
+    Il codice sorgente è accessibile nel repository.
+  \end{itemize}
+\item
+  Scenario Principale:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Orchestratore invia i file sorgente (o il diff
+    dell\textquotesingle ultimo commit) all\textquotesingle Agente 3.
+  \item
+    L\textquotesingle Agente 3 interroga le API di Claude Code inviando
+    il codice per l\textquotesingle analisi.
+  \item
+    L\textquotesingle AI analizza il codice cercando pattern
+    riconducibili alle vulnerabilità della Top 10 OWASP (es. SQL
+    Injection, XSS, Hardcoded secrets).
+  \item
+    L\textquotesingle Agente 3 riceve l\textquotesingle esito
+    dell\textquotesingle analisi.
+  \item
+    L\textquotesingle Agente 3 formatta i risultati evidenziando la
+    gravità (High, Medium, Low) di ogni falla trovata.
+  \end{itemize}
+\item
+  Post-condizioni: Viene generato un report tecnico delle vulnerabilità
+  rilevate.
+\item
+  Sottocasi:
+
+  \begin{itemize}
+  \item
+    UC 4.1: Scansione specifica su un singolo file modificato. (include)
+  \item
+    UC 4.2: Scansione completa dell\textquotesingle intero repository
+    (Full Audit). (include)
+  \end{itemize}
+\end{itemize}
+
+UC 5: Verifica Conformità "Policy-as-Code" (CLAUDE.md)
+
+L\textquotesingle agente verifica che il codice rispetti le regole
+specifiche definite dal team nel file di configurazione.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore.
+\item
+  Attori Secondari: Orchestratore, File di configurazione CLAUDE.md.
+\item
+  Trigger: Avvio della revisione di sicurezza (manuale o automatica).
+\item
+  Precondizioni: Nel repository è presente un file denominato CLAUDE.md
+  contenente le linee guida di sviluppo sicuro del team.
+\item
+  Scenario Principale:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Agente 3 legge il contenuto del file CLAUDE.md per
+    estrarre il contesto e le regole (es. "usa sempre questa libreria
+    per il logging", "non usare variabili globali").
+  \item
+    L\textquotesingle Agente analizza il codice sorgente confrontandolo
+    con le direttive estratte.
+  \item
+    L\textquotesingle Agente identifica eventuali deviazioni dalle
+    pratiche concordate dal team.
+  \item
+    L\textquotesingle Agente genera un elenco di violazioni della policy
+    interna.
+  \end{itemize}
+\item
+  Post-condizioni: Viene prodotto un elenco di non-conformità rispetto
+  alle policy di progetto.
+\item
+  Sottocasi:
+
+  \begin{itemize}
+  \item
+    UC 5.1: Validazione del file CLAUDE.md (verifica che il file di
+    configurazione sia scritto correttamente). (extend)
+  \end{itemize}
+\end{itemize}
+
+UC 6: Generazione Suggerimenti di Remediation
+
+L\textquotesingle agente fornisce soluzioni pratiche per correggere i
+problemi di sicurezza o le violazioni di policy trovate.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore.
+\item
+  Attori Secondari: API Claude Code.
+\item
+  Trigger: Conclusione con esito positivo (rilevamento falle) degli UC 4
+  o UC 5.
+\item
+  Precondizioni: Sono state identificate vulnerabilità o violazioni di
+  policy.
+\item
+  Scenario Principale:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    Per ogni vulnerabilità o violazione trovata,
+    l\textquotesingle Agente 3 richiede a Claude Code una possibile
+    correzione.
+  \item
+    L\textquotesingle AI genera uno snippet di codice "sicuro" che
+    risolve il problema.
+  \item
+    L\textquotesingle Agente presenta allo sviluppatore il confronto tra
+    il codice insicuro e la soluzione proposta.
+  \end{enumerate}
+\item
+  Post-condizioni: Lo sviluppatore riceve indicazioni chiare su come
+  correggere il codice per renderlo conforme.
+\end{itemize}
+
+\subsubsection{\texorpdfstring{Agente 4: }{Agente 4: }}\label{agente-4}
+
+UC 7: Recupero e Filtraggio User Stories
+
+L\textquotesingle agente deve interfacciarsi con il sistema di gestione
+dei task per raccogliere il materiale necessario al report.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore / Project Manager.
+\item
+  Attori Secondari: Orchestratore, Sistema di Task Management (es.
+  GitHub Issues API, Jira API).
+\item
+  Trigger: Lo Sviluppatore richiede la generazione del report a
+  conclusione di uno Sprint.
+\item
+  Precondizioni: 1. L\textquotesingle Agente ha accesso in lettura alle
+  API del sistema di tracking. 2. Le User Stories sono etichettate con
+  lo Sprint ID corretto e sono nello stato "Done" (Completate).
+\item
+  Scenario Principale:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Orchestratore richiede all\textquotesingle Agente
+    4 di analizzare lo Sprint corrente (es. "Sprint 5").
+  \item
+    L\textquotesingle Agente interroga il sistema di task management
+    filtrando per ID Sprint e stato della storia.
+  \item
+    L\textquotesingle Agente valida i dati recuperati (verifica che ci
+    siano descrizioni e titoli validi).
+  \item
+    L\textquotesingle Agente organizza internamente le informazioni
+    (separazione tra bugfix, nuove feature e task tecnici).
+  \end{itemize}
+\item
+  Post-condizioni: L\textquotesingle Agente dispone di un set di dati
+  strutturato pronto per la trasformazione.
+\item
+  Sottocasi:
+
+  \begin{itemize}
+  \item
+    UC 7.1: Segnalazione di User Stories prive di descrizione
+    sufficiente.
+  \end{itemize}
+\end{itemize}
+
+UC 8: Generazione Changelog Tecnico
+
+L\textquotesingle agente produce un documento rivolto ai programmatori
+che riassume i cambiamenti a basso livello.
+
+\begin{itemize}
+\item
+  Attore Primario: Sviluppatore.
+\item
+  Attori Secondari: Orchestratore.
+\item
+  Trigger: Conclusione con successo dell\textquotesingle UC 7.
+\item
+  Precondizioni: Disponibilità dei dati filtrati dello Sprint.
+\item
+  Scenario Principale:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    L\textquotesingle Agente aggrega le User Stories per tipologia
+    tecnica (es. Backend, Frontend, DevOps).
+  \item
+    Per ogni storia, estrae i requisiti tecnici soddisfatti e i file
+    modificati (se accessibili).
+  \item
+    L\textquotesingle Agente formatta il testo in linguaggio tecnico
+    coerente (es. "Aggiornamento schema DB", "Refactoring API Auth").
+  \item
+    Produce un file (solitamente CHANGELOG.md) con link diretti ai task.
+  \end{enumerate}
+\item
+  Post-condizioni: È disponibile un changelog dettagliato per
+  l\textquotesingle uso interno del team di sviluppo.
+\end{itemize}
+
+UC 9: Generazione Changelog di Business
+
+L\textquotesingle agente trasforma il gergo tecnico in benefici
+tangibili per il cliente o l\textquotesingle utente finale.
+
+\begin{itemize}
+\item
+  Attore Primario: Cliente / Stakeholder.
+\item
+  Attori Secondari: Orchestratore, Modello AI (LLM).
+\item
+  Trigger: Conclusione con successo dell\textquotesingle UC 7.
+\item
+  Precondizioni: Disponibilità dei dati filtrati dello Sprint.
+\item
+  Scenario Principale:
+
+  \begin{itemize}
+  \item
+    L\textquotesingle Agente analizza le User Stories e le modifiche
+    apportate.
+  \item
+    L\textquotesingle AI esegue una traduzione semantica: converte i
+    termini tecnici in termini di valore (es. "Ottimizzazione indici DB"
+    diventa "Migliorata la velocità di caricamento delle tabelle").
+  \item
+    L\textquotesingle Agente rimuove i dettagli tecnici irrilevanti per
+    il cliente (es. bugfix minori di refactoring).
+  \item
+    Viene generato un report discorsivo e orientato al business (es.
+    "Novità dello Sprint 5 per l\textquotesingle utente").
+  \end{itemize}
+\item
+  Post-condizioni: Viene prodotto un documento pronto per essere
+  presentato agli stakeholder non tecnici.
+\item
+  Sottocasi:
+
+  \begin{itemize}
+  \item
+    UC 9.1: Adattamento del tono (formale/informale) in base alla
+    configurazione.
+  \end{itemize}
+\end{itemize}
+
+\section{Requisiti}\label{requisiti}
+
+I requisiti riportati in questa sezione sono stati derivati dai casi
+d'uso descritti nel capitolo 3 e dalle indicazioni emerse dagli incontri
+con il proponente. In particolare, il perimetro del progetto è stato
+chiarito come sviluppo di agenti specializzati da integrare in
+un'architettura già esistente, e non come realizzazione di una nuova
+architettura completa ad agenti.
+
+\subsection{Requisiti funzionali}\label{requisiti-funzionali}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+\textbf{Codice}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Priorità}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Descrizione}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Fonti}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RF.1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il sistema deve aggiornare il file
+\href{http://readme.md}{\ul{README.md}} del repository in modo coerente
+con lo stato corrente del codice sorgente.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+UC1
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RF.2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il sistema deve generare o aggiornare la documentazione inline del
+codice, come docstring o JSDoc, per elementi sorgente supportati.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+UC2
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RF.3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RF.4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca
+di vulnerabilità riconducibili alle categorie OWASP rilevanti.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+UC4
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RF.4.1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il sistema deve poter eseguire una scansione di sicurezza su un singolo
+file modificato.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+UC4.1
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RF.4.2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il sistema deve poter eseguire una scansione di sicurezza sull'intero
+repository.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+UC4.2
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\end{longtable}
+}
+
+\subsection{}\label{section}
+
+\subsection{Requisiti qualitativi}\label{requisiti-qualitativi}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+\textbf{Codice}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Priorità}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Descrizione}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Fonti}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RQ.1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Gli output prodotti dagli agenti devono risultare utili al miglioramento
+del codice, ad es. tramite segnalazioni, suggerimenti, frammenti di
+codice o proposte di soluzione.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verbale esterno
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RQ.2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Devono essere definite modalità di test e validazione per gli agenti
+sviluppati.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verbale esterno
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\end{longtable}
+}
+
+\subsection{}\label{section-1}
+
+\subsection{Requisiti di vincolo}\label{requisiti-di-vincolo}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+\textbf{Codice}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Priorità}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Descrizione}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Fonti}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RV.1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Gli agenti sviluppati devono integrarsi in un'architettura già esistente
+fornita dal proponente.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verbale esterno
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RV.2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il progetto non deve prevedere l'addestramento di nuovi modelli, ma
+l'integrazione di modelli o servizi tramite API.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verbale esterno
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RV.3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il sistema deve poter operare sui repository di esempio e sul codice
+reso disponibile dal proponente per integrazione e test.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verbale esterno
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RV.4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Il progetto \ul{non} prevede lo sviluppo di agenti: orchestratore, per
+aggiornamento librerie, per sostituzione del codice obsoleto e per
+mantenimento della copertura dei test, in quanto sono già in sviluppo
+presso Var Group.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verbale esterno
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\end{longtable}
+}
+
+\subsection{\texorpdfstring{Requisiti di sistema operativo {[}??{]}
+}{Requisiti di sistema operativo {[}??{]} }}\label{requisiti-di-sistema-operativo}
+
+\subsection{(facciamo un servizio web per cui non ci vogliono questi
+requisiti?)}\label{facciamo-un-servizio-web-per-cui-non-ci-vogliono-questi-requisiti}
+
+\subsection{Requisiti prestazionali
+{[}?{]}}\label{requisiti-prestazionali}
+
+\subsection{Requisiti di sicurezza}\label{requisiti-di-sicurezza}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+\textbf{Codice}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Priorità}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Descrizione}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Fonti}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RS.1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Le eventuali modifiche proposte al codice o ai file del repository non
+devono essere applicate senza validazione umana preventiva.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verbale esterno
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+RS.2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Obbligatorio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+I risultati dell'analisi di sicurezza devono riportare almeno il tipo di
+problematica rilevata e una sua priorità o gravità.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+UC4
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\end{longtable}
+}
+
+\subsection{Tracciamento}\label{tracciamento}
+
+\subsubsection{Fonte - Requisito}\label{fonte---requisito}
+
+\subsubsection{Requisito - Fonte}\label{requisito---fonte}
+
+\subsubsection{Riepilogo requisiti}\label{riepilogo-requisiti}
+
+\end{document}

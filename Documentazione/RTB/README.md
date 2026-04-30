@@ -8,4 +8,4 @@ Necessari:
 4) Norme di Progetto 1.0
 5) Glossario 1.0
 
-
+I documenti definitivi dovranno essere in formato .pdf.
