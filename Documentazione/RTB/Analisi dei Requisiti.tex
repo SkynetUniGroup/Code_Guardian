@@ -1,68 +1,26 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-\documentclass[
-]{article}
-\usepackage{xcolor}
-\usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-\usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{longtable,booktabs,array}
-\newcounter{none} % for unnumbered tables
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
-\ifLuaTeX
-  \usepackage{luacolor}
-  \usepackage[soul]{lua-ul}
-\else
-  \usepackage{soul}
-\fi
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\usepackage{bookmark}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[figure,table]{totalcount}
+\usepackage{fancyhdr}
+\usepackage{adjustbox}
+
 \hypersetup{
-  pdftitle={Analisi dei requisiti},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
+    pdftitle={Analisi dei requisiti},
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
 
 \title{\protect\phantomsection\label{_gwvbjzmnw5ec}{}Analisi dei
 requisiti}
@@ -73,159 +31,48 @@ requisiti}
 \maketitle
 
 Slide per l'analisi:
-\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{\ul{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T05.pdf}}
+\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T05.pdf}
 
 Esempi:
 
 \begin{itemize}
 \item
-  GammardX:
-  \href{https://gammardx.github.io/Documents/Documenti\%20esterni/Analisi\%20dei\%20Requisiti\%20v2.0.0.pdf}{\ul{https://gammardx.github.io/Documents/Documenti\%20esterni/Analisi\%20dei\%20Requisiti\%20v2.0.0.pdf}}
+  \href{https://gammardx.github.io/Documents/Documenti\%20esterni/Analisi\%20dei\%20Requisiti\%20v2.0.0.pdf}{GammardX}
 \item
-  Torchlight:
-  \href{https://torchlight-swe2324.github.io/docs/pb/Documentazione\%20Esterna/analisi_requisiti_v2.0.0.pdf}{\ul{https://torchlight-swe2324.github.io/docs/pb/Documentazione\%20Esterna/analisi\_requisiti\_v2.0.0.pdf}}
+  \href{https://torchlight-swe2324.github.io/docs/pb/Documentazione\%20Esterna/analisi_requisiti_v2.0.0.pdf}{Torchlight}
 \item
-  Merl:
-  \href{https://merlunipd.github.io/login-warrior/output_documenti/esterni/AdR_V2.pdf}{\ul{https://merlunipd.github.io/login-warrior/output\_documenti/esterni/AdR\_V2.pdf}}
+  \href{https://merlunipd.github.io/login-warrior/output_documenti/esterni/AdR_V2.pdf}{Merl}
 \end{itemize}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0885}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1336}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.3670}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1964}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1819}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Ver.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Data
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Descrizione
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Autore
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verificatore
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-0.3.0
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-15/04/2026
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Inizio scrittura della sezione ``Requisiti''
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Sara Ristovic
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-0.2.0
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-12/04/2026
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Scrittura della sezione 2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Dario Pirrone
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-0.1.0
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-08/04/2026
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Creazione documento e scrittura della sezione 1
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Dario Pirrone
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\end{longtable}
-}
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
+        \hline
+        \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.3.0 & 15/04/2026 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic &  \\ \hline
+        0.2.0 & 12/04/2026 & Scrittura della sezione 2 & Dario Pirrone &  \\ \hline
+        0.1.0 & 08/04/2026 & Creazione documento e scrittura della sezione 1 & Dario Pirrone &  \\ \hline
+        \end{tabularx}
+\end{table}
 
-\hyperref[introduzione]{\textbf{Introduzione 3}}
+\newpage
 
-\begin{quote}
-\hyperref[scopo-del-documento]{Scopo del documento 3}
+% ==========================================
+% INDICI
+% ==========================================
 
-\hyperref[scopo-del-prodotto]{Scopo del prodotto {[}?{]} 3}
+\tableofcontents
+\iftotaltables  % Se sono presenti tabelle o figure appare l'indice
+    \vspace{1cm}
+    \listoftables
+\fi
 
-\hyperref[glossario]{Glossario 3}
-
-\hyperref[riferimenti]{Riferimenti 3}
-
-\hyperref[riferimenti-nominativi]{Riferimenti nominativi 3}
-
-\hyperref[riferimenti-informativi]{Riferimenti informativi 3}
-\end{quote}
-
-\hyperref[descrizione-generale]{\textbf{Descrizione generale 4}}
-
-\begin{quote}
-\hyperref[obiettivi-del-prodotto]{Obiettivi del prodotto 4}
-
-\hyperref[funzioni-del-prodotto]{Funzioni del prodotto 4}
-
-\hyperref[caratteristiche-degli-utenti]{Caratteristiche degli utenti 5}
-
-\hyperref[piattaforma-di-esecuzione]{Piattaforma di esecuzione {[}?{]}
-5}
-\end{quote}
-
-\hyperref[casi-duso]{\textbf{Casi d'uso 5}}
-
-\begin{quote}
-\hyperref[introduzione-1]{Introduzione 5}
-
-\hyperref[attori]{Attori 5}
-
-\hyperref[elenco-dei-casi-duso]{Elenco dei casi d'uso 5}
-
-\hyperref[agente-1]{Agente 1: 5}
-
-\hyperref[agente-3]{Agente 3: 7}
-
-\hyperref[agente-4]{Agente 4: 9}
-\end{quote}
-
-\hyperref[requisiti]{\textbf{Requisiti 10}}
-
-\begin{quote}
-\hyperref[requisiti-funzionali]{Requisiti funzionali 10}
-
-\hyperref[requisiti-qualitativi]{Requisiti qualitativi 10}
-
-\hyperref[_px8bqwk31ax4]{Requisiti di vincolo 10}
-
-\hyperref[requisiti-di-sistema-operativo]{Requisiti di sistema operativo
-{[}??{]} 10}
-
-\hyperref[requisiti-prestazionali]{Requisiti prestazionali {[}?{]} 10}
-
-\hyperref[requisiti-di-sicurezza]{Requisiti di sicurezza {[}?{]} 10}
-
-\hyperref[tracciamento]{Tracciamento 10}
-
-\hyperref[fonte---requisito]{Fonte - Requisito 10}
-
-\hyperref[requisito---fonte]{Requisito - Fonte 10}
-
-\hyperref[riepilogo-requisiti]{Riepilogo requisiti 10}
-\end{quote}
+\iftotalfigures
+    \vspace{1cm}
+    \listoffigures
+\fi
+\newpage
 
 \section{Introduzione}\label{introduzione}
 
@@ -265,11 +112,11 @@ solamente alla loro prima occorrenza in questo documento.
 \item
   Piano di Qualifica v1.0.0
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2p.pdf}{\ul{Capitolato
-  d'appalto C2 - Code Guardian}}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2p.pdf}{Capitolato
+  d'appalto C2 - Code Guardian}
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{\ul{Regolamento
-  del Progetto Didattico}}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento
+  del Progetto Didattico}
 \end{itemize}
 
 \subsubsection{Riferimenti informativi}\label{riferimenti-informativi}
@@ -278,11 +125,11 @@ solamente alla loro prima occorrenza in questo documento.
 \item
   Glossario v1.0.0
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{\ul{Dispense
-  Analisi dei Requisiti}}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{Dispense
+  Analisi dei Requisiti}
 \item
-  \href{https://www.math.unipd.it/~rcardin/swea/2022/Diagrammi\%20Use\%20Case.pdf}{\ul{Dispense
-  Casi d'Uso}}
+  \href{https://www.math.unipd.it/~rcardin/swea/2022/Diagrammi\%20Use\%20Case.pdf}{Dispense
+  Casi d'Uso}
 \end{itemize}
 
 \section{Descrizione generale}\label{descrizione-generale}
@@ -860,202 +707,62 @@ architettura completa ad agenti.
 
 \subsection{Requisiti funzionali}\label{requisiti-funzionali}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
-\textbf{Codice}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Priorità}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Descrizione}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Fonti}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RF.1
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il sistema deve aggiornare il file
-\href{http://readme.md}{\ul{README.md}} del repository in modo coerente
-con lo stato corrente del codice sorgente.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-UC1
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RF.2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il sistema deve generare o aggiornare la documentazione inline del
-codice, come docstring o JSDoc, per elementi sorgente supportati.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-UC2
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RF.3
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RF.4
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca
-di vulnerabilità riconducibili alle categorie OWASP rilevanti.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-UC4
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RF.4.1
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il sistema deve poter eseguire una scansione di sicurezza su un singolo
-file modificato.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-UC4.1
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RF.4.2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il sistema deve poter eseguire una scansione di sicurezza sull'intero
-repository.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-UC4.2
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\end{longtable}
-}
-
-\subsection{}\label{section}
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|c|X|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
+        RF.1 & Obbligatorio & Il sistema deve aggiornare il file \href{http://readme.md}{README.md} 
+        del repository in modo coerente con lo stato corrente del codice sorgente. & UC1 \\ \hline
+        RF.2 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del
+        codice, come docstring o JSDoc, per elementi sorgente supportati. & UC2 \\ \hline
+        RF.3 & & & \\ \hline
+        RF.4 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca
+        di vulnerabilità riconducibili alle categorie OWASP rilevanti. & UC4 \\ \hline
+        RF.4.1 & Obbligatorio & Il sistema deve poter eseguire una scansione di sicurezza su un singolo
+        file modificato. & UC4.1 \\ \hline
+        RF.4.2 & Obbligatorio & Il sistema deve poter eseguire una scansione di sicurezza sull'intero
+        repository. & UC4.2 \\ \hline
+    \end{tabularx}
+\end{table}
 
 \subsection{Requisiti qualitativi}\label{requisiti-qualitativi}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
-\textbf{Codice}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Priorità}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Descrizione}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Fonti}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RQ.1
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Gli output prodotti dagli agenti devono risultare utili al miglioramento
-del codice, ad es. tramite segnalazioni, suggerimenti, frammenti di
-codice o proposte di soluzione.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verbale esterno
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RQ.2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Devono essere definite modalità di test e validazione per gli agenti
-sviluppati.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verbale esterno
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\end{longtable}
-}
-
-\subsection{}\label{section-1}
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|c|X|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
+        RQ.1 & Obbligatorio & Gli output prodotti dagli agenti devono risultare utili al miglioramento
+        del codice, ad es. tramite segnalazioni, suggerimenti, frammenti di codice o proposte di soluzione. &
+        Verbale esterno \\ \hline
+        RQ.2 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati. & 
+        Verbale esterno \\ \hline
+    \end{tabularx}
+\end{table}
 
 \subsection{Requisiti di vincolo}\label{requisiti-di-vincolo}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
-\textbf{Codice}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Priorità}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Descrizione}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Fonti}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RV.1
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Gli agenti sviluppati devono integrarsi in un'architettura già esistente
-fornita dal proponente.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verbale esterno
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RV.2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il progetto non deve prevedere l'addestramento di nuovi modelli, ma
-l'integrazione di modelli o servizi tramite API.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verbale esterno
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RV.3
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il sistema deve poter operare sui repository di esempio e sul codice
-reso disponibile dal proponente per integrazione e test.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verbale esterno
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RV.4
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Il progetto \ul{non} prevede lo sviluppo di agenti: orchestratore, per
-aggiornamento librerie, per sostituzione del codice obsoleto e per
-mantenimento della copertura dei test, in quanto sono già in sviluppo
-presso Var Group.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verbale esterno
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\end{longtable}
-}
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|c|X|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
+        RV.1 & Obbligatorio & Gli agenti sviluppati devono integrarsi in un'architettura già esistente
+        fornita dal proponente. & Verbale esterno \\ \hline
+        RV.2 & Obbligatorio & Il progetto non deve prevedere l'addestramento di nuovi modelli, ma
+        l'integrazione di modelli o servizi tramite API. & Verbale esterno \\ \hline
+        RV.3 & Obbligatorio & Il sistema deve poter operare sui repository di esempio e sul codice
+        reso disponibile dal proponente per integrazione e test. & Verbale esterno \\ \hline
+        RV.4 & Obbligatorio & Il progetto non prevede lo sviluppo di agenti: orchestratore, per
+        aggiornamento librerie, per sostituzione del codice obsoleto e per
+        mantenimento della copertura dei test, in quanto sono già in sviluppo
+        presso Var Group. & Verbale esterno \\ \hline
+    \end{tabularx}
+\end{table}
 
 \subsection{\texorpdfstring{Requisiti di sistema operativo {[}??{]}
 }{Requisiti di sistema operativo {[}??{]} }}\label{requisiti-di-sistema-operativo}
@@ -1068,48 +775,18 @@ requisiti?)}\label{facciamo-un-servizio-web-per-cui-non-ci-vogliono-questi-requi
 
 \subsection{Requisiti di sicurezza}\label{requisiti-di-sicurezza}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1158}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1608}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4791}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2026}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
-\textbf{Codice}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Priorità}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Descrizione}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Fonti}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RS.1
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Le eventuali modifiche proposte al codice o ai file del repository non
-devono essere applicate senza validazione umana preventiva.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Verbale esterno
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-RS.2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Obbligatorio
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-I risultati dell'analisi di sicurezza devono riportare almeno il tipo di
-problematica rilevata e una sua priorità o gravità.
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-UC4
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\end{longtable}
-}
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|c|X|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
+        RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del repository non
+        devono essere applicate senza validazione umana preventiva. & Verbale esterno \\ \hline
+        RS.2 & Obbligatorio & I risultati dell'analisi di sicurezza devono riportare almeno il tipo di
+        problematica rilevata e una sua priorità o gravità. & UC4 \\ \hline
+    \end{tabularx}
+\end{table}
 
 \subsection{Tracciamento}\label{tracciamento}
 
