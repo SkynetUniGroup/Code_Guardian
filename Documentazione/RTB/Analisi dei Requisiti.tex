@@ -13,6 +13,12 @@
 \usepackage[figure,table]{totalcount}
 \usepackage{fancyhdr}
 \usepackage{adjustbox}
+\usepackage{extramarks}
+\usepackage{makecell}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{35pt}
 
 \hypersetup{
     pdftitle={Analisi dei requisiti},
@@ -22,13 +28,63 @@
     urlcolor=blue,
 }
 
-\title{\protect\phantomsection\label{_gwvbjzmnw5ec}{}Analisi dei
-requisiti}
-\author{}
-\date{}
+\newcommand{\doctitle}{Analisi dei Requisiti} % Sostituisci con il titolo reale
+
+% --- INTESTAZIONE (HEADER) ---
+\lhead{\nouppercase{\firstleftmark}}
+\rhead{\adjustbox{valign=m}{\includegraphics[height=1cm]{logo_skynet_dark.png}}}
+
+% --- PIÈ DI PAGINA (FOOTER) ---
+\lfoot{\doctitle} 
+\rfoot{\thepage} 
+
+% Linee di separazione
+\renewcommand{\headrulewidth}{0.4pt} % Linea sotto l'intestazione
+\renewcommand{\footrulewidth}{0.4pt} % Linea sopra il piè di pagina
 
 \begin{document}
-\maketitle
+% ==========================================
+% FRONTESPIZIO
+% ==========================================
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.5\linewidth]{logo_skynet_dark.png}
+    
+    {\Large Gruppo SkyNet}\\
+    {\normalsize \href{mailto:skynetunigroup@gmail.com}{skynetunigroup@gmail.com}}
+    \vspace*{1.5cm}
+    
+    {\Huge \textbf{\doctitle}} \\
+    
+    \vspace{3cm}
+    
+    % Tabella Informazioni Documento, sostituire con il contenuto reale
+    \begin{table}[h]
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Versione} & \textit{Inserire Versione (es. 1.0)} \\ \hline
+            \textbf{Uso} & \textit{Esterno} \\ \hline
+            \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
+            \textbf{Redattori} & \textit{Nome Cognome 1, Nome Cognome 2} \\ \hline
+            \textbf{Verifica} & \textit{Nome Cognome 1, Nome Cognome 2} \\ \hline
+            \textbf{Approvazione} & \textit{Nome Cognome} \\ \hline
+
+        \end{tabularx}
+    \end{table}
+    
+    \vfill
+\end{titlepage}
+\stepcounter{page}
+
+\newpage
+
+% ==========================================
+% LINK DI SUPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO
+% ==========================================
+[LINK DI SUPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO]
+
 
 Slide per l'analisi:
 \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T05.pdf}
@@ -44,7 +100,14 @@ Esempi:
   \href{https://merlunipd.github.io/login-warrior/output_documenti/esterni/AdR_V2.pdf}{Merl}
 \end{itemize}
 
-\begin{table}[ht]
+\newpage
+
+% ==========================================
+% REGISTRO DELLE VERSIONI
+% ==========================================
+\section*{Versioni del documento}
+\markboth{Versioni del documento}{}
+\begin{table}[h]
     \centering
     \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
@@ -73,6 +136,10 @@ Esempi:
     \listoffigures
 \fi
 \newpage
+
+% ==========================================
+% CONTENUTO DEL DOCUMENTO
+% ==========================================
 
 \section{Introduzione}\label{introduzione}
 
@@ -292,7 +359,7 @@ README.md principale per riflettere lo stato attuale del software.
 \item
   Scenario Principale:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     L\textquotesingle Orchestratore notifica l\textquotesingle Agente 1
     della necessità di aggiornare il README.
@@ -308,7 +375,7 @@ README.md principale per riflettere lo stato attuale del software.
   \item
     L\textquotesingle Agente propone la modifica o sovrascrive il file
     (a seconda della configurazione).
-  \end{itemize}
+  \end{enumerate}
 \item
   Post-condizioni: Il file README.md è aggiornato e coerente con
   l\textquotesingle ultima versione del codice sorgente.
@@ -344,7 +411,7 @@ garantire che ogni componente sia documentato correttamente.
 \item
   Scenario Principale:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     L\textquotesingle Agente analizza il file sorgente alla ricerca di
     blocchi di codice non documentati o obsoleti.
@@ -357,7 +424,7 @@ garantire che ogni componente sia documentato correttamente.
   \item
     L\textquotesingle Agente inserisce il commento sopra la firma della
     funzione/classe.
-  \end{itemize}
+  \end{enumerate}
 \item
   Post-condizioni: Il codice sorgente presenta commenti inline
   aggiornati e conformi agli standard di progetto.
@@ -393,7 +460,7 @@ una guida tecnica per i consumatori delle API.
 \item
   Scenario Principale:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     L\textquotesingle Agente scansiona i file dei controller e dei
     modelli dei dati.
@@ -406,7 +473,7 @@ una guida tecnica per i consumatori delle API.
   \item
     L\textquotesingle Agente pubblica o salva il documento nella
     cartella di documentazione predefinita.
-  \end{itemize}
+  \end{enumerate}
 \item
   Post-condizioni: È disponibile un documento tecnico aggiornato che
   descrive il funzionamento di tutte le API della piattaforma.
@@ -449,7 +516,7 @@ vulnerabilità standard nel codice sorgente.
 \item
   Scenario Principale:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     L\textquotesingle Orchestratore invia i file sorgente (o il diff
     dell\textquotesingle ultimo commit) all\textquotesingle Agente 3.
@@ -466,7 +533,7 @@ vulnerabilità standard nel codice sorgente.
   \item
     L\textquotesingle Agente 3 formatta i risultati evidenziando la
     gravità (High, Medium, Low) di ogni falla trovata.
-  \end{itemize}
+  \end{enumerate}
 \item
   Post-condizioni: Viene generato un report tecnico delle vulnerabilità
   rilevate.
@@ -500,7 +567,7 @@ specifiche definite dal team nel file di configurazione.
 \item
   Scenario Principale:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     L\textquotesingle Agente 3 legge il contenuto del file CLAUDE.md per
     estrarre il contesto e le regole (es. "usa sempre questa libreria
@@ -514,7 +581,7 @@ specifiche definite dal team nel file di configurazione.
   \item
     L\textquotesingle Agente genera un elenco di violazioni della policy
     interna.
-  \end{itemize}
+  \end{enumerate}
 \item
   Post-condizioni: Viene prodotto un elenco di non-conformità rispetto
   alle policy di progetto.
@@ -588,7 +655,7 @@ dei task per raccogliere il materiale necessario al report.
 \item
   Scenario Principale:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     L\textquotesingle Orchestratore richiede all\textquotesingle Agente
     4 di analizzare lo Sprint corrente (es. "Sprint 5").
@@ -601,7 +668,7 @@ dei task per raccogliere il materiale necessario al report.
   \item
     L\textquotesingle Agente organizza internamente le informazioni
     (separazione tra bugfix, nuove feature e task tecnici).
-  \end{itemize}
+  \end{enumerate}
 \item
   Post-condizioni: L\textquotesingle Agente dispone di un set di dati
   strutturato pronto per la trasformazione.
@@ -668,7 +735,7 @@ tangibili per il cliente o l\textquotesingle utente finale.
 \item
   Scenario Principale:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     L\textquotesingle Agente analizza le User Stories e le modifiche
     apportate.
@@ -682,7 +749,7 @@ tangibili per il cliente o l\textquotesingle utente finale.
   \item
     Viene generato un report discorsivo e orientato al business (es.
     "Novità dello Sprint 5 per l\textquotesingle utente").
-  \end{itemize}
+  \end{enumerate}
 \item
   Post-condizioni: Viene prodotto un documento pronto per essere
   presentato agli stakeholder non tecnici.
