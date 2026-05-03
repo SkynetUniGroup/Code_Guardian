@@ -1,0 +1,972 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[figure,table]{totalcount}
+\usepackage{fancyhdr}
+\usepackage{adjustbox}
+\usepackage{extramarks}
+\usepackage{makecell}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{35pt}
+
+\hypersetup{
+    pdftitle={Piano di Progetto},
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\newcommand{\doctitle}{Piano di Progetto} % Sostituisci con il titolo reale
+
+% --- INTESTAZIONE (HEADER) ---
+\lhead{\nouppercase{\firstleftmark}}
+\rhead{\adjustbox{valign=m}{\includegraphics[height=1cm]{logo_skynet_dark.png}}}
+
+% --- PIÈ DI PAGINA (FOOTER) ---
+\lfoot{\doctitle} 
+\rfoot{\thepage} 
+
+% Linee di separazione
+\renewcommand{\headrulewidth}{0.4pt} % Linea sotto l'intestazione
+\renewcommand{\footrulewidth}{0.4pt} % Linea sopra il piè di pagina
+
+\begin{document}
+% ==========================================
+% FRONTESPIZIO
+% ==========================================
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.5\linewidth]{logo_skynet_dark.png}
+    
+    {\Large Gruppo SkyNet}\\
+    {\normalsize \href{mailto:skynetunigroup@gmail.com}{skynetunigroup@gmail.com}}
+    \vspace*{1.5cm}
+    
+    {\Huge \textbf{\doctitle}} \\
+    
+    \vspace{3cm}
+    
+    % Tabella Informazioni Documento, sostituire con il contenuto reale
+    \begin{table}[H]
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Versione} & \textit{Inserire Versione (es. 1.0)} \\ \hline
+            \textbf{Uso} & \textit{Esterno} \\ \hline
+            \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
+            \textbf{Redattori} & \textit{Nome Cognome 1, Nome Cognome 2} \\ \hline
+            \textbf{Verifica} & \textit{Nome Cognome 1, Nome Cognome 2} \\ \hline
+            \textbf{Approvazione} & \textit{Nome Cognome} \\ \hline
+
+        \end{tabularx}
+    \end{table}
+    
+    \vfill
+\end{titlepage}
+\stepcounter{page}
+
+\newpage
+Esempi:
+
+\begin{itemize}
+    \item \href{https://gammardx.github.io/Documents/Documenti\%20esterni/Piano\%20di\%20Progetto\%20v2.0.0.pdf}{GammardX}
+    \item \href{https://torchlight-swe2324.github.io/docs/pb/Documentazione\%20Esterna/piano_progetto_v2.0.0.pdf}{Torchlight}
+    \item \href{https://merlunipd.github.io/login-warrior/output_documenti/esterni/PdP_V3.pdf}{Merl}
+\end{itemize}
+
+\newpage
+
+% ==========================================
+% REGISTRO DELLE VERSIONI
+% ==========================================
+\section*{Versioni del documento}
+\markboth{Versioni del documento}{}
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
+        \hline
+        \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.3 & 27/04/2026 & Stesura capitolo 2: Analisi dei Rischi & Dario Pirrone & Marco Barbiero \\ \hline
+        0.2 & 22/04/2026 & Scrittura preventivo Sprint 1 e Sprint 2, scrittura consuntivo Sprint 1 & Dario Pirrone & Marco Barbiero \\ \hline
+        0.1 & 12/04/2026 & Scrittura della sezione ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
+        0.0.1 & 11/04/2026 & Strutturazione del documento & Dario Pirrone & Marco Barbiero \\ \hline
+    \end{tabularx}
+\end{table}
+
+\newpage
+
+% ==========================================
+% INDICI
+% ==========================================
+
+\tableofcontents
+\iftotaltables  % Se sono presenti tabelle o figure appare l'indice
+    \vspace{1cm}
+    \listoftables
+\fi
+
+\iftotalfigures
+    \vspace{1cm}
+    \listoffigures
+\fi
+\newpage
+
+% ==========================================
+% CONTENUTO DEL DOCUMENTO
+% ==========================================
+
+\section{Introduzione}
+
+\subsection{Scopo del documento}
+
+Questo documento ha lo scopo di pianificare e monitorare i progressi nello sviluppo del progetto ``Code Guardian''. In particolare serve a tracciare:
+
+\begin{itemize}
+\item
+  le attività da svolgere e quelle già completate
+\item
+  i rischi individuati e la loro gestione
+\item
+  la pianificazione delle milestone del progetto (a grana grossa) e dei
+  singoli sprint (a grana fine)
+\item
+  i costi temporali ed economici, sia previsti che effettivi.
+\end{itemize}
+
+L\textquotesingle adozione di tale documento mira a incrementare
+l\textquotesingle efficacia e l\textquotesingle efficienza del gruppo di
+lavoro.
+
+Un ulteriore scopo importante di questo documento è di servire come base
+per riflettere sull\textquotesingle andamento di ogni sprint,
+analizzando le difficoltà incontrate e lo stato degli obiettivi per
+capire come migliorarci nello sprint successivo.
+
+Il documento verrà aggiornato continuamente durante tutto il periodo di
+lavoro e sarà completato solo alla fine del progetto.
+
+\subsection{Glossario}
+
+Termini tecnici e vocabolari particolarmente importanti il cui
+significato non sia immediatamente noto o chiaro vengono definiti nel
+documento \emph{Glossario} che è in costante aggiornamento. Ogni termine
+presente nel glossario è contrassegnato da una G a pedice ed è un
+collegamento ipertestuale che rimanda direttamente alla definizione
+corrispondente nel \emph{Glossario}. Tali parole vengono contrassegnate
+solamente alla loro prima occorrenza in questo documento.
+
+\subsection{Riferimenti}
+
+\subsubsection{Riferimenti normativi}
+
+\begin{itemize}
+\item
+  Norme di Progetto v1.0.0
+\item  
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento Progetto Didattico}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2.pdf}{Capitolato C2 - Code Guardian}
+\end{itemize}
+
+\subsubsection{\texorpdfstring{\textbf{Riferimenti
+informativi}}{Riferimenti informativi}}\label{riferimenti-informativi}
+
+\begin{itemize}
+\item
+  Glossario v1.0.0\\
+  (link sul nostro sito)
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T02.pdf}{Slide T02 del corso Ingegneria del Software}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{Slide T04 del corso Ingegneria del Software}
+\item
+  \ldots{}
+\end{itemize}
+
+\section{Analisi dei Rischi}
+
+L\textquotesingle attività di gestione dei rischi è un processo
+fondamentale e continuo che accompagna l\textquotesingle intero ciclo di
+vita del progetto. L\textquotesingle obiettivo principale è identificare
+preventivamente i potenziali ostacoli che potrebbero compromettere il
+rispetto delle scadenze, la qualità del prodotto o il budget orario
+preventivato.
+
+Il gruppo adotta un approccio proattivo: per ogni rischio individuato
+viene definita una strategia di \textbf{precauzione}, volta a
+minimizzare la probabilità che l\textquotesingle evento si verifichi, e
+una strategia di \textbf{mitigazione}, per ridurre
+l\textquotesingle impatto qualora il rischio diventi realtà.
+
+Per garantire una gestione strutturata, i rischi sono stati classificati
+nelle seguenti categorie:
+
+\begin{itemize}
+\item
+  \textbf{RO (Rischi Organizzativi):} legati alla pianificazione, al
+  coordinamento e alla logistica del team.
+\item
+  \textbf{RT (Rischi Tecnologici):} relativi all\textquotesingle uso di
+  strumenti, framework e alla complessità tecnica.
+\item
+  \textbf{RI (Rischi Individuali):} inerenti ai singoli componenti e
+  alle loro disponibilità o competenze.
+\item
+  \textbf{RR (Rischi legati ai Requisiti):} legati alla comprensione e
+  alla variazione delle specifiche di progetto.
+\end{itemize}
+
+Ogni rischio è valutato secondo due parametri principali:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Probabilità:} la frequenza attesa con cui il rischio può
+  manifestarsi (Bassa, Media, Alta).
+\item
+  \textbf{Pericolosità:} l\textquotesingle entità del danno che il
+  rischio arrecherebbe al progetto (Bassa, Media, Alta).
+\end{enumerate}
+
+L\textquotesingle analisi non è da considerarsi statica: il
+\textbf{Responsabile di Progetto} si occupa di monitorare costantemente
+l\textquotesingle insorgenza di nuove criticità e di aggiornare i
+consuntivi di periodo in base all\textquotesingle efficacia delle
+contromisure adottate.
+
+\newpage
+
+\subsection{Rischi organizzativi}
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Scarsa Pianificazione - RO1}} \\ \hline
+        Descrizione & Difficoltà nell\textquotesingle individuare correttamente le attività
+        necessarie e nel suddividere i compiti in modo efficiente, causando
+        potenziali ritardi e spreco di risorse. \\ \hline
+        Probabilità di occorrenza & Media-Alta. \\ \hline
+        Grado di pericolosità & Alta. \\ \hline
+        Precauzioni & Adottare inizialmente una pianificazione pessimistica, definire attività
+        ed obiettivi molto chiari e con un monitoraggio costante
+        dell\textquotesingle andamento del progetto tramite consuntivi di
+        periodo. \\ \hline
+        Mitigazioni possibili & 
+        Se la distanza tra preventivo e consuntivo di uno sprint è eccessiva, il
+        team deve ripianificare gli sprint successivi prima di procedere con
+        altre attività e, se necessario, ridefinire il Way of Working.\\ \hline
+    \end{tabularx}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Comunicazione Interna Inefficace - RO2}} \\ \hline
+        Descrizione & Mancanza di regolarità o chiarezza nelle comunicazioni tra i membri, con
+        rischio di fraintendimenti, duplicazione del lavoro o discrepanze nelle
+        aspettative. \\ \hline
+        Probabilità di occorrenza & Media-Bassa. \\ \hline
+        Grado di pericolosità & Media. \\ \hline
+        Precauzioni & Definire formalmente canali e tecnologie di comunicazione nelle Norme di
+        Progetto e organizzare incontri interni periodici per confronti diretti. \\ \hline
+        Mitigazioni possibili & Garantire aggiornamenti costanti sullo stato di avanzamento;
+        incoraggiare l\textquotesingle uso frequente dei canali interni per
+        risolvere dubbi non appena si presentano. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Sottostima delle Attività - RO3}} \\ \hline
+        Descrizione &
+        Il tempo effettivamente richiesto per una task si rivela superiore a
+        quello preventivato, portando a ritardi sulle scadenze. \\ \hline
+        Probabilità di occorrenza & Alta. \\ \hline
+        Grado di pericolosità & Alta. \\ \hline
+        Precauzioni &
+        Analisi dettagliata dei requisiti e dei compiti prima della stima;
+        inclusione di margini di tolleranza nei tempi e pianificazione
+        pessimistica. \\ \hline
+        Mitigazioni possibili & 
+        Segnalazione tempestiva del ritardo da parte del membro assegnatario; il
+        team valuta la redistribuzione del lavoro tra più persone o il posticipo
+        di attività meno critiche.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Sovrastima delle Attività - RO4}} \\ \hline
+        Descrizione &
+        Il tempo richiesto per completare una task è sensibilmente inferiore al
+        previsto, rischiando un utilizzo inefficiente delle ore produttive
+        rimaste. \\ \hline
+        Probabilità di occorrenza & Media. \\ \hline
+        Grado di pericolosità & Bassa. \\ \hline
+        Precauzioni & Valutazione più accurata della complessità delle task basandosi
+        sull\textquotesingle esperienza acquisita negli sprint precedenti. \\ \hline
+        Mitigazioni possibili & 
+        Comunicazione immediata del completamento anticipato; il membro libero
+        fornisce supporto a chi è in ritardo o avvia nuove task pianificate per
+        periodi successivi.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Forte Disaccordo nel Gruppo - RO5}} \\ \hline
+        Descrizione & 
+        Conflitti tra i componenti su scelte progettuali, tecnologiche o
+        organizzative che bloccano il processo decisionale. \\ \hline
+        Probabilità di occorrenza & Bassa. \\ \hline
+        Grado di pericolosità & Media. \\ \hline
+        Precauzioni &
+        Promuovere un clima di collaborazione e ascolto; definire tempi
+        prestabiliti per le discussioni. \\ \hline
+        Mitigazioni possibili & 
+        Presentazione formale delle diverse proposte con relativa analisi di pro
+        e contro; valutazione collegiale e, se necessario, ricorso a votazione
+        anonima per individuare la scelta più condivisa.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Problemi di Forza Maggiore - RO6}} \\ \hline
+        Descrizione & 
+        Eventi esterni imprevedibili, per esempio guasti tecnici o emergenze
+        varie, che rallentano lo sviluppo del progetto e distorcono le
+        previsioni. \\ \hline
+        Probabilità di occorrenza & Media-Alta. \\ \hline
+        Grado di pericolosità & Alta. \\ \hline
+        Precauzioni & 
+        Mantenere una pianificazione flessibile e pessimistica che permetta di
+        assorbire imprevisti minori. \\ \hline
+        Mitigazioni possibili &
+        Monitoraggio costante della situazione; comunicazione tempestiva a tutti
+        i membri del team e possibile ridefinizione delle scadenze interne. \\ \hline
+    \end{tabularx}
+\end{table}
+
+%\newpage
+
+\subsection{Rischi tecnologici}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Tecnologie Sconosciute - RT1}} \\ \hline
+        Descrizione &
+        Difficoltà derivanti dall\textquotesingle utilizzo di tecnologie,
+        strumenti di supporto, framework o linguaggi nuovi o particolarmente
+        complessi per i membri del gruppo (es. React, OWASP, Node.js). \\ \hline
+        Probabilità di occorrenza & Alta. \\ \hline
+        Grado di pericolosità & Alta. \\ \hline
+        Precauzioni & 
+        Ogni membro deve dichiarare il proprio livello di conoscenza prima della
+        scelta tecnologica. Prevedere periodi di formazione individuale e
+        collettiva prima dell\textquotesingle inizio delle attività di codifica. \\ \hline
+        Mitigazioni possibili & 
+        Studio approfondito di materiale esterno; supporto reciproco tra i
+        membri del team; richiesta di chiarimenti o sessioni di supporto
+        all\textquotesingle azienda proponente. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Mancanza di Documentazione - RT2}} \\ \hline
+        Descrizione &
+        Le tecnologie scelte potrebbero avere una documentazione limitata,
+        obsoleta o poco chiara, rendendo difficile la risoluzione di bug o
+        l\textquotesingle implementazione di funzionalità specifiche. \\ \hline
+        Probabilità di occorrenza & Media-Bassa. \\ \hline
+        Grado di pericolosità & Media-Alta. \\ \hline
+        Precauzioni & 
+        Verificare l\textquotesingle ampiezza della documentazione e il supporto
+        della community prima di adottare definitivamente una tecnologia. \\ \hline
+        Mitigazioni possibili &
+        Utilizzare canali di comunicazione interni per condividere scoperte;
+        cercare guide di terze parti; rivolgersi all\textquotesingle azienda
+        proponente per ottenere materiale aggiuntivo o consigliato.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Errori nel Codice - RT3}} \\ \hline
+        Descrizione &
+        L\textquotesingle attività di codifica e i relativi test possono far
+        emergere comportamenti inattesi o malfunzionamenti che richiedono
+        revisioni e correzioni impreviste. \\ \hline
+        Probabilità di occorrenza & Alta. \\ \hline
+        Grado di pericolosità & Media. \\ \hline
+        Precauzioni & 
+        Definizione rigorosa delle Norme di Progetto per la codifica; adozione
+        di test di unità e integrazione sin dalle prime fasi di sviluppo. \\ \hline
+        Mitigazioni possibili &
+        Il programmatore assegna priorità alla risoluzione del bug; se la
+        criticità è elevata, il responsabile alloca risorse aggiuntive o
+        richiede il supporto dei membri più esperti.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Inefficacia degli Strumenti di Supporto - RT4}} \\ \hline
+        Descrizione &
+        Gli strumenti scelti per il coordinamento (editor collaborativi,
+        piattaforme di comunicazione, tool di gestione repository) si rivelano
+        inadatti alle dinamiche del team o presentano limiti tecnici che
+        ostacolano la produttività. \\ \hline
+        Probabilità di occorrenza & Media-Bassa. \\ \hline
+        Grado di pericolosità & Bassa. \\ \hline
+        Precauzioni &
+        Effettuare una valutazione preliminare dell\textquotesingle efficacia
+        degli strumenti attraverso un periodo di prova limitato prima di
+        renderli ufficiali nelle Norme di Progetto. \\ \hline
+        Mitigazioni possibili &
+        Discussione collegiale sui problemi riscontrati; se
+        l\textquotesingle inefficienza è confermata, il Responsabile deve
+        disporre la sostituzione tempestiva dello strumento con uno più idoneo.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Incompatibilità Tecnologica - RT5}} \\ \hline
+        Descrizione &
+        Problemi di integrazione tra diverse librerie, framework o servizi
+        esterni scelti che non riescono a comunicare correttamente tra loro,
+        rallentando o bloccando lo sviluppo dell\textquotesingle architettura. \\ \hline
+        Probabilità di occorrenza & Media. \\ \hline
+        Grado di pericolosità & Media-Alta. \\ \hline
+        Precauzioni &
+        Realizzazione di un Proof of Concept (PoC) per testare la fattibilità
+        dell\textquotesingle integrazione tra i componenti critici. \\ \hline
+        Mitigazioni possibili &
+        Rivalutazione dell\textquotesingle architettura e sostituzione del
+        componente incompatibile con uno alternativo già testato o più standard.\\ \hline
+    \end{tabularx}
+\end{table}
+
+%\newpage
+
+\subsection{Rischi individuali}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Indisponibilità e Vincoli di Tempo - RI1}} \\ \hline
+        Descrizione &
+        Possibili periodi di assenza o riduzione della produttività di uno o più
+        membri dovuti a impegni accademici, motivi di salute o imprevisti
+        personali. \\ \hline
+        Probabilità di occorrenza & Alta. \\ \hline
+        Grado di pericolosità & Media. \\ \hline
+        Precauzioni &
+        Ogni membro deve comunicare tempestivamente i propri impegni futuri per
+        permettere una pianificazione basata sulla disponibilità reale. \\ \hline
+        Mitigazioni possibili &
+        Il Responsabile provvede alla redistribuzione delle task del membro
+        indisponibile tra gli altri componenti; in casi critici, si procede allo
+        slittamento di attività non prioritarie.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Studio Insufficiente di un Argomento - RI2}} \\ \hline
+        Descrizione &
+        Un membro affronta lo sviluppo di una funzionalità o la stesura di un
+        documento senza aver acquisito le competenze necessarie, portando a un
+        prodotto di scarsa qualità o errato. \\ \hline
+        Probabilità di occorrenza & Media-Alta. \\ \hline
+        Grado di pericolosità & Media-Alta. \\ \hline
+        Precauzioni &
+        Definire dei tempi obbligatori di auto-formazione prima
+        dell\textquotesingle inizio di ogni nuova fase tecnologica. \\ \hline
+        Mitigazioni possibili &
+        Revisione tra pari (Peer Review) immediata; se l\textquotesingle errore
+        persiste, il membro viene affiancato da un componente più esperto o si
+        richiede un incontro di chiarimento con il proponente.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Problemi Interpersonali e Conflitti - RI3}} \\ \hline
+        Descrizione &
+        Nascita di tensioni, incomprensioni o antipatie personali tra membri del
+        gruppo che possono minare il clima collaborativo e la produttività. \\ \hline
+        Probabilità di occorrenza & Bassa. \\ \hline
+        Grado di pericolosità & Alta. \\ \hline
+        Precauzioni & Promuovere una cultura di feedback costruttivo e trasparenza. \\ \hline
+        Mitigazioni possibili &
+        Mediazione diretta del Responsabile per risolvere il conflitto; se
+        necessario, assegnare i membri in conflitto a task o sottogruppi diversi
+        per ridurre le frizioni dirette.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Calo di Motivazione o Impegno - RI4}} \\ \hline
+        Descrizione & 
+        Disinteresse progressivo di un membro verso il progetto, che si
+        manifesta con scarsa partecipazione alle riunioni o mancato rispetto
+        delle scadenze individuali. \\ \hline
+        Probabilità di occorrenza & Bassa. \\ \hline
+        Grado di pericolosità & Media. \\ \hline
+        Precauzioni &
+        Coinvolgimento attivo di tutti i membri nelle scelte decisionali;
+        valorizzazione del lavoro svolto attraverso l\textquotesingle analisi
+        dei risultati nei consuntivi. \\ \hline
+        Mitigazioni possibili & 
+        Colloquio privato con il membro per identificare le cause del
+        disinteresse; se l\textquotesingle impegno non migliora, ridistribuzione
+        del carico di lavoro e segnalazione nel verbale interno.\\ \hline
+    \end{tabularx}
+\end{table}
+
+%\newpage
+
+\subsection{Rischi legati ai requisiti}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Analisi dei Requisiti Incompleta o Errata - RR1}} \\ \hline
+        Descrizione &
+        Durante la fase di analisi, il gruppo potrebbe omettere dei requisiti
+        fondamentali o definirli in modo non corretto, portando a un prodotto
+        finale che non soddisfa le attese. \\ \hline
+        Probabilità di occorrenza & Media. \\ \hline
+        Grado di pericolosità & Alta. \\ \hline
+        Precauzioni &
+        Studio approfondito del capitolato e dei verbali esterni; utilizzo di
+        template standard per la definizione dei requisiti e dei casi
+        d\textquotesingle uso. \\ \hline
+        Mitigazioni possibili & 
+        Revisione continua del documento di Analisi dei Requisiti; confronto
+        diretto e frequente con il proponente per validare ogni requisito
+        individuato.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Cambiamento dei Requisiti in Itinere - RR2}} \\ \hline
+        Descrizione &
+        Richiesta di modifiche o aggiunte ai requisiti da parte del proponente
+        durante lo svolgimento del progetto, o necessità di modifica emersa a
+        causa di vincoli tecnologici scoperti in ritardo. \\ \hline
+        Probabilità di occorrenza & Media-Bassa. \\ \hline
+        Grado di pericolosità & Media. \\ \hline
+        Precauzioni &
+        Definizione chiara dei requisiti must have; avvisare il proponente
+        dell\textquotesingle impatto che ogni modifica ha sui costi e sui tempi
+        di consegna. \\ \hline
+        Mitigazioni possibili &
+        Valutazione dell\textquotesingle impatto della modifica sul Piano di
+        Progetto; se la modifica è critica, il Responsabile deve ripianificare
+        lo sprint corrente e quelli futuri.\\ \hline
+    \end{tabularx}
+\end{table}
+
+{\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Eccessivo Numero di Requisiti Opzionali - RR3}} \\ \hline
+        Descrizione & 
+        Il gruppo identifica e si impegna a realizzare troppi requisiti
+        desiderabili o opzionali, rischiando di non terminare in tempo quelli
+        obbligatori. \\ \hline
+        Probabilità di occorrenza & Media-Bassa. \\ \hline
+        Grado di pericolosità & Media. \\ \hline
+        Precauzioni & 
+        Classificare rigorosamente i requisiti in "Obbligatori", "Desiderabili"
+        e "Opzionali". \\ \hline
+        Mitigazioni possibili &
+        In caso di ritardo sulla tabella di marcia, il Responsabile deve
+        disporre l\textquotesingle abbandono immediato dei requisiti opzionali
+        per concentrare tutte le risorse sul nucleo essenziale del software.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Conflitto tra Requisiti - RR4}} \\ \hline
+        Descrizione &
+        Presenza di due o più requisiti che si contraddicono a vicenda in
+        qualche forma. \\ \hline
+        Probabilità di occorrenza & Bassa. \\ \hline
+        Grado di pericolosità & Bassa. \\ \hline
+        Precauzioni &
+        Creazione di una matrice di tracciabilità dei requisiti per individuare
+        dipendenze e potenziali conflitti. \\ \hline
+        Mitigazioni possibili &
+        Discussione collegiale e consultazione con il proponente per stabilire
+        quale dei requisiti in conflitto abbia la priorità o per trovare un
+        compromesso accettabile. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section{Pianificazione}
+
+\subsection{Macro-fasi del progetto}
+
+Definizione e descrizione delle milestone principali (RTB - Requirements
+and Technology Baseline, PB - Product Baseline, CA - Customer
+Acceptance)
+
+\subsection{Requirements and Technology Baseline (RTB)}
+
+\subsubsection{Prima sotto-milestone}
+
+\subsubsection{Seconda sotto-milestone}
+
+Elenco delle attività previste per ciascuna milestone.\\
+(la tabella è solo per riferimento)
+%\newpage 
+\begin{table}[H]
+    \centerline{
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabularx}{1.1\textwidth}{|m{4em}|X|p{7em}|X|}
+            \hline
+            Macro \newline Milestone & Sotto Milestone & Previsione \newline completamento & Attività  da svolgere \\
+            \hline
+            %in multirow la misura tra le [] è l'offset verticale
+            \multirow{4}{*}[-2cm]{\centering RTB} & Fondamenta e normativa & Inizio Maggio ? & - Definito Way of Working \newline
+            - NdP: redatto il documento \\
+            \cline{2-4}
+            & Analisi e ricerca & Metà maggio & - AdR: Completati tutti gli use case e requisiti \newline
+            - PdQ: Definite le metriche \newline
+            - Completato studio delle tecnologie \\ 
+            \cline{2-4}
+            & PoC e qualità & Inizio Giugno & - Pianificato e realizzato PoC \newline
+            - PdQ: effettuati test \\ 
+            \cline{2-4}
+            & Chiusura RTB & Metà Giugno & - Revisione e completamento di tutti i documenti (v1.0.0) \newline
+            - Preparazione per il colloquio \\
+            \hline \hline
+            \multirow{5}{*}[-2cm]{\centering PB/MVP} & Progettazione architetturale & Fine Luglio & - Redatte Specifiche Tecniche (ST) \\ 
+            \cline{2-4}
+            & Sviluppo core & Metà Agosto & - Codifica funzionalità must-have \newline
+            - Integrazione con orchestratore esterno \\ 
+            \cline{2-4}
+            & Test e raffinamento & Fine Agosto & - Esecuzione test di unità e integrazione \newline
+            - Revisione e completamento di tutti i documenti (v2.0.0) \\ 
+            \cline{2-4}
+            & Validazione MVP e consegna & Inizio Settembre & - Dimostrazione a VarGroup MVP e approvazione formale \newline
+            - Redazione del Manuale Utente \\ 
+            \cline{2-4}
+            & Chiusura progetto & Metà Settembre & - Revisione finale e consegna\\
+            \hline
+        \end{tabularx}
+    }
+\end{table}
+
+\section{Preventivo e Consuntivo}
+
+\subsection{Requirements and Technology Baseline (RTB)}
+
+\subsubsection{Sprint 1: 31/03/2026 - 14/04/2026}
+
+\paragraph{Obiettivi e attività}
+
+Le attività previste per il primo \emph{Sprint} sono le seguenti:
+
+\begin{itemize}
+\item
+  analizzare gli agenti proposti dall\textquotesingle azienda VarGroup e
+  decidere quali sviluppare per il progetto;
+\item
+  strutturare ed iniziare la stesura dell\textquotesingle\emph{Analisi
+  dei requisiti};
+\item
+  strutturare i capitoli dei documenti: \emph{Piano di progetto},
+  \emph{Glossario} e \emph{Norme di progetto};
+\item
+  introdurre le \emph{GitHub Actions} per automatizzare
+  l\textquotesingle aggiunta dei verbali sul sito web;
+\item
+  comunicare all\textquotesingle azienda VarGroup
+  l\textquotesingle aggiudicazione del capitolato;
+\item
+  studiare concetti e tecnologie necessarie per lo sviluppo del
+  progetto.
+\end{itemize}
+
+A seguito di comunicazioni intercorse con l\textquotesingle azienda
+proponente VarGroup, è emersa l\textquotesingle impossibilità da parte
+dei referenti esterni di fornire supporto diretto fino alla metà di
+aprile, a causa di scadenze interne.
+
+Di conseguenza il gruppo si concentrerà maggiormente su attività che non
+necessitano un riscontro immediato da parte
+dell\textquotesingle azienda.
+
+\paragraph{Preventivo orario ed economico}
+
+I ruoli assegnati sono: Responsabile, Amministratore, Analista e Verificatore.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.9\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint 1} & \multicolumn{6}{|c|}{\textbf{Ruolo}} & \\ \hline
+        \textbf{Membro} &\textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Ore totali} \\ \hline
+        Andrea Fistarol & 2 & & & & & & \textbf{2} \\ \hline
+        Dario Pirrone & & & 4 & & & & \textbf{4} \\ \hline
+        Edoardo Granziero & & & & & & 2 & \textbf{2} \\ \hline
+        Marco Barbiero & & 3 & & & & & \textbf{3} \\ \hline
+        Samuele Bertin & & & 2 & & & & \textbf{2} \\ \hline
+        Sara Ristovic & & & 4 & & & & \textbf{4} \\ \hline
+        \textbf{Ore totali per ruolo} & \textbf{2} & \textbf{3} & \textbf{10} & \textbf{0} &
+        \textbf{0} & \textbf{2} & \textbf{17} \\ \hline
+    \end{tabularx}
+\end{table}
+
+
+Le risorse economiche previste per lo \emph{Sprint} sono:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.9\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint 1} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+        \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{25} & \EUR{25} & \EUR{15} & \EUR{15} & / \\ \hline
+        \textbf{Costo totale} & \EUR{60} & \EUR{60} & \EUR{250} & \EUR{0} & \EUR{0} & \EUR{30} & \textbf{\EUR{400}} \\ \hline
+    \end{tabularx}
+\end{table}
+
+\paragraph{Consuntivo}\label{consuntivo}
+
+È risultato un consumo orario minore di quello preventivato inizialmente
+per Amministratore e Verificatore.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.9\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint 1} & \multicolumn{6}{|c|}{\textbf{Ruolo}} & \\ \hline
+        \textbf{Membro} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Ore totali} \\ \hline
+        Andrea Fistarol & 1 (-1) & & & & & & \textbf{1} \\ \hline
+        Dario Pirrone & & & 4 & & & & \textbf{4} \\ \hline
+        Edoardo Granziero & & & & & & 1 (-1) & \textbf{1} \\ \hline
+        Marco Barbiero & & 3 & & & & & \textbf{3} \\ \hline
+        Samuele Bertin & & & 2 & & & & \textbf{2} \\ \hline
+        Sara Ristovic & & & 4 & & & & \textbf{4} \\ \hline
+        \textbf{Ore totali per ruolo} & \textbf{1} & \textbf{3} & \textbf{10} & \textbf{0} & \textbf{0} & \textbf{1} & \textbf{15 (-2)} \\ \hline
+    \end{tabularx}
+\end{table}
+
+Le risorse economiche utilizzate durante lo \emph{Sprint} sono:
+\begin{table}[H]
+    \centerline{
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabularx}{1.09\textwidth}{|X|c|c|c|c|c|c|c|}
+            \hline
+            \textbf{Sprint 1} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+            \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{25} & \EUR{25} & \EUR{15} & \EUR{15} & / \\ \hline
+            \textbf{Costo totale} & \EUR{30} & \EUR{60} & \EUR{250} & \EUR{0} & \EUR{0} & \EUR{15} & \textbf{\EUR{355}} \\ \hline
+            \textbf{Saldo a fine sprint} & \textbf{\EUR{1.590}} & \textbf{\EUR{900}} & \textbf{\EUR{1.400}} 
+            & \textbf{\EUR{2.700}} & \textbf{\EUR{2.070}} & \textbf{\EUR{2.235}} & \textbf{\EUR{10.895}}\\ \hline
+        \end{tabularx}
+    }
+\end{table}
+
+\paragraph{Analisi dei rischi occorsi}\label{analisi-dei-rischi-occorsi}
+
+Durante lo svolgimento del primo \emph{Sprint}, si è manifestata una
+criticità relativa alla definizione delle attività pianificate
+(\textbf{RO1}): è stata riscontrata una definizione eccessivamente
+generica di alcune attività (es. "Inizio stesura Analisi dei
+Requisiti"). La mancanza di una scomposizione dettagliata ha causato
+difficoltà nel monitoraggio delle attività da svolgere e nella gestione
+del tempo da parte del gruppo.
+
+Per mitigare questa criticità si è deciso di definire meglio il
+\emph{Way of Working} riguardo a questo aspetto specifico.
+
+\paragraph{Retrospettiva}\label{retrospettiva}
+
+Al termine dello \emph{Sprint} sono state portate a termine tutte le
+attività previste, nonostante ciò il gruppo ha riscontrato
+un\textquotesingle efficienza operativa inferiore al potenziale, la
+causa principale è stata l\textquotesingle eccessiva genericità nella
+definizione dei task iniziali (come esposto nell\textquotesingle analisi
+dei rischi occorsi).
+
+Per i prossimi Sprint il team ha deciso di integrare nel \emph{Way of
+Working} le seguenti migliorie:
+
+\begin{itemize}
+\item
+  \textbf{Granularità dei \emph{Task}}: scomposizione delle
+  macro-attività in issue atomiche e ben definite in fase di
+  \emph{Planning}.
+\item
+  \textbf{Monitoraggio \emph{Data-driven}}: Introduzione dei
+  \emph{Burndown Chart} per monitorare visivamente
+  l\textquotesingle avanzamento dei lavori e la velocità di smaltimento
+  delle attività residue.
+\end{itemize}
+
+\subsubsection{Sprint 2}
+
+\paragraph{Obiettivi e attività}
+
+Le attività previste per il secondo \emph{Sprint} sono le seguenti:
+
+\begin{itemize}
+\item
+  creare un \emph{Google Sheets} per gestire la rotazione dei ruoli, per
+  la contabilizzazione delle ore produttive di lavoro e per monitorare
+  il budget utilizzato/rimanente;
+\item
+  identificare le macro attività principali nello svolgimento del
+  progetto;
+\item
+  \emph{Analisi dei requisiti}: scrivere gli \emph{use case} dei 3
+  agenti da sviluppare;
+\item
+  \emph{Norme di progetto}: scrivere i processi primari e processi
+  organizzativi;
+\item
+  \emph{Piano di progetto}: scrivere l\textquotesingle analisi dei
+  rischi, consuntivo \emph{Sprint} 1 e preventivo \emph{Sprint} 2.
+\end{itemize}
+
+\paragraph{Preventivo orario ed
+economico}\label{preventivo-orario-ed-economico-1}
+
+I ruoli assegnati sono: Responsabile, Amministratore, Analista e
+Verificatore.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.9\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint 2} & \textbf{RE} & \textbf{AM} & \textbf{AN} &
+        \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+        Andrea Fistarol & & & & & & & \textbf{0} \\ \hline
+        Dario Pirrone & & & & & & & \textbf{0} \\ \hline
+        Edoardo Granziero & & & & & & &\textbf{0} \\ \hline
+        Marco Barbiero & & & & & & & \textbf{0} \\ \hline
+        Samuele Bertin & & & & & & & \textbf{0} \\ \hline
+        Sara Ristovic & & & & & & & \textbf{0} \\ \hline
+        \textbf{Ore totali per ruolo} & \textbf{0} & \textbf{0} &
+        \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0}\\ \hline
+    \end{tabularx}
+\end{table}
+
+Le risorse economiche previste per lo \emph{Sprint} sono:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.9\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint 2} & \textbf{RE} & \textbf{AM} & \textbf{AN} &
+        \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+        \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{2}5 & \EUR{25} & \EUR{15}
+        & \EUR{15} & / \\
+        \textbf{Costo totale} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{0} & 
+        \EUR{0} & \textbf{\EUR{0}} \\ \hline
+    \end{tabularx}
+\end{table}
+
+\paragraph{Consuntivo}
+
+Ore e costi effettivamente sostenuti.
+
+\paragraph{Analisi dei rischi occorsi}
+
+Discussione dei problemi incontrati e della loro mitigazione.
+
+\paragraph{Retrospettiva}
+
+Analisi del Way of Working ed eventuali correzioni per i periodi
+successivi.
+
+\textbf{Consuntivo Finale}
+
+(inserire la tabella con le ore e il costo finale)
+
+\end{document}
