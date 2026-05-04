@@ -338,152 +338,114 @@ l\textquotesingle aggiornamento automatico dei repository.
 
 \subsubsection{Agente 1:}\label{agente-1}
 
-UC 1: Gestione del README di Progetto
+\section{Agente 1: Documentazione e README}
 
-Questo caso d\textquotesingle uso riguarda il mantenimento del file
-README.md principale per riflettere lo stato attuale del software.
+
+
+\subsection{Introduzione all'agente}
+
+L'Agente di Documentazione e README rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file README.md e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle API, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
+
+
+
+\subsection{Obiettivi e Funzionalità}
+
+L'agente si focalizza su tre aree critiche:
+
+\begin{enumerate}
+
+    \item \textbf{Manutenzione del README}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del repository, adattandolo dinamicamente alle evoluzioni della piattaforma.
+
+    \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{docstring} e \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
+
+    \item \textbf{Documentazione delle API}: Estrazione automatizzata degli endpoint per la creazione di guide tecniche per i consumatori del servizio.
+
+\end{enumerate}
+
+
+\section{Casi d'Uso - Agente 1}
+
+\subsection{UC 1: Gestione del README di Progetto}
+Questo caso d'uso riguarda il mantenimento del file \texttt{README.md} principale per riflettere lo stato attuale del software.
 
 \begin{itemize}
-\item
-  Attore Primario: Sviluppatore.
-\item
-  Attori Secondari: Orchestratore, Repository Git.
-\item
-  Trigger: Lo Sviluppatore effettua un commit/push di modifiche
-  strutturali o richiede esplicitamente l\textquotesingle aggiornamento
-  tramite l\textquotesingle Orchestratore.
-\item
-  Precondizioni: L\textquotesingle Agente 1 è attivo e ha i permessi di
-  lettura/scrittura sul repository. Esiste un file README.md (anche
-  vuoto).
-\item
-  Scenario Principale:
-
-  \begin{enumerate}
-  \item
-    L\textquotesingle Orchestratore notifica l\textquotesingle Agente 1
-    della necessità di aggiornare il README.
-  \item
-    L\textquotesingle Agente analizza i file di configurazione (es.
-    package.json, requirements.txt) e la struttura delle cartelle.
-  \item
-    L\textquotesingle Agente identifica le modifiche (nuove dipendenze,
-    nuovi moduli, cambio versione).
-  \item
-    L\textquotesingle Agente rigenera le sezioni interessate del file
-    README.md.
-  \item
-    L\textquotesingle Agente propone la modifica o sovrascrive il file
-    (a seconda della configurazione).
-  \end{enumerate}
-\item
-  Post-condizioni: Il file README.md è aggiornato e coerente con
-  l\textquotesingle ultima versione del codice sorgente.
-\item
-  Sottocasi:
-
-  \begin{itemize}
-  \item
-    UC 1.1: Aggiornamento della guida all\textquotesingle installazione.
-  \item
-    UC 1.2: Aggiornamento della descrizione
-    dell\textquotesingle architettura/moduli.
-  \end{itemize}
+    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Attori Secondari}: Orchestratore, Repository Git.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'aggiornamento tramite l'Orchestratore.
+    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul repository; esiste un file \texttt{README.md}.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Orchestratore notifica l'Agente 1 della necessità di aggiornamento.
+            \item L'Agente analizza file di configurazione (es. \texttt{package.json}) e struttura cartelle.
+            \item L'Agente identifica nuove dipendenze o cambi di versione.
+            \item L'Agente rigenera le sezioni interessate (es. guida all'installazione).
+            \item L'Agente propone la modifica tramite Pull Request.
+        \end{enumerate}
+    \item \textbf{Post-condizioni}: Il file \texttt{README.md} è aggiornato e coerente con l'ultima versione del codice.
 \end{itemize}
 
-UC 2: Generazione Documentazione Inline (Docstring/JSDoc)
-
-L\textquotesingle agente interviene direttamente nel codice sorgente per
-garantire che ogni componente sia documentato correttamente.
+\subsection{UC 2: Generazione Documentazione Inline (Docstring/JSDoc)}
+L'agente interviene nel codice sorgente per garantire che ogni componente sia documentato correttamente.
 
 \begin{itemize}
-\item
-  Attore Primario: Sviluppatore.
-\item
-  Attori Secondari: Orchestratore.
-\item
-  Trigger: Lo Sviluppatore invia un file di codice
-  all\textquotesingle Agente o l\textquotesingle Orchestratore rileva
-  una funzione/classe priva di documentazione.
-\item
-  Precondizioni: Il file sorgente è scritto in un linguaggio supportato
-  (es. JavaScript, Python).
-\item
-  Scenario Principale:
-
-  \begin{enumerate}
-  \item
-    L\textquotesingle Agente analizza il file sorgente alla ricerca di
-    blocchi di codice non documentati o obsoleti.
-  \item
-    L\textquotesingle Agente interpreta la logica della funzione, i
-    parametri di input e il valore di ritorno.
-  \item
-    L\textquotesingle Agente genera il blocco di commento standardizzato
-    (es. JSDoc per TS/JS o Docstring per Python).
-  \item
-    L\textquotesingle Agente inserisce il commento sopra la firma della
-    funzione/classe.
-  \end{enumerate}
-\item
-  Post-condizioni: Il codice sorgente presenta commenti inline
-  aggiornati e conformi agli standard di progetto.
-\item
-  Sottocasi:
-
-  \begin{itemize}
-  \item
-    UC 2.1: Correzione di documentazione esistente non più coerente con
-    il codice (es. parametri cambiati).
-  \item
-    UC 2.2: Segnalazione allo Sviluppatore di logiche troppo complesse
-    da documentare automaticamente.
-  \end{itemize}
+    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Attori Secondari}: Orchestratore.
+    \item \textbf{Trigger}: Rilevamento di una funzione o classe priva di documentazione o con commenti obsoleti.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
+            \item L'Agente genera il blocco di commento standardizzato (JSDoc per JS/TS o Docstring per Python).
+            \item L'Agente inserisce il commento sopra la firma della funzione.
+        \end{enumerate}
+    \item \textbf{Sottocasi}:
+        \begin{itemize}
+            \item \textbf{UC 2.1}: Correzione di documentazione esistente non più coerente (es. parametri cambiati).
+            \item \textbf{UC 2.2}: Segnalazione di logiche troppo complesse per la documentazione automatica.
+        \end{itemize}
 \end{itemize}
 
-UC 3: Generazione Documentazione API
-
-L\textquotesingle agente estrae le definizioni degli endpoint per creare
-una guida tecnica per i consumatori delle API.
+\subsection{UC 3: Generazione Documentazione API}
+L'agente estrae le definizioni degli endpoint per creare una guida tecnica per i consumatori delle API.
 
 \begin{itemize}
-\item
-  Attore Primario: Sviluppatore.
-\item
-  Attori Secondari: Orchestratore.
-\item
-  Trigger: Lo Sviluppatore richiede la generazione della documentazione
-  tecnica finale prima di un rilascio.
-\item
-  Precondizioni: Il sistema espone degli endpoint API definiti nel
-  codice (es. tramite decorator o rotte espresse).
-\item
-  Scenario Principale:
+    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente scansiona i file dei controller e i file delle rotte.
+            \item Estrazione di: metodo HTTP, URL, header, payload richiesto e risposte possibili.
+            \item Formattazione delle informazioni nel file \texttt{API.md} in formato Markdown.
+            \item Salvataggio del documento nella cartella di documentazione predefinita.
+        \end{enumerate}
+    \item \textbf{Post-condizioni}: Disponibilità di un documento tecnico (\texttt{API.md}) aggiornato per gli stakeholder.
+\end{itemize}
 
-  \begin{enumerate}
-  \item
-    L\textquotesingle Agente scansiona i file dei controller e dei
-    modelli dei dati.
-  \item
-    L\textquotesingle Agente estrae per ogni endpoint: metodo HTTP, URL,
-    header, corpo della richiesta e possibili risposte.
-  \item
-    L\textquotesingle Agente formatta queste informazioni in un
-    documento Markdown dedicato (es. API.md).
-  \item
-    L\textquotesingle Agente pubblica o salva il documento nella
-    cartella di documentazione predefinita.
-  \end{enumerate}
-\item
-  Post-condizioni: È disponibile un documento tecnico aggiornato che
-  descrive il funzionamento di tutte le API della piattaforma.
-\item
-  Sottocasi:
 
-  \begin{itemize}
-  \item
-    UC 3.1: Validazione della conformità delle API rispetto a uno
-    standard definito (es. nomi in camelCase).
+
+
+\subsection{Requisiti Funzionali}
+
+I requisiti funzionali per l'Agente 1 sono definiti per rispondere alle esigenze di coerenza documentale espresse dal proponente:
+
+
+
+\begin{itemize}
+
+    \item \textbf{RF.1.1 (Aggiornamento README)}: Il sistema deve identificare le modifiche strutturali nel repository (es. aggiunta di moduli) e aggiornare le sezioni relative all'installazione nel \texttt{README.md}.
+
+    \item \textbf{RF.1.2 (Standardizzazione Inline)}: Il sistema deve analizzare le funzioni prive di documentazione e generare commenti standardizzati che descrivano parametri di input, output e comportamenti attesi.
+
+    \item \textbf{RF.1.3 (Workflow di validazione)}: Tutte le modifiche documentali proposte dall'agente devono essere sottomesse tramite \textit{Pull Request}, subordinando l'applicazione delle stesse a una revisione umana obbligatoria per garantire l'accuratezza del contenuto.
+
+    \item \textbf{RF.1.4 (Documentazione API)}: Il sistema deve scandire i \textit{controller} dell'applicazione per produrre o aggiornare una guida Markdown (es. \texttt{API.md}) che elenchi metodi HTTP, rotte e payload richiesti.
+
+\end{itemize}
+
+
+
+\section{Note Operative}
+
+L'Agente 1 non è un software che richiede un intervento manuale costante. Esso opera in background: ogni volta che viene inviato nuovo codice al repository, l'agente riceve una notifica automatica. Invece di rielaborare l'intero progetto, esamina solo le parti che sono state effettivamente modificate. Questo permette di mantenere la documentazione aggiornata senza rallentare il flusso di lavoro degli sviluppatori, che ricevono solo le proposte di modifica finali pronte per essere revisionate.
   \end{itemize}
 \end{itemize}
 
