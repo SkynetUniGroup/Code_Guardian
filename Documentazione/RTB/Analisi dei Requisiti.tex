@@ -330,13 +330,17 @@ l\textquotesingle aggiornamento automatico dei repository.
 
 \section{Casi d'uso}\label{casi-duso}
 
+
 \subsection{Introduzione}\label{introduzione-1}
+I Casi d’Uso sono costituiti da un diagramma UMLG e da una descrizione testuale che ne
+chiarisce il comportamento e gli obiettivi, al fine di definire in modo preciso le funzionalità che
+il prodotto deve offrire.
 
 \subsection{Attori}\label{attori}
 
 \subsection{Elenco dei casi d'uso}\label{elenco-dei-casi-duso}
+Per ogni agente preso in esame, verrà sviluppata una sezione dell'Analisi dei Requisiti dedicata, così da migliorare l'organizzazione del documento.
 
-\subsubsection{Agente 1:}\label{agente-1}
 
 \section{Agente 1: Documentazione e README}
 
@@ -363,9 +367,9 @@ L'agente si focalizza su tre aree critiche:
 \end{enumerate}
 
 
-\section{Casi d'Uso - Agente 1}
-
-\subsection{UC 1: Gestione del README di Progetto}
+\subsection{Casi d'Uso}
+Di seguito i casi d'uso dell'agente 1.
+\subsubsection{UC 1: Gestione del README di Progetto}
 Questo caso d'uso riguarda il mantenimento del file \texttt{README.md} principale per riflettere lo stato attuale del software.
 
 \begin{itemize}
@@ -384,7 +388,7 @@ Questo caso d'uso riguarda il mantenimento del file \texttt{README.md} principal
     \item \textbf{Post-condizioni}: Il file \texttt{README.md} è aggiornato e coerente con l'ultima versione del codice.
 \end{itemize}
 
-\subsection{UC 2: Generazione Documentazione Inline (Docstring/JSDoc)}
+\subsubsection{UC 2: Generazione Documentazione Inline (Docstring/JSDoc)}
 L'agente interviene nel codice sorgente per garantire che ogni componente sia documentato correttamente.
 
 \begin{itemize}
@@ -404,7 +408,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
         \end{itemize}
 \end{itemize}
 
-\subsection{UC 3: Generazione Documentazione API}
+\subsubsection{UC 3: Generazione Documentazione API}
 L'agente estrae le definizioni degli endpoint per creare una guida tecnica per i consumatori delle API.
 
 \begin{itemize}
@@ -440,6 +444,7 @@ I requisiti funzionali per l'Agente 1 sono definiti per rispondere alle esigenze
     \item \textbf{RF.1.4 (Documentazione API)}: Il sistema deve scandire i \textit{controller} dell'applicazione per produrre o aggiornare una guida Markdown (es. \texttt{API.md}) che elenchi metodi HTTP, rotte e payload richiesti.
 
 \end{itemize}
+
 
 
 
