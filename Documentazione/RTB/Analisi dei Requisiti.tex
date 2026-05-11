@@ -445,6 +445,106 @@ I requisiti funzionali per l'Agente 1 sono definiti per rispondere alle esigenze
 
 \end{itemize}
 
+\section{Agente 4: Changelog da User Stories}
+
+\subsection{Introduzione all'agente}
+L'Agente di Changelog da User Stories funge da mediatore semantico tra il progresso puramente tecnico del team di sviluppo e le necessità informative degli stakeholder di business. In un contesto Agile, comprendere l'impatto reale di uno Sprint può essere complesso per figure non tecniche se i resoconti si limitano a liste di commit o ticket criptici. Questo agente automatizza la traduzione delle attività concluse in report chiari, garantendo che ogni aggiornamento del software sia accompagnato da una narrazione del valore di business generato, senza però tralasciare il dettaglio tecnico necessario alla manutenzione interna.
+
+\subsection{Obiettivi e Funzionalità}
+L'agente si concentra sulla sintesi e trasformazione del progresso di progetto attraverso tre direttrici:
+\begin{enumerate}
+\item \textbf{Recupero e Analisi dei Dati}: Integrazione con i sistemi di task management (Jira, GitHub Issues) per l'estrazione automatizzata dei task completati.
+\item \textbf{Sintesi Semantica Multitarget}: Generazione di report differenziati; uno tecnico (Changelog Tecnico) per il team di sviluppo e uno di valore (Changelog di Business) per i clienti e il management.
+\item \textbf{Validazione e Qualità del Contesto}: Monitoraggio della qualità informativa dei task per prevenire la generazione di report ambigui o privi di valore.
+\end{enumerate}
+
+\subsection{Casi d'Uso}
+Di seguito i casi d'uso dell'agente 4.
+
+\subsubsection{UC 7: Recupero e Filtraggio User Stories}
+Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi esterni per avviare il processo di analisi.
+\begin{itemize}
+\item \textbf{Attore Primario}: Sviluppatore / Project Manager.
+\item \textbf{Attori Secondari}: Orchestratore, Sistema di Task Management (GitHub/Jira).
+\item \textbf{Trigger}: Lo Sviluppatore richiede la generazione del report a conclusione di uno Sprint.
+\item \textbf{Precondizioni}: L'Agente ha i permessi di lettura sulle API del sistema di tracking; le task sono in stato "Done".
+\item \textbf{Scenario Principale}:
+\begin{enumerate}
+\item L'Agente interroga il sistema tramite API filtrando per Sprint ID e stato.
+\item L'Agente valida la presenza di titoli e descrizioni nelle User Stories recuperate.
+\item L'Agente organizza i dati separandoli per tipologia (bugfix, feature, task tecnici).
+\end{enumerate}
+\item \textbf{Sottocasi}:
+\begin{itemize}
+\item \textbf{UC 7.1}: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
+\item \textbf{UC 7.2}: Gestione delle ambiguità se l'AI rileva discrepanze tra titolo e contenuto tecnico.
+\end{itemize}
+\end{itemize}
+
+\subsubsection{UC 8: Generazione Changelog Tecnico (Dev-to-Dev)}
+L'agente produce un documento rivolto ai programmatori che riassume i cambiamenti a basso livello.
+\begin{itemize}
+\item \textbf{Attore Primario}: Sviluppatore.
+\item \textbf{Attori Secondari}: Orchestratore.
+\item \textbf{Scenario Principale}:
+\begin{enumerate}
+\item L'Agente aggrega le User Stories per area di impatto tecnico.
+\item Estrazione dei requisiti tecnici soddisfatti e dei riferimenti (ID task).
+\item Formattazione del testo in linguaggio tecnico asciutto in formato Markdown (\texttt{CHANGELOG.md}).
+\end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 9: Generazione Changelog di Business (Dev-to-Client)}
+L'agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili.
+\begin{itemize}
+\item \textbf{Attore Primario}: Stakeholder / Cliente.
+\item \textbf{Attori Secondari}: Orchestratore, Modello AI (LLM).
+\item \textbf{Precondizioni}: Disponibilità dei dati dello Sprint; configurazione dell'audience (UC 12.5).
+\item \textbf{Scenario Principale}:
+\begin{enumerate}
+\item L'Agente interpreta il valore delle User Stories per l'utente finale tramite LLM.
+\item L'AI converte termini tecnici in benefici (es. "Migliorata velocità" invece di "Ottimizzazione indici").
+\item Filtro dei dettagli tecnici irrilevanti per lo stakeholder non tecnico.
+\item Generazione di una bozza di report (PDF o testo) pronta per la revisione.
+\end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 13.5: Validazione Formato Output AI}
+Questo caso d'uso gestisce le situazioni in cui il modello linguistico produce un output non conforme agli standard tecnici richiesti.
+\begin{itemize}
+\item \textbf{Attore Primario}: Sviluppatore.
+\item \textbf{Attori Secondari}: Modello AI (LLM).
+\item \textbf{Trigger}: L'output generato dall'AI presenta errori di formattazione (es. Markdown corrotto o JSON non valido).
+\item \textbf{Scenario Principale}:
+\begin{enumerate}
+\item L'Agente riceve la risposta dall'LLM e ne analizza la struttura sintattica.
+\item Se vengono rilevati errori, l'Agente richiede automaticamente una correzione al modello (Self-Correction).
+\item In caso di persistenza dell'errore, il sistema notifica lo Sviluppatore dell'impossibilità di generare il report nel formato richiesto.
+\end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 14.4: Esportazione Report Multiformato}
+L'agente permette la distribuzione dei report approvati in diversi formati a seconda del destinatario.
+\begin{itemize}
+\item \textbf{Attore Primario}: Project Manager / Sviluppatore.
+\item \textbf{Scenario Principale}:
+\begin{enumerate}
+\item L'utente seleziona il report approvato e sceglie il formato (PDF, Markdown, JSON).
+\item Il sistema applica i template grafici o strutturali richiesti.
+\item Il sistema genera il file per il download o il salvataggio automatico nel repository.
+\end{enumerate}
+\end{itemize}
+
+\subsection{Requisiti Funzionali}
+I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e trasformazione dei dati richiesti:
+
+\begin{itemize}
+\item \textbf{RF.4.1 (Integrazione Sistemi Task)}: Il sistema deve interfacciarsi con le API dei sistemi di Task Management esterni per il recupero dei metadati delle User Stories.
+\item \textbf{RF.4.2 (Generazione Multitarget)}: Il sistema deve poter generare simultaneamente un report tecnico (orientato allo sviluppo) e un report di business (orientato al cliente).
+\item \textbf{RF.4.3 (Traduzione Semantica)}: Il sistema deve utilizzare modelli di linguaggio (LLM) per mappare le attività tecniche a benefici funzionali descrittivi.
+\item \textbf{RF.4.4 (Validazione Dati)}: Il sistema deve segnalare all'utente i task completati che presentano descrizioni ambigue o insufficienti per una corretta analisi automatizzata.
+\end{itemize}
+
 
 
 
