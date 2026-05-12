@@ -16,6 +16,7 @@
 \usepackage{adjustbox}
 \usepackage{extramarks}
 \usepackage{makecell}
+\usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -94,6 +95,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.4 & 12.05 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & \\ \hline
         0.3 & 27.04 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic & Marco Barbiero \\ \hline
         0.2 & 20.04 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' &
         Sara Ristovic &Marco Barbiero \\ \hline
@@ -171,7 +173,7 @@ periodo di lavoro e sarà completato solo alla fine del progetto.
 
 \subsection{Glossario}
 
-Termini tecnici e vocaboli particolarmente importanti il cui
+Termini tecnici e vocabolari particolarmente importanti il cui
 significato non sia immediatamente noto o chiaro vengono definiti nel
 documento \emph{Glossario} che è in costante aggiornamento. Ogni termine
 presente nel glossario è contrassegnato da una G a pedice ed è un
@@ -211,6 +213,64 @@ solamente alla loro prima occorrenza in questo documento.
 \section{Processi Primari}
 
 \subsection{Fornitura}
+\subsubsection{Avvio}
+Viene condotto un esame preliminare dei requisiti di ogni capitolato d'appalto tenendo conto delle politiche organizzative e di altri regolamenti, anche contattando i proponenti per chiarimenti. I risultati sono documentati nella Valutazione dei Capitolati (LINK) per l'invio ai committenti.
+
+Il gruppo decide collegialmente a quale capitolato candidarsi, assegnando a ogni capitolato un punteggio secondo parametri prestabiliti. Per ogni capitolato, deve essere data motivazione per l'accettazione o il rifiuto.
+
+\subsubsection{Preparazione della risposta}
+Il capitolato selezionato viene esplorato ulteriormente per raffinare la candidatura e massimizzare le possibilità di successo della candidatura. Va realizzato il Preventivo costi e assunzione impegni, secondo le modalità e i vincoli specificati nel Regolamento di Progetto, e va preparata la Lettera di Presentazione.
+
+\subsubsection{Contrattazione}
+Essendo questo un progetto didattico, le modalità del contratto sono definite a priori dai committenti nel Regolamento di Progetto. Tuttavia, l'entità del prodotto da fornire è da definire con il proponente, con il quale può è necessario negoziare per adattare le richieste alle esigenze esterne del gruppo, in particolare gli altri obblighi universitari.
+
+Può essere richiesta modifica degli obbiettivi di fornitura secondo il meccanismo di controllo dei cambiamenti.
+
+\subsubsection{Pianificazione}
+Deve essere condotta una revisione dei requisiti di acquisizione per definire il framework del progetto e della qualità del prodotto SW. I risultati dell'analisi dei requisiti devono essere raccolti nel relativo documento e classificati. Gli obbiettivi e i criteri di qualità individuati devono essere raccolti e organizzati nel Piano di Qualifica.
+
+Deve essere scelto un modello di ciclo di vita. Il progetto è normato secondo un modello incrementale con metodologia Agile e framework Scrumban. La scelta di Scrumban è motivata dall'avere la struttura di Scrum, in grado di dare ordine al flusso di lavoro, ma con la flessibilità di Kanban, venendo così incontro alla ristrettezza di personale e all'inesperienza del gruppo nell'applicare Scrum, riducendo gli overhead gestionali. Si adottano Sprint della durata di 2 settimane, con una riunione all'apertura/chiusura per l'organizzazione del lavoro e la retrospettiva dello sprint precedente. I compiti individuati sono tracciati e assegnati nella board kanban di GitHub Projects.
+
+Devono essere impostati il Piano di Progetto (PdP) e il Piano di Qualifica (PdQ). Il PdP conterrà i costi totali previsti, in conformità con il Preventivo Costi, e dividerà il lavoro in milestone associate alle baseline stabilite dal committente. A livello operativo, ogni milestone sarà raggiunta con uno o più sprint, ognuno organizzato individualmente al suo inizio. Il Piano di Progetto deve contenere preventivi dei costi di ogni sprint e monitorarne l'andamento tramite consuntivi di fine sprint. Inoltre deve essere previsto il coinvolgimento del proponente, con l'instaurazione di canali di comunicazione e riunioni periodiche.\\
+I requisiti del PdQ non sono ancora stati definiti.
+
+Code Guardian deve essere sviluppato internamente con l'uso dei servizi esterni previsti dal capitolato (es. AWS, Anthropic Claude).
+
+I Piani di Progetto e Qualifica devono essere sviluppati in conformità con i requisiti qui sopra citati. Per una lista non esaustiva degli elementi da considerare nei piani, si può fare riferimento alla clausola 5.2.4.5 dello standard ISO/IEC 12207:1995.
+
+\subsubsection{Esecuzione e controllo}
+SkyNet deve implementare ed eseguire i piani di gestione del progetto sviluppati e deve sviluppare il prodotto secondo il Processo di Sviluppo, sprint dopo sprint.
+
+Il progresso e la qualità del SW prodotto devono essere monitorati e controllati per tutta la durata del progetto. Questo compito deve essere continuativo, iterativo e deve provvedere a:
+\begin{itemize}
+    \item Monitorare il progresso di performance tecniche, costi e programma e riportare lo stato del progetto.
+    \item Identificare, registrare, analizzare e risolvere i problemi.
+\end{itemize}
+
+SkyNet deve interfacciarsi con le altri parti (committenti, proponente) come specificato nel Regolamento di Progetto e nei Piani di Progetto. Per quanto riguarda i committenti, ciò significa partecipare ai diari di bordo e candidarsi alle revisioni previste.
+
+\subsubsection{Revisione e valutazione}
+Var Group: saranno condotte revisioni del progetto e del codice e Q\&A con Var Group nel corso delle riunioni settimanali o in appuntamenti prefissati, in conformità con i processi di revisione e ispezione (audit). \\
+Committenti: le revisioni RTB e PB avverranno ai momenti previsti dal Regolamento di Progetto, a sportello. Verrà messa a disposizione l'intera repository con tutti gli artefatti, evidenziando i documenti essenziali come Norme di Progetto, Piano di Progetto, Analisi dei Requisiti, Piano di Qualifica.
+
+Saranno eseguiti verifica e validazione, in conformità coi rispettivi processi qui definiti, per dimostrare che il prodotto SW soddisfi pienamente i requisiti.
+\subsubsection{Consegna e completamento}
+SkyNet si impegna a consegnare il prodotto Code Guardian, composto dai seguenti elementi:
+
+\begin{itemize}
+    \item Analisi dei Requisiti
+    \item Piano di Progetto
+    \item Piano di Qualifica
+    \item Glossario
+    \item MVP funzionante
+    \item Demo live
+    \item Swagger API
+    \item Documentazione descrittiva del progetto
+    \item Bug Reporting
+    \item Codice sorgente su GitHub
+\end{itemize}
+
+Non è prevista alcuna attività di installazione, supporto o manutenzione del prodotto. Con la consegna e accettazione il contratto è da considerarsi terminato.
 
 \subsection{Sviluppo}
 
