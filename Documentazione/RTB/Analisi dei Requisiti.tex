@@ -113,9 +113,10 @@ Esempi:
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        0.3.0 & 15/04/2026 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic &  \\ \hline
-        0.2.0 & 12/04/2026 & Scrittura della sezione 2 & Dario Pirrone &  \\ \hline
-        0.1.0 & 08/04/2026 & Creazione documento e scrittura della sezione 1 & Dario Pirrone &  \\ \hline
+        0.4.0 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & Sara Ristovic \newline Marco Barbiero & Dario Pirrone \\ \hline
+        0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic & Marco Barbiero \\ \hline
+        0.2.0 & 2026/04/12 & Scrittura della sezione 2 & Dario Pirrone & Marco Barbiero \\ \hline
+        0.1.0 & 2026/04/08 & Creazione documento e scrittura della sezione 1 & Dario Pirrone & Marco Barbiero \\ \hline
         \end{tabularx}
 \end{table}
 
@@ -395,12 +396,14 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
     \item \textbf{Attore Primario}: Sviluppatore.
     \item \textbf{Attori Secondari}: Orchestratore.
     \item \textbf{Trigger}: Rilevamento di una funzione o classe priva di documentazione o con commenti obsoleti.
+    \item \textbf{Precondizioni}: Il codice sorgente è accessibile; l'Agente 1 ha i permessi di scrittura.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
             \item L'Agente genera il blocco di commento standardizzato (JSDoc per JS/TS o Docstring per Python).
             \item L'Agente inserisce il commento sopra la firma della funzione.
         \end{enumerate}
+    \item \textbf{Post-condizioni}: Il codice sorgente contiene documentazione inline aggiornata e conforme agli standard.
     \item \textbf{Sottocasi}:
         \begin{itemize}
             \item \textbf{UC 2.1}: Correzione di documentazione esistente non più coerente (es. parametri cambiati).
@@ -414,6 +417,7 @@ L'agente estrae le definizioni degli endpoint per creare una guida tecnica per i
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
     \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
+    \item \textbf{Precondizioni}: Il progetto espone endpoint HTTP; i controller sono mappati correttamente.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente scansiona i file dei controller e i file delle rotte.
@@ -486,20 +490,23 @@ L'agente produce un documento rivolto ai programmatori che riassume i cambiament
 \begin{itemize}
 \item \textbf{Attore Primario}: Sviluppatore.
 \item \textbf{Attori Secondari}: Orchestratore.
+\item \textbf{Precondizioni}: Set di User Stories validato e pronto.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
 \item L'Agente aggrega le User Stories per area di impatto tecnico.
 \item Estrazione dei requisiti tecnici soddisfatti e dei riferimenti (ID task).
 \item Formattazione del testo in linguaggio tecnico asciutto in formato Markdown (\texttt{CHANGELOG.md}).
 \end{enumerate}
+\item \textbf{Post-condizioni}: Generazione del file \texttt{CHANGELOG.md} tecnico.
 \end{itemize}
 
 \subsubsection{UC 9: Generazione Changelog di Business (Dev-to-Client)}
 L'agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili.
 \begin{itemize}
-\item \textbf{Attore Primario}: Stakeholder / Cliente.
+\item \textbf{Attore Primario}: Sviluppatore.
 \item \textbf{Attori Secondari}: Orchestratore, Modello AI (LLM).
-\item \textbf{Precondizioni}: Disponibilità dei dati dello Sprint; configurazione dell'audience (UC 12.5).
+\item \textbf{Trigger}: Conclusione con successo dell'UC 7.
+\item \textbf{Precondizioni}: Disponibilità dei dati dello Sprint
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
 \item L'Agente interpreta il valore delle User Stories per l'utente finale tramite LLM.
@@ -507,32 +514,38 @@ L'agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
 \item Filtro dei dettagli tecnici irrilevanti per lo stakeholder non tecnico.
 \item Generazione di una bozza di report (PDF o testo) pronta per la revisione.
 \end{enumerate}
+\item \textbf{Post-condizioni}: Documento orientato al business generato e pronto per la revisione.
 \end{itemize}
 
-\subsubsection{UC 13.5: Validazione Formato Output AI}
+\subsubsection{UC 10: Validazione Formato Output AI}
 Questo caso d'uso gestisce le situazioni in cui il modello linguistico produce un output non conforme agli standard tecnici richiesti.
 \begin{itemize}
 \item \textbf{Attore Primario}: Sviluppatore.
 \item \textbf{Attori Secondari}: Modello AI (LLM).
 \item \textbf{Trigger}: L'output generato dall'AI presenta errori di formattazione (es. Markdown corrotto o JSON non valido).
+\item \textbf{Precondizioni}: L'Agente 4 ha terminato la fase di generazione.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
 \item L'Agente riceve la risposta dall'LLM e ne analizza la struttura sintattica.
 \item Se vengono rilevati errori, l'Agente richiede automaticamente una correzione al modello (Self-Correction).
 \item In caso di persistenza dell'errore, il sistema notifica lo Sviluppatore dell'impossibilità di generare il report nel formato richiesto.
 \end{enumerate}
+\item \textbf{Post-condizioni}: Il report finale rispetta gli standard di formattazione richiesti.
 \end{itemize}
 
-\subsubsection{UC 14.4: Esportazione Report Multiformato}
+\subsubsection{UC 11: Esportazione Report Multiformato}
 L'agente permette la distribuzione dei report approvati in diversi formati a seconda del destinatario.
 \begin{itemize}
 \item \textbf{Attore Primario}: Project Manager / Sviluppatore.
+\item \textbf{Trigger}: Approvazione manuale dei report generati.
+\item \textbf{Precondizioni}: Report tecnico o business disponibile.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
 \item L'utente seleziona il report approvato e sceglie il formato (PDF, Markdown, JSON).
 \item Il sistema applica i template grafici o strutturali richiesti.
 \item Il sistema genera il file per il download o il salvataggio automatico nel repository.
 \end{enumerate}
+\item \textbf{Post-condizioni}: Il file è correttamente scaricato.
 \end{itemize}
 
 \subsection{Requisiti Funzionali}
@@ -551,7 +564,7 @@ I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e tras
 \section{Note Operative}
 
 L'Agente 1 non è un software che richiede un intervento manuale costante. Esso opera in background: ogni volta che viene inviato nuovo codice al repository, l'agente riceve una notifica automatica. Invece di rielaborare l'intero progetto, esamina solo le parti che sono state effettivamente modificate. Questo permette di mantenere la documentazione aggiornata senza rallentare il flusso di lavoro degli sviluppatori, che ricevono solo le proposte di modifica finali pronte per essere revisionate.
-  \end{itemize}
+
 \end{itemize}
 
 \subsubsection{\texorpdfstring{Agente 3: }{Agente 3: }}\label{agente-3}
