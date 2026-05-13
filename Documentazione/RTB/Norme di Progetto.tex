@@ -282,17 +282,62 @@ Non è prevista alcuna attività di installazione, supporto o manutenzione del p
 
 \subsubsection{Codifica}
 
-\section{Processi di Supporto}
+\section{Processi di supporto}
+
+Il presente capitolo definisce le attività di supporto che assistono gli altri processi, garantendo l'integrità e la qualità dei prodotti durante l'intero ciclo di vita del progetto, in conformità allo standard ISO/IEC 12207:1995.
 
 \subsection{Documentazione}
+Il processo di documentazione stabilisce le modalità di redazione, revisione e pubblicazione di tutti gli artefatti prodotti dal gruppo \textbf{SkyNet}.
 
-\subsection{Configurazione}
+\subsubsection{Strumenti di redazione}
+Il gruppo utilizza i seguenti strumenti per la gestione documentale:
+\begin{itemize}
+    \item \textbf{Google Docs}: utilizzato per la stesura collaborativa iniziale e la creazione di bozze;
+    \item \textbf{Google Sheets}: utilizzato per la creazione di tabelle condivise, la pianificazione e il monitoraggio delle risorse e dei costi di progetto;
+    \item \textbf{Overleaf (LaTeX)}: utilizzato per la formattazione finale e la produzione dei documenti ufficiali, garantendo uniformità stilistica.
+\end{itemize}
+
+\subsubsection{Struttura e convenzioni dei documenti}
+Ogni documento ufficiale deve presentare una struttura coerente composta da:
+\begin{itemize}
+    \item \textbf{Frontespizio}: contenente logo, nome del gruppo, email di contatto, titolo del documento e la tabella informativa (\textit{Versione, Uso, Redattori, Verifica, Approvazione});
+    \item \textbf{Registro delle versioni}: tabella che traccia cronologicamente l'evoluzione del documento;
+    \item \textbf{Glossario}: i termini tecnici definiti nel \textit{Glossario} devono essere contrassegnati da una \textbf{G} a pedice con un collegamento ipertestuale alla relativa definizione;
+    \item \textbf{Nomenclatura file}: i file pdf devono essere nominati seguendo il formato \texttt{Nome\_Documento.pdf}.
+\end{itemize}
+
+\subsubsection{Verbali}
+I verbali sono classificati in Interni (VI) ed Esterni (VE). La nomenclatura segue il formato \texttt{VI\_AAAA\_MM\_GG.pdf} o \texttt{VE\_AAAA\_MM\_GG.pdf}. Ogni verbale deve includere: informazioni generali (luogo, data, orari), registro delle presenze, temi affrontati e tabella delle attività definite.
+
+\subsection{Gestione della configurazione}
+Il processo di configurazione permette di tracciare e controllare le modifiche apportate agli elementi del progetto. Il gruppo utilizza \textbf{Git} per il controllo versione e \textbf{GitHub} per l'hosting dei repository.
+
+\subsubsection{Versionamento dei documenti}
+Ogni documento deve riportare una versione per tracciarne l'evoluzione. Il gruppo utilizza una numerazione progressiva (es. 0.1, 0.2, 1.0).
+
+\subsubsection{Gestione delle attività}
+Il lavoro è organizzato tramite la board \textbf{GitHub Projects} (``TO DO Blackboard''), composta dalle colonne: \textit{Backlog, Ready, In progress, In review, Done, Approved}.
 
 \subsection{Qualità}
+Il processo di qualità assicura che i processi e i prodotti siano conformi alle norme stabilite dal gruppo.
+\begin{itemize}
+    \item \textbf{Obiettivi}: garantire la coerenza tra i vari documenti e l'aderenza ai requisiti richiesti da Var Group;
+    \item \textbf{Monitoraggio}: il monitoraggio dei processi avviene tramite l'analisi delle attività svolte durante ogni sprint. Le metriche specifiche sono dettagliate nel documento \textit{Piano di Qualifica}.
+\end{itemize}
 
 \subsection{Verifica}
+La verifica accerta che ogni attività produca output corretti rispetto ai requisiti iniziali.
+\begin{itemize}
+    \item \textbf{Revisione incrociata (Peer Review)}: ogni documento o parte di codice deve essere verificato da un membro del gruppo diverso dall'autore;
+    \item \textbf{Automazione}: viene utilizzato uno script \textbf{Python} integrato con \textbf{GitHub Actions} per l'aggiornamento automatico della pagina web del progetto al caricamento di nuovi verbali.
+\end{itemize}
 
 \subsection{Validazione}
+Il processo di validazione conferma che il prodotto finale soddisfi le necessità dell'azienda proponente. Essa avviene tramite:
+\begin{itemize}
+    \item \textbf{Incontri esterni}: colloqui periodici con i referenti di Var Group per presentare l'avanzamento dei lavori e ricevere feedback;
+    \item \textbf{Soddisfacimento requisiti}: verifica finale che le funzionalità implementate corrispondano a quanto concordato nel capitolato C2.
+\end{itemize}
 
 \section{Processi Organizzativi}
 
