@@ -173,7 +173,7 @@ solamente alla loro prima occorrenza in questo documento.
 
 \subsection{Riferimenti}\label{riferimenti}
 
-\subsubsection{Riferimenti nominativi}\label{riferimenti-nominativi}
+\subsubsection{Riferimenti normativi}\label{riferimenti-normativi}
 
 \begin{itemize}
 \item
@@ -326,9 +326,9 @@ di programmazione e automazione, l'esecuzione è
 garantita attraverso i principali ambienti di runtime come
 \textbf{Node.js} e \textbf{Python}. L'interazione con il
 codice sorgente avviene tramite la piattaforma \textbf{GitHub},
-sfruttando le \textbf{GitHub Actions} come principale motore di
+[sfruttando le \textbf{GitHub Actions} come principale motore di
 esecuzione per l'analisi e
-l'aggiornamento automatico dei repository.
+l'aggiornamento automatico dei repository. ? \textbf{NON E' OBBLIGATORIO}]
 
 \section{Casi d'uso}\label{casi-duso}
 
@@ -344,7 +344,7 @@ il prodotto deve offrire.
 Di seguito sono riportati i casi d'uso trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
 \subsubsection{UC 1: Visualizzazione report prodotto dall'agente}
-[descrizione]
+Lo Sviluppatore vuole consultare il risultato prodotto da un agente a seguito di un’analisi. Il sistema rende disponibili i report generati, permettendo allo Sviluppatore di visualizzare le informazioni principali relative all’esecuzione, come criticità rilevate, suggerimenti proposti e file coinvolti.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
@@ -381,7 +381,7 @@ Ad oggi per ogni sistema agentico è necessario implementare human-in-the-loop p
 \end{itemize}
 
 \subsubsection{UC 3: Visualizzazione errore durante l’esecuzione dell’agente}
-[descrizione]
+Durante l’esecuzione di un agente può verificarsi un errore che impedisce il completamento dell’analisi o la generazione dell’output richiesto. In questo caso il sistema mostra allo Sviluppatore un messaggio esplicativo, indicando la causa dell’errore e, quando possibile, una possibile azione correttiva.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
@@ -399,12 +399,13 @@ Ad oggi per ogni sistema agentico è necessario implementare human-in-the-loop p
 \end{itemize}
 
 \subsubsection{UC 4: Esportazione del report}
-[descrizione]
+Lo Sviluppatore vuole esportare un report generato da un agente per conservarlo, 
+condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il sistema permette di selezionare il report desiderato e di salvarlo in uno dei formati disponibili.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
     \item \textbf{Trigger}: Lo Sviluppatore vuole esportare e salvare il risultato di un'analisi di un agente in forma di uno dei formati offerti.
-    \item \textbf{Precondizioni}: È disponibile almento un report generato da un agente.
+    \item \textbf{Precondizioni}: È disponibile almeno un report generato da un agente.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item Lo Sviluppatore seleziona un report.
@@ -428,7 +429,7 @@ Per ogni agente preso in esame, verrà sviluppata una sezione dell'Analisi dei R
 
 \subsection{Introduzione all'agente}
 
-L'Agente di Documentazione e README rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file README.md e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle API, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
+L'Agente di Documentazione e README rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{README.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle API, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
 
 
 
@@ -465,7 +466,8 @@ Questo caso d'uso riguarda il mantenimento del file \texttt{README.md} principal
             \item L'Agente rigenera le sezioni interessate (es. guida all'installazione).
             \item L'Agente propone la modifica tramite Pull Request.
         \end{enumerate}
-    \item \textbf{Postcondizioni}: Il file \texttt{README.md} è aggiornato e coerente con l'ultima versione del codice.
+    \item \textbf{Postcondizioni}: È disponibile una proposta di aggiornamento del \texttt{README.md}, pronta per la validazione umana.
+    \item \textbf{Estensioni}: UC 2 - Validazione umana di una proposta dell’agente.
 \end{itemize}
 
 \subsubsection{UC 6: Generazione Documentazione Inline (Docstring/JSDoc)}
@@ -474,17 +476,20 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
     \item \textbf{Attori Secondari}: Orchestratore.
-    \item \textbf{Trigger}: Rilevamento di una funzione o classe priva di documentazione o con commenti obsoleti.
+    \item \textbf{Trigger}: Rilevamento di una funzione o classe priva di documentazione o con commenti obsoleti. [sbagliato, lo sviluppatore deve richiedere q.sa]
+    \item \textbf{Precondizioni}:
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
-            \item L'Agente genera il blocco di commento standardizzato (JSDoc per JS/TS o Docstring per Python).
-            \item L'Agente inserisce il commento sopra la firma della funzione.
+            \item L’Agente individua funzioni o classi prive di documentazione o con documentazione obsoleta.
+            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno. [basta ?]
+            \item L'Agente genera una proposta di commento standardizzato (JSDoc per JS/TS o Docstring per Python).
+            \item Il sistema rende la proposta disponibile per validazione allo Sviluppatore.
         \end{enumerate}
+    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
     \item \textbf{Sottocasi}:
         \begin{itemize}
-            \item \textbf{UC 2.1}: Correzione di documentazione esistente non più coerente (es. parametri cambiati).
-            \item \textbf{UC 2.2}: Segnalazione di logiche troppo complesse per la documentazione automatica.
+            \item \textbf{UC 6.1}: Correzione di documentazione esistente non più coerente (es. parametri cambiati).
+            \item \textbf{UC 6.2}: Segnalazione di logiche troppo complesse per la documentazione automatica.
         \end{itemize}
 \end{itemize}
 
@@ -493,7 +498,9 @@ L'agente estrae le definizioni degli endpoint per creare una guida tecnica per i
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Attori Secondari}:
     \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
+    \item \textbf{Precondizioni}:
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente scansiona i file dei controller e i file delle rotte.
@@ -548,13 +555,14 @@ vulnerabilità standard nel codice sorgente.
 
 \begin{itemize}
 \item
-  Attore Primario: Sviluppatore.
+  \textbf{Attore Primario}: Sviluppatore.
 \item
-  Attori Secondari: Orchestratore, Repository Git, API Claude Code.
+  \textbf{Attori Secondari}: Orchestratore, Repository Git, API Claude Code.
 \item
-  Trigger: Lo Sviluppatore richiede una scansione di sicurezza oppure
+  \textbf{Trigger}: Lo Sviluppatore richiede una scansione di sicurezza oppure
   l'Orchestratore avvia il processo dopo un commit nel repository.
 \item
+  \textbf{Precondizioni}:
   \begin{itemize}
   \item
     L'Agente 3 è correttamente configurato con le API
@@ -563,7 +571,7 @@ vulnerabilità standard nel codice sorgente.
     Il codice sorgente è accessibile nel repository.
   \end{itemize}
 \item
-  Scenario Principale:
+  \textbf{Scenario Principale}:
 
   \begin{enumerate}
   \item
@@ -580,14 +588,21 @@ vulnerabilità standard nel codice sorgente.
     L'Agente 3 riceve l'esito
     dell'analisi.
   \item
+    L'Agente 3 associa ogni vulnerabilità al file e, se disponibile, alla porzione di codice interessata.
+  \item
+    L'Agente 3 classifica ogni vulnerabilità trovata nelle categorie di Top 10 OWASP.
+  \item
     L'Agente 3 formatta i risultati evidenziando la
     gravità (High, Medium, Low) di ogni falla trovata.
+  \item
+    L'Agente 3 inserisce le vulnerabilità, la loro classificazione e le gravità nel report finale.
   \end{enumerate}
 \item
-  Postcondizioni: Viene generato un report tecnico delle vulnerabilità
-  rilevate.
+  \textbf{Postcondizioni}: Viene generato un report tecnico delle vulnerabilità
+  rilevate. Ogni vulnerabilità rilevata è descritta con categoria, gravità e 
+riferimento al codice interessato.
 \item
-  Sottocasi:
+  \textbf{Sottocasi}:
 
   \begin{itemize}
   \item
@@ -598,33 +613,8 @@ vulnerabilità standard nel codice sorgente.
     \item
     UC 8.3: Classificazione delle vulnerabilità rilevate.
   \end{itemize}
-\end{itemize}
 
-\subsubsection{UC 8.3: Classificazione delle vulnerabilità rilevate}
-
-\begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: API Claude Code.
-    \item \textbf{Trigger}: L'Agente 3 ha individuato una o più vulnerabilità durante UC4, UC4.1 o UC4.2.
-    
-    \item \textbf{Precondizioni}:
-      \begin{itemize}
-      \item
-        È disponibile almeno una vulnerabilità rilevata.
-      \item
-        L'Agente 3 dispone delle informazioni minime per descrivere il problema.
-      \end{itemize} 
-    \item
-    
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente 3 analizza ogni vulnerabilità individuata.
-            \item L'Agente 3 associa, se possibile, la vulnerabilità a una categoria OWASP.
-            \item L'Agente 3 assegna una gravità tra High, Medium e Low.
-            \item L'Agente 3 associa la vulnerabilità al file e, se disponibile, alla porzione di codice interessta.
-            \item L'Agente 3 inserisce la classificazione nel report finale.
-        \end{enumerate}
-    \item \textbf{Postcondizioni}: Ogni vulnerabilità rilevata è descritta con categoria, gravità e riferimento al codice interessato.
+\item \textbf{Scenario Alternativo}: Se non vengono rilevate vulnerabilità, l’Agente genera un report che indica l’assenza di criticità individuate.
 \end{itemize}
 
 
@@ -635,16 +625,16 @@ specifiche definite dal team nel file di configurazione.
 
 \begin{itemize}
 \item
-  Attore Primario: Sviluppatore.
+  \textbf{Attore Primario}: Sviluppatore.
 \item
-  Attori Secondari: Orchestratore, File di configurazione CLAUDE.md.
+  \textbf{Attori Secondari}: Orchestratore, File di configurazione CLAUDE.md.
 \item
-  Trigger: Avvio della revisione di sicurezza (manuale o automatica).
+  \textbf{Trigger}: Avvio della revisione di sicurezza (manuale o automatica).
 \item
-  Precondizioni: Nel repository è presente un file denominato CLAUDE.md
+  \textbf{Precondizioni}: Nel repository è presente un file denominato CLAUDE.md
   contenente le linee guida di sviluppo sicuro del team.
 \item
-  Scenario Principale:
+  \textbf{Scenario Principale}:
 
   \begin{enumerate}
   \item
@@ -662,10 +652,10 @@ specifiche definite dal team nel file di configurazione.
     interna.
   \end{enumerate}
 \item
-  Postcondizioni: Viene prodotto un elenco di non-conformità rispetto
+  \textbf{Postcondizioni}: Viene prodotto un elenco di non-conformità rispetto
   alle policy di progetto.
 \item
-  Sottocasi:
+  \textbf{Sottocasi}:
 
   \begin{itemize}
   \item
@@ -680,17 +670,17 @@ problemi di sicurezza o le violazioni di policy trovate.
 
 \begin{itemize}
 \item
-  Attore Primario: Sviluppatore.
+  \textbf{Attore Primario}: Sviluppatore.
 \item
-  Attori Secondari: API Claude Code.
+  \textbf{Attori Secondari}: API Claude Code.
 \item
-  Trigger: Conclusione con esito positivo (rilevamento falle) degli UC 4
-  o UC 5.
+  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 8
+  o UC 9.
 \item
-  Precondizioni: Sono state identificate vulnerabilità o violazioni di
+  \textbf{Precondizioni}: Sono state identificate vulnerabilità o violazioni di
   policy.
 \item
-  Scenario Principale:
+  \textbf{Scenario Principale}:
 
   \begin{enumerate}
   \def\labelenumi{\arabic{enumi}.}
@@ -706,16 +696,18 @@ problemi di sicurezza o le violazioni di policy trovate.
     il codice insicuro e la soluzione proposta.
   \end{enumerate}
 \item
-  Postcondizioni: Lo sviluppatore riceve indicazioni chiare su come
+  \textbf{Postcondizioni}: Lo sviluppatore riceve indicazioni chiare su come
   correggere il codice per renderlo conforme.
 
-\item Inclusioni: 
+\item 
+  \textbf{Inclusioni}: 
     \begin{itemize}
         \item UC 10.1: Generazione snippet di codice correttivo.
         \item UC 10.2: Generazione descrizione testuale della remediation.
     \end{itemize}
 
-\item Estensioni:
+\item 
+  \textbf{Estensioni}:
     \begin{itemize}
         \item Caso d'uso trasversale UC 2: Validazione umana di una proposta dell'agente.
     \end{itemize}
@@ -741,7 +733,7 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
             \item L’Agente 3 presenta allo Sviluppatore il confronto tra codice originale e codice proposto.
         \end{enumerate}
     \item \textbf{Postcondizioni}: Lo Sviluppatore visualizza uno snippet di codice correttivo da valutare manualmente.
-    \item \textbf{Scenari Alternativi}: Se la modifica non è localizzabile in uno snippet, l’agente rimanda a UC 6.2.
+    \item \textbf{Scenari Alternativi}: Se la modifica non è localizzabile in uno snippet, l’agente rimanda a UC 10.2.
 \end{itemize}
 
 \subsubsection{UC 10.2: Generazione descrizione testuale della remediation}
@@ -808,6 +800,7 @@ L'agente produce un documento rivolto ai programmatori che riassume i cambiament
 \begin{itemize}
 \item \textbf{Attore Primario}: Sviluppatore.
 \item \textbf{Attori Secondari}: Orchestratore.
+\item \textbf{Trigger}: Conclusione con successo dell'UC 7.
 \item \textbf{Precondizioni}: Set di User Stories validato e pronto.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
