@@ -105,7 +105,8 @@ Esempi:
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        0.5 & 2026/05/19 & Scrittura preventivo Sprint 4, scrittura consuntivo Sprint 3 & Edoardo Granziero &  \\ \hline
+        0.6 & 2026/05/21 & Scrittura capitolo 3: Pianificazione & Edoardo Granziero & Samuele Bertin \\ \hline
+        0.5 & 2026/05/19 & Scrittura preventivo Sprint 4, scrittura consuntivo Sprint 3 & Edoardo Granziero & Samuele Bertin \\ \hline
         0.4 & 2026/05/06 & Scrittura preventivo Sprint 3, scrittura consuntivo Sprint 2, grafico burndown & Samuele Bertin & Dario Pirrone \\ \hline
         0.3 & 2026/04/27 & Stesura capitolo 2: Analisi dei Rischi & Dario Pirrone & Marco Barbiero \\ \hline
         0.2 & 2026/04/22 & Scrittura preventivo Sprint 1 e Sprint 2, scrittura consuntivo Sprint 1 & Dario Pirrone & Marco Barbiero \\ \hline
@@ -704,34 +705,111 @@ contromisure adottate.
 
 \section{Pianificazione}
 
-\subsection{Macro-fasi del progetto}
+La pianificazione delle attività è stata definita per garantire uno sviluppo strutturato e incrementale del progetto, il cui obiettivo principale è la realizzazione di tre agenti (agente README, agente OWASP e agente changelog). Il periodo di lavoro ufficiale si estende dal 10 marzo fino alla data di scadenza finale prevista per il 10 settembre. Per gestire al meglio le risorse e rispettare le scadenze, il ciclo di vita del progetto è stato suddiviso in periodi di lavoro ben definiti.
 
-Definizione e descrizione delle milestone principali (RTB - Requirements
-and Technology Baseline, PB - Product Baseline, CA - Customer
-Acceptance)
+\subsection{Macro-fasi del progetto}
+Il progetto è stato diviso in due macro-fasi principali, ognuna associata a una milestone di revisione fondamentale per valutare l'avanzamento dei lavori e la qualità dei prodotti realizzati:
+
+\begin{itemize}
+    \item \textbf{RTB (Requirements and Technology Baseline):} Questa fase si concentra sull'analisi del problema, la definizione delle norme di lavoro, la stesura dei requisiti e lo studio delle tecnologie necessarie. Include anche la realizzazione di un Proof of Concept (PoC) per validare le scelte architetturali e tecnologiche.
+    \item \textbf{PB/MVP (Product Baseline / Minimum Viable Product):} In questa fase il focus si sposta sulla progettazione architetturale di dettaglio e sullo sviluppo effettivo del prodotto. L'obiettivo è arrivare al rilascio di un MVP funzionante, integrato e collaudato, pronto per l'approvazione formale da parte del committente (VarGroup).
+\end{itemize}
+
+Di seguito vengono dettagliate le sotto-milestone per ciascuna macro-fase, con le relative tempistiche di previsione e l'elenco delle attività da svolgere. (La tabella riassuntiva è riportata al termine del capitolo).
 
 \subsection{Requirements and Technology Baseline (RTB)}
+La macro-fase RTB si estende dall'inizio di maggio fino a metà giugno ed è focalizzata sul consolidamento delle basi teoriche, metodologiche e tecnologiche del progetto. È suddivisa nelle seguenti sotto-milestone:
 
-\subsubsection{Prima sotto-milestone}
+\subsubsection{Fondamenta e normativa}
+\textbf{Previsione:} Inizio Maggio \\
+In questa fase iniziale il gruppo si concentra sull'organizzazione interna e sulla standardizzazione dei processi.
+\begin{itemize}
+    \item Definizione del \emph{Way of Working} del team.
+    \item Redazione del documento Norme di Progetto (NdP).
+\end{itemize}
 
-\subsubsection{Seconda sotto-milestone}
+\subsubsection{Analisi e ricerca}
+\textbf{Previsione:} Metà Maggio \\
+Fase dedicata alla comprensione dei bisogni del committente e alla definizione degli standard qualitativi.
+\begin{itemize}
+    \item Analisi dei Requisiti (AdR): individuazione e completamento di tutti gli \emph{use case} e dei requisiti di sistema.
+    \item Piano di Qualifica (PdQ): definizione delle metriche di qualità.
+    \item Completamento dello studio delle tecnologie necessarie per lo sviluppo dei tre agenti.
+\end{itemize}
 
-Elenco delle attività previste per ciascuna milestone.\\
-(la tabella è solo per riferimento)
-%\newpage 
+\subsubsection{PoC e qualità}
+\textbf{Previsione:} Inizio Giugno \\
+Fase pratica e di verifica delle scelte analizzate nella milestone precedente.
+\begin{itemize}
+    \item Pianificazione e realizzazione del Proof of Concept (PoC).
+    \item Esecuzione dei primi test software e di processo come definito nel PdQ.
+\end{itemize}
+
+\subsubsection{Chiusura RTB}
+\textbf{Previsione:} Metà Giugno \\
+Consolidamento del lavoro svolto per la presentazione della prima milestone.
+\begin{itemize}
+    \item Revisione generale e completamento di tutta la documentazione (rilascio versione v1.0.0).
+    \item Preparazione per il colloquio di revisione RTB.
+\end{itemize}
+
+\subsection{Product Baseline e MVP (PB/MVP)}
+La macro-fase PB/MVP prende il via a fine luglio per concludersi a metà settembre. L'obiettivo è concretizzare il lavoro di analisi nello sviluppo del prodotto finale. È suddivisa nelle seguenti sotto-milestone:
+
+\subsubsection{Progettazione architetturale}
+\textbf{Previsione:} Fine Luglio \\
+Passaggio dall'analisi alla progettazione della struttura del software.
+\begin{itemize}
+    \item Redazione del documento Specifiche Tecniche (ST) per definire l'architettura degli agenti.
+\end{itemize}
+
+\subsubsection{Sviluppo core}
+\textbf{Previsione:} Metà Agosto \\
+Fase di programmazione intensiva, focalizzata sul nucleo del sistema.
+\begin{itemize}
+    \item Codifica delle funzionalità classificate come \emph{must-have}.
+    \item Integrazione degli agenti con l'orchestratore esterno.
+\end{itemize}
+
+\subsubsection{Test e raffinamento}
+\textbf{Previsione:} Fine Agosto \\
+Verifica e validazione del codice prodotto prima della presentazione al committente.
+\begin{itemize}
+    \item Esecuzione dei test di unità e dei test di integrazione.
+    \item Revisione e aggiornamento di tutta la documentazione (rilascio versione v2.0.0).
+\end{itemize}
+
+\subsubsection{Validazione MVP e consegna}
+\textbf{Previsione:} Inizio Settembre \\
+Rilascio della prima versione funzionante del prodotto al committente.
+\begin{itemize}
+    \item Dimostrazione pratica dell'MVP a VarGroup e approvazione formale.
+    \item Redazione del Manuale Utente per facilitare l'utilizzo degli agenti.
+\end{itemize}
+
+\subsubsection{Chiusura progetto}
+\textbf{Previsione:} Metà Settembre \\
+Attività conclusive prima del termine ufficiale del progetto.
+\begin{itemize}
+    \item Revisione finale e consegna di tutto il materiale (codice e documentazione).
+\end{itemize}
+
+\vspace{0.5cm}
+
 \begin{table}[H]
     \centerline{
         \centering
         \renewcommand{\arraystretch}{1.3}
-        \begin{tabularx}{1.1\textwidth}{|m{4em}|X|p{7em}|X|}
+        % MODIFICA QUI: cambiato m{4em} in m{2.5cm} per dare più respiro al testo
+        \begin{tabularx}{1.1\textwidth}{|m{5em}|p{11em}|p{7.5em}|X|}
             \hline
-            Macro \newline Milestone & Sotto Milestone & Previsione \newline completamento & Attività  da svolgere \\
+            \textbf{Macro \newline Milestone} & \textbf{Sotto Milestone} & \textbf{Previsione \newline completamento} & \textbf{Attività da svolgere} \\
             \hline
             %in multirow la misura tra le [] è l'offset verticale
-            \multirow{4}{*}[-2cm]{\centering RTB} & Fondamenta e normativa & Inizio Maggio ? & - Definito Way of Working \newline
+            \multirow{4}{*}[-2cm]{\centering \textbf{RTB}} & Fondamenta e normativa & Inizio Maggio & - Definito Way of Working \newline
             - NdP: redatto il documento \\
             \cline{2-4}
-            & Analisi e ricerca & Metà maggio & - AdR: Completati tutti gli use case e requisiti \newline
+            & Analisi e ricerca & Metà Maggio & - AdR: Completati tutti gli use case e requisiti \newline
             - PdQ: Definite le metriche \newline
             - Completato studio delle tecnologie \\ 
             \cline{2-4}
@@ -741,7 +819,7 @@ Elenco delle attività previste per ciascuna milestone.\\
             & Chiusura RTB & Metà Giugno & - Revisione e completamento di tutti i documenti (v1.0.0) \newline
             - Preparazione per il colloquio \\
             \hline \hline
-            \multirow{5}{*}[-2cm]{\centering PB/MVP} & Progettazione architetturale & Fine Luglio & - Redatte Specifiche Tecniche (ST) \\ 
+            \multirow{5}{*}[-2cm]{\centering \textbf{PB/MVP}} & Progettazione architetturale & Fine Luglio & - Redatte Specifiche Tecniche (ST) \\ 
             \cline{2-4}
             & Sviluppo core & Metà Agosto & - Codifica funzionalità must-have \newline
             - Integrazione con orchestratore esterno \\ 
@@ -757,6 +835,7 @@ Elenco delle attività previste per ciascuna milestone.\\
         \end{tabularx}
     }
 \end{table}
+
 
 \section{Preventivo e Consuntivo}
 
@@ -1193,11 +1272,11 @@ I ruoli assegnati sono: Responsabile, Amministratore, Analista, Progettista, Pro
         \hline
         \textbf{Sprint 4} & \textbf{RE} & \textbf{AM} & \textbf{AN} &
         \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
-        Andrea Fistarol & & & & & & 3 & \textbf{3} \\ \hline
+        Andrea Fistarol & & & 4 & & & & \textbf{3} \\ \hline
         Dario Pirrone & & 5 & & & & & \textbf{0} \\ \hline
         Edoardo Granziero & 4 & & & & & & \textbf{0} \\ \hline
         Marco Barbiero & & & 5 & & & & \textbf{0} \\ \hline
-        Samuele Bertin & & & 5 & & & & \textbf{0} \\ \hline
+        Samuele Bertin & & & & & & 3 & \textbf{0} \\ \hline
         Sara Ristovic & & & 5 & & & & \textbf{0} \\ \hline
         \textbf{Ore totali per ruolo} & \textbf{0} & \textbf{0} &
         \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0}\\ \hline
