@@ -418,19 +418,12 @@ condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il
 \subsection{Elenco dei casi d'uso}
 Per ogni agente preso in esame, verrà sviluppata una sezione dell'Analisi dei Requisiti dedicata, così da migliorare l'organizzazione del documento.
 
-
 \section{Agente 1: Documentazione e README}
 
-
-
 \subsection{Introduzione all'agente}
-
 L'Agente di Documentazione e README rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{README.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle API, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
 
-
-
 \subsection{Obiettivi e Funzionalità}
-
 L'agente si focalizza su tre aree critiche:
 
 \begin{enumerate}
@@ -439,13 +432,14 @@ L'agente si focalizza su tre aree critiche:
 
     \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{docstring} e \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
 
-    \item \textbf{Documentazione delle API}: Estrazione automatizzata degli endpoint per la creazione di guide tecniche per i consumatori del servizio.
+    \item \textbf{Documentazione delle API}: Estrazione automatizzata degli endpoint per la creazione di guide tecniche per gli utilizzatori del servizio.
 
 \end{enumerate}
-
+\newpage
 
 \subsection{Casi d'Uso}
 Di seguito i casi d'uso dell'agente 1.
+
 \subsubsection{UC 5: Gestione del README di Progetto}
 Questo caso d'uso riguarda il mantenimento del file \texttt{README.md} principale per riflettere lo stato attuale del software.
 
@@ -472,12 +466,17 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
     \item \textbf{Attori Secondari}: Orchestratore.
-    \item \textbf{Trigger}: Rilevamento di una funzione o classe priva di documentazione o con commenti obsoleti. [sbagliato, lo sviluppatore deve richiedere q.sa]
-    \item \textbf{Precondizioni}:
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore.
+    \item \textbf{Precondizioni}:  
+        \begin{itemize}
+            \item L'Agente 1 ha i permessi di lettura/scrittura sul repository.
+            \item Esiste un file di codice sorgente su cui eseguire l'operazione.
+            \item (Opzionale) Esiste un file di configurazione per la documentazione online.
+        \end{itemize}
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item L’Agente individua funzioni o classi prive di documentazione o con documentazione obsoleta.
-            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno. [basta ?]
+            \item L'Agente individua funzioni o classi prive di documentazione o con documentazione obsoleta.
+            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
             \item L'Agente genera una proposta di commento standardizzato (JSDoc per JS/TS o Docstring per Python).
             \item Il sistema rende la proposta disponibile per validazione allo Sviluppatore.
         \end{enumerate}
@@ -494,9 +493,9 @@ L'agente estrae le definizioni degli endpoint per creare una guida tecnica per i
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}:
+    \item \textbf{Attori Secondari}: Orchestratore.
     \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
-    \item \textbf{Precondizioni}:
+    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul repository.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente scansiona i file dei controller e i file delle rotte.
