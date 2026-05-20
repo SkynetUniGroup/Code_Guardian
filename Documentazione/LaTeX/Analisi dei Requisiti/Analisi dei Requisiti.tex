@@ -113,7 +113,7 @@ Esempi di altri gruppi:
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'agente 3, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone \\ \hline
+        0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'agente 3, la sua introduzione e gli obiettivi e funzionalità; Aggiunti sottocasi 11.1 e 11.2 dell'UC 11; aggiornata la sezione "Requisiti" & \makecell[l]{Sara Ristovic \\ Marco Barbiero} & Dario Pirrone \\ \hline
         0.4.0 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Sara Ristovic \\ Marco Barbiero}  & Dario Pirrone \\ \hline
         0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic & Marco Barbiero \\ \hline
         0.2.0 & 2026/04/12 & Scrittura della sezione 2 & Dario Pirrone & Marco Barbiero \\ \hline
@@ -771,88 +771,105 @@ L'agente si concentra sulla sintesi e trasformazione del progresso di progetto a
 \subsection{Casi d'Uso}
 Di seguito i casi d'uso dell'agente 4.
 
-\subsubsection{UC 7: Recupero e Filtraggio User Stories}
+\subsubsection{UC 11: Recupero e Filtraggio User Stories}
 Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi esterni per avviare il processo di analisi.
 \begin{itemize}
 \item \textbf{Attore Primario}: Sviluppatore / Project Manager.
 \item \textbf{Attori Secondari}: Orchestratore, Sistema di Task Management (GitHub/Jira).
 \item \textbf{Trigger}: Lo Sviluppatore richiede la generazione del report a conclusione di uno Sprint.
-\item \textbf{Precondizioni}: L'Agente ha i permessi di lettura sulle API del sistema di tracking; le task sono in stato "Done".
+\item \textbf{Precondizioni}:
+\begin{enumerate}
+\item L'Agente 4 dispone delle credenziali e dei token di accesso validi per le API del sistema esterno.
+\item È stato specificato un identificativo valido per lo Sprint (Sprint ID).
+\item Le task completate durante lo Sprint si trovano in uno stato terminale positivo.
+\end{enumerate}
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
-\item L'Agente interroga il sistema tramite API filtrando per Sprint ID e stato.
-\item L'Agente valida la presenza di titoli e descrizioni nelle User Stories recuperate.
-\item L'Agente organizza i dati separandoli per tipologia (bugfix, feature, task tecnici).
+\item Il Project Manager o lo Sviluppatore seleziona lo Sprint da analizzare comunicando lo Sprint ID.
+\item Il sistema esterno restituisce la lista di tutte le lavorazioni associate.
+\item L'Agente filtra la lista, mantenendo esclusivamente le User Stories e i task che si trovano in uno stato terminale positivo (es. \texttt{Done}, \texttt{Closed}).
+\item L'Agente estrae da ogni task i campi fondamentali: Titolo, Descrizione, Criteri di Accettazione e Commenti rilevanti.
+\item L'Agente mappa i dati in una struttura interna e li memorizza temporaneamente.
 \end{enumerate}
-\item \textbf{Sottocasi}:
-\begin{itemize}
-\item \textbf{UC 7.1}: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
-\item \textbf{UC 7.2}: Gestione delle ambiguità se l'AI rileva discrepanze tra titolo e contenuto tecnico.
-\end{itemize}
+
+\item 
+  \textbf{Inclusioni}: 
+    \begin{itemize}
+        \item UC 11.1: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
+        \item UC 11.2: Gestione delle ambiguità se l'AI rileva discrepanze tra titolo e contenuto tecnico.
+    \end{itemize}
+
 \end{itemize}
 
-\subsubsection{UC 8: Generazione Changelog Tecnico (Dev-to-Dev)}
-L'agente produce un documento rivolto ai programmatori che riassume i cambiamenti a basso livello.
+\subsubsection{UC 11.1: Rilevamento di task con metadati insufficienti}
 \begin{itemize}
 \item \textbf{Attore Primario}: Sviluppatore.
-\item \textbf{Attori Secondari}: Orchestratore.
-\item \textbf{Trigger}: Conclusione con successo dell'UC 7.
-\item \textbf{Precondizioni}: Set di User Stories validato e pronto.
+\item \textbf{Attori Secondari}: Orchestratore, Sistema di Task Management.
+\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 11), l'agente individua una o più User Stories prive di descrizione o di criteri di accettazione minimi.
+\item \textbf{Precondizioni}: L'Agente ha superato la fase di autenticazione API e ha estratto la lista grezza delle task dello Sprint.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
-\item L'Agente aggrega le User Stories per area di impatto tecnico.
-\item Estrazione dei requisiti tecnici soddisfatti e dei riferimenti (ID task).
-\item Formattazione del testo in linguaggio tecnico asciutto in formato Markdown (\texttt{CHANGELOG.md}).
+\item L'Agente analizza il contenuto testuale dei campi informativi di ogni task.
+\item L'Agente rileva che una o più task presentano un livello informativo nullo o sotto la soglia minima stabilita dal sistema.
+\item L'Agente contrassegna internamente queste task come "Non documentabili per scarsità di dati" ed esclude i relativi ID dal flusso di generazione automatica.
+\item Il sistema genera un avviso nel log di esecuzione per informare l'utente delle specifiche task scartate.
 \end{enumerate}
-\item \textbf{Post-condizioni}: Generazione del file \texttt{CHANGELOG.md} tecnico.
+\item \textbf{Post-condizioni}: Il flusso di generazione dei report (UC 12 / UC 13) prosegue solo per le task complete di tutti i metadati, mentre l'utente riceve la notifica tempestiva dei dati mancanti da integrare manualmente nei task incompleti.
 \end{itemize}
 
-\subsubsection{UC 9: Generazione Changelog di Business (Dev-to-Client)}
-L'agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili.
+\subsubsection{UC 11.2: Gestione delle ambiguità e delle incoerenze}
 \begin{itemize}
 \item \textbf{Attore Primario}: Sviluppatore.
 \item \textbf{Attori Secondari}: Orchestratore, Modello AI (LLM).
-\item \textbf{Trigger}: Conclusione con successo dell'UC 7.
-\item \textbf{Precondizioni}: Disponibilità dei dati dello Sprint
-\item \textbf{Scenario Principale}:
+\item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 11, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della User Story e i dati tecnici correlati (es. log dei commit associati).
+\item \textbf{Precondizioni}: I dati della User Story e i dati del repository Git (commit/branch) sono stati recuperati con successo e sono pronti per l'analisi.
+\item \textbf{Scenario Principal}:
 \begin{enumerate}
-\item L'Agente interpreta il valore delle User Stories per l'utente finale tramite LLM.
-\item L'AI converte termini tecnici in benefici (es. "Migliorata velocità" invece di "Ottimizzazione indici").
-\item Filtro dei dettagli tecnici irrilevanti per lo stakeholder non tecnico.
-\item Generazione di una bozza di report (PDF o testo) pronta per la revisione.
+\item L'Agente esegue un confronto semantico automatico tramite LLM tra la documentazione della task e l'effettivo codice/messaggio di commit associato.
+\item L'Agente identifica un conflitto (es. task registrata come "Modifica Testi" ma modifiche reali focalizzate sulla "Sicurezza delle API").
+\item L'Agente contrassegna la voce come "Ambigua" all'interno del sistema di orchestrazione.
+\item Il sistema presenta una notifica visiva allo Sviluppatore, richiedendo una risoluzione manuale o una conferma su quale contesto dare priorità (Documentale o Tecnico).
 \end{enumerate}
-\item \textbf{Post-condizioni}: Documento orientato al business generato e pronto per la revisione.
+\item \textbf{Post-condizioni}: Viene intercettato un potenziale errore di contesto prima della generazione del report definitivo, garantendo la perfetta coerenza tra ciò che viene dichiarato nel Changelog Tecnico e ciò che viene spiegato nel Changelog di Business.
 \end{itemize}
 
-\subsubsection{UC 10: Validazione Formato Output AI}
-Questo caso d'uso gestisce le situazioni in cui il modello linguistico produce un output non conforme agli standard tecnici richiesti.
+\subsubsection{UC 12: Generazione Changelog Tecnico (Dev-to-Dev)}
+\begin{itemize}
+    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Attori Secondari}: Modello AI (LLM).
+    \item \textbf{Trigger}: Conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello Sprint (UC 11).
+    \item \textbf{Precondizioni}: 
+        \begin{enumerate}
+            \item L'Agente 4 dispone del set di dati delle User Stories validato e privo di ambiguità bloccanti (superamento di UC 11.1 e UC 11.2).
+            \item I parametri di configurazione del repository sono accessibili.
+        \end{enumerate}
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente analizza il set di dati aggregato e raggruppa le lavorazioni in macro-categorie tecniche standard (es. \texttt{Added}, \texttt{Changed}, \texttt{Fixed}, \texttt{Deprecated}).
+            \item Per ogni User Story, l'Agente interroga l'LLM inviando i dettagli tecnici e i criteri di accettazione, richiedendo una sintesi in linguaggio ingegneristico asciutto e privo di ridondanze commerciali.
+            \item L'Agente genera la struttura del documento formattando l'output con un formato di Markdown.
+            \item L'Agente inserisce per ogni voce i collegamenti ipertestuali e gli identificativi (ID) corrispondenti ai ticket di origine sul Sistema di Task Management.
+            \item La bozza del file prodotto viene memorizzata in attesa di essere validata.
+        \end{enumerate}
+    \item \textbf{Post-condizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 2) o per l'esportazione diretta (UC 4).
+\end{itemize}
+
+\subsubsection{UC 13: Generazione Changelog di Business (Dev-to-Client)}
+L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli Stakeholder.
 \begin{itemize}
 \item \textbf{Attore Primario}: Sviluppatore.
-\item \textbf{Attori Secondari}: Modello AI (LLM).
-\item \textbf{Trigger}: L'output generato dall'AI presenta errori di formattazione (es. Markdown corrotto o JSON non valido).
-\item \textbf{Precondizioni}: L'Agente 4 ha terminato la fase di generazione.
-\item \textbf{Scenario Principale}:
+\item \textbf{Attori Secondari}: Orchestratore, Modello AI (LLM).
+\item \textbf{Trigger}: Conclusione con successo della generazione del Changelog tecnico previsto nell'UC 12.
+\item \textbf{Precondizioni}: Il file di Changelog Tecnico (UC 12) è stato generato correttamente.
+\item \textbf{Scenario Principale}: 
 \begin{enumerate}
-\item L'Agente riceve la risposta dall'LLM e ne analizza la struttura sintattica.
-\item Se vengono rilevati errori, l'Agente richiede automaticamente una correzione al modello (Self-Correction).
-\item In caso di persistenza dell'errore, il sistema notifica lo Sviluppatore dell'impossibilità di generare il report nel formato richiesto.
+            \item L'Agente riceve in input il testo del Changelog Tecnico prodotto dall'UC 8.
+            \item L'Agente interroga l'LLM inviando il testo tecnico e applicando le direttive sul tono e sull'audience a cui si riferisce il documento.
+            \item L'AI analizza le singole voci tecniche (es. modifiche a database, refactoring, patch di sicurezza) e ne estrae l'equivalente impatto funzionale.
+            \item L'AI traduce i termini specialistici in benefici tangibili per l'utente finale, eliminando i dettagli implementativi di basso livello, poco rilevanti e poco comprensibili per il Cliente.
+            \item L'Agente struttura la bozza del report di business e la memorizza, pronta per la validazione umana (UC 11).
 \end{enumerate}
-\item \textbf{Post-condizioni}: Il report finale rispetta gli standard di formattazione richiesti.
-\end{itemize}
-
-\subsubsection{UC 11: Esportazione Report Multiformato}
-L'agente permette la distribuzione dei report approvati in diversi formati a seconda del destinatario.
-\begin{itemize}
-\item \textbf{Attore Primario}: Project Manager / Sviluppatore.
-\item \textbf{Trigger}: Approvazione manuale dei report generati.
-\item \textbf{Precondizioni}: Report tecnico o business disponibile.
-\item \textbf{Scenario Principale}:
-\begin{enumerate}
-\item L'utente seleziona il report approvato e sceglie il formato (PDF, Markdown, JSON).
-\item Il sistema applica i template grafici o strutturali richiesti.
-\item Il sistema genera il file per il download o il salvataggio automatico nel repository.
-\end{enumerate}
-\item \textbf{Post-condizioni}: Il file è correttamente scaricato.
+\item \textbf{Post-condizioni}: È disponibile un documento di Changelog orientato al business pronto per la revisione umana (UC 2) o per l'esportazione diretta (UC 4).
 \end{itemize}
 
 \subsection{Requisiti Funzionali}
