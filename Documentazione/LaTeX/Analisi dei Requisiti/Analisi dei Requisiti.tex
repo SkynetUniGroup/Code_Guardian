@@ -83,15 +83,13 @@
 \newpage
 
 % ==========================================
-% LINK DI SUPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO
+% LINK DI SUPPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO
 % ==========================================
-[LINK DI SUPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO]
+Materiale di supporto (rimuovere dal documento finale)
 
+\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{Slide di Tullio per l'Analisi}
 
-Slide per l'analisi:
-\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T05.pdf}
-
-Esempi:
+Esempi di altri gruppi:
 
 \begin{itemize}
 \item
@@ -145,9 +143,9 @@ Esempi:
 % CONTENUTO DEL DOCUMENTO
 % ==========================================
 
-\section{Introduzione}\label{introduzione}
+\section{Introduzione}
 
-\subsection{Scopo del documento}\label{scopo-del-documento}
+\subsection{Scopo del documento}
 
 Il presente documento, denominato \textbf{Analisi dei Requisiti}, ha
 l'obiettivo di esporre in modo dettagliato e non ambiguo
@@ -160,7 +158,7 @@ d'Uso (UC)} per illustrare le interazioni tra gli attori
 esterni e il sistema, fornendo una base solida per le successive fasi di
 progettazione, codifica e verifica.
 
-\subsection{Glossario}\label{glossario}
+\subsection{Glossario}
 
 Per evitare ambiguità terminologiche e garantire una comprensione
 univoca del documento, i termini tecnici, gli acronimi e le parole che
@@ -171,9 +169,9 @@ collegamento ipertestuale che rimanda direttamente alla definizione
 corrispondente nel \emph{Glossario}. Tali parole vengono contrassegnate
 solamente alla loro prima occorrenza in questo documento.
 
-\subsection{Riferimenti}\label{riferimenti}
+\subsection{Riferimenti}
 
-\subsubsection{Riferimenti normativi}\label{riferimenti-normativi}
+\subsubsection{Riferimenti normativi}
 
 \begin{itemize}
 \item
@@ -188,7 +186,7 @@ solamente alla loro prima occorrenza in questo documento.
   del Progetto Didattico}
 \end{itemize}
 
-\subsubsection{Riferimenti informativi}\label{riferimenti-informativi}
+\subsubsection{Riferimenti informativi}
 
 \begin{itemize}
 \item
@@ -201,9 +199,9 @@ solamente alla loro prima occorrenza in questo documento.
   Casi d'Uso}
 \end{itemize}
 
-\section{Descrizione generale}\label{descrizione-generale}
+\section{Descrizione generale}
 
-\subsection{Obiettivi del prodotto}\label{obiettivi-del-prodotto}
+\subsection{Obiettivi del prodotto}
 
 L'obiettivo principale del progetto è lo sviluppo di un
 set di agenti intelligenti basati su modelli linguistici di grandi
@@ -236,7 +234,7 @@ Nello specifico, il prodotto si prefigge di:
   tangibile.
 \end{itemize}
 
-\subsection{Funzioni del prodotto}\label{funzioni-del-prodotto}
+\subsection{Funzioni del prodotto}
 
 Il prodotto offre le sue funzionalità attraverso tre agenti
 specializzati coordinati dall'orchestratore centrale:
@@ -285,8 +283,7 @@ specializzati coordinati dall'orchestratore centrale:
   \end{itemize}
 \end{enumerate}
 
-\subsection{Caratteristiche degli
-utenti}\label{caratteristiche-degli-utenti}
+\subsection{Caratteristiche degli utenti}
 
 Il sistema è progettato per inserirsi in un flusso di lavoro di sviluppo
 software moderno, interagendo con diverse figure professionali che
@@ -316,8 +313,7 @@ l'agente di changelog funge da "traduttore",
 trasformando il gergo tecnico delle user stories in report di valore che
 sintetizzano i progressi funzionali raggiunti al termine di ogni sprint.
 
-\subsection{Piattaforma di esecuzione
-{[}?{]}}\label{piattaforma-di-esecuzione}
+\subsection{Piattaforma di esecuzione {[}?{]}}
 
 Il prodotto è concepito come un ecosistema di agenti integrati in
 un'infrastruttura già esistente, operante principalmente
@@ -330,17 +326,17 @@ codice sorgente avviene tramite la piattaforma \textbf{GitHub},
 esecuzione per l'analisi e
 l'aggiornamento automatico dei repository. ? \textbf{NON E' OBBLIGATORIO}]
 
-\section{Casi d'uso}\label{casi-duso}
+\section{Casi d'uso}
 
 
-\subsection{Introduzione}\label{introduzione-1}
+\subsection{Introduzione}
 I Casi d’Uso sono costituiti da un diagramma UMLG e da una descrizione testuale che ne
 chiarisce il comportamento e gli obiettivi, al fine di definire in modo preciso le funzionalità che
 il prodotto deve offrire.
 
-\subsection{Attori}\label{attori}
+\subsection{Attori}
 
-\subsection{Casi d'uso trasversali}\label{casi-duso-trasversali}
+\subsection{Casi d'uso trasversali}
 Di seguito sono riportati i casi d'uso trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
 \subsubsection{UC 1: Visualizzazione report prodotto dall'agente}
@@ -419,7 +415,7 @@ condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il
 
 
 
-\subsection{Elenco dei casi d'uso}\label{elenco-dei-casi-duso}
+\subsection{Elenco dei casi d'uso}
 Per ogni agente preso in esame, verrà sviluppata una sezione dell'Analisi dei Requisiti dedicata, così da migliorare l'organizzazione del documento.
 
 
@@ -877,7 +873,7 @@ I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e tras
 L'Agente 1 non è un software che richiede un intervento manuale costante. Esso opera in background: ogni volta che viene inviato nuovo codice al repository, l'agente riceve una notifica automatica. Invece di rielaborare l'intero progetto, esamina solo le parti che sono state effettivamente modificate. Questo permette di mantenere la documentazione aggiornata senza rallentare il flusso di lavoro degli sviluppatori, che ricevono solo le proposte di modifica finali pronte per essere revisionate.
 
 
-\section{Requisiti}\label{requisiti}
+\section{Requisiti}
 
 I requisiti riportati in questa sezione sono stati derivati dai casi
 d'uso descritti nel capitolo 3 e dalle indicazioni emerse dagli incontri
@@ -886,7 +882,7 @@ chiarito come sviluppo di agenti specializzati da integrare in
 un'architettura già esistente, e non come realizzazione di una nuova
 architettura completa ad agenti.
 
-\subsection{Requisiti funzionali}\label{requisiti-funzionali}
+\subsection{Requisiti funzionali}
 
 \begin{table}[H]
     \centering
@@ -909,7 +905,7 @@ architettura completa ad agenti.
 \end{table}
 
 
-\subsection{Requisiti qualitativi}\label{requisiti-qualitativi}
+\subsection{Requisiti qualitativi}
 
 \begin{table}[H]
     \centering
@@ -925,7 +921,7 @@ architettura completa ad agenti.
     \end{tabularx}
 \end{table}
 
-\subsection{Requisiti di vincolo}\label{requisiti-di-vincolo}
+\subsection{Requisiti di vincolo}
 
 \begin{table}[H]
     \centering
@@ -946,10 +942,9 @@ architettura completa ad agenti.
     \end{tabularx}
 \end{table}
 
-\subsection{Requisiti prestazionali
-{[}?{]}}\label{requisiti-prestazionali}
+\subsection{Requisiti prestazionali {[}?{]}}
 
-\subsection{Requisiti di sicurezza}\label{requisiti-di-sicurezza}
+\subsection{Requisiti di sicurezza}
 
 \begin{table}[H]
     \centering
@@ -965,12 +960,12 @@ architettura completa ad agenti.
 \end{table}
 
 \newpage
-\subsection{Tracciamento}\label{tracciamento}
+\subsection{Tracciamento}
 
-\subsubsection{Fonte - Requisito}\label{fonte---requisito}
+\subsubsection{Fonte - Requisito}
 
-\subsubsection{Requisito - Fonte}\label{requisito---fonte}
+\subsubsection{Requisito - Fonte}
 
-\subsubsection{Riepilogo requisiti}\label{riepilogo-requisiti}
+\subsubsection{Riepilogo requisiti}
 
 \end{document}
