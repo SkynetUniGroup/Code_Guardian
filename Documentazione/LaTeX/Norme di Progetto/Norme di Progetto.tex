@@ -17,6 +17,9 @@
 \usepackage{extramarks}
 \usepackage{makecell}
 \usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
+\usepackage{hyperref}
+\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
+\newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -54,6 +57,7 @@
     \includegraphics[width=0.5\linewidth]{logo_skynet_dark.png}
     
     {\Large Gruppo SkyNet}\\
+ 
     {\normalsize \href{mailto:skynetunigroup@gmail.com}{skynetunigroup@gmail.com}}
     \vspace*{1.5cm}
     
@@ -68,11 +72,12 @@
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
             \textbf{Versione} & \textit{0.5.0} \\ \hline
+  
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
-            \textbf{Redattori} & \textit{Andrea Fistarol, Edoardo Granzero, Sara Ristovic} \\ \hline
+            \textbf{Redattori} & \textit{Andrea Fistarol, Edoardo Granziero, Sara Ristovic} \\ \hline
             \textbf{Verifica} & \textit{Marco Barbiero, Dario Pirrone} \\ \hline
-            \textbf{Approvazione} & \textit{Nome Cognome} \\ \hline
+            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol} \\ \hline
 
         \end{tabularx}
     \end{table}
@@ -91,15 +96,17 @@
 \markboth{Versioni del documento}{}
 \begin{table}[h]
     \centering
-    \renewcommand{\arraystretch}{1.3}
+    
+ \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
         0.5 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
         0.4 & 2026/05/12 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & Dario Pirrone \\ \hline
-        0.3 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic & Marco Barbiero \\ \hline
+        0.3 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic 
+ & Marco Barbiero \\ \hline
         0.2 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' &
-        Sara Ristovic &Marco Barbiero \\ \hline
+        Sara Ristovic & Marco Barbiero \\ \hline
         0.1 & 2026/04/10 & Strutturazione iniziale del documento; Scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
         \end{tabularx}
 \end{table}
@@ -130,13 +137,13 @@
 
 \subsection{Scopo del documento}
 
-Questo documento ha lo scopo di definire il Way of Working adottato dal
-gruppo per la durata del progetto \emph{Code Guardian}. In particolare,
+Questo documento ha lo scopo di definire il \textit{\glo{Way of Working}{wow}} adottato dal
+gruppo per la durata del progetto \textbf{\glo{Code Guardian}{code-guardian}}. In particolare,
 esso definisce i processi, stabilisce le convenzioni e le best
 practices, e identifica gli strumenti da utilizzare specificando le
-relative modalità d'uso.
+relative modalità d'uso. 
 
-Le norme qui descritte seguono lo standard ISO/IEC 12207:1995
+Le norme qui descritte seguono lo standard \textit{\glo{ISO/IEC 12207:1995}{iso-iec-12207-1995}}
 suddividendo le attività in tre tipologie di processi:
 
 \begin{table}[ht]
@@ -146,31 +153,21 @@ suddividendo le attività in tre tipologie di processi:
         \hline
         primari & 
         includono le attività fondamentali per la realizzazione del prodotto
-        (sviluppo, fornitura, manutenzione, ecc.)
-        di supporto assistono gli altri processi garantendo la qualità e
+        (sviluppo, fornitura, manutenzione, ecc.) di supporto assistono gli altri processi garantendo la qualità e
         l\textquotesingle integrità del software (verifica, validazione,
-        documentazione) \\ \hline
+        documentazione) \\ \hline \\ \hline
         di supporto &
         assistono gli altri processi garantendo la qualità e l'integrità del software (verifica, validazione, documentazione) \\ \hline
         organizzativi & 
         aiutano il buon svolgimento di progetto. Essi stabiliscono
-        l'infrastruttura e i processi di base e si occupano della loro gestione.
-        Inoltre, definiscono l'approccio al miglioramento continuo del Way of
-        Working e contribuiscono a garantire un\textquotesingle adeguata
-        formazione del personale. \\ \hline
+        l'infrastruttura e i processi di base e si occupano della loro gestione. Inoltre, definiscono l'approccio al miglioramento continuo del \textit{Way of Working} e contribuiscono a garantire un\textquotesingle adeguata formazione del personale. \\ \hline
     \end{tabularx}
 \end{table}
 
 Il documento mira a riflettere i principi dello standard adattandoli
-alle dimensioni del nostro gruppo e al dominio del nostro progetto.
-
-Ogni membro del gruppo è tenuto a seguire le regole stabilite in questo
+alle dimensioni del nostro gruppo e al dominio del nostro progetto. Ogni membro del gruppo è tenuto a seguire le regole stabilite in questo
 documento al fine di migliorare l'efficienza e l'efficacia del lavoro,
-garantendo così la qualità del prodotto finale.
-
-Poiché il gruppo mira al miglioramento continuo del proprio Way of
-Working, il documento verrà aggiornato incrementalmente durante l'intero
-periodo di lavoro e sarà completato solo alla fine del progetto.
+garantendo così la qualità del prodotto finale. Poiché il gruppo mira al miglioramento continuo del proprio \textit{Way of Working}, il documento verrà aggiornato incrementalmente durante l'intero periodo di lavoro e sarà completato solo alla fine del progetto.
 
 \subsection{Glossario}
 
@@ -191,7 +188,7 @@ solamente alla loro prima occorrenza in questo documento.
   Regolamento Progetto Didattico\\
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/PD1.pdf}
 \item
-  Lo standard ISO/IEC 12207:1995\\
+  Lo standard \textit{ISO/IEC 12207:1995}\\
   \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2009/Approfondimenti/ISO\_12207-1995.pdf}
 \end{itemize}
 
@@ -202,12 +199,10 @@ solamente alla loro prima occorrenza in questo documento.
   Glossario\\
   (link sul nostro sito) //Mettere link
 \item
-  Slide T02 dell'insegnamento Ingegneria del Software (Processi di Ciclo
-  di Vita)\\
+  Slide T02 dell'insegnamento Ingegneria del Software (Processi di Ciclo di Vita)\\
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T02.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T02.pdf}
 \item
-  Slide T04 dell'insegnamento Ingegneria del Software (Gestione di
-  Progetto)\\
+  Slide T04 dell'insegnamento Ingegneria del Software (Gestione di Progetto)\\
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T04.pdf}
 \end{itemize}
 
@@ -215,32 +210,30 @@ solamente alla loro prima occorrenza in questo documento.
 
 \subsection{Fornitura}
 \subsubsection{Avvio}
-Viene condotto un esame preliminare dei requisiti di ogni capitolato d'appalto tenendo conto delle politiche organizzative e di altri regolamenti, anche contattando i proponenti per chiarimenti. I risultati sono documentati nella Valutazione dei Capitolati (LINK) per l'invio ai committenti.
+Viene condotto un esame preliminare dei requisiti di ogni capitolato d'appalto tenendo conto delle politiche organizzative e di altri regolamenti, anche contattando i \textbf{\glo{Proponenti}{proponente}} per chiarimenti. I risultati sono documentati nella Valutazione dei Capitolati (LINK) per l'invio ai \textbf{\glo{Committenti}{committente}}. 
 
 Il gruppo decide collegialmente a quale capitolato candidarsi, assegnando a ogni capitolato un punteggio secondo parametri prestabiliti. Per ogni capitolato, deve essere data motivazione per l'accettazione o il rifiuto.
 
 \subsubsection{Preparazione della risposta}
-Il capitolato selezionato viene esplorato ulteriormente per raffinare la candidatura e massimizzare le possibilità di successo della candidatura. Va realizzato il Preventivo costi e assunzione impegni, secondo le modalità e i vincoli specificati nel Regolamento di Progetto, e va preparata la Lettera di Presentazione.
+Il capitolato selezionato viene esplorato ulteriormente per raffinare la candidatura e massimizzare le possibilità di successo della candidatura. Va realizzato il \textit{\glo{Preventivo}{preventivo}} costi e assunzione impegni, secondo le modalità e i vincoli specificati nel Regolamento di Progetto, e va preparata la Lettera di Presentazione.
 
 \subsubsection{Contrattazione}
-Essendo questo un progetto didattico, le modalità del contratto sono definite a priori dai committenti nel Regolamento di Progetto. Tuttavia, l'entità del prodotto da fornire è da definire con il proponente, con il quale può è necessario negoziare per adattare le richieste alle esigenze esterne del gruppo, in particolare gli altri obblighi universitari.
+Essendo questo un progetto didattico, le modalità del contratto sono definite a priori dai \textbf{Committenti} nel Regolamento di Progetto. Tuttavia, l'entità del prodotto da fornire è da definire con il \textbf{Proponente}, con il quale è necessario negoziare per adattare le richieste alle esigenze esterne del gruppo, in particolare gli altri obblighi universitari. 
 
 Può essere richiesta modifica degli obbiettivi di fornitura secondo il meccanismo di controllo dei cambiamenti.
 
 \subsubsection{Pianificazione}
-Deve essere condotta una revisione dei requisiti di acquisizione per definire il framework del progetto e della qualità del prodotto SW. I risultati dell'analisi dei requisiti devono essere raccolti nel relativo documento e classificati. Gli obbiettivi e i criteri di qualità individuati devono essere raccolti e organizzati nel Piano di Qualifica.
+Deve essere condotta una revisione dei requisiti di acquisizione per definire il framework del progetto e della qualità del prodotto SW. I risultati dell'\textbf{\glo{Analisi dei Requisiti}{analisi-dei-requisiti}} devono essere raccolti nel relativo documento e classificati. Gli obbiettivi e i criteri di qualità individuati devono essere raccolti e organizzati nel \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. 
 
-Deve essere scelto un modello di ciclo di vita. Il progetto è normato secondo un modello incrementale con metodologia Agile e framework Scrumban. La scelta di Scrumban è motivata dall'avere la struttura di Scrum, in grado di dare ordine al flusso di lavoro, ma con la flessibilità di Kanban, venendo così incontro alla ristrettezza di personale e all'inesperienza del gruppo nell'applicare Scrum, riducendo gli overhead gestionali. Si adottano Sprint della durata di 2 settimane, con una riunione all'apertura/chiusura per l'organizzazione del lavoro e la retrospettiva dello sprint precedente. I compiti individuati sono tracciati e assegnati nella board kanban di GitHub Projects.
+Deve essere scelto un modello di ciclo di vita. Il progetto è normato secondo un modello incrementale con metodologia \textit{\glo{Agile}{agile}} e framework \textit{\glo{Scrumban}{scrumban}}. La scelta di \textit{Scrumban} è motivata dall'avere la struttura di \textit{\glo{Scrum}{scrum}}, in grado di dare ordine al flusso di lavoro, ma con la flessibilità di \textit{\glo{Kanban}{kanban}}, venendo così incontro alla ristrettezza di personale e all'inesperienza del gruppo nell'applicare \textit{Scrum}, riducendo gli overhead gestionali. Si adottano \textit{\glo{Sprint}{sprint}} della durata di 2 settimane, con una riunione all'apertura/chiusura per l'organizzazione del lavoro e la \textit{\glo{Retrospettiva}{retrospettiva}} dello \textit{Sprint} precedente. I compiti individuati sono tracciati e assegnati nella board \textit{Kanban} di \textit{\glo{GitHub Projects}{github-projects}}. 
 
-Devono essere impostati il Piano di Progetto (PdP) e il Piano di Qualifica (PdQ). Il PdP conterrà i costi totali previsti, in conformità con il Preventivo Costi, e dividerà il lavoro in milestone associate alle baseline stabilite dal committente. A livello operativo, ogni milestone sarà raggiunta con uno o più sprint, ognuno organizzato individualmente al suo inizio. Il Piano di Progetto deve contenere preventivi dei costi di ogni sprint e monitorarne l'andamento tramite consuntivi di fine sprint. Inoltre deve essere previsto il coinvolgimento del proponente, con l'instaurazione di canali di comunicazione e riunioni periodiche.\\
+Devono essere impostati il \textbf{\glo{Piano di Progetto}{piano-di-progetto}} (PdP) e il \textbf{Piano di Qualifica} (PdQ). Il PdP conterrà i costi totali previsti, in conformità con il \textit{Preventivo} Costi, e dividerà il lavoro in milestone associate alle \textit{\glo{Baseline}{baseline}} stabilite dal \textbf{Committente}. A livello operativo, ogni milestone sarà raggiunta con uno o più \textit{Sprint}, ognuno organizzato individualmente al suo inizio. Il \textbf{Piano di Progetto} deve contenere preventivi dei costi di ogni \textit{Sprint} e monitorarne l'andamento tramite \textit{\glo{Consuntivi}{consuntivo}} di fine \textit{Sprint}. Inoltre deve essere previsto il coinvolgimento del \textbf{Proponente}, con l'instaurazione di canali di comunicazione e riunioni periodiche.\\
 I requisiti del PdQ non sono ancora stati definiti.
 
-Code Guardian deve essere sviluppato internamente con l'uso dei servizi esterni previsti dal capitolato (es. AWS, Anthropic Claude).
-
-I Piani di Progetto e Qualifica devono essere sviluppati in conformità con i requisiti qui sopra citati. Per una lista non esaustiva degli elementi da considerare nei piani, si può fare riferimento alla clausola 5.2.4.5 dello standard ISO/IEC 12207:1995.
+\textbf{Code Guardian} deve essere sviluppato internamente con l'uso dei servizi esterni previsti dal capitolato (es. \textit{\glo{AWS}{aws}}, \textit{\glo{Anthropic Claude}{anthropic-claude}}). I \textbf{Piani di Progetto} e \textbf{Qualifica} devono essere sviluppati in conformità con i requisiti qui sopra citati. Per una lista non esaustiva degli elementi da considerare nei piani, si può fare riferimento alla clausola 5.2.4.5 dello standard \textit{ISO/IEC 12207:1995}.
 
 \subsubsection{Esecuzione e controllo}
-SkyNet deve implementare ed eseguire i piani di gestione del progetto sviluppati e deve sviluppare il prodotto secondo il Processo di Sviluppo, sprint dopo sprint.
+SkyNet deve implementare ed eseguire i piani di gestione del progetto sviluppati e deve sviluppare il prodotto secondo il Processo di Sviluppo, \textit{Sprint} dopo \textit{Sprint}. 
 
 Il progresso e la qualità del SW prodotto devono essere monitorati e controllati per tutta la durata del progetto. Questo compito deve essere continuativo, iterativo e deve provvedere a:
 \begin{itemize}
@@ -248,44 +241,45 @@ Il progresso e la qualità del SW prodotto devono essere monitorati e controllat
     \item Identificare, registrare, analizzare e risolvere i problemi.
 \end{itemize}
 
-SkyNet deve interfacciarsi con le altri parti (committenti, proponente) come specificato nel Regolamento di Progetto e nei Piani di Progetto. Per quanto riguarda i committenti, ciò significa partecipare ai diari di bordo e candidarsi alle revisioni previste.
+SkyNet deve interfacciarsi con le altri parti (\textbf{Committenti}, \textbf{Proponente}) come specificato nel Regolamento di Progetto e nei \textbf{Piani di Progetto}. Per quanto riguarda i \textbf{Committenti}, ciò significa partecipare ai diari di bordo e candidarsi alle revisioni previste.
 
 \subsubsection{Revisione e valutazione}
-Var Group: saranno condotte revisioni del progetto e del codice e Q\&A con Var Group nel corso delle riunioni settimanali o in appuntamenti prefissati, in conformità con i processi di revisione e ispezione (audit). \\
-Committenti: le revisioni RTB e PB avverranno ai momenti previsti dal Regolamento di Progetto, a sportello. Verrà messa a disposizione l'intera repository con tutti gli artefatti, evidenziando i documenti essenziali come Norme di Progetto, Piano di Progetto, Analisi dei Requisiti, Piano di Qualifica.
+Var Group: saranno condotte revisioni del progetto e del codice e Q\&A con Var Group nel corso delle riunioni settimanali o in appuntamenti prefissati, in conformità con i processi di revisione e ispezione (\textit{\glo{Audit}{audit}}).\\
+\textbf{Committenti}: le revisioni \textbf{\glo{RTB}{rtb}} e \textbf{\glo{PB}{pb}} avverranno ai momenti previsti dal Regolamento di Progetto, a sportello. Verrà messa a disposizione l'intera \textit{\glo{Repository}{repository}} con tutti gli artefatti, evidenziando i documenti essenziali come \textbf{\glo{Norme di Progetto}{norme-di-progetto}}, \textbf{Piano di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Qualifica}.
 
 Saranno eseguiti verifica e validazione, in conformità coi rispettivi processi qui definiti, per dimostrare che il prodotto SW soddisfi pienamente i requisiti.
+
 \subsubsection{Consegna e completamento}
-SkyNet si impegna a consegnare il prodotto Code Guardian, composto dai seguenti elementi:
+SkyNet si impegna a consegnare il prodotto \textbf{Code Guardian}, composto dai seguenti elementi:
 
 \begin{itemize}
-    \item Analisi dei Requisiti
-    \item Piano di Progetto
-    \item Piano di Qualifica
+    \item \textbf{Analisi dei Requisiti}
+    \item \textbf{Piano di Progetto}
+    \item \textbf{Piano di Qualifica}
     \item Glossario
-    \item MVP funzionante
+    \item \textbf{\glo{MVP}{mvp}} funzionante
     \item Demo live
-    \item Swagger API
+    \item Swagger \textit{\glo{API}{api}}
     \item Documentazione descrittiva del progetto
     \item Bug Reporting
-    \item Codice sorgente su GitHub
+    \item Codice sorgente su \textit{\glo{GitHub}{github}}
 \end{itemize}
 
 Non è prevista alcuna attività di installazione, supporto o manutenzione del prodotto. Con la consegna e accettazione il contratto è da considerarsi terminato.
 
 \subsection{Sviluppo}
 
-\subsubsection{Analisi dei requisiti}
+\subsubsection{\textbf{Analisi dei Requisiti}}
 
 \subsubsection{Progettazione}
 
-{[}scelte architettoniche, design pattern, diagrammi UML{]}
+{[}scelte architettoniche, design pattern, diagrammi \textit{\glo{UML}{uml}}{]}
 
 \subsubsection{Codifica}
 
 \section{Processi di supporto}
 
-Il presente capitolo definisce le attività di supporto che assistono gli altri processi, garantendo l'integrità e la qualità dei prodotti durante l'intero ciclo di vita del progetto, in conformità allo standard ISO/IEC 12207:1995.
+Il presente capitolo definisce le attività di supporto che assistono gli altri processi, garantendo l'integrità e la qualità dei prodotti durante l'intero ciclo di vita del progetto, in conformità allo standard \textit{ISO/IEC 12207:1995}.
 
 \subsection{Documentazione}
 Il processo di documentazione stabilisce le modalità di redazione, revisione e pubblicazione di tutti gli artefatti prodotti dal gruppo \textbf{SkyNet}.
@@ -295,217 +289,139 @@ Il gruppo utilizza i seguenti strumenti per la gestione documentale:
 \begin{itemize}
     \item \textbf{Google Docs}: utilizzato per la stesura collaborativa iniziale e la creazione di bozze;
     \item \textbf{Google Sheets}: utilizzato per la creazione di tabelle condivise, la pianificazione e il monitoraggio delle risorse e dei costi di progetto;
-    \item \textbf{Overleaf (LaTeX)}: utilizzato per la formattazione finale e la produzione dei documenti ufficiali, garantendo uniformità stilistica.
-\end{itemize}
+    \item \textbf{\textit{\glo{Overleaf}{overleaf}}} (\textit{\glo{LaTeX}{latex}}): utilizzato per la formattazione finale e la produzione dei documenti ufficiali, garantendo uniformità stilistica.
+ \end{itemize}
 
 \subsubsection{Struttura e convenzioni dei documenti}
 Ogni documento ufficiale deve presentare una struttura coerente composta da:
 \begin{itemize}
-    \item \textbf{Frontespizio}: contenente logo, nome del gruppo, email di contatto, titolo del documento e la tabella informativa (\textit{Versione, Uso, Redattori, Verifica, Approvazione});
+    \item \textbf{\textit{\glo{Frontespizio}{frontespizio}}}: contenente logo, nome del gruppo, email di contatto, titolo del documento e la tabella informativa (\textit{Versione, Uso, Redattori, Verifica, Approvazione});
     \item \textbf{Registro delle versioni}: tabella che traccia cronologicamente l'evoluzione del documento;
     \item \textbf{Glossario}: i termini tecnici definiti nel \textit{Glossario} devono essere contrassegnati da una \textbf{G} a pedice con un collegamento ipertestuale alla relativa definizione;
     \item \textbf{Nomenclatura file}: i file pdf devono essere nominati seguendo il formato \texttt{Nome\_Documento.pdf}.
-\end{itemize}
+ \end{itemize}
 
 \subsubsection{Verbali}
 I verbali sono classificati in Interni (VI) ed Esterni (VE). La nomenclatura segue il formato \texttt{VI\_AAAA\_MM\_GG.pdf} o \texttt{VE\_AAAA\_MM\_GG.pdf}. Ogni verbale deve includere: informazioni generali (luogo, data, orari), registro delle presenze, temi affrontati e tabella delle attività definite.
 
 \subsection{Gestione della configurazione}
-Il processo di configurazione permette di tracciare e controllare le modifiche apportate agli elementi del progetto. Il gruppo utilizza \textbf{Git} per il controllo versione e \textbf{GitHub} per l'hosting dei repository.
+Il processo di configurazione permette di tracciare e controllare le modifiche apportate agli elementi del progetto. Il gruppo utilizza \textit{\glo{Git}{git}} per il controllo versione e \textit{GitHub} per l'hosting dei \textit{Repository}.
 
 \subsubsection{Versionamento dei documenti}
 Ogni documento deve riportare una versione per tracciarne l'evoluzione. Il gruppo utilizza una numerazione progressiva (es. 0.1, 0.2, 1.0).
 
 \subsubsection{Gestione delle attività}
-Il lavoro è organizzato tramite la board \textbf{GitHub Projects} (``TO DO Blackboard''), composta dalle colonne: \textit{Backlog, Ready, In progress, In review, Done, Approved}.
+Il lavoro è organizzato tramite la board \textit{GitHub Projects} (``TO DO Blackboard''), composta dalle colonne: \textit{Backlog, Ready, In progress, In review, Done, Approved}.
 
 \subsection{Qualità}
 Il processo di qualità assicura che i processi e i prodotti siano conformi alle norme stabilite dal gruppo.
-\begin{itemize}
+ \begin{itemize}
     \item \textbf{Obiettivi}: garantire la coerenza tra i vari documenti e l'aderenza ai requisiti richiesti da Var Group;
-    \item \textbf{Monitoraggio}: il monitoraggio dei processi avviene tramite l'analisi delle attività svolte durante ogni sprint. Le metriche specifiche sono dettagliate nel documento \textit{Piano di Qualifica}.
-\end{itemize}
+    \item \textbf{Monitoraggio}: il monitoraggio dei processi avviene tramite l'analisi delle attività svolte durante ogni \textit{Sprint}. Le metriche specifiche sono dettagliate nel documento \textbf{Piano di Qualifica}.
+ \end{itemize}
 
 \subsection{Verifica}
 La verifica accerta che ogni attività produca output corretti rispetto ai requisiti iniziali.
-\begin{itemize}
-    \item \textbf{Revisione incrociata (Peer Review)}: ogni documento o parte di codice deve essere verificato da un membro del gruppo diverso dall'autore;
-    \item \textbf{Automazione}: viene utilizzato uno script \textbf{Python} integrato con \textbf{GitHub Actions} per l'aggiornamento automatico della pagina web del progetto al caricamento di nuovi verbali.
-\end{itemize}
+ \begin{itemize}
+    \item \textbf{Revisione incrociata (\textit{\glo{Peer Review}{peer-review}})}: ogni documento o parte di codice deve essere verificato da un membro del gruppo diverso dall'autore;
+    \item \textbf{Automazione}: viene utilizzato uno script \textit{\glo{Python}{python}} integrato con \textit{\glo{GitHub Actions}{github-actions}} per l'aggiornamento automatico della pagina web del progetto al caricamento di nuovi verbali.
+ \end{itemize}
 
 \subsection{Validazione}
-Il processo di validazione conferma che il prodotto finale soddisfi le necessità dell'azienda proponente. Essa avviene tramite:
+Il processo di validazione conferma che il prodotto finale soddisfi le necessità dell'azienda \textbf{Proponente}. Essa avviene tramite:
 \begin{itemize}
     \item \textbf{Incontri esterni}: colloqui periodici con i referenti di Var Group per presentare l'avanzamento dei lavori e ricevere feedback;
     \item \textbf{Soddisfacimento requisiti}: verifica finale che le funzionalità implementate corrispondano a quanto concordato nel capitolato C2.
-\end{itemize}
+ \end{itemize}
 
 \section{Processi Organizzativi}
 
 \subsection{Gestione di Processi}
 
-Questa sezione descrive come il gruppo gestisce le attività e i compiti
-previsti durante il progetto. Descrive inoltre i ruoli necessari per
-garantire che ogni obbligo venga assolto e la comunicazione e la
-coordinazione tra i membri del gruppo che rende possibili progressi
-notevoli.
+Questa sezione descrive come il gruppo gestisce le attività e i compiti previsti durante il progetto. Descrive inoltre i ruoli necessari per garantire che ogni obbligo venga assolto e la comunicazione e la coordinazione tra i membri del gruppo che rende possibili progressi notevoli.
 
 \subsubsection{Attività previste}
 
 Le attività previste per la gestione di processi sono le seguenti:
 
-\textbf{Inizializzazione} - \ldots le attività e i compiti da svolgere
-vengono identificati individuando gruppi di requisiti correlati, che
-possono essere obbligatori o facoltativi. E' necessario valutare
-attentamente la fattibilità di ogni singola attività e compito
-analizzando la disponibilità delle risorse necessarie per lo
-svolgimento.
+\textbf{Inizializzazione} - \ldots le attività e i compiti da svolgere vengono identificati individuando gruppi di requisiti correlati, che possono essere obbligatori o facoltativi. E' necessario valutare attentamente la fattibilità di ogni singola attività e compito analizzando la disponibilità delle risorse necessarie per lo svolgimento.
 
-\textbf{Pianificazione} - \ldots Pianificazione dell'esecuzione di
-attività e compiti. Il piano deve descrivere bene il compito, gli
-strumenti che utilizzeremo, preventivo e consuntivo dei costi, a chi
-viene assegnato il compito, scadenze e rischi potenziali.
-
-\textbf{Esecuzione e Controllo} - Durante l'esecuzione del piano, per
-un'attività/compito è importante monitorare il progresso, i costi ed
-eventuali imprevisti. In caso di problemi il piano può essere
-modificato. Durante gli incontri con gli altri membri del gruppo, ed
-eventualmente anche con i tutor esterni, è necessario comunicare lo
-stato di avanzamento dell'attività.
-
-\textbf{Revisione e Valutazione} - I risultati di attività/compiti
-devono essere valutati secondo i requisiti rilevanti. Lo stesso vale per
-i prodotti software.
-
-\textbf{Chiusura} - Quando un'attività o un compito viene completato,
-ciò che viene prodotto va valutato rispetto alle aspettative del
-proponente, in termini di qualità e completezza. Quindi si decide se
-l'attività può essere definita conclusa, o se è necessario continuare a
-lavorare su di essa.
+ \textbf{Pianificazione} - \ldots Pianificazione dell'esecuzione di attività e compiti. Il piano deve descrivere bene il compito, gli strumenti che utilizzeremo, preventivo e consuntivo dei costi, a chi viene assegnato il compito, scadenze e rischi potenziali.
+ 
+ \textbf{Esecuzione e Controllo} - Durante l'esecuzione del piano, per un'attività/compito è importante monitorare il progresso, i costi ed eventuali imprevisti. In caso di problemi il piano può essere modificato. Durante gli incontri con gli altri membri del gruppo, ed eventualmente anche con i tutor esterni, è necessario comunicare lo stato di avanzamento dell'attività.
+ 
+ \textbf{Revisione e Valutazione} - I risultati di attività/compiti devono essere valutati secondo i requisiti rilevanti. Lo stesso vale per i prodotti software.
+ 
+ \textbf{Chiusura} - Quando un'attività o un compito viene completato, ciò che viene prodotto va valutato rispetto alle aspettative del \textbf{Proponente}, in termini di qualità e completezza. Quindi si decide se l'attività può essere definita conclusa, o se è necessario continuare a lavorare su di essa.
 
 \subsubsection{Ruoli}
 
-Per assicurare che ogni aspetto di ogni attività precedente viene
-compiuto adottiamo sette ruoli. I ruoli hanno le loro responsabilità
-definite e vengono assegnati ai membri del gruppo. I membri si alternano
-nei vari ruoli, per motivi formativi.
+Per assicurare che ogni aspetto di ogni attività precedente viene compiuto adottiamo sette ruoli. I ruoli hanno le loro responsabilità definite e vengono assegnati ai membri del gruppo. I membri si alternano nei vari ruoli, per motivi formativi.
 
-\textbf{Responsabile} - Si occupa della comunicazione esterna e
-rappresenta il gruppo e il progetto. Gestisce le riunioni interne e
-redige i verbali. Prende le decisioni importanti nei casi in cui non si
-raggiunga un consenso all'interno del gruppo. In collaborazione con gli
-altri membri pianifica le attività e i compiti da svolgere e ne valuta
-il progresso tempestivamente. Mantiene aggiornato il documento
-\emph{Piano di Progetto}. Si occupa dell'approvazione finale per la
-maggioranza dei compiti.
+\textbf{\glo{Responsabile}{responsabile}} - Si occupa della comunicazione esterna e rappresenta il gruppo e il progetto. Gestisce le riunioni interne e redige i verbali. Prende le decisioni importanti nei casi in cui non si raggiunga un consenso all'interno del gruppo. In collaborazione con gli altri membri pianifica le attività e i compiti da svolgere e ne valuta il progresso tempestivamente. Mantiene aggiornato il documento \textbf{Piano di Progetto}. Si occupa dell'approvazione finale per la maggioranza dei compiti.
 
-\textbf{Amministratore} - Definisce, controlla e mantiene l'ambiente IT
-di lavoro. Seleziona e mette in opera le risorse e gli strumenti
-informatici a supporto del Way of Working. Sceglie nuove tecnologie e
-modi di lavorare migliori e informa adeguatamente il gruppo per
-assicurare una transizione liscia. Redige il documento \emph{Norme di
-Progetto}. Cerca di mantenere e migliorare il Way of Working del gruppo.
-
-\textbf{Analista} - Ha il compito importante di stabilire e tracciare i
-requisiti del progetto. Deve informarsi sul dominio del problema e
-conoscerlo quanto possibile. Definisce gli Use Case. Il ruolo è
-maggiormente attivo nelle fasi iniziali di ogni sprint o iterazione.
-
-\textbf{Progettista} - Determina le scelte realizzative per
-l'architettura di progetto intero e di componenti più piccoli. Deve
-informarsi sulle scelte architetturali, system design e le tecnologie
-che vengono utilizzate.
-
-\textbf{Programmatore} - Contribuisce alla realizzazione e manutenzione
-del prodotto eseguendo per lo più le attività di codifica. Ha competenze
-tecniche e si attiene principalmente alle specifiche definite
-dall\textquotesingle Analista e alle scelte architetturali definite in
-fase di progettazione.
-
-\textbf{Verificatore} - Verifica che il lavoro svolto soddisfi i
-requisiti e rispetti la qualità richiesta. Fornisce il riscontro e
-giudica se e dove sono necessari ulteriori interventi. Acquisisce
-informazioni adeguate sui vari argomenti per consentire una valutazione
-appropriata.
-
-Uno stesso membro non può assumere il ruolo di verificatore
-immediatamente dopo aver ricoperto il ruolo di analista, progettista o
-programmatore perché comporterebbe la verifica del proprio lavoro.
+ \textbf{\glo{Amministratore}{amministratore}} - Definisce, controlla e mantiene l'ambiente IT di lavoro. Seleziona e mette in opera le risorse e gli strumenti informatici a supporto del \textit{Way of Working}. Sceglie nuove tecnologie e modi di lavorare migliori e informa adeguatamente il gruppo per assicurare una transizione liscia. Redige il documento \textbf{Norme di Progetto}. Cerca di mantenere e migliorare il \textit{Way of Working} del gruppo.
+ 
+ \textbf{\glo{Analista}{analista}} - Ha il compito importante di stabilire e tracciare i requisiti del progetto. Deve informarsi sul dominio del problema e conoscerlo quanto possibile. Definisce gli \textit{\glo{Use Case}{use-case}}. Il ruolo è maggiormente attivo nelle fasi iniziali di ogni \textit{Sprint} o iterazione.
+ 
+ \textbf{\glo{Progettista}{progettista}} - Determina le scelte realizzative per l'architettura di progetto intero e di componenti più piccoli. Deve informarsi sulle scelte architetturali, system design e le tecnologie che vengono utilizzate.
+ 
+ \textbf{\glo{Programmatore}{programmatore}} - Contribuisce alla realizzazione e manutenzione del prodotto eseguendo per lo più le attività di codifica. Ha competenze tecniche e si attiene principalmente alle specifiche definite dall\textquotesingle \textbf{Analista} e alle scelte architetturali definite in fase di progettazione.
+ 
+ \textbf{\glo{Verificatore}{verificatore}} - Verifica che il lavoro svolto soddisfi i requisiti e rispetti la qualità richiesta. Fornisce il riscontro e giudica se e dove sono necessari ulteriori interventi. Acquisisce informazioni adeguate sui vari argomenti per consentire una valutazione appropriata.
+ 
+ Uno stesso membro non può assumere il ruolo di \textbf{Verificatore} immediatamente dopo aver ricoperto il ruolo di \textbf{Analista}, \textbf{Progettista} o \textbf{Programmatore} perché comporterebbe la verifica del proprio lavoro.
 
 \subsubsection{Coordinamento}
 
 \paragraph{Riunioni}
 
-Ci sono 3 tipologie di riunioni in cui è necessario partecipare:
-interne, esterne, diari di bordo''.
+Ci sono 3 tipologie di riunioni in cui è necessario partecipare: interne, esterne, diari di bordo''.
 
-{Riunioni Interne}\\
-In queste riunioni partecipano esclusivamente i membri del gruppo
-SkyNet che lavorano sul progetto. Ogni membro è tenuto a partecipare.\\
-Le riunioni si svolgono alla fine e all'inizio di ogni sprint, e in caso
-di necessità, qualora si verifichino situazioni in cui sia necessario
-affrontare e risolvere un problema collettivamente.
+ {Riunioni Interne}\\
+In queste riunioni partecipano esclusivamente i membri del gruppo SkyNet che lavorano sul progetto. Ogni membro è tenuto a partecipare.\\
+Le riunioni si svolgono alla fine e all'inizio di ogni \textit{Sprint}, e in caso di necessità, qualora si verifichino situazioni in cui sia necessario affrontare e risolvere un problema collettivamente.
 
 Le tematiche discusse sono:
 
 \begin{itemize}
 \item
-  Fare una retrospettiva dello sprint concluso e vedere come migliorare
-  il Way of Working nello sprint successivo. Analizzare il grafico
-  Burndown dello sprint.
+  Fare una \textit{Retrospettiva} dello \textit{Sprint} concluso e vedere come migliorare il \textit{Way of Working} nello \textit{Sprint} successivo. Analizzare il grafico \textit{\glo{Burndown}{burndown-chart}} dello \textit{Sprint}.
 \item
-  Fare un consuntivo dei compiti e delle attività svolte e non durante
-  lo sprint. Identificare le ragioni per cui alcuni compiti non sono
-  stati compiuti e decidere come gestirli in futuro.
+  Fare un \textit{Consuntivo} dei compiti e delle attività svolte e non durante lo \textit{Sprint}. Identificare le ragioni per cui alcuni compiti non sono stati compiuti e decidere come gestirli in futuro.
+ \item
+  Assegnare i ruoli per lo \textit{Sprint} successivo.
 \item
-  Assegnare i ruoli per lo sprint successivo.
-\item
-  Identificare le attività e i compiti su cui bisogna lavorare nello
-  sprint successivo. Assegnare i compiti ai membri del gruppo. Ogni
-  compito deve avere esattamente un assegnatario.
-\item
-  Discutere eventuali rischi incontrati, come sono stati gestiti e come
-  saranno gestiti se dovessero comparire in futuro.
-\item
+  Identificare le attività e i compiti su cui bisogna lavorare nello \textit{Sprint} successivo. Assegnare i compiti ai membri del gruppo. Ogni compito deve avere esattamente un assegnatario.
+ \item
+  Discutere eventuali rischi incontrati, come sono stati gestiti e come saranno gestiti se dovessero comparire in futuro.
+ \item
   Discutere lo stato corrente della formazione del personale.
-\item
-  Discutere altri argomenti importanti che il gruppo deve analizzare e
-  prendere una decisione (ad es. se introdurre uno strumento nuovo per
-  migliorare il Way of Working).
-\end{itemize}
+ \item
+  Discutere altri argomenti importanti che il gruppo deve analizzare e prendere una decisione (ad es. se introdurre uno strumento nuovo per migliorare il \textit{Way of Working}).
+ \end{itemize}
 
-Per ogni riunione interna occorre redigere un verbale che riassume gli
-argomenti discussi e le decisioni prese durante l'incontro, in ordine
-cronologico.
+Per ogni riunione interna occorre redigere un verbale che riassume gli argomenti discussi e le decisioni prese durante l'incontro, in ordine cronologico.
 
  {Riunioni Esterne}\\
-Partecipano i membri del gruppo SkyNet che lavorano sul progetto e
-collaboratori dall'agenzia proponente. Vengono svolte quando una delle
-parti ritiene che sia necessario incontrarsi. Le tematiche di solito
-sono:
+Partecipano i membri del gruppo SkyNet che lavorano sul progetto e collaboratori dall'agenzia \textbf{Proponente}. Vengono svolte quando una delle parti ritiene che sia necessario incontrarsi. Le tematiche di solito sono:
 
 \begin{itemize}
 \item
   Avanzamento nello sviluppo del progetto.
-\item
-  Lo stato corrente della formazione del personale del fornitore (gruppo
-  SkyNet). Se e come il proponente può fare il mentore e aiutare i
-  membri di SkyNet di imparare certe tecnologie richieste.
-\item
+ \item
+  Lo stato corrente della formazione del personale del fornitore (gruppo SkyNet). Se e come il \textbf{Proponente} può fare il mentore e aiutare i membri di SkyNet di imparare certe tecnologie richieste.
+ \item
   Chiarimenti dei requisiti da parte del fornitore.
 \item
-  Altre tematiche di progetto che solleva il proponente.
-\item
-  Demo del prodotto, ovvero la presentazione degli incrementi software
-  sviluppati durante lo sprint.
-\item
-  Validazione, cioè l'accettazione formale dei requisiti implementati da
-  parte del proponente.
-\end{itemize}
+  Altre tematiche di progetto che solleva il \textbf{Proponente}.
+ \item
+  Demo del prodotto, ovvero la presentazione degli incrementi software sviluppati durante lo \textit{Sprint}.
+ \item
+  Validazione, cioè l'accettazione formale dei requisiti implementati da parte del \textbf{Proponente}.
+ \end{itemize}
 
-Per ogni riunione esterna occorre redigere un verbale che riassume gli
-argomenti discussi e le decisioni prese durante l'incontro, in ordine
-cronologico.
+Per ogni riunione esterna occorre redigere un verbale che riassume gli argomenti discussi e le decisioni prese durante l'incontro, in ordine cronologico.
 
  {Diari di Bordo}\\
 \ldots{}
@@ -518,257 +434,149 @@ Comunicazioni interne avvengono tramite:
 \item
   riunioni interne
 \item
-  Discord - per messaggi raggruppati in base al tema in canali testuali
-  appositi
+  \textit{\glo{Discord}{discord}} - per messaggi raggruppati in base al tema in canali testuali appositi
 \item
-  WhatsApp - per messaggi veloci e brevi
+  \textit{\glo{WhatsApp}{whatsapp}} - per messaggi veloci e brevi
 \end{itemize}
 
 Comunicazioni esterne avvengono tramite:
 
 \begin{itemize}
 \item
-  la posta elettronica - per inviare email al proponente, ai
-  collaboratori dall'agenzia proponente e ai committenti
+  la posta elettronica - per inviare email al \textbf{Proponente}, ai collaboratori dall'agenzia \textbf{Proponente} e ai \textbf{Committenti}
 \item
-  Slack - per una comunicazione più rapida con VarGroup
+  \textit{\glo{Slack}{slack}} - per una comunicazione più rapida con VarGroup
 \item
-  riunioni esterne con il proponente
+  riunioni esterne con il \textbf{Proponente}
 \item
-  diari di bordo con i committenti
+  diari di bordo con i \textbf{Committenti}
 \end{itemize}
 
 \subsection{Infrastruttura di Supporto}
 
-Questo processo si prende cura dell'infrastruttura necessaria per
-qualsiasi altro processo.
+Questo processo si prende cura dell'infrastruttura necessaria per qualsiasi altro processo.
 
 \subsubsection{Attività previste}
 
 Le attività previste di questo processo sono:
 
-\textbf{Implementazione} - definizione ed implementazione
-dell'infrastruttura adottata. E' necessario considerare prestazioni,
-sicurezza, disponibilità, costi e vincoli di tempo.
+\textbf{Implementazione} - definizione ed implementazione dell'infrastruttura adottata. E' necessario considerare prestazioni, sicurezza, disponibilità, costi e vincoli di tempo.
 
-\textbf{Creazione} - La configurazione dell'infrastruttura va
-pianificata e documentata.
+\textbf{Creazione} - La configurazione dell'infrastruttura va pianificata e documentata.
 
-\textbf{Mantenimento} - l'infrastruttura deve essere mantenuta,
-monitorata e modificata per assicurare il soddisfacimento dei requisiti
-che la necessitano.
+ \textbf{Mantenimento} - l'infrastruttura deve essere mantenuta, monitorata e modificata per assicurare il soddisfacimento dei requisiti che la necessitano.
 
-\paragraph{Implementazione}
+ \paragraph{Implementazione}
 
- {Overleaf} - Un editor Latex collaborativo basato su cloud.
-Utilizzato per la formattazione precisa dei file di documentazione e per
-il loro affinamento finale. {[}Utilizziamo la versione gratuita che
-permette la collaborazione di al massimo due persone su un file.{]}
+ \textit{Overleaf} - Un editor Latex collaborativo basato su cloud. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale. {[}Utilizziamo la versione gratuita che permette la collaborazione di al massimo due persone su un file.{]}
 
- {Google Docs} -Un elaboratore di testi gratuito basato sul web.
-Utilizzato per la scrittura collaborativa dei file di documentazione.
+ Google Docs - Un elaboratore di testi gratuito basato sul web. Utilizzato per la scrittura collaborativa dei file di documentazione.
 
- {Google Sheets} - Un\textquotesingle applicazione per fogli di
-calcolo basata sul cloud che consente agli utenti di collaborare sui
-dati in tempo reale.
+ Google Sheets - Un\textquotesingle applicazione per fogli di calcolo basata sul cloud che consente agli utenti di collaborare sui dati in tempo reale.
+ 
+ \textit{\glo{Gmail}{gmail}} - Servizio di posta elettronica basato sul web. Utilizzato principalmente per la comunicazione esterna.
+ 
+ \textit{Discord} - Un'app di comunicazione che combina messaggistica istantanea, videochiamate e chat vocale in comunità organizzate per argomento, chiamate ``server''. Utilizzato per la comunicazione interna e come la piattaforma dove svolgiamo le nostre riunioni interne.
+ 
+ \textit{WhatsApp} - Un'app di messaggistica istantanea, utilizzata per la comunicazione interna, veloce e breve.
+ 
+ \textit{GitHub} - Una piattaforma basata sul cloud che funge da servizio di hosting per i \textit{Repository} \textit{Git}, consentendo agli sviluppatori di archiviare, gestire, condividere e collaborare ai progetti di codice. E' inoltre un sistema di ticketing.\\
+Utilizzato per l'hosting del nostro \textit{Repository} di progetto e per tracciare ed organizzare i compiti (chiamati \textit{\glo{Issue}{issue}}) pianificati.
 
- {Gmail} - Servizio di posta elettronica basato sul web. Utilizzato
-principalmente per la comunicazione esterna.
+ \textit{Git} - È un sistema di controllo di versione distribuito open source. Permette di gestire la cronologia delle modifiche ai file in modo non lineare, facilitando la collaborazione tra più persone attraverso la ramificazione (\textit{\glo{Branching}{branching}}) e la fusione (\textit{\glo{Merging}{merging}}) del codice, indipendentemente dalla piattaforma di hosting utilizzata.
 
- {Discord} - Un'app di comunicazione che combina messaggistica
-istantanea, videochiamate e chat vocale in comunità organizzate per
-argomento, chiamate ``server''. Utilizzato per la comunicazione interna
-e come la piattaforma dove svolgiamo le nostre riunioni interne.
+ GitHub Pages - E' un servizio gratuito di hosting per siti statici che trasforma i \textit{Repository} \textit{GitHub} direttamente in siti web ospitati. Lo utilizziamo per l'hosting del nostro sito web (\href{https://skynetunigroup.github.io/Code_Guardian/}{ {https://skynetunigroup.github.io/Code\_Guardian/}}) per la documentazione del progetto.
 
- {WhatsApp} - Un'app di messaggistica istantanea, utilizzata per la
-comunicazione interna, veloce e breve.
+ \paragraph{Creazione}
 
- {GitHub} - Una piattaforma basata sul cloud che funge da servizio di
-hosting per i repository Git, consentendo agli sviluppatori di
-archiviare, gestire, condividere e collaborare ai progetti di codice. E'
-inoltre un sistema di ticketing.\\
-Utilizzato per l'hosting del nostro repository di progetto e per
-tracciare ed organizzare i compiti (chiamati issue) pianificati.
-
- {Git} - È un sistema di \textbf{controllo di versione distribuito}
-open source. Permette di gestire la cronologia delle modifiche ai file
-in modo non lineare, facilitando la collaborazione tra più persone
-attraverso la ramificazione (\textbf{branching}) e la fusione
-(\textbf{merging}) del codice, indipendentemente dalla piattaforma di
-hosting utilizzata..
-
- {GitHub Pages} - E' un servizio gratuito di hosting per siti statici
-che trasforma i repository GitHub direttamente in siti web ospitati. Lo
-utilizziamo per l'hosting del nostro sito web (
-\href{https://skynetunigroup.github.io/Code_Guardian/}{ {https://skynetunigroup.github.io/Code\_Guardian/}}
-) per la documentazione del progetto.
-
-\paragraph{Creazione}
-
- {Google Docs} - E' stato creato un file testuale condiviso per ogni
-documento necessario per la documentazione di progetto completa:
-Glossario, Norme di Progetto, Analisi dei requisiti, Piano di Progetto,
-\ldots{[}aggiungeremo più dopo{]}.
-
- {Google Sheets} - Sono stati creati due fogli di calcolo:
+ Google Docs - E' stato creato un file testuale condiviso per ogni documento necessario per la documentazione di progetto completa: Glossario, \textbf{Norme di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Progetto}, \ldots{[}aggiungeremo più dopo{]}.
+ 
+ Google Sheets - Sono stati creati due fogli di calcolo:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  utilizzo risorse progetto - tracciamo quante risorse sono state
-  consumate fino allo sprint corrente
+  utilizzo risorse progetto - tracciamo quante risorse sono state consumate fino allo \textit{Sprint} corrente
 \item
-  grafico burndown - tracciamo quante issue chiudiamo ad ogni giorno
-  dello sprint e quante ne rimangono
+  grafico \textit{Burndown} - tracciamo quante \textit{Issue} chiudiamo ad ogni giorno dello \textit{Sprint} e quante ne rimangono
 \end{enumerate}
 
- {Gmail} - E' stato creato un account di gruppo
-(\href{mailto:skynetunigroup@gmail.com}{ {skynetunigroup@gmail.com}}).
-Ogni membro può utilizzare liberamente l\textquotesingle account, previo
-consenso del gruppo per l\textquotesingle invio di email.
-
- {Discord} - E' stato creato un server di gruppo che si chiama
-``SkyNet - Code Guardian''. All'interno ci sono multipli canali
-testuali, divisi per argomento:
+ \textit{Gmail} - E' stato creato un account di gruppo (\href{mailto:skynetunigroup@gmail.com}{ {skynetunigroup@gmail.com}}). Ogni membro può utilizzare liberamente l\textquotesingle account, previo consenso del gruppo per l\textquotesingle invio di email.
+ 
+ \textit{Discord} - E' stato creato un server di gruppo che si chiama ``SkyNet - Code Guardian''. All'interno ci sono multipli canali testuali, divisi per argomento:
 
 \begin{itemize}
 \item
-  Documentazione: doc-da-verificare, sviluppo-analisi-requisiti,
-  sviluppo-piano-progetto, sviluppo-glossario, sviluppo-norme-progetto,
-  sviluppo-piano-qualifica, verbali
+  Documentazione: doc-da-verificare, sviluppo-analisi-requisiti, sviluppo-piano-progetto, sviluppo-glossario, sviluppo-norme-progetto, sviluppo-piano-qualifica, verbali
 \item
   Coding: per ora vuoto
 \item
-  Canali testuali singoli: generale, comunicazione-esterna,
-  gestione-risorse
+  Canali testuali singoli: generale, comunicazione-esterna, gestione-risorse
 \end{itemize}
 
 C'è anche un canale vocale chiamato Incontro Interno.
 
- {WhatsApp} - E' stato creato un gruppo whatsapp chiamato ``SkyNet
-SWE'' con ogni singolo membro presente.
-
- {GitHub} - Il nostro repository remoto ``Code\_Guardian'' di progetto
-è presente al seguente indirizzo:
-\href{https://github.com/SkynetUniGroup/Code_Guardian}{ {https://github.com/SkynetUniGroup/Code\_Guardian}}.
-Contiene il codice sorgente, la documentazione e le risorse per il
-nostro sito web.\\
-Inoltre, è stato creato un ``progetto'' del repository chiamato ``TO DO
-Blackboard''. Lo scopo è di implementare il nostro Scrumban Way of
-Working. Contiene sei colonne tra cui spostiamo tutte le issue aperte
-finché non vengono chiuse. Le colonne sono:
+ \textit{WhatsApp} - E' stato creato un gruppo \textit{WhatsApp} chiamato ``SkyNet SWE'' con ogni singolo membro presente.
+ 
+ \textit{GitHub} - Il nostro \textit{Repository} remoto ``Code\_Guardian'' di progetto è presente al seguente indirizzo: \href{https://github.com/SkynetUniGroup/Code_Guardian}{ {https://github.com/SkynetUniGroup/Code\_Guardian}}. Contiene il codice sorgente, la documentazione e le risorse per il nostro sito web.\\
+Inoltre, è stato creato un ``progetto'' del \textit{Repository} chiamato ``TO DO Blackboard''. Lo scopo è di implementare il nostro \textit{Scrumban} \textit{Way of Working}. Contiene sei colonne tra cui spostiamo tutte le \textit{Issue} aperte finché non vengono chiuse. Le colonne sono:
 
 \begin{itemize}
 \item
-  Backlog - le issue su cui occorre iniziare a lavorare presto ma non è
-  possibile iniziare ancora perché alcune altre devono essere completate
-  per prime.
-\item
-  Ready - le issue su cui è possibile iniziare a lavorare subito.
-\item
-  In progress - le issue su cui si sta lavorando e progredendo.
-\item
-  In review - le issue il cui assegnatario ha finito di lavorare e le
-  vuole chiudere ma prima devono essere verificate. Al momento in cui
-  una issue viene posta in questa colonna, spetta al Verificatore
-  controllarne il risultato e fornire un riscontro.
-\item
-  Done - le issue che sono state approvate per la chiusura da parte del
-  Verificatore. Diventa il compito del Responsabile procedere con la
-  revisione finale.
-\item
-  Approved - le issue completate e verificate che possono essere chiuse.
-\end{itemize}
+  Backlog - le \textit{Issue} su cui occorre iniziare a lavorare presto ma non è possibile iniziare ancora perché alcune altre devono essere completate per prime.
+ \item
+  Ready - le \textit{Issue} su cui è possibile iniziare a lavorare subito.
+ \item
+  In progress - le \textit{Issue} su cui si sta lavorando e progredendo.
+ \item
+  In review - le \textit{Issue} il cui assegnatario ha finito di lavorare e le vuole chiudere ma prima devono essere verificate. Al momento in cui una \textit{Issue} viene posta in questa colonna, spetta al \textbf{Verificatore} controllarne il risultato e fornire un riscontro.
+ \item
+  Done - le \textit{Issue} che sono state approvate per la chiusura da parte del \textbf{Verificatore}. Diventa il compito del \textbf{Responsabile} procedere con la revisione finale.
+ \item
+  Approved - le \textit{Issue} completate e verificate che possono essere chiuse.
+ \end{itemize}
 
-GitHub Pages - È stato configurato un workflow di \textbf{Continuous
-Deployment} tramite GitHub Actions. Uno script Python processa i file
-sorgenti nel repository e ne automatizza la pubblicazione sulla pagina
-web del progetto, garantendo il costante allineamento tra documentazione
-e stato dell\textquotesingle ambiente online.
+GitHub Pages - È stato configurato un workflow di \textit{\glo{Continuous Deployment}{continuous-deployment}} tramite \textit{GitHub Actions}. Uno script \textit{Python} processa i file sorgenti nel \textit{Repository} e ne automatizza la pubblicazione sulla pagina web del progetto, garantendo il costante allineamento tra documentazione e stato dell\textquotesingle ambiente online.
 
-Overleaf, Google Docs, Google Sheets e Git non richiedevano una
-configurazione specifica.
+ \textit{Overleaf}, Google Docs, Google Sheets e \textit{Git} non richiedevano una configurazione specifica.
 
-\subsection{Miglioramento di Processi}
+ \subsection{Miglioramento di Processi}
 
-Il processo di miglioramento ha lo scopo di stabilire, valutare,
-misurare, controllare e migliorare i processi del ciclo di vita del
-software adottati dal gruppo.
+Il processo di miglioramento ha lo scopo di stabilire, valutare, misurare, controllare e migliorare i processi del ciclo di vita del software adottati dal gruppo.
 
-\subsubsection{Attività previste}
+ \subsubsection{Attività previste}
 
-\textbf{Valutazione del processo} - analisi dell'idoneità e
-dell'efficacia dei processi a intervalli appropriati per identificare i
-punti deboli da migliorare
+\textbf{Valutazione del processo} - analisi dell'idoneità e dell'efficacia dei processi a intervalli appropriati per identificare i punti deboli da migliorare
 
-\textbf{Miglioramento del processo} - identificazione e applicazione di
-modifiche migliorative a seguito della valutazione
+\textbf{Miglioramento del processo} - identificazione e applicazione di modifiche migliorative a seguito della valutazione
 
 \paragraph{Valutazione del processo}
 
-Questa attività viene svolta a intervalli appropriati con lo scopo di
-identificare i punti di forza, criticità e le aree di miglioramento. E'
-un'attività cruciale per assicurare l'utilizzo di processi davvero utili
-ed efficienti, permettendo di intervenire tempestivamente su quelli che
-risultano non sufficientemente buoni, evitando così lo spreco di
-risorse.\\
-Al termine di ogni sprint, il gruppo svolge la retrospettiva esaminando
-i nuovi processi e i processi identificati come deboli. L'obiettivo è di
-documentare se e perché i risultati dei processi siano stati
-insoddisfacenti oppure se possono essere migliorati o velocizzati.
-Quest'attività viene svolta mettendo a confronto i risultati effettivi
-con quelli attesi attraverso una riflessione collettiva tra i membri
-coinvolti.
+Questa attività viene svolta a intervalli appropriati con lo scopo di identificare i punti di forza, criticità e le aree di miglioramento. E' un'attività cruciale per assicurare l'utilizzo di processi davvero utili ed efficienti, permettendo di intervenire tempestivamente su quelli che risultano non sufficientemente buoni, evitando così lo spreco di risorse.\\
+Al termine di ogni \textit{Sprint}, il gruppo svolge la \textit{Retrospettiva} esaminando i nuovi processi e i processi identificati come deboli. L'obiettivo è di documentare se e perché i risultati dei processi siano stati insoddisfacenti oppure se possono essere migliorati o velocizzati. Quest'attività viene svolta mettendo a confronto i risultati effettivi con quelli attesi attraverso una riflessione collettiva tra i membri coinvolti.
 
-\paragraph{Miglioramento del processo}
+ \paragraph{Miglioramento del processo}
 
-A seguito della valutazione del processo per ogni punto debole si
-identificano i possibili miglioramenti scegliendo l'opzione più adatta.
-Dallo sprint successivo la modifica viene apportata e il processo viene
-osservato nuovamente. Questo permette di valutare se mantenere la
-modifica o abbandonarla, seguendo l'approccio del ciclo PDSA di
-miglioramento.
+A seguito della valutazione del processo per ogni punto debole si identificano i possibili miglioramenti scegliendo l'opzione più adatta. Dallo \textit{Sprint} successivo la modifica viene apportata e il processo viene osservato nuovamente. Questo permette di valutare se mantenere la modifica o abbandonarla, seguendo l'approccio del \textit{\glo{Ciclo PDSA}{ciclo-pdsa}} di miglioramento.
 
-\subsection{Formazione del Personale}
+ \subsection{Formazione del Personale}
 
-Questo processo è parte integrante di un progetto sfidante, che prevede
-l'uso di tecniche e tecnologie nuove. E' volto a fornire e mantenere
-personale qualificato, allineando le competenze del gruppo alle esigenze
-tecniche del progetto.
+Questo processo è parte integrante di un progetto sfidante, che prevede l'uso di tecniche e tecnologie nuove. E' volto a fornire e mantenere personale qualificato, allineando le competenze del gruppo alle esigenze tecniche del progetto.
 
-\subsubsection{Attività previste}
+ \subsubsection{Attività previste}
 
-\textbf{Analisi delle competenze} - valutazione delle conoscenze
-tecniche e tecnologiche di ogni membro, rilevanti per il progetto.
+\textbf{Analisi delle competenze} - valutazione delle conoscenze tecniche e tecnologiche di ogni membro, rilevanti per il progetto.
 
-\textbf{Implementazione del processo} - identificazione delle competenze
-necessarie per lo svolgimento del progetto e sviluppo di un piano di
-formazione.
+ \textbf{Implementazione del processo} - identificazione delle competenze necessarie per lo svolgimento del progetto e sviluppo di un piano di formazione.
+ 
+ \textbf{Implementazione del piano di formazione} - ogni membro del gruppo è tenuto allo svolgimento tempestivo del proprio piano di formazione e a riferire periodicamente sull'avanzamento.
 
-\textbf{Implementazione del piano di formazione} - ogni membro del
-gruppo è tenuto allo svolgimento tempestivo del proprio piano di
-formazione e a riferire periodicamente sull'avanzamento.
+ \paragraph{Analisi delle competenze}
 
-\paragraph{Analisi delle competenze}
+Si confrontano le conoscenze di ogni membro del gruppo con le tecnologie indicate dal \textbf{Proponente} e con le altre competenze necessarie per il dominio del progetto. Ogni membro dichiara il proprio livello di conoscenza per ogni tecnologia. Lo scopo è di identificare le lacune principali affinché i membri abbiano un punto di partenza per l'apprendimento.
 
-Si confrontano le conoscenze di ogni membro del gruppo con le tecnologie
-indicate dal proponente e con le altre competenze necessarie per il
-dominio del progetto. Ogni membro dichiara il proprio livello di
-conoscenza per ogni tecnologia. Lo scopo è di identificare le lacune
-principali affinché i membri abbiano un punto di partenza per
-l'apprendimento.
+ \paragraph{Implementazione del processo}
 
-\paragraph{Implementazione del processo}
-
-Viene effettuata una revisione dei requisiti del progetto per
-identificare più dettagliatamente le competenze tecniche e gestionali
-necessarie. In base alle competenze di ogni singolo membro, ai loro
-interessi e alle necessità del progetto, viene creato un piano di
-formazione personalizzato per ogni membro del gruppo. L'obiettivo non è
-che ogni membro sappia fare tutto, ma che le loro competenze individuali
-siano complementari e che la loro unione corrisponda
-all\textquotesingle insieme delle competenze richieste del progetto. Il
-piano specifica strumenti, tecnologie, livelli di approfondimento
-richiesti e scadenze.
+Viene effettuata una revisione dei requisiti del progetto per identificare più dettagliatamente le competenze tecniche e gestionali necessarie. In base alle competenze di ogni singolo membro, ai loro interessi e alle necessità del progetto, viene creato un piano di formazione personalizzato per ogni membro del gruppo. L'obiettivo non è che ogni membro sappia fare tutto, ma che le loro competenze individuali siano complementari e che la loro unione corrisponda all\textquotesingle insieme delle competenze richieste del progetto. Il piano specifica strumenti, tecnologie, livelli di approfondimento richiesti e scadenze.
 
 \end{document}
