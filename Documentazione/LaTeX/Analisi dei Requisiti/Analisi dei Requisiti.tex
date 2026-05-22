@@ -17,6 +17,9 @@
 \usepackage{makecell}
 \usepackage{float}
 \usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
+\usepackage{hyperref}
+\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
+\newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -53,6 +56,7 @@
     \includegraphics[width=0.5\linewidth]{logo_skynet_dark.png}
     
     {\Large Gruppo SkyNet}\\
+   
     {\normalsize \href{mailto:skynetunigroup@gmail.com}{skynetunigroup@gmail.com}}
     \vspace*{1.5cm}
     
@@ -67,6 +71,7 @@
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
             \textbf{Versione} & \textit{0.5} \\ \hline
+    
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic, Marco Barbiero, Dario Pirrone} \\ \hline
@@ -82,25 +87,7 @@
 
 \newpage
 
-% ==========================================
-% LINK DI SUPPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO
-% ==========================================
-Materiale di supporto (rimuovere dal documento finale)
 
-\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{Slide di Tullio per l'Analisi}
-
-Esempi di altri gruppi:
-
-\begin{itemize}
-\item
-  \href{https://gammardx.github.io/Documents/Documenti\%20esterni/Analisi\%20dei\%20Requisiti\%20v2.0.0.pdf}{GammardX}
-\item
-  \href{https://torchlight-swe2324.github.io/docs/pb/Documentazione\%20Esterna/analisi_requisiti_v2.0.0.pdf}{Torchlight}
-\item
-  \href{https://merlunipd.github.io/login-warrior/output_documenti/esterni/AdR_V2.pdf}{Merl}
-\end{itemize}
-
-\newpage
 
 % ==========================================
 % REGISTRO DELLE VERSIONI
@@ -108,6 +95,7 @@ Esempi di altri gruppi:
 \section*{Versioni del documento}
 \markboth{Versioni del documento}{}
 \begin{table}[h]
+    
     \centering
     \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
@@ -147,14 +135,13 @@ Esempi di altri gruppi:
 
 \subsection{Scopo del documento}
 
-Il presente documento, denominato \textbf{Analisi dei Requisiti}, ha
+Il presente documento, denominato \textbf{\glo{Analisi dei Requisiti}{analisi-dei-requisiti}}, ha
 l'obiettivo di esporre in modo dettagliato e non ambiguo
 i requisiti funzionali, qualitativi e di vincolo individuati per il
-progetto \textbf{Code Guardian}. Tali requisiti sono stati delineati a
+progetto \textbf{\glo{Code Guardian}{code-guardian}}. Tali requisiti sono stati delineati a
 seguito di un'attenta analisi del capitolato e dei
-successivi incontri con il proponente. Il documento si avvale
-dell'uso di diagrammi e descrizioni dei \textbf{Casi
-d'Uso (UC)} per illustrare le interazioni tra gli attori
+successivi incontri con il \textbf{\glo{Proponente}{proponente}}. Il documento si avvale
+dell'uso di diagrammi e descrizioni dei \textit{\glo{Casi d'Uso}{use-case}} (UC) per illustrare le interazioni tra gli \textit{\glo{Attori}{attore}}
 esterni e il sistema, fornendo una base solida per le successive fasi di
 progettazione, codifica e verifica.
 
@@ -175,12 +162,12 @@ solamente alla loro prima occorrenza in questo documento.
 
 \begin{itemize}
 \item
-  Norme di Progetto v1.0.0
+  \textbf{\glo{Norme di Progetto}{norme-di-progetto}} v1.0.0
 \item
-  Piano di Qualifica v1.0.0
+  \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}} v1.0.0
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2p.pdf}{Capitolato
-  d'appalto C2 - Code Guardian}
+  d'appalto C2 - \textbf{Code Guardian}}
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento
   del Progetto Didattico}
@@ -193,10 +180,10 @@ solamente alla loro prima occorrenza in questo documento.
   Glossario v1.0.0
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{Dispense
-  Analisi dei Requisiti}
+  \textbf{Analisi dei Requisiti}}
 \item
   \href{https://www.math.unipd.it/~rcardin/swea/2022/Diagrammi\%20Use\%20Case.pdf}{Dispense
-  Casi d'Uso}
+  \textit{Casi d'Uso}}
 \end{itemize}
 
 \section{Descrizione generale}
@@ -205,82 +192,80 @@ solamente alla loro prima occorrenza in questo documento.
 
 L'obiettivo principale del progetto è lo sviluppo di un
 set di agenti intelligenti basati su modelli linguistici di grandi
-dimensioni (\emph{LLM}), progettati per integrarsi in
+dimensioni (\textit{\glo{LLM}{llm}}), progettati per integrarsi in
 un'architettura di orchestrazione già esistente fornita
-dal proponente \emph{Var Group}. Il sistema, denominato \textbf{Code
-Guardian}, mira ad automatizzare i processi di audit, manutenzione e
-documentazione dei repository software, riducendo il carico di lavoro
+dal \textbf{Proponente} \emph{Var Group}. Il sistema, denominato \textbf{Code
+Guardian}, mira ad automatizzare i processi di \textit{\glo{Audit}{audit}}, manutenzione e
+documentazione dei \textit{\glo{Repository}{repository}} software, riducendo il carico di lavoro
 manuale dei team di sviluppo e migliorando la qualità complessiva del
-codice.
-
-Nello specifico, il prodotto si prefigge di:
+codice. Nello specifico, il prodotto si prefigge di:
 
 \begin{itemize}
 \item
-  \textbf{Garantire la coerenza documentale}: assicurando che il README
-  di progetto e la documentazione tecnica (inline e API) siano
+  \textbf{Garantire la coerenza documentale}: assicurando che il \textit{\glo{README}{readme}}
+  di progetto e la documentazione tecnica (inline e \textit{\glo{API}{api}}) siano
   costantemente allineati all'evoluzione funzionale
   della piattaforma.
 \item
   \textbf{Elevare gli standard di sicurezza}: introducendo il paradigma
-  di \emph{policy-as-code}, attraverso il quale gli agenti verificano
-  non solo le vulnerabilità generiche OWASP, ma anche
+  di \textit{\glo{Policy-as-code}{policy-as-code}}, attraverso il quale gli agenti verificano
+  non solo le \textit{\glo{Vulnerabilità}{vulnerabilita}} generiche \textit{\glo{OWASP}{owasp}}, ma anche
   l'aderenza alle specifiche pratiche di sviluppo sicuro
   definite dal team.
 \item
   \textbf{Migliorare la trasparenza verso il business}: automatizzando
-  la redazione di changelog comprensibili al cliente finale, traducendo
-  i progressi tecnici emersi dalle user stories in valore di business
+  la redazione di \textit{\glo{Changelog}{changelog}} comprensibili al cliente finale, traducendo
+  i progressi tecnici emersi dalle \textit{\glo{User Stories}{user-story}} in valore di business
   tangibile.
 \end{itemize}
 
 \subsection{Funzioni del prodotto}
 
 Il prodotto offre le sue funzionalità attraverso tre agenti
-specializzati coordinati dall'orchestratore centrale:
+specializzati coordinati dall'\textbf{\glo{Orchestratore}{orchestratore}} centrale:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \textbf{Agente di Documentazione e README}:
+  \textbf{Agente di Documentazione e \textit{README}}:
 
   \begin{itemize}
   \item
-    \textbf{Manutenzione README}: creazione e aggiornamento dinamico del
-    file README di progetto in base alle modifiche apportate alla
+    \textbf{Manutenzione \textit{README}}: creazione e aggiornamento dinamico del
+    file \textit{README} di progetto in base alle modifiche apportate alla
     piattaforma.
-  \item
-    \textbf{Gestione documentazione tecnica}: generazione e
-    aggiornamento di documentazione inline (\emph{docstring},
-    \emph{JSDoc}) e delle \emph{API docs} per riflettere lo stato
-    attuale del codice.
-  \end{itemize}
 \item
-  \textbf{Agente di Security Review (Policy-as-Code)}:
+    \textbf{Gestione documentazione tecnica}: generazione e
+    aggiornamento di documentazione inline (\textit{\glo{Docstring}{docstring}},
+    \textit{\glo{JSDoc}{jsdoc}}) e delle \textit{\glo{API docs}{api-docs}} per riflettere lo stato
+    attuale del codice.
+\end{itemize}
+\item
+  \textbf{Agente di Security Review (\textit{Policy-as-code})}:
 
   \begin{itemize}
   \item
-    \textbf{Analisi vulnerabilità}: utilizzo delle API di \emph{Claude
-    Code} per l'identificazione di vulnerabilità
-    standard \emph{OWASP}.
-  \item
+    \textbf{Analisi \textit{Vulnerabilità}}: utilizzo delle \textit{API} di \textit{\glo{Claude
+    Code}{claude-code}} per l'identificazione di \textit{Vulnerabilità}
+    standard \textit{OWASP}.
+\item
     \textbf{Verifica policy interne}: controllo
     dell'adozione di pratiche di sviluppo sicuro
     specifiche del team, utilizzando i file di configurazione
-    \emph{CLAUDE.md} presenti nel repository come contesto operativo.
-  \end{itemize}
+    \emph{CLAUDE.md} presenti nel \textit{Repository} come contesto operativo.
+\end{itemize}
 \item
-  \textbf{Agente di Changelog da User Stories}:
+  \textbf{Agente di \textit{Changelog} da \textit{User Stories}}:
 
   \begin{itemize}
   \item
-    \textbf{Analisi Sprint}: lettura e filtraggio delle \emph{user
-    stories} completate durante uno specifico sprint di sviluppo.
-  \item
+    \textbf{Analisi \textit{\glo{Sprint}{sprint}}}: lettura e filtraggio delle \textit{User
+    Stories} completate durante uno specifico \textit{Sprint} di sviluppo.
+\item
     \textbf{Traduzione Business-Oriented:} conversione del linguaggio
     tecnico delle task in un linguaggio chiaro e comprensibile per il
-    cliente, producendo \emph{changelog} sia tecnici che di business.
-  \end{itemize}
+    cliente, producendo \textit{Changelog} sia tecnici che di business.
+\end{itemize}
 \end{enumerate}
 
 \subsection{Caratteristiche degli utenti}
@@ -288,65 +273,67 @@ specializzati coordinati dall'orchestratore centrale:
 Il sistema è progettato per inserirsi in un flusso di lavoro di sviluppo
 software moderno, interagendo con diverse figure professionali che
 operano all'interno di un team IT o nel rapporto con il
-cliente finale.
+cliente finale. 
 
 L'utente principale è rappresentato dallo
 \textbf{sviluppatore}, il quale interagisce con il sistema
-indirettamente attraverso il repository Git. Egli beneficia
+indirettamente attraverso il \textit{Repository} \textit{\glo{Git}{git}}. Egli beneficia
 dell'automatizzazione della documentazione tecnica e del
 feedback immediato sulla sicurezza, che gli permette di correggere
-eventuali vulnerabilità o difformità rispetto alle policy aziendali in
-tempo reale, senza attendere revisioni manuali.
+eventuali \textit{Vulnerabilità} o difformità rispetto alle policy aziendali in
+tempo reale, senza attendere revisioni manuali. 
 
-Una seconda figura chiave è il \textbf{Team Lead} o lo \textbf{Security
-Auditor}. Questi utenti utilizzano il sistema come strumento di
+Una seconda figura chiave è il \textit{\glo{Team Lead}{team-lead}} o lo \textit{\glo{Security
+Auditor}{security-auditor}}. Questi utenti utilizzano il sistema come strumento di
 monitoraggio e governance: definiscono le regole di "sviluppo sicuro"
 all'interno dei file CLAUDE.md e delegano
 all'agente di sicurezza il compito di verificarne
-l'adozione costante su tutto il codice prodotto.
+l'adozione costante su tutto il codice prodotto. 
 
-Infine, il sistema si rivolge agli \textbf{Stakeholder di business}
-(come Project Manager o il cliente finale). Questi soggetti non
+Infine, il sistema si rivolge agli \textit{\glo{Stakeholder}{stakeholder}} di business
+(come \textit{\glo{Project Manager}{project-manager}} o il cliente finale). Questi soggetti non
 necessitano di competenze tecniche approfondite, ma hanno bisogno di
 visibilità sull'andamento del progetto. Per loro,
-l'agente di changelog funge da "traduttore",
-trasformando il gergo tecnico delle user stories in report di valore che
-sintetizzano i progressi funzionali raggiunti al termine di ogni sprint.
+l'agente di \textit{Changelog} funge da "traduttore",
+trasformando il gergo tecnico delle \textit{User Stories} in report di valore che
+sintetizzano i progressi funzionali raggiunti al termine di ogni \textit{Sprint}.
 
 \subsection{Piattaforma di esecuzione {[}?{]}}
 
 Il prodotto è concepito come un ecosistema di agenti integrati in
 un'infrastruttura già esistente, operante principalmente
-in ambiente \textbf{cloud AWS}. Essendo il sistema basato su interfacce
+in ambiente cloud \textit{\glo{AWS}{aws}}. Essendo il sistema basato su interfacce
 di programmazione e automazione, l'esecuzione è
 garantita attraverso i principali ambienti di runtime come
-\textbf{Node.js} e \textbf{Python}. L'interazione con il
-codice sorgente avviene tramite la piattaforma \textbf{GitHub},
-[sfruttando le \textbf{GitHub Actions} come principale motore di
+\textit{\glo{Node.js}{node-js}} e \textit{\glo{Python}{python}}. L'interazione con il
+codice sorgente avviene tramite la piattaforma \textit{\glo{GitHub}{github}},
+[sfruttando le \textit{\glo{GitHub Actions}{github-actions}} come principale motore di
 esecuzione per l'analisi e
-l'aggiornamento automatico dei repository. ? \textbf{NON E' OBBLIGATORIO}]
+l'aggiornamento automatico dei \textit{Repository}.
 
-\section{Casi d'uso}
+? \textbf{NON E' OBBLIGATORIO}]
+
+\section{\textit{Casi d'Uso}}
 
 
 \subsection{Introduzione}
-I Casi d’Uso sono costituiti da un diagramma UMLG e da una descrizione testuale che ne
+I \textit{Casi d'Uso} sono costituiti da un diagramma \textit{\glo{UML}{uml}} e da una descrizione testuale che ne
 chiarisce il comportamento e gli obiettivi, al fine di definire in modo preciso le funzionalità che
 il prodotto deve offrire.
 
-\subsection{Attori}
+\subsection{\textit{Attori}}
 
-\subsection{Casi d'uso trasversali}
-Di seguito sono riportati i casi d'uso trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
+\subsection{\textit{Casi d'Uso} trasversali}
+Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
 \subsubsection{UC 1: Visualizzazione report prodotto dall'agente}
 Lo Sviluppatore vuole consultare il risultato prodotto da un agente a seguito di un’analisi. Il sistema rende disponibili i report generati, permettendo allo Sviluppatore di visualizzare le informazioni principali relative all’esecuzione, come criticità rilevate, suggerimenti proposti e file coinvolti.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: Orchestratore.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: Lo Sviluppatore vuole consultare l'esito dell'analisi svolta da un agente.
-    \item \textbf{Precondizioni}: L'Orchestratore ha eseguito almeno un agente. È disponibile almeno un report prodotto dall'agente.
+    \item \textbf{Precondizioni}: L'\textbf{Orchestratore} ha eseguito almeno un agente. È disponibile almeno un report prodotto dall'agente.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item Lo Sviluppatore accede alla sezione dedicata ai risultati dell'analisi.
@@ -359,13 +346,13 @@ Lo Sviluppatore vuole consultare il risultato prodotto da un agente a seguito di
 \end{itemize}
 
 \subsubsection{UC 2: Validazione umana di una proposta dell'agente}
-Ad oggi per ogni sistema agentico è necessario implementare human-in-the-loop per assicurarsi i risultati affidabili. 
+Ad oggi per ogni sistema agentico è necessario implementare \textit{\glo{Human-in-the-loop}{human-in-the-loop}} per assicurarsi i risultati affidabili.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: Repository Git.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}.
     \item \textbf{Trigger}: Lo Sviluppatore riceve una proposta generata da un agente.
-    \item \textbf{Precondizioni}: Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di Pull Request, patch o suggerimento testuale [da decidere...?]
+    \item \textbf{Precondizioni}: Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di \textit{\glo{Pull Request}{pull-request}}, \textit{\glo{Patch}{patch}} o suggerimento testuale [da decidere...?]
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item Lo Sviluppatore apre la proposta generata dall'agente.
@@ -380,14 +367,14 @@ Ad oggi per ogni sistema agentico è necessario implementare human-in-the-loop p
 Durante l’esecuzione di un agente può verificarsi un errore che impedisce il completamento dell’analisi o la generazione dell’output richiesto. In questo caso il sistema mostra allo Sviluppatore un messaggio esplicativo, indicando la causa dell’errore e, quando possibile, una possibile azione correttiva.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: Orchestratore.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: L'esecuzione di un agente termina con errore.
     \item \textbf{Precondizioni}: È stata avviata l'esecuzione di un agente. Si verifica un errore durante l'analisi o la generazione dell'output.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'agente incontra un errore durante l'esecuzione.
-            \item L'Orchestratore riceve l'esito negativo.
+            \item L'\textbf{Orchestratore} riceve l'esito negativo.
             \item Il sistema mostra allo Sviluppatore un messaggio che descrive la causa dell'errore (es. repository non accessibile, API key non valida, file di configurazione assente, formato del report non generabile).
             \item Il sistema indica, se possibile, un'azione correttiva.
         \end{enumerate}
@@ -399,7 +386,7 @@ Lo Sviluppatore vuole esportare un report generato da un agente per conservarlo,
 condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il sistema permette di selezionare il report desiderato e di salvarlo in uno dei formati disponibili.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{Trigger}: Lo Sviluppatore vuole esportare e salvare il risultato di un'analisi di un agente in forma di uno dei formati offerti.
     \item \textbf{Precondizioni}: È disponibile almeno un report generato da un agente.
     \item \textbf{Scenario Principale}:
@@ -415,61 +402,61 @@ condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il
 
 
 
-\subsection{Elenco dei casi d'uso}
+\subsection{Elenco dei \textit{Casi d'Uso}}
 Per ogni agente preso in esame, verrà sviluppata una sezione dell'Analisi dei Requisiti dedicata, così da migliorare l'organizzazione del documento.
 
-\section{Agente 1: Documentazione e README}
+\section{Agente 1: Documentazione e \textit{README}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Documentazione e README rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{README.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle API, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
+L'Agente di Documentazione e \textit{README} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si focalizza su tre aree critiche:
 
 \begin{enumerate}
 
-    \item \textbf{Manutenzione del README}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del repository, adattandolo dinamicamente alle evoluzioni della piattaforma.
+    \item \textbf{Manutenzione del \textit{README}}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del \textit{Repository}, adattandolo dinamicamente alle evoluzioni della piattaforma.
 
-    \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{docstring} e \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
+    \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{Docstring} e \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
 
-    \item \textbf{Documentazione delle API}: Estrazione automatizzata degli endpoint per la creazione di guide tecniche per gli utilizzatori del servizio.
+    \item \textbf{Documentazione delle \textit{API}}: Estrazione automatizzata degli \textit{\glo{Endpoint}{endpoint}} per la creazione di guide tecniche per gli utilizzatori del servizio.
 
 \end{enumerate}
 \newpage
 
-\subsection{Casi d'Uso}
-Di seguito i casi d'uso dell'agente 1.
+\subsection{\textit{Casi d'Uso}}
+Di seguito i \textit{Casi d'Uso} dell'agente 1.
 
-\subsubsection{UC 5: Gestione del README di Progetto}
-Questo caso d'uso riguarda il mantenimento del file \texttt{README.md} principale per riflettere lo stato attuale del software.
+\subsubsection{UC 5: Gestione del \textit{README} di Progetto}
+Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{README}.md} principale per riflettere lo stato attuale del software.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: Orchestratore, Repository Git.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'aggiornamento tramite l'Orchestratore.
-    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul repository; esiste un file \texttt{README.md}.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'aggiornamento tramite l'\textbf{Orchestratore}.
+    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul \textit{Repository}; esiste un file \texttt{\textit{README}.md}.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item L'Orchestratore notifica l'Agente 1 della necessità di aggiornamento.
+            \item L'\textbf{Orchestratore} notifica l'Agente 1 della necessità di aggiornamento.
             \item L'Agente analizza file di configurazione (es. \texttt{package.json}) e struttura cartelle.
             \item L'Agente identifica nuove dipendenze o cambi di versione.
             \item L'Agente rigenera le sezioni interessate (es. guida all'installazione).
-            \item L'Agente propone la modifica tramite Pull Request.
+            \item L'Agente propone la modifica tramite \textit{Pull Request}.
         \end{enumerate}
-    \item \textbf{Postcondizioni}: È disponibile una proposta di aggiornamento del \texttt{README.md}, pronta per la validazione umana.
+    \item \textbf{Postcondizioni}: È disponibile una proposta di aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana.
     \item \textbf{Estensioni}: UC 2 - Validazione umana di una proposta dell’agente.
 \end{itemize}
 
-\subsubsection{UC 6: Generazione Documentazione Inline (Docstring/JSDoc)}
+\subsubsection{UC 6: Generazione Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
 L'agente interviene nel codice sorgente per garantire che ogni componente sia documentato correttamente.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: Orchestratore.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
-            \item L'Agente 1 ha i permessi di lettura/scrittura sul repository.
+            \item L'Agente 1 ha i permessi di lettura/scrittura sul \textit{Repository}.
             \item Esiste un file di codice sorgente su cui eseguire l'operazione.
             \item (Opzionale) Esiste un file di configurazione per la documentazione online.
         \end{itemize}
@@ -477,7 +464,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
         \begin{enumerate}
             \item L'Agente individua funzioni o classi prive di documentazione o con documentazione obsoleta.
             \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
-            \item L'Agente genera una proposta di commento standardizzato (JSDoc per JS/TS o Docstring per Python).
+            \item L'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
             \item Il sistema rende la proposta disponibile per validazione allo Sviluppatore.
         \end{enumerate}
     \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
@@ -488,22 +475,22 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
         \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 7: Generazione Documentazione API}
-L'agente estrae le definizioni degli endpoint per creare una guida tecnica per i consumatori delle API.
+\subsubsection{UC 7: Generazione Documentazione \textit{API}}
+L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecnica per i consumatori delle \textit{API}.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: Orchestratore.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
-    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul repository.
+    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul \textit{Repository}.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item L'Agente scansiona i file dei controller e i file delle rotte.
-            \item Estrazione di: metodo HTTP, URL, header, payload richiesto e risposte possibili.
-            \item Formattazione delle informazioni nel file \texttt{API.md} in formato Markdown.
+            \item L'Agente scansiona i file dei controller e i file delle \textit{\glo{Rotte}{rotte}}.
+            \item Estrazione di: metodo HTTP, URL, header, \textit{\glo{Payload}{payload}} richiesto e risposte possibili.
+            \item Formattazione delle informazioni nel file \texttt{\textit{API}.md} in formato \textit{\glo{Markdown}{markdown}}.
             \item Salvataggio del documento nella cartella di documentazione predefinita.
         \end{enumerate}
-    \item \textbf{Postcondizioni}: Disponibilità di un documento tecnico (\texttt{API.md}) aggiornato per gli stakeholder.
+    \item \textbf{Postcondizioni}: Disponibilità di un documento tecnico (\texttt{\textit{API}.md}) aggiornato per gli \textit{Stakeholder}.
 \end{itemize}
 
 
@@ -517,116 +504,120 @@ I requisiti funzionali per l'Agente 1 sono definiti per rispondere alle esigenze
 
 \begin{itemize}
 
-    \item \textbf{RF.1.1 (Aggiornamento README)}: Il sistema deve identificare le modifiche strutturali nel repository (es. aggiunta di moduli) e aggiornare le sezioni relative all'installazione nel \texttt{README.md}.
+    \item \textbf{RF.1.1 (Aggiornamento \textit{README})}: Il sistema deve identificare le modifiche strutturali nel \textit{Repository} (es. aggiunta di moduli) e aggiornare le sezioni relative all'installazione nel \texttt{\textit{README}.md}.
 
     \item \textbf{RF.1.2 (Standardizzazione Inline)}: Il sistema deve analizzare le funzioni prive di documentazione e generare commenti standardizzati che descrivano parametri di input, output e comportamenti attesi.
 
     \item \textbf{RF.1.3 (Workflow di validazione)}: Tutte le modifiche documentali proposte dall'agente devono essere sottomesse tramite \textit{Pull Request}, subordinando l'applicazione delle stesse a una revisione umana obbligatoria per garantire l'accuratezza del contenuto.
 
-    \item \textbf{RF.1.4 (Documentazione API)}: Il sistema deve scandire i \textit{controller} dell'applicazione per produrre o aggiornare una guida Markdown (es. \texttt{API.md}) che elenchi metodi HTTP, rotte e payload richiesti.
+    \item \textbf{RF.1.4 (Documentazione \textit{API})}: Il sistema deve scandire i \textit{controller} dell'applicazione per produrre o aggiornare una guida \textit{Markdown} (es. \texttt{\textit{API}.md}) che elenchi metodi HTTP, \textit{Rotte} e \textit{Payload} richiesti.
 
 \end{itemize}
 
-\section{Agente 3: Scansione Vulnerabilità OWASP}
+\section{Agente 3: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Scansione Vulnerabilità OWASP ha l'obiettivo di supportare lo sviluppatore nell'individuazione di possibili vulnerabilità di sicurezza presenti nel codice sorgente del repository. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da OWASP individuabili tramite analisi del codice, come: injection, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, cofigurazioni insicure, ecc. \\ 
-L'agente non garantisce la copertura esaustiva dell'intera OWASP Top 10. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di remediation che devono essere successivamente valutati da uno sviluppatore.
+L'Agente di Scansione Vulnerabilità OWASP ha l'obiettivo di supportare lo sviluppatore nell'individuazione di possibili \textit{Vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da \textit{OWASP} individuabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, cofigurazioni insicure, ecc.
+\\ 
+
+L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP} Top 10. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da uno sviluppatore.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra su tre aree principali:
 \begin{enumerate}
-\item \textbf{Analisi delle vulnerabilità OWASP}: individuazione di pattern di codice potenzialmente riconducibili a vulnerabilità note, come SQL injection, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, hardcoded secrets, ecc.
-\item \textbf{Verifica delle policy interne di sicurezza}: controllo dell'aderenza del codice alle regole definite dal team nel file CLAUDE.md, secondo un approccio di tipo policy-as-code.
+\item \textbf{Analisi delle \textit{Vulnerabilità} \textit{OWASP}}: individuazione di pattern di codice potenzialmente riconducibili a \textit{Vulnerabilità} note, come SQL \textit{Injection}, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, \textit{\glo{Hardcoded secrets}{hardcoded-secrets}}, ecc.
+\item \textbf{Verifica delle policy interne di sicurezza}: controllo dell'aderenza del codice alle regole definite dal team nel file CLAUDE.md, secondo un approccio di tipo \textit{Policy-as-code}.
 \item \textbf{Generazione di remediation}: produzione di suggerimenti testuali o frammenti di codice [quale cosa??] correttivi per mitigare le vulnerabilità o le non conformità rilevate, senza applicare modifiche automatiche prima della validazione umana.
 \end{enumerate}
 
-\subsection{Casi d'Uso}
-Di seguito i casi d'uso dell'agente 3.
+\subsection{\textit{Casi d'Uso}}
+Di seguito i \textit{Casi d'Uso} dell'agente 3.
 
-\subsubsection{UC 8: Esecuzione Scansione Vulnerabilità (OWASP)}
-L'agente utilizza le API di Claude Code per identificare
-vulnerabilità standard nel codice sorgente.
+\subsubsection{UC 8: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}
+L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare
+\textit{Vulnerabilità} standard nel codice sorgente.
 
 \begin{itemize}
 \item
-  \textbf{Attore Primario}: Sviluppatore.
+  \textbf{\textit{Attore} Primario}: Sviluppatore.
 \item
-  \textbf{Attori Secondari}: Orchestratore, Repository Git, API Claude Code.
+  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
 \item
   \textbf{Trigger}: Lo Sviluppatore richiede una scansione di sicurezza oppure
-  l'Orchestratore avvia il processo dopo un commit nel repository.
+  l'\textbf{Orchestratore} avvia il processo dopo un \textit{\glo{Commit}{commit}} nel \textit{Repository}.
 \item
   \textbf{Precondizioni}:
   \begin{itemize}
   \item
-    L'Agente 3 è correttamente configurato con le API
-    Key di Claude Code.
-  \item
-    Il codice sorgente è accessibile nel repository.
-  \end{itemize}
+    L'Agente 3 è correttamente configurato con le \textit{API}
+    Key di \textit{Claude Code}.
+\item
+    Il codice sorgente è accessibile nel \textit{Repository}.
+\end{itemize}
 \item
   \textbf{Scenario Principale}:
 
   \begin{enumerate}
   \item
-    L'Orchestratore invia i file sorgente (o il diff
-    dell'ultimo commit) all'Agente 3.
+    L'\textbf{Orchestratore} invia i file sorgente (o il diff
+    dell'ultimo \textit{Commit}) all'Agente 3.
   \item
-    L'Agente 3 interroga le API di Claude Code inviando
+    L'Agente 3 interroga le \textit{API} di \textit{Claude Code} inviando
     il codice per l'analisi.
-  \item
+\item
     L'AI analizza il codice cercando pattern
-    riconducibili alle vulnerabilità della Top 10 OWASP (es. SQL
-    Injection, XSS, Hardcoded secrets).
-  \item
+    riconducibili alle \textit{Vulnerabilità} della Top 10 \textit{OWASP} (es. SQL
+    \textit{Injection}, \textit{\glo{XSS}{xss}}, \textit{Hardcoded secrets}).
+\item
     L'Agente 3 riceve l'esito
     dell'analisi.
-  \item
-    L'Agente 3 associa ogni vulnerabilità al file e, se disponibile, alla porzione di codice interessata.
-  \item
-    L'Agente 3 classifica ogni vulnerabilità trovata nelle categorie di Top 10 OWASP.
-  \item
+\item
+    L'Agente 3 associa ogni \textit{Vulnerabilità} al file e, se disponibile, alla porzione di codice interessata.
+\item
+    L'Agente 3 classifica ogni \textit{Vulnerabilità} trovata nelle categorie di Top 10 \textit{OWASP}.
+\item
     L'Agente 3 formatta i risultati evidenziando la
     gravità (High, Medium, Low) di ogni falla trovata.
-  \item
-    L'Agente 3 inserisce le vulnerabilità, la loro classificazione e le gravità nel report finale.
-  \end{enumerate}
 \item
-  \textbf{Postcondizioni}: Viene generato un report tecnico delle vulnerabilità
-  rilevate. Ogni vulnerabilità rilevata è descritta con categoria, gravità e 
+    L'Agente 3 inserisce le \textit{Vulnerabilità}, la loro classificazione e le gravità nel report finale.
+\end{enumerate}
+\item
+  \textbf{Postcondizioni}: Viene generato un report tecnico delle \textit{Vulnerabilità}
+  rilevate. Ogni \textit{Vulnerabilità} rilevata è descritta con categoria, gravità e 
 riferimento al codice interessato.
 \item
   \textbf{Sottocasi}:
 
   \begin{itemize}
   \item
-    UC 8.1: Scansione specifica su un singolo file modificato. (include)
+    UC 8.1: Scansione specifica su un singolo file modificato.
+(include)
   \item
-    UC 8.2: Scansione completa dell'intero repository
-    (Full Audit). (include)
+    UC 8.2: Scansione completa dell'intero \textit{Repository}
+    (Full \textit{Audit}).
+(include)
     \item
-    UC 8.3: Classificazione delle vulnerabilità rilevate.
-  \end{itemize}
+    UC 8.3: Classificazione delle \textit{Vulnerabilità} rilevate.
+\end{itemize}
 
-\item \textbf{Scenario Alternativo}: Se non vengono rilevate vulnerabilità, l’Agente genera un report che indica l’assenza di criticità individuate.
+\item \textbf{Scenario Alternativo}: Se non vengono rilevate \textit{Vulnerabilità}, l’Agente genera un report che indica l’assenza di criticità individuate.
 \end{itemize}
 
 
-\subsubsection{UC 9: Verifica Conformità "Policy-as-Code" (CLAUDE.md)}
+\subsubsection{UC 9: Verifica Conformità "\textit{Policy-as-code}" (CLAUDE.md)}
 
 L'agente verifica che il codice rispetti le regole
 specifiche definite dal team nel file di configurazione.
 
 \begin{itemize}
 \item
-  \textbf{Attore Primario}: Sviluppatore.
+  \textbf{\textit{Attore} Primario}: Sviluppatore.
 \item
-  \textbf{Attori Secondari}: Orchestratore, File di configurazione CLAUDE.md.
+  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, File di configurazione CLAUDE.md.
 \item
   \textbf{Trigger}: Avvio della revisione di sicurezza (manuale o automatica).
 \item
-  \textbf{Precondizioni}: Nel repository è presente un file denominato CLAUDE.md
+  \textbf{Precondizioni}: Nel \textit{Repository} è presente un file denominato CLAUDE.md
   contenente le linee guida di sviluppo sicuro del team.
 \item
   \textbf{Scenario Principale}:
@@ -636,16 +627,16 @@ specifiche definite dal team nel file di configurazione.
     L'Agente 3 legge il contenuto del file CLAUDE.md per
     estrarre il contesto e le regole (es. "usa sempre questa libreria
     per il logging", "non usare variabili globali").
-  \item
+\item
     L'Agente analizza il codice sorgente confrontandolo
     con le direttive estratte.
-  \item
+\item
     L'Agente identifica eventuali deviazioni dalle
     pratiche concordate dal team.
-  \item
+\item
     L'Agente genera un elenco di violazioni della policy
     interna.
-  \end{enumerate}
+\end{enumerate}
 \item
   \textbf{Postcondizioni}: Viene prodotto un elenco di non-conformità rispetto
   alle policy di progetto.
@@ -655,24 +646,25 @@ specifiche definite dal team nel file di configurazione.
   \begin{itemize}
   \item
     UC 9.1: Validazione del file CLAUDE.md (verifica che il file di
-    configurazione sia scritto correttamente). (extend)
+    configurazione sia scritto correttamente).
+(extend)
   \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 10: Generazione Suggerimenti di Remediation}
+\subsubsection{UC 10: Generazione Suggerimenti di \textit{Remediation}}
 L'agente fornisce soluzioni pratiche per correggere i
 problemi di sicurezza o le violazioni di policy trovate.
 
 \begin{itemize}
 \item
-  \textbf{Attore Primario}: Sviluppatore.
+  \textbf{\textit{Attore} Primario}: Sviluppatore.
 \item
-  \textbf{Attori Secondari}: API Claude Code.
+  \textbf{\textit{Attori} Secondari}: \textit{API} \textit{Claude Code}.
 \item
   \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 8
   o UC 9.
 \item
-  \textbf{Precondizioni}: Sono state identificate vulnerabilità o violazioni di
+  \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di
   policy.
 \item
   \textbf{Scenario Principale}:
@@ -680,44 +672,43 @@ problemi di sicurezza o le violazioni di policy trovate.
   \begin{enumerate}
   \def\labelenumi{\arabic{enumi}.}
   \item
-    Per ogni vulnerabilità o violazione trovata,
-    l'Agente 3 richiede a Claude Code una possibile
+    Per ogni \textit{Vulnerabilità} o violazione trovata,
+    l'Agente 3 richiede a \textit{Claude Code} una possibile
     correzione.
-  \item
+\item
     L'AI genera uno snippet di codice "sicuro" che
     risolve il problema.
-  \item
+\item
     L'Agente presenta allo sviluppatore il confronto tra
     il codice insicuro e la soluzione proposta.
-  \end{enumerate}
+\end{enumerate}
 \item
   \textbf{Postcondizioni}: Lo sviluppatore riceve indicazioni chiare su come
   correggere il codice per renderlo conforme.
-
 \item 
   \textbf{Inclusioni}: 
     \begin{itemize}
         \item UC 10.1: Generazione snippet di codice correttivo.
-        \item UC 10.2: Generazione descrizione testuale della remediation.
+\item UC 10.2: Generazione descrizione testuale della remediation.
     \end{itemize}
 
 \item 
   \textbf{Estensioni}:
     \begin{itemize}
-        \item Caso d'uso trasversale UC 2: Validazione umana di una proposta dell'agente.
-    \end{itemize}
+        \item \textit{Caso d'Uso} trasversale UC 2: Validazione umana di una proposta dell'agente.
+\end{itemize}
 \end{itemize}
 
 \subsubsection{UC 10.1: Generazione snippet di codice correttivo}
-Descrive la generazione di un frammento di codice alternativo per correggere una vulnerabilità o una non conformità.
+Descrive la generazione di un frammento di codice alternativo per correggere una \textit{Vulnerabilità} o una non conformità.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: API Claude Code.
-    \item \textbf{Trigger}: Una vulnerabilità o non conformità può essere corretta tramite una modifica puntuale al codice..
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textit{API} \textit{Claude Code}.
+    \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità può essere corretta tramite una modifica puntuale al codice..
     \item \textbf{Precondizioni}:
         \begin{itemize}
-            \item La vulnerabilità è sufficientemente circoscritta nel codice.
+            \item La \textit{Vulnerabilità} è sufficientemente circoscritta nel codice.
             \item L’Agente 3 può proporre una soluzione locale senza modifiche architetturali.
         \end{itemize}
     \item \textbf{Scenario Principale}:
@@ -731,16 +722,16 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
     \item \textbf{Scenari Alternativi}: Se la modifica non è localizzabile in uno snippet, l’agente rimanda a UC 10.2.
 \end{itemize}
 
-\subsubsection{UC 10.2: Generazione descrizione testuale della remediation}
+\subsubsection{UC 10.2: Generazione descrizione testuale della \textit{Remediation}}
 Descrive la generazione di una spiegazione testuale della correzione da effettuare.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: API Claude Code.
-    \item \textbf{Trigger}: Una vulnerabilità o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textit{API} \textit{Claude Code}.
+    \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
     \item \textbf{Precondizioni}:
         \begin{itemize}
-            \item È disponibile una vulnerabilità o non conformità rilevata.
+            \item È disponibile una \textit{Vulnerabilità} o non conformità rilevata.
             \item L’agente dispone del contesto sufficiente per descrivere il problema.
         \end{itemize}
     \item \textbf{Scenario Principale}:
@@ -750,43 +741,44 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
             \item L’Agente 3 descrive le azioni consigliate per mitigare o correggere il problema.
             \item L’Agente 3 inserisce la descrizione nel report finale.
         \end{enumerate}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore riceve una descrizione chiara della remediation consigliata.
+    \item \textbf{Postcondizioni}: Lo Sviluppatore riceve una descrizione chiara della \textit{Remediation} consigliata.
 \end{itemize}
 
 
-\section{Agente 4: Changelog da User Stories}
+\section{Agente 4: \textit{Changelog} da \textit{User Stories}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Changelog da User Stories funge da mediatore semantico tra il progresso puramente tecnico del team di sviluppo e le necessità informative degli stakeholder di business. In un contesto Agile, comprendere l'impatto reale di uno Sprint può essere complesso per figure non tecniche se i resoconti si limitano a liste di commit o ticket criptici. Questo agente automatizza la traduzione delle attività concluse in report chiari, garantendo che ogni aggiornamento del software sia accompagnato da una narrazione del valore di business generato, senza però tralasciare il dettaglio tecnico necessario alla manutenzione interna.
+L'Agente di \textit{Changelog} da \textit{User Stories} funge da mediatore semantico tra il progresso puramente tecnico del team di sviluppo e le necessità informative degli \textit{Stakeholder} di business. In un contesto \textit{\glo{Agile}{agile}}, comprendere l'impatto reale di uno \textit{Sprint} può essere complesso per figure non tecniche se i resoconti si limitano a liste di \textit{Commit} o \textit{\glo{Ticket}{ticket}} criptici. Questo agente automatizza la traduzione delle attività concluse in report chiari, garantendo che ogni aggiornamento del software sia accompagnato da una narrazione del valore di business generato, senza però tralasciare il dettaglio tecnico necessario alla manutenzione interna.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra sulla sintesi e trasformazione del progresso di progetto attraverso tre direttrici:
 \begin{enumerate}
-\item \textbf{Recupero e Analisi dei Dati}: Integrazione con i sistemi di task management (Jira, GitHub Issues) per l'estrazione automatizzata dei task completati.
-\item \textbf{Sintesi Semantica Multitarget}: Generazione di report differenziati; uno tecnico (Changelog Tecnico) per il team di sviluppo e uno di valore (Changelog di Business) per i clienti e il management.
+\item \textbf{Recupero e Analisi dei Dati}: Integrazione con i sistemi di task management (Jira, \textit{GitHub} \textit{\glo{Issues}{issue}}) per l'estrazione automatizzata dei task completati.
+\item \textbf{Sintesi Semantica Multitarget}: Generazione di report differenziati; uno tecnico (\textit{Changelog} Tecnico) per il team di sviluppo e uno di valore (\textit{Changelog} di Business) per i clienti e il management.
 \item \textbf{Validazione e Qualità del Contesto}: Monitoraggio della qualità informativa dei task per prevenire la generazione di report ambigui o privi di valore.
 \end{enumerate}
 
-\subsection{Casi d'Uso}
-Di seguito i casi d'uso dell'agente 4.
+\subsection{\textit{Casi d'Uso}}
+Di seguito i \textit{Casi d'Uso} dell'agente 4.
 
-\subsubsection{UC 11: Recupero e Filtraggio User Stories}
+\subsubsection{UC 11: Recupero e Filtraggio \textit{User Stories}}
 Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi esterni per avviare il processo di analisi.
+
 \begin{itemize}
-\item \textbf{Attore Primario}: Sviluppatore / Project Manager.
-\item \textbf{Attori Secondari}: Orchestratore, Sistema di Task Management (GitHub/Jira).
-\item \textbf{Trigger}: Lo Sviluppatore richiede la generazione del report a conclusione di uno Sprint.
+\item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
+\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management (\textit{GitHub}/Jira).
+\item \textbf{Trigger}: Lo Sviluppatore richiede la generazione del report a conclusione di uno \textit{Sprint}.
 \item \textbf{Precondizioni}:
 \begin{enumerate}
-\item L'Agente 4 dispone delle credenziali e dei token di accesso validi per le API del sistema esterno.
-\item È stato specificato un identificativo valido per lo Sprint (Sprint ID).
-\item Le task completate durante lo Sprint si trovano in uno stato terminale positivo.
+\item L'Agente 4 dispone delle credenziali e dei token di accesso validi per le \textit{API} del sistema esterno.
+\item È stato specificato un identificativo valido per lo \textit{Sprint} (\textit{Sprint} ID).
+\item Le task completate durante lo \textit{Sprint} si trovano in uno stato terminale positivo.
 \end{enumerate}
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
-\item Il Project Manager o lo Sviluppatore seleziona lo Sprint da analizzare comunicando lo Sprint ID.
+\item Il \textit{Project Manager} o lo Sviluppatore seleziona lo \textit{Sprint} da analizzare comunicando lo \textit{Sprint} ID.
 \item Il sistema esterno restituisce la lista di tutte le lavorazioni associate.
-\item L'Agente filtra la lista, mantenendo esclusivamente le User Stories e i task che si trovano in uno stato terminale positivo (es. \texttt{Done}, \texttt{Closed}).
+\item L'Agente filtra la lista, mantenendo esclusivamente le \textit{User Stories} e i task che si trovano in uno stato terminale positivo (es. \texttt{Done}, \texttt{Closed}).
 \item L'Agente estrae da ogni task i campi fondamentali: Titolo, Descrizione, Criteri di Accettazione e Commenti rilevanti.
 \item L'Agente mappa i dati in una struttura interna e li memorizza temporaneamente.
 \end{enumerate}
@@ -795,17 +787,17 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
   \textbf{Inclusioni}: 
     \begin{itemize}
         \item UC 11.1: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
-        \item UC 11.2: Gestione delle ambiguità se l'AI rileva discrepanze tra titolo e contenuto tecnico.
+\item UC 11.2: Gestione delle ambiguità se l'AI rileva discrepanze tra titolo e contenuto tecnico.
     \end{itemize}
 
 \end{itemize}
 
 \subsubsection{UC 11.1: Rilevamento di task con metadati insufficienti}
 \begin{itemize}
-\item \textbf{Attore Primario}: Sviluppatore.
-\item \textbf{Attori Secondari}: Orchestratore, Sistema di Task Management.
-\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 11), l'agente individua una o più User Stories prive di descrizione o di criteri di accettazione minimi.
-\item \textbf{Precondizioni}: L'Agente ha superato la fase di autenticazione API e ha estratto la lista grezza delle task dello Sprint.
+\item \textbf{\textit{Attore} Primario}: Sviluppatore.
+\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management.
+\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 11), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
+\item \textbf{Precondizioni}: L'Agente ha superato la fase di autenticazione \textit{API} e ha estratto la lista grezza delle task dello \textit{Sprint}.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
 \item L'Agente analizza il contenuto testuale dei campi informativi di ogni task.
@@ -818,66 +810,67 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 
 \subsubsection{UC 11.2: Gestione delle ambiguità e delle incoerenze}
 \begin{itemize}
-\item \textbf{Attore Primario}: Sviluppatore.
-\item \textbf{Attori Secondari}: Orchestratore, Modello AI (LLM).
-\item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 11, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della User Story e i dati tecnici correlati (es. log dei commit associati).
-\item \textbf{Precondizioni}: I dati della User Story e i dati del repository Git (commit/branch) sono stati recuperati con successo e sono pronti per l'analisi.
+\item \textbf{\textit{Attore} Primario}: Sviluppatore.
+\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
+\item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 11, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della \textit{User Story} e i dati tecnici correlati (es. log dei \textit{Commit} associati).
+\item \textbf{Precondizioni}: I dati della \textit{User Story} e i dati del \textit{Repository} \textit{Git} (\textit{Commit}/branch) sono stati recuperati con successo e sono pronti per l'analisi.
 \item \textbf{Scenario Principal}:
 \begin{enumerate}
-\item L'Agente esegue un confronto semantico automatico tramite LLM tra la documentazione della task e l'effettivo codice/messaggio di commit associato.
+\item L'Agente esegue un confronto semantico automatico tramite \textit{LLM} tra la documentazione della task e l'effettivo codice/messaggio di \textit{Commit} associato.
 \item L'Agente identifica un conflitto (es. task registrata come "Modifica Testi" ma modifiche reali focalizzate sulla "Sicurezza delle API").
 \item L'Agente contrassegna la voce come "Ambigua" all'interno del sistema di orchestrazione.
 \item Il sistema presenta una notifica visiva allo Sviluppatore, richiedendo una risoluzione manuale o una conferma su quale contesto dare priorità (Documentale o Tecnico).
 \end{enumerate}
-\item \textbf{Post-condizioni}: Viene intercettato un potenziale errore di contesto prima della generazione del report definitivo, garantendo la perfetta coerenza tra ciò che viene dichiarato nel Changelog Tecnico e ciò che viene spiegato nel Changelog di Business.
+\item \textbf{Post-condizioni}: Viene intercettato un potenziale errore di contesto prima della generazione del report definitivo, garantendo la perfetta coerenza tra ciò che viene dichiarato nel \textit{Changelog} Tecnico e ciò che viene spiegato nel \textit{Changelog} di Business.
 \end{itemize}
 
-\subsubsection{UC 12: Generazione Changelog Tecnico (Dev-to-Dev)}
+\subsubsection{UC 12: Generazione \textit{Changelog} Tecnico (Dev-to-Dev)}
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
-    \item \textbf{Attori Secondari}: Modello AI (LLM).
-    \item \textbf{Trigger}: Conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello Sprint (UC 11).
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
+    \item \textbf{Trigger}: Conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello \textit{Sprint} (UC 11).
     \item \textbf{Precondizioni}: 
         \begin{enumerate}
-            \item L'Agente 4 dispone del set di dati delle User Stories validato e privo di ambiguità bloccanti (superamento di UC 11.1 e UC 11.2).
-            \item I parametri di configurazione del repository sono accessibili.
+            \item L'Agente 4 dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 11.1 e UC 11.2).
+            \item I parametri di configurazione del \textit{Repository} sono accessibili.
         \end{enumerate}
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente analizza il set di dati aggregato e raggruppa le lavorazioni in macro-categorie tecniche standard (es. \texttt{Added}, \texttt{Changed}, \texttt{Fixed}, \texttt{Deprecated}).
-            \item Per ogni User Story, l'Agente interroga l'LLM inviando i dettagli tecnici e i criteri di accettazione, richiedendo una sintesi in linguaggio ingegneristico asciutto e privo di ridondanze commerciali.
-            \item L'Agente genera la struttura del documento formattando l'output con un formato di Markdown.
-            \item L'Agente inserisce per ogni voce i collegamenti ipertestuali e gli identificativi (ID) corrispondenti ai ticket di origine sul Sistema di Task Management.
+            \item Per ogni \textit{User Story}, l'Agente interroga l'\textit{LLM} inviando i dettagli tecnici e i criteri di accettazione, richiedendo una sintesi in linguaggio ingegneristico asciutto e privo di ridondanze commerciali.
+            \item L'Agente genera la struttura del documento formattando l'output con un formato di \textit{Markdown}.
+            \item L'Agente inserisce per ogni voce i collegamenti ipertestuali e gli identificativi (ID) corrispondenti ai \textit{Ticket} di origine sul Sistema di Task Management.
             \item La bozza del file prodotto viene memorizzata in attesa di essere validata.
         \end{enumerate}
     \item \textbf{Post-condizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 2) o per l'esportazione diretta (UC 4).
 \end{itemize}
 
-\subsubsection{UC 13: Generazione Changelog di Business (Dev-to-Client)}
-L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli Stakeholder.
+\subsubsection{UC 13: Generazione \textit{Changelog} di Business (Dev-to-Client)}
+L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli \textit{Stakeholder}.
+
 \begin{itemize}
-\item \textbf{Attore Primario}: Sviluppatore.
-\item \textbf{Attori Secondari}: Orchestratore, Modello AI (LLM).
-\item \textbf{Trigger}: Conclusione con successo della generazione del Changelog tecnico previsto nell'UC 12.
-\item \textbf{Precondizioni}: Il file di Changelog Tecnico (UC 12) è stato generato correttamente.
+\item \textbf{\textit{Attore} Primario}: Sviluppatore.
+\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
+\item \textbf{Trigger}: Conclusione con successo della generazione del \textit{Changelog} tecnico previsto nell'UC 12.
+\item \textbf{Precondizioni}: Il file di \textit{Changelog} Tecnico (UC 12) è stato generato correttamente.
 \item \textbf{Scenario Principale}: 
 \begin{enumerate}
-            \item L'Agente riceve in input il testo del Changelog Tecnico prodotto dall'UC 8.
-            \item L'Agente interroga l'LLM inviando il testo tecnico e applicando le direttive sul tono e sull'audience a cui si riferisce il documento.
+            \item L'Agente riceve in input il testo del \textit{Changelog} Tecnico prodotto dall'UC 12.
+            \item L'Agente interroga l'\textit{LLM} inviando il testo tecnico e applicando le direttive sul tono e sull'audience a cui si riferisce il documento.
             \item L'AI analizza le singole voci tecniche (es. modifiche a database, refactoring, patch di sicurezza) e ne estrae l'equivalente impatto funzionale.
             \item L'AI traduce i termini specialistici in benefici tangibili per l'utente finale, eliminando i dettagli implementativi di basso livello, poco rilevanti e poco comprensibili per il Cliente.
             \item L'Agente struttura la bozza del report di business e la memorizza, pronta per la validazione umana (UC 11).
 \end{enumerate}
-\item \textbf{Post-condizioni}: È disponibile un documento di Changelog orientato al business pronto per la revisione umana (UC 2) o per l'esportazione diretta (UC 4).
+\item \textbf{Post-condizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 2) o per l'esportazione diretta (UC 4).
 \end{itemize}
 
 \subsection{Requisiti Funzionali}
 I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e trasformazione dei dati richiesti:
 
 \begin{itemize}
-\item \textbf{RF.4.1 (Integrazione Sistemi Task)}: Il sistema deve interfacciarsi con le API dei sistemi di Task Management esterni per il recupero dei metadati delle User Stories.
+\item \textbf{RF.4.1 (Integrazione Sistemi Task)}: Il sistema deve interfacciarsi con le \textit{API} dei sistemi di Task Management esterni per il recupero dei metadati delle \textit{User Stories}.
 \item \textbf{RF.4.2 (Generazione Multitarget)}: Il sistema deve poter generare simultaneamente un report tecnico (orientato allo sviluppo) e un report di business (orientato al cliente).
-\item \textbf{RF.4.3 (Traduzione Semantica)}: Il sistema deve utilizzare modelli di linguaggio (LLM) per mappare le attività tecniche a benefici funzionali descrittivi.
+\item \textbf{RF.4.3 (Traduzione Semantica)}: Il sistema deve utilizzare modelli di linguaggio (\textit{LLM}) per mappare le attività tecniche a benefici funzionali descrittivi.
 \item \textbf{RF.4.4 (Validazione Dati)}: Il sistema deve segnalare all'utente i task completati che presentano descrizioni ambigue o insufficienti per una corretta analisi automatizzata.
 \end{itemize}
 
@@ -886,14 +879,13 @@ I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e tras
 
 \section{Note Operative}
 
-L'Agente 1 non è un software che richiede un intervento manuale costante. Esso opera in background: ogni volta che viene inviato nuovo codice al repository, l'agente riceve una notifica automatica. Invece di rielaborare l'intero progetto, esamina solo le parti che sono state effettivamente modificate. Questo permette di mantenere la documentazione aggiornata senza rallentare il flusso di lavoro degli sviluppatori, che ricevono solo le proposte di modifica finali pronte per essere revisionate.
-
-
+L'Agente 1 non è un software che richiede un intervento manuale costante.
+Esso opera in background: ogni volta che viene inviato nuovo codice al \textit{Repository}, l'agente riceve una notifica automatica.
+Invece di rielaborare l'intero progetto, esamina solo le parti che sono state effettivamente modificate.
+Questo permette di mantenere la documentazione aggiornata senza rallentare il flusso di lavoro degli sviluppatori, che ricevono solo le proposte di modifica finali pronte per essere revisionate.
 \section{Requisiti}
 
-I requisiti riportati in questa sezione sono stati derivati dai casi
-d'uso descritti nel capitolo 3 e dalle indicazioni emerse dagli incontri
-con il proponente. In particolare, il perimetro del progetto è stato
+I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'Uso} descritti nel capitolo 3 e dalle indicazioni emerse dagli incontri con il \textbf{Proponente}. In particolare, il perimetro del progetto è stato
 chiarito come sviluppo di agenti specializzati da integrare in
 un'architettura già esistente, e non come realizzazione di una nuova
 architettura completa ad agenti.
@@ -906,17 +898,22 @@ architettura completa ad agenti.
     \begin{tabularx}{\textwidth}{|c|c|X|c|}
         \hline
         \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
-        RF.1 & Obbligatorio & Il sistema deve aggiornare il file \href{http://readme.md}{README.md} 
-        del repository in modo coerente con lo stato corrente del codice sorgente. & UC1 \\ \hline
+        RF.1 & Obbligatorio & Il sistema deve aggiornare il file \href{http://readme.md}{\textit{README}.md} 
+        del \textit{Repository} in modo coerente con lo stato corrente del codice sorgente.
+ & UC1 \\ \hline
         RF.2 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del
-        codice, come docstring o JSDoc, per elementi sorgente supportati. & UC2 \\ \hline
+        codice, come \textit{Docstring} o \textit{JSDoc}, per elementi sorgente supportati.
+ & UC2 \\ \hline
         RF.3 & & & \\ \hline
         RF.4 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca
-        di vulnerabilità riconducibili alle categorie OWASP rilevanti. & UC4 \\ \hline
+        di \textit{Vulnerabilità} riconducibili alle categorie \textit{OWASP} rilevanti.
+ & UC4 \\ \hline
         RF.4.1 & Obbligatorio & Il sistema deve poter eseguire una scansione di sicurezza su un singolo
-        file modificato. & UC4.1 \\ \hline
+        file modificato.
+ & UC4.1 \\ \hline
         RF.4.2 & Obbligatorio & Il sistema deve poter eseguire una scansione di sicurezza sull'intero
-        repository. & UC4.2 \\ \hline
+        \textit{Repository}.
+ & UC4.2 \\ \hline
     \end{tabularx}
 \end{table}
 
@@ -930,9 +927,12 @@ architettura completa ad agenti.
         \hline
         \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
         RQ.1 & Obbligatorio & Gli output prodotti dagli agenti devono risultare utili al miglioramento
-        del codice, ad es. tramite segnalazioni, suggerimenti, frammenti di codice o proposte di soluzione. &
+        del codice, ad es.
+ tramite segnalazioni, suggerimenti, frammenti di codice o proposte di soluzione.
+ &
         Verbale esterno \\ \hline
-        RQ.2 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati. & 
+        RQ.2 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati.
+ & 
         Verbale esterno \\ \hline
     \end{tabularx}
 \end{table}
@@ -946,15 +946,19 @@ architettura completa ad agenti.
         \hline
         \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
         RV.1 & Obbligatorio & Gli agenti sviluppati devono integrarsi in un'architettura già esistente
-        fornita dal proponente. & Verbale esterno \\ \hline
+        fornita dal \textbf{Proponente}.
+ & Verbale esterno \\ \hline
         RV.2 & Obbligatorio & Il progetto non deve prevedere l'addestramento di nuovi modelli, ma
-        l'integrazione di modelli o servizi tramite API. & Verbale esterno \\ \hline
-        RV.3 & Obbligatorio & Il sistema deve poter operare sui repository di esempio e sul codice
-        reso disponibile dal proponente per integrazione e test. & Verbale esterno \\ \hline
-        RV.4 & Obbligatorio & Il progetto non prevede lo sviluppo di agenti: orchestratore, per
+        l'integrazione di modelli o servizi tramite \textit{API}.
+ & Verbale esterno \\ \hline
+        RV.3 & Obbligatorio & Il sistema deve poter operare sui \textit{Repository} di esempio e sul codice
+        reso disponibile dal \textbf{Proponente} per integrazione e test.
+ & Verbale esterno \\ \hline
+        RV.4 & Obbligatorio & Il progetto non prevede lo sviluppo di agenti: \textbf{Orchestratore}, per
         aggiornamento librerie, per sostituzione del codice obsoleto e per
         mantenimento della copertura dei test, in quanto sono già in sviluppo
-        presso Var Group. & Verbale esterno \\ \hline
+        presso Var Group.
+ & Verbale esterno \\ \hline
     \end{tabularx}
 \end{table}
 
@@ -968,10 +972,12 @@ architettura completa ad agenti.
     \begin{tabularx}{\textwidth}{|c|c|X|c|}
         \hline
         \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ \hline
-        RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del repository non
-        devono essere applicate senza validazione umana preventiva. & Verbale esterno \\ \hline
+        RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del \textit{Repository} non
+        devono essere applicate senza validazione umana preventiva.
+ & Verbale esterno \\ \hline
         RS.2 & Obbligatorio & I risultati dell'analisi di sicurezza devono riportare almeno il tipo di
-        problematica rilevata e una sua priorità o gravità. & UC4 \\ \hline
+        problematica rilevata e una sua priorità o gravità.
+ & UC4 \\ \hline
     \end{tabularx}
 \end{table}
 
