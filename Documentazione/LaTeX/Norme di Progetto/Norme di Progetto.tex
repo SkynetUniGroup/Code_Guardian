@@ -71,13 +71,13 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.5.0} \\ \hline
+            \textbf{Versione} & \textit{0.6.0} \\ \hline
   
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
-            \textbf{Redattori} & \textit{Andrea Fistarol, Edoardo Granziero, Sara Ristovic} \\ \hline
-            \textbf{Verifica} & \textit{Marco Barbiero, Dario Pirrone} \\ \hline
-            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol} \\ \hline
+            \textbf{Redattori} & \textit{Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic} \\ \hline
+            \textbf{Verifica} & \textit{Marco Barbiero, Dario Pirrone, Samuele Bertin} \\ \hline
+            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol, Edoardo Granziero} \\ \hline
 
         \end{tabularx}
     \end{table}
@@ -101,6 +101,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.6 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
         0.5 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
         0.4 & 2026/05/12 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & Dario Pirrone \\ \hline
         0.3 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic 
@@ -155,7 +156,7 @@ suddividendo le attività in tre tipologie di processi:
         includono le attività fondamentali per la realizzazione del prodotto
         (sviluppo, fornitura, manutenzione, ecc.) di supporto assistono gli altri processi garantendo la qualità e
         l\textquotesingle integrità del software (verifica, validazione,
-        documentazione) \\ \hline \\ \hline
+        documentazione) \\ \hline 
         di supporto &
         assistono gli altri processi garantendo la qualità e l'integrità del software (verifica, validazione, documentazione) \\ \hline
         organizzativi & 
@@ -269,13 +270,91 @@ Non è prevista alcuna attività di installazione, supporto o manutenzione del p
 
 \subsection{Sviluppo}
 
+\subsubsection{Descrizione}
+Il processo di sviluppo regola l'organizzazione tecnica del team nella realizzazione del sistema. Per gestire in modo efficace la complessità del progetto e assegnare i compiti in modo delineato, le attività sono state suddivise in tre fasi principali:
+\begin{itemize}
+    \item \textbf{Analisi dei Requisiti}
+    \item Progettazione
+    \item Codifica
+\end{itemize}
+
+Da questo processo si attende la realizzazione di un prodotto robusto e aderente alle richieste del \textbf{Proponente}. Si punta a risolvere le ambiguità tecnologiche fin dalle prime fasi, definendo un'architettura solida e producendo codice ben strutturato, pronto per le successive fasi di verifica.
+
 \subsubsection{\textbf{Analisi dei Requisiti}}
+
+L'analisi ha l'obiettivo di formalizzare i bisogni del \textbf{Proponente} e tradurli in specifiche tecniche. Le finalità specifiche includono:
+\begin{itemize}
+    \item definire con precisione i confini e gli obiettivi del software;
+    \item individuare ed estrarre tutti i requisiti di sistema;
+    \item modellare le funzionalità attese tramite \textit{\glo{Casi d'Uso}{use-case}};
+    \item identificare gli \textit{\glo{Attori}{attore}} che interagiranno con l'applicativo;
+    \item fornire direttive chiare ai \textbf{\glo{Progettisti}{progettista}};
+    \item preparare una base solida per le successive attività di verifica.
+\end{itemize}
+
+Questa attività, in carico principalmente al ruolo di \textbf{\glo{Analista}{analista}}, porta alla stesura e all'aggiornamento del documento \textbf{Analisi dei Requisiti}. Tale documento costituisce la base di conoscenza fondamentale per lo sviluppo, mappando dettagliatamente il dominio del problema e le interazioni previste.
+
+\paragraph{\textit{Casi d'Uso}}
+I \textit{Casi d'Uso} descrivono le interazioni pratiche tra gli \textit{Attori} e il sistema. Ogni scenario, che sia principale o alternativo, viene definito indicando precondizioni, postcondizioni e il flusso degli eventi. Per la loro classificazione viene utilizzata la seguente convenzione:
+
+\begin{center}
+\textbf{\texttt{UC [Id\ Principale].[Id\ Secondario] : [Nome\ Descrittivo]}}
+\end{center}
+\begin{itemize}
+    \item \textbf{UC}: acronimo di \textit{Use Case};
+    \item \textbf{Id\ Principale}: numero progressivo che identifica il \textit{Caso d'Uso};
+    \item \textbf{Id\ Secondario}: numero opzionale per indicare scenari specifici o diramazioni;
+    \item \textbf{Nome\ Descrittivo}: titolo sintetico che riassume l'azione descritta.
+\end{itemize}
+
+\paragraph{Requisiti}
+I requisiti identificano le singole funzionalità, i vincoli o le metriche di performance richieste al sistema. La loro tracciabilità è assicurata dal seguente formato:
+
+\begin{center}
+\textbf{\texttt{R[Categoria].[Identificativo]}}
+\end{center}
+\begin{itemize}
+    \item \textbf{R}: abbreviazione di Requisito;
+    \item \textbf{Categoria}:
+    \begin{itemize}
+        \item \textbf{F}: \textit{Funzionale}, descrive un comportamento o un'operazione del sistema;
+        \item \textbf{Q}: \textit{Qualitativo}, impone uno standard di sviluppo da rispettare;
+        \item \textbf{V}: \textit{Vincolo}, indica una limitazione tecnologica o architetturale;
+        \item \textbf{S}: \textit{Sicurezza}, definisce i requisiti legati alla sicurezza.
+    \end{itemize}
+    \item \textbf{Identificativo}: indice numerico progressivo per l'identificazione univoca.
+\end{itemize}
+
 
 \subsubsection{Progettazione}
 
-{[}scelte architettoniche, design pattern, diagrammi \textit{\glo{UML}{uml}}{]}
+L'attività di progettazione ha lo scopo di definire l'architettura logica e strutturale del sistema software, traducendo i requisiti emersi dall'analisi in soluzioni tecniche concrete. L'obiettivo principale è dominare la complessità del sistema, garantendo che l'applicazione finale sia modulare, scalabile, manutenibile e facilmente estendibile nel tempo.
+
+Le scelte progettuali vengono formalizzate graficamente e testualmente all'interno della documentazione tecnica, avvalendosi dello standard \textit{\glo{UML (Unified Modeling Language)}{uml}}.
+
+\paragraph{Suddivisione delle Fasi Progettuali}
+Il ciclo di progettazione di \textbf{SkyNet} viene affrontato in modo incrementale, suddividendosi in due macro-fasi strategiche:
+\begin{itemize}
+    \item \textbf{Requirements and Technology Baseline (RTB):} questa fase è fortemente orientata allo studio di fattibilità e alla riduzione dei rischi tecnologici. Il team valuta i framework, le librerie e gli strumenti candidati per lo sviluppo. L'attività principale consiste nella realizzazione di un \textbf{\glo{Proof of Concept (PoC)}{poc}}, un prototipo software semplificato utile a verificare l'integrazione tra le tecnologie e a validare le scelte architetturali di base prima della produzione su larga scala.
+    \item \textbf{Product Baseline (PB):} una volta consolidata la fattibilità tecnologica, si passa alla progettazione di dettaglio del sistema definitivo. In questa fase viene definita l'architettura logica completa, specificando l'organizzazione dei pacchetti, la struttura delle classi, le interfacce di comunicazione e le modalità di deployment dell'applicazione.
+\end{itemize}
+
+\paragraph{Tracciamento dei Componenti}
+Al fine di garantire che nessuna funzionalità venga tralasciata e che non venga introdotto codice superfluo, \textbf{SkyNet} adotta una rigorosa strategia di tracciamento bidirezionale. Ogni componente software, classe o modulo descritto nella progettazione deve essere esplicitamente associato a uno o più requisiti funzionali o di vincolo individuati durante l'analisi. Questo processo permette di verificare costantemente la copertura dei requisiti e facilita l'analisi dell'impatto delle modifiche in caso di evoluzione del sistema.
 
 \subsubsection{Codifica}
+
+La codifica è la fase in cui i \textbf{\glo{Programmatori}{programmatore}} implementano le specifiche architetturali, realizzando concretamente il codice sorgente del prodotto software richiesto.
+Durante lo sviluppo, è richiesto il rigoroso rispetto delle norme stilistiche concordate dal gruppo. Ogni nuova unità software o modifica deve essere opportunamente commentata e integrata nel \textit{Repository} tramite la procedura di \textit{\glo{Pull Request}{pull-request}}.
+
+\paragraph{Stile di Codifica}
+Per garantire un codice leggibile, facilmente manutenibile e ispezionabile dagli strumenti di analisi statica, sono state definite le seguenti convenzioni:
+\begin{itemize}
+    \item \textbf{Nomenclatura dei File:} i File devono avere nome univoco ed esplicativo del contenuto del File stesso;
+    \item \textbf{Nomenclatura di Variabili e Funzioni:} i nomi devono essere autodescrittivi, scritti in lingua inglese e formattati tutto minuscolo e con underscore tra parole.
+    \item \textbf{Nomenclatura delle Classi:} come per le variabili, i nomi sono in lingua inglese ma utilizzano la convenzione di avere iniziale maiuscola per ogni parola.
+    \item \textbf{Commenti:} l'uso di commenti strutturati è obbligatorio per ogni classe o funzione non banale, i commenti devono essere redatti in lingua italiana.
+\end{itemize}
 
 \section{Processi di supporto}
 
@@ -362,11 +441,11 @@ Per assicurare che ogni aspetto di ogni attività precedente viene compiuto adot
 
  \textbf{\glo{Amministratore}{amministratore}} - Definisce, controlla e mantiene l'ambiente IT di lavoro. Seleziona e mette in opera le risorse e gli strumenti informatici a supporto del \textit{Way of Working}. Sceglie nuove tecnologie e modi di lavorare migliori e informa adeguatamente il gruppo per assicurare una transizione liscia. Redige il documento \textbf{Norme di Progetto}. Cerca di mantenere e migliorare il \textit{Way of Working} del gruppo.
  
- \textbf{\glo{Analista}{analista}} - Ha il compito importante di stabilire e tracciare i requisiti del progetto. Deve informarsi sul dominio del problema e conoscerlo quanto possibile. Definisce gli \textit{\glo{Use Case}{use-case}}. Il ruolo è maggiormente attivo nelle fasi iniziali di ogni \textit{Sprint} o iterazione.
+ \textbf{Analista} - Ha il compito importante di stabilire e tracciare i requisiti del progetto. Deve informarsi sul dominio del problema e conoscerlo quanto possibile. Definisce gli \textit{Use Case}. Il ruolo è maggiormente attivo nelle fasi iniziali di ogni \textit{Sprint} o iterazione.
  
- \textbf{\glo{Progettista}{progettista}} - Determina le scelte realizzative per l'architettura di progetto intero e di componenti più piccoli. Deve informarsi sulle scelte architetturali, system design e le tecnologie che vengono utilizzate.
+ \textbf{Progettista} - Determina le scelte realizzative per l'architettura di progetto intero e di componenti più piccoli. Deve informarsi sulle scelte architetturali, system design e le tecnologie che vengono utilizzate.
  
- \textbf{\glo{Programmatore}{programmatore}} - Contribuisce alla realizzazione e manutenzione del prodotto eseguendo per lo più le attività di codifica. Ha competenze tecniche e si attiene principalmente alle specifiche definite dall\textquotesingle \textbf{Analista} e alle scelte architetturali definite in fase di progettazione.
+ \textbf{Programmatore} - Contribuisce alla realizzazione e manutenzione del prodotto eseguendo per lo più le attività di codifica. Ha competenze tecniche e si attiene principalmente alle specifiche definite dall\textquotesingle \textbf{Analista} e alle scelte architetturali definite in fase di progettazione.
  
  \textbf{\glo{Verificatore}{verificatore}} - Verifica che il lavoro svolto soddisfi i requisiti e rispetti la qualità richiesta. Fornisce il riscontro e giudica se e dove sono necessari ulteriori interventi. Acquisisce informazioni adeguate sui vari argomenti per consentire una valutazione appropriata.
  
