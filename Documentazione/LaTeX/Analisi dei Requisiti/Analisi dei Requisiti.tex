@@ -326,6 +326,37 @@ il prodotto deve offrire.
 \subsection{\textit{Casi d'Uso} trasversali}
 Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
+\subsubsection{UC X: Selezione \textit{repository} da analizzare}
+Questo caso d'uso consente allo Sviluppatore di indicare il \textit{repository} Git e il riferimento specifico su cui eseguire le analisi degli agenti disponibili. La selezione del \textit{repository} rappresenta una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
+
+\begin{itemize}
+    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Attori Secondari}: \textit{repository} Git.
+    \item \textbf{Trigger}: Lo Sviluppatore vuole selezionare un \textit{repository} e un riferimento specifico da analizzare tramite gli agenti disponibili.
+    \item \textbf{Precondizioni}:
+    \begin{itemize}
+        \item Il sistema è attivo e accessibile.
+        \item Il \textit{repository} Git da analizzare esiste ed è raggiungibile.
+        \item Lo Sviluppatore dispone dei permessi necessari per accedere al \textit{repository}.
+    \end{itemize}
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item Lo Sviluppatore accede alla sezione dedicata alla selezione del \textit{repository}.
+            \item Lo Sviluppatore fornisce l'URL del \textit{repository} Git da analizzare.
+            \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
+            \item Lo Sviluppatore seleziona il riferimento del \textit{repository} da analizzare, scegliendo tra branch, commit o pull request.
+            \item Se lo Sviluppatore non specifica un commit o una pull request, il sistema considera di default l'ultimo commit disponibile sul branch selezionato.
+            \item Il sistema registra il \textit{repository} e il riferimento selezionati come contesto per le successive analisi degli agenti.
+        \end{enumerate}
+    \item \textbf{Postcondizioni}: Il \textit{repository} e il riferimento selezionati sono disponibili come input per l'esecuzione degli agenti.
+    \item \textbf{Scenari alternativi}: 
+    \begin{itemize}
+        \item Se l'URL del \textit{repository} non è valido, il sistema mostra un messaggio di errore esplicativo.
+        \item Se il \textit{repository} non è raggiungibile o lo Sviluppatore non dispone dei permessi necessari, il sistema mostra un messaggio di errore esplicativo.
+        \item Se il branch, il commit o la pull request selezionati non esistono, il sistema mostra un messaggio di errore esplicativo.
+    \end{itemize}
+\end{itemize}
+
 \subsubsection{UC 1: Visualizzazione report prodotto dall'agente}
 Lo Sviluppatore vuole consultare il risultato prodotto da un agente a seguito di un’analisi. Il sistema rende disponibili i report generati, permettendo allo Sviluppatore di visualizzare le informazioni principali relative all’esecuzione, come criticità rilevate, suggerimenti proposti e file coinvolti.
 
@@ -375,7 +406,7 @@ Durante l’esecuzione di un agente può verificarsi un errore che impedisce il 
         \begin{enumerate}
             \item L'agente incontra un errore durante l'esecuzione.
             \item L'\textbf{Orchestratore} riceve l'esito negativo.
-            \item Il sistema mostra allo Sviluppatore un messaggio che descrive la causa dell'errore (es. repository non accessibile, API key non valida, file di configurazione assente, formato del report non generabile).
+            \item Il sistema mostra allo Sviluppatore un messaggio che descrive la causa dell'errore (es. \textit{repository} non accessibile, API key non valida, file di configurazione assente, formato del report non generabile).
             \item Il sistema indica, se possibile, un'azione correttiva.
         \end{enumerate}
     \item \textbf{Postcondizioni}: Lo Sviluppatore visualizza un messaggio di errore esplicativo.
@@ -434,7 +465,11 @@ Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{REA
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
     \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'aggiornamento tramite l'\textbf{Orchestratore}.
-    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul \textit{Repository}; esiste un file \texttt{\textit{README}.md}.
+    \item \textbf{Precondizioni}: 
+        \begin{itemize}
+            \item È stato selezionato un \textit{repository} e un riferimento da analizzare [UC X].
+            \item Esiste un file \texttt{\textit{README}.md}.
+        \end{itemize}
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'\textbf{Orchestratore} notifica l'Agente 1 della necessità di aggiornamento.
@@ -456,9 +491,9 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
     \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
-            \item L'Agente 1 ha i permessi di lettura/scrittura sul \textit{Repository}.
+            \item È stato selezionato un \textit{repository} e un riferimento da analizzare [UC X].
             \item Esiste un file di codice sorgente su cui eseguire l'operazione.
-            \item (Opzionale) Esiste un file di configurazione per la documentazione online.
+            \item (Opzionale) Esiste un file di configurazione per la documentazione inline.
         \end{itemize}
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -482,7 +517,7 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
-    \item \textbf{Precondizioni}: L'Agente 1 ha i permessi di lettura/scrittura sul \textit{Repository}.
+    \item \textbf{Precondizioni}: \item È stato selezionato un \textit{repository} e un riferimento da analizzare [UC X].
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente scansiona i file dei controller e i file delle \textit{\glo{Rotte}{rotte}}.
@@ -548,29 +583,27 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare
 \item
   \textbf{Precondizioni}:
   \begin{itemize}
+  \item 
+  È stato selezionato un \textit{repository} e un riferimento da analizzare [UC X].
   \item
     L'Agente 3 è correttamente configurato con le \textit{API}
-    Key di \textit{Claude Code}.
-\item
-    Il codice sorgente è accessibile nel \textit{Repository}.
+    Key di \textit{Claude Code} [?].
+    \item Il codice sorgente è accessibile.
 \end{itemize}
 \item
   \textbf{Scenario Principale}:
 
   \begin{enumerate}
+  \item 
+  L'Agente 3 riceve dall'\textbf{Orchestratore} il codice sorgente relativo al \textit{repository} e al riferimento selezionati.
   \item
-    L'\textbf{Orchestratore} invia i file sorgente (o il diff
-    dell'ultimo \textit{Commit}) all'Agente 3.
-  \item
-    L'Agente 3 interroga le \textit{API} di \textit{Claude Code} inviando
-    il codice per l'analisi.
+    L'Agente 3 interroga le \textit{API} di \textit{Claude Code} inviando il codice per l'analisi.
 \item
-    L'AI analizza il codice cercando pattern
+    L'Agente 3 analizza il codice cercando pattern
     riconducibili alle \textit{Vulnerabilità} della Top 10 \textit{OWASP} (es. SQL
     \textit{Injection}, \textit{\glo{XSS}{xss}}, \textit{Hardcoded secrets}).
 \item
-    L'Agente 3 riceve l'esito
-    dell'analisi.
+    L'Agente 3 riceve l'esito dell'analisi.
 \item
     L'Agente 3 associa ogni \textit{Vulnerabilità} al file e, se disponibile, alla porzione di codice interessata.
 \item
@@ -596,8 +629,6 @@ riferimento al codice interessato.
     UC 8.2: Scansione completa dell'intero \textit{Repository}
     (Full \textit{Audit}).
 (include)
-    \item
-    UC 8.3: Classificazione delle \textit{Vulnerabilità} rilevate.
 \end{itemize}
 
 \item \textbf{Scenario Alternativo}: Se non vengono rilevate \textit{Vulnerabilità}, l’Agente genera un report che indica l’assenza di criticità individuate.
@@ -613,16 +644,21 @@ specifiche definite dal team nel file di configurazione.
 \item
   \textbf{\textit{Attore} Primario}: Sviluppatore.
 \item
-  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, File di configurazione CLAUDE.md.
+  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} Git, File di configurazione CLAUDE.md.
 \item
   \textbf{Trigger}: Avvio della revisione di sicurezza (manuale o automatica).
 \item
-  \textbf{Precondizioni}: Nel \textit{Repository} è presente un file denominato CLAUDE.md
-  contenente le linee guida di sviluppo sicuro del team.
+  \textbf{Precondizioni}: 
+  \begin{itemize}
+      \item  È stato selezionato un \textit{repository} e un riferimento da analizzare [UC X].
+      \item 
+  \end{itemize}
 \item
   \textbf{Scenario Principale}:
-
+  
   \begin{enumerate}
+  \item 
+  L'Agente verifica che il file CLAUDE.md sia presente, leggibile e interpretabile.
   \item
     L'Agente 3 legge il contenuto del file CLAUDE.md per
     estrarre il contesto e le regole (es. "usa sempre questa libreria
@@ -638,16 +674,13 @@ specifiche definite dal team nel file di configurazione.
     interna.
 \end{enumerate}
 \item
-  \textbf{Postcondizioni}: Viene prodotto un elenco di non-conformità rispetto
-  alle policy di progetto.
+  \textbf{Postcondizioni}: Viene prodotto un elenco di non-conformità rispetto alle policy di progetto.
 \item
   \textbf{Sottocasi}:
 
   \begin{itemize}
-  \item
-    UC 9.1: Validazione del file CLAUDE.md (verifica che il file di
-    configurazione sia scritto correttamente).
-(extend)
+    \item Se il file CLAUDE.md non è presente, il sistema mostra un messaggio esplicativo e interrompe la verifica delle policy interne.
+    \item Se il file CLAUDE.md non è leggibile o non contiene regole interpretabili, il sistema mostra un messaggio esplicativo e non procede con la verifica.
   \end{itemize}
 \end{itemize}
 
@@ -659,29 +692,27 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item
   \textbf{\textit{Attore} Primario}: Sviluppatore.
 \item
-  \textbf{\textit{Attori} Secondari}: \textit{API} \textit{Claude Code}.
+  \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
 \item
   \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 8
   o UC 9.
 \item
-  \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di
-  policy.
+  \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
 \item
   \textbf{Scenario Principale}:
 
   \begin{enumerate}
   \def\labelenumi{\arabic{enumi}.}
-  \item
+    \item 
     Per ogni \textit{Vulnerabilità} o violazione trovata,
-    l'Agente 3 richiede a \textit{Claude Code} una possibile
-    correzione.
-\item
-    L'AI genera uno snippet di codice "sicuro" che
-    risolve il problema.
-\item
-    L'Agente presenta allo sviluppatore il confronto tra
-    il codice insicuro e la soluzione proposta.
-\end{enumerate}
+    l'Agente determina se la vulnerabilità o violazione rilevata è localizzabile in una porzione specifica di codice.
+    \item 
+    Se la vulnerabilità è localizzabile, l'Agente genera uno snippet di codice correttivo [UC 10.1].
+    \item 
+    Se la vulnerabilità non è localizzabile in modo sicuro, l'Agente genera una descrizione testuale della remediation [UC 10.2].
+    \item
+        Lo Sviluppatore consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
+    \end{enumerate}
 \item
   \textbf{Postcondizioni}: Lo sviluppatore riceve indicazioni chiare su come
   correggere il codice per renderlo conforme.
@@ -689,7 +720,7 @@ problemi di sicurezza o le violazioni di policy trovate.
   \textbf{Inclusioni}: 
     \begin{itemize}
         \item UC 10.1: Generazione snippet di codice correttivo.
-\item UC 10.2: Generazione descrizione testuale della remediation.
+        \item UC 10.2: Generazione descrizione testuale della remediation.
     \end{itemize}
 
 \item 
@@ -704,8 +735,8 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{API} \textit{Claude Code}.
-    \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità può essere corretta tramite una modifica puntuale al codice..
+    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
+    \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità può essere corretta tramite una modifica puntuale al codice.
     \item \textbf{Precondizioni}:
         \begin{itemize}
             \item La \textit{Vulnerabilità} è sufficientemente circoscritta nel codice.
@@ -727,7 +758,7 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{API} \textit{Claude Code}.
+    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
     \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
     \item \textbf{Precondizioni}:
         \begin{itemize}
