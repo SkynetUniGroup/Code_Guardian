@@ -18,6 +18,11 @@
 \usepackage{float}
 \usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
 \usepackage{hyperref}
+\usepackage{xltabular}
+\usepackage{array}
+
+\newcolumntype{D}{>{\hsize=1.6\hsize\raggedright\arraybackslash}X}
+\newcolumntype{F}{>{\hsize=0.4\hsize\raggedright\arraybackslash}X}
 \newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
 \newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
@@ -71,6 +76,7 @@
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
             \textbf{Versione} & \textit{0.5} \\ \hline
+            \textbf{Versione} & \textit{0.8} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -96,11 +102,13 @@
 \markboth{Versioni del documento}{}
 \begin{table}[h]
     
+
     \centering
     \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti & Sara Ristovic & Samuele Bertin \\ \hline
         0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'agente 3 & Sara Ristovic & Samuele Bertin \\ \hline
         0.6.0 & 2026/../.. & Aggiunti sottocasi 11.1 e 11.2 dell'UC 13; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
         0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'agente 3, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone \\ \hline
@@ -188,6 +196,7 @@ solamente alla loro prima occorrenza in questo documento.
   \textit{Casi d'Uso}}
 \end{itemize}
 
+\newpage
 \section{Descrizione generale}
 
 \subsection{Obiettivi del prodotto}
@@ -312,8 +321,9 @@ L'interazione con il codice sorgente avviene tramite repository Git.
 L'eventuale integrazione con GitHub Actions potrà essere utilizzata per automatizzare l'esecuzione degli agenti in seguito a eventi come push o pull request, qualora tale funzionalità venga inclusa nel perimetro del MVP.
 \newpage
 
-\section{\textit{Casi d'Uso}}
 
+\newpage
+\section{\textit{Casi d'Uso}}
 
 \subsection{Introduzione}
 I \textit{Casi d'Uso} sono costituiti da un diagramma \textit{\glo{UML}{uml}} e da una descrizione testuale che ne
@@ -465,10 +475,7 @@ condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il
 \end{itemize}
 
 
-
-\subsection{Elenco dei \textit{Casi d'Uso}}
-Per ogni agente preso in esame, verrà sviluppata una sezione dell'Analisi dei Requisiti dedicata, così da migliorare l'organizzazione del documento.
-
+\newpage
 \section{Agente 1: Documentazione e \textit{README}}
 
 \subsection{Introduzione all'agente}
@@ -560,6 +567,7 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
 \end{itemize}
 
 
+<<<<<<< HEAD
 
 
 \subsection{Requisiti Funzionali}
@@ -582,6 +590,9 @@ I requisiti funzionali per l'Agente 1 sono definiti per rispondere alle esigenze
 
 \newpage
 
+=======
+\newpage
+>>>>>>> 89b7ac33cfef66936dc9faff4397a40730e04c30
 \section{Agente 3: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
 \subsection{Introduzione all'agente}
@@ -791,6 +802,7 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
 
 \newpage
 
+\newpage
 \section{Agente 4: \textit{Changelog} da \textit{User Stories}}
 
 \subsection{Introduzione all'agente}
@@ -910,6 +922,7 @@ L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
 \end{enumerate}
 \end{itemize}
 
+<<<<<<< HEAD
 \subsection{Requisiti Funzionali}
 I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e trasformazione dei dati richiesti:
 
@@ -922,6 +935,9 @@ I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e tras
 
 \newpage
 
+=======
+\newpage
+>>>>>>> 89b7ac33cfef66936dc9faff4397a40730e04c30
 \section{Requisiti}
 
 I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'Uso} descritti nel capitolo 3 e dalle indicazioni emerse dagli incontri con il \textbf{Proponente}. In particolare, il perimetro del progetto è stato
@@ -955,6 +971,77 @@ architettura completa ad agenti.
  & UC4.2 \\ \hline
     \end{tabularx}
 \end{table}
+\begingroup
+\renewcommand{\arraystretch}{1.3}
+
+\begin{xltabular}{\textwidth}{|c|c|D|F|}
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endhead
+
+    RF.1 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di selezionare il Repository Git da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch, commit o pull request. & UC 1 \\ \hline
+    RF.2 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
+    \hline
+    RF.3 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
+    \hline
+    RF.4 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3 \\ 
+    \hline
+    RF.5 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di validare, modificare o rifiutare manualmente una proposta generata da un agente prima della sua eventuale applicazione. & UC 4 \\ 
+    \hline
+    RF.6 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5 \\ 
+    \hline
+    RF.7 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in uno dei formati di esportazione disponibili. & UC 6 \\ 
+    \hline
+    RF.8 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository. & UC 7 \\ 
+    \hline
+    RF.9 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice, come Docstring o JSDoc, per gli elementi sorgente supportati. & UC 8 \\ 
+    \hline
+    RF.10 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8.1 \\ 
+    \hline
+    RF.11 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 8.2 \\ 
+    \hline
+    RF.12 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9 \\
+    \hline
+    RF.13 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie OWASP rilevanti. & UC 10 \\
+    \hline
+    RF.14 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 10 \\
+    \hline
+    RF.15 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria OWASP e livello di gravità. & UC 10 \\
+    \hline
+    RF.16 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
+    \hline
+    RF.17 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 12 \\ 
+    \hline
+    RF.18 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 12.1 \\
+    \hline
+    RF.19 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 12.2 \\ 
+    \hline
+    RF.20 & Obbligatorio & Il sistema deve recuperare e filtrare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 13 \\
+    \hline
+    RF.21 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC 13, verbale esterno 2026/04/24 \\
+    \hline
+    RF.22 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC 13 \\ 
+    \hline
+    RF.23 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del changelog. & UC 13.1 \\
+    \hline
+    RF.24 & Obbligatiorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 13.2 \\
+    \hline
+    RF.25 & Obbligatorio & Il sistema deve generare un changelog tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 14 \\
+    \hline
+    RF.26 & Obbligatorio &  Il changelog tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 14 \\
+    \hline
+    RF.27 & Obbligatorio & Il sistema deve generare un changelog orientato al business, comprensibile a stakeholder non tecnici, a partire dai dati validati dello Sprint e/o dal changelog tecnico. & UC 15 \\
+    \hline
+
+\end{xltabular}
+\endgroup
 
 
 \subsection{Requisiti qualitativi}
@@ -975,6 +1062,33 @@ architettura completa ad agenti.
         Verbale esterno \\ \hline
     \end{tabularx}
 \end{table}
+\begingroup
+\renewcommand{\arraystretch}{1.3}
+
+\begin{xltabular}{\textwidth}{|c|c|D|F|}
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endhead
+
+    RQ.1 & Obbligatorio & Il sistema deve adottare un approccio human-in-the-loop, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, verbale esterno 2026/03/23 \\ 
+    \hline
+    RQ.2 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & verbale esterno 2026/03/23 \\
+    \hline
+    RQ.3 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati e per i modelli o servizi utilizzati. & verbale esterno 2026/03/23 \\
+    \hline
+    RQ.4 & Obbligatorio & L’output dell’agente 4 destinato al cliente o agli stakeholder deve essere scritto in modo comprensibile dal lato business, evitando tecnicismi non necessari. & verbale esterno 2026/04/24 \\
+    \hline
+    
+\end{xltabular}
+\endgroup
+
 
 \subsection{Requisiti di vincolo}
 
@@ -1000,7 +1114,39 @@ architettura completa ad agenti.
  & Verbale esterno \\ \hline
     \end{tabularx}
 \end{table}
+\begingroup
+\renewcommand{\arraystretch}{1.3}
 
+\begin{xltabular}{\textwidth}{|c|c|D|F|}
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endhead
+
+    RV.1 & Obbligatorio & Gli agenti sviluppati devono integrarsi in un’architettura già esistente fornita dal Proponente. & verbale esterno 2026/03/23 \\
+    \hline
+    RV.2 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & verbale esterno 2026/03/23 \\
+    \hline
+    RV.3 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per integrazione e test. & verbale esterno 2026/03/23 \\
+    \hline
+    RV.4 & Obbligatorio & Il progetto non prevede lo sviluppo dell’Orchestratore né degli agenti dedicati all’aggiornamento delle librerie, alla sostituzione del codice obsoleto al mantenimento della copertura dei test, in quanto già in sviluppo presso Var Group. & verbale esterno 2026/03/23 \\
+    \hline
+    RV.5 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2, Sezione 2 di AdR \\
+    \hline
+    
+\end{xltabular}
+\endgroup
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> 89b7ac33cfef66936dc9faff4397a40730e04c30
 \subsection{Requisiti di sicurezza}
 
 \begin{table}[H]
@@ -1017,6 +1163,32 @@ architettura completa ad agenti.
  & UC4 \\ \hline
     \end{tabularx}
 \end{table}
+\begingroup
+\renewcommand{\arraystretch}{1.3}
+
+\begin{xltabular}{\textwidth}{|c|c|D|F|}
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Priorità} & \textbf{Descrizione} & \textbf{Fonti} \\ 
+    \hline
+    \endhead
+
+    RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del Repository non devono essere applicate senza validazione umana preventiva. & verbale esterno 2026/03/23 \\
+    \hline
+    RS.2 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare almeno il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
+    \hline
+    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 13 \\
+    \hline
+    
+\end{xltabular}
+\endgroup
+
+
 
 \newpage
 \subsection{Tracciamento}
