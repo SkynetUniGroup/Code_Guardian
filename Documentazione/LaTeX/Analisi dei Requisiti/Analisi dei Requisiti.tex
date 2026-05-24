@@ -564,24 +564,6 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
         \end{enumerate}
 \end{itemize}
 
-\subsection{Requisiti Funzionali}
-
-I requisiti funzionali per l'Agente 1 sono definiti per rispondere alle esigenze di coerenza documentale espresse dal proponente:
-
-
-
-\begin{itemize}
-
-    \item \textbf{RF.1.1 (Aggiornamento \textit{README})}: Il sistema deve identificare le modifiche strutturali nel \textit{Repository} (es. aggiunta di moduli) e aggiornare le sezioni relative all'installazione nel \texttt{\textit{README}.md}.
-
-    \item \textbf{RF.1.2 (Standardizzazione Inline)}: Il sistema deve analizzare le funzioni prive di documentazione e generare commenti standardizzati che descrivano parametri di input, output e comportamenti attesi.
-
-    \item \textbf{RF.1.3 (Workflow di validazione)}: Tutte le modifiche documentali proposte dall'agente devono essere sottoposte a validazione umana prima dell'applicazione, per garantire l'accuratezza del contenuto.
-
-    \item \textbf{RF.1.4 (Documentazione \textit{API})}: Il sistema deve scansionare i \textit{controller} dell'applicazione per produrre o aggiornare una guida \textit{Markdown} (es. \texttt{\textit{API}.md}) che elenchi metodi HTTP, \textit{Rotte} e \textit{Payload} richiesti.
-
-\end{itemize}
-
 \newpage
 \section{Agente 3: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
@@ -910,16 +892,6 @@ L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
             \item L'Agente traduce i termini specialistici in benefici tangibili per l'utente finale, eliminando i dettagli implementativi di basso livello, poco rilevanti e poco comprensibili per il Cliente.
             \item L'Agente struttura la bozza del report di business e la memorizza, pronta per la validazione umana (UC 4).
 \end{enumerate}
-\end{itemize}
-
-\subsection{Requisiti Funzionali}
-I requisiti funzionali per l'Agente 4 definiscono le capacità di analisi e trasformazione dei dati richiesti:
-
-\begin{itemize}
-\item \textbf{RF.4.1 (Integrazione Sistemi Task)}: Il sistema deve interfacciarsi con le \textit{API} dei sistemi di Task Management esterni per il recupero dei metadati delle \textit{User Stories}.
-\item \textbf{RF.4.2 (Generazione Multitarget)}: Il sistema deve poter generare simultaneamente un report tecnico (orientato allo sviluppo) e un report di business (orientato al cliente).
-\item \textbf{RF.4.3 (Traduzione Semantica)}: Il sistema deve utilizzare modelli di linguaggio (\textit{LLM}) per mappare le attività tecniche a benefici funzionali descrittivi.
-\item \textbf{RF.4.4 (Validazione Dati)}: Il sistema deve segnalare all'utente i task completati che presentano descrizioni ambigue o insufficienti per una corretta analisi automatizzata.
 \end{itemize}
 
 \newpage
