@@ -16,7 +16,9 @@
 \usepackage{adjustbox}
 \usepackage{extramarks}
 \usepackage{makecell}
-\usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
+
+\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
+\newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -112,6 +114,7 @@ Esempi:
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
         % Esempio di riga, sostituire con il contenuto reale
+        \textit{0.2.0} & \textit{2026/05/25} & \textit{Compilazione "Obiettivi di qualità del processo"} & \makecell[l]{Dario Pirrone} & \makecell[l]{Samuele Bertin} \\ \hline
         \textit{0.1.0} & \textit{2026/05/10} & \textit{Creazione documento e compilazione "Introduzione"} & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
     \end{tabularx}
 \end{table}
@@ -174,13 +177,92 @@ solamente alla loro prima occorrenza in questo documento.
 
 
 \section{Obiettivi di qualità di processo}
-[In questa sezione si definiscono gli standard adottati (come ISO/IEC 12207) e le metriche per monitorare i processi.]
+Per garantire il controllo e il miglioramento continuo delle attività del gruppo, \textbf{SkyNet} adotta lo standard \textbf{ISO/IEC 12207:1995} come modello di riferimento per il ciclo di vita del software, in perfetta coerenza con quanto delineato nelle \textit{Norme di Progetto v1.0.0}. 
+
+La qualità dei processi viene monitorata quantitativamente attraverso metriche specifiche. Per ciascuna di esse viene definito un \textit{Valore di Accettazione} (la soglia minima necessaria per considerare il processo accettabile e stabile) e un \textit{Valore Ottimale} (il livello di eccellenza a cui il team aspira). Ogni metrica è identificata dal codice \textbf{MP\_[Progressivo]} (\textbf{\glo{Metrica di Processo (MP)}{metrica-di-processo}}).
 
 \subsection{Processi primari}
+I processi primari regolano le attività direttamente collegate alla realizzazione materiale del prodotto software, dalla gestione della fornitura fino alle fasi di analisi, progettazione e codifica.
+
+\subsubsection{Fornitura e Sviluppo}
+L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il Proponente ed evitare l'accumulo di debito tecnico o complessità strutturale eccessiva nelle fasi di implementazione dell'architettura e degli agenti.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+        MP\_01 & \textbf{Percentuale di Requisiti Obbligatori Soddisfatti}: Rapporto tra i requisiti funzionali obbligatori implementati e quelli totali censiti. & $100\%$ & $100\%$ \\ \hline
+        MP\_02 & \textbf{Stabilità dei Requisiti}: Numero di modifiche o riscritture apportate ai requisiti già tracciati e approvati per singolo Sprint. & $\le 3$ & $0$ \\ \hline
+        MP\_03 & \textbf{\glo{Complessità Ciclomatica}{complessità-ciclomatica}}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite analisi statica). & $\le 10$ & $\le 5$ \\ \hline
+        MP\_04 & \textbf{Linee di Codice per Metodo}: Numero di righe di codice effettive che compongono una singola funzione o metodo. & $\le 50$ & $\le 30$ \\ \hline
+    \end{tabularx}
+    \caption{Metriche per i Processi Primari}
+    \label{tab:metriche_primari}
+\end{table}
 
 \subsection{Processi di supporto}
+I processi di supporto sono attività trasversali che sostengono i processi primari, focalizzandosi sulla corretta evoluzione e verifica della documentazione e del codice sorgente.
+
+\subsubsection{Documentazione e Gestione della Configurazione}
+In conformità con il \textit{Way of Working}, l'obiettivo è assicurare l'alta leggibilità dei documenti in lingua italiana e un flusso di lavoro ordinato sul repository GitHub tramite l'analisi delle Pull Request.
+
+\subsubsection{Verifica}
+La verifica misura l'efficacia del piano di testing applicato al software, garantendo l'assenza di regressioni e una copertura ottimale del codice.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+        MP\_05 & \textbf{\glo{Gulpease}{gulpease}}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
+        MP\_06 & \textbf{\glo{Copertura del Codice (Code Coverage)}{copertura-del-codice}}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
+        MP\_07 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
+        MP\_08 & \textbf{Frequenza di Commit}: Numero medio di modifiche salvate nel repository per raggruppare le attività in pacchetti atomici. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
+    \end{tabularx}
+    \caption{Metriche per i Processi di Supporto}
+    \label{tab:metriche_supporto}
+\end{table}
+
+\paragraph{Formula dell'Indice di Gulpease:}
+L'indice di Gulpease utilizzato per verificare la metrica \textbf{MP\_05} è calcolato secondo la seguente formula matematica:
+\begin{equation}
+I_G = 89 + \frac{
+300 \cdot \left( \text{Numero\ totale\ delle\ frasi} \right)
+- 10 \cdot \left( \text{Numero\ totale\ delle\ lettere} \right)
+}{
+\text{Numero\ totale\ delle\ parole}
+}
+\end{equation}
 
 \subsection{Processi organizzativi}
+I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando l'andamento economico rispetto al budget pianificato e l'efficacia della gestione dei rischi.
+
+\subsubsection{Gestione di Progetto (Project Management)}
+L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati, sfruttando i dati del foglio di calcolo gestionale e dei diagrammi di Burndown.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+        MP\_09 & \textbf{\glo{Schedule Variance (SV)}{schedule-variance}}: Indicatore dello scostamento temporale tra il lavoro pianificato in fase di planning e quello completato. & $\ge -10\%$ & $\ge 0\%$ \\ \hline
+        MP\_10 & \textbf{\glo{Budget Variance (BV)}{budget-variance}}: Indicatore dello scostamento economico tra i costi preventivati e i costi effettivamente sostenuti. & $\ge -5\%$ & $\ge 0\%$ \\ \hline
+        MP\_11 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 2$ & $0$ \\ \hline
+    \end{tabularx}
+    \caption{Metriche per i Processi Organizzativi}
+    \label{tab:metriche_organizzativi}
+\end{table}
+
+\paragraph{Formule di Project Management:}
+Per il calcolo di \textbf{MP\_09} e \textbf{MP\_10} si adottano le definizioni derivate dall'Ingegneria del Software (\textbf{\glo{Earned Value Managment (EVM)}{earned-value-managment}}):
+\begin{itemize}
+    \item \textbf{Schedule Variance (SV):} $SV = EV - PV$, dove $EV$ (\textit{Earned Value}) rappresenta il valore del lavoro effettivamente realizzato e $PV$ (\textit{Planned Value}) rappresenta il valore del lavoro pianificato.
+    \item \textbf{Budget Variance (BV):} $BV = BCWS - ACWP$, dove $BCWS$ (\textit{Budgeted Cost of Work Scheduled}) rappresenta il costo preventivato e $ACWP$ (\textit{Actual Cost of Work Performed}) rappresenta il costo reale sostenuto.
+\end{itemize}
 
 
 
