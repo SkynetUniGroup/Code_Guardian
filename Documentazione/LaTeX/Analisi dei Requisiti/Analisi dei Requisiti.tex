@@ -496,6 +496,57 @@ L'agente si focalizza su tre aree critiche:
 Di seguito i \textit{Casi d'Uso} dell'agente 1.
 
 \subsubsection{UC 7: Gestione del \textit{README} di Progetto}
+Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \texttt{\textit{README}.md} del Progetto.
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'aggiornamento tramite l'\textbf{Orchestratore}.
+    \item \textbf{Precondizioni}: 
+        \begin{itemize}
+            \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
+            \item (Opzionale) Esiste un modello personalizzato per il \textit{README}.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: È disponibile una proposta di creazione o aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'\textbf{Orchestratore} notifica l'Agente 1 della necessità di gestire il \textit{README}.
+            \item L'Agente crea o modifica il \textit{README} in modo opportuno.
+            \item L'Agente propone la modifica tramite \textit{Pull Request}.
+        \end{enumerate}
+    \item \textbf{Specializzazioni}: 
+        \begin{itemize}
+            \item UC 7.1 - Creazione del \textit{README}.
+            \item UC 7.2 - Aggiornamento del \textit{README}.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 7.1: Creazione del \textit{README} di Progetto}
+Questo \textit{Caso d'Uso} riguarda la creazione del file \texttt{\textit{README}.md} principale.
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un primo push di modifiche strutturali o richiede l'intervento tramite l'\textbf{Orchestratore}.
+    \item \textbf{Precondizioni}: 
+        \begin{itemize}
+            \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
+            \item Non esiste un file \texttt{\textit{README}.md}.
+            \item (Opzionale) Esiste un modello personalizzato per il \textit{README}.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: È disponibile una prima versione del \texttt{\textit{README}.md}, pronta per la validazione umana.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'\textbf{Orchestratore} notifica l'Agente 1 della necessità di intervento.
+            \item L'Agente analizza file di configurazione e struttura delle cartelle.
+            \item L'Agente inizializza il \textit{README} secondo il modello personalizzato, se disponibile, o quello di default.
+            \item L'Agente genera le sezioni necessarie e possibili al momento.
+            \item L'Agente propone il prodotto tramite \textit{Pull Request}.
+        \end{enumerate}
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+\end{itemize}
+
+\subsubsection{UC 7.2: Aggiornamento del \textit{README} di Progetto}
 Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{README}.md} principale per riflettere lo stato attuale del software.
 
 \begin{itemize}
@@ -506,6 +557,7 @@ Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{REA
         \begin{itemize}
             \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
             \item Esiste un file \texttt{\textit{README}.md}.
+            \item (Opzionale) Esiste un modello personalizzato per il \textit{README}.
         \end{itemize}
     \item \textbf{Postcondizioni}: È disponibile una proposta di aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana.
     \item \textbf{Scenario Principale}:
@@ -513,23 +565,23 @@ Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{REA
             \item L'\textbf{Orchestratore} notifica l'Agente 1 della necessità di aggiornamento.
             \item L'Agente analizza file di configurazione (es. \texttt{package.json}) e struttura cartelle.
             \item L'Agente identifica nuove dipendenze o cambi di versione.
-            \item L'Agente rigenera le sezioni interessate (es. guida all'installazione).
+            \item L'Agente rigenera le sezioni interessate (es. guida all'installazione), secondo il modello personalizzato, se disponibile, o quello di default.
             \item L'Agente propone la modifica tramite \textit{Pull Request}.
         \end{enumerate}
-    \item \textbf{Estensioni}: UC 4 - Validazione umana di una proposta dell’agente.
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+    \item \textbf{Estensioni}: UC 16 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
 \end{itemize}
 
-\subsubsection{UC 8: Generazione Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
+\subsubsection{UC 8: Gestione della Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
 L'agente interviene nel codice sorgente per garantire che ogni componente sia documentato correttamente.
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore.
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un commit nella repo.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
             \item È stato selezionato un ambito di analisi (UC 2).
-            \item (Opzionale) Esiste un file di configurazione per la documentazione inline.
         \end{itemize}
     \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
     \item \textbf{Scenario Principale}:
@@ -539,14 +591,88 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
             \item L'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
             \item Il sistema rende la proposta disponibile per validazione allo Sviluppatore.
         \end{enumerate}
-    \item \textbf{Sottocasi}:
+    \item \textbf{Specializzazioni}:
         \begin{itemize}
-            \item \textbf{UC 8.1}: Correzione di documentazione esistente non più coerente (es. parametri cambiati).
-            \item \textbf{UC 8.2}: Segnalazione di logiche troppo complesse per la documentazione automatica.
+            \item \textbf{UC 8.1}: Creazione della documentazione inline.
+            \item \textbf{UC 8.2}: Aggiornamento della documentazione inline.
         \end{itemize}
+    \item \textbf{Estensioni}: 
+            \item \textbf{UC 8.3}: Errore nella generazione della documentazione inline.
 \end{itemize}
 
-\subsubsection{UC 9: Generazione Documentazione \textit{API}}
+\subsubsection{UC 8.1: Creazione Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
+L'agente scansiona e documenta integralmente un nuovo file.
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un commit nella repo.
+    \item \textbf{Precondizioni}:  
+        \begin{itemize}
+            \item È stato selezionato un ambito di analisi (UC 2).
+            \item È la prima volta che l'Agente opera sul file.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente individua funzioni o classi prive di documentazione o con documentazione pregressa non conforme in tutto il file.
+            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
+            \item Per ogni classe/funzione individuata, l'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
+            \item Il sistema rende le proposte disponibili per la validazione allo Sviluppatore.
+        \end{enumerate}
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+\end{itemize}
+
+\subsubsection{UC 8.2: Aggiornamento Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
+L'agente controlla e se necessario aggiorna la documentazione dopo una modifica.
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un commit con modifiche a uno o più file sorgente o fa richiesta esplicita.
+    \item \textbf{Precondizioni}:  
+        \begin{itemize}
+            \item È stato selezionato un ambito di analisi (UC 2).
+            \item I file in questione sono già stati documentati dall'Agente in passato.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente individua funzioni o classi potenzialmente prive di documentazione o con documentazione obsoleta nel diff del file.
+            \item Se le modifiche lo richiedono, l'Agente interpreta il comportamento delle funzioni/classi nuove/aggiornate.
+            \item L'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}), per ogni classe/funzione.
+            \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
+        \end{enumerate}
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+    \item \textbf{Estensioni}: UC 16 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
+\end{itemize}
+
+\subsubsection{UC 8.3: Errore Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
+    \item \textbf{Trigger}: L'Agente non è in grado di fornire una proposta adeguata per la documentazioni di una classe/funzione.
+    \item \textbf{Precondizioni}:  
+        \begin{itemize}
+            \item È stato selezionato un ambito di analisi (UC 2).
+            \item È stata avviata un'operazione di documentazione sul file.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: 
+        \begin{itemize}
+            \item Lo Sviluppatore dispone di un messaggio esplicativo sulla natura dell'errore.
+            \item L'Agente può continuare l'operazione di documentazione sul resto del file.
+        \end{itemize}
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente individua classi/funzioni prive di documentazione o con documentazione obsoleta.
+            \item L'Agente fallisce nell'interpretazione di una classe/funzione.
+            \item L'Agente genera un messaggio informativo sull'errore al posto della proposta.
+            \item Il sistema rende il messaggio disponibile per visualizzazione allo Sviluppatore.
+        \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 9: Gestione Documentazione \textit{API}}
 L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecnica per i consumatori delle \textit{API}.
 
 \begin{itemize}
@@ -560,7 +686,80 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
             \item L'Agente scansiona i file dei controller e i file delle \textit{\glo{Rotte}{rotte}}.
             \item Estrazione di: metodo HTTP, URL, header, \textit{\glo{Payload}{payload}} richiesto e risposte possibili.
             \item Formattazione delle informazioni nel file \texttt{\textit{API}.md} in formato \textit{\glo{Markdown}{markdown}}.
-            \item Salvataggio del documento nella cartella di documentazione predefinita.
+            \item Il Sistema mette a disposizione la proposta di documento allo Sviluppatore per la validazione.
+        \end{enumerate}
+    \item \textbf{Specializzazione}:
+        \begin{enumerate}
+            \item UC 9.1 - Creazione Documentazione \textit{API}.
+            \item UC 9.2 - Aggiornamento Documentazione \textit{API}.
+        \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 9.1: Creazione Documentazione \textit{API}}
+L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecnica per i consumatori delle \textit{API}.
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
+    \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio.
+    \item \textbf{Precondizioni}:
+        \begin{itemize}
+            \item È stato selezionato un ambito di analisi (UC 2).
+            \item Non esiste documentazione \textit{API}.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: È disponibile una bozza di documento tecnico (\texttt{\textit{API}.md}) per gli \textit{Stakeholder}.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente scansiona i file dei controller e i file delle \textit{\glo{Rotte}{rotte}}.
+            \item Estrazione di: metodo HTTP, URL, header, \textit{\glo{Payload}{payload}} richiesto e risposte possibili.
+            \item Formattazione delle informazioni nel file \texttt{\textit{API}.md} in formato \textit{\glo{Markdown}{markdown}}.
+            \item Il Sistema mette a disposizione la proposta di documento allo Sviluppatore per la validazione.
+        \end{enumerate}
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+\end{itemize}
+
+\subsubsection{UC 9.2: Aggiornamento Documentazione \textit{API}}
+L'agente controlla la coerenza della documentazione \textit{API} dopo una modifica.
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico dopo il rilevamento di modifiche da parte dell'Orchestratore.
+    \item \textbf{Precondizioni}:
+        \begin{itemize}
+            \item È stato selezionato un ambito di analisi (UC 2).
+            \item Esiste già la documentazione \textit{API}.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: È disponibile la proposta di aggiornamento del documento tecnico (\texttt{\textit{API}.md}).
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente scansiona le parti di file modificate o nuove.
+            \item L'Agente rileva cambiamenti negli \textit{Endpoint}.
+            \item L'Agente adegua la documentazione ai cambiamenti.
+            \item Il Sistema mette a disposizione la proposta di aggiornamento allo Sviluppatore per la validazione.
+        \end{enumerate}
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+    \item \textbf{Estensioni}: UC 16 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
+\end{itemize}
+
+\subsubsection{UC 16: Le modifiche al codice non richiedono aggiornamenti della documentazione}
+L'agente controlla la coerenza della documentazione \textit{API} dopo una modifica.
+
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico dopo il rilevamento di modifiche da parte dell'Orchestratore.
+    \item \textbf{Precondizioni}:
+        \begin{itemize}
+            \item È stato selezionato un ambito di analisi (UC 2).
+            \item Esiste già la documentazione \textit{API}.
+        \end{itemize}
+    \item \textbf{Postcondizioni}: Non sono disponibili nuove proposte di aggiornamento della documentazione.
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item L'Agente scansiona le parti di file modificate o nuove.
+            \item L'Agente non rileva cambiamenti significativi nei componenti o negli \textit{endpoint}.
+            \item L'Agente conclude la sua esecuzione senza apportare modifiche.
         \end{enumerate}
 \end{itemize}
 
@@ -585,7 +784,7 @@ L'agente si concentra su tre aree principali:
 Di seguito i \textit{Casi d'Uso} dell'agente 3.
 
 \subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}
-L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
+L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
 
 \begin{itemize}
 \item
@@ -965,7 +1164,7 @@ architettura completa ad agenti.
     \hline
     RF.23 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del changelog. & UC 13.1 \\
     \hline
-    RF.24 & Obbligatorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 13.2 \\
+    RF.24 & Obbligatiorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 13.2 \\
     \hline
     RF.25 & Obbligatorio & Il sistema deve generare un changelog tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 14 \\
     \hline
