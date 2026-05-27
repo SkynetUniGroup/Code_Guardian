@@ -331,6 +331,26 @@ il prodotto deve offrire.
 
 \subsection{\textit{Attori}}
 
+Il sistema \textit{Code Guardian} interagisce con diverse entità fisiche e logiche per portare a termine le proprie funzionalità. Al fine di descrivere in modo chiaro e non ambiguo i \textit{Casi d'Uso}, gli \textit{Attori} sono stati classificati in due categorie: \textbf{\textit{Attori} Primari}, ovvero gli utenti umani che interagiscono direttamente o indirettamente con il sistema per raggiungere un obiettivo, e \textbf{\textit{Attori} Secondari}, ovvero i sistemi, le piattaforme o i file esterni chiamati in causa dall'applicazione per completare le operazioni richieste.
+
+Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di generalizzazione e specializzazione: l'\textit{Attore} di base definisce le caratteristiche e le facoltà comuni che vengono interamente ereditate e successivamente estese dalle figure specializzate.
+
+\subsubsection{\textit{Attori} Primari}
+
+\begin{itemize}
+    \item \textbf{Utente Generico:} Rappresenta l'\textit{Attore} di base del sistema dal quale ereditano tutti gli altri \textit{Attori} primari. Questo ruolo racchiude le facoltà e le interazioni comuni a qualsiasi utilizzatore della piattaforma, consentendo l'esecuzione dei casi d'uso definiti come trasversali, tra cui la selezione del \textit{Repository} \textit{Git}, la visualizzazione dei messaggi di errore e l'esportazione dei report prodotti.
+    
+    \item \textbf{Sviluppatore:} Specializzazione di Utente Generico ed utente principale del sistema. Interagisce con gli agenti per delegare la redazione e l'aggiornamento della documentazione tecnica, per validare le proposte di modifica (approccio \textit{Human-in-the-loop}) e per ricevere feedback immediati sulle vulnerabilità di sicurezza del codice prodotto.
+    
+    \item \textbf{\textit{Security Auditor} / \textit{Team Lead}:} Specializzazione di Utente Generico con responsabilità di governance. Definisce le regole di sviluppo sicuro e le policy interne tramite il file di configurazione \texttt{CLAUDE.md}, che l'Agente OWASP utilizzerà per verificare la conformità del codice prodotto dal team secondo il paradigma \textit{Policy-as-code}.
+    
+    \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente Changelog innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} completate.
+\end{itemize}
+
+\subsubsection{\textit{Attori} Secondari}
+
+
+
 \subsection{\textit{Casi d'Uso} trasversali}
 Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
