@@ -335,46 +335,46 @@ il prodotto deve offrire.
 Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
 \subsubsection{UC 1: Selezione \textit{repository} e riferimento di base}
-Questo caso d'uso consente allo Sviluppatore di indicare il repository Git e il riferimento di base su cui potranno essere eseguite le successive operazioni degli agenti. La selezione del repository non implica necessariamente l'analisi dell'intero contenuto del repository, ma definisce il contesto iniziale da utilizzare nelle funzionalità successive. È una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
+Questo caso d'uso consente all'utente di indicare il repository Git e il riferimento di base su cui potranno essere eseguite le successive operazioni degli agenti. La selezione del repository non implica necessariamente l'analisi dell'intero contenuto del repository, ma definisce il contesto iniziale da utilizzare nelle funzionalità successive. È una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Attori Secondari}: \textit{repository} Git.
-    \item \textbf{Trigger}: Lo Sviluppatore vuole selezionare un \textit{repository} e un riferimento specifico da utilizzare come contesto per gli agenti disponibili.
+    \item \textbf{Trigger}: L'utente vuole selezionare un \textit{repository} e un riferimento specifico da utilizzare come contesto per gli agenti disponibili.
     \item \textbf{Precondizioni}:
     \begin{itemize}
         \item Il sistema è attivo e accessibile.
         \item Il \textit{repository} Git esiste ed è raggiungibile.
-        \item Lo Sviluppatore dispone dei permessi necessari per accedere al \textit{repository}.
+        \item L'utente dispone dei permessi necessari per accedere al \textit{repository}.
     \end{itemize}
     \item \textbf{Postcondizioni}: Il \textit{repository} e il riferimento selezionati sono disponibili come contesto per le funzionalità degli agenti.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item Lo Sviluppatore accede alla sezione dedicata alla selezione del \textit{repository}.
-            \item Lo Sviluppatore fornisce l'URL del \textit{repository} Git.
+            \item L'utente accede alla sezione dedicata alla selezione del \textit{repository}.
+            \item L'utente fornisce l'URL del \textit{repository} Git.
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
-            \item Lo Sviluppatore seleziona il riferimento di base da utilizzare, scegliendo tra branch, commit o pull request.
-            \item Se lo Sviluppatore seleziona un branch senza indicare un commit specifico, il sistema considera di default l'ultimo commit disponibile sul branch selezionato.
+            \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch, commit o pull request.
+            \item Se l'utente seleziona un branch senza indicare un commit specifico, il sistema considera di default l'ultimo commit disponibile sul branch selezionato.
             \item Il sistema registra il \textit{repository} e il riferimento selezionati come contesto per le successive operazioni degli agenti.
         \end{enumerate}
     \item \textbf{Scenari alternativi}: 
     \begin{itemize}
         \item Se l'URL del \textit{repository} non è valido, il sistema mostra un messaggio di errore esplicativo.
-        \item Se il \textit{repository} non è raggiungibile o lo Sviluppatore non dispone dei permessi necessari, il sistema mostra un messaggio di errore esplicativo.
+        \item Se il \textit{repository} non è raggiungibile o l'utente non dispone dei permessi necessari, il sistema mostra un messaggio di errore esplicativo.
         \item Se il branch, il commit o la pull request selezionati non esistono, il sistema mostra un messaggio di errore esplicativo.
     \end{itemize}
 \end{itemize}
 
 
 \subsubsection{UC 2: Selezione ambito di analisi}
-Questo caso d'uso consente allo Sviluppatore di delimitare la porzione del repository su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file o directory. L'analisi dell'intero repository è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
+Questo caso d'uso consente all'utente di delimitare la porzione del repository su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file o directory. L'analisi dell'intero repository è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
 
 \begin{itemize}
-    \item \textbf{Attore Primario}: Sviluppatore.
+    \item \textbf{Attore Primario}: Untente Generico.
 
     \item \textbf{Attori Secondari}: Repository Git.
 
-    \item \textbf{Trigger}: Lo Sviluppatore vuole delimitare la parte del repository da sottoporre all'analisi di un agente.
+    \item \textbf{Trigger}: L'utente vuole delimitare la parte del repository da sottoporre all'analisi di un agente.
 
     \item \textbf{Precondizioni}:
     \begin{itemize}
@@ -386,89 +386,89 @@ Questo caso d'uso consente allo Sviluppatore di delimitare la porzione del repos
 
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
-        \item Lo Sviluppatore indica uno o più file o directory da includere nell'analisi.
+        \item L'utente indica uno o più file o directory da includere nell'analisi.
         \item Il sistema verifica che gli elementi indicati esistano e siano accessibili.
         \item Il sistema registra l'ambito selezionato come input per l'esecuzione dell'agente interessato.
     \end{enumerate}
 
     \item \textbf{Scenari alternativi}:
     \begin{itemize}
-        \item Se lo Sviluppatore non seleziona alcun ambito, il sistema mostra un messaggio informativo e richiede di completare la selezione.
+        \item Se l'utente non seleziona alcun ambito, il sistema mostra un messaggio informativo e richiede di completare la selezione.
         \item Se uno o più elementi selezionati non esistono o non sono accessibili, il sistema mostra un messaggio di errore esplicativo.
-        \item Se supportato dalla configurazione del sistema, lo Sviluppatore può selezionare l'intero repository come ambito di analisi.
+        \item Se supportato dalla configurazione del sistema, l'utente può selezionare l'intero repository come ambito di analisi.
     \end{itemize}
 \end{itemize}
 
 \subsubsection{UC 3: Visualizzazione report prodotto dall'agente}
-Lo Sviluppatore vuole consultare il risultato prodotto da un agente a seguito di un’analisi. Il sistema rende disponibili i report generati, permettendo allo Sviluppatore di visualizzare le informazioni principali relative all’esecuzione, come criticità rilevate, suggerimenti proposti e file coinvolti.
+L'utente vuole consultare il risultato prodotto da un agente a seguito di un’analisi. Il sistema rende disponibili i report generati, permettendo all'utente di visualizzare le informazioni principali relative all’esecuzione, come criticità rilevate, suggerimenti proposti e file coinvolti.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attore} Primario}: Utente Generico.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Lo Sviluppatore vuole consultare l'esito dell'analisi svolta da un agente.
+    \item \textbf{Trigger}: L'utente vuole consultare l'esito dell'analisi svolta da un agente.
     \item \textbf{Precondizioni}: L'\textbf{Orchestratore} ha eseguito almeno un agente. È disponibile almeno un report prodotto dall'agente.
-    \item \textbf{Postcondizioni}: Lo Sviluppatore visualizza il report generato.
+    \item \textbf{Postcondizioni}: L'utente visualizza il report generato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item Lo Sviluppatore accede alla sezione dedicata ai risultati dell'analisi.
+            \item L'utente accede alla sezione dedicata ai risultati dell'analisi.
             \item Il sistema mostra la lista dei report disponibili.
-            \item Lo Sviluppatore seleziona il report desiderato.
+            \item L'utente seleziona il report desiderato.
             \item Il sistema visualizza il contenuto del report, includendo eventuali criticità, suggerimenti e file coinvolti.
         \end{enumerate}
     \item \textbf{Scenari alternativi:} Se non sono presenti report, il sistema mostra un messaggio informativo.
 \end{itemize}
 
 \subsubsection{UC 4: Validazione umana di una proposta dell'agente}
-Il sistema adotta un approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}, in modo che le proposte generate dagli agenti siano validate da uno Sviluppatore prima di essere applicate.
+Il sistema adotta un approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}, in modo che le proposte generate dagli agenti siano validate da un utente prima di essere applicate.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attore} Primario}: Utente Generico.
     \item \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: Lo Sviluppatore riceve una proposta generata da un agente.
+    \item \textbf{Trigger}: L'utente riceve una proposta generata da un agente.
     \item \textbf{Precondizioni}: Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di \textit{\glo{Pull Request}{pull-request}}, \textit{\glo{Patch}{patch}} o suggerimento testuale [da decidere...?]
-    \item \textbf{Postcondizioni}: La proposta è stata accettata, modificata o rifiutata dallo Sviluppatore.
+    \item \textbf{Postcondizioni}: La proposta è stata accettata, modificata o rifiutata dall'utente.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item Lo Sviluppatore apre la proposta generata dall'agente.
-            \item Lo Sviluppatore analizza il contenuto della proposta.
-            \item Lo Sviluppatore decide se accettare, modificare o rifiutare la proposta.
+            \item L'utente apre la proposta generata dall'agente.
+            \item L'utente analizza il contenuto della proposta.
+            \item L'utente decide se accettare, modificare o rifiutare la proposta.
             \item Il sistema registra l'esito della validazione.
         \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC 5: Visualizzazione errore durante l’esecuzione dell’agente}
-Durante l’esecuzione di un agente può verificarsi un errore che impedisce il completamento dell’analisi o la generazione dell’output richiesto. In questo caso il sistema mostra allo Sviluppatore un messaggio esplicativo, indicando la causa dell’errore e, quando possibile, una possibile azione correttiva.
+Durante l’esecuzione di un agente può verificarsi un errore che impedisce il completamento dell’analisi o la generazione dell’output richiesto. In questo caso il sistema mostra all'utente un messaggio esplicativo, indicando la causa dell’errore e, quando possibile, una possibile azione correttiva.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attore} Primario}: Utente Generico.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: L'esecuzione di un agente termina con errore.
     \item \textbf{Precondizioni}: È stata avviata l'esecuzione di un agente. Si verifica un errore durante l'analisi o la generazione dell'output.
-    \item \textbf{Postcondizioni}: Lo Sviluppatore visualizza un messaggio di errore esplicativo.
+    \item \textbf{Postcondizioni}: L'utente visualizza un messaggio di errore esplicativo.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'agente incontra un errore durante l'esecuzione.
             \item L'\textbf{Orchestratore} riceve l'esito negativo.
-            \item Il sistema mostra allo Sviluppatore un messaggio che descrive la causa dell'errore (es. \textit{repository} non accessibile, API key non valida, file di configurazione assente, formato del report non generabile).
+            \item Il sistema mostra all'utente un messaggio che descrive la causa dell'errore (es. \textit{repository} non accessibile, API key non valida, file di configurazione assente, formato del report non generabile).
             \item Il sistema indica, se possibile, un'azione correttiva.
         \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC 6: Esportazione del report}
-Lo Sviluppatore vuole esportare un report generato da un agente per conservarlo, 
+L'utente vuole esportare un report generato da un agente per conservarlo, 
 condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il sistema permette di selezionare il report desiderato e di salvarlo in uno dei formati disponibili.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{Trigger}: Lo Sviluppatore vuole esportare e salvare il risultato di un'analisi di un agente in uno dei formati disponibili.
+    \item \textbf{\textit{Attore} Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente vuole esportare e salvare il risultato di un'analisi di un agente in uno dei formati disponibili.
     \item \textbf{Precondizioni}: È disponibile almeno un report generato da un agente.
     \item \textbf{Postcondizioni}: Il report è stato esportato nel formato scelto.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item Lo Sviluppatore seleziona un report.
-            \item Lo Sviluppatore sceglie il formato di esportazione.
+            \item L'utente seleziona un report.
+            \item L'utente sceglie il formato di esportazione.
             \item Il sistema genera il file esportabile.
-            \item Lo Sviluppatore scarica o salva il report.
+            \item L'utente scarica o salva il report.
         \end{enumerate}
     \item \textbf{Scenari alternativi:} Se l'esportazione fallisce, il sistema mostra un messaggio di errore.
 \end{itemize}
@@ -768,10 +768,9 @@ L'agente controlla la coerenza della documentazione \textit{API} dopo una modifi
 \section{Agente 3: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Scansione Vulnerabilità OWASP ha l'obiettivo di supportare lo sviluppatore nell'individuazione di possibili \textit{Vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da \textit{OWASP} individuabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
+L'Agente di Scansione Vulnerabilità OWASP ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{Vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da \textit{OWASP} individuabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
 \\ 
-
-L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP} Top 10. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da uno sviluppatore.
+L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP} Top 10. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da un \textit{Team Lead} o \textit{Security Auditor}.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra su tre aree principali:
@@ -785,15 +784,15 @@ L'agente si concentra su tre aree principali:
 Di seguito i \textit{Casi d'Uso} dell'agente 3.
 
 \subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}
-L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
+L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
 
 \begin{itemize}
 \item
-  \textbf{\textit{Attore} Primario}: Sviluppatore.
+  \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
 \item
   \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
 \item
-  \textbf{Trigger}: Lo Sviluppatore richiede una scansione di sicurezza oppure l'\textbf{Orchestratore} avvia il processo secondo le modalità di esecuzione configurate.
+  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza oppure l'\textbf{Orchestratore} avvia il processo secondo le modalità di esecuzione configurate.
 \item
   \textbf{Precondizioni}:
   \begin{itemize}
@@ -840,7 +839,7 @@ specifiche definite dal team nel file di configurazione.
 
 \begin{itemize}
 \item
-  \textbf{\textit{Attore} Primario}: Sviluppatore.
+  \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
 \item
   \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} Git, File di configurazione CLAUDE.md.
 \item
@@ -887,7 +886,7 @@ problemi di sicurezza o le violazioni di policy trovate.
 
 \begin{itemize}
 \item
-  \textbf{\textit{Attore} Primario}: Sviluppatore.
+  \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
 \item
@@ -896,7 +895,7 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item
   \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
 \item
-  \textbf{Postcondizioni}: Lo sviluppatore riceve indicazioni chiare su come
+  \textbf{Postcondizioni}: Il \textit{Security Auditor} riceve indicazioni chiare su come
   correggere il codice per renderlo conforme.
 \item
   \textbf{Scenario Principale}:
@@ -911,7 +910,7 @@ problemi di sicurezza o le violazioni di policy trovate.
     \item 
     Se la vulnerabilità non è localizzabile in modo sicuro, l'Agente genera una descrizione testuale della remediation (UC 12.2).
     \item
-        Lo Sviluppatore consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
+        Il \textit{Security Auditor} consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
     \end{enumerate}
 \item 
   \textbf{Inclusioni}: 
@@ -931,7 +930,7 @@ problemi di sicurezza o le violazioni di policy trovate.
 Descrive la generazione di un frammento di codice alternativo per correggere una \textit{Vulnerabilità} o una non conformità.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
     \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità può essere corretta tramite una modifica puntuale al codice.
     \item \textbf{Precondizioni}:
@@ -939,13 +938,13 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
             \item La \textit{Vulnerabilità} è sufficientemente circoscritta nel codice.
             \item L’Agente 3 può proporre una soluzione locale senza modifiche architetturali.
         \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore visualizza uno snippet di codice correttivo da valutare manualmente.
+    \item \textbf{Postcondizioni}: Il \textit{Security Auditor} visualizza uno snippet di codice correttivo da valutare manualmente.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L’Agente 3 seleziona il frammento di codice vulnerabile.
             \item L’Agente 3 richiede una versione corretta del frammento.
             \item Il modello genera uno snippet alternativo.
-            \item L’Agente 3 presenta allo Sviluppatore il confronto tra codice originale e codice proposto.
+            \item L’Agente 3 presenta al \textit{Security Auditor} il confronto tra codice originale e codice proposto.
         \end{enumerate}
     \item \textbf{Scenari Alternativi}: Se la modifica non è localizzabile in uno snippet, l’agente rimanda a UC 12.2.
 \end{itemize}
@@ -954,7 +953,7 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
 Descrive la generazione di una spiegazione testuale della correzione da effettuare.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
+    \item \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
     \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
     \item \textbf{Precondizioni}:
@@ -962,7 +961,7 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
             \item È disponibile una \textit{Vulnerabilità} o non conformità rilevata.
             \item L’agente dispone del contesto sufficiente per descrivere il problema.
         \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore riceve una descrizione chiara della \textit{Remediation} consigliata.
+    \item \textbf{Postcondizioni}: Il \textit{Security Auditor} riceve una descrizione chiara della \textit{Remediation} consigliata.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L’Agente 3 analizza il problema rilevato.
@@ -978,7 +977,7 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
 \section{Agente 4: \textit{Changelog} da \textit{User Stories}}
 
 \subsection{Introduzione all'agente}
-L'Agente di \textit{Changelog} da \textit{User Stories} funge da mediatore semantico tra il progresso puramente tecnico del team di sviluppo e le necessità informative degli \textit{Stakeholder} di business. In un contesto \textit{\glo{Agile}{agile}}, comprendere l'impatto reale di uno \textit{Sprint} può essere complesso per figure non tecniche se i resoconti si limitano a liste di \textit{Commit} o \textit{\glo{Ticket}{ticket}} criptici. Questo agente automatizza la traduzione delle attività concluse in report chiari, garantendo che ogni aggiornamento del software sia accompagnato da una narrazione del valore di business generato, senza però tralasciare il dettaglio tecnico necessario alla manutenzione interna.
+L'Agente di \textit{Changelog} da \textit{User Stories} funge da mediatore semantico tra il progresso puramente tecnico del team di sviluppo e le necessità informative degli \textit{Stakeholder} di business come il \textit{Project Manager}. In un contesto \textit{\glo{Agile}{agile}}, comprendere l'impatto reale di uno \textit{Sprint} può essere complesso per figure non tecniche se i resoconti si limitano a liste di \textit{Commit} o \textit{\glo{Ticket}{ticket}} criptici. Questo agente automatizza la traduzione delle attività concluse in report chiari, garantendo che ogni aggiornamento del software sia accompagnato da una narrazione del valore di business generato, senza però tralasciare il dettaglio tecnico necessario alla manutenzione interna.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra sulla sintesi e trasformazione del progresso di progetto attraverso tre direttrici:
@@ -997,7 +996,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management (\textit{GitHub}/Jira).
-\item \textbf{Trigger}: Lo Sviluppatore richiede la generazione del report a conclusione di uno \textit{Sprint}.
+\item \textbf{Trigger}: Lo Sviluppatore  o il \textit{Project Manager} richiede la generazione del report a conclusione di uno \textit{Sprint}.
 \item \textbf{Precondizioni}:
 \begin{enumerate}
 \item L'Agente 4 dispone delle credenziali e dei token di accesso validi per le \textit{API} del sistema esterno.
@@ -1025,7 +1024,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 
 \subsubsection{UC 13.1: Rilevamento di task con metadati insufficienti}
 \begin{itemize}
-\item \textbf{\textit{Attore} Primario}: Sviluppatore.
+\item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management.
 \item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 13), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
 \item \textbf{Precondizioni}: L'Agente ha superato la fase di autenticazione \textit{API} e ha estratto la lista grezza delle task dello \textit{Sprint}.
@@ -1041,7 +1040,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 
 \subsubsection{UC 13.2: Gestione delle ambiguità e delle incoerenze}
 \begin{itemize}
-\item \textbf{\textit{Attore} Primario}: Sviluppatore.
+\item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
 \item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 13, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della \textit{User Story} e i dati tecnici correlati (es. log dei \textit{Commit} associati).
 \item \textbf{Precondizioni}: I dati della \textit{User Story} e i dati del \textit{Repository} \textit{Git} (\textit{Commit}/branch) sono stati recuperati con successo e sono pronti per l'analisi.
@@ -1051,7 +1050,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \item L'Agente esegue un confronto semantico automatico tramite \textit{LLM} tra la documentazione della task e l'effettivo codice/messaggio di \textit{Commit} associato.
 \item L'Agente identifica un conflitto (es. task registrata come "Modifica Testi" ma modifiche reali focalizzate sulla "Sicurezza delle API").
 \item L'Agente contrassegna la voce come "Ambigua" all'interno del sistema di orchestrazione.
-\item Il sistema presenta una notifica visiva allo Sviluppatore, richiedendo una risoluzione manuale o una conferma su quale contesto dare priorità (Documentale o Tecnico).
+\item Il sistema presenta una notifica visiva allo Sviluppatore o al Sviluppatore / \textit{Project Manager}, richiedendo una risoluzione manuale o una conferma su quale contesto dare priorità (Documentale o Tecnico).
 \end{enumerate}
 \end{itemize}
 
@@ -1080,7 +1079,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli \textit{Stakeholder}.
 
 \begin{itemize}
-\item \textbf{\textit{Attore} Primario}: Sviluppatore.
+\item \textbf{\textit{Attore} Primario}: \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
 \item \textbf{Trigger}: Conclusione con successo della generazione del \textit{Changelog} tecnico previsto nell'UC 14.
 \item \textbf{Precondizioni}: Il file di \textit{Changelog} Tecnico (UC 14) è stato generato correttamente.
@@ -1120,14 +1119,14 @@ architettura completa ad agenti.
     \hline
     \endhead
 
-    RF.1 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di selezionare il Repository Git da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch, commit o pull request. & UC 1 \\ \hline
-    RF.2 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
+    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il Repository Git da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch, commit o pull request. & UC 1 \\ \hline
+    RF.2 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
     \hline
     RF.3 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
     \hline
-    RF.4 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3 \\ 
+    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3 \\ 
     \hline
-    RF.5 & Obbligatorio & Il sistema deve consentire allo Sviluppatore di validare, modificare o rifiutare manualmente una proposta generata da un agente prima della sua eventuale applicazione. & UC 4 \\ 
+    RF.5 & Obbligatorio & Il sistema deve consentire all'utente di validare, modificare o rifiutare manualmente una proposta generata da un agente prima della sua eventuale applicazione. & UC 4 \\ 
     \hline
     RF.6 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5 \\ 
     \hline
