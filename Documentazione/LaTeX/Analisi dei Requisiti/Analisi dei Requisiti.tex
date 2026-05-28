@@ -75,13 +75,13 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.8.2} \\ \hline
+            \textbf{Versione} & \textit{0.9.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic, Marco Barbiero, Dario Pirrone} \\ \hline
-            \textbf{Verifica} & \textit{Dario Pirrone, Marco Barbiero} \\ \hline
-            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol} \\ \hline
+            \textbf{Verifica} & \textit{Dario Pirrone, Marco Barbiero, Samuele Bertin, Edoardo Granziero} \\ \hline
+            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic} \\ \hline
 
         \end{tabularx}
     \end{table}
@@ -106,6 +106,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.9.0 & 2026/05/28 & Scrittura della sottosezione "Attori" (3.2) & Dario Pirrone & Edoardo Granziero \\ \hline
         0.8.2 & 2026/05/26 & Raffinati casi dell'Agente 1 e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
         0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti & Sara Ristovic & Samuele Bertin \\ \hline
         0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'agente 3 & Sara Ristovic & Samuele Bertin \\ \hline
@@ -317,7 +318,7 @@ di programmazione e automazione, l'esecuzione è
 garantita attraverso i principali ambienti di runtime come
 \textit{\glo{Node.js}{node-js}} e \textit{\glo{Python}{python}}.
 L'interazione con il codice sorgente avviene tramite repository Git. 
-L'eventuale integrazione con GitHub Actions potrà essere utilizzata per automatizzare l'esecuzione degli agenti in seguito a eventi come push o pull request, qualora tale funzionalità venga inclusa nel perimetro del MVP.
+L'eventuale integrazione con \textit{\glo{GitHub Actions}{github-actions}} potrà essere utilizzata per automatizzare l'esecuzione degli agenti in seguito a eventi come push o \textit{\glo{Pull Request}{pull-request}}, qualora tale funzionalità venga inclusa nel perimetro del \textbf{\glo{MVP}{mvp}}.
 \newpage
 
 
@@ -331,7 +332,7 @@ il prodotto deve offrire.
 
 \subsection{\textit{Attori}}
 
-Il sistema \textit{Code Guardian} interagisce con diverse entità fisiche e logiche per portare a termine le proprie funzionalità. Al fine di descrivere in modo chiaro e non ambiguo i \textit{Casi d'Uso}, gli \textit{Attori} sono stati classificati in due categorie: \textbf{\textit{Attori} Primari}, ovvero gli utenti umani che interagiscono direttamente o indirettamente con il sistema per raggiungere un obiettivo, e \textbf{\textit{Attori} Secondari}, ovvero i sistemi, le piattaforme o i file esterni chiamati in causa dall'applicazione per completare le operazioni richieste.
+Il sistema \textbf{Code Guardian} interagisce con diverse entità fisiche e logiche per portare a termine le proprie funzionalità. Al fine di descrivere in modo chiaro e non ambiguo i \textit{Casi d'Uso}, gli \textit{Attori} sono stati classificati in due categorie: \textbf{\textit{Attori} Primari}, ovvero gli utenti umani che interagiscono direttamente o indirettamente con il sistema per raggiungere un obiettivo, e \textbf{\textit{Attori} Secondari}, ovvero i sistemi, le piattaforme o i file esterni chiamati in causa dall'applicazione per completare le operazioni richieste.
 
 Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di generalizzazione e specializzazione: l'\textit{Attore} di base definisce le caratteristiche e le facoltà comuni che vengono interamente ereditate e successivamente estese dalle figure specializzate.
 
@@ -340,16 +341,26 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \begin{itemize}
     \item \textbf{Utente Generico:} Rappresenta l'\textit{Attore} di base del sistema dal quale ereditano tutti gli altri \textit{Attori} primari. Questo ruolo racchiude le facoltà e le interazioni comuni a qualsiasi utilizzatore della piattaforma, consentendo l'esecuzione dei casi d'uso definiti come trasversali, tra cui la selezione del \textit{Repository} \textit{Git}, la visualizzazione dei messaggi di errore e l'esportazione dei report prodotti.
     
-    \item \textbf{Sviluppatore:} Specializzazione di Utente Generico ed utente principale del sistema. Interagisce con gli agenti per delegare la redazione e l'aggiornamento della documentazione tecnica, per validare le proposte di modifica (approccio \textit{Human-in-the-loop}) e per ricevere feedback immediati sulle vulnerabilità di sicurezza del codice prodotto.
+    \item \textbf{Sviluppatore:} Specializzazione di Utente Generico ed utente principale del sistema. Interagisce con gli agenti per delegare la redazione e l'aggiornamento della documentazione tecnica, per validare le proposte di modifica (approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}) e per ricevere feedback immediati sulle vulnerabilità di sicurezza del codice prodotto.
     
-    \item \textbf{\textit{Security Auditor} / \textit{Team Lead}:} Specializzazione di Utente Generico con responsabilità di governance. Definisce le regole di sviluppo sicuro e le policy interne tramite il file di configurazione \texttt{CLAUDE.md}, che l'Agente OWASP utilizzerà per verificare la conformità del codice prodotto dal team secondo il paradigma \textit{Policy-as-code}.
+    \item \textbf{\textit{Security Auditor} / \textit{Team Lead}:} Specializzazione di Utente Generico con responsabilità di governance. Definisce le regole di sviluppo sicuro e le policy interne tramite il file di configurazione \texttt{CLAUDE.md}, che l'Agente \textit{OWASP} utilizzerà per verificare la conformità del codice prodotto dal team secondo il paradigma \textit{Policy-as-code}.
     
-    \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente Changelog innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} completate.
+    \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente \textit{Changelog} innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} completate.
 \end{itemize}
 
 \subsubsection{\textit{Attori} Secondari}
 
-
+\begin{itemize}
+    \item \textbf{Orchestratore:} L'architettura centrale fornita dal \textbf{Proponente} (\textbf{VarGroup}). Funge da intermediario logico tra l'utente e gli agenti specializzati, gestendo il flusso delle operazioni, l'assegnazione dei task e la raccolta degli output generati.
+    
+    \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{Pull Request} o \textit{\glo{Patch}{patch}}.
+    
+    \item \textbf{\textit{API \glo{Claude Code}{claude-code}} / Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
+    
+    \item \textbf{Sistema di Task Management:} La piattaforma esterna di tracciamento delle attività. Viene interrogata dall'Agente \textit{Changelog} per recuperare i metadati, le descrizioni e i criteri di accettazione dei \textit{\glo{Ticket}{ticket}} completati durante uno \textit{Sprint}.
+    
+    \item \textbf{File di configurazione (CLAUDE.md):} Documento testuale presente all'interno del \textit{Repository} che l'Agente \textit{OWASP} consulta passivamente per estrarre il contesto operativo e le regole specifiche del team per la validazione delle policy.
+\end{itemize}
 
 \subsection{\textit{Casi d'Uso} trasversali}
 Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
@@ -373,15 +384,15 @@ Questo caso d'uso consente all'utente di indicare il repository Git e il riferim
             \item L'utente accede alla sezione dedicata alla selezione del \textit{repository}.
             \item L'utente fornisce l'URL del \textit{repository} Git.
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
-            \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch, commit o pull request.
-            \item Se l'utente seleziona un branch senza indicare un commit specifico, il sistema considera di default l'ultimo commit disponibile sul branch selezionato.
+            \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch, \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
+            \item Se l'utente seleziona un branch senza indicare un \textit{Commit} specifico, il sistema considera di default l'ultimo \textit{Commit} disponibile sul branch selezionato.
             \item Il sistema registra il \textit{repository} e il riferimento selezionati come contesto per le successive operazioni degli agenti.
         \end{enumerate}
     \item \textbf{Scenari alternativi}: 
     \begin{itemize}
         \item Se l'URL del \textit{repository} non è valido, il sistema mostra un messaggio di errore esplicativo.
         \item Se il \textit{repository} non è raggiungibile o l'utente non dispone dei permessi necessari, il sistema mostra un messaggio di errore esplicativo.
-        \item Se il branch, il commit o la pull request selezionati non esistono, il sistema mostra un messaggio di errore esplicativo.
+        \item Se il branch, il \textit{Commit} o la \textit{Pull Request} selezionati non esistono, il sistema mostra un messaggio di errore esplicativo.
     \end{itemize}
 \end{itemize}
 
@@ -439,13 +450,13 @@ L'utente vuole consultare il risultato prodotto da un agente a seguito di un’a
 \end{itemize}
 
 \subsubsection{UC 4: Validazione umana di una proposta dell'agente}
-Il sistema adotta un approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}, in modo che le proposte generate dagli agenti siano validate da un utente prima di essere applicate.
+Il sistema adotta un approccio \textit{Human-in-the-loop}, in modo che le proposte generate dagli agenti siano validate da un utente prima di essere applicate.
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Utente Generico.
     \item \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}.
     \item \textbf{Trigger}: L'utente riceve una proposta generata da un agente.
-    \item \textbf{Precondizioni}: Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di \textit{\glo{Pull Request}{pull-request}}, \textit{\glo{Patch}{patch}} o suggerimento testuale [da decidere...?]
+    \item \textbf{Precondizioni}: Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di \textit{Pull Request}, \textit{Patch} o suggerimento testuale [da decidere...?]
     \item \textbf{Postcondizioni}: La proposta è stata accettata, modificata o rifiutata dall'utente.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -599,7 +610,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un commit nella repo.
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un \textit{Commit} nella repo.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
             \item È stato selezionato un ambito di analisi (UC 2).
@@ -627,7 +638,7 @@ L'agente scansiona e documenta integralmente un nuovo file.
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un commit nella repo.
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un \textit{Commit} nella repo.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
             \item È stato selezionato un ambito di analisi (UC 2).
@@ -650,7 +661,7 @@ L'agente controlla e se necessario aggiorna la documentazione dopo una modifica.
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un commit con modifiche a uno o più file sorgente o fa richiesta esplicita.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un \textit{Commit} con modifiche a uno o più file sorgente o fa richiesta esplicita.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
             \item È stato selezionato un ambito di analisi (UC 2).
@@ -788,7 +799,7 @@ L'agente controlla la coerenza della documentazione \textit{API} dopo una modifi
 \section{Agente 3: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Scansione Vulnerabilità OWASP ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{Vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da \textit{OWASP} individuabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
+L'Agente di Scansione Vulnerabilità \textit{OWASP} ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{Vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da \textit{OWASP} individuabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
 \\ 
 L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP} Top 10. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da un \textit{Team Lead} o \textit{Security Auditor}.
 
@@ -861,7 +872,7 @@ specifiche definite dal team nel file di configurazione.
 \item
   \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
 \item
-  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} Git, File di configurazione CLAUDE.md.
+  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository Git}, File di configurazione CLAUDE.md.
 \item
   \textbf{Trigger}: Avvio della revisione di sicurezza (manuale o automatica).
 \item \textbf{Precondizioni}:
@@ -997,7 +1008,7 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
 \section{Agente 4: \textit{Changelog} da \textit{User Stories}}
 
 \subsection{Introduzione all'agente}
-L'Agente di \textit{Changelog} da \textit{User Stories} funge da mediatore semantico tra il progresso puramente tecnico del team di sviluppo e le necessità informative degli \textit{Stakeholder} di business come il \textit{Project Manager}. In un contesto \textit{\glo{Agile}{agile}}, comprendere l'impatto reale di uno \textit{Sprint} può essere complesso per figure non tecniche se i resoconti si limitano a liste di \textit{Commit} o \textit{\glo{Ticket}{ticket}} criptici. Questo agente automatizza la traduzione delle attività concluse in report chiari, garantendo che ogni aggiornamento del software sia accompagnato da una narrazione del valore di business generato, senza però tralasciare il dettaglio tecnico necessario alla manutenzione interna.
+L'Agente di \textit{Changelog} da \textit{User Stories} funge da mediatore semantico tra il progresso puramente tecnico del team di sviluppo e le necessità informative degli \textit{Stakeholder} di business come il \textit{Project Manager}. In un contesto \textit{\glo{Agile}{agile}}, comprendere l'impatto reale di uno \textit{Sprint} può essere complesso per figure non tecniche se i resoconti si limitano a liste di \textit{Commit} o \textit{Ticket} criptici. Questo agente automatizza la traduzione delle attività concluse in report chiari, garantendo che ogni aggiornamento del software sia accompagnato da una narrazione del valore di business generato, senza però tralasciare il dettaglio tecnico necessario alla manutenzione interna.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra sulla sintesi e trasformazione del progresso di progetto attraverso tre direttrici:
@@ -1139,7 +1150,7 @@ architettura completa ad agenti.
     \hline
     \endhead
 
-    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il Repository Git da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch, commit o pull request. & UC 1 \\ \hline
+    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il Repository Git da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch, \textit{Commit} o \textit{Pull Request}. & UC 1 \\ \hline
     RF.2 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
     \hline
     RF.3 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
@@ -1162,11 +1173,11 @@ architettura completa ad agenti.
     \hline
     RF.12 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9 \\
     \hline
-    RF.13 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie OWASP rilevanti. & UC 10 \\
+    RF.13 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 10 \\
     \hline
     RF.14 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 10 \\
     \hline
-    RF.15 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria OWASP e livello di gravità. & UC 10 \\
+    RF.15 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10 \\
     \hline
     RF.16 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
     \hline
@@ -1182,15 +1193,15 @@ architettura completa ad agenti.
     \hline
     RF.22 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC 13 \\ 
     \hline
-    RF.23 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del changelog. & UC 13.1 \\
+    RF.23 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 13.1 \\
     \hline
     RF.24 & Obbligatiorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 13.2 \\
     \hline
-    RF.25 & Obbligatorio & Il sistema deve generare un changelog tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 14 \\
+    RF.25 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 14 \\
     \hline
-    RF.26 & Obbligatorio &  Il changelog tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 14 \\
+    RF.26 & Obbligatorio &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 14 \\
     \hline
-    RF.27 & Obbligatorio & Il sistema deve generare un changelog orientato al business, comprensibile a stakeholder non tecnici, a partire dai dati validati dello Sprint e/o dal changelog tecnico. & UC 15 \\
+    RF.27 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dai dati validati dello Sprint e/o dal \textit{Changelog} tecnico. & UC 15 \\
     \hline
 
 \end{xltabular}
@@ -1214,7 +1225,7 @@ architettura completa ad agenti.
     \hline
     \endhead
 
-    RQ.1 & Obbligatorio & Il sistema deve adottare un approccio human-in-the-loop, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, verbale esterno 2026/03/23 \\ 
+    RQ.1 & Obbligatorio & Il sistema deve adottare un approccio \textit{Human-in-the-loop}, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, verbale esterno 2026/03/23 \\ 
     \hline
     RQ.2 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & verbale esterno 2026/03/23 \\
     \hline
