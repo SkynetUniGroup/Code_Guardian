@@ -110,7 +110,7 @@
         0.8.2 & 2026/05/26 & Raffinati casi dell'Agente 1 e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
         0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti & Sara Ristovic & Samuele Bertin \\ \hline
         0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'agente 3 & Sara Ristovic & Samuele Bertin \\ \hline
-        0.6.0 & 2026/05/19 & Aggiunti sottocasi 11.1 e 11.2 dell'UC 13; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
+        0.6.0 & 2026/05/19 & Aggiunti sottocasi 12.1 e 12.2 dell'UC 14; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
         0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'agente 3, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone \\ \hline
         0.4.0 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Sara Ristovic \\ Marco Barbiero}  & Dario Pirrone \\ \hline
         0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic & Marco Barbiero \\ \hline
@@ -601,7 +601,7 @@ Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{REA
             \item L'Agente propone la modifica tramite \textit{Pull Request}.
         \end{enumerate}
     \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-    \item \textbf{Estensioni}: UC 16 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
+    \item \textbf{Estensioni}: UC 10 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
 \end{itemize}
 
 \subsubsection{UC 8: Gestione della Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
@@ -676,7 +676,7 @@ L'agente controlla e se necessario aggiorna la documentazione dopo una modifica.
             \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
         \end{enumerate}
     \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-    \item \textbf{Estensioni}: UC 16 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
+    \item \textbf{Estensioni}: UC 10 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
 \end{itemize}
 
 \subsubsection{UC 8.3: Errore Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}
@@ -771,10 +771,10 @@ L'agente controlla la coerenza della documentazione \textit{API} dopo una modifi
             \item Il Sistema mette a disposizione la proposta di aggiornamento allo Sviluppatore per la validazione.
         \end{enumerate}
     \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-    \item \textbf{Estensioni}: UC 16 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
+    \item \textbf{Estensioni}: UC 10 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
 \end{itemize}
 
-\subsubsection{UC 16: Le modifiche al codice non richiedono aggiornamenti della documentazione}
+\subsubsection{UC 10: Le modifiche al codice non richiedono aggiornamenti della documentazione}
 L'agente controlla la coerenza della documentazione \textit{API} dopo una modifica.
 
 \begin{itemize}
@@ -814,7 +814,7 @@ L'agente si concentra su tre aree principali:
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'agente 3.
 
-\subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}
+\subsubsection{UC 11: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}
 L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
 
 \begin{itemize}
@@ -863,7 +863,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 \end{itemize}
 
 
-\subsubsection{UC 11: Verifica Conformità "\textit{Policy-as-code}" (CLAUDE.md)}
+\subsubsection{UC 12: Verifica Conformità "\textit{Policy-as-code}" (CLAUDE.md)}
 
 L'agente verifica che il codice rispetti le regole
 specifiche definite dal team nel file di configurazione.
@@ -911,7 +911,7 @@ specifiche definite dal team nel file di configurazione.
   \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 12: Generazione Suggerimenti di \textit{Remediation}}
+\subsubsection{UC 13: Generazione Suggerimenti di \textit{Remediation}}
 L'agente fornisce soluzioni pratiche per correggere i
 problemi di sicurezza o le violazioni di policy trovate.
 
@@ -921,8 +921,8 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
 \item
-  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 10
-  o UC 11.
+  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 11
+  o UC 12.
 \item
   \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
 \item
@@ -937,17 +937,17 @@ problemi di sicurezza o le violazioni di policy trovate.
     Per ogni \textit{Vulnerabilità} o violazione trovata,
     l'Agente determina se la vulnerabilità o violazione rilevata è localizzabile in una porzione specifica di codice.
     \item 
-    Se la vulnerabilità è localizzabile, l'Agente genera uno snippet di codice correttivo (UC 12.1).
+    Se la vulnerabilità è localizzabile, l'Agente genera uno snippet di codice correttivo (UC 13.1).
     \item 
-    Se la vulnerabilità non è localizzabile in modo sicuro, l'Agente genera una descrizione testuale della remediation (UC 12.2).
+    Se la vulnerabilità non è localizzabile in modo sicuro, l'Agente genera una descrizione testuale della remediation (UC 13.2).
     \item
         Il \textit{Security Auditor} consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
     \end{enumerate}
 \item 
   \textbf{Inclusioni}: 
     \begin{itemize}
-        \item UC 12.1: Generazione snippet di codice correttivo.
-        \item UC 12.2: Generazione descrizione testuale della remediation.
+        \item UC 13.1: Generazione snippet di codice correttivo.
+        \item UC 13.2: Generazione descrizione testuale della remediation.
     \end{itemize}
 
 \item 
@@ -957,7 +957,7 @@ problemi di sicurezza o le violazioni di policy trovate.
 \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 12.1: Generazione snippet di codice correttivo}
+\subsubsection{UC 13.1: Generazione snippet di codice correttivo}
 Descrive la generazione di un frammento di codice alternativo per correggere una \textit{Vulnerabilità} o una non conformità.
 
 \begin{itemize}
@@ -977,10 +977,10 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
             \item Il modello genera uno snippet alternativo.
             \item L’Agente 3 presenta al \textit{Security Auditor} il confronto tra codice originale e codice proposto.
         \end{enumerate}
-    \item \textbf{Scenari Alternativi}: Se la modifica non è localizzabile in uno snippet, l’agente rimanda a UC 12.2.
+    \item \textbf{Scenari Alternativi}: Se la modifica non è localizzabile in uno snippet, l’agente rimanda a UC 13.2.
 \end{itemize}
 
-\subsubsection{UC 12.2: Generazione descrizione testuale della \textit{Remediation}}
+\subsubsection{UC 13.2: Generazione descrizione testuale della \textit{Remediation}}
 Descrive la generazione di una spiegazione testuale della correzione da effettuare.
 
 \begin{itemize}
@@ -1021,7 +1021,7 @@ L'agente si concentra sulla sintesi e trasformazione del progresso di progetto a
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'agente 4.
 
-\subsubsection{UC 13: Recupero e Filtraggio \textit{User Stories}}
+\subsubsection{UC 14: Recupero e Filtraggio \textit{User Stories}}
 Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi esterni per avviare il processo di analisi.
 
 \begin{itemize}
@@ -1047,19 +1047,19 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \item 
   \textbf{Estensioni}: 
     \begin{itemize}
-        \item UC 13.1: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
-\item UC 13.2: Gestione delle ambiguità se l'Agente 4 rileva discrepanze tra titolo e contenuto tecnico.
+        \item UC 14.1: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
+\item UC 14.2: Gestione delle ambiguità se l'Agente 4 rileva discrepanze tra titolo e contenuto tecnico.
     \end{itemize}
 
 \end{itemize}
 
-\subsubsection{UC 13.1: Rilevamento di task con metadati insufficienti}
+\subsubsection{UC 14.1: Rilevamento di task con metadati insufficienti}
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management.
-\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 13), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
+\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 14), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
 \item \textbf{Precondizioni}: L'Agente ha superato la fase di autenticazione \textit{API} e ha estratto la lista grezza delle task dello \textit{Sprint}.
-\item \textbf{Postcondizioni}: Il flusso di generazione dei report (UC 14 / UC 15) prosegue solo per le task complete di tutti i metadati, mentre l'utente riceve la notifica tempestiva dei dati mancanti da integrare manualmente nei task incompleti.
+\item \textbf{Postcondizioni}: Il flusso di generazione dei report (UC 15 / UC 16) prosegue solo per le task complete di tutti i metadati, mentre l'utente riceve la notifica tempestiva dei dati mancanti da integrare manualmente nei task incompleti.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
 \item L'Agente analizza il contenuto testuale dei campi informativi di ogni task.
@@ -1069,11 +1069,11 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 13.2: Gestione delle ambiguità e delle incoerenze}
+\subsubsection{UC 14.2: Gestione delle ambiguità e delle incoerenze}
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
-\item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 13, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della \textit{User Story} e i dati tecnici correlati (es. log dei \textit{Commit} associati).
+\item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 14, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della \textit{User Story} e i dati tecnici correlati (es. log dei \textit{Commit} associati).
 \item \textbf{Precondizioni}: I dati della \textit{User Story} e i dati del \textit{Repository} \textit{Git} (\textit{Commit}/branch) sono stati recuperati con successo e sono pronti per l'analisi.
 \item \textbf{Postcondizioni}: Viene intercettato un potenziale errore di contesto prima della generazione del report definitivo, garantendo la perfetta coerenza tra ciò che viene dichiarato nel \textit{Changelog} Tecnico e ciò che viene spiegato nel \textit{Changelog} di Business.
 \item \textbf{Scenario Principal}:
@@ -1085,14 +1085,14 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 14: Generazione \textit{Changelog} Tecnico (Dev-to-Dev)}
+\subsubsection{UC 15: Generazione \textit{Changelog} Tecnico (Dev-to-Dev)}
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
-    \item \textbf{Trigger}: Conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello \textit{Sprint} (UC 13).
+    \item \textbf{Trigger}: Conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello \textit{Sprint} (UC 14).
     \item \textbf{Precondizioni}: 
         \begin{enumerate}
-            \item L'Agente 4 dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 13.1 e UC 13.2).
+            \item L'Agente 4 dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 14.1 e UC 14.2).
             \item I parametri di configurazione del \textit{Repository} sono accessibili.
         \end{enumerate}
     \item \textbf{Postcondizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
@@ -1106,18 +1106,18 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
         \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 15: Generazione \textit{Changelog} di Business (Dev-to-Client)}
+\subsubsection{UC 16: Generazione \textit{Changelog} di Business (Dev-to-Client)}
 L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli \textit{Stakeholder}.
 
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
-\item \textbf{Trigger}: Conclusione con successo della generazione del \textit{Changelog} tecnico previsto nell'UC 14.
-\item \textbf{Precondizioni}: Il file di \textit{Changelog} Tecnico (UC 14) è stato generato correttamente.
+\item \textbf{Trigger}: Conclusione con successo della generazione del \textit{Changelog} tecnico previsto nell'UC 15.
+\item \textbf{Precondizioni}: Il file di \textit{Changelog} Tecnico (UC 15) è stato generato correttamente.
 \item \textbf{Postcondizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
 \item \textbf{Scenario Principale}: 
 \begin{enumerate}
-            \item L'Agente riceve in input il testo del \textit{Changelog} Tecnico prodotto dall'UC 14.
+            \item L'Agente riceve in input il testo del \textit{Changelog} Tecnico prodotto dall'UC 15.
             \item L'Agente interroga l'\textit{LLM} inviando il testo tecnico e applicando le direttive sul tono e sull'audience a cui si riferisce il documento.
             \item L'Agente analizza le singole voci tecniche (es. modifiche a database, refactoring, patch di sicurezza) e ne estrae l'equivalente impatto funzionale.
             \item L'Agente traduce i termini specialistici in benefici tangibili per l'utente finale, eliminando i dettagli implementativi di basso livello, poco rilevanti e poco comprensibili per il Cliente.
@@ -1173,35 +1173,35 @@ architettura completa ad agenti.
     \hline
     RF.12 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9 \\
     \hline
-    RF.13 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 10 \\
+    RF.13 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 11 \\
     \hline
-    RF.14 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 10 \\
+    RF.14 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 11 \\
     \hline
-    RF.15 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10 \\
+    RF.15 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 11 \\
     \hline
-    RF.16 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
+    RF.16 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 12 \\
     \hline
-    RF.17 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 12 \\ 
+    RF.17 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 13 \\ 
     \hline
-    RF.18 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 12.1 \\
+    RF.18 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 13.1 \\
     \hline
-    RF.19 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 12.2 \\ 
+    RF.19 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 13.2 \\ 
     \hline
-    RF.20 & Obbligatorio & Il sistema deve recuperare e filtrare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 13 \\
+    RF.20 & Obbligatorio & Il sistema deve recuperare e filtrare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 14 \\
     \hline
-    RF.21 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC 13, verbale esterno 2026/04/24 \\
+    RF.21 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC 14, verbale esterno 2026/04/24 \\
     \hline
-    RF.22 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC 13 \\ 
+    RF.22 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC 14 \\ 
     \hline
-    RF.23 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 13.1 \\
+    RF.23 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 14.1 \\
     \hline
-    RF.24 & Obbligatiorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 13.2 \\
+    RF.24 & Obbligatiorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 14.2 \\
     \hline
-    RF.25 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 14 \\
+    RF.25 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 15 \\
     \hline
-    RF.26 & Obbligatorio &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 14 \\
+    RF.26 & Obbligatorio &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 15 \\
     \hline
-    RF.27 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dai dati validati dello Sprint e/o dal \textit{Changelog} tecnico. & UC 15 \\
+    RF.27 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dai dati validati dello Sprint e/o dal \textit{Changelog} tecnico. & UC 16 \\
     \hline
 
 \end{xltabular}
@@ -1288,9 +1288,9 @@ architettura completa ad agenti.
 
     RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del Repository non devono essere applicate senza validazione umana preventiva. & verbale esterno 2026/03/23 \\
     \hline
-    RS.2 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare almeno il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
+    RS.2 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare almeno il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 11 \\
     \hline
-    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 13 \\
+    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 14 \\
     \hline
     
 \end{xltabular}
@@ -1335,23 +1335,23 @@ La seguente tabella riporta il tracciamento diretto tra i casi d'uso rilevati e 
     RF.10 & [UC 8, \#3.5.2], [UC 8.1, \#3.5.2] \\ \hline
     RF.11 & [UC 8.2, \#3.5.2] \\ \hline
     RF.12 & [UC 9, \#3.5.3]   \\ \hline
-    RF.13 & [UC 10, \#3.7.1]  \\ \hline
-    RF.14 & [UC 10, \#3.7.1]  \\ \hline
-    RF.15 & [UC 10, \#3.7.1]  \\ \hline
-    RF.16 & [UC 11, \#3.7.2]  \\ \hline
-    RF.17 & [UC 12, \#3.7.3]  \\ \hline
-    RF.18 & [UC 12.1, \#3.7.3] \\ \hline
-    RF.19 & [UC 12.2, \#3.7.3] \\ \hline
-    RF.20 & [UC 13, \#3.9.1]  \\ \hline
-    RF.21 & [UC 13, \#3.9.1]  \\ \hline
-    RF.22 & [UC 13, \#3.9.1]  \\ \hline
-    RF.23 & [UC 13.1, \#3.9.1] \\ \hline
-    RF.24 & [UC 13.2, \#3.9.1] \\ \hline
-    RF.25 & [UC 14, \#3.9.2]  \\ \hline
-    RF.26 & [UC 14, \#3.9.2]  \\ \hline
-    RF.27 & [UC 15, \#3.9.3]  \\ \hline
-    RS.2  & [UC 10, \#3.7.1]  \\ \hline
-    RS.3  & [UC 13, \#3.9.1]  \\
+    RF.13 & [UC 11, \#3.7.1]  \\ \hline
+    RF.14 & [UC 11, \#3.7.1]  \\ \hline
+    RF.15 & [UC 11, \#3.7.1]  \\ \hline
+    RF.16 & [UC 12, \#3.7.2]  \\ \hline
+    RF.17 & [UC 13, \#3.7.3]  \\ \hline
+    RF.18 & [UC 13.1, \#3.7.3] \\ \hline
+    RF.19 & [UC 13.2, \#3.7.3] \\ \hline
+    RF.20 & [UC 14, \#3.9.1]  \\ \hline
+    RF.21 & [UC 14, \#3.9.1]  \\ \hline
+    RF.22 & [UC 14, \#3.9.1]  \\ \hline
+    RF.23 & [UC 14.1, \#3.9.1] \\ \hline
+    RF.24 & [UC 14.2, \#3.9.1] \\ \hline
+    RF.25 & [UC 15, \#3.9.2]  \\ \hline
+    RF.26 & [UC 15, \#3.9.2]  \\ \hline
+    RF.27 & [UC 16, \#3.9.3]  \\ \hline
+    RS.2  & [UC 11, \#3.7.1]  \\ \hline
+    RS.3  & [UC 14, \#3.9.1]  \\
 \end{xltabular}
 \end{center}
 \endgroup
