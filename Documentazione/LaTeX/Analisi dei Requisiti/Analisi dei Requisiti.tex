@@ -366,7 +366,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsection{\textit{Casi d'Uso} trasversali}
 Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
-\subsubsection{UC 1: Selezione \textit{repository} e riferimento di base}
+\subsubsection{UC 1: Selezione \textit{repository} e riferimento di base}\label{uc:1}
 Questo caso d'uso consente all'utente di indicare il repository Git e il riferimento di base su cui potranno essere eseguite le successive operazioni degli agenti. La selezione del repository non implica necessariamente l'analisi dell'intero contenuto del repository, ma definisce il contesto iniziale da utilizzare nelle funzionalità successive. È una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
 
 \begin{itemize}
@@ -1268,7 +1268,7 @@ architettura completa ad agenti.
     \hline
     RV.4 & Obbligatorio & Il progetto non prevede lo sviluppo dell’Orchestratore né degli agenti dedicati all’aggiornamento delle librerie, alla sostituzione del codice obsoleto al mantenimento della copertura dei test, in quanto già in sviluppo presso Var Group. & verbale esterno 2026/03/23 \\
     \hline
-    RV.5 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2, Sezione 2 di AdR \\
+    RV.5 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2 \\
     \hline
     
 \end{xltabular}
@@ -1301,65 +1301,116 @@ architettura completa ad agenti.
 \end{xltabular}
 \endgroup
 
-
-
 \newpage
 
-\subsection{Tracciamento dei Casi d'Uso}
+\section{Tracciamento}
 
-La seguente tabella riporta il tracciamento diretto tra i casi d'uso rilevati e i requisiti ad essi associati, indicando il relativo riferimento dinamico all'interno della sezione dei casi d'uso.
+Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Casi d'Uso, Verbali, Capitolato) e i requisiti derivati. Le tabelle seguenti mappano questa corrispondenza in modo sistematico, garantendo coerenza e facilitandone la consultazione.
+
+\subsection{Tracciamento Fonte - Requisiti}
 
 \begingroup
 \renewcommand{\arraystretch}{1.3}
-\begin{center}
-\begin{xltabular}{12cm}{|c|>{\centering\arraybackslash}X|}
+\begin{xltabular}{\textwidth}{|c|X|}
     \hline
-    \textbf{Codice Requisito} & \textbf{Caso d'Uso} \\ 
+    \textbf{Fonte} & \textbf{Requisiti} \\ 
     \hline
     \endfirsthead
 
     \hline
-    \textbf{Codice Requisito} & \textbf{Caso d'Uso} \\ 
+    \textbf{Fonte} & \textbf{Requisiti} \\ 
     \hline
     \endhead
 
-    \hline
-    \endfoot
-    \hline
-    \endlastfoot
+    \hyperref[uc:1]{UC 1} & RF.1 \\ \hline
+    \hyperref[uc:2]{UC 2} & RF.2, RF.3 \\ \hline
+    \hyperref[uc:3]{UC 3} & RF.4 \\ \hline
+    \hyperref[uc:4]{UC 4} & RF.5, RQ.1 \\ \hline
+    \hyperref[uc:5]{UC 5} & RF.6 \\ \hline
+    \hyperref[uc:6]{UC 6} & RF.7 \\ \hline
+    \hyperref[uc:7]{UC 7} & RF.8 \\ \hline
+    \hyperref[uc:8]{UC 8} & RF.9 \\ \hline
+    \hyperref[uc:8.1]{UC 8.1} & RF.10 \\ \hline
+    \hyperref[uc:8.2]{UC 8.2} & RF.11 \\ \hline
+    \hyperref[uc:9]{UC 9} & RF.12 \\ \hline
+    \hyperref[uc:10]{UC 10} & RF.12, RF.13, RQ.3 \\ \hline
+    \hyperref[uc:11]{UC 11} & RF.14, RF.15, RF.16, RS.2 \\ \hline
+    \hyperref[uc:12]{UC 12} & RF.17 \\ \hline
+    \hyperref[uc:13]{UC 13} & RF.18 \\ \hline
+    \hyperref[uc:13.1]{UC 13.1} & RF.19 \\ \hline
+    \hyperref[uc:13.2]{UC 13.2} & RF.20 \\ \hline
+    \hyperref[uc:14]{UC 14} & RF.21, RF.22, RF.23, RS.3 \\ \hline
+    \hyperref[uc:14.1]{UC 14.1} & RF.24 \\ \hline
+    \hyperref[uc:14.2]{UC 14.2} & RF.25 \\ \hline
+    \hyperref[uc:15]{UC 15} & RF.26, RF.27 \\ \hline
+    \hyperref[uc:16]{UC 16} & RF.28 \\ \hline
+    Capitolato C2 & RV.5 \\ \hline
+    verbale esterno 2026/03/23 & RQ.1, RQ.2, RQ.4, RV.1, RV.2, RV.3, RV.4, RS.1 \\ \hline
+    verbale esterno 2026/04/24 & RF.22, RQ.5 \\ \hline
 
-    RF.1  & [UC 1, \#3.3.1]   \\ \hline
-    RF.2  & [UC 2, \#3.3.2]   \\ \hline
-    RF.3  & [UC 2, \#3.3.2]   \\ \hline
-    RF.4  & [UC 3, \#3.3.3]   \\ \hline
-    RF.5  & [UC 4, \#3.3.4]   \\ \hline
-    RF.6  & [UC 5, \#3.3.5]   \\ \hline
-    RF.7  & [UC 6, \#3.3.6]   \\ \hline
-    RF.8  & [UC 7, \#3.5.1]   \\ \hline
-    RF.9  & [UC 8, \#3.5.2]   \\ \hline
-    RF.10 & [UC 8, \#3.5.2], [UC 8.1, \#3.5.2] \\ \hline
-    RF.11 & [UC 8.2, \#3.5.2] \\ \hline
-    RF.12 & [UC 9, \#3.5.3], [UC 10, \#3.5.4]   \\ \hline
-    RF.13 & [UC 10, \#3.5.4]  \\ \hline    
-    RF.14 & [UC 11, \#3.7.1]  \\ \hline
-    RF.15 & [UC 11, \#3.7.1]  \\ \hline
-    RF.16 & [UC 11, \#3.7.1]  \\ \hline
-    RF.17 & [UC 12, \#3.7.2]  \\ \hline
-    RF.18 & [UC 13, \#3.7.3]  \\ \hline
-    RF.19 & [UC 13.1, \#3.7.3] \\ \hline
-    RF.20 & [UC 13.2, \#3.7.3] \\ \hline
-    RF.21 & [UC 14, \#3.9.1]  \\ \hline
-    RF.22 & [UC 14, \#3.9.1]  \\ \hline
-    RF.23 & [UC 14, \#3.9.1]  \\ \hline
-    RF.24 & [UC 14.1, \#3.9.1] \\ \hline
-    RF.25 & [UC 14.2, \#3.9.1] \\ \hline
-    RF.26 & [UC 15, \#3.9.2]  \\ \hline
-    RF.27 & [UC 15, \#3.9.2]  \\ \hline
-    RF.28 & [UC 16, \#3.9.3]  \\ \hline
-    RS.2  & [UC 11, \#3.7.1]  \\ \hline
-    RS.3  & [UC 14, \#3.9.1]  \\
 \end{xltabular}
-\end{center}
+\endgroup
+
+\newpage
+
+\subsection{Tracciamento Requisito - Fonti}
+
+\begingroup
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|}
+    \hline
+    \textbf{Requisito} & \textbf{Fonti} \\ 
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Requisito} & \textbf{Fonti} \\ 
+    \hline
+    \endhead
+
+    RF.1 & \hyperref[uc:1]{UC 1} \\ \hline
+    RF.2 & \hyperref[uc:2]{UC 2} \\ \hline
+    RF.3 & \hyperref[uc:2]{UC 2} \\ \hline
+    RF.4 & \hyperref[uc:3]{UC 3} \\ \hline
+    RF.5 & \hyperref[uc:4]{UC 4} \\ \hline
+    RF.6 & \hyperref[uc:5]{UC 5} \\ \hline
+    RF.7 & \hyperref[uc:6]{UC 6} \\ \hline
+    RF.8 & \hyperref[uc:7]{UC 7} \\ \hline
+    RF.9 & \hyperref[uc:8]{UC 8} \\ \hline
+    RF.10 & \hyperref[uc:8.1]{UC 8.1} \\ \hline
+    RF.11 & \hyperref[uc:8.2]{UC 8.2} \\ \hline
+    RF.12 & \hyperref[uc:9]{UC 9}, \hyperref[uc:10]{UC 10} \\ \hline
+    RF.13 & \hyperref[uc:10]{UC 10} \\ \hline
+    RF.14 & \hyperref[uc:11]{UC 11} \\ \hline
+    RF.15 & \hyperref[uc:11]{UC 11} \\ \hline
+    RF.16 & \hyperref[uc:11]{UC 11} \\ \hline
+    RF.17 & \hyperref[uc:12]{UC 12} \\ \hline
+    RF.18 & \hyperref[uc:13]{UC 13} \\ \hline
+    RF.19 & \hyperref[uc:13.1]{UC 13.1} \\ \hline
+    RF.20 & \hyperref[uc:13.2]{UC 13.2} \\ \hline
+    RF.21 & \hyperref[uc:14]{UC 14} \\ \hline
+    RF.22 & \hyperref[uc:14]{UC 14}, verbale esterno 2026/04/24 \\ \hline
+    RF.23 & \hyperref[uc:14]{UC 14} \\ \hline
+    RF.24 & \hyperref[uc:14.1]{UC 14.1} \\ \hline
+    RF.25 & \hyperref[uc:14.2]{UC 14.2} \\ \hline
+    RF.26 & \hyperref[uc:15]{UC 15} \\ \hline
+    RF.27 & \hyperref[uc:15]{UC 15} \\ \hline
+    RF.28 & \hyperref[uc:16]{UC 16} \\ \hline
+    RQ.1 & \hyperref[uc:4]{UC 4}, verbale esterno 2026/03/23 \\ \hline
+    RQ.2 & verbale esterno 2026/03/23 \\ \hline
+    RQ.3 & \hyperref[uc:10]{UC 10} \\ \hline
+    RQ.4 & verbale esterno 2026/03/23 \\ \hline
+    RQ.5 & verbale esterno 2026/04/24 \\ \hline
+    RV.1 & verbale esterno 2026/03/23 \\ \hline
+    RV.2 & verbale esterno 2026/03/23 \\ \hline
+    RV.3 & verbale esterno 2026/03/23 \\ \hline
+    RV.4 & verbale esterno 2026/03/23 \\ \hline
+    RV.5 & Capitolato C2 \\ \hline
+    RS.1 & verbale esterno 2026/03/23 \\ \hline
+    RS.2 & \hyperref[uc:11]{UC 11} \\ \hline
+    RS.3 & \hyperref[uc:14]{UC 14} \\ \hline
+
+\end{xltabular}
 \endgroup
 
 \end{document}
