@@ -905,12 +905,21 @@ specifiche definite dal team nel file di configurazione.
 \end{enumerate}
 \item
   \textbf{Scenari alternativi}:
-
   \begin{itemize}
-    \item Se il file CLAUDE.md non è presente, il sistema mostra un messaggio esplicativo e interrompe la verifica delle policy interne.
-    \item Se il file CLAUDE.md non è leggibile o non contiene regole interpretabili, il sistema mostra un messaggio esplicativo e non procede con la verifica.
-  \end{itemize}
-\end{itemize}
+    \item \textbf{Il file CLAUDE.md non è presente}:
+                \begin{enumerate}
+                    \item Il sistema rileva l'assenza del file.
+                    \item Il sistema interrompe la verifica delle policy interne.
+                    \item Il sistema delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
+                \end{enumerate}
+            \item \textbf{Il file CLAUDE.md non è leggibile o non contiene regole interpretabili}:
+                \begin{enumerate}
+                    \item Il sistema rileva l'impossibilità di analizzare il file.
+                    \item Il sistema interrompe la verifica delle policy interne.
+                    \item Il sistema delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
+                \end{enumerate}
+        \end{itemize}
+    \end{itemize}
 
 \subsubsection{UC 13: Generazione Suggerimenti di \textit{Remediation}}\label{uc:13}
 L'agente fornisce soluzioni pratiche per correggere i
@@ -935,27 +944,25 @@ problemi di sicurezza o le violazioni di policy trovate.
   \begin{enumerate}
   \def\labelenumi{\arabic{enumi}.}
     \item 
-    Per ogni \textit{Vulnerabilità} o violazione trovata,
-    l'Agente determina se la vulnerabilità o violazione rilevata è localizzabile in una porzione specifica di codice.
+    Per ogni vulnerabilità o violazione rilevata, l'Agente analizza il contesto e la porzione di codice interessata.
     \item 
-    Se la vulnerabilità è localizzabile, l'Agente genera uno snippet di codice correttivo (UC 13.1).
+    L'Agente determina il livello di localizzazione possibile per la risoluzione del problema.
     \item 
-    Se la vulnerabilità non è localizzabile in modo sicuro, l'Agente genera una descrizione testuale della remediation (UC 13.2).
+    Il flusso si estende per generare uno snippet di codice correttivo (UC 13.1) oppure una descrizione testuale (UC 13.2).
     \item
-        Il \textit{Security Auditor} consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
+    Il \textit{Security Auditor} consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
     \end{enumerate}
 \item 
-  \textbf{Inclusioni}: 
+  \textbf{Inclusioni}:
+    \begin{itemize}
+        \item UC 4: Validazione umana di una proposta dell'agente.
+    \end{itemize}    
+\item 
+  \textbf{Estensioni}: 
     \begin{itemize}
         \item UC 13.1: Generazione snippet di codice correttivo.
         \item UC 13.2: Generazione descrizione testuale della remediation.
     \end{itemize}
-
-\item 
-  \textbf{Estensioni}:
-    \begin{itemize}
-        \item \textit{Caso d'Uso} trasversale UC 4: Validazione umana di una proposta dell'agente.
-\end{itemize}
 \end{itemize}
 
 \subsubsection{UC 13.1: Generazione snippet di codice correttivo}\label{uc:13.1}
@@ -978,7 +985,6 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
             \item Il modello genera uno snippet alternativo.
             \item L’Agente OWASP presenta al \textit{Security Auditor} il confronto tra codice originale e codice proposto.
         \end{enumerate}
-    \item \textbf{Scenari Alternativi}: Se la modifica non è localizzabile in uno snippet, l’agente rimanda a UC 13.2.
 \end{itemize}
 
 \subsubsection{UC 13.2: Generazione descrizione testuale della \textit{Remediation}}\label{uc:13.2}
@@ -989,10 +995,8 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
     \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
     \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
     \item \textbf{Precondizioni}:
-        \begin{itemize}
-            \item È disponibile una \textit{Vulnerabilità} o non conformità rilevata.
-            \item L’agente dispone del contesto sufficiente per descrivere il problema.
-        \end{itemize}
+        È disponibile una \textit{Vulnerabilità} o non conformità rilevata, l’agente dispone del contesto sufficiente per descrivere il problema.
+
     \item \textbf{Postcondizioni}: Il \textit{Security Auditor} riceve una descrizione chiara della \textit{Remediation} consigliata.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -1198,7 +1202,7 @@ architettura completa ad agenti.
     \hline
     RF.24 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 14.1 \\
     \hline
-    RF.25 & Obbligatiorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 14.2 \\
+    RF.25 & Obbligatorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 14.2 \\
     \hline
     RF.26 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 15 \\
     \hline
