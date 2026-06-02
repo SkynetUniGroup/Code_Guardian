@@ -585,14 +585,14 @@ Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{REA
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'aggiornamento tramite l'\textbf{Orchestratore}.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'analisi tramite l'\textbf{Orchestratore}.
     \item \textbf{Precondizioni}: 
         \begin{itemize}
             \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
             \item Esiste un file \texttt{\textit{README}.md}.
             \item (Opzionale) Esiste un modello personalizzato per il \textit{README}.
         \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile una proposta di aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana.
+    \item \textbf{Postcondizioni}: È disponibile una proposta di aggiornamento del \texttt{\textit{README}.md} o il file è già aggiornato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'\textbf{Orchestratore} notifica l'Agente DOX della necessità di aggiornamento.
@@ -601,8 +601,18 @@ Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{REA
             \item L'Agente rigenera le sezioni interessate (es. guida all'installazione), secondo il modello personalizzato, se disponibile, o quello di default.
             \item L'Agente propone la modifica tramite \textit{Pull Request}.
         \end{enumerate}
+    \item \textbf{Scenario alternativo}:
+        \begin{enumerate}
+        \renewcommand{\labelenumi}{\Alph{enumi}.}
+        \renewcommand{\labelenumii}{\arabic{enumii}.}
+            \item L'analisi non rileva cambiamenti:
+            \begin{enumerate}
+                \item Non vengono generate proposte di aggiornamento.
+                \item Lo Sviluppatore è informato.
+                \item Lo UC termina.
+            \end{enumerate}
+        \end{enumerate}
     \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-    \item \textbf{Estensioni}: UC 10 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
 \end{itemize}
 
 \subsubsection{UC 8: Gestione della Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}\label{uc:8}
@@ -616,7 +626,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
         \begin{itemize}
             \item È stato selezionato un ambito di analisi (UC 2).
         \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
+    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare ed è avvertito eventuali problemi.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente individua funzioni o classi prive di documentazione o con documentazione obsoleta.
@@ -624,13 +634,21 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
             \item L'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
             \item Il sistema rende la proposta disponibile per validazione allo Sviluppatore.
         \end{enumerate}
+    \item \textbf{Scenario alternativo}:
+        \begin{enumerate}
+        \renewcommand{\labelenumi}{\Alph{enumi}.}
+        \renewcommand{\labelenumii}{\arabic{enumii}.}
+            \item L'Agente non riesce a interpretare una classe/funzione:
+            \begin{enumerate}
+                \item Invece di una proposta, è generato un avvertimento per quella classe/funzione.
+                \item L'analisi passa alla classe/funzione seguente, se presente.
+            \end{enumerate}
+        \end{enumerate}
     \item \textbf{Specializzazioni}:
         \begin{itemize}
             \item \textbf{UC 8.1}: Creazione della documentazione inline.
             \item \textbf{UC 8.2}: Aggiornamento della documentazione inline.
         \end{itemize}
-    \item \textbf{Estensioni}: 
-            \item \textbf{UC 8.3}: Errore nella generazione della documentazione inline.
 \end{itemize}
 
 \subsubsection{UC 8.1: Creazione Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}\label{uc:8.1}
@@ -668,7 +686,7 @@ L'agente controlla e se necessario aggiorna la documentazione dopo una modifica.
             \item È stato selezionato un ambito di analisi (UC 2).
             \item I file in questione sono già stati documentati dall'Agente in passato.
         \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
+    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare o la documentazione è già aggiornata.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente individua funzioni o classi potenzialmente prive di documentazione o con documentazione obsoleta nel diff del file.
@@ -676,33 +694,18 @@ L'agente controlla e se necessario aggiorna la documentazione dopo una modifica.
             \item L'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}), per ogni classe/funzione.
             \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
         \end{enumerate}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-    \item \textbf{Estensioni}: UC 10 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
-\end{itemize}
-
-\subsubsection{UC 8.3: Errore Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}\label{uc:8.3}
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: L'Agente non è in grado di fornire una proposta adeguata per la documentazioni di una classe/funzione.
-    \item \textbf{Precondizioni}:  
-        \begin{itemize}
-            \item È stato selezionato un ambito di analisi (UC 2).
-            \item È stata avviata un'operazione di documentazione sul file.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: 
-        \begin{itemize}
-            \item Lo Sviluppatore dispone di un messaggio esplicativo sulla natura dell'errore.
-            \item L'Agente può continuare l'operazione di documentazione sul resto del file.
-        \end{itemize}
-    \item \textbf{Scenario Principale}:
+    \item \textbf{Scenario alternativo}:
         \begin{enumerate}
-            \item L'Agente individua classi/funzioni prive di documentazione o con documentazione obsoleta.
-            \item L'Agente fallisce nell'interpretazione di una classe/funzione.
-            \item L'Agente genera un messaggio informativo sull'errore al posto della proposta.
-            \item Il sistema rende il messaggio disponibile per visualizzazione allo Sviluppatore.
+        \renewcommand{\labelenumi}{\Alph{enumi}.}
+        \renewcommand{\labelenumii}{\arabic{enumii}.}
+            \item Le modifiche al codice non richiedono di cambiare la documentazione:
+            \begin{enumerate}
+                \item Non vengono generate proposte di aggiornamento.
+                \item Lo Sviluppatore è informato.
+                \item Lo UC termina.
+            \end{enumerate}
         \end{enumerate}
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
 \end{itemize}
 
 \subsubsection{UC 9: Gestione Documentazione \textit{API}}\label{uc:9}
@@ -763,7 +766,7 @@ L'agente controlla la coerenza della documentazione \textit{API} dopo una modifi
             \item È stato selezionato un ambito di analisi (UC 2).
             \item Esiste già la documentazione \textit{API}.
         \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile la proposta di aggiornamento del documento tecnico (\texttt{\textit{API}.md}).
+    \item \textbf{Postcondizioni}: È disponibile la proposta di aggiornamento del documento tecnico (\texttt{\textit{API}.md}) o il documento è già aggiornato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente scansiona le parti di file modificate o nuove.
@@ -771,29 +774,18 @@ L'agente controlla la coerenza della documentazione \textit{API} dopo una modifi
             \item L'Agente adegua la documentazione ai cambiamenti.
             \item Il Sistema mette a disposizione la proposta di aggiornamento allo Sviluppatore per la validazione.
         \end{enumerate}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-    \item \textbf{Estensioni}: UC 10 - Le modifiche al codice non richiedono aggiornamenti della documentazione.
-\end{itemize}
-
-\subsubsection{UC 10: Le modifiche al codice non richiedono aggiornamenti della documentazione}\label{uc:10}
-L'agente controlla la coerenza della documentazione \textit{API} dopo una modifica.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico dopo il rilevamento di modifiche da parte dell'Orchestratore.
-    \item \textbf{Precondizioni}:
-        \begin{itemize}
-            \item È stato selezionato un ambito di analisi (UC 2).
-            \item Esiste già la documentazione \textit{API}.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: Non sono disponibili nuove proposte di aggiornamento della documentazione.
-    \item \textbf{Scenario Principale}:
+    \item \textbf{Scenario alternativo}:
         \begin{enumerate}
-            \item L'Agente scansiona le parti di file modificate o nuove.
-            \item L'Agente non rileva cambiamenti significativi nei componenti o negli \textit{endpoint}.
-            \item L'Agente conclude la sua esecuzione senza apportare modifiche.
+        \renewcommand{\labelenumi}{\Alph{enumi}.}
+        \renewcommand{\labelenumii}{\arabic{enumii}.}
+            \item L'analisi non rileva cambiamenti:
+            \begin{enumerate}
+                \item Non vengono generate proposte di aggiornamento.
+                \item Lo Sviluppatore è informato.
+                \item Lo UC termina.
+            \end{enumerate}
         \end{enumerate}
+    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell'agente.
 \end{itemize}
 
 \newpage
@@ -1337,7 +1329,6 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     \hyperref[uc:8.1]{UC 8.1} & RF.10 \\ \hline
     \hyperref[uc:8.2]{UC 8.2} & RF.11 \\ \hline
     \hyperref[uc:9]{UC 9} & RF.12 \\ \hline
-    \hyperref[uc:10]{UC 10} & RF.12, RF.13, RQ.3 \\ \hline
     \hyperref[uc:11]{UC 11} & RF.14, RF.15, RF.16, RS.2 \\ \hline
     \hyperref[uc:12]{UC 12} & RF.17 \\ \hline
     \hyperref[uc:13]{UC 13} & RF.18 \\ \hline
@@ -1383,8 +1374,7 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RF.9 & \hyperref[uc:8]{UC 8} \\ \hline
     RF.10 & \hyperref[uc:8.1]{UC 8.1} \\ \hline
     RF.11 & \hyperref[uc:8.2]{UC 8.2} \\ \hline
-    RF.12 & \hyperref[uc:9]{UC 9}, \hyperref[uc:10]{UC 10} \\ \hline
-    RF.13 & \hyperref[uc:10]{UC 10} \\ \hline
+    RF.12 & \hyperref[uc:9]{UC 9} \\ \hline
     RF.14 & \hyperref[uc:11]{UC 11} \\ \hline
     RF.15 & \hyperref[uc:11]{UC 11} \\ \hline
     RF.16 & \hyperref[uc:11]{UC 11} \\ \hline
@@ -1402,7 +1392,6 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RF.28 & \hyperref[uc:16]{UC 16} \\ \hline
     RQ.1 & \hyperref[uc:4]{UC 4}, Verbale esterno 2026/03/23 \\ \hline
     RQ.2 & Verbale esterno 2026/03/23 \\ \hline
-    RQ.3 & \hyperref[uc:10]{UC 10} \\ \hline
     RQ.4 & Verbale esterno 2026/03/23 \\ \hline
     RQ.5 & Verbale esterno 2026/04/24 \\ \hline
     RV.1 & Verbale esterno 2026/03/23 \\ \hline
