@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.9.0} \\ \hline
+            \textbf{Versione} & \textit{0.11.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -99,13 +99,14 @@
 % ==========================================
 \section*{Versioni del documento}
 \markboth{Versioni del documento}{}
-\begin{table}[htbp]
+\begin{table}[H]
 
     \centering
     \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
         0.10.0 & 2026/05/30 & Aggiunti requisiti RF.13 e RQ.5 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero \\ \hline        
         0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & Dario Pirrone & Edoardo Granziero \\ \hline
         0.8.2 & 2026/05/26 & Raffinati casi dell'agente DOX e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
@@ -534,72 +535,19 @@ Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \tex
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'aggiornamento tramite l'\textbf{Orchestratore}.
+    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'intervento tramite l'\textbf{Orchestratore}.
     \item \textbf{Precondizioni}: 
         \begin{itemize}
             \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
             \item (Opzionale) Esiste un modello personalizzato per il \textit{README}.
         \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile una proposta di creazione o aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana.
+    \item \textbf{Postcondizioni}: È disponibile una proposta di creazione o aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana, o il \texttt{\textit{README}.md} è già aggiornato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'\textbf{Orchestratore} notifica l'Agente DOX della necessità di gestire il \textit{README}.
-            \item L'Agente crea o modifica il \textit{README} in modo opportuno.
-            \item L'Agente propone la modifica tramite \textit{Pull Request}.
-        \end{enumerate}
-    \item \textbf{Specializzazioni}: 
-        \begin{itemize}
-            \item UC 7.1 - Creazione del \textit{README}.
-            \item UC 7.2 - Aggiornamento del \textit{README}.
-        \end{itemize}
-\end{itemize}
-
-\subsubsection{UC 7.1: Creazione del \textit{README} di Progetto}\label{uc:7.1}
-Questo \textit{Caso d'Uso} riguarda la creazione del file \texttt{\textit{README}.md} principale.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un primo push di modifiche strutturali o richiede l'intervento tramite l'\textbf{Orchestratore}.
-    \item \textbf{Precondizioni}: 
-        \begin{itemize}
-            \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
-            \item Non esiste un file \texttt{\textit{README}.md}.
-            \item (Opzionale) Esiste un modello personalizzato per il \textit{README}.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile una prima versione del \texttt{\textit{README}.md}, pronta per la validazione umana.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'\textbf{Orchestratore} notifica l'Agente DOX della necessità di intervento.
             \item L'Agente analizza file di configurazione e struttura delle cartelle.
-            \item L'Agente inizializza il \textit{README} secondo il modello personalizzato, se disponibile, o quello di default.
-            \item L'Agente genera le sezioni necessarie e possibili al momento.
+            \item L'Agente crea o aggiorna il \textit{README} secondo il modello personalizzato, se disponibile, o quello di default.
             \item L'Agente propone il prodotto tramite \textit{Pull Request}.
-        \end{enumerate}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-\end{itemize}
-
-\subsubsection{UC 7.2: Aggiornamento del \textit{README} di Progetto}\label{uc:7.2}
-Questo \textit{Caso d'Uso} riguarda il mantenimento del file \texttt{\textit{README}.md} principale per riflettere lo stato attuale del software.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'analisi tramite l'\textbf{Orchestratore}.
-    \item \textbf{Precondizioni}: 
-        \begin{itemize}
-            \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
-            \item Esiste un file \texttt{\textit{README}.md}.
-            \item (Opzionale) Esiste un modello personalizzato per il \textit{README}.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile una proposta di aggiornamento del \texttt{\textit{README}.md} o il file è già aggiornato.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'\textbf{Orchestratore} notifica l'Agente DOX della necessità di aggiornamento.
-            \item L'Agente analizza file di configurazione (es. \texttt{package.json}) e struttura cartelle.
-            \item L'Agente identifica nuove dipendenze o cambi di versione.
-            \item L'Agente rigenera le sezioni interessate (es. guida all'installazione), secondo il modello personalizzato, se disponibile, o quello di default.
-            \item L'Agente propone la modifica tramite \textit{Pull Request}.
         \end{enumerate}
     \item \textbf{Scenario alternativo}:
         \begin{enumerate}
@@ -626,13 +574,13 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
         \begin{itemize}
             \item È stato selezionato un ambito di analisi (UC 2).
         \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare ed è avvertito eventuali problemi.
+    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare o la documentazione è già aggiornata.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item L'Agente individua funzioni o classi prive di documentazione o con documentazione obsoleta.
-            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
-            \item L'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
-            \item Il sistema rende la proposta disponibile per validazione allo Sviluppatore.
+            \item L'Agente individua funzioni o classi prive di documentazione, con documentazione obsoleta o non conforme.
+            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno o lo scopo e le caratteristiche della classe.
+            \item Per ogni classe/funzione individuata, l'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
+            \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
         \end{enumerate}
     \item \textbf{Scenario alternativo}:
         \begin{enumerate}
@@ -643,61 +591,6 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
                 \item Invece di una proposta, è generato un avvertimento per quella classe/funzione.
                 \item L'analisi passa alla classe/funzione seguente, se presente.
             \end{enumerate}
-        \end{enumerate}
-    \item \textbf{Specializzazioni}:
-        \begin{itemize}
-            \item \textbf{UC 8.1}: Creazione della documentazione inline.
-            \item \textbf{UC 8.2}: Aggiornamento della documentazione inline.
-        \end{itemize}
-\end{itemize}
-
-\subsubsection{UC 8.1: Creazione Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}\label{uc:8.1}
-L'agente scansiona e documenta integralmente un nuovo file.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un \textit{Commit} nella repo.
-    \item \textbf{Precondizioni}:  
-        \begin{itemize}
-            \item È stato selezionato un ambito di analisi (UC 2).
-            \item È la prima volta che l'Agente opera sul file.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente individua funzioni o classi prive di documentazione o con documentazione pregressa non conforme in tutto il file.
-            \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno.
-            \item Per ogni classe/funzione individuata, l'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
-            \item Il sistema rende le proposte disponibili per la validazione allo Sviluppatore.
-        \end{enumerate}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-\end{itemize}
-
-\subsubsection{UC 8.2: Aggiornamento Documentazione Inline (\textit{Docstring}/\textit{JSDoc})}\label{uc:8.2}
-L'agente controlla e se necessario aggiorna la documentazione dopo una modifica.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un \textit{Commit} con modifiche a uno o più file sorgente o fa richiesta esplicita.
-    \item \textbf{Precondizioni}:  
-        \begin{itemize}
-            \item È stato selezionato un ambito di analisi (UC 2).
-            \item I file in questione sono già stati documentati dall'Agente in passato.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare o la documentazione è già aggiornata.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente individua funzioni o classi potenzialmente prive di documentazione o con documentazione obsoleta nel diff del file.
-            \item Se le modifiche lo richiedono, l'Agente interpreta il comportamento delle funzioni/classi nuove/aggiornate.
-            \item L'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}), per ogni classe/funzione.
-            \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
-        \end{enumerate}
-    \item \textbf{Scenario alternativo}:
-        \begin{enumerate}
-        \renewcommand{\labelenumi}{\Alph{enumi}.}
-        \renewcommand{\labelenumii}{\arabic{enumii}.}
             \item Le modifiche al codice non richiedono di cambiare la documentazione:
             \begin{enumerate}
                 \item Non vengono generate proposte di aggiornamento.
@@ -716,63 +609,13 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
     \item \textbf{Precondizioni}: È stato selezionato un ambito di analisi (UC 2).
-    \item \textbf{Postcondizioni}: Disponibilità di un documento tecnico (\texttt{\textit{API}.md}) aggiornato per gli \textit{Stakeholder}.
+    \item \textbf{Postcondizioni}: È disponibile una proposta di documento tecnico (\texttt{\textit{API}.md}) o il documento è già aggiornato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente scansiona i file dei controller e i file delle \textit{\glo{Rotte}{rotte}}.
             \item Estrazione di: metodo HTTP, URL, header, \textit{\glo{Payload}{payload}} richiesto e risposte possibili.
             \item Formattazione delle informazioni nel file \texttt{\textit{API}.md} in formato \textit{\glo{Markdown}{markdown}}.
             \item Il Sistema mette a disposizione la proposta di documento allo Sviluppatore per la validazione.
-        \end{enumerate}
-    \item \textbf{Specializzazione}:
-        \begin{enumerate}
-            \item UC 9.1 - Creazione Documentazione \textit{API}.
-            \item UC 9.2 - Aggiornamento Documentazione \textit{API}.
-        \end{enumerate}
-\end{itemize}
-
-\subsubsection{UC 9.1: Creazione Documentazione \textit{API}}\label{uc:9.1}
-L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecnica per i consumatori delle \textit{API}.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio.
-    \item \textbf{Precondizioni}:
-        \begin{itemize}
-            \item È stato selezionato un ambito di analisi (UC 2).
-            \item Non esiste documentazione \textit{API}.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile una bozza di documento tecnico (\texttt{\textit{API}.md}) per gli \textit{Stakeholder}.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente scansiona i file dei controller e i file delle \textit{\glo{Rotte}{rotte}}.
-            \item Estrazione di: metodo HTTP, URL, header, \textit{\glo{Payload}{payload}} richiesto e risposte possibili.
-            \item Formattazione delle informazioni nel file \texttt{\textit{API}.md} in formato \textit{\glo{Markdown}{markdown}}.
-            \item Il Sistema mette a disposizione la proposta di documento allo Sviluppatore per la validazione.
-        \end{enumerate}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
-\end{itemize}
-
-\subsubsection{UC 9.2: Aggiornamento Documentazione \textit{API}}\label{uc:9.2}
-L'agente controlla la coerenza della documentazione \textit{API} dopo una modifica.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico dopo il rilevamento di modifiche da parte dell'Orchestratore.
-    \item \textbf{Precondizioni}:
-        \begin{itemize}
-            \item È stato selezionato un ambito di analisi (UC 2).
-            \item Esiste già la documentazione \textit{API}.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile la proposta di aggiornamento del documento tecnico (\texttt{\textit{API}.md}) o il documento è già aggiornato.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente scansiona le parti di file modificate o nuove.
-            \item L'Agente rileva cambiamenti negli \textit{Endpoint}.
-            \item L'Agente adegua la documentazione ai cambiamenti.
-            \item Il Sistema mette a disposizione la proposta di aggiornamento allo Sviluppatore per la validazione.
         \end{enumerate}
     \item \textbf{Scenario alternativo}:
         \begin{enumerate}
@@ -1164,13 +1007,13 @@ architettura completa ad agenti.
     \hline
     RF.9 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice, come Docstring o JSDoc, per gli elementi sorgente supportati. & UC 8 \\ 
     \hline
-    RF.10 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8.1 \\ 
+    RF.10 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8 \\ 
     \hline
-    RF.11 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 8.2 \\ 
+    RF.11 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 8 \\ 
     \hline
-    RF.12 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9, UC 10\\
+    RF.12 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9\\
     \hline
-    RF.13 & Obbligatorio & Il sistema deve riconoscere quando le modifiche apportate al codice sorgente non alterano il comportamento, i componenti o gli endpoint analizzati, terminando l'esecuzione senza generare nuove proposte di aggiornamento documentale. & UC 10\\
+    RF.13 & Obbligatorio & Il sistema deve riconoscere quando le modifiche apportate al codice sorgente non alterano il comportamento, i componenti o gli endpoint analizzati, terminando l'esecuzione senza generare nuove proposte di aggiornamento documentale. & UC 7, 8, 9\\
     \hline
     RF.14 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 11 \\
     \hline
@@ -1228,7 +1071,7 @@ architettura completa ad agenti.
     \hline
     RQ.2 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & Verbale esterno 2026/03/23 \\
     \hline
-    RQ.3 & Desiderabile & Il sistema deve minimizzare i falsi positivi nella generazione della documentazione, evitando di proporre aggiornamenti per modifiche al codice puramente stilistiche o marginali. & UC 10 \\
+    RQ.3 & Desiderabile & Il sistema deve minimizzare i falsi positivi nella generazione della documentazione, evitando di proporre aggiornamenti per modifiche al codice puramente stilistiche o marginali. & UC 7, 8, 9 \\
     \hline
     RQ.4 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati e per i modelli o servizi utilizzati. & Verbale esterno 2026/03/23 \\
     \hline
@@ -1324,11 +1167,9 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     \hyperref[uc:4]{UC 4} & RF.5, RQ.1 \\ \hline
     \hyperref[uc:5]{UC 5} & RF.6 \\ \hline
     \hyperref[uc:6]{UC 6} & RF.7 \\ \hline
-    \hyperref[uc:7]{UC 7} & RF.8 \\ \hline
-    \hyperref[uc:8]{UC 8} & RF.9 \\ \hline
-    \hyperref[uc:8.1]{UC 8.1} & RF.10 \\ \hline
-    \hyperref[uc:8.2]{UC 8.2} & RF.11 \\ \hline
-    \hyperref[uc:9]{UC 9} & RF.12 \\ \hline
+    \hyperref[uc:7]{UC 7} & RF.8, RF.13, RQ.3 \\ \hline
+    \hyperref[uc:8]{UC 8} & RF.9, RF.10, RF.11, RF.13, RQ.3 \\ \hline
+    \hyperref[uc:9]{UC 9} & RF.12, RF.13, RQ.3 \\ \hline
     \hyperref[uc:11]{UC 11} & RF.14, RF.15, RF.16, RS.2 \\ \hline
     \hyperref[uc:12]{UC 12} & RF.17 \\ \hline
     \hyperref[uc:13]{UC 13} & RF.18 \\ \hline
@@ -1372,9 +1213,10 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RF.7 & \hyperref[uc:6]{UC 6} \\ \hline
     RF.8 & \hyperref[uc:7]{UC 7} \\ \hline
     RF.9 & \hyperref[uc:8]{UC 8} \\ \hline
-    RF.10 & \hyperref[uc:8.1]{UC 8.1} \\ \hline
-    RF.11 & \hyperref[uc:8.2]{UC 8.2} \\ \hline
+    RF.10 & \hyperref[uc:8]{UC 8} \\ \hline
+    RF.11 & \hyperref[uc:8]{UC 8} \\ \hline
     RF.12 & \hyperref[uc:9]{UC 9} \\ \hline
+    RF.13 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
     RF.14 & \hyperref[uc:11]{UC 11} \\ \hline
     RF.15 & \hyperref[uc:11]{UC 11} \\ \hline
     RF.16 & \hyperref[uc:11]{UC 11} \\ \hline
@@ -1392,6 +1234,7 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RF.28 & \hyperref[uc:16]{UC 16} \\ \hline
     RQ.1 & \hyperref[uc:4]{UC 4}, Verbale esterno 2026/03/23 \\ \hline
     RQ.2 & Verbale esterno 2026/03/23 \\ \hline
+    RQ.3 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
     RQ.4 & Verbale esterno 2026/03/23 \\ \hline
     RQ.5 & Verbale esterno 2026/04/24 \\ \hline
     RV.1 & Verbale esterno 2026/03/23 \\ \hline
