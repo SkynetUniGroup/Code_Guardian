@@ -109,8 +109,8 @@
         0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
         0.10.0 & 2026/05/30 & Aggiunti requisiti RF.13 e RQ.5 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero \\ \hline        
         0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & Dario Pirrone & Edoardo Granziero \\ \hline
-        0.8.2 & 2026/05/26 & Raffinati casi dell'agente DOX e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
-        0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti & Sara Ristovic & Samuele Bertin \\ \hline
+        0.8.2 & 2026/05/26 & Raffinati casi dell'agente Docs e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
+        0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti; piccoli raffinamenti nell'intero file & Sara Ristovic & Samuele Bertin \\ \hline
         0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'Agente OWASP & Sara Ristovic & Samuele Bertin \\ \hline
         0.6.0 & 2026/05/19 & Aggiunti sottocasi 14.1 e 14.2 dell'UC 14; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
         0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'Agente OWASP, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone \\ \hline
@@ -183,6 +183,12 @@ solamente alla loro prima occorrenza in questo documento.
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento
   del Progetto Didattico}
+
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_04_24.pdf}{Verbale esterno 24 aprile}
+
+\item
+\href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_03_23.pdf}{Verbale esterno 23 marzo}
+
 \end{itemize}
 
 \subsubsection{Riferimenti informativi}
@@ -384,7 +390,7 @@ Questo caso d'uso consente all'utente di indicare il repository Git e il riferim
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'utente accede alla sezione dedicata alla selezione del \textit{repository}.
-            \item L'utente fornisce l'URL del \textit{repository} Git.
+            \item L'utente fornisce l'\textit{URL} del \textit{repository} Git.
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
             \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch, \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
             \item Se l'utente seleziona un branch senza indicare un \textit{Commit} specifico, il sistema considera di default l'ultimo \textit{Commit} disponibile sul branch selezionato.
@@ -392,7 +398,7 @@ Questo caso d'uso consente all'utente di indicare il repository Git e il riferim
         \end{enumerate}
     \item \textbf{Scenari alternativi}: 
     \begin{itemize}
-        \item Se l'URL del \textit{repository} non è valido, il sistema mostra un messaggio di errore esplicativo.
+        \item Se l'\textit{URL} del \textit{repository} non è valido, il sistema mostra un messaggio di errore esplicativo.
         \item Se il \textit{repository} non è raggiungibile o l'utente non dispone dei permessi necessari, il sistema mostra un messaggio di errore esplicativo.
         \item Se il branch, il \textit{Commit} o la \textit{Pull Request} selezionati non esistono, il sistema mostra un messaggio di errore esplicativo.
     \end{itemize}
@@ -508,7 +514,7 @@ condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il
 
 
 \newpage
-\section{Agente DOX: Documentazione e \textit{README}}
+\section{Agente Docs: Documentazione e \textit{README}}
 
 \subsection{Introduzione all'agente}
 L'Agente di Documentazione e \textit{README} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
@@ -527,7 +533,7 @@ L'agente si focalizza su tre aree critiche:
 \end{enumerate}
 
 \subsection{\textit{Casi d'Uso}}
-Di seguito i \textit{Casi d'Uso} dell'Agente DOX.
+Di seguito i \textit{Casi d'Uso} dell'Agente Docs.
 
 \subsubsection{UC 7: Gestione del \textit{README} di Progetto}\label{uc:7}
 Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \texttt{\textit{README}.md} del Progetto.
@@ -544,7 +550,7 @@ Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \tex
     \item \textbf{Postcondizioni}: È disponibile una proposta di creazione o aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana, o il \texttt{\textit{README}.md} è già aggiornato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
-            \item L'\textbf{Orchestratore} notifica l'Agente DOX della necessità di gestire il \textit{README}.
+            \item L'\textbf{Orchestratore} notifica l'Agente Docs della necessità di gestire il \textit{README}.
             \item L'Agente analizza file di configurazione e struttura delle cartelle.
             \item L'Agente crea o aggiorna il \textit{README} secondo il modello personalizzato, se disponibile, o quello di default.
             \item L'Agente propone il prodotto tramite \textit{Pull Request}.
@@ -644,7 +650,7 @@ L'agente si concentra su tre aree principali:
 \begin{enumerate}
 \item \textbf{Analisi delle \textit{Vulnerabilità} \textit{OWASP}}: individuazione di pattern di codice potenzialmente riconducibili a \textit{Vulnerabilità} note, come SQL \textit{Injection}, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, \textit{\glo{Hardcoded secrets}{hardcoded-secrets}}, ecc.
 \item \textbf{Verifica delle policy interne di sicurezza}: controllo dell'aderenza del codice alle regole definite dal team nel file CLAUDE.md, secondo un approccio di tipo \textit{Policy-as-code}.
-\item \textbf{Generazione di remediation}: produzione di suggerimenti testuali o frammenti di codice [quale cosa??] correttivi per mitigare le vulnerabilità o le non conformità rilevate, senza applicare modifiche automatiche prima della validazione umana.
+\item \textbf{Generazione di remediation}: produzione di suggerimenti testuali o modifiche al codice correttive per mitigare le vulnerabilità o le non conformità rilevate, senza applicare modifiche automatiche prima della validazione umana.
 \end{enumerate}
 
 \subsection{\textit{Casi d'Uso}}
@@ -665,8 +671,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
   \begin{itemize}
   \item È stato selezionato un ambito di analisi (UC 2).
   \item
-    L'Agente OWASP è correttamente configurato con le \textit{API}
-    Key di \textit{Claude Code} [?].
+    L'Agente OWASP è correttamente configurato con le \textit{API} Key di \textit{Claude Code}.
 \end{itemize}
 \item
     \textbf{Postcondizioni}: Viene generato un report tecnico delle \textit{Vulnerabilità} rilevate. Ogni \textit{Vulnerabilità} rilevata è descritta con categoria, gravità e riferimento al codice interessato.
@@ -853,7 +858,7 @@ L'Agente di \textit{Changelog} da \textit{User Stories} funge da mediatore seman
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra sulla sintesi e trasformazione del progresso di progetto attraverso tre direttrici:
 \begin{enumerate}
-\item \textbf{Recupero e Analisi dei Dati}: Integrazione con i sistemi di task management (Jira, \textit{GitHub} \textit{\glo{Issues}{issue}}) per l'estrazione automatizzata dei task completati.
+\item \textbf{Recupero e Analisi dei Dati}: Integrazione con il sistema di task management \textit{GitHub} \textit{\glo{Issues}{issue}} per l'estrazione automatizzata dei task completati.
 \item \textbf{Sintesi Semantica Multitarget}: Generazione di report differenziati; uno tecnico (\textit{Changelog} Tecnico) per il team di sviluppo e uno di valore (\textit{Changelog} di Business) per i clienti e il management.
 \item \textbf{Validazione e Qualità del Contesto}: Monitoraggio della qualità informativa dei task per prevenire la generazione di report ambigui o privi di valore.
 \end{enumerate}
@@ -866,7 +871,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management (\textit{GitHub}/Jira).
+\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management \textit{GitHub Issues}.
 \item \textbf{Trigger}: Lo Sviluppatore  o il \textit{Project Manager} richiede la generazione del report a conclusione di uno \textit{Sprint}.
 \item \textbf{Precondizioni}:
 \begin{enumerate}
