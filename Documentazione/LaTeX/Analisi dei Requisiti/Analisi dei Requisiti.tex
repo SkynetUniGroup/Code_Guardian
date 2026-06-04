@@ -557,7 +557,7 @@ Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \tex
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: Lo Sviluppatore effettua un push di modifiche strutturali o richiede l'intervento tramite l'\textbf{Orchestratore}.
+    \item \textbf{Trigger}: Lo Sviluppatore richiede l'intervento tramite l'\textbf{Orchestratore}.
     \item \textbf{Precondizioni}: 
         \begin{itemize}
             \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
@@ -591,7 +591,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore o in automatico a seguito di un \textit{Commit} nella repo.
+    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore verso l'\textbf{Orchestratore}.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
             \item È stato selezionato un ambito di analisi (UC 2).
@@ -601,7 +601,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
         \begin{enumerate}
             \item L'Agente individua funzioni o classi prive di documentazione, con documentazione obsoleta o non conforme.
             \item L'Agente interpreta la logica della funzione, i parametri di input e il valore di ritorno o lo scopo e le caratteristiche della classe.
-            \item Per ogni classe/funzione individuata, l'Agente genera una proposta di commento standardizzato (\textit{JSDoc} per JS/TS o \textit{Docstring} per \textit{Python}).
+            \item Per ogni classe/funzione individuata, l'Agente genera una proposta di commento standardizzato (\textit{JSDoc}).
             \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
         \end{enumerate}
     \item \textbf{Scenario alternativo}:
@@ -629,7 +629,7 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
-    \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio o rilevamento nuove rotte.
+    \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio.
     \item \textbf{Precondizioni}: È stato selezionato un ambito di analisi (UC 2).
     \item \textbf{Postcondizioni}: È disponibile una proposta di documento tecnico (\texttt{\textit{API}.md}) o il documento è già aggiornato.
     \item \textbf{Scenario Principale}:
@@ -681,7 +681,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 \item
   \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
 \item
-  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza oppure l'\textbf{Orchestratore} avvia il processo secondo le modalità di esecuzione configurate.
+  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza per identificare \textit{Vulnerabilità} all'\textbf{Orchestratore}.
 \item
   \textbf{Precondizioni}:
   \begin{itemize}
@@ -731,7 +731,7 @@ specifiche definite dal team nel file di configurazione.
 \item
   \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository Git}, File di configurazione CLAUDE.md.
 \item
-  \textbf{Trigger}: Avvio della revisione di sicurezza (manuale o automatica).
+  \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità all'\textbf{Orchestratore}.
 \item \textbf{Precondizioni}:
 \begin{itemize}
     \item È stato selezionato un ambito di analisi (UC 2).
@@ -1011,7 +1011,9 @@ architettura completa ad agenti.
     \hline
     \endhead
 
-    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il Repository Git da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch, \textit{Commit} o \textit{Pull Request}. & UC 1 \\ \hline
+    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il Repository Git da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1 \\ \hline
+    RF.1.1 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
+    \\ \hline
     RF.2 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
     \hline
     RF.3 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
@@ -1022,11 +1024,15 @@ architettura completa ad agenti.
     \hline
     RF.6 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5 \\ 
     \hline
-    RF.7 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in uno dei formati di esportazione disponibili. & UC 6 \\ 
+    RF.7 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
     \hline
-    RF.8 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository. & UC 7 \\ 
+    RF.7.1 & Opzionale & Il sistema deve consentire all'utente di selezionare un report per l'esportazione da un archivio di report storici. & UC 6 \\ 
     \hline
-    RF.9 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice, come Docstring o JSDoc, per gli elementi sorgente supportati. & UC 8 \\ 
+    RF.8 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 7 \\ 
+    \hline
+    RF.8.1 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file README.md. & UC 7 \\ 
+    \hline
+    RF.9 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 8 \\ 
     \hline
     RF.10 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8 \\ 
     \hline
@@ -1050,7 +1056,9 @@ architettura completa ad agenti.
     \hline
     RF.20 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 13.2 \\ 
     \hline
-    RF.21 & Obbligatorio & Il sistema deve recuperare e filtrare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 14 \\
+    RF.21 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 14 \\
+    \hline
+    RF.21.1 & Obbligatorio & Il sistema deve filtrare le User Stories e i task completati relativi a uno specifico Sprint. & UC 14 \\
     \hline
     RF.22 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC 14, Verbale esterno 2026/04/24 \\
     \hline
@@ -1058,13 +1066,13 @@ architettura completa ad agenti.
     \hline
     RF.24 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 14.1 \\
     \hline
-    RF.25 & Obbligatorio & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 14.2 \\
+    RF.25 & Opzionale & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 14.2 \\
     \hline
     RF.26 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 15 \\
     \hline
-    RF.27 & Obbligatorio &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 15 \\
+    RF.27 & Desiderabile &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 15 \\
     \hline
-    RF.28 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dai dati validati dello Sprint e/o dal \textit{Changelog} tecnico. & UC 16 \\
+    RF.28 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, genearto dai dati validati dello Sprint. & UC 15,16 \\
     \hline
 
 \end{xltabular}
