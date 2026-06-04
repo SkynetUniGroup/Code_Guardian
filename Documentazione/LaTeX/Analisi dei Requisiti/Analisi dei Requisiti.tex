@@ -433,7 +433,7 @@ Questo caso d'uso consente all'utente di delimitare la porzione del repository s
 
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
-        \item L'utente indica uno o più file o directory da includere nell'analisi.
+        \item L'utente seleziona l'ambito dell'analisi, indicando o l'intero \textit{Repository} o porzioni minori (singoli file o directory).
         \item Il sistema verifica che gli elementi indicati esistano e siano accessibili.
         \item Il sistema registra l'ambito selezionato come input per l'esecuzione dell'agente interessato.
     \end{enumerate}
@@ -442,7 +442,7 @@ Questo caso d'uso consente all'utente di delimitare la porzione del repository s
     \begin{itemize}
         \item Se l'utente non seleziona alcun ambito, il sistema mostra un messaggio informativo e richiede di completare la selezione.
         \item Se uno o più elementi selezionati non esistono o non sono accessibili, il sistema mostra un messaggio di errore esplicativo.
-        \item Se supportato dalla configurazione del sistema, l'utente può selezionare l'intero repository come ambito di analisi.
+        \item (desiderabile) Se l'ambito selezionato supera la capacità di elaborazione del modello, il sistema mostra un messaggio di errore esplicativo e richiede di restringere la selezione.
     \end{itemize}
 \end{itemize}
 
@@ -496,7 +496,7 @@ Durante l’esecuzione di un agente può verificarsi un errore che impedisce il 
         \begin{enumerate}
             \item L'agente incontra un errore durante l'esecuzione.
             \item L'\textbf{Orchestratore} riceve l'esito negativo.
-            \item Il sistema mostra all'utente un messaggio che descrive la causa dell'errore (es. \textit{repository} non accessibile, API key non valida, file di configurazione assente, formato del report non generabile).
+            \item Il sistema mostra all'utente un messaggio che descrive la causa dell'errore (es. \textit{repository} non accessibile, API key non valida, file di configurazione assente, formato del report non generabile, superamento del limite massimo di file/righe di codice elaborabili).
             \item Il sistema indica, se possibile, un'azione correttiva.
         \end{enumerate}
 \end{itemize}
@@ -1015,6 +1015,8 @@ architettura completa ad agenti.
     RF.1.1 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
     \\ \hline
     RF.2 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
+    \hline
+    RF.2.1 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2, 5 \\ 
     \hline
     RF.3 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
     \hline
