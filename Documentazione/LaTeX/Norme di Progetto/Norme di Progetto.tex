@@ -307,6 +307,74 @@ I \textit{Casi d'Uso} descrivono le interazioni pratiche tra gli \textit{Attori}
     \item \textbf{Nome\ Descrittivo}: titolo sintetico che riassume l'azione descritta.
 \end{itemize}
 
+\newpage
+\subparagraph{Struttura}
+I \textit{Casi d'Uso} devono seguire la seguente struttura: 
+
+\noindent \textbf{UC 1.2: Titolo} \newline
+Breve descrizione.
+\begin{itemize}
+    \item \textbf{\textit{Attore} Primario}:
+    \item \textbf{(\textit{Attori} Secondari)}:
+    \item \textbf{Trigger}: 
+    \item \textbf{Precondizioni}: 
+        \begin{itemize}
+            \item Condizione 1.
+            \item ...
+        \end{itemize}
+    \item \textbf{Postcondizioni}: 
+        \begin{itemize}
+            \item Condizione 1.
+            \item ...
+        \end{itemize}
+    \item \textbf{Scenario Principale}:
+        \begin{enumerate}
+            \item Passo 1.
+            \item Passo 2.
+            \item ...
+        \end{enumerate}
+    \item \textbf{(Scenari alternativi)}:
+        \begin{enumerate}
+        \renewcommand{\labelenumi}{\Alph{enumi}.}
+        \renewcommand{\labelenumii}{\arabic{enumii}.}
+            \item Alternativa 1:
+            \begin{enumerate}
+                \item Passo 1.
+                \item ...
+            \end{enumerate}
+            \item Alternativa 2:
+            \begin{enumerate}
+                \item Passo 1.
+                \item ...
+            \end{enumerate}
+            \item ...
+        \end{enumerate}
+    \item \textbf{(Specializzazioni)}:
+    \item \textbf{(Inclusioni)}:
+    \item \textbf{(Estensioni)}:
+\end{itemize}
+
+\newpage
+\subparagraph{Codice {\LaTeX} per gli scenari alternativi}
+\begin{verbatim}
+    \item \textbf{(Scenari alternativi)}:
+        \begin{enumerate}
+        \renewcommand{\labelenumi}{\Alph{enumi}.}
+        \renewcommand{\labelenumii}{\arabic{enumii}.}
+            \item Alternativa 1:
+            \begin{enumerate}
+                \item Passo 1.
+                \item ...
+            \end{enumerate}
+            \item Alternativa 2:
+            \begin{enumerate}
+                \item Passo 1.
+                \item ...
+            \end{enumerate}
+            \item ...
+        \end{enumerate}
+\end{verbatim}
+
 \paragraph{Requisiti}
 I requisiti identificano le singole funzionalità, i vincoli o le metriche di performance richieste al sistema. La loro tracciabilità è assicurata dal seguente formato:
 
@@ -324,7 +392,6 @@ I requisiti identificano le singole funzionalità, i vincoli o le metriche di pe
     \end{itemize}
     \item \textbf{Identificativo}: indice numerico progressivo per l'identificazione univoca.
 \end{itemize}
-
 
 \subsubsection{Progettazione}
 
@@ -368,7 +435,7 @@ Il gruppo utilizza i seguenti strumenti per la gestione documentale:
 \begin{itemize}
     \item \textbf{Google Docs}: utilizzato per la stesura collaborativa iniziale e la creazione di bozze;
     \item \textbf{Google Sheets}: utilizzato per la creazione di tabelle condivise, la pianificazione e il monitoraggio delle risorse e dei costi di progetto;
-    \item \textbf{\textit{\glo{Overleaf}{overleaf}}} (\textit{\glo{LaTeX}{latex}}): utilizzato per la formattazione finale e la produzione dei documenti ufficiali, garantendo uniformità stilistica.
+    \item \textbf{\textit{\glo{Overleaf}{overleaf}}} (\textit{\glo{LaTeX}{LaTeX}}): utilizzato per la formattazione finale e la produzione dei documenti ufficiali, garantendo uniformità stilistica.
  \end{itemize}
 
 \subsubsection{Struttura e convenzioni dei documenti}
@@ -547,7 +614,7 @@ Le attività previste di questo processo sono:
 
  \paragraph{Implementazione}
 
- \textit{Overleaf} - Un editor Latex collaborativo basato su cloud. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale. {[}Utilizziamo la versione gratuita che permette la collaborazione di al massimo due persone su un file.{]}
+ \textit{Overleaf} - Un editor {\LaTeX} collaborativo basato su cloud. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale. {[}Utilizziamo la versione gratuita che permette la collaborazione di al massimo due persone su un file.{]}
 
  Google Docs - Un elaboratore di testi gratuito basato sul web. Utilizzato per la scrittura collaborativa dei file di documentazione.
 
