@@ -99,27 +99,33 @@
 % ==========================================
 \section*{Versioni del documento}
 \markboth{Versioni del documento}{}
-\begin{table}[H]
+\renewcommand{\arraystretch}{1.3}
 
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
-        \hline
-        \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
-        0.10.0 & 2026/05/30 & Aggiunti requisiti RF.13 e RQ.5 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero \\ \hline        
-        0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & Dario Pirrone & Edoardo Granziero \\ \hline
-        0.8.2 & 2026/05/26 & Raffinati casi dell'agente Docs e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
-        0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti; piccoli raffinamenti nell'intero file & Sara Ristovic & Samuele Bertin \\ \hline
-        0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'Agente OWASP & Sara Ristovic & Samuele Bertin \\ \hline
-        0.6.0 & 2026/05/19 & Aggiunti sottocasi 14.1 e 14.2 dell'UC 14; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
-        0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'Agente OWASP, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone \\ \hline
-        0.4.0 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Sara Ristovic \\ Marco Barbiero}  & Dario Pirrone \\ \hline
-        0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic & Marco Barbiero \\ \hline
-        0.2.0 & 2026/04/12 & Scrittura della sezione 2 & Dario Pirrone & Marco Barbiero \\ \hline
-        0.1.0 & 2026/04/08 & Creazione documento e scrittura della sezione 1 & Dario Pirrone & Marco Barbiero\\ \hline
-        \end{tabularx}
-\end{table}
+\begin{xltabular}{\textwidth}{|c|c|>{\raggedright\arraybackslash}X|l|l|}
+    \hline
+    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+    \endfirsthead 
+    
+    \hline
+    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+    \endhead 
+    
+
+
+    0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito di incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero \\ \hline 
+    0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
+    0.10.0 & 2026/05/30 & Aggiunti requisiti RF.13 e RQ.5 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero \\ \hline        
+    0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & Dario Pirrone & Edoardo Granziero \\ \hline
+    0.8.2 & 2026/05/26 & Raffinati casi dell'agente Docs e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
+    0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti; piccoli raffinamenti nell'intero file & Sara Ristovic & Samuele Bertin \\ \hline
+    0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'Agente OWASP & Sara Ristovic & Samuele Bertin \\ \hline
+    0.6.0 & 2026/05/19 & Aggiunti sottocasi 14.1 e 14.2 dell'UC 14; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
+    0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'Agente OWASP, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone \\ \hline
+    0.4.0 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Sara Ristovic \\ Marco Barbiero}  & Dario Pirrone \\ \hline
+    0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic & Marco Barbiero \\ \hline
+    0.2.0 & 2026/04/12 & Scrittura della sezione 2 & Dario Pirrone & Marco Barbiero \\ \hline
+    0.1.0 & 2026/04/08 & Creazione documento e scrittura della sezione 1 & Dario Pirrone & Marco Barbiero\\ \hline
+\end{xltabular}
 
 \newpage
 
@@ -1076,6 +1082,8 @@ architettura completa ad agenti.
     RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1 \\ \hline
     RF.1.1 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
     \\ \hline
+    RF.1.2 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} o l'ambito di analisi selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC 1 
+    \\ \hline
     RF.2 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
     \hline
     RF.2.1 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2, 5 \\ 
@@ -1088,7 +1096,9 @@ architettura completa ad agenti.
     \hline
     RF.6 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5 \\ 
     \hline
-    RF.6.1 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC 5, 11, 13, 15, 16 \\ 
+    RF.6.1 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC 5 \\ 
+    \hline
+    RF.6.2 & Desiderabile & Il sistema deve interrompere l'esecuzione di un agente e mostrare un messaggio di errore all'utente qualora il tempo di elaborazione del modello AI (LLM) superi la soglia massima consentita (Timeout di risposta). & UC 5, 8, 9, 11, 13.1, 13.2, 15, 16 \\ 
     \hline
     RF.7 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
     \hline
@@ -1172,6 +1182,8 @@ architettura completa ad agenti.
     \hline
     RQ.5 & Obbligatorio & L’output dell’Agente Changelog destinato al cliente o agli stakeholder deve essere scritto in modo comprensibile dal lato business, evitando tecnicismi non necessari. & Verbale esterno 2026/04/24 \\
     \hline
+    RQ.6 & Desiderabile & l tempo di attesa per l'esecuzione di un agente su un ambito di analisi ristretto (es. file singolo o porzione di codice locale) non dovrebbe superare una soglia temporale ragionevole (es. 2-3 minuti), al fine di non ostacolare il flusso di lavoro dell'utente. & Capitolato C2 \\
+    \hline
     
 \end{xltabular}
 \endgroup
@@ -1229,11 +1241,14 @@ architettura completa ad agenti.
     \hline
     \endhead
 
+    RS.0 & Obbligatorio & Il sistema deve memorizzare i token di accesso e le credenziali fornite dall'utente esclusivamente in formato cifrato all'interno del proprio livello di persistenza. & UC 0 \\
+    \hline
     RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del Repository non devono essere applicate senza validazione umana preventiva. & Verbale esterno 2026/03/23 \\
     \hline
     RS.2 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare almeno il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 11 \\
     \hline
     RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 0, 14 \\
+    RS.4 & Desiderabile & Il sistema dovrebbe interfacciarsi con i servizi LLM esterni utilizzando policy o tier di servizio API che garantiscano che il codice sorgente analizzato non venga trattenuto o utilizzato per l'addestramento di modelli di terze parti. & Capitolato C2 \\
     \hline
     
 \end{xltabular}
