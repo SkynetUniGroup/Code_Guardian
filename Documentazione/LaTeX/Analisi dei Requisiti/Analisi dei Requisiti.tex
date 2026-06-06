@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.11.0} \\ \hline
+            \textbf{Versione} & \textit{0.12.1} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -111,15 +111,15 @@
     \endhead 
     
 
-
+    0.12.1 & 2026/06/06 & Modificata numerazione UC e requisiti & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito di incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero \\ \hline 
-    0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
-    0.10.0 & 2026/05/30 & Aggiunti requisiti RF.13 e RQ.5 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero \\ \hline        
+    0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. ex UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
+    0.10.0 & 2026/05/30 & Aggiunti requisiti RF.20 e RQ.4 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero \\ \hline        
     0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & Dario Pirrone & Edoardo Granziero \\ \hline
     0.8.2 & 2026/05/26 & Raffinati casi dell'agente Docs e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
     0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti; piccoli raffinamenti nell'intero file & Sara Ristovic & Samuele Bertin \\ \hline
     0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'Agente OWASP & Sara Ristovic & Samuele Bertin \\ \hline
-    0.6.0 & 2026/05/19 & Aggiunti sottocasi 14.1 e 14.2 dell'UC 14; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
+    0.6.0 & 2026/05/19 & Aggiunte estensioni 16 e 17 dell'UC 15; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone \\ \hline
     0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 3 UC all'Agente OWASP, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone \\ \hline
     0.4.0 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Sara Ristovic \\ Marco Barbiero}  & Dario Pirrone \\ \hline
     0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic & Marco Barbiero \\ \hline
@@ -704,7 +704,7 @@ L'agente si concentra su tre aree principali:
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente OWASP.
 
-\subsubsection{UC 11: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}\label{uc:11}
+\subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}\label{uc:10}
 L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
 
 \begin{itemize}
@@ -756,7 +756,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 \end{itemize}
 
 
-\subsubsection{UC 12: Verifica Conformità "\textit{Policy-as-code}" (CLAUDE.md)}\label{uc:12}
+\subsubsection{UC 11: Verifica Conformità "\textit{Policy-as-code}" (CLAUDE.md)}\label{uc:11}
 
 L'agente verifica che il codice rispetti le regole
 specifiche definite dal team nel file di configurazione.
@@ -819,7 +819,7 @@ specifiche definite dal team nel file di configurazione.
         \end{itemize}
     \end{itemize}
 
-\subsubsection{UC 13: Generazione Suggerimenti di \textit{Remediation}}\label{uc:13}
+\subsubsection{UC 12: Generazione Suggerimenti di \textit{Remediation}}\label{uc:12}
 L'agente fornisce soluzioni pratiche per correggere i
 problemi di sicurezza o le violazioni di policy trovate.
 
@@ -829,8 +829,8 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
 \item
-  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 11
-  o UC 12.
+  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 10
+  o UC 11.
 \item
   \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
 \item
@@ -846,7 +846,7 @@ problemi di sicurezza o le violazioni di policy trovate.
     \item 
     L'Agente determina il livello di localizzazione possibile per la risoluzione del problema.
     \item 
-    Il flusso si estende per generare uno snippet di codice correttivo (UC 13.1) oppure una descrizione testuale (UC 13.2).
+    Il flusso si estende per generare uno snippet di codice correttivo (UC 13) oppure una descrizione testuale (UC 14).
     \item
     Il \textit{Security Auditor} consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
     \end{enumerate}
@@ -863,12 +863,12 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item 
   \textbf{Estensioni}: 
     \begin{itemize}
-        \item UC 13.1: Generazione snippet di codice correttivo.
-        \item UC 13.2: Generazione descrizione testuale della remediation.
+        \item UC 13: Generazione snippet di codice correttivo.
+        \item UC 14: Generazione descrizione testuale della remediation.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 13.1: Generazione snippet di codice correttivo}\label{uc:13.1}
+\subsubsection{UC 13: Generazione snippet di codice correttivo}\label{uc:13}
 Descrive la generazione di un frammento di codice alternativo per correggere una \textit{Vulnerabilità} o una non conformità.
 
 \begin{itemize}
@@ -894,7 +894,7 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
 \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 13.2: Generazione descrizione testuale della \textit{Remediation}}\label{uc:13.2}
+\subsubsection{UC 14: Generazione descrizione testuale della \textit{Remediation}}\label{uc:14}
 Descrive la generazione di una spiegazione testuale della correzione da effettuare.
 
 \begin{itemize}
@@ -937,7 +937,7 @@ L'agente si concentra sulla sintesi e trasformazione del progresso di progetto a
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente Changelog.
 
-\subsubsection{UC 14: Recupero e Filtraggio \textit{User Stories}}\label{uc:14}
+\subsubsection{UC 15: Recupero e Filtraggio \textit{User Stories}}\label{uc:15}
 Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi esterni per avviare il processo di analisi.
 
 \begin{itemize}
@@ -967,19 +967,19 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \item 
   \textbf{Estensioni}: 
     \begin{itemize}
-        \item UC 14.1: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
-\item UC 14.2: Gestione delle ambiguità se l'Agente Changelog rileva discrepanze tra titolo e contenuto tecnico.
+        \item UC 16: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
+\item UC 17: Gestione delle ambiguità se l'Agente Changelog rileva discrepanze tra titolo e contenuto tecnico.
     \end{itemize}
 
 \end{itemize}
 
-\subsubsection{UC 14.1: Rilevamento di task con metadati insufficienti}\label{uc:14.1}
+\subsubsection{UC 16: Rilevamento di task con metadati insufficienti}\label{uc:16}
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management.
-\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 14), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
+\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 15), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
 \item \textbf{Precondizioni}: L'Agente ha superato la fase di autenticazione \textit{API} e ha estratto la lista grezza delle task dello \textit{Sprint}.
-\item \textbf{Postcondizioni}: Il flusso di generazione dei report (UC 15 / UC 16) prosegue solo per le task complete di tutti i metadati, mentre l'utente riceve la notifica tempestiva dei dati mancanti da integrare manualmente nei task incompleti.
+\item \textbf{Postcondizioni}: Il flusso di generazione dei report (UC 18 / UC 19) prosegue solo per le task complete di tutti i metadati, mentre l'utente riceve la notifica tempestiva dei dati mancanti da integrare manualmente nei task incompleti.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
 \item L'Agente analizza il contenuto testuale dei campi informativi di ogni task.
@@ -989,11 +989,11 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 14.2: Gestione delle ambiguità e delle incoerenze}\label{uc:14.2}
+\subsubsection{UC 17: Gestione delle ambiguità e delle incoerenze}\label{uc:17}
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
-\item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 14, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della \textit{User Story} e i dati tecnici correlati (es. log dei \textit{Commit} associati).
+\item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 15, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della \textit{User Story} e i dati tecnici correlati (es. log dei \textit{Commit} associati).
 \item \textbf{Precondizioni}: I dati della \textit{User Story} e i dati del \textit{Repository} \textit{Git} (\textit{Commit}/branch) sono stati recuperati con successo e sono pronti per l'analisi.
 \item \textbf{Postcondizioni}: Viene intercettato un potenziale errore di contesto prima della generazione del report definitivo, garantendo la perfetta coerenza tra ciò che viene dichiarato nel \textit{Changelog} Tecnico e ciò che viene spiegato nel \textit{Changelog} di Business.
 \item \textbf{Scenario Principal}:
@@ -1005,14 +1005,14 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 15: Generazione \textit{Changelog} Tecnico (Dev-to-Dev)}\label{uc:15}
+\subsubsection{UC 18: Generazione \textit{Changelog} Tecnico (Dev-to-Dev)}\label{uc:18}
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
-    \item \textbf{Trigger}: Richiesta esplicita dello sviluppatore di generare un \textit{Changelog} Tecnico e conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello \textit{Sprint} (UC 14).
+    \item \textbf{Trigger}: Richiesta esplicita dello sviluppatore di generare un \textit{Changelog} Tecnico e conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello \textit{Sprint} (UC 15).
     \item \textbf{Precondizioni}: 
         \begin{enumerate}
-            \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 14.1 e UC 14.2).
+            \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
             \item I parametri di configurazione del \textit{Repository} sono accessibili.
         \end{enumerate}
     \item \textbf{Postcondizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
@@ -1030,18 +1030,18 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 16: Generazione \textit{Changelog} di Business (Dev-to-Client)}\label{uc:16}
+\subsubsection{UC 19: Generazione \textit{Changelog} di Business (Dev-to-Client)}\label{uc:19}
 L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli \textit{Stakeholder}.
 
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
 \item \textbf{Trigger}: Richiesta esplicita del \textit{Project Manager} di generare un \textit{Changelog} di Business, dopo la creazione del \textit{Changelog} Tecnico.
-\item \textbf{Precondizioni}: Il file di \textit{Changelog} Tecnico (UC 15) è stato generato correttamente.
+\item \textbf{Precondizioni}: Il file di \textit{Changelog} Tecnico (UC 18) è stato generato correttamente.
 \item \textbf{Postcondizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
 \item \textbf{Scenario Principale}: 
 \begin{enumerate}
-            \item L'Agente riceve in input il testo del \textit{Changelog} Tecnico prodotto dall'UC 15.
+            \item L'Agente riceve in input il testo del \textit{Changelog} Tecnico prodotto dall'UC 18.
             \item L'Agente interroga l'\textit{LLM} inviando il testo tecnico e applicando le direttive sul tono e sull'audience a cui si riferisce il documento.
             \item L'Agente analizza le singole voci tecniche (es. modifiche a database, refactoring, patch di sicurezza) e ne estrae l'equivalente impatto funzionale.
             \item L'Agente traduce i termini specialistici in benefici tangibili per l'utente finale, eliminando i dettagli implementativi di basso livello, poco rilevanti e poco comprensibili per il Cliente.
@@ -1080,75 +1080,75 @@ architettura completa ad agenti.
 
     RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC 0 \\ \hline
     RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1 \\ \hline
-    RF.1.1 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
+    RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
     \\ \hline
-    RF.1.2 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} o l'ambito di analisi selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC 1 
+    RF.3 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} o l'ambito di analisi selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC 1 
     \\ \hline
-    RF.2 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
+    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
     \hline
-    RF.2.1 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2, 5 \\ 
+    RF.5 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2, 5 \\ 
     \hline
-    RF.3 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
+    RF.6 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
     \hline
-    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3 \\ 
+    RF.7 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3 \\ 
     \hline
-    RF.5 & Obbligatorio & Il sistema deve consentire all'utente di validare, modificare o rifiutare manualmente una proposta generata da un agente prima della sua eventuale applicazione. & UC 4 \\ 
+    RF.8 & Obbligatorio & Il sistema deve consentire all'utente di validare, modificare o rifiutare manualmente una proposta generata da un agente prima della sua eventuale applicazione. & UC 4 \\ 
     \hline
-    RF.6 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5 \\ 
+    RF.9 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5 \\ 
     \hline
-    RF.6.1 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC 5 \\ 
+    RF.10 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC 5 \\ 
     \hline
-    RF.6.2 & Desiderabile & Il sistema deve interrompere l'esecuzione di un agente e mostrare un messaggio di errore all'utente qualora il tempo di elaborazione del modello AI (LLM) superi la soglia massima consentita (Timeout di risposta). & UC 5, 8, 9, 11, 13.1, 13.2, 15, 16 \\ 
+    RF.11 & Desiderabile & Il sistema deve interrompere l'esecuzione di un agente e mostrare un messaggio di errore all'utente qualora il tempo di elaborazione del modello AI (LLM) superi la soglia massima consentita (Timeout di risposta). & UC 5, 8, 9, 12, 13, 14, 18, 19 \\ 
     \hline
-    RF.7 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
+    RF.12 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
     \hline
-    RF.7.1 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati, consentendo all'utente di selezionare un report passato ai fini dell'esportazione. & UC 6 \\ 
+    RF.13 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati, consentendo all'utente di selezionare un report passato ai fini dell'esportazione. & UC 6 \\ 
     \hline
-    RF.8 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 7 \\ 
+    RF.14 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 7 \\ 
     \hline
-    RF.8.1 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file README.md. & UC 7 \\ 
+    RF.15 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file README.md. & UC 7 \\ 
     \hline
-    RF.9 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 8 \\ 
+    RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 8 \\ 
     \hline
-    RF.10 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8 \\ 
+    RF.17 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8 \\ 
     \hline
-    RF.11 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 8 \\ 
+    RF.18 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 8 \\ 
     \hline
-    RF.12 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9\\
+    RF.19 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9\\
     \hline
-    RF.13 & Obbligatorio & Il sistema deve riconoscere quando le modifiche apportate al codice sorgente non alterano il comportamento, i componenti o gli endpoint analizzati, terminando l'esecuzione senza generare nuove proposte di aggiornamento documentale. & UC 7, 8, 9\\
+    RF.20 & Obbligatorio & Il sistema deve riconoscere quando le modifiche apportate al codice sorgente non alterano il comportamento, i componenti o gli endpoint analizzati, terminando l'esecuzione senza generare nuove proposte di aggiornamento documentale. & UC 7, 8, 9\\
     \hline
-    RF.14 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 11 \\
+    RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 10 \\
     \hline
-    RF.15 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 11 \\
+    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 10 \\
     \hline
-    RF.16 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 11 \\
+    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10 \\
     \hline
-    RF.17 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 12 \\
+    RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
     \hline
-    RF.18 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 13 \\ 
+    RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 12 \\ 
     \hline
-    RF.19 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 13.1 \\
+    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 13 \\
     \hline
-    RF.20 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 13.2 \\ 
+    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 14 \\ 
     \hline
-    RF.21 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 14 \\
+    RF.28 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 15 \\
     \hline
-    RF.21.1 & Obbligatorio & Il sistema deve filtrare le User Stories e i task completati relativi a uno specifico Sprint. & UC 14 \\
+    RF.29 & Obbligatorio & Il sistema deve filtrare le User Stories e i task completati relativi a uno specifico Sprint. & UC 15 \\
     \hline
-    RF.22 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC 14, Verbale esterno 2026/04/24 \\
+    RF.30 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC 15, Verbale esterno 2026/04/24 \\
     \hline
-    RF.23 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC 14 \\ 
+    RF.31 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC 15 \\ 
     \hline
-    RF.24 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 14.1 \\
+    RF.32 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 16 \\
     \hline
-    RF.25 & Opzionale & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 14.2 \\
+    RF.33 & Opzionale & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 17 \\
     \hline
-    RF.26 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 15 \\
+    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 18 \\
     \hline
-    RF.27 & Desiderabile &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 15 \\
+    RF.35 & Desiderabile &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 18 \\
     \hline
-    RF.28 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, genearto dai dati validati dello Sprint. & UC 15,16 \\
+    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, genearto dai dati validati dello Sprint. & UC 18,19 \\
     \hline
 
 \end{xltabular}
@@ -1172,17 +1172,17 @@ architettura completa ad agenti.
     \hline
     \endhead
 
-    RQ.1 & Obbligatorio & Il sistema deve adottare un approccio \textit{Human-in-the-loop}, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, Verbale esterno 2026/03/23 \\ 
+    RQ.0 & Obbligatorio & Il sistema deve adottare un approccio \textit{Human-in-the-loop}, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, Verbale esterno 2026/03/23 \\ 
     \hline
-    RQ.2 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & Verbale esterno 2026/03/23 \\
+    RQ.1 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & Verbale esterno 2026/03/23 \\
     \hline
-    RQ.3 & Desiderabile & Il sistema deve minimizzare i falsi positivi nella generazione della documentazione, evitando di proporre aggiornamenti per modifiche al codice puramente stilistiche o marginali. & UC 7, 8, 9 \\
+    RQ.2 & Desiderabile & Il sistema deve minimizzare i falsi positivi nella generazione della documentazione, evitando di proporre aggiornamenti per modifiche al codice puramente stilistiche o marginali. & UC 7, 8, 9 \\
     \hline
-    RQ.4 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati e per i modelli o servizi utilizzati. & Verbale esterno 2026/03/23 \\
+    RQ.3 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati e per i modelli o servizi utilizzati. & Verbale esterno 2026/03/23 \\
     \hline
-    RQ.5 & Obbligatorio & L’output dell’Agente Changelog destinato al cliente o agli stakeholder deve essere scritto in modo comprensibile dal lato business, evitando tecnicismi non necessari. & Verbale esterno 2026/04/24 \\
+    RQ.4 & Obbligatorio & L’output dell’Agente Changelog destinato al cliente o agli stakeholder deve essere scritto in modo comprensibile dal lato business, evitando tecnicismi non necessari. & Verbale esterno 2026/04/24 \\
     \hline
-    RQ.6 & Desiderabile & l tempo di attesa per l'esecuzione di un agente su un ambito di analisi ristretto (es. file singolo o porzione di codice locale) non dovrebbe superare una soglia temporale ragionevole (es. 2-3 minuti), al fine di non ostacolare il flusso di lavoro dell'utente. & Capitolato C2 \\
+    RQ.5 & Desiderabile & l tempo di attesa per l'esecuzione di un agente su un ambito di analisi ristretto (es. file singolo o porzione di codice locale) non dovrebbe superare una soglia temporale ragionevole (es. 2-3 minuti), al fine di non ostacolare il flusso di lavoro dell'utente. & Capitolato C2 \\
     \hline
     
 \end{xltabular}
@@ -1206,19 +1206,19 @@ architettura completa ad agenti.
     \hline
     \endhead
 
-    RV.1 & Obbligatorio & Gli agenti sviluppati devono integrarsi in un’architettura già esistente fornita dal Proponente. & Verbale esterno 2026/03/23 \\
+    RV.0 & Obbligatorio & Gli agenti sviluppati devono integrarsi in un’architettura già esistente fornita dal Proponente. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.2 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
+    RV.1 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.3 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per integrazione e test. & Verbale esterno 2026/03/23 \\
+    RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per integrazione e test. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.4 & Obbligatorio & Il progetto non prevede lo sviluppo dell’Orchestratore né degli agenti dedicati all’aggiornamento delle librerie, alla sostituzione del codice obsoleto al mantenimento della copertura dei test, in quanto già in sviluppo presso Var Group. & Verbale esterno 2026/03/23 \\
+    RV.3 & Obbligatorio & Il progetto non prevede lo sviluppo dell’Orchestratore né degli agenti dedicati all’aggiornamento delle librerie, alla sostituzione del codice obsoleto al mantenimento della copertura dei test, in quanto già in sviluppo presso Var Group. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.5 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2 \\
+    RV.4 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2 \\
     \hline
-    RV.6 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
+    RV.5 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.7 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
+    RV.6 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
     \hline
     
 \end{xltabular}
@@ -1245,9 +1245,10 @@ architettura completa ad agenti.
     \hline
     RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del Repository non devono essere applicate senza validazione umana preventiva. & Verbale esterno 2026/03/23 \\
     \hline
-    RS.2 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare almeno il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 11 \\
+    RS.2 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare almeno il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
     \hline
-    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 0, 14 \\
+    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 0, 15 \\
+    \hline
     RS.4 & Desiderabile & Il sistema dovrebbe interfacciarsi con i servizi LLM esterni utilizzando policy o tier di servizio API che garantiscano che il codice sorgente analizzato non venga trattenuto o utilizzato per l'addestramento di modelli di terze parti. & Capitolato C2 \\
     \hline
     
@@ -1276,27 +1277,27 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     \endhead
 
     \hyperref[uc:1]{UC 1} & RF.1 \\ \hline
-    \hyperref[uc:2]{UC 2} & RF.2, RF.3 \\ \hline
-    \hyperref[uc:3]{UC 3} & RF.4 \\ \hline
-    \hyperref[uc:4]{UC 4} & RF.5, RQ.1 \\ \hline
-    \hyperref[uc:5]{UC 5} & RF.6 \\ \hline
-    \hyperref[uc:6]{UC 6} & RF.7 \\ \hline
-    \hyperref[uc:7]{UC 7} & RF.8, RF.13, RQ.3 \\ \hline
-    \hyperref[uc:8]{UC 8} & RF.9, RF.10, RF.11, RF.13, RQ.3 \\ \hline
-    \hyperref[uc:9]{UC 9} & RF.12, RF.13, RQ.3 \\ \hline
-    \hyperref[uc:11]{UC 11} & RF.14, RF.15, RF.16, RS.2 \\ \hline
-    \hyperref[uc:12]{UC 12} & RF.17 \\ \hline
-    \hyperref[uc:13]{UC 13} & RF.18 \\ \hline
-    \hyperref[uc:13.1]{UC 13.1} & RF.19 \\ \hline
-    \hyperref[uc:13.2]{UC 13.2} & RF.20 \\ \hline
-    \hyperref[uc:14]{UC 14} & RF.21, RF.22, RF.23, RS.3 \\ \hline
-    \hyperref[uc:14.1]{UC 14.1} & RF.24 \\ \hline
-    \hyperref[uc:14.2]{UC 14.2} & RF.25 \\ \hline
-    \hyperref[uc:15]{UC 15} & RF.26, RF.27 \\ \hline
-    \hyperref[uc:16]{UC 16} & RF.28 \\ \hline
-    Capitolato C2 & RV.5 \\ \hline
-    Verbale esterno 2026/03/23 & RQ.1, RQ.2, RQ.4, RV.1, RV.2, RV.3, RV.4, RS.1 \\ \hline
-    Verbale esterno 2026/04/24 & RF.22, RQ.5 \\ \hline
+    \hyperref[uc:2]{UC 2} & RF.4, RF.6 \\ \hline
+    \hyperref[uc:3]{UC 3} & RF.7 \\ \hline
+    \hyperref[uc:4]{UC 4} & RF.8, RQ.0 \\ \hline
+    \hyperref[uc:5]{UC 5} & RF.9 \\ \hline
+    \hyperref[uc:6]{UC 6} & RF.12 \\ \hline
+    \hyperref[uc:7]{UC 7} & RF.14, RF.20, RQ.2 \\ \hline
+    \hyperref[uc:8]{UC 8} & RF.16, RF.17, RF.18, RF.20, RQ.2 \\ \hline
+    \hyperref[uc:9]{UC 9} & RF.19, RF.20, RQ.2 \\ \hline
+    \hyperref[uc:10]{UC 10} & RF.21, RF.22, RF.23, RS.2 \\ \hline
+    \hyperref[uc:11]{UC 11} & RF.24 \\ \hline
+    \hyperref[uc:12]{UC 12} & RF.25 \\ \hline
+    \hyperref[uc:13]{UC 13} & RF.26 \\ \hline
+    \hyperref[uc:14]{UC 14} & RF.27 \\ \hline
+    \hyperref[uc:15]{UC 15} & RF.28, RF.30, RF.31, RS.3 \\ \hline
+    \hyperref[uc:16]{UC 16} & RF.32 \\ \hline
+    \hyperref[uc:17]{UC 17} & RF.33 \\ \hline
+    \hyperref[uc:18]{UC 18} & RF.34, RF.35 \\ \hline
+    \hyperref[uc:19]{UC 19} & RF.36 \\ \hline
+    Capitolato C2 & RV.4 \\ \hline
+    Verbale esterno 2026/03/23 & RQ.0, RQ.1, RQ.3, RV.0, RV.1, RV.2, RV.3, RS.1 \\ \hline
+    Verbale esterno 2026/04/24 & RF.30, RQ.4 \\ \hline
 
 \end{xltabular}
 \endgroup
@@ -1319,46 +1320,46 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     \endhead
 
     RF.1 & \hyperref[uc:1]{UC 1} \\ \hline
-    RF.2 & \hyperref[uc:2]{UC 2} \\ \hline
-    RF.3 & \hyperref[uc:2]{UC 2} \\ \hline
-    RF.4 & \hyperref[uc:3]{UC 3} \\ \hline
-    RF.5 & \hyperref[uc:4]{UC 4} \\ \hline
-    RF.6 & \hyperref[uc:5]{UC 5} \\ \hline
-    RF.7 & \hyperref[uc:6]{UC 6} \\ \hline
-    RF.8 & \hyperref[uc:7]{UC 7} \\ \hline
-    RF.9 & \hyperref[uc:8]{UC 8} \\ \hline
-    RF.10 & \hyperref[uc:8]{UC 8} \\ \hline
-    RF.11 & \hyperref[uc:8]{UC 8} \\ \hline
-    RF.12 & \hyperref[uc:9]{UC 9} \\ \hline
-    RF.13 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
-    RF.14 & \hyperref[uc:11]{UC 11} \\ \hline
-    RF.15 & \hyperref[uc:11]{UC 11} \\ \hline
-    RF.16 & \hyperref[uc:11]{UC 11} \\ \hline
-    RF.17 & \hyperref[uc:12]{UC 12} \\ \hline
-    RF.18 & \hyperref[uc:13]{UC 13} \\ \hline
-    RF.19 & \hyperref[uc:13.1]{UC 13.1} \\ \hline
-    RF.20 & \hyperref[uc:13.2]{UC 13.2} \\ \hline
-    RF.21 & \hyperref[uc:14]{UC 14} \\ \hline
-    RF.22 & \hyperref[uc:14]{UC 14}, Verbale esterno 2026/04/24 \\ \hline
-    RF.23 & \hyperref[uc:14]{UC 14} \\ \hline
-    RF.24 & \hyperref[uc:14.1]{UC 14.1} \\ \hline
-    RF.25 & \hyperref[uc:14.2]{UC 14.2} \\ \hline
-    RF.26 & \hyperref[uc:15]{UC 15} \\ \hline
-    RF.27 & \hyperref[uc:15]{UC 15} \\ \hline
-    RF.28 & \hyperref[uc:16]{UC 16} \\ \hline
-    RQ.1 & \hyperref[uc:4]{UC 4}, Verbale esterno 2026/03/23 \\ \hline
-    RQ.2 & Verbale esterno 2026/03/23 \\ \hline
-    RQ.3 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
-    RQ.4 & Verbale esterno 2026/03/23 \\ \hline
-    RQ.5 & Verbale esterno 2026/04/24 \\ \hline
+    RF.4 & \hyperref[uc:2]{UC 2} \\ \hline
+    RF.6 & \hyperref[uc:2]{UC 2} \\ \hline
+    RF.7 & \hyperref[uc:3]{UC 3} \\ \hline
+    RF.8 & \hyperref[uc:4]{UC 4} \\ \hline
+    RF.9 & \hyperref[uc:5]{UC 5} \\ \hline
+    RF.12 & \hyperref[uc:6]{UC 6} \\ \hline
+    RF.14 & \hyperref[uc:7]{UC 7} \\ \hline
+    RF.16 & \hyperref[uc:8]{UC 8} \\ \hline
+    RF.17 & \hyperref[uc:8]{UC 8} \\ \hline
+    RF.18 & \hyperref[uc:8]{UC 8} \\ \hline
+    RF.19 & \hyperref[uc:9]{UC 9} \\ \hline
+    RF.20 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
+    RF.21 & \hyperref[uc:10]{UC 10} \\ \hline
+    RF.22 & \hyperref[uc:10]{UC 10} \\ \hline
+    RF.23 & \hyperref[uc:10]{UC 10} \\ \hline
+    RF.24 & \hyperref[uc:11]{UC 11} \\ \hline
+    RF.25 & \hyperref[uc:12]{UC 12} \\ \hline
+    RF.26 & \hyperref[uc:13]{UC 13} \\ \hline
+    RF.27 & \hyperref[uc:14]{UC 14} \\ \hline
+    RF.28 & \hyperref[uc:15]{UC 15} \\ \hline
+    RF.30 & \hyperref[uc:15]{UC 15}, Verbale esterno 2026/04/24 \\ \hline
+    RF.31 & \hyperref[uc:15]{UC 15} \\ \hline
+    RF.32 & \hyperref[uc:16]{UC 16} \\ \hline
+    RF.33 & \hyperref[uc:17]{UC 17} \\ \hline
+    RF.34 & \hyperref[uc:18]{UC 18} \\ \hline
+    RF.35 & \hyperref[uc:18]{UC 18} \\ \hline
+    RF.36 & \hyperref[uc:19]{UC 19} \\ \hline
+    RQ.0 & \hyperref[uc:4]{UC 4}, Verbale esterno 2026/03/23 \\ \hline
+    RQ.1 & Verbale esterno 2026/03/23 \\ \hline
+    RQ.2 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
+    RQ.3 & Verbale esterno 2026/03/23 \\ \hline
+    RQ.4 & Verbale esterno 2026/04/24 \\ \hline
+    RV.0 & Verbale esterno 2026/03/23 \\ \hline
     RV.1 & Verbale esterno 2026/03/23 \\ \hline
     RV.2 & Verbale esterno 2026/03/23 \\ \hline
     RV.3 & Verbale esterno 2026/03/23 \\ \hline
-    RV.4 & Verbale esterno 2026/03/23 \\ \hline
-    RV.5 & Capitolato C2 \\ \hline
+    RV.4 & Capitolato C2 \\ \hline
     RS.1 & Verbale esterno 2026/03/23 \\ \hline
-    RS.2 & \hyperref[uc:11]{UC 11} \\ \hline
-    RS.3 & \hyperref[uc:14]{UC 14} \\ \hline
+    RS.2 & \hyperref[uc:10]{UC 10} \\ \hline
+    RS.3 & \hyperref[uc:15]{UC 15} \\ \hline
 
 \end{xltabular}
 \endgroup
