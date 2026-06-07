@@ -373,7 +373,6 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
     
     \item \textbf{Sistema di Task Management:} La piattaforma esterna di tracciamento delle attività. Viene interrogata dall'Agente \textit{Changelog} per recuperare i metadati, le descrizioni e i criteri di accettazione dei \textit{\glo{Ticket}{ticket}} completati durante uno \textit{Sprint}.
     
-    \item \textbf{File di configurazione (CLAUDE.md):} Documento testuale presente all'interno del \textit{Repository} che l'Agente \textit{OWASP} consulta passivamente per estrarre il contesto operativo e le regole specifiche del team per la validazione delle policy.
 \end{itemize}
 
 \newpage
@@ -765,7 +764,7 @@ specifiche definite dal team nel file di configurazione.
 \item
   \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
 \item
-  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository Git}, File di configurazione CLAUDE.md.
+  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository Git}.
 \item
   \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità all'\textbf{Orchestratore}.
 \item \textbf{Precondizioni}:
@@ -829,8 +828,7 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
 \item
-  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 10
-  o UC 11.
+  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 10 o UC 11 e richiesta del utente di generare suggerimenti di \textit{Remediation}.
 \item
   \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
 \item
@@ -961,7 +959,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \item \textbf{Scenari alternativi}: 
     \begin{itemize}
-        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di Task Management restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il sitema notifica all'utente l'errore.
+        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di Task Management restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.
     \end{itemize}
 
 \item 
@@ -1037,7 +1035,11 @@ L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
 \item \textbf{\textit{Attore} Primario}: \textit{Project Manager}.
 \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
 \item \textbf{Trigger}: Richiesta esplicita del \textit{Project Manager} di generare un \textit{Changelog} di Business, dopo la creazione del \textit{Changelog} Tecnico.
-\item \textbf{Precondizioni}: Il file di \textit{Changelog} Tecnico (UC 18) è stato generato correttamente.
+\item \textbf{Precondizioni}: 
+        \begin{enumerate}
+            \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
+            \item I parametri di configurazione del \textit{Repository} sono accessibili.
+        \end{enumerate}
 \item \textbf{Postcondizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
 \item \textbf{Scenario Principale}: 
 \begin{enumerate}
@@ -1049,7 +1051,12 @@ L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
 \end{enumerate}
     \item \textbf{Scenario Alternativo}: 
     \begin{itemize}
+    \item Il Changelog Tecnico non è stato genearto in precedenza al passo 1, quindi Il sistema invoca automaticamente la generazione del Changelog Tecnico (Inclusione UC 18).
     \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+\end{itemize}
+    \item \textbf{Inclusioni}: 
+    \begin{itemize}
+    \item UC 18: Generazione Changelog Tecnico.
 \end{itemize}
 \end{itemize}
 
@@ -1094,7 +1101,7 @@ architettura completa ad agenti.
     \hline
     RF.8 & Obbligatorio & Il sistema deve consentire all'utente di validare, modificare o rifiutare manualmente una proposta generata da un agente prima della sua eventuale applicazione. & UC 4 \\ 
     \hline
-    RF.9 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5 \\ 
+    RF.9 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5, 15 \\ 
     \hline
     RF.10 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC 5 \\ 
     \hline
@@ -1290,7 +1297,7 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     \hyperref[uc:12]{UC 12} & RF.25 \\ \hline
     \hyperref[uc:13]{UC 13} & RF.26 \\ \hline
     \hyperref[uc:14]{UC 14} & RF.27 \\ \hline
-    \hyperref[uc:15]{UC 15} & RF.28, RF.30, RF.31, RS.3 \\ \hline
+    \hyperref[uc:15]{UC 15} & RF.15, 28, RF.30, RF.31, RS.3 \\ \hline
     \hyperref[uc:16]{UC 16} & RF.32 \\ \hline
     \hyperref[uc:17]{UC 17} & RF.33 \\ \hline
     \hyperref[uc:18]{UC 18} & RF.34, RF.35 \\ \hline
@@ -1324,7 +1331,7 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RF.6 & \hyperref[uc:2]{UC 2} \\ \hline
     RF.7 & \hyperref[uc:3]{UC 3} \\ \hline
     RF.8 & \hyperref[uc:4]{UC 4} \\ \hline
-    RF.9 & \hyperref[uc:5]{UC 5} \\ \hline
+    RF.9 & \hyperref[uc:5]{UC 5}, \hyperref[uc:15]{UC 15} \\ \hline
     RF.12 & \hyperref[uc:6]{UC 6} \\ \hline
     RF.14 & \hyperref[uc:7]{UC 7} \\ \hline
     RF.16 & \hyperref[uc:8]{UC 8} \\ \hline
