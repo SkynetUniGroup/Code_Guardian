@@ -110,6 +110,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
     
+
     0.13.0 & 2026/06/08 & Aggiunti diagrammi UML per Agente OWASP e Agente Changelog & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.1 & 2026/06/06 & Modificata numerazione UC e requisiti & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito di incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero \\ \hline 
@@ -215,11 +216,7 @@ solamente alla loro prima occorrenza in questo documento.
 
 \subsection{Obiettivi del prodotto}
 
-L'obiettivo principale del progetto è lo sviluppo di un
-set di agenti intelligenti basati su modelli linguistici di grandi
-dimensioni (\textit{\glo{LLM}{llm}}), progettati per integrarsi in
-un'architettura di orchestrazione già esistente fornita
-dal \textbf{Proponente} \emph{Var Group}. Il sistema, denominato \textbf{Code
+L'obiettivo principale del progetto è lo sviluppo di un sistema composto da un \textbf{\glo{Orchestratore}{orchestratore}} centrale deterministico e da un set di tre agenti intelligenti specializzati basati su modelli linguistici di grandi dimensioni (\textit{\glo{LLM}{llm}}).L'\textbf{Orchestratore} funge da motore di esecuzione lineare e funzionale: riceve gli input dell'utente e invoca i vari agenti. Il sistema, denominato \textbf{Code
 Guardian}, mira ad automatizzare i processi di \textit{\glo{Audit}{audit}}, manutenzione e
 documentazione dei \textit{\glo{Repository}{repository}} software, riducendo il carico di lavoro
 manuale dei team di sviluppo e migliorando la qualità complessiva del
@@ -247,7 +244,7 @@ codice. Nello specifico, il prodotto si prefigge di:
 \subsection{Funzioni del prodotto}
 
 Il prodotto offre le sue funzionalità attraverso tre agenti
-specializzati coordinati dall'\textbf{\glo{Orchestratore}{orchestratore}} centrale:
+specializzati coordinati dall'\textbf{Orchestratore} centrale:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -362,6 +359,13 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
     \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente \textit{Changelog} innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} completate.
 \end{itemize}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{ATTORI.png}
+    \caption{Attori primari coinvolti}
+    \label{fig:Attori}
+\end{figure}
+
 \subsubsection{\textit{Attori} Secondari}
 
 \begin{itemize}
@@ -372,6 +376,8 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
     \item \textbf{Sistema di Task Management:} La piattaforma esterna di tracciamento delle attività. Viene interrogata dall'Agente \textit{Changelog} per recuperare i metadati, le descrizioni e i criteri di accettazione dei \textit{\glo{Ticket}{ticket}} completati durante uno \textit{Sprint}.
     
 \end{itemize}
+
+
 
 \newpage
 \subsection{\textit{Casi d'Uso} trasversali}
@@ -714,7 +720,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
 \item
-  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza per identificare \textit{Vulnerabilità} all'\textbf{Orchestratore}.
+  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza per identificare \textit{Vulnerabilità}.
 \item
   \textbf{Precondizioni}:
   \begin{itemize}
@@ -774,7 +780,7 @@ specifiche definite dal team nel file di configurazione.
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository Git}.
 \item
-  \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità all'\textbf{Orchestratore}.
+  \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità.
 \item \textbf{Precondizioni}:
 \begin{itemize}
     \item È stato selezionato un ambito di analisi (UC 2).
@@ -1014,7 +1020,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \begin{enumerate}
 \item L'Agente esegue un confronto semantico automatico tramite \textit{LLM} tra la documentazione della task e l'effettivo codice/messaggio di \textit{Commit} associato.
 \item L'Agente identifica un conflitto (es. task registrata come "Modifica Testi" ma modifiche reali focalizzate sulla "Sicurezza delle API").
-\item L'Agente contrassegna la voce come "Ambigua" all'interno del sistema di orchestrazione.
+\item L'Agente contrassegna la voce come "Ambigua".
 \item Il sistema presenta una notifica visiva allo Sviluppatore o al Sviluppatore / \textit{Project Manager}, richiedendo una risoluzione manuale o una conferma su quale contesto dare priorità (Documentale o Tecnico).
 \end{enumerate}
 \end{itemize}
@@ -1246,13 +1252,13 @@ architettura completa ad agenti.
     \hline
     \endhead
 
-    RV.0 & Obbligatorio & Gli agenti sviluppati devono integrarsi in un’architettura già esistente fornita dal Proponente. & Verbale esterno 2026/03/23 \\
+    RV.0 & Obbligatorio & Il progetto prevede lo sviluppo, da parte del team, di un Orchestratore centrale che invoca gli agenti e fa da itermediario tra utenti e agenti. & Verbale esterno 2026/06/08 \\
     \hline
     RV.1 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per integrazione e test. & Verbale esterno 2026/03/23 \\
+    RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.3 & Obbligatorio & Il progetto non prevede lo sviluppo dell’Orchestratore né degli agenti dedicati all’aggiornamento delle librerie, alla sostituzione del codice obsoleto al mantenimento della copertura dei test, in quanto già in sviluppo presso Var Group. & Verbale esterno 2026/03/23 \\
+    RV.3 & Obbligatorio & Il sitema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
     \hline
     RV.4 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2 \\
     \hline
@@ -1336,8 +1342,9 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     \hyperref[uc:18]{UC 18} & RF.34, RF.35 \\ \hline
     \hyperref[uc:19]{UC 19} & RF.36 \\ \hline
     Capitolato C2 & RV.4 \\ \hline
-    Verbale esterno 2026/03/23 & RQ.0, RQ.1, RQ.3, RV.0, RV.1, RV.2, RV.3, RS.1 \\ \hline
+    Verbale esterno 2026/03/23 & RQ.0, RQ.1, RQ.3, RV.1, RV.2, RS.1 \\ \hline
     Verbale esterno 2026/04/24 & RF.30, RQ.4 \\ \hline
+    Verbale esterno 2026/06/08 & RV.0, RV.3 \\ \hline
 
 \end{xltabular}
 \endgroup
@@ -1392,9 +1399,9 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RQ.2 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
     RQ.3 & Verbale esterno 2026/03/23 \\ \hline
     RQ.4 & Verbale esterno 2026/04/24 \\ \hline
-    RV.0 & Verbale esterno 2026/03/23 \\ \hline
+    RV.0 & Verbale esterno 2026/06/08\\ \hline
     RV.1 & Verbale esterno 2026/03/23 \\ \hline
-    RV.2 & Verbale esterno 2026/03/23 \\ \hline
+    RV.2 & Verbale esterno 2026/06/08 \\ \hline
     RV.3 & Verbale esterno 2026/03/23 \\ \hline
     RV.4 & Capitolato C2 \\ \hline
     RS.1 & Verbale esterno 2026/03/23 \\ \hline
