@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.12.1} \\ \hline
+            \textbf{Versione} & \textit{0.13.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -110,7 +110,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
     
-
+    0.13.0 & 2026/06/08 & Aggiunti diagrammi UML per Agente OWASP e Agente Changelog & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.1 & 2026/06/06 & Modificata numerazione UC e requisiti & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito di incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. ex UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
@@ -365,8 +365,6 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsubsection{\textit{Attori} Secondari}
 
 \begin{itemize}
-    \item \textbf{Orchestratore:} L'architettura centrale fornita dal \textbf{Proponente} (\textbf{VarGroup}). Funge da intermediario logico tra l'utente e gli agenti specializzati, gestendo il flusso delle operazioni, l'assegnazione dei task e la raccolta degli output generati.
-    
     \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{Pull Request} o \textit{\glo{Patch}{patch}}.
     
     \item \textbf{\textit{API \glo{Claude Code}{claude-code}} / Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
@@ -379,10 +377,10 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsection{\textit{Casi d'Uso} trasversali}
 Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=1\linewidth]{UC trasversali.png}
-    \caption{Use cases trasversali a tutti gli Agenti}
+    \caption{Use Cases trasversali a tutti gli Agenti}
     \label{fig:UCtrasv}
 \end{figure}
 
@@ -486,9 +484,10 @@ L'utente vuole consultare il risultato prodotto da un agente a seguito di un’a
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Utente Generico.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: L'utente vuole consultare l'esito dell'analisi svolta da un agente.
-    \item \textbf{Precondizioni}: L'\textbf{Orchestratore} ha eseguito almeno un agente. È disponibile almeno un report prodotto dall'agente.
+    \item \textbf{Precondizioni}: \begin{itemize}
+    \item L'\textbf{Orchestratore} ha eseguito almeno un agente ed è disponibile almeno un report prodotto dall'agente.
+    \end{itemize}
     \item \textbf{Postcondizioni}: L'utente visualizza il report generato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -497,7 +496,9 @@ L'utente vuole consultare il risultato prodotto da un agente a seguito di un’a
             \item L'utente seleziona il report desiderato.
             \item Il sistema visualizza il contenuto del report, includendo eventuali criticità, suggerimenti e file coinvolti.
         \end{enumerate}
-    \item \textbf{Scenari alternativi:} Se non sono presenti report, il sistema mostra un messaggio informativo.
+    \item \textbf{Scenari alternativi:} \begin{itemize}
+        \item Se non sono presenti report, il sistema mostra un messaggio informativo.
+    \end{itemize}
 \end{itemize}
 
 \subsubsection{UC 4: Validazione umana di una proposta dell'agente}\label{uc:4}
@@ -507,7 +508,9 @@ Il sistema adotta un approccio \textit{Human-in-the-loop}, in modo che le propos
     \item \textbf{\textit{Attore} Primario}: Utente Generico.
     \item \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}.
     \item \textbf{Trigger}: L'utente riceve una proposta generata da un agente.
-    \item \textbf{Precondizioni}: Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di \textit{Pull Request}, frammento di codice o suggerimento testuale.
+    \item \textbf{Precondizioni}: \begin{itemize}
+    \item Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di \textit{Pull Request}, frammento di codice o suggerimento testuale.
+    \end{itemize}
     \item \textbf{Postcondizioni}: La proposta è stata accettata, modificata o rifiutata dall'utente.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -523,9 +526,10 @@ Durante l’esecuzione di un agente può verificarsi un errore che impedisce il 
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Utente Generico.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: L'esecuzione di un agente termina con errore.
-    \item \textbf{Precondizioni}: È stata avviata l'esecuzione di un agente. Si verifica un errore durante l'analisi o la generazione dell'output.
+    \item \textbf{Precondizioni}: \begin{itemize}
+    \item È stata avviata l'esecuzione di un agente. Si verifica un errore durante l'analisi o la generazione dell'output.
+    \end{itemize}
     \item \textbf{Postcondizioni}: L'utente visualizza un messaggio di errore esplicativo.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -543,7 +547,9 @@ condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Utente Generico.
     \item \textbf{Trigger}: L'utente vuole esportare e salvare il risultato di un'analisi di un agente in uno dei formati disponibili.
-    \item \textbf{Precondizioni}: È disponibile almeno un report generato da un agente.
+    \item \textbf{Precondizioni}: \begin{itemize}
+    \item È disponibile almeno un report generato da un agente.
+    \end{itemize}
     \item \textbf{Postcondizioni}: Il report è stato esportato nel formato scelto.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -552,7 +558,9 @@ condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il
             \item Il sistema genera il file esportabile.
             \item L'utente scarica o salva il report.
         \end{enumerate}
-    \item \textbf{Scenari alternativi:} Se l'esportazione fallisce, il sistema mostra un messaggio di errore.
+    \item \textbf{Scenari alternativi:} \begin{itemize}
+    \item Se l'esportazione fallisce, il sistema mostra un messaggio di errore.
+    \end{itemize}
 \end{itemize}
 
 
@@ -579,10 +587,10 @@ L'agente si focalizza su tre aree critiche:
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente Docs.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=1\linewidth]{UC Docs.png}
-    \caption{Use cases dell'Agente Docs}
+    \caption{Use Cases dell'Agente Docs}
     \label{fig:UCDocs}
 \end{figure}
 
@@ -591,7 +599,7 @@ Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \tex
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}.
+    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}.
     \item \textbf{Trigger}: Lo Sviluppatore richiede l'intervento tramite l'\textbf{Orchestratore}.
     \item \textbf{Precondizioni}: 
         \begin{itemize}
@@ -619,7 +627,6 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore verso l'\textbf{Orchestratore}.
     \item \textbf{Precondizioni}:  
         \begin{itemize}
@@ -634,23 +641,14 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
             \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
         \end{enumerate}
     \item \textbf{Scenario alternativo}:
-        \begin{enumerate}
-        \renewcommand{\labelenumi}{\Alph{enumi}.}
-        \renewcommand{\labelenumii}{\arabic{enumii}.}
-            \item L'Agente non riesce a interpretare una classe/funzione:
-            \begin{enumerate}
-                \item Invece di una proposta, è generato un avvertimento per quella classe/funzione.
-                \item L'analisi passa alla classe/funzione seguente, se presente.
-            \end{enumerate}
-            \item Le modifiche al codice non richiedono di cambiare la documentazione:
-            \begin{enumerate}
-                \item Non vengono generate proposte di aggiornamento.
-                \item Lo Sviluppatore è informato.
-                \item Lo UC termina.
-            \end{enumerate}
-            \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
-        \end{enumerate}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+    \begin{itemize}
+        \item Se l'Agente non riesce a interpretare una classe/funzione, invece di una proposta viene generato un avvertimento per quella specifica classe/funzione e l'analisi passa a quella seguente, se presente.
+        \item Se le modifiche al codice non richiedono di cambiare la documentazione, non vengono generate proposte di aggiornamento, lo Sviluppatore viene informato e l'UC termina.
+        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \end{itemize}
+    \item \textbf{Inclusioni}:\begin{itemize}
+    \item UC 4: Validazione umana di una proposta dell’agente.
+    \end{itemize}
 \end{itemize}
 
 \subsubsection{UC 9: Gestione Documentazione \textit{API}}\label{uc:9}
@@ -658,9 +656,10 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}.
     \item \textbf{Trigger}: Richiesta esplicita di generazione prima di un rilascio.
-    \item \textbf{Precondizioni}: È stato selezionato un ambito di analisi (UC 2).
+    \item \textbf{Precondizioni}: \begin{itemize}
+    \item È stato selezionato un ambito di analisi (UC 2).
+    \end{itemize}
     \item \textbf{Postcondizioni}: È disponibile una proposta di documento tecnico (\texttt{\textit{API}.md}) o il documento è già aggiornato.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -670,18 +669,13 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
             \item Il Sistema mette a disposizione la proposta di documento allo Sviluppatore per la validazione.
         \end{enumerate}
     \item \textbf{Scenario alternativo}:
-        \begin{enumerate}
-        \renewcommand{\labelenumi}{\Alph{enumi}.}
-        \renewcommand{\labelenumii}{\arabic{enumii}.}
-            \item L'analisi non rileva cambiamenti:
-            \begin{enumerate}
-                \item Non vengono generate proposte di aggiornamento.
-                \item Lo Sviluppatore è informato.
-                \item Lo UC termina.
-            \end{enumerate}
-            \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
-        \end{enumerate}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell'agente.
+    \begin{itemize}
+        \item Se l'analisi non rileva cambiamenti, non vengono generate proposte di aggiornamento, lo Sviluppatore è informato e l'UC termina.
+        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \end{itemize}
+    \item \textbf{Inclusioni}: \begin{itemize}
+    \item UC 4: Validazione umana di una proposta dell’agente.
+    \end{itemize}
 \end{itemize}
 
 \newpage
@@ -700,17 +694,25 @@ L'agente si concentra su tre aree principali:
 \item \textbf{Generazione di remediation}: produzione di suggerimenti testuali o modifiche al codice correttive per mitigare le vulnerabilità o le non conformità rilevate, senza applicare modifiche automatiche prima della validazione umana.
 \end{enumerate}
 
+\newpage
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente OWASP.
 
 \subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}\label{uc:10}
 L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{UML UC10.png}
+    \caption{Use Case Scansione Vulnerabilità}
+    \label{fig:UC10}
+\end{figure}
+
 \begin{itemize}
 \item
   \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
 \item
-  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
+  \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
 \item
   \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza per identificare \textit{Vulnerabilità} all'\textbf{Orchestratore}.
 \item
@@ -756,15 +758,21 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 
 
 \subsubsection{UC 11: Verifica Conformità "\textit{Policy-as-code}" (CLAUDE.md)}\label{uc:11}
-
 L'agente verifica che il codice rispetti le regole
 specifiche definite dal team nel file di configurazione.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{UML UC11.png}
+    \caption{Use Case Conformità ”Policy-as-code”}
+    \label{fig:UC11}
+\end{figure}
 
 \begin{itemize}
 \item
   \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
 \item
-  \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, \textit{Repository Git}.
+  \textbf{\textit{Attori} Secondari}: \textit{Repository Git}.
 \item
   \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità all'\textbf{Orchestratore}.
 \item \textbf{Precondizioni}:
@@ -796,31 +804,25 @@ specifiche definite dal team nel file di configurazione.
 \end{enumerate}
 \item
   \textbf{Scenari alternativi}:
-  \begin{itemize}
-    \item \textbf{Il file CLAUDE.md non è presente}:
-                \begin{enumerate}
-                    \item Il sistema rileva l'assenza del file.
-                    \item Il sistema interrompe la verifica delle policy interne.
-                    \item Il sistema delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
-                \end{enumerate}
-            \item \textbf{Il file CLAUDE.md non è leggibile o non contiene regole interpretabili}:
-                \begin{enumerate}
-                    \item Il sistema rileva l'impossibilità di analizzare il file.
-                    \item Il sistema interrompe la verifica delle policy interne.
-                    \item Il sistema delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
-                \end{enumerate}
-            \item \textbf{Il file CLAUDE.md contiene regole in palese contraddizione logica}:
-                \begin{enumerate}
-                    \item L'Agente OWASP legge il contenuto del file per estrarre le regole.
-                    \item L'Agente rileva un conflitto logico insormontabile tra due o più direttive.
-                    \item Il sistema interrompe la verifica delle policy interne e elega la gestione del fallimento all'UC 5.
-                \end{enumerate}
-        \end{itemize}
+  \textbf{Scenari alternativi}:
+\begin{itemize}
+    \item \textbf{Il file CLAUDE.md non è presente}: il sistema rileva l'assenza del file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
+    \item \textbf{Il file CLAUDE.md non è leggibile o non contiene regole interpretabili}: il sistema rileva l'impossibilità di analizzare il file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
+    \item \textbf{Il file CLAUDE.md contiene regole in palese contraddizione logica}: l'Agente OWASP legge il contenuto del file per estrarre le regole, rileva un conflitto logico insormontabile tra due o più direttive, quindi interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.
+\end{itemize}
     \end{itemize}
 
+\newpage
 \subsubsection{UC 12: Generazione Suggerimenti di \textit{Remediation}}\label{uc:12}
 L'agente fornisce soluzioni pratiche per correggere i
 problemi di sicurezza o le violazioni di policy trovate.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{UML UC12,13,14.png}
+    \caption{Use Cases Generazione Suggerimenti di Remediation}
+    \label{fig:UC12,13,14}
+\end{figure}
 
 \begin{itemize}
 \item
@@ -830,7 +832,9 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item
   \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 10 o UC 11 e richiesta del utente di generare suggerimenti di \textit{Remediation}.
 \item
-  \textbf{Precondizioni}: Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
+  \textbf{Precondizioni}: \begin{itemize}
+  \item Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
+  \end{itemize}
 \item
   \textbf{Postcondizioni}: Il \textit{Security Auditor} riceve indicazioni chiare su come
   correggere il codice per renderlo conforme.
@@ -899,9 +903,9 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
     \item \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
     \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
-    \item \textbf{Precondizioni}:
-        È disponibile una \textit{Vulnerabilità} o non conformità rilevata, l’agente dispone del contesto sufficiente per descrivere il problema.
-
+    \item \textbf{Precondizioni}:\begin{itemize}
+        \item È disponibile una \textit{Vulnerabilità} o non conformità rilevata, l’agente dispone del contesto sufficiente per descrivere il problema.
+    \end{itemize}
     \item \textbf{Postcondizioni}: Il \textit{Security Auditor} riceve una descrizione chiara della \textit{Remediation} consigliata.
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -932,22 +936,30 @@ L'agente si concentra sulla sintesi e trasformazione del progresso di progetto a
 \item \textbf{Validazione e Qualità del Contesto}: Monitoraggio della qualità informativa dei task per prevenire la generazione di report ambigui o privi di valore.
 \end{enumerate}
 
+\newpage
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente Changelog.
 
 \subsubsection{UC 15: Recupero e Filtraggio \textit{User Stories}}\label{uc:15}
 Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi esterni per avviare il processo di analisi.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{UML UC15,16,17.png}
+    \caption{Use Cases Recupero e Filtraggio User Stories}
+    \label{fig:UC15,16,17}
+\end{figure}
+
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management \textit{GitHub Issues}.
+\item \textbf{\textit{Attori} Secondari}: Sistema di Task Management \textit{GitHub Issues}.
 \item \textbf{Trigger}: Lo Sviluppatore  o il \textit{Project Manager} richiede la generazione del report a conclusione di uno \textit{Sprint}.
 \item \textbf{Precondizioni}:
-\begin{enumerate}
+\begin{itemize}
 \item L'Agente Changelog dispone delle credenziali e dei token di accesso validi per le \textit{API} del sistema esterno.
 \item È stato specificato un identificativo valido per lo \textit{Sprint} (\textit{Sprint} ID).
 \item Le task completate durante lo \textit{Sprint} si trovano in uno stato terminale positivo.
-\end{enumerate}
+\end{itemize}
 \item \textbf{Postcondizioni}: L'Agente dispone delle \textit{User Stories} e dei task completati nello \textit{Sprint} selezionato.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
@@ -974,9 +986,11 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \subsubsection{UC 16: Rilevamento di task con metadati insufficienti}\label{uc:16}
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Sistema di Task Management.
+\item \textbf{\textit{Attori} Secondari}: Sistema di Task Management.
 \item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 15), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
-\item \textbf{Precondizioni}: L'Agente ha superato la fase di autenticazione \textit{API} e ha estratto la lista grezza delle task dello \textit{Sprint}.
+\item \textbf{Precondizioni}: \begin{itemize}
+\item L'Agente ha superato la fase di autenticazione \textit{API} e ha estratto la lista grezza delle task dello \textit{Sprint}.
+\end{itemize}
 \item \textbf{Postcondizioni}: Il flusso di generazione dei report (UC 18 / UC 19) prosegue solo per le task complete di tutti i metadati, mentre l'utente riceve la notifica tempestiva dei dati mancanti da integrare manualmente nei task incompleti.
 \item \textbf{Scenario Principale}:
 \begin{enumerate}
@@ -990,9 +1004,11 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \subsubsection{UC 17: Gestione delle ambiguità e delle incoerenze}\label{uc:17}
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
+\item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
 \item \textbf{Trigger}: Durante la validazione dei dati aggregati nell'UC 15, l'agente rileva una forte discrepanza semantica tra il titolo/descrizione della \textit{User Story} e i dati tecnici correlati (es. log dei \textit{Commit} associati).
-\item \textbf{Precondizioni}: I dati della \textit{User Story} e i dati del \textit{Repository} \textit{Git} (\textit{Commit}/branch) sono stati recuperati con successo e sono pronti per l'analisi.
+\item \textbf{Precondizioni}: \begin{itemize}
+\item I dati della \textit{User Story} e i dati del \textit{Repository} \textit{Git} (\textit{Commit}/branch) sono stati recuperati con successo e sono pronti per l'analisi.
+\end{itemize}
 \item \textbf{Postcondizioni}: Viene intercettato un potenziale errore di contesto prima della generazione del report definitivo, garantendo la perfetta coerenza tra ciò che viene dichiarato nel \textit{Changelog} Tecnico e ciò che viene spiegato nel \textit{Changelog} di Business.
 \item \textbf{Scenario Principal}:
 \begin{enumerate}
@@ -1003,16 +1019,26 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC 18: Generazione \textit{Changelog} Tecnico (Dev-to-Dev)}\label{uc:18}
+L'Agente genera un Changelog Dev-to-Dev partendo dai dati delle User Stories.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{UML UC18.png}
+    \caption{Use Case Generazione Changelog Tecnico}
+    \label{fig:UC18}
+\end{figure}
+
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: Sviluppatore.
     \item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
     \item \textbf{Trigger}: Richiesta esplicita dello sviluppatore di generare un \textit{Changelog} Tecnico e conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello \textit{Sprint} (UC 15).
     \item \textbf{Precondizioni}: 
-        \begin{enumerate}
+        \begin{itemize}
             \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
             \item I parametri di configurazione del \textit{Repository} sono accessibili.
-        \end{enumerate}
+        \end{itemize}
     \item \textbf{Postcondizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
@@ -1031,15 +1057,22 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \subsubsection{UC 19: Generazione \textit{Changelog} di Business (Dev-to-Client)}\label{uc:19}
 L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli \textit{Stakeholder}.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{UML UC19.png}
+    \caption{Use Case Generazione Changelog di Business}
+    \label{fig:UC19}
+\end{figure}
+
 \begin{itemize}
 \item \textbf{\textit{Attore} Primario}: \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: \textbf{Orchestratore}, Modello AI (\textit{LLM}).
+\item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
 \item \textbf{Trigger}: Richiesta esplicita del \textit{Project Manager} di generare un \textit{Changelog} di Business, dopo la creazione del \textit{Changelog} Tecnico.
 \item \textbf{Precondizioni}: 
-        \begin{enumerate}
+        \begin{itemize}
             \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
             \item I parametri di configurazione del \textit{Repository} sono accessibili.
-        \end{enumerate}
+        \end{itemize}
 \item \textbf{Postcondizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
 \item \textbf{Scenario Principale}: 
 \begin{enumerate}
