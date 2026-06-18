@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.13.0} \\ \hline
+            \textbf{Versione} & \textit{0.14.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -109,7 +109,8 @@
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
-    
+
+    0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazone e login & Dario Pirrone & Sara Ristovic \\ \hline
     0.13.0 & 2026/06/08 & Aggiunti diagrammi UML per Agente OWASP e Agente Changelog & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.1 & 2026/06/06 & Modificata numerazione UC e requisiti & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito di incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero \\ \hline 
@@ -353,6 +354,8 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsubsection{\textit{Attori} Primari}
 
 \begin{itemize}
+    \item \textbf{Utente non Autenticato:}
+
     \item \textbf{Utente Generico:} Rappresenta l'\textit{Attore} di base del sistema dal quale ereditano tutti gli altri \textit{Attori} primari. Questo ruolo racchiude le facoltà e le interazioni comuni a qualsiasi utilizzatore della piattaforma, consentendo l'esecuzione dei casi d'uso definiti come trasversali, tra cui la selezione del \textit{Repository} \textit{Git}, la visualizzazione dei messaggi di errore e l'esportazione dei report prodotti.
     
     \item \textbf{Sviluppatore:} Specializzazione di Utente Generico ed utente principale del sistema. Interagisce con gli agenti per delegare la redazione e l'aggiornamento della documentazione tecnica, per validare le proposte di modifica (approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}) e per ricevere feedback immediati sulle vulnerabilità di sicurezza del codice prodotto.
@@ -384,6 +387,67 @@ Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per d
     \label{fig:UCtrasv}
 \end{figure}
 
+\subsubsection{UC 20: Registrazione di un nuovo utente}\label{uc:20}
+Questo caso d'uso descrive il processo attraverso il quale un utente non ancora registrato (non riconosciuto) crea un nuovo account all'interno del sistema \textbf{Code Guardian}, definendo contestualmente il proprio ruolo operativo per l'accesso alle funzionalità degli agenti.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente accede per la prima volta alla piattaforma \textbf{Code Guardian} e desidera creare un account.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema è attivo e accessibile.
+        \item L'utente non possiede ancora un account registrato associato al proprio indirizzo email.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'account dell'utente è stato creato con successo nel sistema.
+        \item All'utente è stato associato il ruolo selezionato (Sviluppatore, \textit{Security Auditor} o \textit{Project Manager}).
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente accede alla pagina di registrazione del sistema \textbf{Code Guardian}.
+        \item Il sistema richiede l'inserimento dei dati anagrafici e delle credenziali di accesso (Nome, Cognome, Indirizzo Email, Password).
+        \item Il sistema richiede la selezione del ruolo operativo che l'utente assumerà all'interno del progetto, offrendo come opzioni: Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}.
+        \item L'utente compila i campi richiesti e seleziona il proprio ruolo.
+        \item Il sistema convalida la correttezza formale dei dati inseriti (es. validità dell'email, robustezza della password).
+        \item Il sistema registra il nuovo utente, memorizza le credenziali in modo sicuro e notifica il successo dell'operazione.
+    \end{enumerate}
+    \item \textbf{Scenari alternativi:}
+    \begin{itemize}
+        \item \textbf{Email già registrata:} Al passo 5, se il sistema rileva che l'indirizzo email inserito è già associato a un account esistente, l'operazione viene interrotta. Il sistema mostra un messaggio di errore e suggerisce di procedere con il login (UC 21).
+        \item \textbf{Dati non validi:} Al passo 5, se i dati inseriti non rispettano i criteri di validazione (password troppo debole o formato email errato), il sistema mostra un messaggio di errore specifico e chiede all'utente di correggere i campi evidenziati.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 21: Autenticazione dell'utente (Login)}\label{uc:21}
+Questo caso d'uso descrive il processo tramite il quale un utente già registrato, ma non ancora riconosciuto nella sessione corrente, fornisce le proprie credenziali per accedere al sistema e ottenere i permessi associati al proprio ruolo.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non autenticato.
+    \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di Code Guardian.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente ha completato con successo il processo di registrazione (UC 20).
+        \item Il sistema è attivo e accessibile.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente è autenticato con successo.
+        \item Il sistema riconosce l'utente identificandolo come Utente Generico specializzato nel ruolo scelto in fase di registrazione (Sviluppatore, Security Auditor o Project Manager), sbloccando i relativi permessi e funzionalità.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente accede alla pagina di login del sistema.
+        \item Il sistema richiede l'inserimento delle credenziali di accesso (Indirizzo Email e Password).
+        \item L'utente inserisce le proprie credenziali.
+        \item Il sistema verifica la corrispondenza delle credenziali inserite con quelle memorizzate in modo sicuro nel database.
+        \item Il sistema autentica l'utente, avvia una sessione attiva associata al suo ruolo e lo reindirizza alla dashboard principale.
+    \end{enumerate}
+    \item \textbf{Scenari alternativi:}
+    \begin{itemize}
+        \item \textbf{Credenziali errate:} Al passo 4, se l'indirizzo email o la password non trovano corrispondenza nel sistema, l'operazione viene interrotta. Il sistema mostra un messaggio di errore generico (es. "Credenziali non valide") e invita l'utente a riprovare.
+    \end{itemize}
+\end{itemize}
 
 \subsubsection{UC 0: Configurazione delle credenziali}\label{uc:0}
 Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al sistema le credenziali necessarie per autorizzare l'accesso ai servizi esterni (come il \textit{Repository Git} e il Sistema di Task Management).
@@ -1117,6 +1181,12 @@ architettura completa ad agenti.
     \hline
     \endhead
 
+    RF.37 & Obbligatorio & Il sistema deve consentire a un utente non autenticato di registrarsi creando un nuovo account e inserendo nome, cognome, email e password. & UC 20 \\ \hline
+    RF.38 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & UC 20 \\ \hline
+    RF.39 & Obbligatorio & Il sistema deve validare i dati inseriti (formato dell'email, robustezza della password) e mostrare un messaggio d'errore in caso di mancata conformità. & UC 20 \\ \hline
+    RF.40 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC 20 \\ \hline
+    RF.41 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC 21 \\ \hline
+    RF.42 & Obbligatorio & IIl sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC 21 \\ \hline
     RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC 0 \\ \hline
     RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1 \\ \hline
     RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
@@ -1211,6 +1281,8 @@ architettura completa ad agenti.
     \hline
     \endhead
 
+    RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi, al fine di garantire un'esperienza utente fluida. & UC 21 \\ 
+    \hline
     RQ.0 & Obbligatorio & Il sistema deve adottare un approccio \textit{Human-in-the-loop}, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, Verbale esterno 2026/03/23 \\ 
     \hline
     RQ.1 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & Verbale esterno 2026/03/23 \\
@@ -1280,6 +1352,8 @@ architettura completa ad agenti.
     \hline
     \endhead
 
+    RS.5 & Obbligatorio & Il sistema deve memorizzare le password degli utenti nel database esclusivamente in formato cifrato, applicando tecniche di hashing. & UC 20 \\
+    \hline
     RS.0 & Obbligatorio & Il sistema deve memorizzare i token di accesso e le credenziali fornite dall'utente esclusivamente in formato cifrato all'interno del proprio livello di persistenza. & UC 0 \\
     \hline
     RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del Repository non devono essere applicate senza validazione umana preventiva. & Verbale esterno 2026/03/23 \\
