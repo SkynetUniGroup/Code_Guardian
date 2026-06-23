@@ -217,12 +217,7 @@ solamente alla loro prima occorrenza in questo documento.
 
 \subsection{Obiettivi del prodotto}
 
-L'obiettivo principale del progetto è lo sviluppo di un
-set di agenti intelligenti basati su modelli linguistici di grandi
-dimensioni (\textit{\glo{LLM}{llm}}), progettati per integrarsi in
-un'architettura di orchestrazione già esistente fornita
-dal \textbf{Proponente} \emph{Var Group}. Il sistema, denominato \textbf{Code
-Guardian}, mira ad automatizzare i processi di \textit{\glo{Audit}{audit}}, manutenzione e
+L'obiettivo principale del progetto è lo sviluppo di un sistema composto da un \textbf{\glo{Orchestratore}{orchestratore}} centrale deterministico e da un set di tre agenti intelligenti specializzati basati su modelli linguistici di grandi dimensioni (\textit{\glo{LLM}{llm}}).L'\textbf{Orchestratore} funge da motore di esecuzione lineare e funzionale: riceve gli input dell'utente e invoca i vari agenti. Il sistema, denominato \textbf{Code Guardian}, mira ad automatizzare i processi di \textit{\glo{Audit}{audit}}, manutenzione e
 documentazione dei \textit{\glo{Repository}{repository}} software, riducendo il carico di lavoro
 manuale dei team di sviluppo e migliorando la qualità complessiva del
 codice. Nello specifico, il prodotto si prefigge di:
@@ -249,12 +244,12 @@ codice. Nello specifico, il prodotto si prefigge di:
 \subsection{Funzioni del prodotto}
 
 Il prodotto offre le sue funzionalità attraverso tre agenti
-specializzati coordinati dall'\textbf{\glo{Orchestratore}{orchestratore}} centrale:
+specializzati coordinati da un \textbf{Orchestratore} centrale deterministrico, le funzioni degli agenti sono le seguenti:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \textbf{Agente di Documentazione e \textit{README}}:
+  \textbf{Agente di Documentazione e \textit{README} (Agente Docs)}:
 
   \begin{itemize}
   \item
@@ -268,7 +263,7 @@ specializzati coordinati dall'\textbf{\glo{Orchestratore}{orchestratore}} centra
     attuale del codice.
 \end{itemize}
 \item
-  \textbf{Agente di Security Review (\textit{Policy-as-code})}:
+  \textbf{Agente di Security Review (Agente \textit{OWASP})}:
 
   \begin{itemize}
   \item
@@ -282,7 +277,7 @@ specializzati coordinati dall'\textbf{\glo{Orchestratore}{orchestratore}} centra
     \emph{CLAUDE.md} presenti nel \textit{Repository} come contesto operativo.
 \end{itemize}
 \item
-  \textbf{Agente di \textit{Changelog} da \textit{User Stories}}:
+  \textbf{Agente di \textit{Changelog} da \textit{User Stories} (Agente \textit{Changelog})}:
 
   \begin{itemize}
   \item
@@ -355,7 +350,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsubsection{\textit{Attori} Primari}
 
 \begin{itemize}
-    \item \textbf{Utente non Autenticato:}
+    \item \textbf{Utente non Autenticato:} Rappresenta un individuo che visita la piattaforma \textbf{Code Guardian} ma non possiede ancora un account o non è stato riconosciuto nella sessione corrente. Le sue interazioni con il sistema sono limitate esclusivamente alle procedure di ingresso: può effettuare la registrazione di un nuovo account oppure eseguire l'autenticazione (login), al fine di avviare una sessione attiva e acquisire i permessi associati alla propria specializzazione di Utente Generico.
 
     \item \textbf{Utente Generico:} Rappresenta l'\textit{Attore} di base del sistema dal quale ereditano tutti gli altri \textit{Attori} primari. Questo ruolo racchiude le facoltà e le interazioni comuni a qualsiasi utilizzatore della piattaforma, consentendo l'esecuzione dei casi d'uso definiti come trasversali, tra cui la selezione del \textit{Repository} \textit{Git}, la visualizzazione dei messaggi di errore e l'esportazione dei report prodotti.
     
@@ -365,6 +360,16 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
     
     \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente \textit{Changelog} innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} completate.
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{ATTORI.png}
+    \caption{Attori primari coinvolti}
+    \label{fig:Attori}
+\end{figure}
+
+
+
 
 \subsubsection{\textit{Attori} Secondari}
 
@@ -861,7 +866,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
 \item
-  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza per identificare \textit{Vulnerabilità} all'\textbf{Orchestratore}.
+  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza per identificare \textit{Vulnerabilità}.
 \item
   \textbf{Precondizioni}:
   \begin{itemize}
@@ -921,7 +926,7 @@ specifiche definite dal team nel file di configurazione.
 \item
   \textbf{\textit{Attori} Secondari}: \textit{Repository Git}.
 \item
-  \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità all'\textbf{Orchestratore}.
+  \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità.
 \item \textbf{Precondizioni}:
 \begin{itemize}
     \item È stato selezionato un ambito di analisi (UC 2).
@@ -1160,7 +1165,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \begin{enumerate}
 \item L'Agente esegue un confronto semantico automatico tramite \textit{LLM} tra la documentazione della task e l'effettivo codice/messaggio di \textit{Commit} associato.
 \item L'Agente identifica un conflitto (es. task registrata come "Modifica Testi" ma modifiche reali focalizzate sulla "Sicurezza delle API").
-\item L'Agente contrassegna la voce come "Ambigua" all'interno del sistema di orchestrazione.
+\item L'Agente contrassegna la voce come "Ambigua".
 \item Il sistema presenta una notifica visiva allo Sviluppatore o al \textit{Project Manager}, richiedendo una risoluzione manuale o una conferma su quale contesto dare priorità (Documentale o Tecnico).
 \end{enumerate}
 \end{itemize}
@@ -1243,10 +1248,7 @@ L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
 
 \section{Requisiti}
 
-I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'Uso} descritti nel capitolo 3 e dalle indicazioni emerse dagli incontri con il \textbf{Proponente}. In particolare, il perimetro del progetto è stato
-chiarito come sviluppo di agenti specializzati da integrare in
-un'architettura già esistente, e non come realizzazione di una nuova
-architettura completa ad agenti.
+I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'Uso} descritti nel capitolo 3 e dalle indicazioni emerse dagli incontri con il \textbf{Proponente}. In particolare, il perimetro del progetto comprende lo sviluppo di agenti specializzati e dell'\textbf{Orchestratore} centrale incaricato di gestirli.
 
 \subsection{Requisiti funzionali}
 \begingroup
@@ -1416,9 +1418,9 @@ architettura completa ad agenti.
     \hline
     RV.1 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per integrazione e test. & Verbale esterno 2026/03/23 \\
+    RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.3 & Obbligatorio & [DA ELIMINARE] Il progetto non prevede lo sviluppo dell’Orchestratore né degli agenti dedicati all’aggiornamento delle librerie, alla sostituzione del codice obsoleto al mantenimento della copertura dei test, in quanto già in sviluppo presso Var Group. & Verbale esterno 2026/03/23 \\
+    RV.3 & Obbligatorio & [Il sitema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
     \hline
     RV.4 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2 \\
     \hline
