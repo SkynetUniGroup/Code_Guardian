@@ -79,7 +79,7 @@
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
-            \textbf{Redattori} & \textit{Sara Ristovic, Marco Barbiero, Dario Pirrone} \\ \hline
+            \textbf{Redattori} & \textit{Sara Ristovic, Marco Barbiero, Dario Pirrone, Andrea Fistarol} \\ \hline
             \textbf{Verifica} & \textit{Dario Pirrone, Marco Barbiero, Samuele Bertin, Edoardo Granziero} \\ \hline
             \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic} \\ \hline
 
@@ -176,6 +176,8 @@ collegamento ipertestuale che rimanda direttamente alla definizione
 corrispondente nel \emph{Glossario}. Tali parole vengono contrassegnate
 solamente alla loro prima occorrenza in questo documento.
 
+I termini evidenziati in grassetto identificano concetti tecnici specifici del progetto, mentre i termini in corsivo indicano concetti tecnici di carattere generale, comuni al dominio dello sviluppo software.
+
 \subsection{Riferimenti}
 
 \subsubsection{Riferimenti normativi}
@@ -225,20 +227,12 @@ codice. Nello specifico, il prodotto si prefigge di:
 \begin{itemize}
 \item
   \textbf{Garantire la coerenza documentale}: assicurando che il \textit{\glo{README}{readme}}
-  di progetto e la documentazione tecnica (inline e \textit{\glo{API}{api}}) siano
-  costantemente allineati all'evoluzione funzionale
-  della piattaforma.
+  di progetto e la documentazione tecnica (inline e \textit{\glo{API}{api}}) siano costantemente allineati all'evoluzione funzionale del software in analisi.
 \item
-  \textbf{Elevare gli standard di sicurezza}: introducendo il paradigma
-  di \textit{\glo{Policy-as-code}{policy-as-code}}, attraverso il quale gli agenti verificano
-  non solo le \textit{\glo{Vulnerabilità}{vulnerabilita}} generiche \textit{\glo{OWASP}{owasp}}, ma anche
-  l'aderenza alle specifiche pratiche di sviluppo sicuro
-  definite dal team.
+  \textbf{Elevare gli standard di sicurezza}: verificando le categorie di \textit{\glo{Vulnerabilità}{vulnerabilita}} più critiche individuate dall’\textit{\glo{OWASP}{owasp}} Top 10 e introducendo il paradigma di \textit{\glo{Policy-as-code}{policy-as-code}}, attraverso il quale viene controllata l’aderenza alle specifiche pratiche di sviluppo sicuro definite dal team.
 \item
   \textbf{Migliorare la trasparenza verso il business}: automatizzando
-  la redazione di \textit{\glo{Changelog}{changelog}} comprensibili al cliente finale, traducendo
-  i progressi tecnici emersi dalle \textit{\glo{User Stories}{user-story}} in valore di business
-  tangibile.
+  la redazione di \textit{\glo{Changelog}{changelog}} comprensibili al cliente finale e traducendo i progressi tecnici emersi dalle \textit{\glo{User Stories}{user-story}} in valore di business tangibile.
 \end{itemize}
 
 \subsection{Funzioni del prodotto}
@@ -254,8 +248,7 @@ specializzati coordinati da un \textbf{Orchestratore} centrale deterministrico, 
   \begin{itemize}
   \item
     \textbf{Manutenzione \textit{README}}: creazione e aggiornamento dinamico del
-    file \textit{README} di progetto in base alle modifiche apportate alla
-    piattaforma.
+    file \textit{README} di progetto in base alle modifiche apportate al codice sorgente.
 \item
     \textbf{Gestione documentazione tecnica}: generazione e
     aggiornamento di documentazione inline (\textit{\glo{Docstring}{docstring}},
@@ -294,31 +287,14 @@ specializzati coordinati da un \textbf{Orchestratore} centrale deterministrico, 
 
 Il sistema è progettato per inserirsi in un flusso di lavoro di sviluppo
 software moderno, interagendo con diverse figure professionali che
-operano all'interno di un team IT o nel rapporto con il
-cliente finale. 
+operano all'interno di un team di sviluppo software o nel rapporto con il
+cliente finale.
 
-L'utente principale è rappresentato dallo
-\textbf{sviluppatore}, il quale interagisce con il sistema
-indirettamente attraverso il \textit{Repository} \textit{\glo{Git}{git}}. Egli beneficia
-dell'automatizzazione della documentazione tecnica e del
-feedback immediato sulla sicurezza, che gli permette di correggere
-eventuali \textit{Vulnerabilità} o difformità rispetto alle policy aziendali in
-tempo reale, senza attendere revisioni manuali. 
+L'utente principale è rappresentato dallo \textbf{sviluppatore}, il quale interagisce direttamente con il sistema fornendo il contesto operativo attraverso il \textit{Repository} \textit{\glo{Git}{git}} di riferimento. Egli beneficia dell'automatizzazione della documentazione tecnica e del feedback immediato sulla sicurezza, che gli permette di correggere eventuali \textit{vulnerabilità} o difformità rispetto alle policy aziendali in tempo reale, senza attendere revisioni manuali. 
 
-Una seconda figura chiave è il \textit{\glo{Team Lead}{team-lead}} o lo \textit{\glo{Security
-Auditor}{security-auditor}}. Questi utenti utilizzano il sistema come strumento di
-monitoraggio e governance: definiscono le regole di "sviluppo sicuro"
-all'interno dei file CLAUDE.md e delegano
-all'agente di sicurezza il compito di verificarne
-l'adozione costante su tutto il codice prodotto. 
+Una seconda figura chiave è il \textit{\glo{Team Lead}{team-lead}} o lo \textit{\glo{Security Auditor}{security-auditor}}. Questi utenti utilizzano il sistema come strumento di monitoraggio della sicurezza del software. Delegano all’agente OWASP sia la verifica delle categorie di vulnerabilità più critiche individuate dall’OWASP Top 10, sia il controllo dell’aderenza alle regole di sviluppo sicuro definite dal team all’interno del file CLAUDE.md.
 
-Infine, il sistema si rivolge agli \textit{\glo{Stakeholder}{stakeholder}} di business
-(come \textit{\glo{Project Manager}{project-manager}} o il cliente finale). Questi soggetti non
-necessitano di competenze tecniche approfondite, ma hanno bisogno di
-visibilità sull'andamento del progetto. Per loro,
-l'agente di \textit{Changelog} funge da "traduttore",
-trasformando il gergo tecnico delle \textit{User Stories} in report di valore che
-sintetizzano i progressi funzionali raggiunti al termine di ogni \textit{Sprint}.
+Infine, il sistema si rivolge agli \textit{\glo{Stakeholder}{stakeholder}} di business (come \textit{\glo{Project Manager}{project-manager}} o il cliente finale). Questi soggetti non necessitano di competenze tecniche approfondite, ma hanno bisogno di visibilità sull'andamento del progetto. Per loro, l'agente di \textit{Changelog} funge da "traduttore", trasformando il gergo tecnico delle \textit{User Stories} e dei compiti completati in report di valore che sintetizzano i progressi funzionali raggiunti al termine di ogni \textit{Sprint}.
 
 \subsection{Piattaforma di esecuzione}
 
@@ -328,7 +304,7 @@ in ambiente cloud \textit{\glo{AWS}{aws}}. Essendo il sistema basato su interfac
 di programmazione e automazione, l'esecuzione è
 garantita attraverso i principali ambienti di runtime come
 \textit{\glo{Node.js}{node-js}} e \textit{\glo{Python}{python}}.
-L'interazione con il codice sorgente avviene tramite repository Git. 
+L'interazione con il codice sorgente avviene tramite \textit{repository} Git. 
 L'eventuale integrazione con \textit{\glo{GitHub Actions}{github-actions}} potrà essere utilizzata per automatizzare l'esecuzione degli agenti in seguito a eventi come push o \textit{\glo{Pull Request}{pull-request}}, qualora tale funzionalità venga inclusa nel perimetro del \textit{\glo{MVP}{mvp}}.
 \newpage
 
@@ -337,9 +313,7 @@ L'eventuale integrazione con \textit{\glo{GitHub Actions}{github-actions}} potr�
 \section{\textit{Casi d'Uso}}
 
 \subsection{Introduzione}
-I \textit{Casi d'Uso} sono costituiti da un diagramma \textit{\glo{UML}{uml}} e da una descrizione testuale che ne
-chiarisce il comportamento e gli obiettivi, al fine di definire in modo preciso le funzionalità che
-il prodotto deve offrire.
+I \textit{Casi d'Uso} sono esposti dalle descrizioni testuali che ne chiariscono il comportamento e gli obiettivi, e dai diagrammi \textit{\glo{UML}{uml}}, al fine di definire in modo preciso le funzionalità che il prodotto deve e potrebbe offrire.
 
 \subsection{\textit{Attori}}
 
