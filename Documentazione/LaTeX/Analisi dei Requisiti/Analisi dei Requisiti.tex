@@ -720,6 +720,34 @@ Di seguito i \textit{Casi d'Uso} dell'Agente Docs.
     \label{fig:UCDocs}
 \end{figure}
 
+\subsubsection{UC 25: Impostazione del modello di stile personalizzato per il README}\label{uc:25}
+Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente fornisce al sistema un modello (template) personalizzato per la generazione e l'aggiornamento del file README.md.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Trigger:} Lo Sviluppatore desidera definire una struttura e uno stile specifici per il README.md, sovrascrivendo il template di default dell'Agente Docs.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente \`e autenticato (UC 21).
+        \item \`E stato selezionato un repository e un riferimento di base (UC 1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:} Il modello personalizzato \`e stato salvato correttamente e diviene il template di riferimento per le successive esecuzioni dell'Agente Docs relative a quel repository.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente accede alla sezione di personalizzazione del README tramite l'interfaccia grafica.
+        \item Il sistema presenta l'opzione per caricare un modello personalizzato per il README.
+        \item L'utente fornisce il template caricando un file con estensione \texttt{.md} contenente la struttura base.
+        \item Il sistema convalida la correttezza formale del file fornito.
+        \item Il sistema memorizza il modello nel contesto del progetto e notifica all'utente il successo dell'operazione.
+    \end{enumerate}
+    \item \textbf{Scenari alternativi:}
+    \begin{itemize}
+        \item \textbf{Formato non valido:} Al passo 4, se il file o il testo inserito presentano errori di formattazione o estensioni non supportate, il sistema interrompe l'operazione, mostra un messaggio di errore esplicativo e invita l'utente a reinserire il modello corretto.
+    \end{itemize}
+\end{itemize}
+
+
+
 \subsubsection{UC 7: Gestione del \textit{README} di Progetto}\label{uc:7}
 Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \texttt{\textit{README}.md} del Progetto.
 
@@ -1282,9 +1310,9 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.13 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati, consentendo all'utente di selezionare un report passato ai fini dell'esportazione. & UC 6 \\ 
     \hline
-    RF.14 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 7 \\ 
+    RF.14 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file README.md. & UC 25, UC 7 \\ 
     \hline
-    RF.15 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file README.md. & UC 7 \\ 
+    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 7 \\ 
     \hline
     RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 8 \\ 
     \hline
@@ -1401,6 +1429,8 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     RV.5 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
     \hline
     RV.6 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
+    \hline
+    RV.7 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
     \hline
     
 \end{xltabular}
