@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.15.0} \\ \hline
+            \textbf{Versione} & \textit{0.15.1} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -110,6 +110,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
     
+    0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & Dario Pirrone & Sara Ristovic \\ \hline
     0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazone e login & Dario Pirrone & Sara Ristovic \\ \hline
     0.13.0 & 2026/06/08 & Aggiunti diagrammi UML per Agente OWASP e Agente Changelog & Dario Pirrone & Edoardo Granziero \\ \hline 
@@ -392,11 +393,116 @@ Questo caso d'uso descrive il processo attraverso il quale un utente non ancora 
         \item Il sistema convalida la correttezza formale dei dati inseriti (es. validità dell'email, robustezza della password).
         \item Il sistema registra il nuovo utente, memorizza le credenziali in modo sicuro e notifica il successo dell'operazione.
     \end{enumerate}
-    \item \textbf{Scenari alternativi:}
+    \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{Email già registrata:} Al passo 5, se il sistema rileva che l'indirizzo email inserito è già associato a un account esistente, l'operazione viene interrotta. Il sistema mostra un messaggio di errore e suggerisce di procedere con il login (UC 21).
-        \item \textbf{Dati non validi:} Al passo 5, se i dati inseriti non rispettano i criteri di validazione (password troppo debole o formato email errato), il sistema mostra un messaggio di errore specifico e chiede all'utente di correggere i campi evidenziati.
+        \item \textbf{UC 20.1:} Inserimento nome.
+        \item \textbf{UC 20.2:} Inserimento cognome.
+        \item \textbf{UC 20.3:} Inserimento indirizzo email.
+        \item \textbf{UC 20.4:} Inserimento password.
+        \item \textbf{UC 20.5:} Selezione ruolo operativo.
     \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 20.6: Errore email già registrata.} Estende il passo 5 qualora il sistema rilevi che l'indirizzo email inserito è già presente nel database.
+        \item \textbf{UC 20.7: Errore dati non validi.} Estende il passo 5 qualora il formato dell'email sia errato o la password non rispetti i criteri di sicurezza.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 20.1: Inserimento nome}\label{uc:20.1}
+Questo caso d'uso descrive l'inserimento del nome da parte dell'utente durante la fase di registrazione.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato all'inserimento del nome.
+    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
+    \item \textbf{Postcondizioni:} Il nome dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita il proprio nome all'interno del campo di input preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 20.2: Inserimento cognome}\label{uc:20.2}
+Questo caso d'uso descrive l'inserimento del cognome da parte dell'utente durante la fase di registrazione.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato all'inserimento del cognome.
+    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
+    \item \textbf{Postcondizioni:} Il cognome dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita il proprio cognome all'interno del campo di input preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 20.3: Inserimento indirizzo email}\label{uc:20.3}
+Questo caso d'uso descrive l'inserimento dell'indirizzo email da parte dell'utente durante la fase di registrazione.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato all'indirizzo email.
+    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
+    \item \textbf{Postcondizioni:} L'indirizzo email dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita il proprio indirizzo email all'interno del campo apposito.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 20.4: Inserimento password}\label{uc:20.4}
+Questo caso d'uso descrive l'inserimento della password da parte dell'utente durante la fase di registrazione.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato alla password.
+    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
+    \item \textbf{Postcondizioni:} La password dell'utente è stata valorizzata all'interno del form.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita la propria password all'interno del campo apposito.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 20.5: Selezione ruolo operativo}\label{uc:20.5}
+Questo caso d'uso descrive la selezione del ruolo che l'utente assumerà all'interno del sistema (Sviluppatore, Security Auditor, Project Manager).
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente interagisce con il componente di selezione del ruolo.
+    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
+    \item \textbf{Postcondizioni:} Il ruolo operativo scelto è stato selezionato e valorizzato nel form.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente seleziona uno dei ruoli operativi disponibili tra quelli proposti dal sistema.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 20.6: Errore email già registrata}\label{uc:20.6}
+Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti di registrarsi utilizzando un indirizzo email già presente nel database.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente conferma la volontà di registrarsi cliccando sul pulsante di conferma.
+    \item \textbf{Precondizioni:} L'utente ha inserito un indirizzo email che risulta già associato ad un account esistente nel sistema.
+    \item \textbf{Postcondizioni:} Il processo di registrazione viene interrotto. Il sistema mostra un messaggio di errore specifico e l'utente rimane sulla pagina di registrazione.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema verifica nel database l'esistenza dell'email inserita.
+        \item Il sistema rileva che l'indirizzo email è già in uso.
+        \item L'operazione di registrazione viene bloccata.
+        \item Il sistema mostra a schermo un messaggio d'errore (es. "L'indirizzo email inserito è già registrato") e suggerisce all'utente di effettuare il login (UC 21) oppure di utilizzare un'email diversa.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 20.7: Errore dati non validi}\label{uc:20.7}
+Questo caso d'uso descrive la gestione degli errori legati alla validazione sintattica e di robustezza dei dati inseriti nel modulo di registrazione (formato email scorretto o password troppo debole).
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente conferma la volontà di registrarsi cliccando sul pulsante di conferma.
+    \item \textbf{Precondizioni:} L'utente ha inserito dei dati che non rispettano le policy di validazione richieste dal sistema.
+    \item \textbf{Postcondizioni:} Il processo di registrazione viene interrotto. Il sistema segnala i campi contenenti errori e l'utente rimane sulla pagina di registrazione per poterli correggere.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema verifica la correttezza formale dei dati inseriti (validità del formato dell'indirizzo email e robustezza minima della password).
+        \item Il sistema rileva che uno o più campi non rispettano i criteri di validazione previsti.
+        \item L'operazione di registrazione viene bloccata.
+        \item Il sistema mostra a schermo dei messaggi d'errore contestuali accanto ai campi non validi (es. "Formato email non valido" o "La password deve contenere almeno 8 caratteri"), invitando l'utente a correggere i dati.
+    \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC 21: Autenticazione dell'utente (Login)}\label{uc:21}
@@ -423,19 +529,66 @@ Questo caso d'uso descrive il processo tramite il quale un utente già registrat
         \item Il sistema verifica la corrispondenza delle credenziali inserite con quelle memorizzate in modo sicuro nel database.
         \item Il sistema autentica l'utente, avvia una sessione attiva associata al suo ruolo e lo reindirizza alla dashboard principale.
     \end{enumerate}
-    \item \textbf{Scenari alternativi:}
+    \item \textbf{Sottocasi d'uso):}
     \begin{itemize}
-        \item \textbf{Credenziali errate:} Al passo 4, se l'indirizzo email o la password non trovano corrispondenza nel sistema, l'operazione viene interrotta. Il sistema mostra un messaggio di errore generico (es. "Credenziali non valide") e invita l'utente a riprovare.
+        \item \textbf{UC 21.1:} Inserimento email.
+        \item \textbf{UC 21.2:} Inserimento password.
     \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 21.3: Errore credenziali errate.} Estende il passo 4 qualora l'indirizzo email o la password non trovino corrispondenza all'interno del sistema.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 21.1: Inserimento email}\label{uc:21.1}
+Questo caso d'uso descrive l'inserimento dell'indirizzo email da parte dell'utente durante la fase di autenticazione.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato all'indirizzo email.
+    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di login.
+    \item \textbf{Postcondizioni:} L'indirizzo email dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita il proprio indirizzo email all'interno del campo apposito.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 21.2: Inserimento password}\label{uc:21.2}
+Questo caso d'uso descrive l'inserimento della password da parte dell'utente durante la fase di autenticazione.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato alla password.
+    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di login.
+    \item \textbf{Postcondizioni:} La password dell'utente è stata valorizzata all'interno del form.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita la propria password all'interno del campo apposito.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 21.3: Errore credenziali errate}\label{uc:21.3}
+Questo caso d'uso descrive il comportamento del sistema nel caso in cui le credenziali fornite per l'autenticazione non siano corrette.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente conferma la volontà di accedere cliccando sul pulsante di login.
+    \item \textbf{Precondizioni:} L'utente ha inserito una combinazione di indirizzo email e password che non corrisponde ad alcun account registrato.
+    \item \textbf{Postcondizioni:} Il processo di autenticazione viene interrotto. L'utente rimane sulla pagina di login e visualizza un messaggio di errore.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema verifica nel database la corrispondenza delle credenziali inserite.
+        \item Il sistema rileva che l'indirizzo email o la password sono errati.
+        \item L'operazione di login viene bloccata.
+        \item Il sistema mostra a schermo un messaggio di errore generico (es. "Credenziali non valide"), per evitare di rivelare se il problema sia l'email o la password, e invita l'utente a riprovare.
+    \end{enumerate}
 \end{itemize}
 
 
 \subsubsection{UC 0: Configurazione delle credenziali}\label{uc:0}
-Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al sistema le credenziali necessarie per autorizzare l'accesso ai servizi esterni (come il \textit{Repository Git} e il Sistema di Task Management).
+Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al sistema le credenziali necessarie per autorizzare l'accesso ai servizi esterni (il \textit{Repository Git} e il Sistema di \textit{Task Management}).
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{Repository Git}, Sistema di Task Management.
+    \item \textbf{Attori Secondari}: \textit{Repository Git}, Sistema di \textit{Task Management}.
     \item \textbf{Trigger}: L'utente accede per la prima volta al sistema o necessita di aggiornare un token scaduto.
     \item \textbf{Precondizioni}:
     \begin{itemize}
@@ -450,12 +603,76 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
             \item Il sistema convalida la correttezza formale e effettua una chiamata di test per verificare i permessi delle chiavi inserite.
             \item Il sistema salva le credenziali e notifica all'utente il successo dell'operazione.
         \end{enumerate}
-    \item \textbf{Scenari alternativi}: 
+    \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item Al passo 4, se la chiamata di test fallisce, il sistema mostra un messaggio di errore all'utente chiedendo di reinserire le credenziali.
+        \item \textbf{UC 0.1:} Inserimento token \textit{Repository Git}.
+        \item \textbf{UC 0.2:} Inserimento token Sistema di \textit{Task Management}.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 0.3: Errore validazione credenziali fallita.} Estende il passo 4 qualora la chiamata di test verso uno o entrambi i servizi esterni restituisca un errore di autenticazione (es. token scaduto o privo di permessi sufficienti).
+        \item \textbf{UC 0.4: Errore formato credenziali non valido.} Estende il passo 4 qualora i campi siano incompleti o i token non rispettino la struttura sintattica attesa prima dell'invio.
     \end{itemize}
 \end{itemize}
 
+\subsubsection{UC 0.1: Inserimento token \textit{Repository Git}}\label{uc:0.1}
+Questo caso d'uso descrive l'azione di inserimento del token personale di accesso.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali del \textit{Repository Git}.
+    \item \textbf{Precondizioni:} Il sistema mostra correttamente la schermata di configurazione delle credenziali.
+    \item \textbf{Postcondizioni:} Il token del \textit{Repository Git} è stato inserito nel relativo campo di input.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita o incolla il proprio token personale di accesso nel campo preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 0.2: Inserimento token Sistema di \textit{Task Management}}\label{uc:0.2}
+Questo caso d'uso descrive l'azione di inserimento del token per consentire al sistema di interfacciarsi con la piattaforma esterna di tracciamento delle attività.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali del Sistema di Task Management.
+    \item \textbf{Precondizioni:} Il sistema mostra correttamente la schermata di configurazione delle credenziali.
+    \item \textbf{Postcondizioni:} Il token del Sistema di Task Management è stato inserito nel relativo campo di input.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente digita o incolla la chiave o il token di autenticazione per il tool di Task Management (es. GitHub Issues) nel campo preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 0.3: Errore validazione credenziali fallita}\label{uc:0.3}
+Questo caso d'uso descrive la gestione del fallimento del test di autenticazione con i server esterni a causa di token errati, scaduti o non autorizzati.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Sistema di \textit{Task Management}.
+    \item \textbf{Trigger:} Il sistema effettua la chiamata di test e riceve un feedback di errore dai servizi esterni.
+    \item \textbf{Precondizioni:} L'utente ha inserito dei token formalmente corretti, ma non validi dal punto di vista logico o autorizzativo sui server esterni.
+    \item \textbf{Postcondizioni:} L'operazione di salvataggio viene annullata, le credenziali non vengono memorizzate e il sistema mostra un messaggio di errore dettagliato, mantenendo l'utente sulla pagina corrente.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema rileva il fallimento della chiamata di test.
+        \item Il sistema identifica quale servizio ha rifiutato la connessione (\textit{Repository Git}, \textit{Task Management} o entrambi).
+        \item Il sistema blocca la persistenza dei dati.
+        \item Il sistema mostra a schermo un messaggio di errore specifico (es. "Impossibile stabilire una connessione: il token Git inserito è scaduto o non ha i permessi di lettura") e invita l'utente a verificare e reinserire le credenziali.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 0.4: Errore formato credenziali non valido}\label{uc:0.4}
+Questo caso d'uso descrive la validazione sintattica locale effettuata dal sistema prima dell'invio delle richieste. Gestisce il caso in cui i token inseriti siano malformati, oppure il caso in cui non sia stato fornito il token del \textit{Repository Git}.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente clicca sul pulsante di conferma e salvataggio.
+    \item \textbf{Precondizioni:} L'utente ha lasciato vuoto il campo obbligatorio del \textit{Repository Git}, oppure ha inserito in uno dei campi una stringa che non rispetta il pattern di un token valido.
+    \item \textbf{Postcondizioni:} Il sistema blocca la chiamata di test esterna, evidenzia i campi non conformi o mancanti e l'utente rimane sulla pagina per effettuare le correzioni.
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema analizza localmente la presenza e la struttura testuale nei campi di input, considerando il token \textit{Git} come obbligatorio e quello del Task Management come opzionale.
+        \item Il sistema rileva che il campo \textit{Git} è vuoto, oppure che uno dei campi compilati non rispetta i requisiti minimi di formattazione (lunghezza errata o caratteri non ammessi).
+        \item Il sistema interrompe il flusso di salvataggio ed evita di contattare gli attori secondari.
+        \item Il sistema mostra un avviso visivo contestuale (es. "Il token \textit{Git} è obbligatorio" sul primo campo, oppure "Formato token non valido" sul campo specifico errato), richiedendo una correzione da parte dell'utente.
+    \end{enumerate}
+\end{itemize}
 
 \subsubsection{UC 1: Selezione \textit{repository} e riferimento di base}\label{uc:1}
 Questo caso d'uso consente all'utente di indicare il repository Git e il riferimento di base su cui potranno essere eseguite le successive operazioni degli agenti. La selezione del repository non implica necessariamente l'analisi dell'intero contenuto del repository, ma definisce il contesto iniziale da utilizzare nelle funzionalità successive. È una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
@@ -1268,13 +1485,13 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     \endhead
 
-    RF.37 & Obbligatorio & Il sistema deve consentire a un utente non autenticato di registrarsi creando un nuovo account e inserendo nome, cognome, email e password. & UC 20 \\ \hline
-    RF.38 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & UC 20 \\ \hline
-    RF.39 & Obbligatorio & Il sistema deve validare i dati inseriti (formato dell'email, robustezza della password) e mostrare un messaggio d'errore in caso di mancata conformità. & UC 20 \\ \hline
-    RF.40 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC 20 \\ \hline
-    RF.41 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC 21 \\ \hline
-    RF.42 & Obbligatorio & IIl sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC 21 \\ \hline
-    RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC 0 \\ \hline
+    RF.37 & Obbligatorio & Il sistema deve consentire a un utente non autenticato di registrarsi creando un nuovo account e inserendo nome, cognome, email e password. & UC 20, 20.1, 20.2, 20.3, 20.4 \\ \hline
+    RF.38 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & UC 20.5 \\ \hline
+    RF.39 & Obbligatorio & Il sistema deve validare i dati inseriti (formato dell'email, robustezza della password) e mostrare un messaggio d'errore in caso di mancata conformità. & UC 20.7 \\ \hline
+    RF.40 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC 20.6 \\ \hline
+    RF.41 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC 21, 21.1, 21.2 \\ \hline
+    RF.42 & Obbligatorio & IIl sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC 21.3 \\ \hline
+    RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC 0, 0.1, 0.2, 0.3, 0.4 \\ \hline
     RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1 \\ \hline
     RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
     \\ \hline
