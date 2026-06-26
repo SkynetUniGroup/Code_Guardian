@@ -413,8 +413,8 @@ Questo caso d'uso descrive l'inserimento del nome da parte dell'utente durante l
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato all'inserimento del nome.
-    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
-    \item \textbf{Postcondizioni:} Il nome dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Precondizioni:} \begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:} \begin{itemize}\item Il nome dell'utente è stato valorizzato all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita il proprio nome all'interno del campo di input preposto.
@@ -426,8 +426,8 @@ Questo caso d'uso descrive l'inserimento del cognome da parte dell'utente durant
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato all'inserimento del cognome.
-    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
-    \item \textbf{Postcondizioni:} Il cognome dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il cognome dell'utente è stato valorizzato all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita il proprio cognome all'interno del campo di input preposto.
@@ -439,8 +439,8 @@ Questo caso d'uso descrive l'inserimento dell'indirizzo email da parte dell'uten
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato all'indirizzo email.
-    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
-    \item \textbf{Postcondizioni:} L'indirizzo email dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item L'indirizzo email dell'utente è stato valorizzato all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita il proprio indirizzo email all'interno del campo apposito.
@@ -452,8 +452,8 @@ Questo caso d'uso descrive l'inserimento della password da parte dell'utente dur
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato alla password.
-    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
-    \item \textbf{Postcondizioni:} La password dell'utente è stata valorizzata all'interno del form.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item La password dell'utente è stata valorizzata all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita la propria password all'interno del campo apposito.
@@ -465,8 +465,8 @@ Questo caso d'uso descrive la selezione del ruolo che l'utente assumerà all'int
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente interagisce con il componente di selezione del ruolo.
-    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di registrazione.
-    \item \textbf{Postcondizioni:} Il ruolo operativo scelto è stato selezionato e valorizzato nel form.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il ruolo operativo scelto è stato selezionato e valorizzato nel form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente seleziona uno dei ruoli operativi disponibili tra quelli proposti dal sistema.
@@ -478,8 +478,8 @@ Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti d
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente conferma la volontà di registrarsi cliccando sul pulsante di conferma.
-    \item \textbf{Precondizioni:} L'utente ha inserito un indirizzo email che risulta già associato ad un account esistente nel sistema.
-    \item \textbf{Postcondizioni:} Il processo di registrazione viene interrotto. Il sistema mostra un messaggio di errore specifico e l'utente rimane sulla pagina di registrazione.
+    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha inserito un indirizzo email che risulta già associato ad un account esistente nel sistema.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il processo di registrazione viene interrotto. Il sistema mostra un messaggio di errore specifico e l'utente rimane sulla pagina di registrazione.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema verifica nel database l'esistenza dell'email inserita.
@@ -494,8 +494,8 @@ Questo caso d'uso descrive la gestione degli errori legati alla validazione sint
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente conferma la volontà di registrarsi cliccando sul pulsante di conferma.
-    \item \textbf{Precondizioni:} L'utente ha inserito dei dati che non rispettano le policy di validazione richieste dal sistema.
-    \item \textbf{Postcondizioni:} Il processo di registrazione viene interrotto. Il sistema segnala i campi contenenti errori e l'utente rimane sulla pagina di registrazione per poterli correggere.
+    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha inserito dei dati che non rispettano le policy di validazione richieste dal sistema.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il processo di registrazione viene interrotto. Il sistema segnala i campi contenenti errori e l'utente rimane sulla pagina di registrazione per poterli correggere.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema verifica la correttezza formale dei dati inseriti (validità del formato dell'indirizzo email e robustezza minima della password).
@@ -545,8 +545,8 @@ Questo caso d'uso descrive l'inserimento dell'indirizzo email da parte dell'uten
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato all'indirizzo email.
-    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di login.
-    \item \textbf{Postcondizioni:} L'indirizzo email dell'utente è stato valorizzato all'interno del form.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di login.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item L'indirizzo email dell'utente è stato valorizzato all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita il proprio indirizzo email all'interno del campo apposito.
@@ -558,8 +558,8 @@ Questo caso d'uso descrive l'inserimento della password da parte dell'utente dur
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente seleziona il campo di input dedicato alla password.
-    \item \textbf{Precondizioni:} Il sistema ha caricato e mostra correttamente il modulo di login.
-    \item \textbf{Postcondizioni:} La password dell'utente è stata valorizzata all'interno del form.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di login.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item La password dell'utente è stata valorizzata all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita la propria password all'interno del campo apposito.
@@ -571,8 +571,8 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui le crede
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente conferma la volontà di accedere cliccando sul pulsante di login.
-    \item \textbf{Precondizioni:} L'utente ha inserito una combinazione di indirizzo email e password che non corrisponde ad alcun account registrato.
-    \item \textbf{Postcondizioni:} Il processo di autenticazione viene interrotto. L'utente rimane sulla pagina di login e visualizza un messaggio di errore.
+    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha inserito una combinazione di indirizzo email e password che non corrisponde ad alcun account registrato.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il processo di autenticazione viene interrotto. L'utente rimane sulla pagina di login e visualizza un messaggio di errore.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema verifica nel database la corrispondenza delle credenziali inserite.
@@ -594,7 +594,7 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
     \begin{itemize}
         \item Il sistema è attivo e accessibile.
     \end{itemize}
-    \item \textbf{Postcondizioni}: I token di accesso sono memorizzati in modo sicuro nel sistema e gli agenti sono pronti all'esecuzione.
+    \item \textbf{Postcondizioni}:\begin{itemize}\item I token di accesso sono memorizzati in modo sicuro nel sistema e gli agenti sono pronti all'esecuzione.\end{itemize}
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'utente accede alla sezione di configurazione del sistema.
@@ -620,8 +620,8 @@ Questo caso d'uso descrive l'azione di inserimento del token personale di access
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali del \textit{Repository Git}.
-    \item \textbf{Precondizioni:} Il sistema mostra correttamente la schermata di configurazione delle credenziali.
-    \item \textbf{Postcondizioni:} Il token del \textit{Repository Git} è stato inserito nel relativo campo di input.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema mostra correttamente la schermata di configurazione delle credenziali.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il token del \textit{Repository Git} è stato inserito nel relativo campo di input.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita o incolla il proprio token personale di accesso nel campo preposto.
@@ -633,8 +633,8 @@ Questo caso d'uso descrive l'azione di inserimento del token per consentire al s
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali del Sistema di Task Management.
-    \item \textbf{Precondizioni:} Il sistema mostra correttamente la schermata di configurazione delle credenziali.
-    \item \textbf{Postcondizioni:} Il token del Sistema di Task Management è stato inserito nel relativo campo di input.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema mostra correttamente la schermata di configurazione delle credenziali.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il token del Sistema di Task Management è stato inserito nel relativo campo di input.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita o incolla la chiave o il token di autenticazione per il tool di Task Management (es. GitHub Issues) nel campo preposto.
@@ -647,8 +647,8 @@ Questo caso d'uso descrive la gestione del fallimento del test di autenticazione
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Attori Secondari:} \textit{Repository Git}, Sistema di \textit{Task Management}.
     \item \textbf{Trigger:} Il sistema effettua la chiamata di test e riceve un feedback di errore dai servizi esterni.
-    \item \textbf{Precondizioni:} L'utente ha inserito dei token formalmente corretti, ma non validi dal punto di vista logico o autorizzativo sui server esterni.
-    \item \textbf{Postcondizioni:} L'operazione di salvataggio viene annullata, le credenziali non vengono memorizzate e il sistema mostra un messaggio di errore dettagliato, mantenendo l'utente sulla pagina corrente.
+    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha inserito dei token formalmente corretti, ma non validi dal punto di vista logico o autorizzativo sui server esterni.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item L'operazione di salvataggio viene annullata, le credenziali non vengono memorizzate e il sistema mostra un messaggio di errore dettagliato, mantenendo l'utente sulla pagina corrente.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema rileva il fallimento della chiamata di test.
@@ -663,8 +663,8 @@ Questo caso d'uso descrive la validazione sintattica locale effettuata dal siste
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente clicca sul pulsante di conferma e salvataggio.
-    \item \textbf{Precondizioni:} L'utente ha lasciato vuoto il campo obbligatorio del \textit{Repository Git}, oppure ha inserito in uno dei campi una stringa che non rispetta il pattern di un token valido.
-    \item \textbf{Postcondizioni:} Il sistema blocca la chiamata di test esterna, evidenzia i campi non conformi o mancanti e l'utente rimane sulla pagina per effettuare le correzioni.
+    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha lasciato vuoto il campo obbligatorio del \textit{Repository Git}, oppure ha inserito in uno dei campi una stringa che non rispetta il pattern di un token valido.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il sistema blocca la chiamata di test esterna, evidenzia i campi non conformi o mancanti e l'utente rimane sulla pagina per effettuare le correzioni.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema analizza localmente la presenza e la struttura testuale nei campi di input, considerando il token \textit{Git} come obbligatorio e quello del Task Management come opzionale.
@@ -688,43 +688,214 @@ Questo caso d'uso consente all'utente di indicare il repository Git e il riferim
         \item L'utente dispone dei permessi necessari per accedere al \textit{repository}.
         \item Il repository selezionato contiene codice sorgente scritto nei linguaggi supportati dal sistema.
     \end{itemize}
-    \item \textbf{Postcondizioni}: Il \textit{repository} e il riferimento selezionati sono disponibili come contesto per le funzionalità degli agenti.
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il \textit{repository} e il riferimento selezionati sono disponibili come contesto per le funzionalità degli agenti.\end{itemize}
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'utente accede alla sezione dedicata alla selezione del \textit{repository}.
             \item L'utente fornisce l'\textit{URL} del \textit{repository} Git.
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
-            \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch, \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
+            \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch e specifico \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
             \item Se l'utente seleziona un branch senza indicare un \textit{Commit} specifico, il sistema considera di default l'ultimo \textit{Commit} disponibile sul branch selezionato.
             \item Il sistema registra il \textit{repository} e il riferimento selezionati come contesto per le successive operazioni degli agenti.
         \end{enumerate}
-    \item \textbf{Scenari alternativi}: 
+    \item \textbf{Sottocasi d'uso}:
     \begin{itemize}
-        \item Se l'\textit{URL} del \textit{repository} non è valido, il sistema mostra un messaggio di errore esplicativo.
-        \item Se il \textit{repository} non è raggiungibile o l'utente non dispone dei permessi necessari, il sistema mostra un messaggio di errore esplicativo.
-        \item Se il branch, il \textit{Commit} o la \textit{Pull Request} selezionati non esistono, il sistema mostra un messaggio di errore esplicativo.
-        \item Se il repository contiene un linguaggio non supportato, il sistema avvisa l'utente che le funzionalità di analisi potrebbero non essere disponibili o generare errori.
+        \item \textbf{UC 1.1}: Inserimento URL del \textit{repository Git}.
+        \item \textbf{UC 1.2}: Selezione tipologia di riferimento.
+        \item \textbf{UC 1.3}: Selezione/Inserimento del nome del Branch.
+        \item \textbf{UC 1.4}: Inserimento identificativo del \textit{Commit}.
+        \item \textbf{UC 1.5}: Inserimento identificativo della \textit{Pull Request}.
     \end{itemize}
+    \item \textbf{Estensioni}:
+    \begin{itemize}
+        \item \textbf{UC 1.6: Errore URL \textit{repository} non valido}. Estende il passo 2 qualora il sistema rilevi localmente che l'URL del \textit{repository} non rispetti il formato sintattico valido.
+        \item \textbf{UC 1.7: Errore \textit{repository} non raggiungibile o permessi insufficienti}. Estende il passo 3 qualora, interrogando il servizio remoto, il \textit{repository} risulti inesistente o privato senza opportuna autorizzazione.
+        \item \textbf{UC 1.8: Errore branch inesistente}. Estende il passo 4 qualora il nome del branch specificato non venga trovato nel \textit{repository} remoto.
+        \item \textbf{UC 1.9: Errore \textit{commit} inesistente}. Estende il passo 4  qualora l'hash del \textit{commit} inserito non esista o non appartenga al branch selezionato.
+        \item \textbf{UC 1.10: Errore \textit{Pull Reques}t inesistente}. Estende il passo 4 qualora l'identificativo della Pull Request inserito non corrisponda ad alcuna \textit{PR} attiva o esistente.
+        \item \textbf{UC 1.11: Avviso linguaggio non supportato}. Estende il passo 6 qualora il codice sorgente nel riferimento selezionato sia scritto in un linguaggio non gestito dagli agenti del sistema.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 1.1: Inserimento URL del \textit{repository Git}}\label{uc:1.1}
+Questo caso d'uso descrive l'inserimento dell'URL del \textit{repository Git} da parte dell'utente.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente seleziona il campo di testo dedicato all'inserimento dell'URL del \textit{repository Git}.
+    \item \textbf{Precondizioni}:\begin{itemize}\item Il sistema ha caricato e mostra correttamente la schermata di configurazione del contesto operativo.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item L'URL del \textit{repository Git} è stato valorizzato all'interno del form.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente digita o incolla l'URL del \textit{repository Git} all'interno del campo di input preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.2: Selezione tipologia di riferimento}\label{uc:1.2}
+Questo caso d'uso descrive la selezione del tipo di riferimento base (Branch o \textit{Pull Request}).
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente interagisce con il componente grafico per determinare l'ambito di riferimento.
+    \item \textbf{Precondizioni}:\begin{itemize}\item Il sistema ha caricato e mostra correttamente la schermata di configurazione e il campo dell'URL è stato correttamente compilato.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item La tipologia di riferimento scelta (Branch o \textit{Pull Request}) è stata selezionata e valorizzata nel form, abilitando condizionalmente i relativi campi di inserimento successivi.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente seleziona una voce tra le opzioni "Branch" e "Pull Request".
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.3: Selezione/Inserimento del nome del Branch}\label{uc:1.3}
+Questo caso d'uso descrive l'azione di inserimento o selezione del nome del branch specifico su cui impostare l'analisi del codice.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente seleziona il campo dedicato al nome del branch.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "Branch" (UC 1.2).\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il nome del branch è stato valorizzato all'interno del form.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente inserisce o seleziona il nome del branch desiderato (es. \textit{main} o \textit{develop}) all'interno del campo di input preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.4: Inserimento identificativo del \textit{Commit}}\label{uc:1.4}
+Questo caso d'uso descrive l'inserimento facoltativo dell'identificativo (hash) di un \textit{Commit} specifico per vincolare l'analisi a una precisa versione cronologica del branch.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente seleziona il campo di testo dedicato all'hash del \textit{Commit}.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "Branch" come tipologia di riferimento (UC 1.2) e ha inserito il nome del branch (UC 1.3).\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item L'identificativo del \textit{Commit} è stato inserito nel form; qualora il campo venga lasciato vuoto, il sistema imposta automaticamente come default l'ultimo \textit{Commit} disponibile sul branch selezionato.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente digita l'hash alfanumerico del \textit{Commit} desiderato all'interno del campo di input preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.5: Inserimento identificativo della \textit{Pull Request}}\label{uc:1.5}
+Questo caso d'uso descrive l'inserimento dell'identificativo numerico di una specifica \textit{Pull Request} su cui effettuare l'analisi degli agenti.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente seleziona il campo dedicato all'identificativo della \textit{Pull Request}.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "\textit{Pull Request}" all'interno del menù a tendina della tipologia di riferimento (UC 1.2).\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item L'identificativo numerico della \textit{Pull Request} è stato valorizzato all'interno del form.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente digita il numero identificativo della \textit{Pull Request} all'interno del campo di input preposto.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.6: Errore URL \textit{repository} non valido}\label{uc:1.6}
+Questo caso d'uso descrive la gestione dell'errore qualora l'URL inserito dall'utente non rispetti il formato sintattico corretto di un \textit{repository Git}.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: Il sistema effettua una validazione sintattica locale sull'input dell'URL (UC 1.1) e rileva che la stringa non è conforme al formato atteso.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha inserito o incollato del testo nel campo dell'URL del \textit{repository}.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema mostra un messaggio d'errore testuale e inibisce il proseguimento della configurazione fino alla correzione del dato.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema rileva l'invalidità sintattica dell'URL digitato.
+        \item Il sistema evidenzia in rosso il campo di input e mostra un messaggio di errore (es. "Formato URL non valido").
+        \item Il sistema blocca l'interazione con i controlli successivi del form.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.7: Errore \textit{repository} non raggiungibile o permessi insufficienti}\label{uc:1.7}
+Questo caso d'uso descrive lo scenario in cui l'URL è sintatticamente corretto, ma il server remoto nega l'accesso o non trova la risorsa.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Trigger}: Il sistema effettua una richiesta API per verificare l'esistenza del \textit{repository} e riceve un codice di errore di rete o di autorizzazione.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'URL inserito è valido dal punto di vista sintattico.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema avvisa l'utente della mancata raggiungibilità o della mancanza di permessi, bloccando l'operazione.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema interroga il servizio remoto tramite le API di riferimento.
+        \item Il servizio remoto restituisce un errore di risorsa non trovata o di accesso negato.
+        \item Il sistema mostra un messaggio a schermo (es. "\textit{repository} non trovato o permessi insufficienti. Verificare il token di accesso").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.8: Errore branch inesistente}\label{uc:1.8}
+Questo caso d'uso descrive l'errore derivante dall'inserimento di un nome di branch che non trova riscontro effettivo nel \textit{repository} remoto configurato.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Trigger}: Il sistema valida il nome del branch inviato (UC 1.3) verificandone la presenza sul server remoto e riceve una risposta negativa.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "Branch" (UC 1.2) e inserito un nome di branch (UC 1.3).\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema segnala l'inesistenza del branch, impedendo la registrazione del contesto operativo.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema verifica l'esistenza del branch specificato tramite le API del servizio Git esterno.
+        \item Il servizio esterno risponde segnalando che il branch indicato non esiste.
+        \item Il sistema mostra un messaggio di errore mirato sul campo del branch (es. "Il branch specificato non esiste in questo \textit{repository}").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.9: Errore \textit{commit} inesistente}\label{uc:1.9}
+Questo caso d'uso descrive l'errore derivante dall'inserimento di un hash di un \textit{Commit} errato o non appartenente alla cronologia del branch selezionato.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Trigger}: Il sistema valida l'identificativo del \textit{Commit} (UC 1.4) interrogando l'API remota e non ne trova traccia nel contesto stabilito.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha inserito facoltativamente un valore alfanumerico nel campo del \textit{Commit} (UC 1.4).\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema segnala l'invalidità del \textit{Commit}, mantenendo intatti gli altri dati del form per consentire una nuova digitazione.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema interroga l'API remota per accertarsi che l'hash inserito sia un \textit{Commit} valido all'interno del branch selezionato.
+        \item La verifica fallisce in quanto l'hash è errato o non collegato al branch.
+        \item Il sistema visualizza un messaggio di errore specifico (es. "Hash del \textit{Commit} non valido o non presente sul branch").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.10: Errore \textit{Pull Request} inesistente}\label{uc:1.10}
+Questo caso d'uso descrive l'errore che si verifica quando l'utente immette un identificativo numerico di una \textit{Pull Request} che non esiste nel \textit{repository}.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Trigger}: Il sistema valida l'ID della \textit{Pull Request} inviato (UC 1.5) interrogando l'API remota e riceve una risposta di risorsa non trovata.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "\textit{Pull Request}" (UC 1.2) e ha inserito un identificativo numerico (UC 1.5).\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema segnala l'inesistenza della \textit{Pull Request} e blocca la convalida del form.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema richiede i dettagli della \textit{Pull Request} al servizio esterno tramite il numero fornito.
+        \item Il servizio remoto restituisce un errore indicando che nessuna \textit{Pull Request} corrisponde a quel numero.
+        \item Il sistema mostra un avviso mirato a schermo (es. "\textit{Pull Request} non trovata").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 1.11: Avviso linguaggio non supportato}\label{uc:1.11}
+Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quando il codice del \textit{repository} non coincide con le capacità tecniche degli agenti.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Trigger}: Il sistema esamina i metadati dei linguaggi del codice sorgente nel riferimento e rileva che le estensioni predominanti non sono supportate.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'URL, il branch/\textit{PR} e gli eventuali \textit{commit} sono validi e sono stati verificati con successo.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema registra con successo il contesto operativo per le successive funzionalità, ma notifica l'utente dell'incompatibilità dei linguaggi rilevati.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema interroga i metadati del codice o esegue una scansione rapida della struttura dei file del \textit{repository}.
+        \item Il sistema constata che i linguaggi principali rilevati non fanno parte dell'insieme di linguaggi supportati dal sistema Code Guardian.
+        \item Il sistema mostra un avviso informativo (es. "Attenzione: i linguaggi rilevati in questo \textit{repository} potrebbero non essere pienamente supportati dagli agenti").
+        \item Il sistema consente comunque il completamento e la memorizzazione del contesto operativo.
+    \end{enumerate}
 \end{itemize}
 
 
 \subsubsection{UC 2: Selezione ambito di analisi}\label{uc:2}
-Questo caso d'uso consente all'utente di delimitare la porzione del repository su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file o directory. L'analisi dell'intero repository è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
+Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file o directory. L'analisi dell'intero \textit{repository} è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
 
-    \item \textbf{Attori Secondari}: Repository Git.
+    \item \textbf{Attori Secondari}: \textit{Repository Git}.
 
     \item \textbf{Trigger}: L'utente vuole delimitare la parte del repository da sottoporre all'analisi di un agente.
 
     \item \textbf{Precondizioni}:
     \begin{itemize}
-        \item È stato selezionato un repository e un riferimento di base (UC 1).
-        \item Il sistema può accedere al contenuto del repository selezionato.
+        \item È stato selezionato un r\textit{epository} e un riferimento di base (UC 1).
+        \item Il sistema può accedere al contenuto del \textit{repository} selezionato.
     \end{itemize}
     
-    \item \textbf{Postcondizioni}: L'ambito di analisi selezionato è disponibile come input per l'agente interessato.
+    \item \textbf{Postcondizioni}:\begin{itemize}\item L'ambito di analisi selezionato è disponibile come input per l'agente interessato.\end{itemize}
 
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
@@ -732,14 +903,110 @@ Questo caso d'uso consente all'utente di delimitare la porzione del repository s
         \item Il sistema verifica che gli elementi indicati esistano e siano accessibili.
         \item Il sistema registra l'ambito selezionato come input per l'esecuzione dell'agente interessato.
     \end{enumerate}
-
-    \item \textbf{Scenari alternativi}:
+\item \textbf{Sottocasi d'uso}:
     \begin{itemize}
-        \item Se l'utente non seleziona alcun ambito, il sistema mostra un messaggio informativo e richiede di completare la selezione.
-        \item Se uno o più elementi selezionati non esistono o non sono accessibili, il sistema mostra un messaggio di errore esplicativo.
-        \item (desiderabile) Se l'ambito selezionato supera la capacità di elaborazione del modello, il sistema mostra un messaggio di errore esplicativo e richiede di restringere la selezione.
+        \item \textbf{UC 2.1}: Selezione dell'intero \textit{Repository}.
+        \item \textbf{UC 2.2}: Selezione di directory specifiche.
+        \item \textbf{UC 2.3}: Selezione di singoli file.
+    \end{itemize}
+    \item \textbf{Estensioni}:
+    \begin{itemize}
+        \item \textbf{UC 2.4: Errore mancata selezione dell'ambito}. Estende il passo 1 qualora l'utente tenti di confermare l'avvio delle operazioni senza aver selezionato alcun elemento o opzione di analisi, mostrando un messaggio informativo a schermo.
+        \item \textbf{UC 2.5: Errore elementi non esistenti o non accessibili}. Estende il passo 2 qualora uno o più file o directory selezionati non siano più presenti o accessibili nel riferimento remoto, mostrando un messaggio di errore esplicativo.
+        \item \textbf{UC 2.6: Errore superamento limiti dimensionali dell'ambito}. Estende il passo 2 qualora il volume complessivo di righe o file selezionati superi la capacità massima di elaborazione del modello \textit{LLM}, mostrando un messaggio di errore esplicativo e richiedendo di restringere la selezione.
     \end{itemize}
 \end{itemize}
+
+\subsubsection{UC 2.1: Selezione dell'intero \textit{Repository}}\label{uc:2.1}
+Questo caso d'uso descrive la selezione dell'intero \textit{Repository Git} come ambito complessivo dell'analisi attraverso l'interazione con un comando globale di selezione.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente attiva il comando grafico di selezione globale nell'interfaccia.
+    \item \textbf{Precondizioni}:\begin{itemize}\item Il sistema mostra correttamente la schermata di configurazione dell'ambito e la struttura dei file del \textit{Repository} è accessibile.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item L'intero \textit{Repository} è stato impostato e valorizzato come ambito di analisi nel form.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente seleziona il comando di inclusione totale del \textit{Repository}.
+        \item Il sistema seleziona automaticamente tutte le cartelle e i file contenuti nel \textit{Repository Git}.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 2.2: Selezione di directory specifiche}\label{uc:2.2}
+Questo caso d'uso descrive la selezione mirata di una o più cartelle specifiche all'interno del \textit{Repository} per circoscrivere l'azione degli agenti.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente interagisce con i componenti grafici di selezione associati alle cartelle nella struttura ad albero.
+    \item \textbf{Precondizioni}:\begin{itemize}\item Il sistema mostra correttamente la struttura ad albero delle cartelle del \textit{Repository} e l'opzione di selezione totale (UC 2.1) non è attiva.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Le directory selezionate e tutti i file in esse contenuti ricorsivamente vengono registrati nel form come ambito dell'analisi.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente naviga nell'albero dei file e seleziona una o più cartelle di suo interesse all'interno del \textit{Repository}.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 2.3: Selezione di singoli file}\label{uc:2.3}
+Questo caso d'uso descrive la selezione puntuale e atomica di singoli file del \textit{Repository}, escludendo il resto delle strutture non d'interesse.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente interagisce con i componenti grafici di selezione associati ai singoli file nell'albero delle risorse.
+    \item \textbf{Precondizioni}:\begin{itemize}\item Il sistema mostra correttamente la struttura dei file del \textit{Repository} e l'opzione di selezione totale (UC 2.1) non è attiva.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item I file specifici selezionati dall'utente vengono registrati nel form come ambito finale dell'analisi.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente naviga tra i nodi dell'albero dei file ed effettua una spunta selettiva su uno o più file specifici del \textit{Repository Git}.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 2.4: Errore mancata selezione dell'ambito}\label{uc:2.4}
+Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti di proseguire senza aver definito alcun ambito di analisi all'interno del \textit{Repository}.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: L'utente conferma la configurazione dell'ambito cliccando sull'apposito pulsante senza aver effettuato alcuna selezione.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'interfaccia mostra il contenuto del \textit{Repository} ma né l'opzione di selezione globale (UC 2.1) né alcuna selezione parziale (UC 2.2, UC 2.3) risultano attive.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema blocca il proseguimento e invita l'utente a effettuare una scelta valida, mantenendolo sulla schermata corrente.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente tenta di confermare la configurazione corrente (vuota).
+        \item Il sistema rileva localmente che nessun ambito di analisi è stato selezionato.
+        \item Il sistema inibisce l'avanzamento.
+        \item Il sistema mostra un messaggio d'errore o di avviso esplicativo a schermo (es. "Selezionare almeno un file o una directory per procedere").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 2.5: Errore elementi non esistenti o non accessibili}\label{uc:2.5}
+Questo caso d'uso descrive lo scenario in cui uno o più elementi selezionati dall'utente non risultino più disponibili o accessibili nel \textit{Repository Git} remoto.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Attori Secondari}: \textit{Repository Git}.
+    \item \textbf{Trigger}: Il sistema verifica la disponibilità effettiva degli elementi selezionati e riceve un feedback di errore dal \textit{Repository Git}.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato uno o più elementi tramite l'interfaccia e ha confermato la scelta.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item L'ambito di analisi non viene registrato come contesto valido. Il sistema segnala il problema all'utente.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema interroga le API del \textit{Repository Git} per verificare l'effettiva accessibilità in lettura dei file o delle directory precedentemente selezionate.
+        \item Il servizio remoto restituisce un errore indicando che uno o più elementi non sono stati trovati o non sono accessibili.
+        \item Il sistema interrompe la validazione dell'ambito.
+        \item Il sistema mostra un messaggio di errore (es. "Impossibile accedere ad alcuni file selezionati. Verificare che non siano stati rimossi dal \textit{Repository}").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 2.6: Errore superamento limiti dimensionali dell'ambito}\label{uc:2.6}
+Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di file scelti superi la capacità massima dei modelli LLM incaricati dell'analisi.
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: Il sistema esegue un calcolo preventivo sul volume dei file selezionati all'interno del \textit{Repository} e rileva che esso eccede i limiti prefissati.
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato un ambito (totale o parziale) e ha confermato la scelta, i cui file esistono e sono tutti regolarmente accessibili (UC 2.5 completato con successo).\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item La registrazione dell'ambito fallisce. L'utente viene invitato dal sistema a ridurre la mole della selezione.\end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema effettua un conteggio o una stima della dimensione complessiva dei file inclusi nell'ambito.
+        \item Il sistema confronta la stima con il limite massimo supportato dalla configurazione corrente per garantire prestazioni e costi accettabili.
+        \item Il sistema rileva che la dimensione totale eccede la soglia massima consentita.
+        \item Il sistema blocca il salvataggio del contesto.
+        \item Il sistema mostra un messaggio di errore a schermo (es. "L'ambito selezionato supera la capacità di elaborazione del sistema. Si prega di restringere la selezione nel \textit{Repository}").
+    \end{enumerate}
+\end{itemize}
+
 
 \subsubsection{UC 22: Selezione e avvio delle operazioni tramite \textbf{Orchestratore}}\label{uc:22}
 Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce con l'interfaccia grafica per selezionare deterministicamente una o più operazioni da far svolgere agli agenti.
@@ -1492,16 +1759,30 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     RF.41 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC 21, 21.1, 21.2 \\ \hline
     RF.42 & Obbligatorio & IIl sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC 21.3 \\ \hline
     RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC 0, 0.1, 0.2, 0.3, 0.4 \\ \hline
-    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1 \\ \hline
-    RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1 
+    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1, 1.1, 1.2, 1.3, 1.4 \\ \hline
+    RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1.2, 1.5
     \\ \hline
-    RF.3 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} o l'ambito di analisi selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC 1 
+    RF.48 & Obbligatorio & Il sistema deve validare sintatticamente l'URL del repository inserito e mostrare un messaggio di errore se il formato non è valido. & UC 1.6
     \\ \hline
-    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2 \\ 
+    RF.49 & Obbligatorio & Il sistema deve verificare la raggiungibilità del repository e la validità dei permessi d'accesso, mostrando un messaggio di errore in caso di fallimento. & UC 1.7
+    \\ \hline
+    RF.50 & Obbligatorio & Il sistema deve verificare l'esistenza del branch specificato sul repository remoto e mostrare un messaggio di errore qualora non venga trovato. & UC 1.8
+    \\ \hline
+    RF.51 & Obbligatorio & Il sistema deve verificare l'esistenza dell'hash del commit specificato e la sua appartenenza al branch selezionato, mostrando un errore in caso negativo. & UC 1.9
+    \\ \hline
+    RF.52 & Obbligatorio & Il sistema deve verificare l'esistenza dell'identificativo della Pull Request specificata, mostrando un messaggio di errore qualora non venga trovata. & UC 1.10
+    \\ \hline
+    RF.3 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC 1.11
+    \\ \hline
+    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2, 2.2, 2.3 \\ 
     \hline
-    RF.5 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2, 5 \\ 
+    RF.5 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2.6, 5 \\ 
     \hline
-    RF.6 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2 \\ 
+    RF.6 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2.1 \\ 
+    \hline
+    RF.53 & Obbligatorio & Il sistema deve bloccare il proseguimento e mostrare un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & UC 2.4 \\ 
+    \hline
+    RF.54 & Obbligatorio & Il sistema deve verificare l'effettiva esistenza e accessibilità degli elementi selezionati nel \textit{Repository} remoto, mostrando un messaggio di errore in caso di fallimento. & UC 2.5 \\ 
     \hline
     RF.43 & Obbligatorio & Il sistema deve fornire un'interfaccia grafica (GUI) che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti, permettendo all'utente una selezione esplicita. & UC 22 \\ 
     \hline
@@ -1597,19 +1878,25 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
 
     RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi, al fine di garantire un'esperienza utente fluida. & UC 21 \\ 
     \hline\
-    RQ.7 & Desiderabile & L'interfaccia grafica deve fornire un feedback visivo immediato e non bloccante al cambio di stato di ogni singola operazione, garantendo un'esperienza utente fluida durante le esecuzioni concorrenti. & UC 22, UC 23 \\ 
+    RQ.7 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC 22, 23, PdQ(OB\_PROD\_05) \\ 
     \hline
     RQ.0 & Obbligatorio & Il sistema deve adottare un approccio \textit{Human-in-the-loop}, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, Verbale esterno 2026/03/23 \\ 
     \hline
     RQ.1 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & Verbale esterno 2026/03/23 \\
     \hline
-    RQ.2 & Desiderabile & Il sistema deve minimizzare i falsi positivi nella generazione della documentazione, evitando di proporre aggiornamenti per modifiche al codice puramente stilistiche o marginali. & UC 7, 8, 9 \\
+    RQ.2 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC 7, 8, 9, PdQ(OB\_PROD\_02) \\
     \hline
     RQ.3 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati e per i modelli o servizi utilizzati. & Verbale esterno 2026/03/23 \\
     \hline
     RQ.4 & Obbligatorio & L’output dell’Agente Changelog destinato al cliente o agli stakeholder deve essere scritto in modo comprensibile dal lato business, evitando tecnicismi non necessari. & Verbale esterno 2026/04/24 \\
     \hline
-    RQ.5 & Desiderabile & l tempo di attesa per l'esecuzione di un agente su un ambito di analisi ristretto (es. file singolo o porzione di codice locale) non dovrebbe superare una soglia temporale ragionevole (es. 2-3 minuti), al fine di non ostacolare il flusso di lavoro dell'utente. & Capitolato C2 \\
+    RQ.5 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\% , come stabilito dalla metrica MP\_06 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_06) \\
+    \hline
+    RQ.8 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (OB\_PROD\_08) del Piano di Qualifica. & Capitolato C2, PdQ(OB\_PROD\_08) \\
+    \hline
+    RQ.9 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare con successo il 100\% delle eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting) , conformemente alla metrica OB\_PROD\_04 del Piano di Qualifica. & Verbale interno 2026/06/02, PdQ(OB\_PROD\_04) \\
+    \hline
+    RQ.10 & Obbligatorio & Tutta la documentazione testuale di progetto redatta in lingua italiana deve possedere un Indice di Gulpease maggiore o uguale a 40. La valutazione seguirà la metrica MP\_05 del Piano di Qualifica. &  PdQ(MP\_05) \\
     \hline
     
 \end{xltabular}
