@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.15.1} \\ \hline
+            \textbf{Versione} & \textit{0.15.2} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -109,7 +109,8 @@
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
-    
+
+    0.15.2 & 2026/06/25 & Modifiche varie sui requisiti qualitativi & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & Dario Pirrone & Sara Ristovic \\ \hline
     0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazone e login & Dario Pirrone & Sara Ristovic \\ \hline
@@ -1826,6 +1827,8 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10 \\
     \hline
+    RF.55 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
+    \hline
     RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
     \hline
     RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 12 \\ 
@@ -1874,19 +1877,13 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     \endhead
 
-    RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi, al fine di garantire un'esperienza utente fluida. & UC 21 \\ 
+    RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi. & UC 21 \\ 
     \hline\
     RQ.7 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC 22, 23, PdQ(OB\_PROD\_05) \\ 
     \hline
-    RQ.0 & Obbligatorio & Il sistema deve adottare un approccio \textit{Human-in-the-loop}, mantenendo il controllo umano nella validazione degli output prodotti dagli agenti. & UC 4, Verbale esterno 2026/03/23 \\ 
-    \hline
-    RQ.1 & Obbligatorio &  Gli output prodotti dagli agenti devono risultare utili al miglioramento del codice, ad esempio tramite segnalazioni, suggerimenti testuali, frammenti di codice o proposte di soluzione. & Verbale esterno 2026/03/23 \\
-    \hline
     RQ.2 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC 7, 8, 9, PdQ(OB\_PROD\_02) \\
     \hline
-    RQ.3 & Obbligatorio & Devono essere definite modalità di test e validazione per gli agenti sviluppati e per i modelli o servizi utilizzati. & Verbale esterno 2026/03/23 \\
-    \hline
-    RQ.4 & Obbligatorio & L’output dell’Agente Changelog destinato al cliente o agli stakeholder deve essere scritto in modo comprensibile dal lato business, evitando tecnicismi non necessari. & Verbale esterno 2026/04/24 \\
+    RQ.4 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità 'Flesch Reading Ease' superiore a 50, al fine di garantire l'assenza di eccessivi tecnicismi. & Verbale esterno 2026/04/24 \\
     \hline
     RQ.5 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\% , come stabilito dalla metrica MP\_06 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_06) \\
     \hline
@@ -1925,8 +1922,6 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
     \hline
     RV.3 & Obbligatorio & [Il sitema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
-    \hline
-    RV.4 & Obbligatorio & Il sistema deve basarsi sull’analisi di Repository software e sulla produzione di output documentazione e remediation coerenti con il perimetro del progetto Code Guardian. &  Capitolato C2 \\
     \hline
     RV.5 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
     \hline
