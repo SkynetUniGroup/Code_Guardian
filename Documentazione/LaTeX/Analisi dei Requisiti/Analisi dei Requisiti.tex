@@ -511,7 +511,7 @@ Questo caso d'uso descrive il processo tramite il quale un utente già registrat
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
-    \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di \textbf{Code Guardian}.
+    \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di Code Guardian.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente ha completato con successo il processo di registrazione (UC 20).
@@ -599,7 +599,7 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'utente accede alla sezione di configurazione del sistema.
-            \item Il sistema richiede l'inserimento dei token di accesso ai servizi esterni.
+            \item Il sistema richiede l'inserimento dei parametri di autenticazione.
             \item L'utente inserisce i dati richiesti.
             \item Il sistema convalida la correttezza formale e effettua una chiamata di test per verificare i permessi delle chiavi inserite.
             \item Il sistema salva le credenziali e notifica all'utente il successo dell'operazione.
@@ -633,12 +633,12 @@ Questo caso d'uso descrive l'azione di inserimento del token personale di access
 Questo caso d'uso descrive l'azione di inserimento del token per consentire al sistema di interfacciarsi con la piattaforma esterna di tracciamento delle attività.
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali del Sistema di \textit{Task Management}.
+    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali del Sistema di Task Management.
     \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema mostra correttamente la schermata di configurazione delle credenziali.\end{itemize}
-    \item \textbf{Postcondizioni:}\begin{itemize}\item Il token del Sistema di \textit{Task Management} è stato inserito nel relativo campo di input.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il token del Sistema di Task Management è stato inserito nel relativo campo di input.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente digita o incolla la chiave o il token di autenticazione per il tool di \textit{Task Management} (es. GitHub Issues) nel campo preposto.
+        \item L'utente digita o incolla la chiave o il token di autenticazione per il tool di Task Management (es. GitHub Issues) nel campo preposto.
     \end{enumerate}
 \end{itemize}
 
@@ -648,14 +648,14 @@ Questo caso d'uso descrive la gestione del fallimento del test di autenticazione
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Attori Secondari:} \textit{Repository Git}, Sistema di \textit{Task Management}.
     \item \textbf{Trigger:} Il sistema effettua la chiamata di test e riceve un feedback di errore dai servizi esterni.
-    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha inserito dei token formalmente corretti, ma non validi dal punto di vista dell'accesso e dei permessi sui server esterni.\end{itemize}
-    \item \textbf{Postcondizioni:}\begin{itemize}\item L'operazione di salvataggio delle credenziali viene annullata e il sistema mostra un messaggio di errore dettagliato, mantenendo l'utente sulla pagina corrente.\end{itemize}
+    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha inserito dei token formalmente corretti, ma non validi dal punto di vista logico o autorizzativo sui server esterni.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item L'operazione di salvataggio viene annullata, le credenziali non vengono memorizzate e il sistema mostra un messaggio di errore dettagliato, mantenendo l'utente sulla pagina corrente.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema rileva il fallimento della chiamata di test.
         \item Il sistema identifica quale servizio ha rifiutato la connessione (\textit{Repository Git}, \textit{Task Management} o entrambi).
-        \item Il sistema interrompe il salvataggio delle credenziali.
-        \item Il sistema mostra a schermo un messaggio di errore specifico (es. "Impossibile stabilire una connessione: il token \textit{Git} inserito è scaduto o non ha i permessi di lettura") e invita l'utente a verificare e reinserire le credenziali.
+        \item Il sistema blocca la persistenza dei dati.
+        \item Il sistema mostra a schermo un messaggio di errore specifico (es. "Impossibile stabilire una connessione: il token Git inserito è scaduto o non ha i permessi di lettura") e invita l'utente a verificare e reinserire le credenziali.
     \end{enumerate}
 \end{itemize}
 
@@ -664,11 +664,11 @@ Questo caso d'uso descrive la validazione sintattica locale effettuata dal siste
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente clicca sul pulsante di conferma e salvataggio.
-    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha lasciato vuoto il campo obbligatorio del \textit{Repository Git}, oppure ha inserito in uno dei campi una stringa che non rispetta i requisiti minimi di formattazione di un token valido.\end{itemize}
+    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha lasciato vuoto il campo obbligatorio del \textit{Repository Git}, oppure ha inserito in uno dei campi una stringa che non rispetta il pattern di un token valido.\end{itemize}
     \item \textbf{Postcondizioni:}\begin{itemize}\item Il sistema blocca la chiamata di test esterna, evidenzia i campi non conformi o mancanti e l'utente rimane sulla pagina per effettuare le correzioni.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema analizza localmente la presenza e la struttura testuale nei campi di input, considerando il token \textit{Git} come obbligatorio e quello del \textit{Task Management} come opzionale.
+        \item Il sistema analizza localmente la presenza e la struttura testuale nei campi di input, considerando il token \textit{Git} come obbligatorio e quello del Task Management come opzionale.
         \item Il sistema rileva che il campo \textit{Git} è vuoto, oppure che uno dei campi compilati non rispetta i requisiti minimi di formattazione (lunghezza errata o caratteri non ammessi).
         \item Il sistema interrompe il flusso di salvataggio ed evita di contattare gli attori secondari.
         \item Il sistema mostra un avviso visivo contestuale (es. "Il token \textit{Git} è obbligatorio" sul primo campo, oppure "Formato token non valido" sul campo specifico errato), richiedendo una correzione da parte dell'utente.
@@ -677,7 +677,6 @@ Questo caso d'uso descrive la validazione sintattica locale effettuata dal siste
 
 \subsubsection{UC 1: Selezione \textit{repository} e riferimento di base}\label{uc:1}
 Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e il riferimento di base su cui potranno essere eseguite le successive operazioni degli agenti. La selezione del \textit{repository} non implica necessariamente l'analisi del suo intero contenuto, ma definisce il contesto iniziale da utilizzare nelle funzionalità successive. È una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
-Inoltre, l'utente seleziona la tipologia di riferimento di base, scegliendo tra Branch e \textit{Pull Request}. Nel caso di Branch, può indicare facoltativamente un \textit{Commit} specifico e nel caso di \textit{Pull Request}, fornisce il relativo identificativo numerico.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
@@ -686,13 +685,15 @@ Inoltre, l'utente seleziona la tipologia di riferimento di base, scegliendo tra 
     \item \textbf{Precondizioni}:
     \begin{itemize}
         \item Il sistema è attivo e accessibile.
-        \item Il \textit{repository} selezionato contiene codice sorgente scritto nei linguaggi supportati dal sistema.
+        \item Il \textit{repository} Git esiste ed è raggiungibile.
+        \item L'utente dispone dei permessi necessari per accedere al \textit{repository}.
+        \item Il repository selezionato contiene codice sorgente scritto nei linguaggi supportati dal sistema.
     \end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item Il \textit{repository} e il riferimento selezionati sono disponibili come contesto per le funzionalità degli agenti.\end{itemize}
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'utente accede alla sezione dedicata alla selezione del \textit{repository}.
-            \item L'utente fornisce l'\textit{URL} del \textit{repository Git}.
+            \item L'utente fornisce l'\textit{URL} del \textit{repository} Git.
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
             \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch e specifico \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
             \item Se l'utente seleziona un branch senza indicare un \textit{Commit} specifico, il sistema considera di default l'ultimo \textit{Commit} disponibile sul branch selezionato.
@@ -702,7 +703,7 @@ Inoltre, l'utente seleziona la tipologia di riferimento di base, scegliendo tra 
     \begin{itemize}
         \item \textbf{UC 1.1}: Inserimento URL del \textit{repository Git}.
         \item \textbf{UC 1.2}: Selezione tipologia di riferimento.
-        \item \textbf{UC 1.3}: Inserimento del nome del Branch.
+        \item \textbf{UC 1.3}: Selezione/Inserimento del nome del Branch.
         \item \textbf{UC 1.4}: Inserimento identificativo del \textit{Commit}.
         \item \textbf{UC 1.5}: Inserimento identificativo della \textit{Pull Request}.
     \end{itemize}
@@ -711,7 +712,7 @@ Inoltre, l'utente seleziona la tipologia di riferimento di base, scegliendo tra 
         \item \textbf{UC 1.6: Errore URL \textit{repository} non valido}. Estende il passo 2 qualora il sistema rilevi localmente che l'URL del \textit{repository} non rispetti il formato sintattico valido.
         \item \textbf{UC 1.7: Errore \textit{repository} non raggiungibile o permessi insufficienti}. Estende il passo 3 qualora, interrogando il servizio remoto, il \textit{repository} risulti inesistente o privato senza opportuna autorizzazione.
         \item \textbf{UC 1.8: Errore branch inesistente}. Estende il passo 4 qualora il nome del branch specificato non venga trovato nel \textit{repository} remoto.
-        \item \textbf{UC 1.9: Errore \textit{commit} inesistente}. Estende il passo 4  qualora l'identificativo del \textit{commit} inserito non esista o non appartenga al branch selezionato.
+        \item \textbf{UC 1.9: Errore \textit{commit} inesistente}. Estende il passo 4  qualora l'hash del \textit{commit} inserito non esista o non appartenga al branch selezionato.
         \item \textbf{UC 1.10: Errore \textit{Pull Reques}t inesistente}. Estende il passo 4 qualora l'identificativo della Pull Request inserito non corrisponda ad alcuna \textit{PR} attiva o esistente.
         \item \textbf{UC 1.11: Avviso linguaggio non supportato}. Estende il passo 6 qualora il codice sorgente nel riferimento selezionato sia scritto in un linguaggio non gestito dagli agenti del sistema.
     \end{itemize}
@@ -735,7 +736,7 @@ Questo caso d'uso descrive la selezione del tipo di riferimento base (Branch o \
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: L'utente interagisce con il componente grafico per determinare l'ambito di riferimento.
-    \item \textbf{Precondizioni}:\begin{itemize}\item Il sistema ha caricato e mostra correttamente la schermata di configurazione e il campo dell'URL è stato correttamente compilato (UC 1.1). \end{itemize}
+    \item \textbf{Precondizioni}:\begin{itemize}\item Il sistema ha caricato e mostra correttamente la schermata di configurazione e il campo dell'URL è stato correttamente compilato.\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item La tipologia di riferimento scelta (Branch o \textit{Pull Request}) è stata selezionata e valorizzata nel form, abilitando condizionalmente i relativi campi di inserimento successivi.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
@@ -743,7 +744,7 @@ Questo caso d'uso descrive la selezione del tipo di riferimento base (Branch o \
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 1.3: Inserimento del nome del Branch}\label{uc:1.3}
+\subsubsection{UC 1.3: Selezione/Inserimento del nome del Branch}\label{uc:1.3}
 Questo caso d'uso descrive l'azione di inserimento o selezione del nome del branch specifico su cui impostare l'analisi del codice.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
@@ -762,7 +763,7 @@ Questo caso d'uso descrive l'inserimento facoltativo dell'identificativo (hash) 
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: L'utente seleziona il campo di testo dedicato all'hash del \textit{Commit}.
     \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "Branch" come tipologia di riferimento (UC 1.2) e ha inserito il nome del branch (UC 1.3).\end{itemize}
-    \item \textbf{Postcondizioni}:\begin{itemize}\item L'identificativo del \textit{Commit} è stato inserito nel form. Qualora il campo venga lasciato vuoto, il sistema imposta automaticamente come default l'ultimo \textit{Commit} disponibile sul branch selezionato.\end{itemize}
+    \item \textbf{Postcondizioni}:\begin{itemize}\item L'identificativo del \textit{Commit} è stato inserito nel form; qualora il campo venga lasciato vuoto, il sistema imposta automaticamente come default l'ultimo \textit{Commit} disponibile sul branch selezionato.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
         \item L'utente digita l'hash alfanumerico del \textit{Commit} desiderato all'interno del campo di input preposto.
@@ -830,7 +831,7 @@ Questo caso d'uso descrive l'errore derivante dall'inserimento di un nome di bra
 \end{itemize}
 
 \subsubsection{UC 1.9: Errore \textit{commit} inesistente}\label{uc:1.9}
-Questo caso d'uso descrive l'errore derivante dall'inserimento di un identificativo (hash) di un \textit{Commit} errato o non appartenente alla cronologia del branch selezionato.
+Questo caso d'uso descrive l'errore derivante dall'inserimento di un hash di un \textit{Commit} errato o non appartenente alla cronologia del branch selezionato.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Attori Secondari}: \textit{repository Git}.
@@ -872,7 +873,7 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
         \item Il sistema interroga i metadati del codice o esegue una scansione rapida della struttura dei file del \textit{repository}.
-        \item Il sistema constata che i linguaggi principali rilevati non fanno parte dell'insieme di linguaggi supportati dal sistema \textbf{Code Guardian}.
+        \item Il sistema constata che i linguaggi principali rilevati non fanno parte dell'insieme di linguaggi supportati dal sistema Code Guardian.
         \item Il sistema mostra un avviso informativo (es. "Attenzione: i linguaggi rilevati in questo \textit{repository} potrebbero non essere pienamente supportati dagli agenti").
         \item Il sistema consente comunque il completamento e la memorizzazione del contesto operativo.
     \end{enumerate}
@@ -1510,7 +1511,7 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{Repository Git}, \textit{API} \textit{Claude Code}.
+    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
     \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità può essere corretta tramite una modifica puntuale al codice.
     \item \textbf{Precondizioni}:
         \begin{itemize}
@@ -1536,7 +1537,7 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
 
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{Repository Git}, \textit{API} \textit{Claude Code}.
+    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
     \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
     \item \textbf{Precondizioni}:\begin{itemize}
         \item È disponibile una \textit{Vulnerabilità} o non conformità rilevata, l’agente dispone del contesto sufficiente per descrivere il problema.
@@ -1756,7 +1757,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     RF.40 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC 20.6 \\ \hline
     RF.41 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC 21, 21.1, 21.2 \\ \hline
     RF.42 & Obbligatorio & IIl sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC 21.3 \\ \hline
-    RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC 0, 0.1, 0.2, 0.3, 0.4 \\ \hline
+    RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC 0, 0.1, 0.2, 0.3, 0.4 \\ \hline
     RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC 1, 1.1, 1.2, 1.3, 1.4 \\ \hline
     RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC 1.2, 1.5
     \\ \hline
@@ -1826,7 +1827,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10 \\
     \hline
-    RF.55 & Obbligatorio &  I risultati dell'analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
+    RF.55 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
     \hline
     RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
     \hline
@@ -1876,21 +1877,21 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     \endhead
 
-    RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi. & UC 21 \\ 
+    RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi. & UC 21, PdQ(OB\_PROD\_10) \\ 
     \hline\
     RQ.7 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC 22, 23, PdQ(OB\_PROD\_05) \\ 
     \hline
     RQ.2 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC 7, 8, 9, PdQ(OB\_PROD\_02) \\
     \hline
-    RQ.4 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità 'Flesch Reading Ease' superiore a 50. & Verbale esterno 2026/04/24 \\
+    RQ.4 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità 'Flesch Reading Ease' superiore a 50. & Verbale esterno 2026/04/24, PdQ(OB\_PROD\_09) \\
     \hline
-    RQ.5 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\% , come stabilito dalla metrica MP\_06 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_06) \\
+    RQ.5 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\% , come stabilito dalla metrica MP\_06 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_03) \\
     \hline
     RQ.8 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (OB\_PROD\_08) del Piano di Qualifica. & Capitolato C2, PdQ(OB\_PROD\_08) \\
     \hline
     RQ.9 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare con successo il 100\% delle eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting) , conformemente alla metrica OB\_PROD\_04 del Piano di Qualifica. & Verbale interno 2026/06/02, PdQ(OB\_PROD\_04) \\
     \hline
-    RQ.10 & Obbligatorio & Tutta la documentazione testuale di progetto redatta in lingua italiana deve possedere un Indice di Gulpease maggiore o uguale a 40. La valutazione seguirà la metrica MP\_05 del Piano di Qualifica. &  PdQ(MP\_05) \\
+    RQ.10 & Obbligatorio & Tutta la documentazione testuale di progetto redatta in lingua italiana deve possedere un Indice di Gulpease maggiore o uguale a 40. La valutazione seguirà la metrica MP\_05 del Piano di Qualifica. &  PdQ(MP\_02) \\
     \hline
     
 \end{xltabular}
