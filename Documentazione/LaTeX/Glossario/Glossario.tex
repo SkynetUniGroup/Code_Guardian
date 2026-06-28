@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{geometry}
+\usepackage{amsmath}
 \geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
 \usepackage{tabularx}
 \usepackage{booktabs}
@@ -208,6 +209,14 @@ Pratica nel controllo di versione che permette agli sviluppatori di creare una l
 
 \noindent\hypertarget{budget-variance}{\textbf{Budget Variance (BV)}} \\[0.1em]
 Indicatore economico utilizzato nell'Ingegneria del Software (e più in generale nell'Earned Value Management) per misurare lo scostamento tra il costo preventivato di un progetto e il costo effettivamente sostenuto in un determinato istante o Sprint. Un valore negativo indica un superamento del budget stabilito (Overbudget).
+\vspace{0.5cm}
+
+\noindent\hypertarget{build-success-rate}{\textbf{Build Success Rate}} \\[0.1em]
+Indice quantitativo utilizzato nell'ambito DevOps e dell'Ingegneria del Software per misurare l'efficacia e la stabilità del processo di \textit{Continuous Integration} (CI). Rappresenta la percentuale di build (ovvero i processi automatizzati di compilazione, verifica sintattica tramite linter ed esecuzione dei test) completate con successo rispetto al totale delle build avviate in un determinato intervallo temporale (es. uno Sprint). Viene calcolato mediante la seguente formula:
+\begin{equation}
+\text{Build Success Rate} = \left( \frac{B_{\text{successo}}}{B_{\text{totali}}} \right) \times 100
+\end{equation}
+Dove $B_{\text{successo}}$ indica il numero di build andate a buon fine (passanti) e $B_{\text{totali}}$ rappresenta il numero complessivo di build avviate all'interno della pipeline automatizzata (es. tramite GitHub Actions). Un valore elevato garantisce che il codice presente sul repository sia costantemente in uno stato stabile, compilabile e privo di regressioni.
 \vspace{0.5cm}
 
 \noindent\hypertarget{burndown-chart}{\textbf{Burndown Chart}} \\[0.1em]
@@ -566,6 +575,14 @@ Insieme di azioni, suggerimenti descrittivi o frammenti di codice correttivo fin
 
 \noindent\hypertarget{repository}{\textbf{Repository}} \\[0.1em]
 Archivio centralizzato, spesso ospitato su piattaforme cloud (come GitHub), utilizzato per memorizzare e gestire il codice sorgente di un progetto software. Oltre ai file, conserva la cronologia completa di tutte le modifiche apportate nel tempo, facilitando la collaborazione e il controllo di versione.
+\vspace{0.5cm}
+
+\noindent\hypertarget{requirements-stability-index}{\textbf{Requirements Stability Index (RSI)}} \\[0.1em]
+Indice quantitativo utilizzato nell'Ingegneria del Software per misurare il grado di stabilità dei requisiti di un progetto durante un determinato intervallo temporale (es. uno Sprint). Monitorare questo indice permette di rilevare tempestivamente il fenomeno dello \textit{scope creep} (espansione incontrollata del perimetro del progetto) e di valutare la validità della fase di analisi iniziale. L'indice viene calcolato secondo la seguente formula:
+\begin{equation}
+RSI = \left( 1 - \frac{R_{\text{modificati}} + R_{\text{eliminati}}}{R_{\text{totali\_iniziali}}} \right) \times 100
+\end{equation}
+Dove $R_{\text{modificati}}$ e $R_{\text{eliminati}}$ rappresentano il numero di requisiti variati o scartati nel corso dello Sprint, mentre $R_{\text{totali\_iniziali}}$ indica il totale dei requisiti approvati a inizio iterazione. Un valore pari al 100\% indica una stabilità assoluta del perimetro software.
 \vspace{0.5cm}
 
 \noindent\hypertarget{responsabile}{\textbf{Responsabile}} \\[0.1em]
