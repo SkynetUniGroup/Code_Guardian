@@ -110,7 +110,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
 
-    0.15.2 & 2026/06/25 & Modifiche varie sui requisiti qualitativi & Dario Pirrone & Sara Ristovic \\ \hline
+    0.15.2 & 2026/06/25 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & Dario Pirrone & Sara Ristovic \\ \hline
     0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazone e login & Dario Pirrone & Sara Ristovic \\ \hline
@@ -1883,7 +1883,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RQ.2 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC 7, 8, 9, PdQ(OB\_PROD\_02) \\
     \hline
-    RQ.4 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità 'Flesch Reading Ease' superiore a 50, al fine di garantire l'assenza di eccessivi tecnicismi. & Verbale esterno 2026/04/24 \\
+    RQ.4 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità 'Flesch Reading Ease' superiore a 50. & Verbale esterno 2026/04/24 \\
     \hline
     RQ.5 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\% , come stabilito dalla metrica MP\_06 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_06) \\
     \hline
@@ -1921,13 +1921,41 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.3 & Obbligatorio & [Il sitema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
+    RV.3 & Obbligatorio & Il sitema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
+    \hline
+    RV.4 & Obbligatorio & Il prodotto deve essere sviluppato ed eseguito come un'applicazione Web che deve essere compatibile ed eseguibile senza anomalie grafiche sulle versioni più recenti dei principali browser (Google Chrome v145 o superiore, Mozilla Firefox v145 o superiore, Microsoft Edge v145 o superiore). & Capitolato C2 \\
     \hline
     RV.5 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
     \hline
     RV.6 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
     \hline
     RV.7 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
+    \hline
+    RV.8 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript , utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    \hline
+    RV.9 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework NestJS. &  Verbale interno 2026/06/02 \\
+    \hline
+    RV.10 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework LangGraph. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    \hline
+    RV.11 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su MongoDB per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    \hline
+    RV.12 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da AWS Bedrock. &  Verbale interno 2026/06/02 \\
+    \hline
+    RV.13 & Obbligatorio & L'agente preposto all'analisi di sicurezza (OWASP) deve essere istruito utilizzando specificatamente il modello Anthropic Claude. &  Verbale interno 2026/06/02 \\
+    \hline
+    RV.14 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    \hline
+    RV.15 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
+    \hline
+    RV.16 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
+    \hline
+    RV.17 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
+    \hline
+    RV.18 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
+    \hline
+    RV.19 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
+    \hline
+    RV.20 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
     \hline
     
 \end{xltabular}
@@ -1954,9 +1982,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RS.0 & Obbligatorio & Il sistema deve memorizzare i token di accesso e le credenziali fornite dall'utente esclusivamente in formato cifrato all'interno del proprio livello di persistenza. & UC 0 \\
     \hline
-    RS.1 & Obbligatorio & Le eventuali modifiche proposte al codice o ai file del Repository non devono essere applicate senza validazione umana preventiva. & Verbale esterno 2026/03/23 \\
-    \hline
-    RS.2 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare almeno il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
+    RS.1 & Obbligatorio & L'architettura del sistema deve impedire permessi di scrittura automatica sul repository Git da parte degli agenti autonomi. & Verbale esterno 2026/03/23 \\
     \hline
     RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 0, 15 \\
     \hline
