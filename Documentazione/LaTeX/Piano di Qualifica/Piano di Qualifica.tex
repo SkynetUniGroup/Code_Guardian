@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{geometry}
+\usepackage{amsmath}
 \geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
 \usepackage{tabularx}
 \usepackage{booktabs}
@@ -16,6 +17,8 @@
 \usepackage{adjustbox}
 \usepackage{extramarks}
 \usepackage{makecell}
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
 \newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
 \newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
@@ -46,6 +49,9 @@
 \renewcommand{\headrulewidth}{0.4pt} % Linea sotto l'intestazione
 \renewcommand{\footrulewidth}{0.4pt} % Linea sopra il piè di pagina
 
+\newlength{\LargColVal} % variabile per la larghezza delle colonne dei valori
+\setlength{\LargColVal}{2.5cm}
+
 \begin{document}
 
 % ==========================================
@@ -64,7 +70,7 @@
     \vspace{3cm}
     
     % Tabella Informazioni Documento, sostituire con il contenuto reale
-    \begin{table}[h]
+    \begin{table}[ht]
         \centering
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
@@ -107,7 +113,7 @@ Esempi:
 % ==========================================
 \section*{Versioni del documento}
 \markboth{Versioni del documento}{}
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
@@ -187,16 +193,13 @@ I processi primari regolano le attività direttamente collegate alla realizzazio
 \subsubsection{Fornitura e Sviluppo}
 L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il Proponente ed evitare l'accumulo di debito tecnico o complessità strutturale eccessiva nelle fasi di implementazione dell'architettura e degli agenti.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        MP\_01 & \textbf{Percentuale di Requisiti Obbligatori Soddisfatti}: Rapporto tra i requisiti funzionali obbligatori implementati e quelli totali censiti. & $100\%$ & $100\%$ \\ \hline
-        MP\_02 & \textbf{Stabilità dei Requisiti}: Numero di modifiche o riscritture apportate ai requisiti già tracciati e approvati per singolo Sprint. & $\le 3$ & $0$ \\ \hline
-        MP\_03 & \textbf{\glo{Complessità Ciclomatica}{complessità-ciclomatica}}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite analisi statica). & $\le 10$ & $\le 5$ \\ \hline
-        MP\_04 & \textbf{Linee di Codice per Metodo}: Numero di righe di codice effettive che compongono una singola funzione o metodo. & $\le 50$ & $\le 30$ \\ \hline
+        MP\_01 & \textbf{\glo{Requirements Stability Index (RSI)}{requirements-stability-index}}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
     \end{tabularx}
     \caption{Metriche per i Processi Primari}
     \label{tab:metriche_primari}
@@ -211,16 +214,17 @@ In conformità con il \textit{Way of Working}, l'obiettivo è assicurare l'alta 
 \subsubsection{Verifica}
 La verifica misura l'efficacia del piano di testing applicato al software, garantendo l'assenza di regressioni e una copertura ottimale del codice.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        MP\_05 & \textbf{\glo{Gulpease}{gulpease}}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
-        MP\_06 & \textbf{\glo{Copertura del Codice (Code Coverage)}{copertura-del-codice}}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
-        MP\_07 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
-        MP\_08 & \textbf{Frequenza di Commit}: Numero medio di modifiche salvate nel repository per raggruppare le attività in pacchetti atomici. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
+        MP\_02 & \textbf{\glo{Gulpease}{gulpease}}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
+        MP\_03 & \textbf{\glo{Copertura del Codice (Code Coverage)}{copertura-del-codice}}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
+        MP\_04 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
+        MP\_05 & \textbf{Frequenza di Commit}: Numero medio di modifiche salvate nel repository per raggruppare le attività in pacchetti atomici. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
+        MP\_05 & \textbf{\glo{Build Success Rate}{Build-success-rate}}: Percentuale di build completate con successo nella pipeline di Continuous Integration (GitHub Actions) rispetto al totale delle build avviate nello Sprint. & $\ge 90\%$ & $100\%$ \\ \hline
     \end{tabularx}
     \caption{Metriche per i Processi di Supporto}
     \label{tab:metriche_supporto}
@@ -243,10 +247,10 @@ I processi organizzativi sovrintendono l'efficienza metodologica del team, monit
 \subsubsection{Gestione di Progetto (Project Management)}
 L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati, sfruttando i dati del foglio di calcolo gestionale e dei diagrammi di Burndown.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         MP\_09 & \textbf{\glo{Schedule Variance (SV)}{schedule-variance}}: Indicatore dello scostamento temporale tra il lavoro pianificato in fase di planning e quello completato. & $\ge -10\%$ & $\ge 0\%$ \\ \hline
@@ -272,14 +276,15 @@ Per garantire l'eccellenza del sistema \textbf{Code Guardian}, il gruppo \textbf
 \subsection{Funzionalità}
 La funzionalità rappresenta la capacità del prodotto software di fornire funzioni in grado di soddisfare i requisiti espressi e impliciti concordati con il Proponente \textit{Var Group}.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         OB\_PROD\_01 & \textbf{Copertura dei Requisiti Funzionali}: Percentuale dei requisiti funzionali obbligatori soddisfatti dall'insieme degli agenti. & $100\%$ & $100\%$ \\ \hline
         OB\_PROD\_02 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{\glo{allucinazioni (ai)}{allucinazioni}} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
+        OB\_PROD\_09 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
     \end{tabularx}
     \caption{Metriche di Funzionalità}
     \label{tab:prod_funzionalita}
@@ -288,10 +293,10 @@ La funzionalità rappresenta la capacità del prodotto software di fornire funzi
 \subsection{Affidabilità}
 L'affidabilità misura la capacità del sistema di mantenere costanti le proprie prestazioni nel tempo, minimizzando i fallimenti applicativi dovuti a downtime delle API esterne (LLM) o a eccezioni di runtime nel parsing delle codebase.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         OB\_PROD\_03 & \textbf{Densità dei Guasti (Anomalie Codice)}: Percentuale di operazioni fallite (es. parsing interrotto) sul totale delle richieste eseguite. & $\le 5\%$ & $0\%$ \\ \hline
@@ -304,15 +309,16 @@ L'affidabilità misura la capacità del sistema di mantenere costanti le proprie
 \subsection{Efficienza}
 L'efficienza definisce la relazione tra il livello di prestazioni del software e la quantità di risorse (specialmente temporali ed economiche legate al consumo di token dei modelli) utilizzate.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         OB\_PROD\_05 & \textbf{Tempo di Risposta dell'Agente}: Tempo medio impiegato da un singolo agente per completare l'analisi ed emettere l'output. & $\le 45 \text{ s}$ & $\le 20 \text{ s}$ \\ \hline
         OB\_PROD\_06 & \textbf{Ottimizzazione dei Token}: Rapporto tra i token strettamente necessari nei prompt di sistema e i token totali consumati per richiesta. & $\ge 70\%$ & $\ge 85\%$ \\ \hline
+        OB\_PROD\_10 & \textbf{Tempo di Autenticazione}: Tempo massimo impiegato dal sistema per completare la verifica delle credenziali e autorizzare l'accesso. & $\le 2 \text{ s}$ & $\le 1 \text{ s}$ \\ \hline
     \end{tabularx}
     \caption{Metriche di Efficienza}
     \label{tab:prod_efficienza}
@@ -321,14 +327,16 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
 \subsection{Manutenibilità}
 La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al software, inclusi correzioni, miglioramenti o adattamenti degli agenti a nuovi modelli linguistici.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         OB\_PROD\_07 & \textbf{\glo{Maintainability Index (Indice di Manutenibilità)}{maintainability-index}}: Indice numerico standard basato su linee di codice, volume di Halstead e complessità. & $\ge 65$ & $\ge 85$ \\ \hline
         OB\_PROD\_08 & \textbf{\glo{Prompt Isolation (Disaccoppiamento dei Prompt)}{prompt-isolation}}: Percentuale di prompt archiviati in file di configurazione isolati rispetto alla logica di backend. & $100\%$ & $100\%$ \\ \hline
+        OB\_PROD\_12 & \textbf{\glo{Complessità Ciclomatica}{complessità-ciclomatica}}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite analisi statica). & $\le 10$ & $\le 5$ \\ \hline
+        OB\_PROD\_13 & \textbf{Linee di Codice per Metodo}: Numero di righe di codice effettive che compongono una singola funzione o metodo. & $\le 50$ & $\le 30$ \\ \hline
     \end{tabularx}
     \caption{Metriche di Manutenibilità}
     \label{tab:prod_manutenibilita}
@@ -385,18 +393,40 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
 
 
 \section{Cruscotto di valutazione}
-[È la parte dinamica del documento dove vengono riportati i risultati reali ottenuti durante i vari sprint, tipicamente tramite grafici.]
+Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elaborati durante l'esecuzione del progetto. L'obiettivo del cruscotto è tracciare l'andamento delle metriche di processo e di prodotto, permettendo di valutare oggettivamente il raggiungimento dei valori di accettazione e dei target ottimali definiti nei capitoli precedenti.
 
+Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textit{Norme di Progetto}:
+\begin{itemize}
+    \item \textbf{Metriche Organizzative e di Fornitura} (es. SV, BV, RSI): calcolate a partire dai dati consuntivati sui fogli di tracciamento condivisi (Google Sheets) al termine di ogni Sprint.
+    \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Build Success Rate, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
+\end{itemize}
+
+\textit{[Nota per la redazione: Inserire in questa sezione, al termine di ogni iterazione, i grafici aggiornati (es. andamento SV/BV, grafici a torta sulla copertura dei requisiti) accompagnati da una sintetica didascalia di analisi oggettiva dei risultati mostrati.]}
 
 
 \section{Valutazioni per il miglioramento}
-[Analisi delle criticità riscontrate durante lo sviluppo e azioni correttive intraprese.]
+Al termine di ogni iterazione, il gruppo SkyNet analizza i dati esposti nel \textit{Cruscotto di valutazione} per individuare deviazioni dai target qualitativi, inefficienze operative e colli di bottiglia. Le seguenti sottosezioni documentano in modo oggettivo le criticità riscontrate e formalizzano le azioni correttive (basate sull'approccio iterativo PDSA - \textit{Plan-Do-Study-Act}) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
 
 \subsection{Valutazione sugli strumenti}
+Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo (es. IDE, tool di comunicazione, architettura CI/CD, framework di testing).
+\begin{itemize}
+    \item \textbf{Criticità riscontrate:} \textit{[Descrizione formale del limite o malfunzionamento riscontrato nell'uso di uno strumento. Esempio: "Riscontrata lentezza eccessiva nell'esecuzione della pipeline su GitHub Actions dovuta all'assenza di meccanismi di caching."]}
+    \item \textbf{Azioni correttive:} \textit{[Soluzione ingegneristica applicata. Esempio: "Implementato il caching delle dipendenze nel file YAML della pipeline, riducendo i tempi di build del 40\%."]}
+\end{itemize}
 
 \subsection{Valutazione sull'organizzazione}
+Esame dell'efficacia delle metodologie di pianificazione, della stima degli effort (preventivo vs consuntivo), del coordinamento asincrono e dell'efficacia delle riunioni interne ed esterne.
+\begin{itemize}
+    \item \textbf{Criticità riscontrate:} \textit{[Esempio: "Sottostima cronica del tempo necessario per la fase di verifica dei documenti in fase di planning, con conseguente accumulo di lavoro negli ultimi giorni dello Sprint."]}
+    \item \textbf{Azioni correttive:} \textit{[Esempio: "Aggiornati i pesi di stima per l'attività di verifica su GitHub Projects. Stabilita una propedeuticità rigida che vieta l'apertura di nuove issue di stesura se la coda di verifica supera le 3 issue pendenti."]}
+\end{itemize}
 
 \subsection{Valutazione sui ruoli}
+Valutazione dell'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, efficacia della rotazione e individuazione di eventuali carenze di competenze (knowledge gap) che richiedono formazione.
+\begin{itemize}
+    \item \textbf{Criticità riscontrate:} \textit{[Esempio: "Rilevata sovrapposizione operativa tra Analisti e Progettisti, con i primi che hanno definito dettagli architetturali non di loro competenza."]}
+    \item \textbf{Azioni correttive:} \textit{[Esempio: "Introdotto un checkpoint di validazione condotto dal Responsabile prima del passaggio di consegne tra Analisti e Progettisti, per garantire una netta separazione delle responsabilità."]}
+\end{itemize}
 
 
 
