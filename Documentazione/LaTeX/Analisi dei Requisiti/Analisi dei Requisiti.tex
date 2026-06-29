@@ -1030,7 +1030,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item UC 26.1: Visualizzazione di una singola operazione nella lista.
+        \item \textbf{UC 26.1}: Visualizzazione di una singola operazione nella lista.
     \end{itemize}
 \end{itemize}
 
@@ -1054,8 +1054,8 @@ Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item UC 26.1.1: Visualizzazione del nome dell'operazione.
-        \item UC 26.1.2: Visualizzazione della descrizione dell'operazione.
+        \item \textbf{UC 26.1.1}: Visualizzazione del nome dell'operazione.
+        \item \textbf{UC 26.1.2}: Visualizzazione della descrizione dell'operazione.
     \end{itemize}
 \end{itemize}
 
@@ -1120,9 +1120,9 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce 
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item UC 22.1: Selezione di un'operazione.
-        \item UC 22.2: Deselezione di un'operazione.
-        \item UC 22.3: Conferma e avvio delle operazioni.
+        \item \textbf{UC 22.1}: Selezione di un'operazione.
+        \item \textbf{UC 22.2}: Deselezione di un'operazione.
+        \item \textbf{UC 22.3}: Conferma e avvio delle operazioni.
     \end{itemize}
 \end{itemize}
 
@@ -1190,8 +1190,8 @@ Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le 
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item UC 22.4: Errore mancata selezione delle operazioni. Estende il passo 2 qualora l'elenco delle operazioni selezionate risulti vuoto.
-        \item UC 24: Gestione errore di orchestrazione o routing. Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare il task.
+        \item \textbf{UC 22.4: Errore mancata selezione delle operazioni.} Estende il passo 2 qualora l'elenco delle operazioni selezionate risulti vuoto.
+        \item \textbf{UC 24: Gestione errore di orchestrazione o routing.} Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare il task.
     \end{itemize}
 \end{itemize}
 
@@ -1219,53 +1219,124 @@ Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comand
 \end{itemize}
 
 
-\subsubsection{UC 23: Monitoraggio dello stato di esecuzione}\label{uc:23}
-
-Questo caso d'uso permette all'utente di verificare in tempo reale lo stato di avanzamento delle richieste prese in carico dall'\textbf{Orchestratore}.
+\subsubsection{UC 23: Visualizzazione della dashboard di monitoraggio delle operazioni}\label{uc:23}
+Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all'utente lo stato di avanzamento complessivo di tutte le richieste prese in carico dall'\textbf{Orchestratore} in tempo reale.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente ha confermato l'avvio di una o più \textit{task} (UC 22) e necessita di controllarne il progresso.
+    \item \textbf{Trigger:} L'utente ha confermato l'avvio di una o più operazioni (UC 22.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'\textbf{Orchestratore} ha preso in carico e avviato almeno una richiesta di esecuzione.
+        \item L'Orchestratore ha preso in carico e avviato almeno un'operazione di elaborazione.
     \end{itemize}
-    \item \textbf{Postcondizioni:} L'utente è aggiornato sull'esito (positivo o negativo) delle \textit{task} e può procedere con le azioni successive (validazione o lettura report).
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza lo stato complessivo delle attività in corso di esecuzione nella dashboard.
+        \item Al termine positivo di ciascuna operazione, il sistema aggiorna l'interfaccia abilitando i controlli grafici interattivi per consentire all'utente di visualizzare il report (UC 3) o validare la proposta (UC 4).
+    \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'\textbf{Orchestratore} aggiorna l'interfaccia grafica mostrando una sezione dedicata al monitoraggio delle \textit{task} in corso.
-        \item Il sistema mostra lo stato indipendente di ogni singola operazione (``In attesa'', ``In elaborazione'', ``Completato con successo'').
-        \item L'utente consulta la dashboard grafica per verificare l'avanzamento.
-        \item Al termine positivo di ciascuna operazione, il sistema sblocca i controlli per visualizzare il report (UC 3) o validare la proposta (UC 4).
+        \item L'\textbf{Orchestratore} attiva la sezione grafica di monitoraggio.
+        \item Il sistema mostra la lista delle operazioni in esecuzione, aggiornandone l'avanzamento in modo indipendente.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 23.1}: Visualizzazione del progresso di una singola operazione.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 23.1: Visualizzazione del progresso di una singola operazione}\label{uc:23.1}
+Questo caso d'uso descrive la visualizzazione del progresso individuale associato a una specifica attività presente all'interno della dashboard di monitoraggio.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema elabora e aggiorna un elemento all'interno della lista di monitoraggio.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item La dashboard di monitoraggio delle operazioni è attiva e visibile a schermo (UC 23).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza le informazioni di avanzamento relative alla singola attività specifica.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra i dettagli grafici e lo stato dinamico dell'attività selezionata.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 23.1.1}: Visualizzazione del nome dell'operazione monitorata.
+        \item \textbf{UC 23.1.2}: Visualizzazione dello stato corrente dell'operazione.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 23.1.1: Visualizzazione del nome dell'operazione monitorata}\label{uc:23.1.1}
+Questo caso d'uso descrive la visualizzazione della stringa testuale che identifica l'operazione attualmente in fase di monitoraggio.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza l'etichetta identificativa del singolo elemento monitorato.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando il progresso di una specifica operazione (UC 23.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il nome descrittivo dell'operazione è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo il nome dell'attività in esecuzione (es. "Generazione Changelog Tecnico").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 23.1.2: Visualizzazione dello stato corrente dell'operazione}\label{uc:23.1.2}
+Questo caso d'uso descrive la visualizzazione dell'indicatore testuale che esprime lo stato dinamico di avanzamento dell'attività monitorata.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema riceve un aggiornamento di stato dall\textbf{'Orchestratore} relativo alla specifica attività e ne modifica la rappresentazione grafica nell'interfaccia.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando il progresso di una specifica operazione (UC 23.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'indicatore dello stato aggiornato dell'attività è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra e aggiorna dinamicamente l'etichetta dello stato corrente dell'operazione, alternandola tra i valori ammessi (``In attesa'', ``In elaborazione'', ``Completato'' e "Fallito").
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item UC 24: Gestione errore di orchestrazione o routing (se il sistema perde traccia di una \textit{task} o si verifica un problema di comunicazione interna).
-        \item UC 5: Visualizzazione errore durante l'esecuzione dell'agente (se l'errore è interno alla logica di business dell'agente o del \textit{LLM}).
+        \item \textbf{UC 5: Visualizzazione errore durante l'esecuzione dell'agente.} Estende il passo 1 qualora lo stato assunto sia "Fallito" e il sistema metta a disposizione dell'utente un messaggio con i dettagli dell'anomalia interna all'agente.
+        \item \textbf{UC 24: Gestione errore di orchestrazione o routing.} Estende il passo 1 qualora lo stato assunto sia "Fallito" e il sistema metta a disposizione dell'utente un messaggio con i dettagli del problema architetturale.
     \end{itemize}
 \end{itemize}
 
 
-\subsubsection{UC 24: Gestione errore di orchestrazione o routing}\label{uc:24}
-
-Questo caso d'uso descrive il comportamento del sistema quando si verifica un problema a livello architetturale dell'\textbf{Orchestratore}, come l'impossibilità di instradare una richiesta verso un agente o un errore di comunicazione interna, isolando il problema per permettere l'esecuzione parziale delle altre \textit{task}.
+\subsubsection{UC 24: Visualizzazione errore di orchestrazione o routing}\label{uc:24}
+Questo caso d'uso descrive il comportamento del sistema quando si verifica un problema a livello architetturale (es. impossibilità di instradare una richiesta o caduta di comunicazione interna) e la conseguente notifica all'utente. Il sistema isola il problema per permettere l'esecuzione parziale delle altre \textit{task} in corso.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'\textbf{Orchestratore} non riesce ad avviare o a mantenere la comunicazione con uno specifico agente a seguito della richiesta dell'utente.
+    \item \textbf{Trigger:} Il sistema rileva un fallimento di comunicazione o di routing verso un agente durante la fase di avvio (UC 22.3) o durante l'esecuzione (UC 23.1.2).
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item È stato richiesto l'avvio di una o più \textit{task} tramite l'interfaccia grafica (UC 22).
-        \item Si verifica un errore di sistema non imputabile alla logica interna dell'agente.
+        \item L'utente ha richiesto l'avvio di una o più operazioni, oppure ne sta monitorando l'avanzamento nella dashboard.
+        \item Si verifica un errore di sistema non imputabile alla logica interna dell'agente o del modello LLM.
     \end{itemize}
-    \item \textbf{Postcondizioni:} L'utente visualizza l'errore per la \textit{task} fallita, mentre le eventuali altre \textit{task} concorrenti continuano la loro esecuzione senza interruzioni.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item La specifica operazione affetta dall'errore viene interrotta definitivamente e il sistema mostra i dettagli dell'anomalia all'utente.
+        \item L'errore viene isolato e le eventuali altre operazioni parallele continuano la loro esecuzione senza interruzioni.
+    \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'\textbf{Orchestratore} rileva un'anomalia nel routing della richiesta verso l'agente o perde improvvisamente la comunicazione con esso.
-        \item Il sistema identifica esattamente quale o quali \textit{task} sono affette dal problema architetturale.
-        \item L'\textbf{Orchestratore} aggiorna lo stato visivo della specifica \textit{task} nella dashboard in ``Fallito (Errore di Sistema)''.
-        \item L'\textbf{Orchestratore} fa proseguire regolarmente l'esecuzione e il monitoraggio delle eventuali altre \textit{task} parallele non affette dal problema.
-        \item Il sistema mostra un messaggio di errore esplicativo relativo unicamente all'operazione interrotta.
+        \item Il sistema identifica esattamente quale o quali operazioni sono affette dal problema architetturale e ne inibisce l'ulteriore elaborazione.
+        \item Il sistema isola il guasto, garantendo che il routing delle altre attività parallele prosegua regolarmente.
+        \item Il sistema renderizza a schermo un messaggio di errore testuale contenente le specifiche del fallimento di orchestrazione, relativo unicamente all'operazione interrotta.
     \end{enumerate}
 \end{itemize}
 
@@ -1978,9 +2049,13 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.59 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista. & UC 22.4 \\ 
     \hline
-    RF.46 & Obbligatorio & Il sistema deve mostrare all'utente, tramite la dashboard dell'interfaccia grafica, lo stato di avanzamento indipendente di ciascuna \textit{Task} avviata ("In attesa", "In elaborazione", "Completato", "Fallito"). & UC 23, UC 24 \\ 
+    RF.46 & Obbligatorio & Il sistema deve mostrare all'utente una sezione o dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'\textbf{Orchestratore}. & UC 23 \\ 
     \hline
-    RF.47 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore, mostrando il messaggio di fallimento per la \textit{task} interessata e permettendo la regolare prosecuzione delle altre \textit{task} parallele. & UC 24 \\ 
+    RF.60 & Obbligatorio & Il sistema deve renderizzare a schermo il nome di ogni operazione in fase di elaborazione e mostrare un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato" o "Fallito". & UC 23.1, 23.1.1, 23.1.2 \\ 
+    \hline
+    RF.61 & Obbligatorio & Il sistema deve abilitare e rendere interattivi i controlli grafici per le fasi successive  esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & UC 23 \\ 
+    \hline
+    RF.47 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore, mostrando il messaggio di fallimento per la \textit{task} interessata e permettendo la regolare prosecuzione delle altre \textit{task} parallele. & UC 24, 22.3, 23.1.2 \\ 
     \hline
     RF.7 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3 \\ 
     \hline
