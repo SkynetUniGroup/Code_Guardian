@@ -1008,35 +1008,216 @@ Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di 
 \end{itemize}
 
 
-\subsubsection{UC 22: Selezione e avvio delle operazioni tramite \textbf{Orchestratore}}\label{uc:22}
-Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce con l'interfaccia grafica per selezionare una o più operazioni da far svolgere agli agenti.
+\subsubsection{UC 26: Visualizzazione lista delle operazioni disponibili}\label{uc:26}
+Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a schermo la lista di tutte le operazioni (funzionalità) che l'utente può richiedere.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente desidera avviare una o più funzionalità messe a disposizione dal sistema.
+    \item \textbf{Trigger:} L'utente accede alla dashboard principale dell'interfaccia grafica per la selezione delle operazioni.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato (UC 21).
-        \item È stato configurato il contesto di analisi, ovvero repository e ambito (UC 1, UC 2).
+        \item \`E stato configurato il contesto di analisi, ovvero \textit{repository} e ambito (UC 1, UC 2).
     \end{itemize}
-    \item \textbf{Postcondizioni:} L'\textbf{Orchestratore} ha ricevuto gli input e ha avviato le esecuzioni richieste verso i rispettivi agenti.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza correttamente l'elenco delle operazioni disponibili.
+    \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente accede alla dashboard principale dell'interfaccia grafica dell'\textbf{Orchestratore}.
-        \item Il sistema mostra i controlli visivi con le operazioni disponibili associate ai vari agenti (Agente Docs, Agente OWASP, Agente Changelog).
-        \item L'utente seleziona una o più operazioni da eseguire.
-        \item L'utente conferma l'avvio delle \textit{task} selezionate.
-        \item L'\textbf{Orchestratore} acquisisce l'input, mappa deterministicamente le scelte sui rispettivi agenti e ne avvia l'esecuzione parallela.
+        \item Il sistema recupera l'elenco delle operazioni disponibili per il contesto attuale.
+        \item Il sistema renderizza a schermo la lista completa delle operazioni.
     \end{enumerate}
-    \item \textbf{Scenari alternativi:}
+    \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item Mancata selezione: al passo 4, se l'utente tenta di avviare il processo senza aver prima selezionato alcuna operazione, il sistema mostra un messaggio informativo a schermo e richiede di effettuare almeno una selezione per procedere.
-    \end{itemize}
-    \item \textbf{Estensioni:}
-    \begin{itemize}
-        \item UC 24: Gestione errore di orchestrazione o routing (nel caso l'\textbf{Orchestratore} non riesca a contattare gli agenti in fase di avvio).
+        \item UC 26.1: Visualizzazione di una singola operazione nella lista.
     \end{itemize}
 \end{itemize}
+
+\subsubsection{UC 26.1: Visualizzazione di una singola operazione nella lista}\label{uc:26.1}
+Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati a una singola operazione all'interno della lista generata dal sistema.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema elabora e mostra un elemento della lista delle operazioni.
+    \item \textbf{Precondizioni:} 
+    \begin{itemize}
+        \item Il sistema ha recuperato con successo le operazioni disponibili (UC 26).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza le informazioni essenziali della singola operazione nella dashboard.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra i dati identificativi dell'operazione all'utente.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item UC 26.1.1: Visualizzazione del nome dell'operazione.
+        \item UC 26.1.2: Visualizzazione della descrizione dell'operazione.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 26.1.1: Visualizzazione del nome dell'operazione}\label{uc:26.1.1}
+Questo caso d'uso descrive la visualizzazione del nome identificativo della singola operazione all'interno della lista.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza l'intestazione o il titolo dell'elemento della lista.
+    \item \textbf{Precondizioni:} 
+    \begin{itemize}
+        \item Il sistema sta mostrando una specifica operazione nella lista (UC 26.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il nome dell'operazione è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo il nome testuale identificativo dell'operazione (es. "Scansione Vulnerabilità OWASP").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 26.1.2: Visualizzazione della descrizione dell'operazione}\label{uc:26.1.2}
+Questo caso d'uso descrive la visualizzazione della spiegazione testuale associata alle funzionalità della singola operazione.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il testo descrittivo di supporto dell'elemento della lista.
+    \item \textbf{Precondizioni:} 
+    \begin{itemize}
+        \item Il sistema sta mostrando una specifica operazione nella lista (UC 26.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item La descrizione delle funzionalità dell'operazione è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo una breve spiegazione testuale che riassume lo scopo e l'output previsto per quella specifica operazione.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 22: Gestione della selezione e avvio delle operazioni}\label{uc:22}
+Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce con l'interfaccia grafica per scegliere quali operazioni attivare, tra quelle rese disponibili dal sistema, e ne richiede l'esecuzione.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente desidera selezionare e avviare una o più funzionalità messe a disposizione dal sistema.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza correttamente la lista delle operazioni disponibili (UC 26).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'\textbf{Orchestratore} ha ricevuto gli input e ha avviato le esecuzioni richieste, oppure il processo è stato bloccato a causa di un errore (es. nessuna operazione selezionata).
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente interagisce con gli elementi della lista selezionando o deselezionando le operazioni di suo interesse.
+        \item L'utente conferma le proprie scelte e innesca il comando di avvio.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item UC 22.1: Selezione di un'operazione.
+        \item UC 22.2: Deselezione di un'operazione.
+        \item UC 22.3: Conferma e avvio delle operazioni.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 22.1: Selezione di un'operazione}\label{uc:22.1}
+Questo caso d'uso descrive l'azione con cui l'utente marca un'operazione come desiderata per la successiva esecuzione.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente interagisce con il comando grafico di selezione associato a una specifica operazione non ancora selezionata.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando l'operazione nella lista.
+        \item L'operazione non risulta attualmente selezionata.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'operazione risulta selezionata.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente attiva il comando di selezione corrispondente all'operazione desiderata.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 22.2: Deselezione di un'operazione}\label{uc:22.2}
+Questo caso d'uso descrive l'azione con cui l'utente rimuove un'operazione precedentemente scelta dalla lista di quelle da avviare.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente interagisce con il comando grafico di deselezione di una specifica operazione già selezionata.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'operazione risulta attualmente selezionata (UC 22.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'operazione risulta deselezionata.
+        \item L'operazione è rimossa dalla lista interna delle task pronte per l'avvio.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente disattiva il comando di selezione corrispondente all'operazione.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 22.3: Conferma e avvio delle operazioni}\label{uc:22.3}
+Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le scelte all'\textbf{Orchestratore} e avviare i processi.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente clicca sull'apposito pulsante di conferma e avvio.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente si trova nella schermata della lista delle operazioni.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'\textbf{Orchestratore} avvia l'elaborazione per le operazioni scelte.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente richiede l'avvio interagendo con il pulsante di conferma.
+        \item L'\textbf{Orchestratore} acquisisce la lista delle operazioni attualmente selezionate.
+        \item Il sistema avvia l'elaborazione, instradando deterministicamente le richieste.
+    \end{enumerate}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item UC 22.4: Errore mancata selezione delle operazioni. Estende il passo 2 qualora l'elenco delle operazioni selezionate risulti vuoto.
+        \item UC 24: Gestione errore di orchestrazione o routing. Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare il task.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 22.4: Errore mancata selezione delle operazioni}\label{uc:22.4}
+Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comando di avvio senza aver prima selezionato alcun task.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} verifica la lista delle operazioni e rileva che essa è vuota.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente ha innescato il comando di avvio (UC 22.3) ma nessuna operazione è attualmente selezionata.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema blocca il processo di avvio.
+        \item Viene mostrato un avviso a schermo e l'utente rimane nella pagina corrente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema rileva che la lista delle selezioni è vuota.
+        \item L'\textbf{Orchestratore} interrompe la procedura di avvio per mancanza di input validi.
+        \item Il sistema mostra a schermo un messaggio informativo o d'errore (es. "Selezionare almeno un'operazione per procedere").
+    \end{enumerate}
+\end{itemize}
+
 
 \subsubsection{UC 23: Monitoraggio dello stato di esecuzione}\label{uc:23}
 
@@ -1783,11 +1964,19 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.54 & Obbligatorio & Il sistema deve verificare l'effettiva esistenza e accessibilità degli elementi selezionati nel \textit{Repository} remoto, mostrando un messaggio di errore in caso di fallimento. & UC 2.5 \\ 
     \hline
-    RF.43 & Obbligatorio & Il sistema deve fornire un'interfaccia grafica (GUI) che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti, permettendo all'utente una selezione esplicita. & UC 22 \\ 
+    RF.43 & Obbligatorio & Il sistema deve fornire un'interfaccia grafica (GUI) che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti, permettendo all'utente una selezione esplicita. & UC 26, 22, 22.1 \\ 
     \hline
-    RF.44 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di selezionare e avviare più operazioni diverse in contemporanea. & UC 22 \\ 
+    RF.56 & Obbligatorio & Il sistema deve mostrare a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'\textbf{Orchestratore}. & UC 26.1, 26.1.1 \\ 
     \hline
-    RF.45 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & UC 22 \\ 
+    RF.57 & Obbligatorio & Il sistema deve mostrare a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & UC 26.1, 26.1.2 \\ 
+    \hline
+    RF.44 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di selezionare e avviare più operazioni diverse in contemporanea. & UC 22, 22.1, 22.3 \\ 
+    \hline
+    RF.58 & Obbligatorio & Il sistema deve permettere all'utente di deselezionare un'operazione precedentemente spuntata tramite l'interfaccia grafica, rimuovendola dalla coda di avvio. & UC 22.2 \\ 
+    \hline
+    RF.45 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & UC 22.3 \\ 
+    \hline
+    RF.59 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista. & UC 22.4 \\ 
     \hline
     RF.46 & Obbligatorio & Il sistema deve mostrare all'utente, tramite la dashboard dell'interfaccia grafica, lo stato di avanzamento indipendente di ciascuna \textit{Task} avviata ("In attesa", "In elaborazione", "Completato", "Fallito"). & UC 23, UC 24 \\ 
     \hline
@@ -1879,7 +2068,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
 
     RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi. & UC 21, PdQ(OB\_PROD\_10) \\ 
     \hline\
-    RQ.7 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC 22, 23, PdQ(OB\_PROD\_05) \\ 
+    RQ.7 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC 22.3, 23, PdQ(OB\_PROD\_05) \\ 
     \hline
     RQ.2 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC 7, 8, 9, PdQ(OB\_PROD\_02) \\
     \hline
