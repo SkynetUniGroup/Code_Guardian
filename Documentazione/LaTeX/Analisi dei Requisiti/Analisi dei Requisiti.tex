@@ -110,7 +110,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
 
-    0.15.2 & 2026/06/25 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic \\ \hline
+    0.15.2 & 2026/06/28 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & Dario Pirrone & Sara Ristovic \\ \hline
     0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazone e login & Dario Pirrone & Sara Ristovic \\ \hline
@@ -1383,22 +1383,173 @@ Il sistema adotta un approccio \textit{Human-in-the-loop}, in modo che le propos
         \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 5: Visualizzazione errore durante l’esecuzione dell’agente}\label{uc:5}
-Durante l’esecuzione di un agente può verificarsi un errore che impedisce il completamento dell’analisi o la generazione dell’output richiesto. In questo caso il sistema mostra all'utente un messaggio esplicativo, indicando la causa dell’errore e, quando possibile, una possibile azione correttiva.
+
+\subsubsection{UC 5: Visualizzazione errore durante l'esecuzione dell'agente}\label{uc:5}
+Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possibili anomalie, tecniche o semantiche, che possono verificarsi durante l'elaborazione interna di un agente o del modello \textit{LLM} a esso associato. Essendo un caso d'uso astratto, non viene mai istanziato direttamente, ma si manifesta all'utente esclusivamente attraverso una delle sue specializzazioni.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Utente Generico.
-    \item \textbf{Trigger}: L'esecuzione di un agente termina con errore.
-    \item \textbf{Precondizioni}: \begin{itemize}
-    \item È stata avviata l'esecuzione di un agente. Si verifica un errore durante l'analisi o la generazione dell'output.
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema rileva un errore critico durante l'elaborazione di una specifica \textit{task}.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Un agente è attualmente in fase di esecuzione.
     \end{itemize}
-    \item \textbf{Postcondizioni}: L'utente visualizza un messaggio di errore esplicativo.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'esecuzione dell'agente termina con un errore.
-            \item Il sistema mostra all'utente un messaggio che descrive la causa dell'errore (es. timeout di risposta dal modello \textit{AI}, formato di output dell'\textit{LLM} non interpretabile, file di configurazione assente, formato del report non generabile, superamento del limite massimo di file/righe di codice elaborabili, superamento delle quote di utilizzo API).
-            \item Il sistema indica, se possibile, un'azione correttiva.
-        \end{enumerate}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'esecuzione dell'agente coinvolto viene bloccata e il suo stato passa a "Fallito".
+        \item Il sistema notifica l'utente mostrando a schermo un messaggio che descrive la specifica causa dell'errore.
+    \end{itemize}
+    \item \textbf{Specializzazioni (Casi d'uso derivati):}
+    \begin{itemize}
+        \item \textbf{UC 5.1}: Visualizzazione errore per superamento soglia massima di utilizzo \textit{AI}.
+        \item \textbf{UC 5.2}: Visualizzazione errore per timeout del modello \textit{AI}.
+        \item \textbf{UC 5.3}: Visualizzazione errore di parsing dell'output \textit{LLM}.
+        \item \textbf{UC 5.4}: Visualizzazione errore per superamento limiti dimensionali a runtime.
+        \item \textbf{UC 5.5}: Visualizzazione errore per risorsa di contesto mancante.
+        \item \textbf{UC 5.6}: Visualizzazione errore per risorsa di contesto non valida o malformata.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 5.1: Visualizzazione errore per superamento soglia massima di utilizzo \textit{AI}}\label{uc:5.1}
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione venga bloccata preventivamente dal sistema stesso per aver raggiunto il limite massimo di chiamate o token consentiti, impostato internamente come meccanismo di salvaguardia dei costi.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema rileva che l'operazione in corso comporta il superamento della soglia massima di utilizzo configurata nel sistema.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta per delegare un'elaborazione al modello \textbf{LLM}.
+        \item Il contatore interno delle risorse consumate ha raggiunto il limite di salvaguardia prefissato.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'elaborazione viene interrotta definitivamente per impedire ulteriori costi.
+        \item Il sistema mostra un messaggio d'errore informando l'utente del blocco per raggiungimento del limite di utilizzo.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema verifica le quote interne prima della comunicazione con le \textit{API} esterne e rileva il superamento della soglia.
+        \item L'elaborazione dell'agente viene bloccata in modo controllato.
+        \item Il sistema renderizza a schermo il messaggio d'errore testuale (es. "Limite massimo di utilizzo del modello \textit{AI} raggiunto per questa sessione. Operazione interrotta per salvaguardia delle risorse").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}}\label{uc:5.2}
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora il modello \textit{LLM} non restituisca una risposta entro il tempo massimo consentito dal sistema.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il tempo di attesa per la ricezione della risposta da parte delle \textit{API} esterne del modello \textit{AI} supera la soglia di timeout preimpostata.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema ha inviato correttamente la richiesta al provider \textit{AI} ed è in attesa di risposta.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item La connessione viene chiusa e l'elaborazione interrotta.
+        \item Il sistema mostra un messaggio d'errore indicante che il modello \textit{AI} sta impiegando troppo tempo a rispondere.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema attende la risposta del modello \textit{LLM}.
+        \item Il timer interno di salvaguardia scade senza che sia stato ricevuto alcun dato utile.
+        \item Il sistema interrompe l'attesa e forza la chiusura della connessione.
+        \item Il sistema renderizza a schermo il messaggio d'errore (es. "Timeout di risposta dal modello \textit{AI} superato. Riprovare l'operazione").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}}\label{uc:5.3}
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora la risposta fornita dal modello \textit{AI} sia strutturata in un formato non interpretabile o imprevisto dal sistema.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il modulo di validazione interno fallisce nell'estrarre o interpretare i dati strutturati dall'output testuale restituito dall'\textit{LLM}.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema ha ricevuto una risposta completa dal provider \textit{AI}.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'elaborazione e la conseguente generazione del report vengono bloccate.
+        \item Il sistema mostra un messaggio d'errore indicante che l'output generato dall'\textit{AI} non è conforme.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema acquisisce la risposta grezza dal modello \textit{LLM}.
+        \item Il sistema tenta di parsare e validare la struttura dati.
+        \item La validazione fallisce a causa di un formato non conforme alle aspettative dell'agente.
+        \item Il sistema interrompe la task e mostra a schermo il dettaglio dell'errore (es. "Errore di generazione: formato di output dell'\textit{LLM} non interpretabile o malformato").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 5.4: Visualizzazione errore per superamento limiti dimensionali a runtime}\label{uc:5.4}
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora i dati da analizzare per una specifica \textit{task} superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{AI} durante l'esecuzione.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il calcolo dei \textit{token} o della dimensione dei file selezionati supera le specifiche hardware/software massime del modello in uso.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'agente sta assemblando il \textit{prompt} e il contesto da inviare al modello \textit{LLM}.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'elaborazione viene interrotta prima dell'invio.
+        \item Il sistema mostra un messaggio d'errore suggerendo di ridurre la mole di dati.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema calcola il volume di dati.
+        \item Il sistema rileva che il volume supera il limite massimo elaborabile in una singola richiesta.
+        \item L'esecuzione viene bloccata preventivamente.
+        \item Il sistema renderizza a schermo il messaggio d'errore (es. "Superamento del limite massimo di file o righe di codice elaborabili. Ridurre il contesto di analisi").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 5.5: Visualizzazione errore per risorsa di contesto mancante}\label{uc:5.5}
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione di un agente fallisca a causa dell'assenza fisica di una risorsa esterna necessaria per l'analisi.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'agente tenta di accedere a una dipendenza di contesto (es. il file \texttt{CLAUDE.md} o uno \textit{Sprint} ID su un task manager) e rileva che essa non è presente.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'agente richiede l'accesso a una specifica risorsa esterna per avviare la propria logica di business.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'elaborazione dell'agente viene bloccata.
+        \item Il sistema mostra un messaggio d'errore informando l'utente che la risorsa richiesta non è stata trovata.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema intercetta un'eccezione di tipo "risorsa non trovata" (Not Found) durante il recupero del contesto preliminare.
+        \item Il sistema interrompe l'esecuzione della \textit{task} corrente.
+        \item Il sistema renderizza a schermo il dettaglio testuale dell'errore (es. "File CLAUDE.md non trovato nel \textit{repository}" oppure "\textit{Sprint} ID inesistente").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 5.6: Visualizzazione errore per risorsa di contesto non valida o malformata}\label{uc:5.6}
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione di un agente fallisca perché una risorsa di contesto, pur essendo fisicamente presente, risulta illeggibile, formattata in modo scorretto o contenente direttive contraddittorie.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'agente accede alla risorsa di contesto ma il modulo di validazione solleva un'eccezione semantica o di parsing durante la lettura del suo contenuto.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item La risorsa esterna necessaria (es. il file \texttt{CLAUDE.md}) esiste ed è stata correttamente individuata.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'elaborazione dell'agente viene bloccata.
+        \item Il sistema mostra un messaggio d'errore informando l'utente che il contenuto della risorsa non è interpretabile o è invalido.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema acquisisce la risorsa ma fallisce nella sua validazione sintattica o logica (es. regole in conflitto nel file di policy).
+        \item Il sistema interrompe l'esecuzione della task corrente.
+        \item Il sistema renderizza a schermo il dettaglio dell'errore (es. "Il file CLAUDE.md presenta errori di sintassi o regole in palese contraddizione logica").
+    \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC 6: Esportazione del report}\label{uc:6}
@@ -1506,7 +1657,7 @@ Questo è il \textit{Caso d'Uso} generico per la gestione automatizzata del \tex
     \item \textbf{Scenario alternativo}:
         \begin{itemize}
             \item L'analisi non rileva cambiamenti: non vengono generate proposte di aggiornamento, lo Sviluppatore viene informato e lo UC termina.
-            \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+            \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
         \end{itemize}
     \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
 \end{itemize}
@@ -1533,7 +1684,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
     \begin{itemize}
         \item Se l'Agente non riesce a interpretare una classe/funzione, invece di una proposta viene generato un avvertimento per quella specifica classe/funzione e l'analisi passa a quella seguente, se presente.
         \item Se le modifiche al codice non richiedono di cambiare la documentazione, non vengono generate proposte di aggiornamento, lo Sviluppatore viene informato e l'UC termina.
-        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
     \end{itemize}
     \item \textbf{Inclusioni}:\begin{itemize}
     \item UC 4: Validazione umana di una proposta dell’agente.
@@ -1560,7 +1711,7 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
     \item \textbf{Scenario alternativo}:
     \begin{itemize}
         \item Se l'analisi non rileva cambiamenti, non vengono generate proposte di aggiornamento, lo Sviluppatore è informato e l'UC termina.
-        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
     \end{itemize}
     \item \textbf{Inclusioni}: \begin{itemize}
     \item UC 4: Validazione umana di una proposta dell’agente.
@@ -1641,7 +1792,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 \item \textbf{Scenario Alternativo}: 
 \begin{itemize}
     \item Se non vengono rilevate \textit{Vulnerabilità}, l’Agente genera un report che indica l’assenza di criticità individuate.
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
 \end{itemize}
 \end{itemize}
 
@@ -1694,9 +1845,9 @@ specifiche definite dal team nel file di configurazione.
 \item
   \textbf{Scenari alternativi}:
 \begin{itemize}
-    \item \textbf{Il file CLAUDE.md non è presente}: il sistema rileva l'assenza del file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
-    \item \textbf{Il file CLAUDE.md non è leggibile o non contiene regole interpretabili}: il sistema rileva l'impossibilità di analizzare il file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5 per mostrare il messaggio d'errore specifico.
-    \item \textbf{Il file CLAUDE.md contiene regole in palese contraddizione logica}: l'Agente OWASP legge il contenuto del file per estrarre le regole, rileva un conflitto logico insormontabile tra due o più direttive, quindi interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.
+    \item \textbf{Il file CLAUDE.md non è presente}: il sistema rileva l'assenza del file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.5 per mostrare il messaggio d'errore specifico.
+    \item \textbf{Il file CLAUDE.md non è leggibile o non contiene regole interpretabili}: il sistema rileva l'impossibilità di analizzare il file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.6 per mostrare il messaggio d'errore specifico.
+    \item \textbf{Il file CLAUDE.md contiene regole in palese contraddizione logica}: l'Agente OWASP legge il contenuto del file per estrarre le regole, rileva un conflitto logico insormontabile tra due o più direttive, quindi interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.6.
 \end{itemize}
     \end{itemize}
 
@@ -1742,7 +1893,7 @@ problemi di sicurezza o le violazioni di policy trovate.
     \end{enumerate}
 \item \textbf{Scenario Alternativo}: 
 \begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
 \end{itemize}
     
 \item 
@@ -1780,7 +1931,7 @@ Descrive la generazione di un frammento di codice alternativo per correggere una
         \end{enumerate}
     \item \textbf{Scenario Alternativo}: 
     \begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
 \end{itemize}
 \end{itemize}
 
@@ -1804,7 +1955,7 @@ Descrive la generazione di una spiegazione testuale della correzione da effettua
         \end{enumerate}
     \item \textbf{Scenario Alternativo}: 
     \begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
 \end{itemize}
 \end{itemize}
 
@@ -1859,7 +2010,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \item \textbf{Scenari alternativi}: 
     \begin{itemize}
-        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di Task Management restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.
+        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di Task Management restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.5.
     \end{itemize}
 
 \item 
@@ -1938,7 +2089,7 @@ L'Agente genera un Changelog Dev-to-Dev partendo dai dati delle User Stories.
         \end{enumerate}
     \item \textbf{Scenario Alternativo}: 
     \begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
 \end{itemize}
 \end{itemize}
 
@@ -1973,7 +2124,7 @@ L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
     \item \textbf{Scenario Alternativo}: 
     \begin{itemize}
     \item Il Changelog Tecnico non è stato generato in precedenza al passo 1, quindi Il sistema invoca automaticamente la generazione del Changelog Tecnico (Inclusione UC 18).
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
 \end{itemize}
     \item \textbf{Inclusioni}: 
     \begin{itemize}
@@ -2027,7 +2178,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \\ \hline
     RF.4 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2, 2.2, 2.3 \\ 
     \hline
-    RF.5 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2.6, 5 \\ 
+    RF.5 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2.6, 5.4 \\ 
     \hline
     RF.6 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2.1 \\ 
     \hline
@@ -2063,9 +2214,15 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.9 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5, 15 \\ 
     \hline
-    RF.10 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC 5 \\ 
+    RF.10 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC 5.1 \\ 
     \hline
-    RF.11 & Desiderabile & Il sistema deve interrompere l'esecuzione di un agente e mostrare un messaggio di errore all'utente qualora il tempo di elaborazione del modello AI (LLM) superi la soglia massima consentita (Timeout di risposta). & UC 5, 8, 9, 12, 13, 14, 18, 19 \\ 
+    RF.11 & Desiderabile & Il sistema deve interrompere l'esecuzione di un agente e mostrare un messaggio di errore all'utente qualora il tempo di elaborazione del modello \textit{AI} (\textit{LLM}) superi la soglia massima consentita (Timeout di risposta). & UC 5.2, 8, 9, 12, 13, 14, 18, 19 \\ 
+    \hline
+    RF.62 & Obbligatorio & l sistema deve interrompere l'esecuzione e mostrare un messaggio di errore qualora il formato di output restituito dal modello \textit{LLM} non sia parsabile, interpretabile o validabile secondo le strutture dati attese. &  UC 5.3 \\ 
+    \hline
+    RF.63 & Obbligatorio & l sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, strettamente necessaria per l'analisi (es. file \texttt{CLAUDE.md}, Sprint ID), risulti mancante o non trovata. & UC 5.5 \\ 
+    \hline
+    RF.64 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, pur essendo presente, risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & UC 5.6 \\ 
     \hline
     RF.12 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
     \hline
