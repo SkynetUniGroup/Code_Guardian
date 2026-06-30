@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.15.2} \\ \hline
+            \textbf{Versione} & \textit{0.16.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -110,6 +110,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
 
+    0.16.0 & 2026/06/30 & Aggiunti sottocasi a diversi UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.2 & 2026/06/28 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & Dario Pirrone & Sara Ristovic \\ \hline
@@ -1232,7 +1233,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'utente visualizza lo stato complessivo delle attività in corso di esecuzione nella dashboard.
-        \item Al termine positivo di ciascuna operazione, il sistema aggiorna l'interfaccia abilitando i controlli grafici interattivi per consentire all'utente di visualizzare il report (UC 3) o validare la proposta (UC 4).
+        \item Al termine positivo di ciascuna operazione, il sistema aggiorna l'interfaccia abilitando i controlli grafici interattivi per consentire all'utente di visualizzare il report (UC 3).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -1341,47 +1342,573 @@ Questo caso d'uso descrive il comportamento del sistema quando si verifica un pr
 \end{itemize}
 
 
+\subsubsection{UC 27: Visualizzazione della pagina dello storico dei report}\label{uc:27}
+Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a schermo la pagina dedicata allo storico dei report generati in passato e che hanno raggiunto lo stato di completamento.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente accede all'apposita sezione del sistema dedicata allo storico dei report.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente è autenticato (UC 21).
+        \item È stato configurato il contesto di analisi (UC 1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza correttamente la pagina contenente lo storico dei report.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema recupera dal database i report precedentemente generati e completati.
+        \item Il sistema renderizza a schermo la pagina dello storico.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 27.1:} Visualizzazione della lista dei report salvati.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 27.1: Visualizzazione della lista dei report salvati}\label{uc:27.1}
+Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i report completati all'interno della pagina dello storico.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema elabora e mostra la struttura della lista all'interno della pagina dello storico.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema ha caricato correttamente la pagina dello storico dei report (UC 27).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza l'elenco dei report salvati.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo la lista contenente i vari report disponibili.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 27.1.1:} Visualizzazione di un singolo elemento report nella lista.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 27.1.1: Visualizzazione di un singolo elemento report nella lista}\label{uc:27.1.1}
+Questo caso d'uso descrive la visualizzazione del contenitore logico relativo a un singolo report all'interno della lista.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza un singolo elemento all'interno della lista generale.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando la lista dei report salvati (UC 27.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza il blocco contenente i dati del singolo report.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo lo spazio grafico dedicato a un report specifico, popolandolo con i suoi metadati.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 27.1.1.1:} Visualizzazione dell'identificativo del report.
+        \item \textbf{UC 27.1.1.2:} Visualizzazione del titolo del report.
+        \item \textbf{UC 27.1.1.3:} Visualizzazione della data di generazione.
+        \item \textbf{UC 27.1.1.4:} Visualizzazione dell'ora di generazione.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 27.1.1.1: Visualizzazione dell'identificativo del report}\label{uc:27.1.1.1}
+Questo caso d'uso descrive la visualizzazione del codice univoco associato al report all'interno del suo elemento nella lista.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente all'identificativo del report.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un singolo elemento report nella lista (UC 27.1.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'identificativo univoco del report è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra il valore alfanumerico identificativo del report.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 27.1.1.2: Visualizzazione del titolo del report}\label{uc:27.1.1.2}
+Questo caso d'uso descrive la visualizzazione del titolo descrittivo assegnato al report all'interno del suo elemento nella lista.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente al titolo del report.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un singolo elemento report nella lista (UC 27.1.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il titolo descrittivo del report è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo la stringa di testo corrispondente al titolo del report.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 27.1.1.3: Visualizzazione della data di generazione}\label{uc:27.1.1.3}
+Questo caso d'uso descrive la visualizzazione della data solare in cui il report è stato prodotto e completato dal sistema.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato temporale relativo alla data di creazione del report.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un singolo elemento report nella lista (UC 27.1.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item La data di generazione del report è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo la data di completamento del report.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 27.1.1.4: Visualizzazione dell'ora di generazione}\label{uc:27.1.1.4}
+Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui il report è stato prodotto e completato dal sistema.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato temporale relativo all'orario di creazione del report.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un singolo elemento report nella lista (UC 27.1.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'ora di generazione del report è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo l'orario (ore e minuti) di completamento del report.
+    \end{enumerate}
+\end{itemize}
+
+
+\subsubsection{UC 28: Selezione di un report per la visualizzazione}\label{uc:28}
+Questo caso d'uso descrive l'interazione attraverso la quale l'utente seleziona un report, che ha raggiunto lo stato di completamento, al fine di aprirne la visualizzazione dettagliata. L'azione può essere innescata indifferentemente dalla dashboard di monitoraggio o dalla pagina dello storico.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente interagisce con il comando grafico associato a un report completato.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un'operazione completata all'interno della dashboard (UC 23.1) oppure un elemento nella lista dello storico (UC 27.1.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema innesca la procedura di caricamento e passa la direttiva per la visualizzazione del report specifico.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente seleziona il report desiderato dall'interfaccia.
+        \item Il sistema acquisisce la richiesta legata all'identificativo univoco di quel report.
+        \item Il sistema avvia il caricamento dei dettagli.
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 3:} Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+\end{itemize}
+
+
 \subsubsection{UC 3: Visualizzazione report prodotto dall'agente}\label{uc:3}
-L'utente vuole consultare il risultato prodotto da un agente a seguito di un’analisi. Il sistema rende disponibili i report generati, permettendo all'utente di visualizzare le informazioni principali relative all’esecuzione, come criticità rilevate, suggerimenti proposti e file coinvolti.
+Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a schermo il report completo generato da un agente a seguito di un'analisi, permettendo all'utente di consultare le informazioni di intestazione e i risultati specifici.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Utente Generico.
-    \item \textbf{Trigger}: L'utente vuole consultare l'esito dell'analisi svolta da un agente.
-    \item \textbf{Precondizioni}: \begin{itemize}
-    \item L'\textbf{Orchestratore} ha eseguito almeno un agente ed è disponibile almeno un report prodotto dall'agente.
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente seleziona un report da visualizzare (UC 28).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente è autenticato (UC 21).
+        \item È stata richiesta l'apertura di un report specifico precedentemente completato (UC 28).
     \end{itemize}
-    \item \textbf{Postcondizioni}: L'utente visualizza il report generato.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'utente accede alla sezione dedicata ai risultati dell'analisi.
-            \item Il sistema mostra la lista dei report disponibili.
-            \item L'utente seleziona il report desiderato.
-            \item Il sistema visualizza il contenuto del report, includendo eventuali criticità, suggerimenti e file coinvolti.
-        \end{enumerate}
-    \item \textbf{Scenari alternativi:} \begin{itemize}
-        \item Se non sono presenti report, il sistema mostra un messaggio informativo.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'utente visualizza l'intero report formattato a schermo.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema recupera dal database i dati completi del report selezionato.
+        \item Il sistema renderizza l'intestazione con i metadati e il corpo centrale con i contenuti specifici prodotti dall'agente.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 3.1:} Visualizzazione del intestazione del report.
+        \item \textbf{UC 3.2:} Visualizzazione del corpo del report.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 4: Validazione umana di una proposta dell'agente}\label{uc:4}
-Il sistema adotta un approccio \textit{Human-in-the-loop}, in modo che le proposte generate dagli agenti siano validate da un utente prima di essere applicate.
+\subsubsection{UC 3.1: Visualizzazione dei intestazione del report}\label{uc:3.1}
+Questo caso d'uso descrive la visualizzazione della sezione superiore del report, contenente le informazioni generali e di contesto relative all'elaborazione effettuata dall'agente.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Utente Generico.
-    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: L'utente riceve una proposta generata da un agente.
-    \item \textbf{Precondizioni}: \begin{itemize}
-    \item Un agente ha prodotto una proposta di modifica. La proposta è disponibile sotto forma di \textit{Pull Request}, frammento di codice o suggerimento testuale.
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema elabora e mostra l'intestazione grafica del report.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta caricando e mostrando il report specifico (UC 3).
     \end{itemize}
-    \item \textbf{Postcondizioni}: La proposta è stata accettata, modificata o rifiutata dall'utente.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'utente apre la proposta generata dall'agente.
-            \item L'utente analizza il contenuto della proposta.
-            \item L'utente decide se accettare, modificare o rifiutare la proposta.
-            \item Il sistema registra l'esito della validazione.
-        \end{enumerate}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Le informazioni di contesto del report sono visibili a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e posiziona a schermo il blocco di intestazione popolandolo con i dati contestuali.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 3.1.1:} Visualizzazione del nome del \textit{repository}.
+        \item \textbf{UC 3.1.2:} Visualizzazione del riferimento di base.
+        \item \textbf{UC 3.1.3:} Visualizzazione dell'ambito di analisi.
+        \item \textbf{UC 3.1.4:} Visualizzazione dei tempi di esecuzione.
+        \item \textbf{UC 3.1.5:} Visualizzazione della data di generazione.
+        \item \textbf{UC 3.1.6:} Visualizzazione dell'ora di generazione.
+    \end{itemize}
 \end{itemize}
+
+\subsubsection{UC 3.1.1: Visualizzazione del nome del \textit{repository}}\label{uc:3.1.1}
+Questo caso d'uso descrive la visualizzazione del nome del \textit{repository Git} su cui l'agente ha effettuato la sua elaborazione.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente al \textit{repository}.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando l'intestazione del report (UC 3.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il nome del \textit{repository} è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo la stringa di testo identificativa del \textit{repository} analizzato.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.1.2: Visualizzazione del riferimento di base}\label{uc:3.1.2}
+Questo caso d'uso descrive la visualizzazione del riferimento di base su cui il sistema ha operato, che può consistere nel nome di uno specifico \textit{Branch} o nell'identificativo di una \textit{Pull Request}.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente al riferimento di base (\textit{Branch} o \textit{PR}).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando l'intestazione del report (UC 3.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il riferimento testuale al \textit{Branch} o alla \textit{Pull Request} analizzata è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo la stringa indicante il nome/identificativo del riferimento di base associato al report.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.1.3: Visualizzazione dell'ambito di analisi}\label{uc:3.1.3}
+Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli file o directory che hanno costituito l'ambito specifico dell'analisi dell'agente.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza i dati testuali corrispondenti all'ambito di analisi circoscritto.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando l'intestazione del report (UC 3.1).
+        \item L'analisi è stata eseguita su una selezione parziale di file o directory e non sull'intero repository.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item I percorsi dei file o delle directory analizzate sono visibili a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo i percorsi degli elementi analizzati.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.1.4: Visualizzazione dei tempi di esecuzione}\label{uc:3.1.4}
+Questo caso d'uso descrive la visualizzazione del tempo totale impiegato dal sistema per completare le operazioni e generare il report.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato numerico corrispondente alla durata dell'operazione.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando l'intestazione del report (UC 3.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il tempo complessivo di esecuzione è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo la durata dell'elaborazione.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.1.5: Visualizzazione della data di generazione}\label{uc:3.1.5}
+Questo caso d'uso descrive la visualizzazione della data in cui l'analisi dell'agente si è conclusa con successo.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato temporale relativo alla data di conclusione dell'attività.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando l'intestazione del report (UC 3.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item La data di generazione è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo la data.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.1.6: Visualizzazione dell'ora di generazione}\label{uc:3.1.6}
+Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui l'elaborazione dell'agente si è conclusa producendo il report.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato temporale relativo all'orario di conclusione dell'attività.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando l'intestazione del report (UC 3.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'ora esatta di generazione è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo l'orario (ore e minuti).
+    \end{enumerate}
+\end{itemize}
+
+
+\subsubsection{UC 3.2: Visualizzazione del corpo del report}\label{uc:3.2}
+Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica del report. Poiché il contenuto varia a seconda dell'agente che lo ha prodotto, il sistema interpreta il payload e renderizza a schermo i blocchi visivi pertinenti.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema elabora i risultati specifici generati dall'agente per mostrarli a schermo.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta caricando e mostrando il report specifico (UC 3).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item I componenti grafici relativi al contenuto del report sono visibili a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema analizza la struttura dei dati restituiti dall'agente.
+        \item Il sistema individua i componenti necessari e li posiziona in sequenza all'interno del corpo del report.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 3.2.1:} Visualizzazione blocco testuale formattato.
+        \item \textbf{UC 3.2.2:} Visualizzazione lista di elementi strutturati.
+        \item \textbf{UC 3.2.3:} Visualizzazione Snippet di codice.
+        \item \textbf{UC 3.2.4:} Visualizzazione collegamento a una \textit{Pull Request}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 3.2.1: Visualizzazione blocco testuale formattato}\label{uc:3.2.1}
+Questo caso d'uso descrive la visualizzazione di un componente dedicato al testo lungo e formattato.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza una porzione di testo formattato (Markdown) ricevuto dall'agente.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando il corpo del report (UC 3.2).
+        \item I dati del report includono un blocco testuale.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il testo formattato è leggibile a schermo.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema converte eventuali tag di formattazione in elementi visivi e mostra il blocco di testo.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.2.2: Visualizzazione lista di elementi strutturati}\label{uc:3.2.2}
+Questo caso d'uso descrive la visualizzazione di un contenitore a lista per mostrare dati ripetitivi e strutturati.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema elabora un array di dati strutturati per mostrarli sotto forma di elenco.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando il corpo del report (UC 3.2).
+        \item I dati del report includono una lista di elementi.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'elenco strutturato è visibile a schermo.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema renderizza il contenitore generale della lista e itera sui dati per popolarla.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 3.2.2.1:} Visualizzazione di un singolo elemento nella lista.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 3.2.2.1: Visualizzazione di un singolo elemento nella lista}\label{uc:3.2.2.1}
+Questo caso d'uso descrive la visualizzazione del contenitore logico relativo a una singola voce all'interno della lista strutturata.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza la card corrispondente a una singola occorrenza.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando una lista di elementi strutturati (UC 3.2.2).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il blocco contenente i dettagli della singola voce è visibile a schermo.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo lo spazio grafico dedicato all'elemento, popolandolo con i suoi attributi specifici.
+    \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 3.2.2.1.1:} Visualizzazione della categoria dell'elemento.
+        \item \textbf{UC 3.2.2.1.2:} Visualizzazione dell'indicatore di gravità.
+        \item \textbf{UC 3.2.2.1.3:} Visualizzazione del riferimento alla porzione di codice.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 3.2.2.1.1: Visualizzazione della categoria dell'elemento}\label{uc:3.2.2.1.1}
+Questo caso d'uso descrive la visualizzazione del nome identificativo della singola occorrenza (es. il tipo di vulnerabilità rilevata).
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale principale dell'elemento.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un singolo elemento nella lista (UC 3.2.2.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il titolo dell'elemento è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo il testo indicante la categoria della voce.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.2.2.1.2: Visualizzazione dell'indicatore di gravità}\label{uc:3.2.2.1.2}
+Questo caso d'uso descrive la visualizzazione dell'etichetta indicante il livello di gravità associato alla singola occorrenza.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza il dato relativo all'impatto o priorità dell'elemento.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un singolo elemento nella lista (UC 3.2.2.1).
+        \item Il dato prevede una classificazione di gravità o priorità.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'indicatore di gravità è visibile a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo l'etichetta classificatoria.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.2.2.1.3: Visualizzazione del riferimento alla porzione di codice}\label{uc:3.2.2.1.3}
+Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di riga in cui è stata rilevata la criticità o su cui deve intervenire la modifica.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza i dati di localizzazione spaziale dell'elemento.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando un singolo elemento nella lista (UC 3.2.2.1).
+        \item È disponibile un riferimento esplicito a una porzione di codice.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item I percorsi e le righe di codice interessate sono visibili a schermo per l'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema mostra a schermo la stringa contenente le righe di riferimento.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.2.3: Visualizzazione Snippet di codice}\label{uc:3.2.3}
+Questo caso d'uso descrive la visualizzazione di un contenitore formattato specificamente per mostrare codice sorgente, utilizzato qualora un agente proponga un frammento correttivo diretto.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza un blocco di testo identificato come codice sorgente.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando il corpo del report (UC 3.2).
+        \item I dati del report includono una porzione di codice sorgente suggerita.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il codice è visibile a schermo, preferibilmente con evidenziazione della sintassi.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema posiziona a schermo il contenitore dedicato al codice e vi renderizza all'interno lo snippet suggerito.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 3.2.4: Visualizzazione collegamento a una \textit{Pull Request}}\label{uc:3.2.4}
+Questo caso d'uso descrive la visualizzazione di un collegamento ipertestuale verso una \textit{Pull Request} prodotta in automatico sul \textit{repository} remoto.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il sistema renderizza l'URL identificativo di una risorsa esterna interattiva.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema sta mostrando il corpo del report (UC 3.2).
+        \item L'agente ha completato con successo l'apertura di una \textit{Pull Request}.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il link interattivo alla \textit{Pull Request} è visibile e cliccabile a schermo.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo il collegamento ipertestuale alla piattaforma Git esterna.
+    \end{enumerate}
+\end{itemize}
+
 
 
 \subsubsection{UC 5: Visualizzazione errore durante l'esecuzione dell'agente}\label{uc:5}
@@ -1553,26 +2080,52 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
 \end{itemize}
 
 \subsubsection{UC 6: Esportazione del report}\label{uc:6}
-L'utente vuole esportare un report generato da un agente per conservarlo, 
-condividerlo o utilizzarlo nelle successive attività di sviluppo e verifica. Il sistema permette di selezionare il report desiderato e di salvarlo in uno dei formati disponibili.
+Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esportazione del report in formato PDF.
 
 \begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Utente Generico.
-    \item \textbf{Trigger}: L'utente vuole esportare e salvare il risultato di un'analisi di un agente in uno dei formati disponibili.
-    \item \textbf{Precondizioni}: \begin{itemize}
-    \item È disponibile almeno un report generato da un agente.
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'utente interagisce con il comando di esportazione presente all'interno dell'interfaccia di visualizzazione del report.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente ha aperto e sta visualizzando il dettaglio di un report (UC 3).
     \end{itemize}
-    \item \textbf{Postcondizioni}: Il report è stato esportato nel formato scelto.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'utente seleziona un report.
-            \item L'utente sceglie il formato di esportazione.
-            \item Il sistema genera il file esportabile.
-            \item L'utente scarica o salva il report.
-        \end{enumerate}
-    \item \textbf{Scenari alternativi:} \begin{itemize}
-    \item Se la generazione del file esportabile fallisce, il sistema mostra un messaggio di errore.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato il documento e ne ha avviato il download sul dispositivo locale dell'utente.
     \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente attiva il comando per esportare il report corrente.
+        \item Il sistema raccoglie i dati testuali e strutturati presenti nel report.
+        \item Il sistema converte e formatta i dati generando un file in formato PDF.
+        \item Il sistema invia il file al client, innescando il download locale.
+    \end{enumerate}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 6.1: Errore durante la generazione del file.} Estende il passo 3 qualora il sistema incontri un'anomalia o un errore interno durante il processo di conversione dei dati nel formato PDF.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 6.1: Errore durante la generazione del file}\label{uc:6.1}
+Questo caso d'uso descrive il comportamento del sistema nel caso in cui la procedura di impaginazione e conversione dei dati del report nel formato di esportazione fallisca.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} Il modulo interno incaricato della generazione del PDF rileva un'eccezione e interrompe la creazione del file.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente ha richiesto l'esportazione del report (UC 6).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il processo di esportazione viene bloccato e il sistema notifica l'utente del problema, mantenendolo sulla pagina del report.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema intercetta il fallimento del processo di conversione in PDF.
+        \item Il sistema annulla l'operazione di download.
+        \item Il sistema renderizza a schermo un messaggio d'errore (es. "Impossibile generare il file PDF. Riprovare l'operazione").
+    \end{enumerate}
 \end{itemize}
 
 
@@ -1658,7 +2211,7 @@ Questo è il \textit{caso d'uso} generico per la gestione automatizzata del \tex
             \item Se il \texttt{\textit{README}.md} risulta già coerente, non vengono generate proposte di aggiornamento e lo Sviluppatore viene informato.
             \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema. L'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
         \end{itemize}
-    \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
+    \item \textbf{Inclusioni}: UC 3 - isualizzazione report prodotto dall’agente.
 \end{itemize}
 
 \subsubsection{UC 8: Gestione della Documentazione Inline}\label{uc:8}
@@ -1687,7 +2240,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
         \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
     \end{itemize}
     \item \textbf{Inclusioni}:\begin{itemize}
-    \item UC 4: Validazione umana di una proposta dell’agente.
+    \item UC 3 - isualizzazione report prodotto dall’agente.
     \end{itemize}
 \end{itemize}
 
@@ -1714,7 +2267,7 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
         \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
     \end{itemize}
     \item \textbf{Inclusioni}: \begin{itemize}
-    \item UC 4: Validazione umana di una proposta dell’agente.
+    \item UC 3 - isualizzazione report prodotto dall’agente.
     \end{itemize}
 \end{itemize}
 
@@ -1899,7 +2452,7 @@ problemi di sicurezza o le violazioni di policy trovate.
 \item 
   \textbf{Inclusioni}:
     \begin{itemize}
-        \item UC 4: Validazione umana di una proposta dell'agente.
+        \item UC 3 - isualizzazione report prodotto dall’agente.
     \end{itemize}    
 \item 
   \textbf{Estensioni}: 
@@ -2078,7 +2631,7 @@ L'Agente genera un Changelog Dev-to-Dev partendo dai dati delle User Stories.
             \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
             \item I parametri di configurazione del \textit{Repository} sono accessibili.
         \end{itemize}
-    \item \textbf{Postcondizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
+    \item \textbf{Postcondizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 3) o per l'esportazione diretta (UC 6).
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'Agente analizza il set di dati aggregato e raggruppa le lavorazioni in macro-categorie tecniche standard (es. \texttt{Added}, \texttt{Changed}, \texttt{Fixed}, \texttt{Deprecated}).
@@ -2112,14 +2665,14 @@ L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in ben
             \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
             \item I parametri di configurazione del \textit{Repository} sono accessibili.
         \end{itemize}
-\item \textbf{Postcondizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 4) o per l'esportazione diretta (UC 6).
+\item \textbf{Postcondizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 3) o per l'esportazione diretta (UC 6).
 \item \textbf{Scenario Principale}: 
 \begin{enumerate}
             \item L'Agente riceve in input il testo del \textit{Changelog} Tecnico prodotto dall'UC 18.
             \item L'Agente interroga l'\textit{LLM} inviando il testo tecnico e applicando le direttive sul tono e sull'audience a cui si riferisce il documento.
             \item L'Agente analizza le singole voci tecniche (es. modifiche a database, refactoring, patch di sicurezza) e ne estrae l'equivalente impatto funzionale.
             \item L'Agente traduce i termini specialistici in benefici tangibili per l'utente finale, eliminando i dettagli implementativi di basso livello, poco rilevanti e poco comprensibili per il Cliente.
-            \item L'Agente struttura la bozza del report di business e la memorizza, pronta per la validazione umana (UC 4).
+            \item L'Agente struttura la bozza del report di business e la memorizza, pronta per la validazione umana (UC 3).
 \end{enumerate}
     \item \textbf{Scenario Alternativo}: 
     \begin{itemize}
@@ -2204,13 +2757,17 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.60 & Obbligatorio & Il sistema deve renderizzare a schermo il nome di ogni operazione in fase di elaborazione e mostrare un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato" o "Fallito". & UC 23.1, 23.1.1, 23.1.2 \\ 
     \hline
-    RF.61 & Obbligatorio & Il sistema deve abilitare e rendere interattivi i controlli grafici per le fasi successive  esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & UC 23 \\ 
+    RF.61 & Obbligatorio & Il sistema deve abilitare e rendere interattivi i controlli grafici per le fasi successive  esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & UC 23, 28 \\ 
     \hline
     RF.47 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore, mostrando il messaggio di fallimento per la \textit{task} interessata e permettendo la regolare prosecuzione delle altre \textit{task} parallele. & UC 24, 22.3, 23.1.2 \\ 
     \hline
-    RF.7 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3 \\ 
+    RF.7 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC 3, 3.1, 3.2, 28 \\ 
     \hline
-    RF.8 & Obbligatorio & Il sistema deve consentire all'utente di validare, modificare o rifiutare manualmente una proposta generata da un agente prima della sua eventuale applicazione. & UC 4 \\ 
+    RF.67 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del repository Git analizzato, il riferimento base e l'ambito di analisi, oltre al tempo di esecuzione e data e ora di completamento. & UC  3.1, 3.1.1, 3.1.2, 3.1.3, 3.1.4, 3.1.5, 3.1.6 \\ 
+    \hline
+    RF.68 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & UC 3.2.4, 7 \\ 
+    \hline
+    RF.8 & Obbligatorio & Il sistema deve garantire un approccio \textit{human-in-the-loop} restituendo le proposte di modifica in formati non distruttivi e soggetti a revisione esterna, demandando all'utente l'applicazione definitiva. & UC 3.2.3, 3.2.4 \\ 
     \hline
     RF.9 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5, 15 \\ 
     \hline
@@ -2226,7 +2783,11 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.12 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
     \hline
-    RF.13 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati, consentendo all'utente di selezionare un report passato ai fini dell'esportazione. & UC 6 \\ 
+    RF.13 & Opzionale & Il sistema deve mantenere un archivio storico dei report e permettere all'utente di visualizzare una pagina contenente la lista aggregata dei report generati in passato. & UC 27, 27.1 \\ 
+    \hline
+    RF.65 & Opzionale & Il sistema deve mostrare a schermo, per ogni singolo elemento all'interno dello storico dei report, il relativo codice identificativo univoco e il titolo, oltre alla data e l'ora di completamento. & UC 27.1.1, 27.1.1.1, 27.1.1.2, 27.1.1.3, 27.1.1.4 \\ 
+    \hline
+    RF.66 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati. & UC 27 \\ 
     \hline
     RF.14 & Opzionale & Il sistema deve permettere all'utente di impostare un template personalizzato per il file \texttt{\textit{README}.md}. & UC 25, UC 7 \\ 
     \hline
@@ -2244,9 +2805,9 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 10 \\
     \hline
-    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 10 \\
+    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 10, 3.2.2.1.3 \\
     \hline
-    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10 \\
+    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10, 3.2.2.1.1, 3.2.2.1.2 \\
     \hline
     RF.55 & Obbligatorio &  I risultati dell'analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
     \hline
@@ -2254,9 +2815,9 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 12 \\ 
     \hline
-    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 13 \\
+    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 13, 3.2.3 \\
     \hline
-    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 14 \\ 
+    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 14, 3.2.1 \\ 
     \hline
     RF.28 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 15 \\
     \hline
@@ -2270,11 +2831,11 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.33 & Opzionale & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 17 \\
     \hline
-    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 18 \\
+    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 18, 3.2.1 \\
     \hline
     RF.35 & Desiderabile &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 18 \\
     \hline
-    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC 18,19 \\
+    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC 18, 19, 3.2.1 \\
     \hline
 
 \end{xltabular}
@@ -2437,7 +2998,6 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     \hyperref[uc:1]{UC 1} & RF.1 \\ \hline
     \hyperref[uc:2]{UC 2} & RF.4, RF.6 \\ \hline
     \hyperref[uc:3]{UC 3} & RF.7 \\ \hline
-    \hyperref[uc:4]{UC 4} & RF.8, RQ.0 \\ \hline
     \hyperref[uc:5]{UC 5} & RF.9 \\ \hline
     \hyperref[uc:6]{UC 6} & RF.12 \\ \hline
     \hyperref[uc:7]{UC 7} & RF.14, RF.15, RF.20, RQ.2 \\ \hline
@@ -2484,7 +3044,6 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RF.5 & \hyperref[uc:2]{UC 2}, \hyperref[uc:5]{UC 5} \\ \hline
     RF.6 & \hyperref[uc:2]{UC 2} \\ \hline
     RF.7 & \hyperref[uc:3]{UC 3} \\ \hline
-    RF.8 & \hyperref[uc:4]{UC 4} \\ \hline
     RF.9 & \hyperref[uc:5]{UC 5}, \hyperref[uc:15]{UC 15} \\ \hline
     RF.10 & \hyperref[uc:5]{UC 5} \\ \hline
     RF.11 & \hyperref[uc:5]{UC 5}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9}, \hyperref[uc:12]{UC 12}, \hyperref[uc:13]{UC 13}, \hyperref[uc:14]{UC 14}, \hyperref[uc:18]{UC 18}, \hyperref[uc:19]{UC 19} \\ \hline
@@ -2512,7 +3071,6 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
     RF.34 & \hyperref[uc:18]{UC 18} \\ \hline
     RF.35 & \hyperref[uc:18]{UC 18} \\ \hline
     RF.36 & \hyperref[uc:19]{UC 19} \\ \hline
-    RQ.0 & \hyperref[uc:4]{UC 4}, Verbale esterno 2026/03/23 \\ \hline
     RQ.1 & Verbale esterno 2026/03/23 \\ \hline
     RQ.2 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
     RQ.3 & Verbale esterno 2026/03/23 \\ \hline
