@@ -1656,7 +1656,7 @@ Questo è il \textit{caso d'uso} generico per la gestione automatizzata del \tex
     \item \textbf{Scenario alternativo}:
         \begin{itemize}
             \item Se il \texttt{\textit{README}.md} risulta già coerente, non vengono generate proposte di aggiornamento e lo Sviluppatore viene informato.
-            \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema. L'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+            \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema. L'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
         \end{itemize}
     \item \textbf{Inclusioni}: UC 4 - Validazione umana di una proposta dell’agente.
 \end{itemize}
@@ -1684,7 +1684,7 @@ L'agente interviene nel codice sorgente per garantire che ogni componente sia do
     \begin{itemize}
         \item Se l'Agente non riesce a interpretare una classe/funzione, invece di una proposta viene generato un avvertimento per quella specifica classe/funzione e l'analisi passa a quella seguente, se presente.
         \item Se le modifiche al codice non richiedono di cambiare la documentazione, non vengono generate proposte di aggiornamento e lo Sviluppatore viene informato.
-        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
     \end{itemize}
     \item \textbf{Inclusioni}:\begin{itemize}
     \item UC 4: Validazione umana di una proposta dell’agente.
@@ -1711,7 +1711,7 @@ L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecn
     \item \textbf{Scenario alternativo}:
     \begin{itemize}
         \item Se l'analisi non rileva necessità di aggiornamento, non vengono generate proposte di aggiornamento e lo Sviluppatore è informato.
-        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5 per la visualizzazione dell'errore.
+        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
     \end{itemize}
     \item \textbf{Inclusioni}: \begin{itemize}
     \item UC 4: Validazione umana di una proposta dell’agente.
