@@ -512,7 +512,7 @@ Questo caso d'uso descrive il processo tramite il quale un utente già registrat
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
-    \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di Code Guardian.
+    \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di \textbf{Code Guardian}.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente ha completato con successo il processo di registrazione (UC 20).
@@ -874,7 +874,7 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
         \item Il sistema interroga i metadati del codice o esegue una scansione rapida della struttura dei file del \textit{repository}.
-        \item Il sistema constata che i linguaggi principali rilevati non fanno parte dell'insieme di linguaggi supportati dal sistema Code Guardian.
+        \item Il sistema constata che i linguaggi principali rilevati non fanno parte dell'insieme di linguaggi supportati dal sistema \textbf{Code Guardian}.
         \item Il sistema mostra un avviso informativo (es. "Attenzione: i linguaggi rilevati in questo \textit{repository} potrebbero non essere pienamente supportati dagli agenti").
         \item Il sistema consente comunque il completamento e la memorizzazione del contesto operativo.
     \end{enumerate}
@@ -882,7 +882,7 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
 
 
 \subsubsection{UC 2: Selezione ambito di analisi}\label{uc:2}
-Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file o directory. L'analisi dell'intero \textit{repository} è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
+Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file e/o directory. Viene selezionato rispetto al repository e al riferimento di base già risolti in UC 1. L'analisi dell'intero \textit{repository} è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
@@ -914,7 +914,7 @@ Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repo
     \begin{itemize}
         \item \textbf{UC 2.4: Errore mancata selezione dell'ambito}. Estende il passo 1 qualora l'utente tenti di confermare l'avvio delle operazioni senza aver selezionato alcun elemento o opzione di analisi, mostrando un messaggio informativo a schermo.
         \item \textbf{UC 2.5: Errore elementi non esistenti o non accessibili}. Estende il passo 2 qualora uno o più file o directory selezionati non siano più presenti o accessibili nel riferimento remoto, mostrando un messaggio di errore esplicativo.
-        \item \textbf{UC 2.6: Errore superamento limiti dimensionali dell'ambito}. Estende il passo 2 qualora il volume complessivo di righe o file selezionati superi la capacità massima di elaborazione del modello \textit{LLM}, mostrando un messaggio di errore esplicativo e richiedendo di restringere la selezione.
+        \item \textbf{UC 2.6: Errore superamento limiti dimensionali dell'ambito}. Estende il passo 2 qualora il volume complessivo di righe di codice o di file selezionati superi la capacità massima di elaborazione del modello \textit{LLM}, mostrando un messaggio di errore esplicativo e richiedendo di restringere la selezione.
     \end{itemize}
 \end{itemize}
 
@@ -980,7 +980,7 @@ Questo caso d'uso descrive lo scenario in cui uno o più elementi selezionati da
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Attori Secondari}: \textit{Repository Git}.
     \item \textbf{Trigger}: Il sistema verifica la disponibilità effettiva degli elementi selezionati e riceve un feedback di errore dal \textit{Repository Git}.
-    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato uno o più elementi tramite l'interfaccia e ha confermato la scelta.\end{itemize}
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato uno o più elementi tramite l'interfaccia (UC 2.1 o UC 2.2 o UC 2.3) e ha confermato la scelta.\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item L'ambito di analisi non viene registrato come contesto valido. Il sistema segnala il problema all'utente.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
@@ -996,7 +996,7 @@ Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: Il sistema esegue un calcolo preventivo sul volume dei file selezionati all'interno del \textit{Repository} e rileva che esso eccede i limiti prefissati.
-    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato un ambito (totale o parziale) e ha confermato la scelta, i cui file esistono e sono tutti regolarmente accessibili (UC 2.5 completato con successo).\end{itemize}
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato un ambito d'analisi (totale o parziale) tramite UC 2.1, UC 2.2 o UC 2.3 e ha confermato la scelta. La verifica di esistenza e accessibilità degli elementi selezionati ha avuto esito positivo (UC 2.5 non si è verificato).\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item La registrazione dell'ambito fallisce. L'utente viene invitato dal sistema a ridurre la mole della selezione.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
@@ -2133,14 +2133,14 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui la proce
 \section{Agente Docs: Documentazione e \textit{README}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Documentazione e \textit{README} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
+L'Agente di Documentazione e \texttt{\textit{README}.md} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto \textbf{Code Guardian}. Nei cicli di sviluppo software veloci, la documentazione è spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si focalizza su tre aree critiche:
 
 \begin{enumerate}
 
-    \item \textbf{Manutenzione del \textit{README}}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del \textit{Repository}, adattandolo dinamicamente alle evoluzioni della piattaforma.
+    \item \textbf{Manutenzione del \texttt{\textit{README}.md}}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del \textit{Repository}, adattandolo dinamicamente alle evoluzioni della piattaforma.
 
     \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{Docstring} e \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
 
@@ -2150,7 +2150,7 @@ L'agente si focalizza su tre aree critiche:
 
 \newpage
 \subsection{\textit{Casi d'Uso}}
-Di seguito i \textit{Casi d'Uso} dell'Agente Docs.
+Di seguito i \textit{Casi d'uso} dell'Agente Docs.
 
 \begin{figure}[htbp]
     \centering
@@ -2159,8 +2159,8 @@ Di seguito i \textit{Casi d'Uso} dell'Agente Docs.
     \label{fig:UCDocs}
 \end{figure}
 
-\subsubsection{UC 25: Impostazione del modello di stile personalizzato per il README}\label{uc:25}
-Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente fornisce al sistema un modello (template) personalizzato per la generazione e l'aggiornamento del file README.md.
+\subsubsection{UC 25: Impostazione del template personalizzato per il \textit{README}}\label{uc:25}
+Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente fornisce al sistema un modello (template) personalizzato per la generazione e l'aggiornamento del file \texttt{\textit{README}.md}.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
@@ -2170,11 +2170,11 @@ Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente for
         \item L'utente \`e autenticato (UC 21).
         \item \`E stato selezionato un repository e un riferimento di base (UC 1).
     \end{itemize}
-    \item \textbf{Postcondizioni:} Il modello personalizzato \`e stato salvato correttamente e diviene il template di riferimento per le successive esecuzioni dell'Agente Docs relative a quel repository.
+    \item \textbf{Postcondizioni:} Il template personalizzato \`e stato salvato correttamente e diviene il template di riferimento per le successive esecuzioni dell'Agente Docs relative a quel repository.
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente accede alla sezione di personalizzazione del README tramite l'interfaccia grafica.
-        \item Il sistema presenta l'opzione per caricare un modello personalizzato per il README.
+        \item L'utente accede alla sezione di personalizzazione del \texttt{\textit{README}.md} tramite l'interfaccia grafica.
+        \item Il sistema presenta l'opzione per caricare un modello personalizzato per il \texttt{\textit{README}.md}.
         \item L'utente fornisce il template caricando un file con estensione \texttt{.md} contenente la struttura base.
         \item Il sistema convalida la correttezza formale del file fornito.
         \item Il sistema memorizza il modello nel contesto del progetto e notifica all'utente il successo dell'operazione.
@@ -2191,21 +2191,21 @@ Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente for
 \section{Agente OWASP: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Scansione Vulnerabilità \textit{OWASP} ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{Vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da \textit{OWASP} individuabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
+L'Agente di scansione vulnerabilità \textit{OWASP} ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio individuate dall'\textit{OWASP Top 10} e rilevabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
 \\ 
-L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP} Top 10. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da un \textit{Team Lead} o \textit{Security Auditor}.
+L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP Top 10}. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da un \textit{Team Lead} o \textit{Security Auditor}.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra su tre aree principali:
 \begin{enumerate}
-\item \textbf{Analisi delle \textit{Vulnerabilità} \textit{OWASP}}: individuazione di pattern di codice potenzialmente riconducibili a \textit{Vulnerabilità} note, come SQL \textit{Injection}, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, \textit{\glo{Hardcoded secrets}{hardcoded-secrets}}, ecc.
+\item \textbf{Analisi delle \textit{Vulnerabilità} \textit{OWASP Top 10}}: individuazione di pattern di codice potenzialmente riconducibili a \textit{vulnerabilità} note, come SQL \textit{Injection}, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, \textit{\glo{Hardcoded secrets}{hardcoded-secrets}}, ecc.
 \item \textbf{Verifica delle policy interne di sicurezza}: controllo dell'aderenza del codice alle regole definite dal team nel file CLAUDE.md, secondo un approccio di tipo \textit{Policy-as-code}.
 \item \textbf{Generazione di remediation}: produzione di suggerimenti testuali o modifiche al codice correttive per mitigare le vulnerabilità o le non conformità rilevate, senza applicare modifiche automatiche prima della validazione umana.
 \end{enumerate}
 
 \newpage
 \subsection{\textit{Casi d'Uso}}
-Di seguito i \textit{Casi d'Uso} dell'Agente OWASP.
+Di seguito i \textit{Casi d'uso} dell'Agente OWASP.
 
 \subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}\label{uc:10}
 L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
@@ -2479,7 +2479,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \item \textbf{Scenari alternativi}: 
     \begin{itemize}
-        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di Task Management restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.5.
+        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di \textit{Task Management} restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.5.
     \end{itemize}
 
 \item 
@@ -2633,9 +2633,9 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.66 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati. & UC 27 \\ 
     \hline
-    RF.14 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file README.md. & UC 25, UC 7 \\ 
+    RF.14 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file \texttt{\textit{README}.md}. & UC 25, UC 7 \\ 
     \hline
-    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 22 \\ 
+    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file \texttt{\textit{README}.md} del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 22 \\ 
     \hline
     RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 22 \\ 
     \hline
