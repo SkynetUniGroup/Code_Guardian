@@ -512,7 +512,7 @@ Questo caso d'uso descrive il processo tramite il quale un utente già registrat
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
-    \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di \textbf{Code Guardian}.
+    \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di Code Guardian.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente ha completato con successo il processo di registrazione (UC 20).
@@ -874,7 +874,7 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
         \item Il sistema interroga i metadati del codice o esegue una scansione rapida della struttura dei file del \textit{repository}.
-        \item Il sistema constata che i linguaggi principali rilevati non fanno parte dell'insieme di linguaggi supportati dal sistema \textbf{Code Guardian}.
+        \item Il sistema constata che i linguaggi principali rilevati non fanno parte dell'insieme di linguaggi supportati dal sistema Code Guardian.
         \item Il sistema mostra un avviso informativo (es. "Attenzione: i linguaggi rilevati in questo \textit{repository} potrebbero non essere pienamente supportati dagli agenti").
         \item Il sistema consente comunque il completamento e la memorizzazione del contesto operativo.
     \end{enumerate}
@@ -882,7 +882,7 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
 
 
 \subsubsection{UC 2: Selezione ambito di analisi}\label{uc:2}
-Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file e/o directory. Viene selezionato rispetto al repository e al riferimento di base già risolti in UC 1. L'analisi dell'intero \textit{repository} è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
+Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file o directory. L'analisi dell'intero \textit{repository} è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
@@ -914,7 +914,7 @@ Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repo
     \begin{itemize}
         \item \textbf{UC 2.4: Errore mancata selezione dell'ambito}. Estende il passo 1 qualora l'utente tenti di confermare l'avvio delle operazioni senza aver selezionato alcun elemento o opzione di analisi, mostrando un messaggio informativo a schermo.
         \item \textbf{UC 2.5: Errore elementi non esistenti o non accessibili}. Estende il passo 2 qualora uno o più file o directory selezionati non siano più presenti o accessibili nel riferimento remoto, mostrando un messaggio di errore esplicativo.
-        \item \textbf{UC 2.6: Errore superamento limiti dimensionali dell'ambito}. Estende il passo 2 qualora il volume complessivo di righe di codice o di file selezionati superi la capacità massima di elaborazione del modello \textit{LLM}, mostrando un messaggio di errore esplicativo e richiedendo di restringere la selezione.
+        \item \textbf{UC 2.6: Errore superamento limiti dimensionali dell'ambito}. Estende il passo 2 qualora il volume complessivo di righe o file selezionati superi la capacità massima di elaborazione del modello \textit{LLM}, mostrando un messaggio di errore esplicativo e richiedendo di restringere la selezione.
     \end{itemize}
 \end{itemize}
 
@@ -980,7 +980,7 @@ Questo caso d'uso descrive lo scenario in cui uno o più elementi selezionati da
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Attori Secondari}: \textit{Repository Git}.
     \item \textbf{Trigger}: Il sistema verifica la disponibilità effettiva degli elementi selezionati e riceve un feedback di errore dal \textit{Repository Git}.
-    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato uno o più elementi tramite l'interfaccia (UC 2.1 o UC 2.2 o UC 2.3) e ha confermato la scelta.\end{itemize}
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato uno o più elementi tramite l'interfaccia e ha confermato la scelta.\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item L'ambito di analisi non viene registrato come contesto valido. Il sistema segnala il problema all'utente.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
@@ -996,7 +996,7 @@ Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: Il sistema esegue un calcolo preventivo sul volume dei file selezionati all'interno del \textit{Repository} e rileva che esso eccede i limiti prefissati.
-    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato un ambito d'analisi (totale o parziale) tramite UC 2.1, UC 2.2 o UC 2.3 e ha confermato la scelta. La verifica di esistenza e accessibilità degli elementi selezionati ha avuto esito positivo (UC 2.5 non si è verificato).\end{itemize}
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato un ambito (totale o parziale) e ha confermato la scelta, i cui file esistono e sono tutti regolarmente accessibili (UC 2.5 completato con successo).\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item La registrazione dell'ambito fallisce. L'utente viene invitato dal sistema a ridurre la mole della selezione.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
@@ -2133,14 +2133,14 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui la proce
 \section{Agente Docs: Documentazione e \textit{README}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Documentazione e \texttt{\textit{README}.md} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto \textbf{Code Guardian}. Nei cicli di sviluppo software veloci, la documentazione è spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
+L'Agente di Documentazione e \textit{README} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto Code Guardian. Sappiamo bene come, nei cicli di sviluppo veloci, la documentazione sia spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si focalizza su tre aree critiche:
 
 \begin{enumerate}
 
-    \item \textbf{Manutenzione del \texttt{\textit{README}.md}}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del \textit{Repository}, adattandolo dinamicamente alle evoluzioni della piattaforma.
+    \item \textbf{Manutenzione del \textit{README}}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del \textit{Repository}, adattandolo dinamicamente alle evoluzioni della piattaforma.
 
     \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{Docstring} e \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
 
@@ -2150,7 +2150,7 @@ L'agente si focalizza su tre aree critiche:
 
 \newpage
 \subsection{\textit{Casi d'Uso}}
-Di seguito i \textit{casi d'uso} dell'Agente Docs.
+Di seguito i \textit{Casi d'Uso} dell'Agente Docs.
 
 \begin{figure}[htbp]
     \centering
@@ -2159,22 +2159,22 @@ Di seguito i \textit{casi d'uso} dell'Agente Docs.
     \label{fig:UCDocs}
 \end{figure}
 
-\subsubsection{UC 25: Impostazione del template personalizzato per il \textit{README}}\label{uc:25}
-Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente fornisce al sistema un modello (template) personalizzato per la generazione e l'aggiornamento del file \texttt{\textit{README}.md}.
+\subsubsection{UC 25: Impostazione del modello di stile personalizzato per il README}\label{uc:25}
+Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente fornisce al sistema un modello (template) personalizzato per la generazione e l'aggiornamento del file README.md.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Trigger:} Lo Sviluppatore desidera fornire un template personalizzato per il file \texttt{\textit{README}.md}, per guidarne la generazione e l’aggiornamento da parte dell’Agente.
+    \item \textbf{Trigger:} Lo Sviluppatore desidera definire una struttura e uno stile specifici per il README.md, sovrascrivendo il template di default dell'Agente Docs.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente \`e autenticato (UC 21).
         \item \`E stato selezionato un repository e un riferimento di base (UC 1).
     \end{itemize}
-    \item \textbf{Postcondizioni:} Il template personalizzato \`e stato salvato correttamente e diviene il template di riferimento per le successive esecuzioni dell'Agente Docs relative a quel repository.
+    \item \textbf{Postcondizioni:} Il modello personalizzato \`e stato salvato correttamente e diviene il template di riferimento per le successive esecuzioni dell'Agente Docs relative a quel repository.
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente accede alla sezione di personalizzazione del \texttt{\textit{README}.md} tramite l'interfaccia grafica.
-        \item Il sistema presenta l'opzione per caricare un modello personalizzato per il \texttt{\textit{README}.md}.
+        \item L'utente accede alla sezione di personalizzazione del README tramite l'interfaccia grafica.
+        \item Il sistema presenta l'opzione per caricare un modello personalizzato per il README.
         \item L'utente fornisce il template caricando un file con estensione \texttt{.md} contenente la struttura base.
         \item Il sistema convalida la correttezza formale del file fornito.
         \item Il sistema memorizza il modello nel contesto del progetto e notifica all'utente il successo dell'operazione.
@@ -2187,109 +2187,25 @@ Questo \textit{caso d'uso} descrive il processo attraverso il quale l'utente for
 
 
 
-\subsubsection{UC 7: Gestione del \textit{README} di Progetto}\label{uc:7}
-Questo è il \textit{caso d'uso} generico per la gestione automatizzata del \texttt{\textit{README}.md} del Progetto.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}.
-    \item \textbf{Trigger}: Lo Sviluppatore richiede l'intervento.
-    \item \textbf{Precondizioni}: 
-        \begin{itemize}
-            \item È stato selezionato un \textit{repository} e un riferimento di base (UC 1).
-            \item (Opzionale) Esiste un modello personalizzato per il \texttt{\textit{README}.md}.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile una proposta di creazione o aggiornamento del \texttt{\textit{README}.md}, pronta per la validazione umana, o la documentazione era già aggiornata.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'\textbf{Orchestratore} notifica l'Agente Docs della necessità di gestire il \texttt{\textit{README}.md}
-            \item L'Agente crea o aggiorna il \texttt{\textit{README}.md} secondo il template personalizzato, se disponibile, o quello di default.
-            \item L'Agente propone il prodotto tramite \textit{Pull Request}.
-        \end{enumerate}
-    \item \textbf{Scenario alternativo}:
-        \begin{itemize}
-            \item Se il \texttt{\textit{README}.md} risulta già coerente, non vengono generate proposte di aggiornamento e lo Sviluppatore viene informato.
-            \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema. L'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-        \end{itemize}
-    \item \textbf{Inclusioni}: UC 3 - isualizzazione report prodotto dall’agente.
-\end{itemize}
-
-\subsubsection{UC 8: Gestione della Documentazione Inline}\label{uc:8}
-L'agente interviene nel codice sorgente per garantire che ogni componente sia documentato correttamente.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{Repository Git}.
-    \item \textbf{Trigger}: Richiesta esplicita da parte dello Sviluppatore.
-    \item \textbf{Precondizioni}:  
-        \begin{itemize}
-            \item È stato selezionato un ambito di analisi (UC 2).
-        \end{itemize}
-    \item \textbf{Postcondizioni}: Lo Sviluppatore dispone di una proposta di documentazione inline da validare o la documentazione era già aggiornata.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente individua funzioni o classi prive di documentazione, con documentazione obsoleta o non conforme.
-            \item L'Agente interpreta le dichiarazioni delle funzioni e la loro logica o lo scopo e le caratteristiche delle classi.
-            \item Per ogni classe/funzione individuata, l'Agente genera una proposta di commento standardizzato (\textit{JSDoc}).
-            \item Il sistema rende le proposte disponibili per validazione allo Sviluppatore.
-        \end{enumerate}
-    \item \textbf{Scenario alternativo}:
-    \begin{itemize}
-        \item Se l'Agente non riesce a interpretare una classe/funzione, invece di una proposta viene generato un avvertimento per quella specifica classe/funzione e l'analisi passa a quella seguente, se presente.
-        \item Se le modifiche al codice non richiedono di cambiare la documentazione, non vengono generate proposte di aggiornamento e lo Sviluppatore viene informato.
-        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-    \end{itemize}
-    \item \textbf{Inclusioni}:\begin{itemize}
-    \item UC 3 - isualizzazione report prodotto dall’agente.
-    \end{itemize}
-\end{itemize}
-
-\subsubsection{UC 9: Gestione Documentazione \textit{API}}\label{uc:9}
-L'agente estrae le definizioni degli \textit{Endpoint} per creare una guida tecnica per i consumatori delle \textit{API}.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{Trigger}: Richiesta esplicita di generazione.
-    \item \textbf{Precondizioni}: \begin{itemize}
-    \item È stato selezionato un ambito di analisi (UC 2).
-    \end{itemize}
-    \item \textbf{Postcondizioni}: È disponibile una proposta di documento tecnico (\texttt{\textit{API}.md}) o quel documento era già aggiornato.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente scansiona i file dei controller e i file delle \textit{\glo{Rotte}{rotte}}.
-            \item Estrazione di: metodo HTTP, URL, header, \textit{\glo{Payload}{payload}} richiesto e risposte possibili.
-            \item Formattazione delle informazioni nel file \texttt{\textit{API}.md} in formato \textit{\glo{Markdown}{markdown}}.
-            \item Il Sistema mette a disposizione la proposta di documento allo Sviluppatore per la validazione.
-        \end{enumerate}
-    \item \textbf{Scenario alternativo}:
-    \begin{itemize}
-        \item Se l'analisi non rileva necessità di aggiornamento, non vengono generate proposte di aggiornamento e lo Sviluppatore è informato.
-        \item Se l'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-    \end{itemize}
-    \item \textbf{Inclusioni}: \begin{itemize}
-    \item UC 3 - isualizzazione report prodotto dall’agente.
-    \end{itemize}
-\end{itemize}
-
 \newpage
 \section{Agente OWASP: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
 \subsection{Introduzione all'agente}
-L'Agente di scansione vulnerabilità \textit{OWASP} ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio individuate dall'\textit{OWASP Top 10} e rilevabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
+L'Agente di Scansione Vulnerabilità \textit{OWASP} ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{Vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio definite da \textit{OWASP} individuabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
 \\ 
-L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP Top 10}. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da un \textit{Team Lead} o \textit{Security Auditor}.
+L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP} Top 10. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da un \textit{Team Lead} o \textit{Security Auditor}.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si concentra su tre aree principali:
 \begin{enumerate}
-\item \textbf{Analisi delle \textit{Vulnerabilità} \textit{OWASP Top 10}}: individuazione di pattern di codice potenzialmente riconducibili a \textit{vulnerabilità} note, come SQL \textit{Injection}, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, \textit{\glo{Hardcoded secrets}{hardcoded-secrets}}, ecc.
+\item \textbf{Analisi delle \textit{Vulnerabilità} \textit{OWASP}}: individuazione di pattern di codice potenzialmente riconducibili a \textit{Vulnerabilità} note, come SQL \textit{Injection}, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, \textit{\glo{Hardcoded secrets}{hardcoded-secrets}}, ecc.
 \item \textbf{Verifica delle policy interne di sicurezza}: controllo dell'aderenza del codice alle regole definite dal team nel file CLAUDE.md, secondo un approccio di tipo \textit{Policy-as-code}.
 \item \textbf{Generazione di remediation}: produzione di suggerimenti testuali o modifiche al codice correttive per mitigare le vulnerabilità o le non conformità rilevate, senza applicare modifiche automatiche prima della validazione umana.
 \end{enumerate}
 
 \newpage
 \subsection{\textit{Casi d'Uso}}
-Di seguito i \textit{casi d'uso} dell'Agente OWASP.
+Di seguito i \textit{Casi d'Uso} dell'Agente OWASP.
 
 \subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}\label{uc:10}
 L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
@@ -2344,7 +2260,7 @@ L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \text
 
 \item \textbf{Scenario Alternativo}: 
 \begin{itemize}
-    \item Se non vengono rilevate \textit{Vulnerabilità}, l'Agente genera un report che indica l'assenza di criticità individuate.
+    \item Se non vengono rilevate \textit{Vulnerabilità}, l’Agente genera un report che indica l’assenza di criticità individuate.
     \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
 \end{itemize}
 \end{itemize}
@@ -2563,7 +2479,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \item \textbf{Scenari alternativi}: 
     \begin{itemize}
-        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di \textit{Task Management} restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.5.
+        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di Task Management restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.5.
     \end{itemize}
 
 \item 
@@ -2611,79 +2527,7 @@ Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi e
 \end{enumerate}
 \end{itemize}
 
-\newpage
-\subsubsection{UC 18: Generazione \textit{Changelog} Tecnico (Dev-to-Dev)}\label{uc:18}
-L'Agente genera un Changelog Dev-to-Dev partendo dai dati delle User Stories.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\linewidth]{UML UC18.png}
-    \caption{Use Case Generazione Changelog Tecnico}
-    \label{fig:UC18}
-\end{figure}
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
-    \item \textbf{Trigger}: Richiesta esplicita dello sviluppatore di generare un \textit{Changelog} Tecnico e conclusione con successo della fase di recupero, filtraggio e validazione dei dati dello \textit{Sprint} (UC 15).
-    \item \textbf{Precondizioni}: 
-        \begin{itemize}
-            \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
-            \item I parametri di configurazione del \textit{Repository} sono accessibili.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: Viene generato un report tecnico pronto per la revisione umana (UC 3) o per l'esportazione diretta (UC 6).
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L'Agente analizza il set di dati aggregato e raggruppa le lavorazioni in macro-categorie tecniche standard (es. \texttt{Added}, \texttt{Changed}, \texttt{Fixed}, \texttt{Deprecated}).
-            \item Per ogni \textit{User Story}, l'Agente interroga l'\textit{LLM} inviando i dettagli tecnici e i criteri di accettazione, richiedendo una sintesi in linguaggio ingegneristico asciutto e privo di ridondanze commerciali.
-            \item L'Agente genera la struttura del documento formattando l'output con un formato di \textit{Markdown}.
-            \item L'Agente inserisce per ogni voce i collegamenti ipertestuali e gli identificativi (ID) corrispondenti ai \textit{Ticket} di origine sul Sistema di Task Management.
-            \item La bozza del file prodotto viene memorizzata in attesa di essere validata.
-        \end{enumerate}
-    \item \textbf{Scenario Alternativo}: 
-    \begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-\end{itemize}
-\end{itemize}
-
-\subsubsection{UC 19: Generazione \textit{Changelog} di Business (Dev-to-Client)}\label{uc:19}
-L'Agente esegue una traduzione semantica per trasformare il gergo tecnico in benefici tangibili per gli \textit{Stakeholder}.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\linewidth]{UML UC19.png}
-    \caption{Use Case Generazione Changelog di Business}
-    \label{fig:UC19}
-\end{figure}
-
-\begin{itemize}
-\item \textbf{\textit{Attore} Primario}: \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: Modello AI (\textit{LLM}).
-\item \textbf{Trigger}: Richiesta esplicita del \textit{Project Manager} di generare un \textit{Changelog} di Business, dopo la creazione del \textit{Changelog} Tecnico.
-\item \textbf{Precondizioni}: 
-        \begin{itemize}
-            \item L'Agente Changelog dispone del set di dati delle \textit{User Stories} validato e privo di ambiguità bloccanti (superamento di UC 16 e UC 17).
-            \item I parametri di configurazione del \textit{Repository} sono accessibili.
-        \end{itemize}
-\item \textbf{Postcondizioni}: È disponibile un documento di \textit{Changelog} orientato al business pronto per la revisione umana (UC 3) o per l'esportazione diretta (UC 6).
-\item \textbf{Scenario Principale}: 
-\begin{enumerate}
-            \item L'Agente riceve in input il testo del \textit{Changelog} Tecnico prodotto dall'UC 18.
-            \item L'Agente interroga l'\textit{LLM} inviando il testo tecnico e applicando le direttive sul tono e sull'audience a cui si riferisce il documento.
-            \item L'Agente analizza le singole voci tecniche (es. modifiche a database, refactoring, patch di sicurezza) e ne estrae l'equivalente impatto funzionale.
-            \item L'Agente traduce i termini specialistici in benefici tangibili per l'utente finale, eliminando i dettagli implementativi di basso livello, poco rilevanti e poco comprensibili per il Cliente.
-            \item L'Agente struttura la bozza del report di business e la memorizza, pronta per la validazione umana (UC 3).
-\end{enumerate}
-    \item \textbf{Scenario Alternativo}: 
-    \begin{itemize}
-    \item Il Changelog Tecnico non è stato generato in precedenza al passo 1, quindi Il sistema invoca automaticamente la generazione del Changelog Tecnico (Inclusione UC 18).
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-\end{itemize}
-    \item \textbf{Inclusioni}: 
-    \begin{itemize}
-    \item UC 18: Generazione Changelog Tecnico.
-\end{itemize}
-\end{itemize}
+\
 
 \newpage
 
@@ -2729,11 +2573,11 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \\ \hline
     RF.3 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC 1.11
     \\ \hline
-    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l'ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2, 2.2, 2.3 \\ 
+    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC 2, 2.2, 2.3 \\ 
     \hline
     RF.5 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC 2.6, 5.4 \\ 
     \hline
-    RF.6 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell'intero Repository come ambito di analisi. & UC 2.1 \\ 
+    RF.6 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC 2.1 \\ 
     \hline
     RF.53 & Obbligatorio & Il sistema deve bloccare il proseguimento e mostrare un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & UC 2.4 \\ 
     \hline
@@ -2789,35 +2633,33 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.66 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati. & UC 27 \\ 
     \hline
-    RF.14 & Opzionale & Il sistema deve permettere all'utente di impostare un template personalizzato per il file \texttt{\textit{README}.md}. & UC 25, UC 7 \\ 
+    RF.14 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file README.md. & UC 25, UC 7 \\ 
     \hline
-    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file \texttt{\textit{README}.md} del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 7 \\ 
+    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file README.md del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 22 \\ 
     \hline
-    RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 8 \\ 
+    RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 22 \\ 
     \hline
-    RF.17 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8 \\ 
+    RF.17 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 22 \\ 
     \hline
-    RF.18 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 8 \\ 
+    RF.18 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 3 \\ 
     \hline
-    RF.19 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 9\\
+    RF.19 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 22\\
     \hline
-    RF.20 & Obbligatorio & Il sistema deve riconoscere quando le modifiche apportate al codice sorgente non alterano il comportamento, i componenti o gli endpoint analizzati, terminando l'esecuzione senza generare nuove proposte di aggiornamento documentale. & UC 7, 8, 9\\
+    RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 22 \\
     \hline
-    RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 10 \\
+    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 3.2.2.1.3 \\
     \hline
-    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 10, 3.2.2.1.3 \\
+    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 3.2.2.1.1, 3.2.2.1.2 \\
     \hline
-    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 10, 3.2.2.1.1, 3.2.2.1.2 \\
+    RF.55 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 3.2.2 \\
     \hline
-    RF.55 & Obbligatorio &  I risultati dell'analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 10 \\
+    RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 22 \\
     \hline
-    RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
+    RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 3 \\ 
     \hline
-    RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 12 \\ 
+    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da inserire nel report. & UC 3.2.3 \\
     \hline
-    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da sottoporre a validazione umana. & UC 13, 3.2.3 \\
-    \hline
-    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 14, 3.2.1 \\ 
+    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 3.2.1 \\ 
     \hline
     RF.28 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 15 \\
     \hline
@@ -2831,11 +2673,11 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.33 & Opzionale & Il sistema deve rilevare ambiguità o incoerenze tra la documentazione della User Story e i dati tecnici associati, segnalandole all’utente per risoluzione manuale. & UC 17 \\
     \hline
-    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 18, 3.2.1 \\
+    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 22, 3.2.1 \\
     \hline
-    RF.35 & Desiderabile &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 18 \\
+    RF.35 & Desiderabile &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 3 \\
     \hline
-    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC 18, 19, 3.2.1 \\
+    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC 22, 3.2.1 \\
     \hline
 
 \end{xltabular}
@@ -2939,6 +2781,8 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RV.20 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
     \hline
+    RV.21 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
+    \hline
     
 \end{xltabular}
 \endgroup
@@ -2966,7 +2810,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RS.1 & Obbligatorio & L'architettura del sistema deve impedire permessi di scrittura automatica sul repository Git da parte degli agenti autonomi. & Verbale esterno 2026/03/23 \\
     \hline
-    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 0, 15 \\
+    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC 0 \\
     \hline
     RS.4 & Desiderabile & Il sistema dovrebbe interfacciarsi con i servizi LLM esterni utilizzando policy o tier di servizio API che garantiscano che il codice sorgente analizzato non venga trattenuto o utilizzato per l'addestramento di modelli di terze parti. & Capitolato C2 \\
     \hline
@@ -2982,109 +2826,11 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 
 \subsection{Tracciamento Fonte - Requisiti}
 
-\begingroup
-\renewcommand{\arraystretch}{1.3}
-\begin{xltabular}{\textwidth}{|c|X|}
-    \hline
-    \textbf{Fonte} & \textbf{Requisiti} \\ 
-    \hline
-    \endfirsthead
 
-    \hline
-    \textbf{Fonte} & \textbf{Requisiti} \\ 
-    \hline
-    \endhead
-
-    \hyperref[uc:1]{UC 1} & RF.1 \\ \hline
-    \hyperref[uc:2]{UC 2} & RF.4, RF.6 \\ \hline
-    \hyperref[uc:3]{UC 3} & RF.7 \\ \hline
-    \hyperref[uc:5]{UC 5} & RF.9 \\ \hline
-    \hyperref[uc:6]{UC 6} & RF.12 \\ \hline
-    \hyperref[uc:7]{UC 7} & RF.14, RF.15, RF.20, RQ.2 \\ \hline
-    \hyperref[uc:8]{UC 8} & RF.16, RF.17, RF.18, RF.20, RQ.2 \\ \hline
-    \hyperref[uc:9]{UC 9} & RF.19, RF.20, RQ.2 \\ \hline
-    \hyperref[uc:10]{UC 10} & RF.21, RF.22, RF.23, RS.2 \\ \hline
-    \hyperref[uc:11]{UC 11} & RF.24 \\ \hline
-    \hyperref[uc:12]{UC 12} & RF.25 \\ \hline
-    \hyperref[uc:13]{UC 13} & RF.26 \\ \hline
-    \hyperref[uc:14]{UC 14} & RF.27 \\ \hline
-    \hyperref[uc:15]{UC 15} & RF.28, RF.30, RF.31, RS.3 \\ \hline
-    \hyperref[uc:16]{UC 16} & RF.32 \\ \hline
-    \hyperref[uc:17]{UC 17} & RF.33 \\ \hline
-    \hyperref[uc:18]{UC 18} & RF.34, RF.35 \\ \hline
-    \hyperref[uc:19]{UC 19} & RF.36 \\ \hline
-    Capitolato C2 & RV.4 \\ \hline
-    Verbale esterno 2026/03/23 & RQ.0, RQ.1, RQ.3, RV.0, RV.1, RV.2, RV.3, RS.1 \\ \hline
-    Verbale esterno 2026/04/24 & RF.30, RQ.4 \\ \hline
-
-\end{xltabular}
-\endgroup
 
 \newpage
 
 \subsection{Tracciamento Requisito - Fonti}
 
-\begingroup
-\renewcommand{\arraystretch}{1.3}
-\begin{xltabular}{\textwidth}{|c|X|}
-    \hline
-    \textbf{Requisito} & \textbf{Fonti} \\ 
-    \hline
-    \endfirsthead
-
-    \hline
-    \textbf{Requisito} & \textbf{Fonti} \\ 
-    \hline
-    \endhead
-
-    RF.1 & \hyperref[uc:1]{UC 1} \\ \hline
-    RF.2 & \hyperref[uc:1]{UC 1} \\ \hline
-    RF.3 & \hyperref[uc:1]{UC 1} \\ \hline
-    RF.4 & \hyperref[uc:2]{UC 2} \\ \hline
-    RF.5 & \hyperref[uc:2]{UC 2}, \hyperref[uc:5]{UC 5} \\ \hline
-    RF.6 & \hyperref[uc:2]{UC 2} \\ \hline
-    RF.7 & \hyperref[uc:3]{UC 3} \\ \hline
-    RF.9 & \hyperref[uc:5]{UC 5}, \hyperref[uc:15]{UC 15} \\ \hline
-    RF.10 & \hyperref[uc:5]{UC 5} \\ \hline
-    RF.11 & \hyperref[uc:5]{UC 5}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9}, \hyperref[uc:12]{UC 12}, \hyperref[uc:13]{UC 13}, \hyperref[uc:14]{UC 14}, \hyperref[uc:18]{UC 18}, \hyperref[uc:19]{UC 19} \\ \hline
-    RF.12 & \hyperref[uc:6]{UC 6} \\ \hline
-    RF.13 & \hyperref[uc:6]{UC 6} \\ \hline
-    RF.14 & \hyperref[uc:7]{UC 7} \\ \hline
-    RF.15 & \hyperref[uc:7]{UC 7} \\ \hline
-    RF.16 & \hyperref[uc:8]{UC 8} \\ \hline
-    RF.17 & \hyperref[uc:8]{UC 8} \\ \hline
-    RF.18 & \hyperref[uc:8]{UC 8} \\ \hline
-    RF.19 & \hyperref[uc:9]{UC 9} \\ \hline
-    RF.20 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
-    RF.21 & \hyperref[uc:10]{UC 10} \\ \hline
-    RF.22 & \hyperref[uc:10]{UC 10} \\ \hline
-    RF.23 & \hyperref[uc:10]{UC 10} \\ \hline
-    RF.24 & \hyperref[uc:11]{UC 11} \\ \hline
-    RF.25 & \hyperref[uc:12]{UC 12} \\ \hline
-    RF.26 & \hyperref[uc:13]{UC 13} \\ \hline
-    RF.27 & \hyperref[uc:14]{UC 14} \\ \hline
-    RF.28 & \hyperref[uc:15]{UC 15} \\ \hline
-    RF.30 & \hyperref[uc:15]{UC 15}, Verbale esterno 2026/04/24 \\ \hline
-    RF.31 & \hyperref[uc:15]{UC 15} \\ \hline
-    RF.32 & \hyperref[uc:16]{UC 16} \\ \hline
-    RF.33 & \hyperref[uc:17]{UC 17} \\ \hline
-    RF.34 & \hyperref[uc:18]{UC 18} \\ \hline
-    RF.35 & \hyperref[uc:18]{UC 18} \\ \hline
-    RF.36 & \hyperref[uc:19]{UC 19} \\ \hline
-    RQ.1 & Verbale esterno 2026/03/23 \\ \hline
-    RQ.2 & \hyperref[uc:7]{UC 7}, \hyperref[uc:8]{UC 8}, \hyperref[uc:9]{UC 9} \\ \hline
-    RQ.3 & Verbale esterno 2026/03/23 \\ \hline
-    RQ.4 & Verbale esterno 2026/04/24 \\ \hline
-    RV.0 & Verbale esterno 2026/03/23 \\ \hline
-    RV.1 & Verbale esterno 2026/03/23 \\ \hline
-    RV.2 & Verbale esterno 2026/03/23 \\ \hline
-    RV.3 & Verbale esterno 2026/03/23 \\ \hline
-    RV.4 & Capitolato C2 \\ \hline
-    RS.1 & Verbale esterno 2026/03/23 \\ \hline
-    RS.2 & \hyperref[uc:10]{UC 10} \\ \hline
-    RS.3 & \hyperref[uc:15]{UC 15} \\ \hline
-
-\end{xltabular}
-\endgroup
 
 \end{document}
