@@ -1191,10 +1191,75 @@ Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le 
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
+        \item \textbf{UC 22.3.1: Generazione \textit{README} di progetto}
+        \item \textbf{UC 22.3.2: Generazione documentazione inline}
         \item \textbf{UC 22.4: Errore mancata selezione delle operazioni.} Estende il passo 2 qualora l'elenco delle operazioni selezionate risulti vuoto.
         \item \textbf{UC 24: Gestione errore di orchestrazione o routing.} Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare il task.
     \end{itemize}
 \end{itemize}
+
+\subsubsection{UC 22.3.1: Generazione \textit{README} di progetto}\label{uc:22.3.1}
+Questo caso d'uso descrive l'esecuzione dell'operazione specifica di generazione o aggiornamento del file \textit{README} del progetto, come estensione del processo di conferma e avvio delle operazioni.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{LLM}.
+    \item \textbf{Trigger:} Il sistema rileva che nell'UC 22.3 è stata confermata l'operazione "Generazione \textit{README} di progetto".
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item È stato configurato un \textit{Repository Git} e un riferimento di base (UC 1).
+        \item (Opzionale) L'utente ha impostato un template personalizzato per il \textit{README} (UC 25).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item È disponibile una proposta di creazione o aggiornamento del file \textit{README}, pronta per essere visualizzata e validata dall'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} delega la richiesta di elaborazione all'Agente Docs.
+        \item L'Agente analizza i file di configurazione e la struttura delle cartelle del \textit{Repository Git}, elaborandoli tramite il modello \textit{LLM}.
+        \item L'Agente crea o aggiorna il testo del \textit{README} basandosi sul modello personalizzato, se disponibile, oppure sul template di default.
+        \item L'Agente formula la proposta finale di aggiornamento che verrà inserita nel report finale a disposizione dell'utente.
+    \end{enumerate}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+    \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 2 qualora il modello \textit{LLM} non fornisca una risposta entro il tempo limite di attesa preimpostato, causando l'interruzione dell'elaborazione.
+    \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 3 qualora l'output generato dal modello \textit{LLM} presenti una struttura testuale o Markdown malformata e non interpretabile per la formattazione del \textit{README}.
+\end{itemize}
+\end{itemize}
+
+
+\subsubsection{UC 22.3.2: Generazione documentazione inline}\label{uc:22.3.2}
+Questo caso d'uso descrive l'intervento dell'agente nel codice sorgente per garantire che ogni componente sia documentato correttamente, come estensione del processo di conferma e avvio delle operazioni.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{LLM}.
+    \item \textbf{Trigger:} Il sistema rileva che nell'UC 22.3 è stata confermata l'operazione "Generazione documentazione inline".
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item È stato selezionato un ambito di analisi valido all'interno del \textit{Repository Git} (UC 2).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Lo Sviluppatore dispone di una proposta di documentazione inline generata dal sistema pronta per la validazione.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'Orchestratore avvia l'elaborazione delegandola all'Agente Docs.
+        \item L'Agente scansiona il codice e individua funzioni o classi prive di documentazione, con documentazione obsoleta o non conforme.
+        \item L'Agente interroga il modello \textit{LLM} per interpretare la logica della funzione, i parametri di input e il valore di ritorno, oppure lo scopo generale e le caratteristiche della classe.
+        \item Per ogni classe o funzione individuata, l'Agente genera una proposta di commento standardizzato (\textit{JSDoc}).
+        \item Il sistema aggrega le proposte generate rendendole disponibili per la successiva visualizzazione da parte dello Sviluppatore.
+    \end{enumerate}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora l'interrogazione al modello \textit{LLM} ecceda il limite di tempo massimo consentito, bloccando l'analisi del file corrente.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la proposta di commento standardizzato restituita dal modello \textit{LLM} non rispetti i pattern di validazione strutturale (JSDoc).
+        \item \textbf{UC 3.2.1: Visualizzazione blocco testuale formattato.} Estende il passo 3 qualora il modello \textit{LLM} segnali di non poter dedurre in modo affidabile e sicuro lo scopo di una specifica classe o funzione. L'Agente salta la generazione della proposta per quell'elemento e inserisce un avvertimento mirato all'interno del payload, che verrà poi mostrato all'utente nel corpo del report.
+    \end{itemize}
+\end{itemize}
+
 
 \subsubsection{UC 22.4: Errore mancata selezione delle operazioni}\label{uc:22.4}
 Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comando di avvio senza aver prima selezionato alcun task.
@@ -2207,228 +2272,8 @@ L'agente si concentra su tre aree principali:
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'uso} dell'Agente OWASP.
 
-\subsubsection{UC 10: Esecuzione Scansione \textit{Vulnerabilità} (\textit{OWASP})}\label{uc:10}
-L'agente utilizza le \textit{API} di \textit{Claude Code} per identificare \textit{Vulnerabilità} standard di sicurezza nel codice sorgente.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\linewidth]{UML UC10.png}
-    \caption{Use Case Scansione Vulnerabilità}
-    \label{fig:UC10}
-\end{figure}
-
-\begin{itemize}
-\item
-  \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
-\item
-  \textbf{\textit{Attori} Secondari}: \textit{Repository} \textit{Git}, \textit{API} \textit{Claude Code}.
-\item
-  \textbf{Trigger}: Il \textit{Security Auditor} richiede una scansione di sicurezza per identificare \textit{Vulnerabilità}.
-\item
-  \textbf{Precondizioni}:
-  \begin{itemize}
-  \item È stato selezionato un ambito di analisi (UC 2).
-  \item
-    L'Agente OWASP è correttamente configurato con le \textit{API} Key di \textit{Claude Code}.
-\end{itemize}
-\item
-    \textbf{Postcondizioni}: Viene generato un report tecnico delle \textit{Vulnerabilità} rilevate. Ogni \textit{Vulnerabilità} rilevata è descritta con categoria, gravità e riferimento al codice interessato.
-\item
-  \textbf{Scenario Principale}:
-
-  \begin{enumerate}
-  \item 
-  L'Agente OWASP riceve dall'\textbf{Orchestratore} il codice sorgente relativo all'ambito di analisi selezionato.
-  \item
-    L'Agente OWASP interroga le \textit{API} di \textit{Claude Code} inviando il codice per l'analisi.
-\item
-    L'Agente OWASP analizza il codice cercando pattern
-    riconducibili alle \textit{Vulnerabilità} della Top 10 \textit{OWASP} (es. SQL
-    \textit{Injection}, \textit{\glo{XSS}{xss}}, \textit{Hardcoded secrets}).
-\item
-    L'Agente OWASP riceve l'esito dell'analisi.
-\item
-    L'Agente OWASP associa ogni \textit{Vulnerabilità} al file e, se disponibile, alla porzione di codice interessata.
-\item
-    L'Agente OWASP classifica ogni \textit{Vulnerabilità} trovata nelle categorie di Top 10 \textit{OWASP}.
-\item
-    L'Agente OWASP formatta i risultati evidenziando la
-    gravità (High, Medium, Low) di ogni falla trovata.
-\item
-    L'Agente OWASP inserisce le \textit{Vulnerabilità}, la loro classificazione e le gravità nel report finale.
-\end{enumerate}
-
-\item \textbf{Scenario Alternativo}: 
-\begin{itemize}
-    \item Se non vengono rilevate \textit{Vulnerabilità}, l’Agente genera un report che indica l’assenza di criticità individuate.
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-\end{itemize}
-\end{itemize}
 
 
-\subsubsection{UC 11: Verifica Conformità "\textit{Policy-as-code}" (CLAUDE.md)}\label{uc:11}
-L'agente verifica che il codice rispetti le regole
-specifiche definite dal team nel file di configurazione.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\linewidth]{UML UC11.png}
-    \caption{Use Case Conformità ”Policy-as-code”}
-    \label{fig:UC11}
-\end{figure}
-
-\begin{itemize}
-\item
-  \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead}.
-\item
-  \textbf{\textit{Attori} Secondari}: \textit{Repository Git}.
-\item
-  \textbf{Trigger}: Il \textit{Security Auditor} richiede una revisione di conformità.
-\item \textbf{Precondizioni}:
-\begin{itemize}
-    \item È stato selezionato un ambito di analisi (UC 2).
-    \item Il codice sorgente è accessibile.
-\end{itemize}
-\item
-  \textbf{Postcondizioni}: Viene prodotto un elenco di non-conformità rispetto alle policy di progetto.
-\item
-  \textbf{Scenario Principale}:
-  
-  \begin{enumerate}
-  \item 
-  L'Agente verifica che il file CLAUDE.md sia presente, leggibile e interpretabile.
-  \item
-    L'Agente OWASP legge il contenuto del file CLAUDE.md per
-    estrarre il contesto e le regole (es. "usa sempre questa libreria
-    per il logging", "non usare variabili globali").
-\item
-    L'Agente analizza il codice sorgente confrontandolo
-    con le direttive estratte.
-\item
-    L'Agente identifica eventuali deviazioni dalle
-    pratiche concordate dal team.
-\item
-    L'Agente genera un elenco di violazioni della policy
-    interna.
-\end{enumerate}
-\item
-  \textbf{Scenari alternativi}:
-\begin{itemize}
-    \item \textbf{Il file CLAUDE.md non è presente}: il sistema rileva l'assenza del file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.5 per mostrare il messaggio d'errore specifico.
-    \item \textbf{Il file CLAUDE.md non è leggibile o non contiene regole interpretabili}: il sistema rileva l'impossibilità di analizzare il file, interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.6 per mostrare il messaggio d'errore specifico.
-    \item \textbf{Il file CLAUDE.md contiene regole in palese contraddizione logica}: l'Agente OWASP legge il contenuto del file per estrarre le regole, rileva un conflitto logico insormontabile tra due o più direttive, quindi interrompe la verifica delle policy interne e delega la gestione del fallimento all'UC 5.6.
-\end{itemize}
-    \end{itemize}
-
-\newpage
-\subsubsection{UC 12: Generazione Suggerimenti di \textit{Remediation}}\label{uc:12}
-L'agente fornisce soluzioni pratiche per correggere i
-problemi di sicurezza o le violazioni di policy trovate.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\linewidth]{UML UC12,13,14.png}
-    \caption{Use Cases Generazione Suggerimenti di Remediation}
-    \label{fig:UC12,13,14}
-\end{figure}
-
-\begin{itemize}
-\item
-  \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
-\item
-  \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
-\item
-  \textbf{Trigger}: Conclusione con esito positivo (rilevamento falle) degli UC 10 o UC 11 e richiesta del utente di generare suggerimenti di \textit{Remediation}.
-\item
-  \textbf{Precondizioni}: \begin{itemize}
-  \item Sono state identificate \textit{Vulnerabilità} o violazioni di policy.
-  \end{itemize}
-\item
-  \textbf{Postcondizioni}: Il \textit{Security Auditor} riceve indicazioni chiare su come
-  correggere il codice per renderlo conforme.
-\item
-  \textbf{Scenario Principale}:
-
-  \begin{enumerate}
-  \def\labelenumi{\arabic{enumi}.}
-    \item 
-    Per ogni vulnerabilità o violazione rilevata, l'Agente analizza il contesto e la porzione di codice interessata.
-    \item 
-    L'Agente determina il livello di localizzazione possibile per la risoluzione del problema.
-    \item 
-    Il flusso si estende per generare uno snippet di codice correttivo (UC 13) oppure una descrizione testuale (UC 14).
-    \item
-    Il \textit{Security Auditor} consulta vulnerabilità, gravità, file coinvolto, spiegazione e proposta correttiva.
-    \end{enumerate}
-\item \textbf{Scenario Alternativo}: 
-\begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-\end{itemize}
-    
-\item 
-  \textbf{Inclusioni}:
-    \begin{itemize}
-        \item UC 3 - isualizzazione report prodotto dall’agente.
-    \end{itemize}    
-\item 
-  \textbf{Estensioni}: 
-    \begin{itemize}
-        \item UC 13: Generazione snippet di codice correttivo.
-        \item UC 14: Generazione descrizione testuale della remediation.
-    \end{itemize}
-\end{itemize}
-
-\subsubsection{UC 13: Generazione snippet di codice correttivo}\label{uc:13}
-Descrive la generazione di un frammento di codice alternativo per correggere una \textit{Vulnerabilità} o una non conformità.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
-    \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità può essere corretta tramite una modifica puntuale al codice.
-    \item \textbf{Precondizioni}:
-        \begin{itemize}
-            \item La \textit{Vulnerabilità} è sufficientemente circoscritta nel codice.
-            \item L’Agente OWASP può proporre una soluzione locale senza modifiche architetturali.
-        \end{itemize}
-    \item \textbf{Postcondizioni}: Il \textit{Security Auditor} visualizza uno snippet di codice correttivo da valutare manualmente.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L’Agente OWASP seleziona il frammento di codice vulnerabile.
-            \item L’Agente OWASP richiede una versione corretta del frammento.
-            \item Il modello genera uno snippet alternativo.
-            \item L’Agente OWASP presenta al \textit{Security Auditor} il confronto tra codice originale e codice proposto.
-        \end{enumerate}
-    \item \textbf{Scenario Alternativo}: 
-    \begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-\end{itemize}
-\end{itemize}
-
-\subsubsection{UC 14: Generazione descrizione testuale della \textit{Remediation}}\label{uc:14}
-Descrive la generazione di una spiegazione testuale della correzione da effettuare.
-
-\begin{itemize}
-    \item \textbf{\textit{Attore} Primario}: \textit{Security Auditor} / \textit{Team Lead} / Sviluppatore.
-    \item \textbf{\textit{Attori} Secondari}: \textit{Repository} Git, \textit{API} \textit{Claude Code}.
-    \item \textbf{Trigger}: Una \textit{Vulnerabilità} o non conformità non può essere risolta in modo affidabile tramite uno snippet di codice.
-    \item \textbf{Precondizioni}:\begin{itemize}
-        \item È disponibile una \textit{Vulnerabilità} o non conformità rilevata, l’agente dispone del contesto sufficiente per descrivere il problema.
-    \end{itemize}
-    \item \textbf{Postcondizioni}: Il \textit{Security Auditor} riceve una descrizione chiara della \textit{Remediation} consigliata.
-    \item \textbf{Scenario Principale}:
-        \begin{enumerate}
-            \item L’Agente OWASP analizza il problema rilevato.
-            \item L’Agente OWASP genera una spiegazione della causa del problema.
-            \item L’Agente OWASP descrive le azioni consigliate per mitigare o correggere il problema.
-            \item L’Agente OWASP inserisce la descrizione nel report finale.
-        \end{enumerate}
-    \item \textbf{Scenario Alternativo}: 
-    \begin{itemize}
-    \item L'Agente non riceve risposta dall'\textit{LLM} entro il tempo limite oppure riceve un output la cui struttura non è parsabile dal sistema, l'elaborazione viene interrotta e il flusso passa all'UC 5.2 per la visualizzazione dell'errore.
-\end{itemize}
-\end{itemize}
-
-\newpage
 
 \newpage
 \section{Agente Changelog: \textit{Changelog} da \textit{User Stories}}
