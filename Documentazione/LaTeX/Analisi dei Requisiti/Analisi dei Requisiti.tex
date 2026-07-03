@@ -1707,7 +1707,7 @@ Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui l'elabor
 
 
 \subsubsection{UC 3.2: Visualizzazione del corpo del report}\label{uc:3.2}
-Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica del report. Poiché il contenuto varia a seconda dell'agente che lo ha prodotto, il sistema interpreta il payload e renderizza a schermo i blocchi visivi pertinenti.
+Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica del report. Poiché il contenuto varia a seconda dell'agente che lo ha prodotto, il sistema interpreta il \textit{\glo{Payload}{payload}} e renderizza a schermo i blocchi visivi pertinenti.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1739,7 +1739,7 @@ Questo caso d'uso descrive la visualizzazione di un componente dedicato al testo
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza una porzione di testo formattato (Markdown) ricevuto dall'agente.
+    \item \textbf{Trigger:} Il sistema renderizza una porzione di testo formattato (\textit{\glo{Markdown}{markdown}}) ricevuto dall'agente.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando il corpo del report (UC 3.2).
@@ -1935,6 +1935,7 @@ Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possi
         \item \textbf{UC 5.4}: Visualizzazione errore per superamento limiti dimensionali a runtime.
         \item \textbf{UC 5.5}: Visualizzazione errore per risorsa di contesto mancante.
         \item \textbf{UC 5.6}: Visualizzazione errore per risorsa di contesto non valida o malformata.
+        \item \textbf{UC 5.7}: Visualizzazione errore durante la creazione della \textit{Pull Request}.
     \end{itemize}
 \end{itemize}
 
@@ -2077,6 +2078,31 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
         \item Il sistema acquisisce la risorsa ma fallisce nella sua validazione sintattica o logica (es. regole in conflitto nel file di policy).
         \item Il sistema interrompe l'esecuzione della task corrente.
         \item Il sistema renderizza a schermo il dettaglio dell'errore (es. "Il file CLAUDE.md presenta errori di sintassi o regole in palese contraddizione logica").
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 5.7: Visualizzazione errore durante la creazione della \textit{Pull Request}}\label{uc:5.7}
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione di un agente fallisca a causa dell'impossibilità di creare una \textit{Pull Request} sul repository remoto (es. per permessi in scrittura insufficienti o token scaduto).
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}.
+    \item \textbf{Trigger:} L'agente tenta di aprire una \textit{Pull Request} tramite le \textit{API} del servizio esterno ma riceve un codice d'errore di autorizzazione o di rete.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Un agente ha generato con successo una proposta di modifica ed è pronto per inoltrarla al \textit{Repository Git}.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'elaborazione dell'agente viene bloccata.
+        \item Il sistema mostra un messaggio d'errore informando l'utente del fallimento dell'operazione in fase di caricamento su \textit{Git}.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema tenta di aprire la \textit{Pull Request} inviando il \textit{payload} alle \textit{API} del \textit{Repository Git}.
+        \item Il servizio remoto restituisce un errore.
+        \item Il sistema interrompe l'esecuzione della task corrente.
+        \item Il sistema renderizza a schermo il dettaglio testuale dell'errore (es. "Impossibile creare la Pull Request: verificare che il token \textit{Git} abbia i permessi di scrittura abilitati").
     \end{enumerate}
 \end{itemize}
 
@@ -2228,7 +2254,7 @@ Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti d
         \item Il sistema analizza l'estensione e la validità del file in input.
         \item Il sistema rileva un'estensione non consentita (es. \texttt{.pdf}, \texttt{.txt}) o un formato corrotto.
         \item L'operazione di persistenza viene bloccata.
-        \item Il sistema mostra un messaggio di errore esplicativo a schermo (es. "Formato file non valido. Si prega di caricare un file Markdown .md").
+        \item Il sistema mostra un messaggio di errore esplicativo a schermo (es. "Formato file non valido. Si prega di caricare un file \textit{Markdown} .md").
     \end{enumerate}
 \end{itemize}
 
@@ -2256,6 +2282,150 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
 \end{itemize}
 
 
+\subsubsection{UC 7: Generazione o aggiornamento del \textit{README} di Progetto}\label{uc:7}
+Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per generare o aggiornare il file \texttt{README.md}, interfacciandosi con i servizi esterni necessari.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di generazione del README dalla lista delle operazioni disponibili nella dashboard (UC 22.3).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Lo Sviluppatore è autenticato (UC 21).
+        \item È stato configurato con successo il contesto operativo:\textit{ Repository Git} e Riferimento di base (UC 1).
+        \item L'utente ha selezionato l'operazione "Generazione del \textit{README}" (UC 22.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) per il \texttt{README.md}.
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC 3) con l'esito del task e il collegamento alla \textit{Pull Request} (UC 3.2.4).
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC 22.3) e attiva l'Agente Docs.
+        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per scaricare la struttura del progetto e l'attuale file \texttt{README.md}.
+        \item Il sistema recupera l'eventuale template personalizzato del \textit{README} fornito dallo Sviluppatore (UC 25); in sua assenza, carica in memoria il template di default.
+        \item Il sistema compone il prompt contestuale e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la stesura del nuovo documento.
+        \item Il modello \textit{AI} elabora le direttive e restituisce al sistema il contenuto aggiornato.
+        \item Il sistema effettua una chiamata alle \textit{API} del \textit{Repository Git} per aprire una \textit{Pull Request} contenente il documento aggiornato.
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC 3).
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 3}: Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output LLM.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
+        \item \textbf{UC 5.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+    \end{itemize}
+\end{itemize}
+
+
+\subsubsection{UC 8: Generazione della documentazione inline}\label{uc:8}
+Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente selezionato e generare, o aggiornare, la documentazione inline (\textit{JSDoc}) per le funzioni e le classi rilevate.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di gestione della documentazione inline dalla lista delle operazioni disponibili nella dashboard (UC 22.3).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Lo Sviluppatore è autenticato (UC 21).
+        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e Riferimento di base (UC 1).
+        \item È stato selezionato e validato un ambito di analisi (UC 2).
+        \item L'utente ha selezionato l'operazione "Generazione documentazione inline" (UC 22.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente i commenti di documentazione inline aggiornati per il codice selezionato.
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC 3) con l'esito del task e il collegamento alla \textit{Pull Request} (UC 3.2.4).
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC 22.3) e attiva l'Agente Docs.
+        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
+        \item Il sistema analizza il codice sorgente per identificare funzioni e classi prive di documentazione, o con documentazione obsoleta/non conforme agli standard.
+        \item Il sistema compone il prompt contestuale, includendo le porzioni di codice rilevate, e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la generazione della documentazione inline appropriata.
+        \item Il modello \textit{AI} elabora il codice e restituisce al sistema le proposte di commento standardizzato (\textit{JSDoc}) per gli elementi analizzati.
+        \item Il sistema effettua una chiamata alle \textit{API} del \textit{Repository Git} per aprire una \textit{Pull Request} contenente le proposte di documentazione inline integrate nel codice.
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC 3).
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 3}: Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
+        \item \textbf{UC 5.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC 8.1: Avviso per complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il Modello \textit{AI} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 8.1: Avviso per complessità del codice eccessiva}\label{uc:8.1}
+Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di generare una documentazione affidabile per una specifica porzione di codice a causa della sua intrinseca complessità.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Trigger:} Il Modello \textit{AI} o il modulo di analisi interno rilevano un livello di complessità che impedisce l'estrazione logica o la sintesi del comportamento della classe/funzione corrente.
+    \item \textbf{Precondizioni:} L'Agente sta ciclando sulle funzioni e classi estratte per richiederne la documentazione al Modello \textit{AI}.
+    \item \textbf{Postcondizioni:} 
+    \begin{itemize}
+        \item Il sistema non genera la proposta di documentazione per l'elemento complesso.
+        \item Viene registrato un avviso formattato che sarà visualizzato all'interno del report finale.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema rileva l'incapacità di interpretare in modo affidabile l'elemento analizzato.
+        \item Il sistema esclude la funzione o la classe corrente dalla stesura della \textit{Pull Request}.
+        \item Il sistema compila i dati per un nuovo avviso, predisponendolo per essere mostrato nella lista di elementi strutturati del report (UC 3.2.2).
+        \item Il sistema valorizza i campi dell'elemento impostando la categoria come "Avviso" (UC 3.2.2.1.1), la gravità come informativa (UC 3.2.2.1.2) e registrando le righe di codice esatte in cui risiede la classe complessa (UC 3.2.2.1.3).
+        \item Il sistema riprende l'analisi a partire dall'eventuale elemento successivo disponibile (Ritorno al passo 3 di UC 8).
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 9: Generazione documentazione \textit{API}}\label{uc:9}
+Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente (nello specifico i file di \textit{controller} e di definizione delle \textit{\glo{Rotte}{rotte}}) per generare o aggiornare il file \texttt{API.md} contenente la guida tecnica degli \textit{Endpoint}.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di gestione della documentazione \textit{API} dalla lista delle operazioni disponibili nella dashboard (UC 22.3).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Lo Sviluppatore è autenticato (UC 21).
+        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e Riferimento di base (UC 1).
+        \item È stato selezionato e validato un ambito di analisi (UC 2).
+        \item L'utente ha selezionato l'operazione "Generazione documentazione \textit{API}" (UC 22.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente il file \texttt{API.md} generato o aggiornato.
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC 3) con l'esito del task e il collegamento alla \textit{Pull Request} (UC 3.2.4).
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC 22.3) e attiva l'Agente Docs.
+        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per estrarre i file del codice sorgente appartenenti all'ambito selezionato, identificando in particolare i file contenenti la definizione delle rotte e le logiche dei \textit{controller}.
+        \item Il sistema compone il prompt contestuale con il codice estratto e lo invia alle \textit{API} del Modello \textit{AI}, richiedendo l'identificazione degli \textit{Endpoint} e l'estrazione di metodo HTTP, URL, \textit{header}, \textit{Payload} richiesti e formati di risposta.
+        \item Il modello \textit{AI} elabora il codice e restituisce al sistema le informazioni tecniche formattate strutturalmente con la sintassi \textit{Markdown}.
+        \item Il sistema effettua una chiamata alle \textit{API} del \textit{Repository Git} per aprire una \textit{Pull Request} contenente il documento \texttt{API.md} finale.
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC 23.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC 3).
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 3}: Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} non rispetti la formattazione \textit{Markdown} richiesta o non sia parsabile dal sistema.
+        \item \textbf{UC 5.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 5 qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+    \end{itemize}
+\end{itemize}
 
 
 \newpage
