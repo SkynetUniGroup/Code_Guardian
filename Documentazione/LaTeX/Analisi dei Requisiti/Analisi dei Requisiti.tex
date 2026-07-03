@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.16.0} \\ \hline
+            \textbf{Versione} & \textit{0.17.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -110,6 +110,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
 
+    0.17.0 & 2026/07/03 & Aggiornati UC specifici per agenti Docs, OWASP e Changelog & Dario Pirrone & Sara Ristovic \\ \hline
     0.16.0 & 2026/06/30 & Aggiunti sottocasi a diversi UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.2 & 2026/06/28 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
@@ -2448,7 +2449,85 @@ L'agente si concentra su tre aree principali:
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'uso} dell'Agente OWASP.
 
+\subsubsection{UC 10: Esecuzione scansione vulnerabilità (\textit{OWASP})}\label{uc:10}
+Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente \textit{OWASP} per analizzare il codice sorgente e identificare pattern riconducibili alle vulnerabilità standard dell'\textit{OWASP Top 10}.
 
+\begin{itemize}
+    \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di scansione vulnerabilità dalla lista delle operazioni disponibili nella dashboard (UC 22.3).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC 21).
+        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e Riferimento di base (UC 1).
+        \item È stato selezionato e validato un ambito di analisi (UC 2).
+        \item L'utente ha selezionato l'operazione "Scansione vulnerabilità \textit{OWASP}" (UC 22.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato un report tecnico contenente le vulnerabilità rilevate.
+        \item L'utente visualizza il report dell'operazione (UC 3) con i dettagli strutturati (categoria, gravità, riferimento al codice).
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC 22.3) e attiva l'Agente \textit{OWASP}.
+        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
+        \item Il sistema compone il prompt di analisi, istruendo il modello alla ricerca di criticità (es. \textit{SQL Injection}, \textit{\glo{XSS}{xss}}, \textit{Hardcoded secrets}), e lo invia alle \textit{API} del Modello \textit{AI}.
+        \item Il Modello \textit{AI} elabora il codice e restituisce al sistema l'elenco delle vulnerabilità individuate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
+        \item Il sistema formatta le criticità ottenute per la visualizzazione strutturata, associando a ciascuna la categoria \textit{OWASP} (UC 3.2.2.1.1), il livello di gravità (UC 3.2.2.1.2), la porzione di codice interessata (UC 3.2.2.1.3) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC 3.2.3) o di testo formattato (UC 3.2.1).
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC 23.1.2) e rende disponibile all'utente il report dell'operazione (UC 3).
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 3}: Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output della scansione, superando il limite di timeout.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile per la classificazione delle vulnerabilità.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 11: Verifica conformità \textit{Policy-as-code} (\texttt{CLAUDE.md})}\label{uc:11}
+Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWASP} controlla che il codice sorgente rispetti le pratiche di sviluppo sicuro e le policy interne specificate dal team nel file di configurazione \texttt{CLAUDE.md}.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
+    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di verifica di conformità dalla lista delle operazioni disponibili nella dashboard (UC 22.3).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC 21).
+        \item È stato configurato il contesto operativo (UC 1) e selezionato l'ambito di analisi (UC 2).
+        \item L'utente ha selezionato l'operazione "Verifica conformità policy" (UC 22.1).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato un elenco delle deviazioni (non-conformità) rilevate rispetto alle regole di progetto.
+        \item L'utente visualizza il report dell'operazione (UC 3) contenente le violazioni strutturate.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC 22.3) e attiva l'Agente \textit{OWASP}.
+        \item Il sistema interroga le \textit{API} del \textit{Repository Git} ricercando e leggendo il contenuto del file di configurazione \texttt{CLAUDE.md} alla radice del progetto, validandone la struttura e le direttive interne.
+        \item Il sistema estrae il codice sorgente dell'ambito selezionato tramite le \textit{API} di Git.
+        \item Il sistema compone il prompt contestuale unendo il codice estratto con le regole di \textit{policy} lette, per poi inviarlo alle \textit{API} del Modello \textit{AI}.
+        \item Il Modello \textit{AI} confronta il codice con le direttive e restituisce al sistema l'elenco delle violazioni normative riscontrate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
+        \item Il sistema formatta le non-conformità ottenute per la visualizzazione strutturata nel report, associandole alla categoria di regola infranta, al file/riga in cui si verifica l'anomalia (UC 3.2.2) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC 3.2.3) o di testo formattato (UC 3.2.1).
+        \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC 23.1.2) e rende disponibile all'utente il report (UC 3).
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textit{UC 3}: Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.5: Visualizzazione errore per risorsa di contesto mancante.} Estende il passo 2 qualora il file \texttt{CLAUDE.md} non esista o non venga trovato all'interno del \textit{Repository Git}.
+        \item \textbf{UC 5.6: Visualizzazione errore per risorsa di contesto non valida o malformata.} Estende il passo 2 qualora il file \texttt{CLAUDE.md} sia illeggibile, contenga errori di sintassi o regole in palese contraddizione logica.
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} superi il tempo limite per l'elaborazione.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile dal sistema.
+    \end{itemize}
+\end{itemize}
 
 
 \newpage
@@ -2469,61 +2548,123 @@ L'agente si concentra sulla sintesi e trasformazione del progresso di progetto a
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente Changelog.
 
-\subsubsection{UC 15: Recupero e Filtraggio \textit{User Stories}}\label{uc:15}
-Questo caso d'uso riguarda l'estrazione delle attività completate dai sistemi esterni per avviare il processo di analisi.
-
+\subsubsection{UC 15: Generazione Changelog Tecnico (\textit{Dev-to-Dev})}\label{uc:15}
+Questo caso d'uso descrive il processo mediante il quale il sistema recupera i dati da un sistema di tracciamento esterno e orchestra l'Agente Changelog per la stesura automatica di un resoconto tecnico orientato agli sviluppatori.
 
 \begin{itemize}
-\item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: Sistema di Task Management \textit{GitHub Issues}.
-\item \textbf{Trigger}: Lo Sviluppatore  o il \textit{Project Manager} richiede la generazione del report a conclusione di uno \textit{Sprint}.
-\item \textbf{Precondizioni}:
-\begin{itemize}
-\item L'Agente Changelog dispone delle credenziali e dei token di accesso validi per le \textit{API} del sistema esterno.
-\item È stato specificato un identificativo valido per lo \textit{Sprint} (\textit{Sprint} ID).
-\item Le task completate durante lo \textit{Sprint} si trovano in uno stato terminale positivo.
-\end{itemize}
-\item \textbf{Postcondizioni}: L'Agente dispone delle \textit{User Stories} e dei task completati nello \textit{Sprint} selezionato.
-\item \textbf{Scenario Principale}:
-\begin{enumerate}
-\item Il \textit{Project Manager} o lo Sviluppatore seleziona lo \textit{Sprint} da analizzare comunicando lo \textit{Sprint} ID.
-\item Il sistema esterno restituisce la lista di tutte le lavorazioni associate.
-\item L'Agente filtra la lista, mantenendo esclusivamente le \textit{User Stories} e i task che si trovano in uno stato terminale positivo (es. \texttt{Done}, \texttt{Closed}).
-\item L'Agente estrae da ogni task i campi fondamentali: Titolo, Descrizione, Criteri di Accettazione e Commenti rilevanti.
-\item L'Agente mappa i dati in una struttura interna e li memorizza temporaneamente.
-\end{enumerate}
-\item \textbf{Scenari alternativi}: 
+    \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
+    \item \textbf{Attori Secondari:} Sistema di Task Management, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di generazione Changelog dalla dashboard (UC 22.3).
+    \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Se lo Sprint ID non esiste o non contiene task completati il sistema di \textit{Task Management} restituisce un errore o una lista vuota, l'agente interrompe l'esecuzione e il flusso passa all'UC 5.5.
+        \item L'utente è autenticato (UC 21) e ha configurato le credenziali per il Sistema di Task Management (UC 0.2).
+        \item L'utente ha selezionato l'operazione "Generazione Changelog" (UC 22.1).
     \end{itemize}
-
-\item 
-  \textbf{Estensioni}: 
+    \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item UC 16: Rilevamento di task con metadati insufficienti e segnalazione all'utente.
+        \item Il sistema ha generato un Changelog tecnico scritto in formato \textit{Markdown} ed inserito nel report (UC 3.2.1).
+        \item L'utente visualizza il report dell'operazione (UC 3), all'interno del quale è presente, se richiesta inizialmente, l'opzione per proseguire con la generazione del Changelog di Business.
     \end{itemize}
-
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione (UC 22.3) e attiva l'Agente Changelog.
+        \item Il sistema richiede all'utente l'inserimento testuale dell'identificativo dello Sprint (\textit{Sprint ID}) da analizzare.
+        \item Il sistema interroga le \textit{API} del Sistema di Task Management estraendo l'intero set di lavorazioni associate allo \textit{Sprint ID} fornito.
+        \item Il sistema filtra internamente i task in stato di completamento ed estrae i metadati rilevanti (\textit{User Stories}, descrizioni, criteri di accettazione).
+        \item Il sistema compone il prompt contestuale con i dati estratti e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la sintesi in linguaggio ingegneristico standardizzato.
+        \item Il Modello \textit{AI} restituisce al sistema il testo del Changelog formattato in \textit{Markdown}.
+        \item Il sistema arricchisce il documento inserendo i collegamenti ipertestuali automatici verso i ticket originali sul sistema esterno.
+        \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC 23.1.2) e rende disponibile all'utente il report contenente il testo generato (UC 3).
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 3}: Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.5: Visualizzazione errore per risorsa di contesto mancante.} Estende il passo 3 qualora lo \textit{Sprint ID} inserito dall'utente non esista o la risposta del server restituisca un insieme vuoto.
+        \item \textbf{UC 15.1: Avviso e gestione task con metadati insufficienti.} Estende il passo 4 qualora il sistema rilevi all'interno dei task completati l'assenza di descrizioni o di criteri di accettazione minimi.
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 5 qualora il Modello \textit{AI} superi il tempo limite per l'elaborazione.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 6 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile.
+    \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 16: Rilevamento di task con metadati insufficienti}\label{uc:16}
+\subsubsection{UC 15.1: Avviso e gestione task con metadati insufficienti}\label{uc:15.1}
+Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente Changelog rilevi la presenza di task contrassegnati come completati ma qualitativamente poveri di informazioni, chiedendo all'utente come procedere.
+
 \begin{itemize}
-\item \textbf{\textit{Attore} Primario}: Sviluppatore / \textit{Project Manager}.
-\item \textbf{\textit{Attori} Secondari}: Sistema di Task Management.
-\item \textbf{Trigger}: Durante l'esecuzione del recupero (UC 15), l'agente individua una o più \textit{User Stories} prive di descrizione o di criteri di accettazione minimi.
-\item \textbf{Precondizioni}: \begin{itemize}
-\item L'Agente ha superato la fase di autenticazione \textit{API} e ha estratto la lista grezza delle task dello \textit{Sprint}.
-\end{itemize}
-\item \textbf{Postcondizioni}: Il flusso di generazione dei report (UC 18 / UC 19) prosegue solo per le task complete di tutti i metadati, mentre l'utente riceve la notifica tempestiva dei dati mancanti da integrare manualmente nei task incompleti.
-\item \textbf{Scenario Principale}:
-\begin{enumerate}
-\item L'Agente analizza il contenuto testuale dei campi informativi di ogni task.
-\item L'Agente rileva che una o più task presentano un livello informativo nullo o sotto la soglia minima stabilita dal sistema.
-\item L'Agente contrassegna internamente queste task come "Non documentabili per scarsità di dati" ed esclude i relativi ID dal flusso di generazione automatica.
-\item Il sistema genera un avviso nel log di esecuzione per informare l'utente delle specifiche task scartate.
-\end{enumerate}
+    \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
+    \item \textbf{Trigger:} Il modulo di analisi dati rileva che una o più \textit{User Stories} estratte presentano campi testuali vuoti o sotto la soglia minima di caratteri stabilita.
+    \item \textbf{Precondizioni:} Il sistema ha completato il filtraggio dei task dello Sprint (Passo 4 di UC 15).
+    \item \textbf{Postcondizioni:} 
+    \begin{itemize}
+        \item I task privi di metadati vengono scartati e l'elaborazione prosegue esclusivamente con i task validi.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema sospende l'esecuzione dell'Agente.
+        \item Il sistema mostra a schermo una finestra di avviso contenente l'elenco degli ID dei task informativamente insufficienti, presentando le opzioni per annullare o per proseguire.
+        \item L'utente interagisce con il comando "Procedi escludendo i task incompleti".
+        \item Il sistema rimuove le \textit{User Stories} segnalate dal \textit{payload} da inviare al Modello \textit{AI}.
+        \item L'estensione termina e il flusso principale riprende dal passo 5 di UC 15.
+    \end{enumerate}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 15.1.1: Annullamento generazione per metadati mancanti.} Estende il passo 3 qualora l'utente scelga l'opzione "Annulla operazione", bloccando il processo per recarsi sul Sistema di Task Management ad integrare manualmente i testi mancanti.
+    \end{itemize}
 \end{itemize}
 
+\subsubsection{UC 15.1.1: Annullamento generazione per metadati mancanti}\label{uc:15.1.1}
+Questo caso d'uso descrive l'interruzione definitiva del processo di generazione qualora l'utente decida di non procedere con un set di dati incompleto.
 
+\begin{itemize}
+    \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
+    \item \textbf{Trigger:} L'utente seleziona il comando di annullamento all'interno della finestra di avviso sui metadati.
+    \item \textbf{Precondizioni:} Il sistema sta mostrando l'elenco dei task privi di descrizione (UC 15.1).
+    \item \textbf{Postcondizioni:} Il processo viene abortito e lo stato dell'operazione passa a "Fallito".
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente clicca sul pulsante "Annulla operazione".
+        \item Il sistema interrompe l'esecuzione dell'Agente Changelog.
+        \item Il sistema chiude la finestra di avviso e imposta lo stato dell'operazione a "Fallito" nella dashboard (UC 23.1.2).
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 16: Generazione Changelog di Business (\textit{Dev-to-Client})}\label{uc:16}
+Questo caso d'uso descrive il processo successivo e dipendente dal Changelog Tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Project Manager / Sviluppatore.
+    \item \textbf{Attori Secondari:} Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} L'utente clicca sul comando "Accetta e genera Business" presente all'interno del report tecnico generato precedentemente.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato e sta mostrando all'utente il report del Changelog Tecnico (UC 15).
+        \item L'utente aveva inizialmente selezionato l'operazione composita per la stesura di entrambi i report.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato un Changelog di Business scritto in formato \textit{Markdown} ed inserito nel report (UC 3.2.1).
+        \item L'utente visualizza un nuovo report aggiornato (UC 3) con il testo finale.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema riceve il comando di generazione innescato dall'interfaccia del report corrente.
+        \item Il sistema acquisisce il testo del Changelog Tecnico appena approvato.
+        \item Il sistema compone un nuovo prompt unendo il testo tecnico con le direttive preimpostate sul tono di voce \textit{business-oriented} e lo invia alle \textit{API} del Modello \textit{AI}.
+        \item Il Modello \textit{AI} elabora il contenuto, rimuove i dettagli implementativi e restituisce il testo tradotto formattato in \textit{Markdown}.
+        \item Il sistema registra il successo dell'attività e sostituisce o affianca il contenuto nel report di visualizzazione, rendendolo disponibile all'utente (UC 3).
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 3}: Visualizzazione report prodotto dall'agente.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per rispondere.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita non sia formattata correttamente in \textit{Markdown}.
+    \end{itemize}
+\end{itemize}
 \newpage
 
 \section{Requisiti}
@@ -2606,7 +2747,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.68 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & UC 3.2.4, 7 \\ 
     \hline
-    RF.8 & Obbligatorio & Il sistema deve garantire un approccio \textit{human-in-the-loop} restituendo le proposte di modifica in formati non distruttivi e soggetti a revisione esterna, demandando all'utente l'applicazione definitiva. & UC 3.2.3, 3.2.4 \\ 
+    RF.8 & Obbligatorio & Il sistema deve garantire un approccio \textit{human-in-the-loop} restituendo le proposte di modifica in formati non distruttivi e soggetti a revisione esterna, demandando all'utente l'applicazione definitiva. & UC 3.2.3, 3.2.4, 7, 8, 9 \\ 
     \hline
     RF.9 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC 5, 15 \\ 
     \hline
@@ -2619,6 +2760,8 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     RF.63 & Obbligatorio & l sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, strettamente necessaria per l'analisi (es. file \texttt{CLAUDE.md}, Sprint ID), risulti mancante o non trovata. & UC 5.5 \\ 
     \hline
     RF.64 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, pur essendo presente, risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & UC 5.6 \\ 
+    \hline
+    RF.72 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente con un messaggio di errore qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & UC 5.7 \\ 
     \hline
     RF.12 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
     \hline
@@ -2634,31 +2777,35 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.70 & Opzionale & Il sistema deve permettere all'utente di rimuovere il template personalizzato precedentemente caricato, ripristinando il modello di default dell'agente. & UC 25, 25.2 \\ 
     \hline
-    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file \texttt{\textit{README}.md} del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 22 \\ 
+    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file \texttt{\textit{README}.md} del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC 7 \\ 
     \hline
-    RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 22 \\ 
+    RF.71 & Obbligatorio & Il sistema deve inoltrare le proposte di modifica documentale generate dagli agenti aprendo automaticamente una \textit{Pull Request} sul \textit{Repository Git} di destinazione. & UC 7, 8, 9 \\ 
     \hline
-    RF.17 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 22 \\ 
+    RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC 8 \\ 
     \hline
-    RF.18 & Desiderabile & Il sistema deve segnalare allo Sviluppatore i casi in cui la logica risulti troppo complessa per una documentazione automatica affidabile. & UC 3 \\ 
+    RF.17 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC 8 \\ 
     \hline
-    RF.19 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle API del progetto. & UC 22\\
+    RF.18 & Desiderabile & Il sistema deve escludere dalla generazione automatica e segnalare tramite un avviso strutturato nel report (comprensivo delle righe di riferimento) le porzioni di codice o classi la cui logica risulta troppo complessa per una documentazione affidabile. & UC 8.1 \\ 
     \hline
-    RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 22 \\
+    RF.19 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle \textit{API} del progetto. & UC 9\\
     \hline
-    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 3.2.2.1.3 \\
+    RF.72 & Obbligatorio & Il sistema deve identificare, estrarre e analizzare i file di \textit{routing} e i \textit{controller} dal codice sorgente al fine di rilevare gli \textit{Endpoint}, i metodi HTTP, i \textit{Payload} e i formati di risposta per la generazione del documento \textit{API}.md. & UC 9\\
     \hline
-    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 3.2.2.1.1, 3.2.2.1.2 \\
+    RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 10 \\
     \hline
-    RF.55 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 3.2.2 \\
+    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC 3.2.2.1.3, 10 \\
     \hline
-    RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 22 \\
+    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC 3.2.2.1.1, 3.2.2.1.2, 10 \\
     \hline
-    RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 3 \\ 
+    RF.55 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC 3.2.2, 10 \\
     \hline
-    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da inserire nel report. & UC 3.2.3 \\
+    RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC 11 \\
     \hline
-    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 3.2.1 \\ 
+    RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC 3, 10, 11 \\ 
+    \hline
+    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da inserire nel report. & UC 3.2.3, 10, 11 \\
+    \hline
+    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC 3.2.1, 10, 11 \\ 
     \hline
     RF.28 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC 15 \\
     \hline
