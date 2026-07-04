@@ -1732,6 +1732,7 @@ Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica 
         \item \textbf{UC 3.2.2:} Visualizzazione lista di elementi strutturati.
         \item \textbf{UC 3.2.3:} Visualizzazione Snippet di codice.
         \item \textbf{UC 3.2.4:} Visualizzazione collegamento a una \textit{Pull Request}.
+        \item \textbf{UC 3.2.5:} Visualizzazione comandi di validazione e avanzamento.
     \end{itemize}
 \end{itemize}
 
@@ -1911,7 +1912,26 @@ Questo caso d'uso descrive la visualizzazione di un collegamento ipertestuale ve
     \end{enumerate}
 \end{itemize}
 
+\subsubsection{UC 3.2.5: Visualizzazione comandi di validazione e avanzamento}\label{uc:3.2.5}
+Questo caso d'uso descrive la visualizzazione all'interno del report di un modulo interattivo contenente i pulsanti di azione, mostrato qualora un'operazione preveda un'approvazione umana per innescare un processo successivo (generazione del \textit{Changelog} di business).
 
+\begin{itemize}
+    \item \textbf{Attore Primario}: Utente Generico.
+    \item \textbf{Trigger}: Il sistema renderizza i componenti grafici per la decisione dell'utente al termine del report.
+    \item \textbf{Precondizioni}:
+    \begin{itemize}
+        \item Il sistema sta mostrando il corpo del report (UC 3.2).
+        \item L'utente aveva precedentemente richiesto un'operazione composta che richiede validazione intermedia.
+    \end{itemize}
+    \item \textbf{Postcondizioni}:
+    \begin{itemize}
+        \item I comandi per accettare e proseguire, o per rifiutare e annullare, sono visibili e interattivi a schermo.
+    \end{itemize}
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item Il sistema formatta e mostra a schermo i pulsanti di approvazione e annullamento.
+    \end{enumerate}
+\end{itemize}
 
 \subsubsection{UC 5: Visualizzazione errore durante l'esecuzione dell'agente}\label{uc:5}
 Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possibili anomalie, tecniche o semantiche, che possono verificarsi durante l'elaborazione interna di un agente o del modello \textit{LLM} a esso associato. Essendo un caso d'uso astratto, non viene mai istanziato direttamente, ma si manifesta all'utente esclusivamente attraverso una delle sue specializzazioni.
@@ -2548,7 +2568,7 @@ L'agente si concentra sulla sintesi e trasformazione del progresso di progetto a
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente Changelog.
 
-\subsubsection{UC 15: Generazione Changelog Tecnico (\textit{Dev-to-Dev})}\label{uc:15}
+\subsubsection{UC 15: Generazione \textit{Changelog} tecnico (\textit{Dev-to-Dev})}\label{uc:15}
 Questo caso d'uso descrive il processo mediante il quale il sistema recupera i dati da un sistema di tracciamento esterno e orchestra l'Agente Changelog per la stesura automatica di un resoconto tecnico orientato agli sviluppatori.
 
 \begin{itemize}
@@ -2558,7 +2578,7 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato (UC 21) e ha configurato le credenziali per il Sistema di Task Management (UC 0.2).
-        \item L'utente ha selezionato l'operazione "Generazione Changelog" (UC 22.1).
+        \item L'utente ha selezionato l'operazione "Generazione changelog tecnico" o "Generazione changelog di buisiness" (UC 22.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2576,6 +2596,10 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
         \item Il sistema arricchisce il documento inserendo i collegamenti ipertestuali automatici verso i ticket originali sul sistema esterno.
         \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC 23.1.2) e rende disponibile all'utente il report contenente il testo generato (UC 3).
     \end{enumerate}
+    \item \textbf{Sottocasi d'uso:}
+    \begin{itemize}
+        \item \textbf{UC 15.2}: Inserimento identificativo dello \textit{Sprint}.
+    \end{itemize}
     \item \textbf{Inclusioni:}
     \begin{itemize}
         \item \textbf{UC 3}: Visualizzazione report prodotto dall'agente.
@@ -2589,8 +2613,34 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \end{itemize}
 \end{itemize}
 
+\subsubsection{UC 15.2: Inserimento identificativo dello \textit{Sprint}}\label{uc:15.2}
+Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da parte dell'utente, dato necessario per l'estrazione dei task completati dal sistema esterno.
+
+\begin{itemize}
+    \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
+    
+    \item \textbf{Trigger}: L'utente seleziona il campo di input dedicato all'inserimento dello \textit{Sprint} ID.
+    
+    \item \textbf{Precondizioni}:
+    \begin{itemize}
+        \item L'utente ha innescato l'operazione di generazione \textbf{Changelog} (UC 15).
+        \item Il sistema ha caricato e mostra correttamente il modulo per l'inserimento dei parametri del \textbf{Changelog}.
+    \end{itemize}
+    
+    \item \textbf{Postcondizioni}:
+    \begin{itemize}
+        \item L'identificativo dello \textit{Sprint} (\textit{Sprint} ID) è stato valorizzato all'interno del form.
+    \end{itemize}
+    
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente digita o incolla lo \textit{Sprint} ID all'interno del campo di input preposto.
+    \end{enumerate}
+\end{itemize}
+
+
 \subsubsection{UC 15.1: Avviso e gestione task con metadati insufficienti}\label{uc:15.1}
-Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente Changelog rilevi la presenza di task contrassegnati come completati ma qualitativamente poveri di informazioni, chiedendo all'utente come procedere.
+Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{Changelog} rilevi la presenza di task contrassegnati come completati ma qualitativamente poveri di informazioni, chiedendo all'utente come procedere.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
@@ -2625,13 +2675,13 @@ Questo caso d'uso descrive l'interruzione definitiva del processo di generazione
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente clicca sul pulsante "Annulla operazione".
-        \item Il sistema interrompe l'esecuzione dell'Agente Changelog.
-        \item Il sistema chiude la finestra di avviso e imposta lo stato dell'operazione a "Fallito" nella dashboard (UC 23.1.2).
+        \item Il sistema interrompe l'esecuzione dell'Agente \textbf{Changelog}.
+        \item Il sistema chiude la finestra di avviso e imposta lo stato dell'operazione a "Annullato" nella dashboard (UC 23.1.2).
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 16: Generazione Changelog di Business (\textit{Dev-to-Client})}\label{uc:16}
-Questo caso d'uso descrive il processo successivo e dipendente dal Changelog Tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
+\subsubsection{UC 16: Generazione \textbf{Changelog} di business (\textit{Dev-to-Client})}\label{uc:16}
+Questo caso d'uso descrive il processo successivo e dipendente dal \textbf{Changelog} tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Project Manager / Sviluppatore.
@@ -2639,18 +2689,18 @@ Questo caso d'uso descrive il processo successivo e dipendente dal Changelog Tec
     \item \textbf{Trigger:} L'utente clicca sul comando "Accetta e genera Business" presente all'interno del report tecnico generato precedentemente.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato e sta mostrando all'utente il report del Changelog Tecnico (UC 15).
-        \item L'utente aveva inizialmente selezionato l'operazione composita per la stesura di entrambi i report.
+        \item Il sistema ha generato e sta mostrando all'utente il report del \textbf{Changelog} tecnico (UC 15).
+        \item L'utente aveva inizialmente selezionato l'operazione "Generazione changelog di buisiness" (UC 22.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato un Changelog di Business scritto in formato \textit{Markdown} ed inserito nel report (UC 3.2.1).
+        \item Il sistema ha generato un \textbf{Changelog} di Business scritto in formato \textit{Markdown} ed inserito nel report (UC 3.2.1).
         \item L'utente visualizza un nuovo report aggiornato (UC 3) con il testo finale.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema riceve il comando di generazione innescato dall'interfaccia del report corrente.
-        \item Il sistema acquisisce il testo del Changelog Tecnico appena approvato.
+        \item Il sistema acquisisce il testo del \textbf{Changelog} tecnico appena approvato.
         \item Il sistema compone un nuovo prompt unendo il testo tecnico con le direttive preimpostate sul tono di voce \textit{business-oriented} e lo invia alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} elabora il contenuto, rimuove i dettagli implementativi e restituisce il testo tradotto formattato in \textit{Markdown}.
         \item Il sistema registra il successo dell'attività e sostituisce o affianca il contenuto nel report di visualizzazione, rendendolo disponibile all'utente (UC 3).
@@ -2661,10 +2711,41 @@ Questo caso d'uso descrive il processo successivo e dipendente dal Changelog Tec
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
+        \item \textbf{UC 16.1: Annullamento della generazione del \textbf{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
         \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per rispondere.
         \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita non sia formattata correttamente in \textit{Markdown}.
     \end{itemize}
 \end{itemize}
+
+\subsubsection{UC 16.1: Annullamento della generazione del \textbf{Changelog} di business}\label{uc:16.1}
+Questo caso d'uso descrive l'interruzione del processo di generazione del \textit{Changelog} di business qualora l'utente, dopo aver visionato il report tecnico, decida di non procedere oltre.
+
+\begin{itemize}
+    \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
+    
+    \item \textbf{Trigger}: L'utente interagisce con il comando grafico di rifiuto/annullamento presente nel report tecnico (UC 3.2.5).
+    
+    \item \textbf{Precondizioni}:
+    \begin{itemize}
+        \item Il sistema ha generato e sta mostrando all'utente il report del \textit{Changelog} tecnico (UC 15).
+        \item L'operazione di generazione di business è in attesa di conferma umana.
+    \end{itemize}
+    
+    \item \textbf{Postcondizioni}:
+    \begin{itemize}
+        \item L'operazione secondaria viene abortita definitivamente.
+        \item Lo stato dell'attività associata nella dashboard passa a "Annullato" (UC 23.1.2) senza eseguire chiamate al modello \textit{AI}.
+    \end{itemize}
+    
+    \item \textbf{Scenario Principale}:
+    \begin{enumerate}
+        \item L'utente clicca sul comando di annullamento all'interno del report.
+        \item Il sistema acquisisce la direttiva e rimuove la \textit{task} di business dalla coda di elaborazione.
+        \item Il sistema notifica l'annullamento all'utente e disabilita il modulo di validazione (UC 3.2.5) per impedire ulteriori inneschi.
+    \end{enumerate}
+\end{itemize}
+
+
 \newpage
 
 \section{Requisiti}
@@ -2789,7 +2870,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.19 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle \textit{API} del progetto. & UC 9\\
     \hline
-    RF.72 & Obbligatorio & Il sistema deve identificare, estrarre e analizzare i file di \textit{routing} e i \textit{controller} dal codice sorgente al fine di rilevare gli \textit{Endpoint}, i metodi HTTP, i \textit{Payload} e i formati di risposta per la generazione del documento \textit{API}.md. & UC 9\\
+    RF.73 & Obbligatorio & Il sistema deve identificare, estrarre e analizzare i file di \textit{routing} e i \textit{controller} dal codice sorgente al fine di rilevare gli \textit{Endpoint}, i metodi HTTP, i \textit{Payload} e i formati di risposta per la generazione del documento \textit{API}.md. & UC 9\\
     \hline
     RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC 10 \\
     \hline
@@ -2815,13 +2896,21 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.31 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC 15 \\ 
     \hline
-    RF.32 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 16 \\
+    RF.32 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC 15.1 \\
     \hline
-    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 22, 3.2.1 \\
+    RF.76 & Obbligatorio & Il sistema deve consentire all'utente di annullare l'operazione di generazione del \textit{Changelog} qualora vengano rilevati task con metadati insufficienti.. & UC 15.1.1 \\
     \hline
-    RF.35 & Desiderabile &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 3 \\
+    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC 15, 3.2.1 \\
     \hline
-    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC 22, 3.2.1 \\
+    RF.74 & Obbligatorio & Il sistema deve permettere all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da analizzare. & UC 15.2 \\
+    \hline
+    RF.35 & Opzionale &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 15, 3 \\
+    \hline
+    RF.75 & Obbligatorio & Il sistema deve fornire un comando, all'interno del report del \textit{Changelog} Tecnico, per innescare la traduzione in \textit{Changelog} di Business. & UC 16 \\
+    \hline
+    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC 16, 3.2.1 \\
+    \hline
+    RF.77 & Obbligatorio & Il sistema deve permettere all'utente di annullare la generazione del \textit{Changelog} di business dopo aver visionato il report tecnico. & UC 16.1, 3.2.5 \\
     \hline
 
 \end{xltabular}
