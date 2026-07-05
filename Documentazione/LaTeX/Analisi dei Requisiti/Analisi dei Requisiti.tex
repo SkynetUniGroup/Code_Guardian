@@ -353,6 +353,8 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 
 \begin{itemize}
     \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{Pull Request} o \textit{\glo{Patch}{patch}}.
+
+    \item \textbf{Server SMTP:}
     
     \item \textbf{\textit{API \glo{Claude Code}{claude-code}} / Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
     
@@ -1118,55 +1120,57 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce 
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente interagisce con gli elementi della lista selezionando o deselezionando le operazioni di suo interesse.
+        \item L'utente esprime la propria preferenza riguardo la ricezione del report finale via email.
         \item L'utente conferma le proprie scelte e innesca il comando di avvio.
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC 22.1}: Selezione di un'operazione.
+        \item \textbf{UC 22.1}: Selezione/Deselezione di un'operazione.
         \item \textbf{UC 22.2}: Deselezione di un'operazione.
         \item \textbf{UC 22.3}: Conferma e avvio delle operazioni.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 22.1: Selezione di un'operazione}\label{uc:22.1}
-Questo caso d'uso descrive l'azione con cui l'utente marca un'operazione come desiderata per la successiva esecuzione.
+\subsubsection{UC 22.1: Selezione/Deselezione di un'operazione}\label{uc:22.1}
+Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfaccia per aggiungere o rimuovere una specifica operazione dalla coda di esecuzione.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente interagisce con il comando grafico di selezione associato a una specifica operazione non ancora selezionata.
+    \item \textbf{Trigger:} L'utente interagisce con il comando grafico di selezione/deselezione associato a una specifica operazione.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando l'operazione nella lista.
-        \item L'operazione non risulta attualmente selezionata.
+        \item L'utente si trova nella dashboard e sta configurando le operazioni da avviare (UC 22).
+        \item Il sistema sta mostrando l'operazione all'interno della lista delle operazioni disponibili.
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item L'operazione risulta selezionata.
+        \item Lo stato dell'operazione viene aggiornato coerentemente con l'azione dell'utente (selezionata o deselezionata).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente attiva il comando di selezione corrispondente all'operazione desiderata.
+        \item L'utente attiva o disattiva il comando grafico corrispondente all'operazione.
+        \item Il sistema aggiorna dinamicamente la coda di avvio in base al nuovo stato assunto dal comando.
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 22.2: Deselezione di un'operazione}\label{uc:22.2}
-Questo caso d'uso descrive l'azione con cui l'utente rimuove un'operazione precedentemente scelta dalla lista di quelle da avviare.
+\subsubsection{UC 22.2: Attivazione/Disattivazione notifica email}\label{uc:22.2}
+Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfaccia per abilitare o disabilitare la ricezione del report generato tramite posta elettronica.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente interagisce con il comando grafico di deselezione di una specifica operazione già selezionata.
+    \item \textbf{Trigger:} L'utente seleziona o deseleziona il comando grafico relativo alla notifica email.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'operazione risulta attualmente selezionata (UC 22.1).
+        \item L'utente si trova nella dashboard e sta configurando le operazioni da avviare (UC 22).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item L'operazione risulta deselezionata.
-        \item L'operazione è rimossa dalla lista interna delle task pronte per l'avvio.
+        \item Lo stato della preferenza di notifica (attiva o inattiva) è stato aggiornato e registrato dal sistema per essere associato alla coda di elaborazione.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente disattiva il comando di selezione corrispondente all'operazione.
+        \item L'utente interagisce con il comando corrispondente all'attivazione/disattivazione delle notifiche email.
+        \item Il sistema aggiorna dinamicamente lo stato della preferenza in base all'input ricevuto.
     \end{enumerate}
 \end{itemize}
 
@@ -2177,6 +2181,88 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui la proce
 \end{itemize}
 
 
+\subsubsection{UC 29: Invio automatico del report via email}\label{uc:29}
+Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema, al completamento positivo di un'operazione, genera l'allegato del report e lo invia all'indirizzo email associato all'account dell'utente.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} Server SMTP.
+    \item \textbf{Trigger:} Lo stato dell'operazione passa a "Completato" e il sistema rileva che la preferenza di notifica email era stata attivata.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente ha precedentemente attivato la preferenza di notifica via email (UC 22.2).
+        \item L'elaborazione da parte dell'agente è terminata con successo.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'email contenente in allegato il report PDF è stata inviata con successo all'indirizzo dell'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} verifica che l'utente abbia abilitato l'opzione di notifica.
+        \item Il sistema richiede la generazione del report nel formato di esportazione.
+        \item Il sistema compone il messaggio di posta elettronica allegando il file generato.
+        \item Il sistema contatta il Server SMTP e inoltra l'email all'indirizzo registrato dall'utente.
+    \end{enumerate}
+    \item \textbf{Inclusioni:}
+    \begin{itemize}
+        \item \textbf{UC 6}: Esportazione del report.
+    \end{itemize}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC 29.1}: Errore invio email. Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
+        \item \textbf{UC 29.2}: Errore allegato troppo grande. Estende il passo 4 qualora il file generato superi i limiti dimensionali imposti dal provider di posta.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 29.1: Errore invio email}\label{uc:29.1}
+Questo caso d'uso descrive la gestione del fallimento durante la trasmissione dell'email, causato da un'anomalia del server esterno di posta.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} Server SMTP.
+    \item \textbf{Trigger:} Il Servizio mail esterno restituisce un errore di rete o di autorizzazione durante il tentativo di invio (UC 29).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema ha preparato l'email con allegato il report.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'operazione di invio viene bloccata.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema tenta l'inoltro dell'email al Server SMTP.
+        \item Il server esterno rifiuta la richiesta o risulta irraggiungibile.
+        \item Il sistema interrompe la procedura di notifica.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC 29.2: Errore allegato troppo grande}\label{uc:29.2}
+Questo caso d'uso descrive il comportamento del sistema nel caso in cui il server di posta esterno rifiuti l'invio dell'email a causa delle dimensioni eccessive del PDF allegato.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} Server SMTP.
+    \item \textbf{Trigger:} Il Server SMTP restituisce un errore indicante che il limite di dimensione massima per i messaggi o gli allegati è stato superato.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema ha tentato di inviare al server esterno un'email contenente il report PDF come allegato (UC 29).
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'email viene recapitata all'utente senza il file allegato, fornendo in alternativa il link per la visualizzazione o il download diretto in piattaforma.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema tenta l'inoltro dell'email con allegato al Server SMTP.
+        \item Il Server SMTP rifiuta la richiesta restituendo un codice di errore relativo alla dimensione eccessiva del \textit{payload}.
+        \item Il sistema intercetta l'eccezione.
+        \item Il sistema compone una nuova email rimuovendo l'allegato e inserendo nel corpo del messaggio un link diretto per consultare o scaricare il report dalla piattaforma Code Guardian.
+        \item Il sistema contatta nuovamente il Server SMTP e inoltra con successo l'email aggiornata.
+    \end{enumerate}
+\end{itemize}
+
 \newpage
 \section{Agente Docs: Documentazione e \textit{README}}
 
@@ -2675,13 +2761,13 @@ Questo caso d'uso descrive l'interruzione definitiva del processo di generazione
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente clicca sul pulsante "Annulla operazione".
-        \item Il sistema interrompe l'esecuzione dell'Agente \textbf{Changelog}.
+        \item Il sistema interrompe l'esecuzione dell'Agente \textit{Changelog}.
         \item Il sistema chiude la finestra di avviso e imposta lo stato dell'operazione a "Annullato" nella dashboard (UC 23.1.2).
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC 16: Generazione \textbf{Changelog} di business (\textit{Dev-to-Client})}\label{uc:16}
-Questo caso d'uso descrive il processo successivo e dipendente dal \textbf{Changelog} tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
+\subsubsection{UC 16: Generazione \textit{Changelog} di business (\textit{Dev-to-Client})}\label{uc:16}
+Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Changelog} tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Project Manager / Sviluppatore.
@@ -2689,18 +2775,18 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textbf{Chang
     \item \textbf{Trigger:} L'utente clicca sul comando "Accetta e genera Business" presente all'interno del report tecnico generato precedentemente.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato e sta mostrando all'utente il report del \textbf{Changelog} tecnico (UC 15).
+        \item Il sistema ha generato e sta mostrando all'utente il report del \textit{Changelog} tecnico (UC 15).
         \item L'utente aveva inizialmente selezionato l'operazione "Generazione changelog di buisiness" (UC 22.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato un \textbf{Changelog} di Business scritto in formato \textit{Markdown} ed inserito nel report (UC 3.2.1).
+        \item Il sistema ha generato un \textit{Changelog} di Business scritto in formato \textit{Markdown} ed inserito nel report (UC 3.2.1).
         \item L'utente visualizza un nuovo report aggiornato (UC 3) con il testo finale.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema riceve il comando di generazione innescato dall'interfaccia del report corrente.
-        \item Il sistema acquisisce il testo del \textbf{Changelog} tecnico appena approvato.
+        \item Il sistema acquisisce il testo del \textit{Changelog} tecnico appena approvato.
         \item Il sistema compone un nuovo prompt unendo il testo tecnico con le direttive preimpostate sul tono di voce \textit{business-oriented} e lo invia alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} elabora il contenuto, rimuove i dettagli implementativi e restituisce il testo tradotto formattato in \textit{Markdown}.
         \item Il sistema registra il successo dell'attività e sostituisce o affianca il contenuto nel report di visualizzazione, rendendolo disponibile all'utente (UC 3).
@@ -2711,13 +2797,13 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textbf{Chang
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC 16.1: Annullamento della generazione del \textbf{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
+        \item \textbf{UC 16.1: Annullamento della generazione del \textit{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
         \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per rispondere.
         \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita non sia formattata correttamente in \textit{Markdown}.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC 16.1: Annullamento della generazione del \textbf{Changelog} di business}\label{uc:16.1}
+\subsubsection{UC 16.1: Annullamento della generazione del \textit{Changelog} di business}\label{uc:16.1}
 Questo caso d'uso descrive l'interruzione del processo di generazione del \textit{Changelog} di business qualora l'utente, dopo aver visionato il report tecnico, decida di non procedere oltre.
 
 \begin{itemize}
@@ -2808,7 +2894,9 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.44 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di selezionare e avviare più operazioni diverse in contemporanea. & UC 22, 22.1, 22.3 \\ 
     \hline
-    RF.58 & Obbligatorio & Il sistema deve permettere all'utente di deselezionare un'operazione precedentemente spuntata tramite l'interfaccia grafica, rimuovendola dalla coda di avvio. & UC 22.2 \\ 
+    RF.58 & Obbligatorio & Il sistema deve permettere all'utente di deselezionare un'operazione precedentemente spuntata tramite l'interfaccia grafica, rimuovendola dalla coda di avvio. & UC 22.1 \\ 
+    \hline
+    RF.78 & Opzionale & Il sistema deve consentire all'utente di abilitare o disabilitare la ricezione del report generato tramite notifica email. & UC 22, 22.2 \\ 
     \hline
     RF.45 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & UC 22.3 \\ 
     \hline
@@ -2845,6 +2933,12 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     RF.72 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente con un messaggio di errore qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & UC 5.7 \\ 
     \hline
     RF.12 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC 6 \\ 
+    \hline
+    RF.79 & Opzionale & Il sistema deve inviare automaticamente un'email all'indirizzo dell'utente contenente il report PDF in allegato, qualora l'operazione sia completata e la relativa preferenza sia attiva. & UC 29, 6 \\ 
+    \hline
+    RF.80 & Opzionale & Il sistema deve gestire il fallimento dell'invio dell'email (es. server SMTP irraggiungibile) mantenendo la visualizzazione in piattaforma. & UC 29.1\\ 
+    \hline
+    RF.81 & Opzionale & Il sistema deve inviare l'email priva di allegato, includendo nel corpo del messaggio il collegamento diretto al report in piattaforma, qualora il file generato superi i limiti dimensionali imposti dal server SMTP. & UC 29.2 \\ 
     \hline
     RF.13 & Opzionale & Il sistema deve mantenere un archivio storico dei report e permettere all'utente di visualizzare una pagina contenente la lista aggregata dei report generati in passato. & UC 27, 27.1 \\ 
     \hline
