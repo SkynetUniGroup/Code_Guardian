@@ -309,7 +309,6 @@ di programmazione e automazione, l'esecuzione è
 garantita attraverso i principali ambienti di runtime come
 \textit{\glo{Node.js}{node-js}} e \textit{\glo{Python}{python}}.
 L'interazione con il codice sorgente avviene tramite \textit{repository Git}. 
-L'eventuale integrazione con \textit{\glo{GitHub Actions}{github-actions}} potrà essere utilizzata per automatizzare l'esecuzione degli agenti in seguito a eventi come push o \textit{\glo{Pull Request}{pull-request}}.
 \newpage
 
 
@@ -352,7 +351,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsubsection{\textit{Attori} Secondari}
 
 \begin{itemize}
-    \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{Pull Request}.
+    \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{\glo{Pull Request}{pull-request}}.
 
     \item \textbf{Server SMTP:} Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
     
