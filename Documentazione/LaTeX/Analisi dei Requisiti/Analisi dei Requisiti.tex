@@ -296,7 +296,7 @@ cliente finale.
 
 L'utente principale è rappresentato dallo \textbf{sviluppatore}, il quale interagisce direttamente con il sistema fornendo il contesto operativo attraverso il \textit{Repository} \textit{\glo{Git}{git}} di riferimento. Egli beneficia dell'automatizzazione della documentazione tecnica e del feedback immediato sulla sicurezza, che gli permette di correggere eventuali \textit{vulnerabilità} o difformità rispetto alle policy aziendali in tempo reale, senza attendere revisioni manuali. 
 
-Una seconda figura chiave è il \textit{\glo{Team Lead}{team-lead}} o lo \textit{\glo{Security Auditor}{security-auditor}}. Questi utenti utilizzano il sistema come strumento di monitoraggio della sicurezza del software. Delegano all’agente OWASP sia la verifica delle categorie di vulnerabilità più critiche individuate dall’OWASP Top 10, sia il controllo dell’aderenza alle regole di sviluppo sicuro definite dal team all’interno del file CLAUDE.md.
+Una seconda figura chiave è il \textit{\glo{Team Lead}{team-lead}} o lo \textit{\glo{Security Auditor}{security-auditor}}. Questi utenti utilizzano il sistema come strumento di monitoraggio della sicurezza del software. Delegano all’agente \textit{OWASP} sia la verifica delle categorie di vulnerabilità più critiche individuate dall’\textit{OWASP Top 10}, sia il controllo dell’aderenza alle regole di sviluppo sicuro definite dal team all’interno del file CLAUDE.md.
 
 Infine, il sistema si rivolge agli \textit{\glo{Stakeholder}{stakeholder}} di business (come \textit{\glo{Project Manager}{project-manager}} o il cliente finale). Questi soggetti non necessitano di competenze tecniche approfondite, ma hanno bisogno di visibilità sull'andamento del progetto. Per loro, l'agente di \textit{Changelog} funge da "traduttore", trasformando il gergo tecnico delle \textit{User Stories} e dei compiti completati in report di valore che sintetizzano i progressi funzionali raggiunti al termine di ogni \textit{Sprint}.
 
@@ -308,8 +308,8 @@ in ambiente cloud \textit{\glo{AWS}{aws}}. Essendo il sistema basato su interfac
 di programmazione e automazione, l'esecuzione è
 garantita attraverso i principali ambienti di runtime come
 \textit{\glo{Node.js}{node-js}} e \textit{\glo{Python}{python}}.
-L'interazione con il codice sorgente avviene tramite \textit{repository} Git. 
-L'eventuale integrazione con \textit{\glo{GitHub Actions}{github-actions}} potrà essere utilizzata per automatizzare l'esecuzione degli agenti in seguito a eventi come push o \textit{\glo{Pull Request}{pull-request}}, qualora tale funzionalità venga inclusa nel perimetro del \textit{\glo{MVP}{mvp}}.
+L'interazione con il codice sorgente avviene tramite \textit{repository Git}. 
+L'eventuale integrazione con \textit{\glo{GitHub Actions}{github-actions}} potrà essere utilizzata per automatizzare l'esecuzione degli agenti in seguito a eventi come push o \textit{\glo{Pull Request}{pull-request}}.
 \newpage
 
 
@@ -2564,7 +2564,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 
 
 \newpage
-\section{Agente OWASP: Scansione \textit{Vulnerabilità} \textit{OWASP}}
+\section{Agente \textit{OWASP}: Scansione \textit{Vulnerabilità} \textit{OWASP}}
 
 \subsection{Introduzione all'agente}
 L'Agente di scansione vulnerabilità \textit{OWASP} ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L'analisi di sicurezza viene svolta facendo riferimento alle principali categorie di rischio individuate dall'\textit{OWASP Top 10} e rilevabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc.
@@ -2581,7 +2581,7 @@ L'agente si concentra su tre aree principali:
 
 \newpage
 \subsection{\textit{Casi d'Uso}}
-Di seguito i \textit{Casi d'uso} dell'Agente OWASP.
+Di seguito i \textit{Casi d'uso} dell'Agente \textit{OWASP}P.
 
 \subsubsection{UC 10: Esecuzione scansione vulnerabilità (\textit{OWASP})}\label{uc:10}
 Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente \textit{OWASP} per analizzare il codice sorgente e identificare pattern riconducibili alle vulnerabilità standard dell'\textit{OWASP Top 10}.
@@ -3148,7 +3148,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RV.12 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da AWS Bedrock. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.13 & Obbligatorio & L'agente preposto all'analisi di sicurezza (OWASP) deve essere istruito utilizzando specificatamente il modello Anthropic Claude. &  Verbale interno 2026/06/02 \\
+    RV.13 & Obbligatorio & L'agente preposto all'analisi di sicurezza (\textit{OWASP}) deve essere istruito utilizzando specificatamente il modello Anthropic Claude. &  Verbale interno 2026/06/02 \\
     \hline
     RV.14 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
