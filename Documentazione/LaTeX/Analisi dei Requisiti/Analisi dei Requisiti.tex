@@ -352,9 +352,9 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsubsection{\textit{Attori} Secondari}
 
 \begin{itemize}
-    \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{Pull Request} o \textit{\glo{Patch}{patch}}.
+    \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{Pull Request}.
 
-    \item \textbf{Server SMTP:}
+    \item \textbf{Server SMTP:} Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
     
     \item \textbf{\textit{API \glo{Claude Code}{claude-code}} / Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
     
@@ -616,7 +616,7 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC 0.3: Errore validazione credenziali fallita.} Estende il passo 4 qualora la chiamata di test verso uno o entrambi i servizi esterni restituisca un errore di autenticazione (es. token scaduto o privo di permessi sufficienti).
-        \item \textbf{UC 0.4: Errore formato credenziali non valido.} Estende il passo 4 qualora i campi siano incompleti o i token non rispettino la struttura sintattica attesa prima dell'invio.
+        \item \textbf{UC 0.4: Errore formato credenziali non valido.} Estende il passo 4 qualora i token non rispettino la struttura sintattica attesa prima dell'invio.
     \end{itemize}
 \end{itemize}
 
@@ -664,18 +664,18 @@ Questo caso d'uso descrive la gestione del fallimento del test di autenticazione
 \end{itemize}
 
 \subsubsection{UC 0.4: Errore formato credenziali non valido}\label{uc:0.4}
-Questo caso d'uso descrive la validazione sintattica locale effettuata dal sistema prima dell'invio delle richieste. Gestisce il caso in cui i token inseriti siano malformati, oppure il caso in cui non sia stato fornito il token del \textit{Repository Git}.
+Questo caso d'uso descrive la validazione sintattica locale effettuata dal sistema prima dell'invio delle richieste. Gestisce il caso in cui i token inseriti siano malformati.
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente clicca sul pulsante di conferma e salvataggio.
-    \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha lasciato vuoto il campo obbligatorio del \textit{Repository Git}, oppure ha inserito in uno dei campi una stringa che non rispetta il pattern di un token valido.\end{itemize}
-    \item \textbf{Postcondizioni:}\begin{itemize}\item Il sistema blocca la chiamata di test esterna, evidenzia i campi non conformi o mancanti e l'utente rimane sulla pagina per effettuare le correzioni.\end{itemize}
+    \item \textbf{Precondizioni:}\begin{itemize}\item ha inserito in uno dei campi una stringa che non rispetta il pattern di un token valido.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il sistema blocca la chiamata di test esterna, evidenzia i campi non conformi e l'utente rimane sulla pagina per effettuare le correzioni.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema analizza localmente la presenza e la struttura testuale nei campi di input, considerando il token \textit{Git} come obbligatorio e quello del Task Management come opzionale.
-        \item Il sistema rileva che il campo \textit{Git} è vuoto, oppure che uno dei campi compilati non rispetta i requisiti minimi di formattazione (lunghezza errata o caratteri non ammessi).
+        \item Il sistema analizza localmente la presenza e la struttura testuale nei campi di input.
+        \item Il sistema rileva che uno dei campi compilati non rispetta i requisiti minimi di formattazione (lunghezza errata o caratteri non ammessi).
         \item Il sistema interrompe il flusso di salvataggio ed evita di contattare gli attori secondari.
-        \item Il sistema mostra un avviso visivo contestuale (es. "Il token \textit{Git} è obbligatorio" sul primo campo, oppure "Formato token non valido" sul campo specifico errato), richiedendo una correzione da parte dell'utente.
+        \item Il sistema mostra un avviso visivo contestuale (es. "Formato token non valido" sul campo specifico errato), richiedendo una correzione da parte dell'utente.
     \end{enumerate}
 \end{itemize}
 
@@ -1021,7 +1021,6 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato (UC 21).
-        \item \`E stato configurato il contesto di analisi, ovvero \textit{repository} e ambito (UC 1, UC 2).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1197,6 +1196,7 @@ Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le 
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC 22.4: Errore mancata selezione delle operazioni.} Estende il passo 2 qualora l'elenco delle operazioni selezionate risulti vuoto.
+        \item \textbf{UC 22.5: Errore prerequisiti operazione mancanti.} Estende il passo 2 qualora per una o più operazioni selezionate manchino i prerequisiti di contesto necessari (Token \textit{Git}, \textit{Repository}, Ambito di analisi).
         \item \textbf{UC 24: Gestione errore di orchestrazione o routing.} Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare il task.
     \end{itemize}
 \end{itemize}
@@ -1225,6 +1225,31 @@ Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comand
     \end{enumerate}
 \end{itemize}
 
+
+\subsubsection{UC 22.5: Errore prerequisiti operazione mancanti}\label{uc:22.5}
+Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comando di avvio per una o più operazioni, senza aver prima configurato i prerequisiti essenziali per la loro esecuzione (token di accesso, selezione del \textit{repository} o dell'ambito di analisi).
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} verifica i requisiti delle operazioni in coda e rileva la mancanza di dati contestuali o credenziali obbligatorie.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente ha innescato il comando di avvio (UC 22.3) con almeno un'operazione valida selezionata.
+        \item I parametri di contesto (UC 1, UC 2) o le credenziali (UC 0.1, UC 0.2) richiesti specificamente per l'operazione innescata non sono stati precedentemente configurati.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema blocca preventivamente il processo di avvio per le attività compromesse.
+        \item Viene mostrato un avviso a schermo indicante i prerequisiti mancanti e l'utente rimane nella pagina corrente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item Il sistema acquisisce la lista delle operazioni selezionate e ne verifica le dipendenze strutturali e di autorizzazione.
+        \item L'\textbf{Orchestratore} rileva l'assenza di uno o più dati fondamentali per l'esecuzione (es. Token \textit{Git} non inserito, oppure \textit{Repository Git} non selezionato prima di avviare l'Agente OWASP).
+        \item L'\textbf{Orchestratore} interrompe la procedura di avvio per evitare fallimenti logici o chiamate a vuoto.
+        \item Il sistema mostra a schermo un messaggio d'errore mirato (es. ``Per avviare la Scansione OWASP è necessario configurare prima il Token \textit{Git} e selezionare il \textit{Repository} di riferimento'').
+    \end{enumerate}
+\end{itemize}
 
 \subsubsection{UC 23: Visualizzazione della dashboard di monitoraggio delle operazioni}\label{uc:23}
 Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all'utente lo stato di avanzamento complessivo di tutte le richieste prese in carico dall'\textbf{Orchestratore} in tempo reale.
@@ -2399,7 +2424,8 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC 21).
-        \item È stato configurato con successo il contesto operativo:\textit{ Repository Git} e Riferimento di base (UC 1).
+        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC 0.1).
+        \item È stato configurato con successo il contesto operativo:\textit{ Repository Git} e riferimento di base (UC 1).
         \item L'utente ha selezionato l'operazione "Generazione del \textit{README}" (UC 22.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2440,7 +2466,8 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC 21).
-        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e Riferimento di base (UC 1).
+        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC 0.1).
+        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e riferimento di base (UC 1).
         \item È stato selezionato e validato un ambito di analisi (UC 2).
         \item L'utente ha selezionato l'operazione "Generazione documentazione inline" (UC 22.1).
     \end{itemize}
@@ -2504,7 +2531,8 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC 21).
-        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e Riferimento di base (UC 1).
+        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC 0.1).
+        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e riferimento di base (UC 1).
         \item È stato selezionato e validato un ambito di analisi (UC 2).
         \item L'utente ha selezionato l'operazione "Generazione documentazione \textit{API}" (UC 22.1).
     \end{itemize}
@@ -2565,8 +2593,8 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC 21).
-        \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e Riferimento di base (UC 1).
-        \item È stato selezionato e validato un ambito di analisi (UC 2).
+        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC 0.1).
+        \item È stato configurato il contesto operativo (UC 1) e selezionato l'ambito di analisi (UC 2).
         \item L'utente ha selezionato l'operazione "Scansione vulnerabilità \textit{OWASP}" (UC 22.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2604,6 +2632,7 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWA
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC 21).
+        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC 0.1).
         \item È stato configurato il contesto operativo (UC 1) e selezionato l'ambito di analisi (UC 2).
         \item L'utente ha selezionato l'operazione "Verifica conformità policy" (UC 22.1).
     \end{itemize}
@@ -2674,7 +2703,8 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione (UC 22.3) e attiva l'Agente Changelog.
-        \item Il sistema richiede all'utente l'inserimento testuale dell'identificativo dello Sprint (\textit{Sprint ID}) da analizzare.
+        \item Il sistema richiede all'utente l'inserimento testuale dell'identificativo dello Sprint (\textit{Sprint ID}) da analizzare, mostrando i comandi per confermare o annullare.
+        \item L'utente conferma l'inserimento dello \textit{Sprint ID}.
         \item Il sistema interroga le \textit{API} del Sistema di Task Management estraendo l'intero set di lavorazioni associate allo \textit{Sprint ID} fornito.
         \item Il sistema filtra internamente i task in stato di completamento ed estrae i metadati rilevanti (\textit{User Stories}, descrizioni, criteri di accettazione).
         \item Il sistema compone il prompt contestuale con i dati estratti e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la sintesi in linguaggio ingegneristico standardizzato.
@@ -2692,11 +2722,35 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC 5.5: Visualizzazione errore per risorsa di contesto mancante.} Estende il passo 3 qualora lo \textit{Sprint ID} inserito dall'utente non esista o la risposta del server restituisca un insieme vuoto.
-        \item \textbf{UC 15.1: Avviso e gestione task con metadati insufficienti.} Estende il passo 4 qualora il sistema rilevi all'interno dei task completati l'assenza di descrizioni o di criteri di accettazione minimi.
-        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 5 qualora il Modello \textit{AI} superi il tempo limite per l'elaborazione.
-        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 6 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile.
+        \item \textbf{UC 15.3: Annullamento dell'inserimento dello \textit{Sprint} ID.} Estende il passo 3 qualora l'utente decida di interrompere l'operazione interagendo con il comando di annullamento.
+        \item \textbf{UC 5.5: Visualizzazione errore per risorsa di contesto mancante.} Estende il passo 4 qualora lo \textit{Sprint ID} inserito dall'utente non esista o la risposta del server restituisca un insieme vuoto.
+        \item \textbf{UC 15.1: Avviso e gestione task con metadati insufficienti.} Estende il passo 5 qualora il sistema rilevi all'interno dei task completati l'assenza di descrizioni o di criteri di accettazione minimi.
+        \item \textbf{UC 5.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 6 qualora il Modello \textit{AI} superi il tempo limite per l'elaborazione.
+        \item \textbf{UC 5.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 7 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile.
     \end{itemize}
+\end{itemize}
+
+\subsubsection{UC 15.3: Annullamento dell'inserimento dello \textit{Sprint} ID}\label{uc:15.3}
+Questo caso d'uso descrive l'interruzione volontaria del processo di generazione del \textit{Changelog} qualora l'utente, alla richiesta di inserimento dello \textit{Sprint} ID, decida di non procedere.
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
+    \item \textbf{Trigger:} L'utente interagisce con il comando grafico di annullamento presente nel modulo di richiesta dello \textit{Sprint} ID.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item Il sistema ha avviato l'Agente \textit{Changelog} e sta mostrando a schermo il campo per l'inserimento dello \textit{Sprint} ID.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item L'operazione di generazione del \textit{Changelog} viene abortita prima di effettuare qualsiasi chiamata di rete.
+        \item Il modulo di inserimento viene chiuso e lo stato dell'operazione passa a ``Annullato'' nella dashboard di monitoraggio.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente clicca sul pulsante di annullamento.
+        \item Il sistema interrompe l'esecuzione dell'Agente \textit{Changelog}.
+        \item Il sistema rimuove il prompt a schermo e aggiorna dinamicamente lo stato dell'attività.
+    \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC 15.2: Inserimento identificativo dello \textit{Sprint}}\label{uc:15.2}
@@ -2900,7 +2954,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.45 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & UC 22.3 \\ 
     \hline
-    RF.59 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista. & UC 22.4 \\ 
+    RF.59 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista o senza aver prima configurato i parametri di contesto obbligatori per le operazioni selezionate. & UC 22.4, 22.5 \\ 
     \hline
     RF.46 & Obbligatorio & Il sistema deve mostrare all'utente una sezione o dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'\textbf{Orchestratore}. & UC 23 \\ 
     \hline
@@ -2998,6 +3052,8 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.74 & Obbligatorio & Il sistema deve permettere all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da analizzare. & UC 15.2 \\
     \hline
+    RF.82 & Obbligatorio & Il sistema deve consentire all'utente di annullare volontariamente l'operazione di generazione del \textit{Changelog} durante la fase di richiesta dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID), bloccando l'esecuzione dell'agente. & UC 15.3 \\
+    \hline
     RF.35 & Opzionale &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC 15, 3 \\
     \hline
     RF.75 & Obbligatorio & Il sistema deve fornire un comando, all'interno del report del \textit{Changelog} Tecnico, per innescare la traduzione in \textit{Changelog} di Business. & UC 16 \\
@@ -3030,7 +3086,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
 
     RQ.6 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi. & UC 21, PdQ(OB\_PROD\_10) \\ 
     \hline\
-    RQ.7 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC 22.3, 23, PdQ(OB\_PROD\_05) \\ 
+    RQ.7 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC 23, PdQ(OB\_PROD\_05) \\ 
     \hline
     RQ.2 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC 7, 8, 9, PdQ(OB\_PROD\_02) \\
     \hline
