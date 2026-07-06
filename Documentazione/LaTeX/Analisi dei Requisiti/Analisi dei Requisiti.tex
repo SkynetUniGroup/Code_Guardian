@@ -699,6 +699,7 @@ Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e i
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
             \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch e specifico \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
             \item Se l'utente seleziona un branch senza indicare un \textit{Commit} specifico, il sistema considera di default l'ultimo \textit{Commit} disponibile sul branch selezionato.
+            \item Il sistema analizza i metadati del \textit{repository} per verificare i linguaggi di programmazione principali utilizzati nel riferimento selezionato.
             \item Il sistema registra il \textit{repository} e il riferimento selezionati come contesto per le successive operazioni degli agenti.
         \end{enumerate}
     \item \textbf{Sottocasi d'uso}:
@@ -883,7 +884,7 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
 
 
 \subsubsection{UC16: Selezione ambito di analisi}\label{uc:16}
-Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può comprendere l'intero \textit{repository} oppure essere ristretto a uno o più file e/o directory (stando nei liniti di dimensione imposti dal sistema). L'ambito viene selezionato rispetto al \textit{repository} e al riferimento di base già selezionati in UC9. 
+Questo caso d'uso consente all'utente di delimitare la porzione del \textit{Repository} su cui eseguire l'analisi di un agente. L'ambito può comprendere l'intero \textit{Repository} oppure essere circoscritto a una selezione personalizzata, combinando liberamente singole directory e file specifici (nel rispetto dei limiti dimensionali imposti dal sistema). L'ambito viene configurato a partire dal \textit{Repository} e dal riferimento di base precedentemente validati in UC9.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
 
@@ -919,7 +920,7 @@ Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repo
 \end{itemize}
 
 \subsubsection{UC16.1: Selezione dell'intero \textit{Repository}}\label{uc:16.1}
-Questo caso d'uso descrive la selezione dell'intero \textit{Repository Git} come ambito complessivo dell'analisi attraverso l'interazione con un comando globale di selezione.
+Questo caso d'uso descrive la selezione dell'intero \textit{Repository Git} come ambito complessivo dell'analisi.
     \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: L'utente attiva il comando grafico di selezione globale nell'interfaccia.
@@ -933,7 +934,7 @@ Questo caso d'uso descrive la selezione dell'intero \textit{Repository Git} come
     \end{itemize}
 
 \subsubsection{UC16.2: Selezione di directory specifiche}\label{uc:16.2}
-Questo caso d'uso descrive la selezione mirata di una o più cartelle specifiche all'interno del \textit{Repository} per circoscrivere l'azione degli agenti.
+Questo caso d'uso descrive la selezione mirata di una o più cartelle specifiche all'interno del \textit{Repository} per circoscrivere l'azione degli agenti. Questa operazione può essere effettuata in modo esclusivo oppure in combinazione con la selezione di file singoli (UC16.3).
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: L'utente interagisce con i componenti grafici di selezione associati alle cartelle nella struttura ad albero.
@@ -946,7 +947,7 @@ Questo caso d'uso descrive la selezione mirata di una o più cartelle specifiche
 \end{itemize}
 
 \subsubsection{UC16.3: Selezione di singoli file}\label{uc:16.3}
-Questo caso d'uso descrive la selezione puntuale e atomica di singoli file del \textit{Repository}, escludendo il resto delle strutture non d'interesse.
+Questo caso d'uso descrive la selezione puntuale e atomica di singoli file del \textit{Repository}, escludendo il resto delle strutture non d'interesse.Questa operazione può essere effettuata in modo esclusivo oppure in combinazione con la selezione di intere directory (UC16.2).
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: L'utente interagisce con i componenti grafici di selezione associati ai singoli file nell'albero delle risorse.
@@ -2289,7 +2290,7 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui il serve
 \section{Agente Docs: Documentazione e \textit{README}}
 
 \subsection{Introduzione all'agente}
-L'Agente di Documentazione e \texttt{\textit{README}.md} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto \textbf{Code Guardian}. Nei cicli di sviluppo software veloci, la documentazione è spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento. In questo modo, garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
+L'Agente di Documentazione e \texttt{\textit{README}.md} rappresenta un pilastro fondamentale per la qualità del lavoro quotidiano degli sviluppatori e per la stabilità del progetto \textbf{Code Guardian}. Nei cicli di sviluppo software veloci, la documentazione è spesso la prima a perdere il passo rispetto al codice, diventando presto superata. Questo agente nasce proprio per risolvere tale problema: il suo compito è automatizzare tutto il processo di aggiornamento, in questo modo garantiamo che il file \texttt{\textit{README}.md} e l'intera documentazione tecnica, sia quella interna al codice che quella dedicata alle \textit{API}, siano sempre uno specchio fedele e puntuale dell'evoluzione del progetto, in qualsiasi momento.
 
 \subsection{Obiettivi e Funzionalità}
 L'agente si focalizza su tre aree critiche:
@@ -2298,7 +2299,7 @@ L'agente si focalizza su tre aree critiche:
 
     \item \textbf{Manutenzione del \texttt{\textit{README}.md}}: Automazione della creazione e dell'aggiornamento del file principale di presentazione del \textit{Repository}, adattandolo dinamicamente alle evoluzioni della piattaforma.
 
-    \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{Docstring} e \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
+    \item \textbf{Gestione della documentazione inline}: Analisi semantica del codice per la generazione di \textit{JSDoc}, assicurando che ogni modulo sia correttamente commentato.
 
     \item \textbf{Documentazione delle \textit{API}}: Estrazione automatizzata degli \textit{\glo{Endpoint}{endpoint}} per la creazione di guide tecniche per gli utilizzatori del servizio.
 
@@ -2440,10 +2441,6 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento aggiornato.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textbf{UC26}: Visualizzazione report prodotto dall'agente.
-    \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
@@ -2483,10 +2480,6 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente le proposte di documentazione inline integrate nel codice.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textbf{UC26}: Visualizzazione report prodotto dall'agente.
-    \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
@@ -2547,10 +2540,6 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento \texttt{API.md} finale.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textbf{UC26}: Visualizzazione report prodotto dall'agente.
-    \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
@@ -2578,7 +2567,7 @@ L'agente si concentra su tre aree principali:
 
 \newpage
 \subsection{\textit{Casi d'Uso}}
-Di seguito i \textit{Casi d'uso} dell'Agente \textit{OWASP}P.
+Di seguito i \textit{Casi d'uso} dell'Agente \textit{OWASP}.
 
 \subsubsection{UC38: Esecuzione scansione vulnerabilità (\textit{OWASP})}\label{uc:38}
 Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente \textit{OWASP} per analizzare il codice sorgente e identificare pattern riconducibili alle vulnerabilità standard dell'\textit{OWASP Top 10}.
@@ -2608,10 +2597,6 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
         \item Il sistema formatta le criticità ottenute per la visualizzazione strutturata, associando a ciascuna la categoria \textit{OWASP} (UC26.2.2.1.1), il livello di gravità (UC26.2.2.1.2), la porzione di codice interessata (UC26.2.2.1.3) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC26.2.3) o di testo formattato (UC26.2.1).
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile all'utente il report dell'operazione (UC26).
     \end{enumerate}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textbf{UC26}: Visualizzazione report prodotto dall'agente.
-    \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output della scansione, superando il limite di timeout.
@@ -2648,10 +2633,6 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWA
         \item Il sistema formatta le non-conformità ottenute per la visualizzazione strutturata nel report, associandole alla categoria di regola infranta, al file/riga in cui si verifica l'anomalia (UC26.2.2) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC26.2.3) o di testo formattato (UC26.2.1).
         \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile all'utente il report (UC26).
     \end{enumerate}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textit{UC26}: Visualizzazione report prodotto dall'agente.
-    \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.5: Visualizzazione errore per risorsa di contesto mancante.} Estende il passo 2 qualora il file \texttt{CLAUDE.md} non esista o non venga trovato all'interno del \textit{Repository Git}.
@@ -2712,10 +2693,6 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
         \item \textbf{UC40.1}: Inserimento identificativo dello \textit{Sprint}.
-    \end{itemize}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textbf{UC26}: Visualizzazione report prodotto dall'agente.
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
@@ -2842,10 +2819,6 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
         \item Il Modello \textit{AI} elabora il contenuto, rimuove i dettagli implementativi e restituisce il testo tradotto formattato in \textit{Markdown}.
         \item Il sistema registra il successo dell'attività e sostituisce o affianca il contenuto nel report di visualizzazione, rendendolo disponibile all'utente (UC26).
     \end{enumerate}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textbf{UC26}: Visualizzazione report prodotto dall'agente.
-    \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC45: Annullamento della generazione del \textit{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
