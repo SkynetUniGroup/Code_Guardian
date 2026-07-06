@@ -1036,7 +1036,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
 \end{itemize}
 
 \subsubsection{UC20.1: Visualizzazione di una singola operazione nella lista}\label{uc:20.1}
-Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati a una singola operazione all'interno della lista generata dal sistema.
+Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati a una singola operazione all'interno della lista generata delle operazioni disponibili.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1061,11 +1061,11 @@ Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati
 \end{itemize}
 
 \subsubsection{UC20.1.1: Visualizzazione del nome dell'operazione}\label{uc:20.1.1}
-Questo caso d'uso descrive la visualizzazione del nome identificativo della singola operazione all'interno della lista.
+Questo caso d'uso descrive la visualizzazione del nome identificativo della singola operazione all'interno della lista delle operazioni disponibili.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza l'intestazione o il titolo dell'elemento della lista.
+    \item \textbf{Trigger:} Il sistema renderizza il titolo dell'elemento della lista.
     \item \textbf{Precondizioni:} 
     \begin{itemize}
         \item Il sistema sta mostrando una specifica operazione nella lista (UC20.1).
@@ -1081,7 +1081,7 @@ Questo caso d'uso descrive la visualizzazione del nome identificativo della sing
 \end{itemize}
 
 \subsubsection{UC20.1.2: Visualizzazione della descrizione dell'operazione}\label{uc:20.1.2}
-Questo caso d'uso descrive la visualizzazione della spiegazione testuale associata alle funzionalità della singola operazione.
+Questo caso d'uso descrive la visualizzazione della spiegazione testuale associata alle funzionalità della singola operazione all'interno della lista delle operazioni disponibili.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1123,7 +1123,7 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce 
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
         \item \textbf{UC21.1}: Selezione/Deselezione di un'operazione.
-        \item \textbf{UC21.2}: Deselezione di un'operazione.
+        \item \textbf{UC21.2}: Attivazione/Disattivazione notifica email.
         \item \textbf{UC21.3}: Conferma e avvio delle operazioni.
     \end{itemize}
 \end{itemize}
@@ -1146,7 +1146,7 @@ Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfacc
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente attiva o disattiva il comando grafico corrispondente all'operazione.
-        \item Il sistema aggiorna dinamicamente la coda di avvio in base al nuovo stato assunto dal comando.
+        \item Il sistema aggiorna dinamicamente l'interfaccia e memorizza temporaneamente la selezione effettuata dall'utente.
     \end{enumerate}
 \end{itemize}
 
@@ -1162,24 +1162,24 @@ Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfacc
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Lo stato della preferenza di notifica (attiva o inattiva) è stato aggiornato e registrato dal sistema per essere associato alla coda di elaborazione.
+        \item Lo stato della preferenza di notifica (attiva o inattiva) è stato aggiornato e memorizzato localmente in attesa della conferma e dell'avvio delle operazioni (UC 21.3).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente interagisce con il comando corrispondente all'attivazione/disattivazione delle notifiche email.
-        \item Il sistema aggiorna dinamicamente lo stato della preferenza in base all'input ricevuto.
+        \item Il sistema aggiorna dinamicamente l'interfaccia e memorizza temporaneamente lo stato della preferenza in base all'input ricevuto.
     \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC21.3: Conferma e avvio delle operazioni}\label{uc:21.3}
-Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le scelte all'\textbf{Orchestratore} e avviare i processi.
+Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le scelte all'\textbf{Orchestratore} e avviare l'elaborazione delle operazioni selezionate.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente clicca sull'apposito pulsante di conferma e avvio.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'utente si trova nella schermata della lista delle operazioni.
+        \item L'utente si trova nella schermata della lista delle operazioni disponibili (UC21).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1188,7 +1188,7 @@ Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le 
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente richiede l'avvio interagendo con il pulsante di conferma.
-        \item L'\textbf{Orchestratore} acquisisce la lista delle operazioni attualmente selezionate.
+        \item L'\textbf{Orchestratore} acquisisce la lista delle operazioni e lo stato della preferenza per la notifica email, generando così la coda di esecuzione.
         \item Il sistema avvia l'elaborazione, instradando le richieste.
     \end{enumerate}
     \item \textbf{Estensioni:}
@@ -1257,7 +1257,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all
     \item \textbf{Trigger:} L'utente ha confermato l'avvio di una o più operazioni (UC21.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'\textbf{Orchestratore} ha preso in carico e avviato almeno un'operazione di elaborazione (UC21.3).
+        \item L'\textbf{Orchestratore} ha preso in carico e avviato almeno un'operazione (UC21.3).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1276,18 +1276,18 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all
 \end{itemize}
 
 \subsubsection{UC22.1: Visualizzazione del progresso di una singola operazione}\label{uc:22.1}
-Questo caso d'uso descrive la visualizzazione del progresso individuale associato a una specifica attività presente all'interno della dashboard di monitoraggio.
+Questo caso d'uso descrive la visualizzazione del progresso individuale associato a una specifica operazione presente all'interno della dashboard di monitoraggio.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema elabora e aggiorna un elemento all'interno della lista di monitoraggio.
+    \item \textbf{Trigger:} Il sistema avanza nell'elaborazione dell'operazione e aggiorna l'elemento corrispondente all'interno della lista di monitoraggio.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item La dashboard di monitoraggio delle operazioni è attiva e visibile a schermo (UC22).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item L'utente visualizza le informazioni di avanzamento relative alla singola attività specifica.
+        \item L'utente visualizza le informazioni di avanzamento relative alla singola operazione specifica.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -1325,14 +1325,14 @@ Questo caso d'uso descrive la visualizzazione dell'indicatore testuale che espri
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema riceve un aggiornamento di stato dall\textbf{'Orchestratore} relativo alla specifica attività e ne modifica la rappresentazione grafica nell'interfaccia.
+    \item \textbf{Trigger:} Il sistema riceve un aggiornamento di stato dall\textbf{'Orchestratore} relativo alla specifica operazione e ne modifica la rappresentazione grafica nell'interfaccia.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando il progresso di una specifica operazione (UC22.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item L'indicatore dello stato aggiornato dell'attività è visibile a schermo per l'utente.
+        \item L'indicatore dello stato aggiornato dell'operazione è visibile a schermo per l'utente.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -1359,14 +1359,14 @@ Questo caso d'uso descrive il comportamento del sistema quando si verifica un pr
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item La specifica operazione affetta dall'errore viene interrotta definitivamente e il sistema mostra i dettagli dell'anomalia all'utente.
+        \item La specifica operazione affetta dall'errore viene interrotta definitivamente e il sistema mostra un messaggio di errore all'utente.
         \item L'errore viene isolato e le eventuali altre operazioni parallele continuano la loro esecuzione senza interruzioni.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema identifica esattamente quale o quali operazioni sono affette dal problema architetturale e ne inibisce l'ulteriore elaborazione.
         \item Il sistema isola il guasto, garantendo che il routing delle altre attività parallele prosegua regolarmente.
-        \item Il sistema renderizza a schermo un messaggio di errore testuale contenente le specifiche del fallimento di orchestrazione, relativo unicamente all'operazione interrotta.
+        \item Il sistema renderizza a schermo un messaggio di errore testuale, relativo unicamente all'operazione interrotta.
     \end{enumerate}
 \end{itemize}
 
@@ -1380,7 +1380,6 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato (UC4).
-        \item È stato configurato il contesto di analisi (UC9).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1398,11 +1397,11 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
 \end{itemize}
 
 \subsubsection{UC24.1: Visualizzazione della lista dei report salvati}\label{uc:24.1}
-Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i report completati all'interno della pagina dello storico.
+Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i report salvati all'interno della pagina dello storico.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema elabora e mostra la struttura della lista all'interno della pagina dello storico.
+    \item \textbf{Trigger:} Il sistema mostra la struttura della lista all'interno della pagina dello storico.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema ha caricato correttamente la pagina dello storico dei report (UC24).
@@ -1422,7 +1421,7 @@ Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i r
 \end{itemize}
 
 \subsubsection{UC24.1.1: Visualizzazione di un singolo elemento report nella lista}\label{uc:24.1.1}
-Questo caso d'uso descrive la visualizzazione del contenitore logico relativo a un singolo report all'interno della lista.
+Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a un singolo report all'interno della lista.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1530,24 +1529,24 @@ Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui il repor
 
 
 \subsubsection{UC25: Selezione di un report per la visualizzazione}\label{uc:25}
-Questo caso d'uso descrive l'interazione attraverso la quale l'utente seleziona un report, che ha raggiunto lo stato di completamento, al fine di aprirne la visualizzazione dettagliata. L'azione può essere innescata indifferentemente dalla dashboard di monitoraggio o dalla pagina dello storico.
+Questo caso d'uso descrive l'interazione attraverso la quale l'utente seleziona un report al fine di aprirne la visualizzazione dettagliata. L'azione può essere innescata indifferentemente dalla dashboard di monitoraggio o dalla pagina dello storico.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente interagisce con il comando grafico associato a un report completato.
+    \item \textbf{Trigger:} L'utente interagisce con il comando grafico associato a un report.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando un'operazione completata all'interno della dashboard (UC22.1) oppure un elemento nella lista dello storico (UC24.1.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema innesca la procedura di caricamento e passa la direttiva per la visualizzazione del report specifico.
+        \item Il sistema avvia la visualizzazione del report selezionato (UC26).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente seleziona il report desiderato dall'interfaccia.
         \item Il sistema acquisisce la richiesta legata all'identificativo univoco di quel report.
-        \item Il sistema avvia il caricamento dei dettagli.
+        \item Il sistema avvia il caricamento dei dettagli e delle informazioni del report.
     \end{enumerate}
     \item \textbf{Inclusioni:}
     \begin{itemize}
@@ -1578,12 +1577,12 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC26.1:} Visualizzazione del intestazione del report.
+        \item \textbf{UC26.1:} Visualizzazione dellintestazione del report.
         \item \textbf{UC26.2:} Visualizzazione del corpo del report.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC26.1: Visualizzazione dei intestazione del report}\label{uc:26.1}
+\subsubsection{UC26.1: Visualizzazione dell'intestazione del report}\label{uc:26.1}
 Questo caso d'uso descrive la visualizzazione della sezione superiore del report, contenente le informazioni generali e di contesto relative all'elaborazione effettuata dall'agente.
 
 \begin{itemize}
@@ -2205,7 +2204,7 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui la proce
 
 
 \subsubsection{UC30: Invio automatico del report via email}\label{uc:30}
-Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema, al completamento positivo di un'operazione, genera l'allegato del report e lo invia all'indirizzo email associato all'account dell'utente.
+Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema, al completamento positivo di un'operazione che produce un report, genera l'allegato del report e lo invia all'indirizzo email associato all'account dell'utente.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -2279,9 +2278,9 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui il serve
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema tenta l'inoltro dell'email con allegato al Server SMTP.
-        \item Il Server SMTP rifiuta la richiesta restituendo un codice di errore relativo alla dimensione eccessiva del \textit{payload}.
+        \item Il Server SMTP rifiuta la richiesta restituendo un codice di errore relativo alla dimensione eccessiva dell'allegato.
         \item Il sistema intercetta l'eccezione.
-        \item Il sistema compone una nuova email rimuovendo l'allegato e inserendo nel corpo del messaggio un link diretto per consultare o scaricare il report dalla piattaforma Code Guardian.
+        \item Il sistema compone una nuova email rimuovendo l'allegato e inserendo nel corpo del messaggio un link diretto per consultare o scaricare il report dalla piattaforma \textbf{Code Guardian}.
         \item Il sistema contatta nuovamente il Server SMTP e inoltra con successo l'email aggiornata.
     \end{enumerate}
 \end{itemize}
