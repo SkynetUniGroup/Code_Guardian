@@ -308,7 +308,7 @@ in ambiente cloud \textit{\glo{AWS}{aws}}. Essendo il sistema basato su interfac
 di programmazione e automazione, l'esecuzione è
 garantita attraverso i principali ambienti di runtime come
 \textit{\glo{Node.js}{node-js}} e \textit{\glo{Python}{python}}.
-L'interazione con il codice sorgente avviene tramite \textit{repository Git}. 
+L'interazione con il codice sorgente avviene tramite la piattaforma \textit{\glo{GitHub}{github}}. 
 \newpage
 
 
@@ -351,7 +351,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsubsection{\textit{Attori} Secondari}
 
 \begin{itemize}
-    \item \textbf{\textit{Repository Git}:} Il sistema di controllo di versione esterno (\textit{\glo{GitHub}{github}}). Rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{\glo{Pull Request}{pull-request}}.
+    \item \textbf{\textit{Piattaforma GitHub}:} Il sistema di controllo di versione esterno GitHub rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{\glo{Pull Request}{pull-request}}.
 
     \item \textbf{Server SMTP:} Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
     
@@ -587,12 +587,12 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui le crede
 \end{itemize}
 
 
-\subsubsection{UC6: Configurazione delle credenziali}\label{uc:6}
-Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al sistema le credenziali necessarie per autorizzare l'accesso ai servizi esterni (il \textit{Repository Git} e il Sistema di \textit{Task Management}).
+\subsubsection{UC6: Configurazione delle credenziali servizi esterni}\label{uc:6}
+Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al sistema le credenziali necessarie per autorizzare l'accesso ai servizi esterni (la \textit{Piattaforma GitHub} e il Sistema di \textit{Task Management}).
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{Repository Git}, Sistema di \textit{Task Management}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}, Sistema di \textit{Task Management}.
     \item \textbf{Trigger}: L'utente accede per la prima volta al sistema o necessita di aggiornare un token scaduto.
     \item \textbf{Precondizioni}:
     \begin{itemize}
@@ -604,12 +604,12 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
             \item L'utente accede alla sezione di configurazione del sistema.
             \item Il sistema richiede l'inserimento dei parametri di autenticazione.
             \item L'utente inserisce i dati richiesti.
-            \item Il sistema convalida la correttezza formale e effettua una chiamata di test per verificare i permessi delle chiavi inserite.
+            \item Il sistema verifica la correttezza formale e effettua una chiamata di test per verificare i permessi delle chiavi inserite.
             \item Il sistema salva le credenziali e notifica all'utente il successo dell'operazione.
         \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC6.1:} Inserimento token \textit{Repository Git}.
+        \item \textbf{UC6.1:} Inserimento token \textit{Piattaforma GitHub}.
         \item \textbf{UC6.2:} Inserimento token Sistema di \textit{Task Management}.
     \end{itemize}
     \item \textbf{Estensioni:}
@@ -619,13 +619,13 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC6.1: Inserimento token \textit{Repository Git}}\label{uc:6.1}
-Questo caso d'uso descrive l'azione di inserimento del token personale di accesso.
+\subsubsection{UC6.1: Inserimento token \textit{Piattaforma GitHub}}\label{uc:6.1}
+Questo caso d'uso descrive l'azione di inserimento del token personale.
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali del \textit{Repository Git}.
+    \item \textbf{Trigger:} L'utente seleziona il campo di testo dedicato alle credenziali della \textit{Piattaforma GitHub}.
     \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema mostra correttamente la schermata di configurazione delle credenziali.\end{itemize}
-    \item \textbf{Postcondizioni:}\begin{itemize}\item Il token del \textit{Repository Git} è stato inserito nel relativo campo di input.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il token della \textit{Piattaforma GitHub} è stato inserito nel relativo campo di input.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente digita o incolla il proprio token personale di accesso nel campo preposto.
@@ -649,14 +649,14 @@ Questo caso d'uso descrive l'azione di inserimento del token per consentire al s
 Questo caso d'uso descrive la gestione del fallimento del test di autenticazione con i server esterni a causa di token errati, scaduti o non autorizzati.
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Attori Secondari:} \textit{Repository Git}, Sistema di \textit{Task Management}.
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Sistema di \textit{Task Management}.
     \item \textbf{Trigger:} Il sistema effettua la chiamata di test e riceve un feedback di errore dai servizi esterni.
     \item \textbf{Precondizioni:}\begin{itemize}\item L'utente ha inserito dei token formalmente corretti, ma non validi dal punto di vista logico o autorizzativo sui server esterni.\end{itemize}
     \item \textbf{Postcondizioni:}\begin{itemize}\item L'operazione di salvataggio viene annullata, le credenziali non vengono memorizzate e il sistema mostra un messaggio di errore dettagliato, mantenendo l'utente sulla pagina corrente.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema rileva il fallimento della chiamata di test.
-        \item Il sistema identifica quale servizio ha rifiutato la connessione (\textit{Repository Git}, \textit{Task Management} o entrambi).
+        \item Il sistema identifica quale servizio ha rifiutato la connessione (\textit{Piattaforma GitHub}, \textit{Task Management} o entrambi).
         \item Il sistema blocca la persistenza dei dati.
         \item Il sistema mostra a schermo un messaggio di errore specifico (es. "Impossibile stabilire una connessione: il token Git inserito è scaduto o non ha i permessi di lettura") e invita l'utente a verificare e reinserire le credenziali.
     \end{enumerate}
@@ -683,14 +683,13 @@ Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e i
 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
     \item \textbf{Trigger}: L'utente vuole selezionare un \textit{repository} e un riferimento specifico da utilizzare come contesto per gli agenti disponibili.
     \item \textbf{Precondizioni}:
     \begin{itemize}
         \item Il sistema è attivo e accessibile.
         \item Il \textit{repository} Git esiste ed è raggiungibile.
         \item L'utente dispone dei permessi necessari per accedere al \textit{repository}.
-        \item Il repository selezionato contiene codice sorgente scritto nei linguaggi supportati dal sistema.
     \end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item Il \textit{repository} e il riferimento selezionati sono disponibili come contesto per le funzionalità degli agenti.\end{itemize}
     \item \textbf{Scenario Principale}:
@@ -805,7 +804,7 @@ Questo caso d'uso descrive la gestione dell'errore qualora l'URL inserito dall'u
 Questo caso d'uso descrive lo scenario in cui l'URL è sintatticamente corretto, ma il server remoto nega l'accesso o non trova la risorsa.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
     \item \textbf{Trigger}: Il sistema effettua una richiesta API per verificare l'esistenza del \textit{repository} e riceve un codice di errore di rete o di autorizzazione.
     \item \textbf{Precondizioni}:\begin{itemize}\item L'URL inserito è valido dal punto di vista sintattico.\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema avvisa l'utente della mancata raggiungibilità o della mancanza di permessi, bloccando l'operazione.\end{itemize}
@@ -821,7 +820,7 @@ Questo caso d'uso descrive lo scenario in cui l'URL è sintatticamente corretto,
 Questo caso d'uso descrive l'errore derivante dall'inserimento di un nome di branch che non trova riscontro effettivo nel \textit{repository} remoto configurato.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
     \item \textbf{Trigger}: Il sistema valida il nome del branch inviato (UC9.3) verificandone la presenza sul server remoto e riceve una risposta negativa.
     \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "Branch" (UC9.2) e inserito un nome di branch (UC9.3).\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema segnala l'inesistenza del branch, impedendo la registrazione del contesto operativo.\end{itemize}
@@ -837,7 +836,7 @@ Questo caso d'uso descrive l'errore derivante dall'inserimento di un nome di bra
 Questo caso d'uso descrive l'errore derivante dall'inserimento di un hash di un \textit{Commit} errato o non appartenente alla cronologia del branch selezionato.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
     \item \textbf{Trigger}: Il sistema valida l'identificativo del \textit{Commit} (UC9.4) interrogando l'API remota e non ne trova traccia nel contesto stabilito.
     \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha inserito facoltativamente un valore alfanumerico nel campo del \textit{Commit} (UC9.4).\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema segnala l'invalidità del \textit{Commit}, mantenendo intatti gli altri dati del form per consentire una nuova digitazione.\end{itemize}
@@ -853,7 +852,7 @@ Questo caso d'uso descrive l'errore derivante dall'inserimento di un hash di un 
 Questo caso d'uso descrive l'errore che si verifica quando l'utente immette un identificativo numerico di una \textit{Pull Request} che non esiste nel \textit{repository}.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
     \item \textbf{Trigger}: Il sistema valida l'ID della \textit{Pull Request} inviato (UC9.5) interrogando l'API remota e riceve una risposta di risorsa non trovata.
     \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "\textit{Pull Request}" (UC9.2) e ha inserito un identificativo numerico (UC9.5).\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema segnala l'inesistenza della \textit{Pull Request} e blocca la convalida del form.\end{itemize}
@@ -869,7 +868,7 @@ Questo caso d'uso descrive l'errore che si verifica quando l'utente immette un i
 Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quando il codice del \textit{repository} non coincide con le capacità tecniche degli agenti.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
     \item \textbf{Trigger}: Il sistema esamina i metadati dei linguaggi del codice sorgente nel riferimento e rileva che le estensioni predominanti non sono supportate.
     \item \textbf{Precondizioni}:\begin{itemize}\item L'URL, il branch/\textit{PR} e gli eventuali \textit{commit} sono validi e sono stati verificati con successo.\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item Il sistema registra con successo il contesto operativo per le successive funzionalità, ma notifica l'utente dell'incompatibilità dei linguaggi rilevati.\end{itemize}
@@ -884,12 +883,11 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
 
 
 \subsubsection{UC16: Selezione ambito di analisi}\label{uc:16}
-Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può essere ristretto a uno o più file e/o directory. Viene selezionato rispetto al repository e al riferimento di base già risolti in UC9. L'analisi dell'intero \textit{repository} è considerata una possibilità aggiuntiva solo se supportata dalla configurazione del sistema.
-
+Questo caso d'uso consente all'utente di delimitare la porzione del \textit{repository} su cui eseguire l'analisi di un agente. L'ambito può comprendere l'intero \textit{repository} oppure essere ristretto a uno o più file e/o directory (stando nei liniti di dimensione imposti dal sistema). L'ambito viene selezionato rispetto al \textit{repository} e al riferimento di base già selezionati in UC9. 
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
 
-    \item \textbf{Attori Secondari}: \textit{Repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
 
     \item \textbf{Trigger}: L'utente vuole delimitare la parte del repository da sottoporre all'analisi di un agente.
 
@@ -980,13 +978,13 @@ Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti d
 Questo caso d'uso descrive lo scenario in cui uno o più elementi selezionati dall'utente non risultino più disponibili o accessibili nel \textit{Repository Git} remoto.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
-    \item \textbf{Attori Secondari}: \textit{Repository Git}.
-    \item \textbf{Trigger}: Il sistema verifica la disponibilità effettiva degli elementi selezionati e riceve un feedback di errore dal \textit{Repository Git}.
+    \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
+    \item \textbf{Trigger}: Il sistema verifica la disponibilità effettiva degli elementi selezionati e riceve un feedback di errore dalla \textit{Piattaforma GitHub}.
     \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato uno o più elementi tramite l'interfaccia (UC16.1 o UC16.2 o UC16.3) e ha confermato la scelta.\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item L'ambito di analisi non viene registrato come contesto valido. Il sistema segnala il problema all'utente.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
-        \item Il sistema interroga le API del \textit{Repository Git} per verificare l'effettiva accessibilità in lettura dei file o delle directory precedentemente selezionate.
+        \item Il sistema interroga le API della \textit{Piattaforma GitHub} per verificare l'effettiva accessibilità in lettura dei file o delle directory precedentemente selezionate.
         \item Il servizio remoto restituisce un errore indicando che uno o più elementi non sono stati trovati o non sono accessibili.
         \item Il sistema interrompe la validazione dell'ambito.
         \item Il sistema mostra un messaggio di errore (es. "Impossibile accedere ad alcuni file selezionati. Verificare che non siano stati rimossi dal \textit{Repository}").
@@ -1190,19 +1188,19 @@ Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le 
     \begin{enumerate}
         \item L'utente richiede l'avvio interagendo con il pulsante di conferma.
         \item L'\textbf{Orchestratore} acquisisce la lista delle operazioni attualmente selezionate.
-        \item Il sistema avvia l'elaborazione, instradando deterministicamente le richieste.
+        \item Il sistema avvia l'elaborazione, instradando le richieste.
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC21.4: Errore mancata selezione delle operazioni.} Estende il passo 2 qualora l'elenco delle operazioni selezionate risulti vuoto.
         \item \textbf{UC21.5: Errore prerequisiti operazione mancanti.} Estende il passo 2 qualora per una o più operazioni selezionate manchino i prerequisiti di contesto necessari (Token \textit{Git}, \textit{Repository}, Ambito di analisi).
-        \item \textbf{UC23: Visualizzazione errore di orchestrazione o routing.} Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare il task.
+        \item \textbf{UC23: Visualizzazione errore di orchestrazione o routing.} Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare l'operazione.
     \end{itemize}
 \end{itemize}
 
 
 \subsubsection{UC21.4: Errore mancata selezione delle operazioni}\label{uc:21.4}
-Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comando di avvio senza aver prima selezionato alcun task.
+Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comando di avvio senza aver prima selezionato alcuna operazione.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1244,21 +1242,21 @@ Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comand
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema acquisisce la lista delle operazioni selezionate e ne verifica le dipendenze strutturali e di autorizzazione.
-        \item L'\textbf{Orchestratore} rileva l'assenza di uno o più dati fondamentali per l'esecuzione (es. Token \textit{Git} non inserito, oppure \textit{Repository Git} non selezionato prima di avviare l'Agente OWASP).
+        \item L'\textbf{Orchestratore} rileva l'assenza di uno o più dati fondamentali per l'esecuzione (es. Token \textit{GitHub} non inserito, oppure \textit{Repository Git} non selezionato prima di avviare l'Agente OWASP).
         \item L'\textbf{Orchestratore} interrompe la procedura di avvio per evitare fallimenti logici o chiamate a vuoto.
         \item Il sistema mostra a schermo un messaggio d'errore mirato (es. ``Per avviare la Scansione OWASP è necessario configurare prima il Token \textit{Git} e selezionare il \textit{Repository} di riferimento'').
     \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC22: Visualizzazione della dashboard di monitoraggio delle operazioni}\label{uc:22}
-Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all'utente lo stato di avanzamento complessivo di tutte le richieste prese in carico dall'\textbf{Orchestratore} in tempo reale.
+Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all'utente lo stato di avanzamento complessivo di tutte le richieste prese in carico in tempo reale.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente ha confermato l'avvio di una o più operazioni (UC21.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'Orchestratore ha preso in carico e avviato almeno un'operazione di elaborazione.
+        \item L'\textbf{Orchestratore} ha preso in carico e avviato almeno un'operazione di elaborazione (UC21.3).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1267,7 +1265,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'\textbf{Orchestratore} attiva la sezione grafica di monitoraggio.
+        \item Il sistema attiva la sezione grafica di monitoraggio.
         \item Il sistema mostra la lista delle operazioni in esecuzione, aggiornandone l'avanzamento in modo indipendente.
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
@@ -1341,14 +1339,14 @@ Questo caso d'uso descrive la visualizzazione dell'indicatore testuale che espri
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27: Visualizzazione errore durante l'esecuzione dell'agente.} Estende il passo 1 qualora lo stato assunto sia "Fallito" e il sistema metta a disposizione dell'utente un messaggio con i dettagli dell'anomalia interna all'agente.
-        \item \textbf{UC23: Gestione errore di orchestrazione o routing.} Estende il passo 1 qualora lo stato assunto sia "Fallito" e il sistema metta a disposizione dell'utente un messaggio con i dettagli del problema architetturale.
+        \item \textbf{UC27: Visualizzazione errore durante l'esecuzione dell'agente.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un nomalia interna all'agente.
+        \item \textbf{UC23: Visualizzazione errore di orchestrazione o routing.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un problema architetturale di orchestrazione o routing.
     \end{itemize}
 \end{itemize}
 
 
 \subsubsection{UC23: Visualizzazione errore di orchestrazione o routing}\label{uc:23}
-Questo caso d'uso descrive il comportamento del sistema quando si verifica un problema a livello architetturale (es. impossibilità di instradare una richiesta o caduta di comunicazione interna) e la conseguente notifica all'utente. Il sistema isola il problema per permettere l'esecuzione parziale delle altre \textit{task} in corso.
+Questo caso d'uso descrive il comportamento del sistema quando si verifica un problema a livello architetturale (es. impossibilità di instradare una richiesta o caduta di comunicazione interna) e la conseguente notifica all'utente. Il sistema isola il problema per permettere l'esecuzione parziale delle altre operazioni in corso.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1356,7 +1354,7 @@ Questo caso d'uso descrive il comportamento del sistema quando si verifica un pr
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente ha richiesto l'avvio di una o più operazioni, oppure ne sta monitorando l'avanzamento nella dashboard.
-        \item Si verifica un errore di sistema non imputabile alla logica interna dell'agente o del modello LLM.
+        \item Si verifica un errore di sistema non imputabile alla logica interna dell'agente o del modello \textit{LLM}.
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1966,7 +1964,7 @@ Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possi
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema rileva un errore critico durante l'elaborazione di una specifica \textit{task}.
+    \item \textbf{Trigger:} Il sistema rileva un errore critico durante l'elaborazione di una specifica operazione.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Un agente è attualmente in fase di esecuzione.
@@ -2056,12 +2054,12 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
         \item Il sistema acquisisce la risposta grezza dal modello \textit{LLM}.
         \item Il sistema tenta di parsare e validare la struttura dati.
         \item La validazione fallisce a causa di un formato non conforme alle aspettative dell'agente.
-        \item Il sistema interrompe la task e mostra a schermo il dettaglio dell'errore (es. "Errore di generazione: formato di output dell'\textit{LLM} non interpretabile o malformato").
+        \item Il sistema interrompe l'operazione e mostra a schermo il dettaglio dell'errore (es. "Errore di generazione: formato di output dell'\textit{LLM} non interpretabile o malformato").
     \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC27.4: Visualizzazione errore per superamento limiti dimensionali a runtime}\label{uc:27.4}
-Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora i dati da analizzare per una specifica \textit{task} superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{AI} durante l'esecuzione.
+Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora i dati da analizzare per una specifica operazione superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{AI} durante l'esecuzione.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -2102,7 +2100,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema intercetta un'eccezione di tipo "risorsa non trovata" (Not Found) durante il recupero del contesto preliminare.
-        \item Il sistema interrompe l'esecuzione della \textit{task} corrente.
+        \item Il sistema interrompe l'esecuzione dell'operazione corrente.
         \item Il sistema renderizza a schermo il dettaglio testuale dell'errore (es. "File CLAUDE.md non trovato nel \textit{repository}" oppure "\textit{Sprint} ID inesistente").
     \end{enumerate}
 \end{itemize}
@@ -2125,7 +2123,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema acquisisce la risorsa ma fallisce nella sua validazione sintattica o logica (es. regole in conflitto nel file di policy).
-        \item Il sistema interrompe l'esecuzione della task corrente.
+        \item Il sistema interrompe l'esecuzione dell'operazione corrente.
         \item Il sistema renderizza a schermo il dettaglio dell'errore (es. "Il file CLAUDE.md presenta errori di sintassi o regole in palese contraddizione logica").
     \end{enumerate}
 \end{itemize}
@@ -2135,11 +2133,11 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Attori Secondari:} \textit{Repository Git}.
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}.
     \item \textbf{Trigger:} L'agente tenta di aprire una \textit{Pull Request} tramite le \textit{API} del servizio esterno ma riceve un codice d'errore di autorizzazione o di rete.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Un agente ha generato con successo una proposta di modifica ed è pronto per inoltrarla al \textit{Repository Git}.
+        \item Un agente ha generato con successo una proposta di modifica ed è pronto per inoltrarla alla \textit{Piattaforma GitHub}.
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2148,9 +2146,9 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema tenta di aprire la \textit{Pull Request} inviando il \textit{payload} alle \textit{API} del \textit{Repository Git}.
+        \item Il sistema tenta di aprire la \textit{Pull Request} inviando il \textit{payload} alle \textit{API} della \textit{Piattaforma GitHub}.
         \item Il servizio remoto restituisce un errore.
-        \item Il sistema interrompe l'esecuzione della task corrente.
+        \item Il sistema interrompe l'esecuzione dell'operazione corrente.
         \item Il sistema renderizza a schermo il dettaglio testuale dell'errore (es. "Impossibile creare la Pull Request: verificare che il token \textit{Git} abbia i permessi di scrittura abilitati").
     \end{enumerate}
 \end{itemize}
@@ -2418,28 +2416,28 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
     \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di generazione del README dalla lista delle operazioni disponibili nella dashboard (UC21.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC4).
-        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC6.1).
+        \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
         \item È stato configurato con successo il contesto operativo:\textit{ Repository Git} e riferimento di base (UC9).
         \item L'utente ha selezionato l'operazione "Generazione del \textit{README}" (UC21.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) per il \texttt{README.md}.
-        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito del task e il collegamento alla \textit{Pull Request} (UC26.2.4).
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito del \textit{task} e il collegamento alla \textit{Pull Request} (UC26.2.4).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
-        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per scaricare la struttura del progetto e l'attuale file \texttt{README.md}.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per scaricare la struttura del progetto e l'attuale file \texttt{README.md}.
         \item Il sistema recupera l'eventuale template personalizzato del \textit{README} fornito dallo Sviluppatore (UC33); in sua assenza, carica in memoria il template di default.
         \item Il sistema compone il prompt contestuale e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la stesura del nuovo documento.
         \item Il modello \textit{AI} elabora le direttive e restituisce al sistema il contenuto aggiornato.
-        \item Il sistema effettua una chiamata alle \textit{API} del \textit{Repository Git} per aprire una \textit{Pull Request} contenente il documento aggiornato.
+        \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento aggiornato.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
     \item \textbf{Inclusioni:}
@@ -2450,7 +2448,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \begin{itemize}
         \item \textbf{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
         \item \textbf{UC27.3: Visualizzazione errore di parsing dell'output LLM.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
-        \item \textbf{UC27.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC27.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
     \end{itemize}
 \end{itemize}
 
@@ -2460,12 +2458,12 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
     \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di gestione della documentazione inline dalla lista delle operazioni disponibili nella dashboard (UC21.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC4).
-        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC6.1).
+        \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
         \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e riferimento di base (UC9).
         \item È stato selezionato e validato un ambito di analisi (UC16).
         \item L'utente ha selezionato l'operazione "Generazione documentazione inline" (UC21.1).
@@ -2478,11 +2476,11 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
-        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
         \item Il sistema analizza il codice sorgente per identificare funzioni e classi prive di documentazione, o con documentazione obsoleta/non conforme agli standard.
         \item Il sistema compone il prompt contestuale, includendo le porzioni di codice rilevate, e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la generazione della documentazione inline appropriata.
         \item Il modello \textit{AI} elabora il codice e restituisce al sistema le proposte di commento standardizzato (\textit{JSDoc}) per gli elementi analizzati.
-        \item Il sistema effettua una chiamata alle \textit{API} del \textit{Repository Git} per aprire una \textit{Pull Request} contenente le proposte di documentazione inline integrate nel codice.
+        \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente le proposte di documentazione inline integrate nel codice.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
     \item \textbf{Inclusioni:}
@@ -2493,7 +2491,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \begin{itemize}
         \item \textbf{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
         \item \textbf{UC27.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
-        \item \textbf{UC27.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC27.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
         \item \textbf{UC36: Avviso per complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il Modello \textit{AI} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
     \end{itemize}
 \end{itemize}
@@ -2525,12 +2523,12 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
     \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di gestione della documentazione \textit{API} dalla lista delle operazioni disponibili nella dashboard (UC21.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC4).
-        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC6.1).
+        \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
         \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e riferimento di base (UC9).
         \item È stato selezionato e validato un ambito di analisi (UC16).
         \item L'utente ha selezionato l'operazione "Generazione documentazione \textit{API}" (UC21.1).
@@ -2543,10 +2541,10 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
-        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per estrarre i file del codice sorgente appartenenti all'ambito selezionato, identificando in particolare i file contenenti la definizione delle rotte e le logiche dei \textit{controller}.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre i file del codice sorgente appartenenti all'ambito selezionato, identificando in particolare i file contenenti la definizione delle rotte e le logiche dei \textit{controller}.
         \item Il sistema compone il prompt contestuale con il codice estratto e lo invia alle \textit{API} del Modello \textit{AI}, richiedendo l'identificazione degli \textit{Endpoint} e l'estrazione di metodo HTTP, URL, \textit{header}, \textit{Payload} richiesti e formati di risposta.
         \item Il modello \textit{AI} elabora il codice e restituisce al sistema le informazioni tecniche formattate strutturalmente con la sintassi \textit{Markdown}.
-        \item Il sistema effettua una chiamata alle \textit{API} del \textit{Repository Git} per aprire una \textit{Pull Request} contenente il documento \texttt{API.md} finale.
+        \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento \texttt{API.md} finale.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
     \item \textbf{Inclusioni:}
@@ -2557,7 +2555,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \begin{itemize}
         \item \textbf{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
         \item \textbf{UC27.3: Visualizzazione errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} non rispetti la formattazione \textit{Markdown} richiesta o non sia parsabile dal sistema.
-        \item \textbf{UC27.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 5 qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC27.7: Visualizzazione errore durante la creazione della \textit{Pull Request}.} Estende il passo 5 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
     \end{itemize}
 \end{itemize}
 
@@ -2587,12 +2585,12 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
 
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
-    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
     \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di scansione vulnerabilità dalla lista delle operazioni disponibili nella dashboard (UC21.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC4).
-        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC6.1).
+        \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
         \item È stato configurato il contesto operativo (UC9) e selezionato l'ambito di analisi (UC16).
         \item L'utente ha selezionato l'operazione "Scansione vulnerabilità \textit{OWASP}" (UC21.1).
     \end{itemize}
@@ -2604,7 +2602,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente \textit{OWASP}.
-        \item Il sistema interroga le \textit{API} del \textit{Repository Git} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
         \item Il sistema compone il prompt di analisi, istruendo il modello alla ricerca di criticità (es. \textit{SQL Injection}, \textit{\glo{XSS}{xss}}, \textit{Hardcoded secrets}), e lo invia alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} elabora il codice e restituisce al sistema l'elenco delle vulnerabilità individuate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
         \item Il sistema formatta le criticità ottenute per la visualizzazione strutturata, associando a ciascuna la categoria \textit{OWASP} (UC26.2.2.1.1), il livello di gravità (UC26.2.2.1.2), la porzione di codice interessata (UC26.2.2.1.3) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC26.2.3) o di testo formattato (UC26.2.1).
@@ -2626,12 +2624,12 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWA
 
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
-    \item \textbf{Attori Secondari:} \textit{Repository Git}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
     \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di verifica di conformità dalla lista delle operazioni disponibili nella dashboard (UC21.3).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC4).
-        \item L'utente ha configurato le credenziali per il \textit{Repository Git} (UC6.1).
+        \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
         \item È stato configurato il contesto operativo (UC9) e selezionato l'ambito di analisi (UC16).
         \item L'utente ha selezionato l'operazione "Verifica conformità policy" (UC21.1).
     \end{itemize}
@@ -2643,7 +2641,7 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWA
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente \textit{OWASP}.
-        \item Il sistema interroga le \textit{API} del \textit{Repository Git} ricercando e leggendo il contenuto del file di configurazione \texttt{CLAUDE.md} alla radice del progetto, validandone la struttura e le direttive interne.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} ricercando e leggendo il contenuto del file di configurazione \texttt{CLAUDE.md} alla radice del progetto, validandone la struttura e le direttive interne.
         \item Il sistema estrae il codice sorgente dell'ambito selezionato tramite le \textit{API} di Git.
         \item Il sistema compone il prompt contestuale unendo il codice estratto con le regole di \textit{policy} lette, per poi inviarlo alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} confronta il codice con le direttive e restituisce al sistema l'elenco delle violazioni normative riscontrate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
@@ -2913,7 +2911,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     RF.40 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC2 \\ \hline
     RF.41 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC4, UC4.1, UC4.2 \\ \hline
     RF.42 & Obbligatorio & Il sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC5 \\ \hline
-    RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Repository Git} e Sistema di Task Management). & UC6, UC6.1, UC6.2, UC7, UC8 \\ \hline
+    RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Piattaforma GitHub} e Sistema di Task Management). & UC6, UC6.1, UC6.2, UC7, UC8 \\ \hline
     RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC9, UC9.1, UC9.2, UC9.3, UC9.4 \\ \hline
     RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC9.2, UC9.5
     \\ \hline
@@ -2965,7 +2963,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.7 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC26, UC26.1, UC26.2, UC25 \\ 
     \hline
-    RF.67 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del repository Git analizzato, il riferimento base e l'ambito di analisi, oltre al tempo di esecuzione e data e ora di completamento. & UC26.1, UC26.1.1, UC26.1.2, UC26.1.3, UC26.1.4, UC26.1.5, UC26.1.6 \\ 
+    RF.67 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del \textit{repository Git} analizzato, il riferimento base e l'ambito di analisi, oltre al tempo di esecuzione e data e ora di completamento. & UC26.1, UC26.1.1, UC26.1.2, UC26.1.3, UC26.1.4, UC26.1.5, UC26.1.6 \\ 
     \hline
     RF.68 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & UC26.2.4, UC34 \\ 
     \hline
@@ -2983,7 +2981,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.64 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, pur essendo presente, risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & UC27.6 \\ 
     \hline
-    RF.72 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente con un messaggio di errore qualora il \textit{Repository Git} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & UC27.7 \\ 
+    RF.72 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente con un messaggio di errore qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & UC27.7 \\ 
     \hline
     RF.12 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF. & UC28 \\ 
     \hline
@@ -3007,7 +3005,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file \texttt{\textit{README}.md} del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC34 \\ 
     \hline
-    RF.71 & Obbligatorio & Il sistema deve inoltrare le proposte di modifica documentale generate dagli agenti aprendo automaticamente una \textit{Pull Request} sul \textit{Repository Git} di destinazione. & UC34, 8, 9 \\ 
+    RF.71 & Obbligatorio & Il sistema deve inoltrare le proposte di modifica documentale generate dagli agenti aprendo automaticamente una \textit{Pull Request} sul \textit{Repository Git} di destinazione. & UC34, UC35, UC37 \\ 
     \hline
     RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC35 \\ 
     \hline
@@ -3190,7 +3188,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     RS.0 & Obbligatorio & Il sistema deve memorizzare i token di accesso e le credenziali fornite dall'utente esclusivamente in formato cifrato all'interno del proprio livello di persistenza. & UC6 \\
     \hline
-    RS.1 & Obbligatorio & L'architettura del sistema deve impedire permessi di scrittura automatica sul repository Git da parte degli agenti autonomi. & Verbale esterno 2026/03/23 \\
+    RS.1 & Obbligatorio & L'architettura del sistema deve impedire permessi di scrittura automatica sul \textit{repository Git} da parte degli agenti autonomi. & Verbale esterno 2026/03/23 \\
     \hline
     RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC6 \\
     \hline
