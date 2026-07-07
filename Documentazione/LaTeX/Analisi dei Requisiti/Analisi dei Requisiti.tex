@@ -1150,19 +1150,19 @@ Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfacc
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC21.2: Attivazione/Disattivazione notifica email}\label{uc:21.2}
-Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfaccia per abilitare o disabilitare la ricezione del report generato tramite posta elettronica.
+\subsubsection{UC21.2: Attivazione/Disattivazione notifiche email}\label{uc:21.2}
+Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfaccia per abilitare o disabilitare la ricezione di comunicazioni via posta elettronica, che includono la consegna dei report generati o le richieste di intervento manuale in piattaforma.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente seleziona o deseleziona il comando grafico relativo alla notifica email.
+    \item \textbf{Trigger:} L'utente seleziona o deseleziona il comando grafico relativo alle notifiche email.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente si trova nella dashboard e sta configurando le operazioni da avviare (UC21).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Lo stato della preferenza di notifica (attiva o inattiva) è stato aggiornato e memorizzato localmente in attesa della conferma e dell'avvio delle operazioni (UC 21.3).
+        \item Lo stato della preferenza di notifica (attiva o inattiva) è stato aggiornato e memorizzato localmente in attesa della conferma e dell'avvio delle operazioni (UC21.3).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2212,12 +2212,41 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC31}: Errore invio email. Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
-        \item \textbf{UC32}: Errore allegato troppo grande. Estende il passo 4 qualora il file generato superi i limiti dimensionali imposti dal provider di posta.
+        \item \textbf{UC32}: Errore invio email. Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
+        \item \textbf{UC33}: Errore allegato troppo grande. Estende il passo 4 qualora il file generato superi i limiti dimensionali imposti dal provider di posta.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC31: Errore invio email}\label{uc:31}
+\subsubsection{UC31: Notifica email per richiesta validazione umana}\label{uc:31}
+Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema invia un'email all'utente per notificare la necessità di un intervento manuale o di una validazione affinché un'operazione sospesa o composta possa proseguire (es. validazione del Changelog Tecnico).
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} Server SMTP.
+    \item \textbf{Trigger:} Un agente entra in stato di sospensione o attesa di input da parte dell'utente (approvazione \textit{Human-in-the-loop} o gestione anomalie).
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item L'utente ha precedentemente attivato la preferenza di notifica via email (UC21.2).
+        \item L'elaborazione dell'agente si è fermata in attesa di una decisione umana.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Un'email contenente l'avviso e un collegamento diretto alla piattaforma è stata inviata con successo all'indirizzo dell'utente.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} rileva che un agente è in attesa di validazione o di un input manuale.
+        \item Il sistema verifica che l'utente abbia abilitato l'opzione di notifica.
+        \item Il sistema compone il messaggio di posta elettronica includendo la motivazione dell'attesa e un collegamento ipertestuale per accedere direttamente all'attività in corso nella piattaforma.
+        \item Il sistema contatta il Server SMTP e inoltra l'email all'indirizzo registrato dall'utente.
+    \end{enumerate}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC32: Errore invio email.} Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC32: Errore invio email}\label{uc:32}
 Questo caso d'uso descrive la gestione del fallimento durante la trasmissione dell'email, causato da un'anomalia del server esterno di posta.
 
 \begin{itemize}
@@ -2242,7 +2271,7 @@ Questo caso d'uso descrive la gestione del fallimento durante la trasmissione de
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC32: Errore allegato troppo grande}\label{uc:32}
+\subsubsection{UC33: Errore allegato troppo grande}\label{uc:33}
 Questo caso d'uso descrive il comportamento del sistema nel caso in cui il server di posta esterno rifiuti l'invio dell'email a causa delle dimensioni eccessive del PDF allegato.
 
 \begin{itemize}
@@ -2291,7 +2320,7 @@ L'agente si focalizza su tre aree critiche:
 Di seguito i \textit{Casi d'uso} dell'Agente Docs.
 
 
-\subsubsection{UC33: Gestione del template personalizzato per il \textit{README}}\label{uc:33}
+\subsubsection{UC34: Gestione del template personalizzato per il \textit{README}}\label{uc:34}
 Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la struttura e lo stile personalizzato per la generazione e l'aggiornamento del file \texttt{\textit{README.md}}, sovrascrivendo o ripristinando il template di default dell'Agente Docs.
 
 \begin{itemize}
@@ -2314,12 +2343,12 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la 
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC33.1}: Caricamento del file template.
-        \item \textbf{UC33.3}: Rimozione del template personalizzato.
+        \item \textbf{UC34.1}: Caricamento del file template.
+        \item \textbf{UC34.3}: Rimozione del template personalizzato.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC33.1: Caricamento del file template}\label{uc:33.1}
+\subsubsection{UC34.1: Caricamento del file template}\label{uc:34.1}
 Questo caso d'uso descrive l'azione materiale con cui l'utente fornisce al sistema il file contenente il modello personalizzato. Se era già presente un template personalizzato precedente, questo viene sovrascritto.
 
 \begin{itemize}
@@ -2327,7 +2356,7 @@ Questo caso d'uso descrive l'azione materiale con cui l'utente fornisce al siste
     \item \textbf{Trigger:} L'utente seleziona l'opzione per caricare un nuovo modello.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema mostra correttamente la sezione di personalizzazione del \textit{README} (UC33).
+        \item Il sistema mostra correttamente la sezione di personalizzazione del \textit{README} (UC34).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2341,17 +2370,17 @@ Questo caso d'uso descrive l'azione materiale con cui l'utente fornisce al siste
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC33.2: Errore formato file non valido}  Estende il passo 2 qualora il file fornito dal utente non abbia formato valido o sia strutturalmente malformato.
+        \item \textbf{UC34.2: Errore formato file non valido}  Estende il passo 2 qualora il file fornito dal utente non abbia formato valido o sia strutturalmente malformato.
     \end{itemize}
 \end{itemize}
 
 
-\subsubsection{UC33.2: Errore formato file non valido}\label{uc:33.2}
+\subsubsection{UC34.2: Errore formato file non valido}\label{uc:34.2}
 Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti di caricare un file per il template non supportato.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Trigger:} Il modulo di validazione interno fallisce nell'interpretare il file fornito durante il caricamento (UC33.1).
+    \item \textbf{Trigger:} Il modulo di validazione interno fallisce nell'interpretare il file fornito durante il caricamento (UC34.1).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente ha inserito un file privo di estensione \texttt{.md}.
@@ -2370,7 +2399,7 @@ Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti d
 \end{itemize}
 
 
-\subsubsection{UC33.3: Rimozione del template personalizzato}\label{uc:33.3}
+\subsubsection{UC34.3: Rimozione del template personalizzato}\label{uc:33.3}
 Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un template personalizzato precedentemente caricato, ripristinando così il comportamento e il template di default dell'Agente Docs.
 
 \begin{itemize}
@@ -2378,7 +2407,7 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
     \item \textbf{Trigger:} L'utente seleziona l'apposito comando grafico di eliminazione o ripristino default.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema mostra correttamente la sezione di personalizzazione del README (UC33).
+        \item Il sistema mostra correttamente la sezione di personalizzazione del README (UC34).
         \item \`E attualmente impostato un template personalizzato per il \textit{repository} selezionato.
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2393,7 +2422,7 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
 \end{itemize}
 
 
-\subsubsection{UC34: Generazione o aggiornamento del \textit{README} di Progetto}\label{uc:34}
+\subsubsection{UC35: Generazione o aggiornamento del \textit{README} di Progetto}\label{uc:35}
 Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per generare o aggiornare il file \texttt{README.md}, interfacciandosi con i servizi esterni necessari.
 
 \begin{itemize}
@@ -2416,7 +2445,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
         \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per scaricare la struttura del progetto e l'attuale file \texttt{README.md}.
-        \item Il sistema recupera l'eventuale template personalizzato del \textit{README} fornito dallo Sviluppatore (UC33); in sua assenza, carica in memoria il template di default.
+        \item Il sistema recupera l'eventuale template personalizzato del \textit{README} fornito dallo Sviluppatore (UC34); in sua assenza, carica in memoria il template di default.
         \item Il sistema compone il prompt contestuale e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la stesura del nuovo documento.
         \item Il modello \textit{AI} elabora le direttive e restituisce al sistema il contenuto aggiornato.
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento aggiornato.
@@ -2432,7 +2461,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
 \end{itemize}
 
 
-\subsubsection{UC35: Generazione della documentazione inline}\label{uc:35}
+\subsubsection{UC36: Generazione della documentazione inline}\label{uc:36}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente selezionato e generare, o aggiornare, la documentazione inline (\textit{JSDoc}) per le funzioni e le classi rilevate.
 
 \begin{itemize}
@@ -2468,12 +2497,12 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
         \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
-        \item \textbf{UC36: Gestione complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il Modello \textit{AI} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
+        \item \textbf{UC37: Gestione complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il Modello \textit{AI} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
         \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC36: Gestione complessità del codice eccessiva}\label{uc:36}
+\subsubsection{UC37: Gestione complessità del codice eccessiva}\label{uc:37}
 Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di generare una documentazione affidabile per una specifica porzione di codice a causa della sua intrinseca complessità.
 
 \begin{itemize}
@@ -2491,11 +2520,11 @@ Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di g
         \item Il sistema esclude la funzione o la classe corrente dalla stesura della \textit{Pull Request}.
         \item Il sistema compila i dati per un nuovo avviso, predisponendolo per essere mostrato nella lista di elementi strutturati del report (UC26.2.2).
         \item Il sistema valorizza i campi dell'elemento impostando la categoria come "Avviso" (UC26.2.2.1.1), la gravità come informativa (UC26.2.2.1.2) e registrando le righe di codice esatte in cui risiede la classe complessa (UC26.2.2.1.3).
-        \item Il sistema riprende l'analisi a partire dall'eventuale elemento successivo disponibile (Ritorno al passo 3 di UC35).
+        \item Il sistema riprende l'analisi a partire dall'eventuale elemento successivo disponibile (Ritorno al passo 3 di UC36).
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC37: Generazione documentazione \textit{API}}\label{uc:37}
+\subsubsection{UC38: Generazione documentazione \textit{API}}\label{uc:38}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente (nello specifico i file di \textit{controller} e di definizione delle \textit{\glo{Rotte}{rotte}}) per generare o aggiornare il file \texttt{API.md} contenente la guida tecnica degli \textit{Endpoint}.
 
 \begin{itemize}
@@ -2554,7 +2583,7 @@ L'agente si concentra su tre aree principali:
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'uso} dell'Agente \textit{OWASP}.
 
-\subsubsection{UC38: Esecuzione scansione vulnerabilità (\textit{OWASP})}\label{uc:38}
+\subsubsection{UC39: Esecuzione scansione vulnerabilità (\textit{OWASP})}\label{uc:39}
 Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente \textit{OWASP} per analizzare il codice sorgente e identificare pattern riconducibili alle vulnerabilità standard dell'\textit{OWASP Top 10}.
 
 \begin{itemize}
@@ -2591,7 +2620,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC39: Verifica conformità \textit{Policy-as-code} (\texttt{CLAUDE.md})}\label{uc:39}
+\subsubsection{UC40: Verifica conformità \textit{Policy-as-code} (\texttt{CLAUDE.md})}\label{uc:40}
 Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWASP} controlla che il codice sorgente rispetti le pratiche di sviluppo sicuro e le policy interne specificate dal team nel file di configurazione \texttt{CLAUDE.md}.
 
 \begin{itemize}
@@ -2650,7 +2679,7 @@ L'agente si concentra sulla sintesi e trasformazione del progresso di progetto a
 \subsection{\textit{Casi d'Uso}}
 Di seguito i \textit{Casi d'Uso} dell'Agente Changelog.
 
-\subsubsection{UC40: Generazione \textit{Changelog} tecnico (\textit{Dev-to-Dev})}\label{uc:40}
+\subsubsection{UC41: Generazione \textit{Changelog} tecnico (\textit{Dev-to-Dev})}\label{uc:41}
 Questo caso d'uso descrive il processo mediante il quale il sistema recupera i dati da un sistema di tracciamento esterno e orchestra l'Agente Changelog per la stesura automatica di un resoconto tecnico orientato agli sviluppatori.
 
 \begin{itemize}
@@ -2681,21 +2710,23 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC40.1}: Inserimento identificativo dello \textit{Sprint}.
+        \item \textbf{UC41.1}: Inserimento identificativo dello \textit{Sprint}.
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
+        \item \textbf{UC31: Notifica email per richiesta validazione umana.} Estende il passo 2 qualora l'utente non sia attivamente sulla piattaforma, inviando un'email per richiedere l'inserimento dello \textit{Sprint ID}.
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC41: Annullamento dell'inserimento dello \textit{Sprint} ID.} Estende il passo 3 qualora l'utente decida di interrompere l'operazione interagendo con il comando di annullamento.
+        \item \textbf{UC42: Annullamento dell'inserimento dello \textit{Sprint} ID.} Estende il passo 3 qualora l'utente decida di interrompere l'operazione interagendo con il comando di annullamento.
         \item \textbf{UC27.5: Errore per risorsa di contesto mancante.} Estende il passo 4 qualora lo \textit{Sprint ID} inserito dall'utente non esista o la risposta del server restituisca un insieme vuoto.
-        \item \textbf{UC42: Avviso e gestione task con metadati insufficienti.} Estende il passo 5 qualora il sistema rilevi all'interno dei task completati l'assenza di descrizioni o di criteri di accettazione minimi.
+        \item \textbf{UC43: Avviso e gestione task con metadati insufficienti.} Estende il passo 5 qualora il sistema rilevi all'interno dei task completati l'assenza di descrizioni o di criteri di accettazione minimi.
         \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 6 qualora il Modello \textit{AI} superi il tempo limite per l'elaborazione.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 7 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile.
+        \item \textbf{UC31: Notifica email per richiesta validazione umana.} Estende il passo 9 qualora l'utente abbia selezionato originariamente il \textit{Changelog} di Business, inviando un'email per richiedere la validazione del report tecnico e l'innesco del processo di generazione.
         \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC40.1: Inserimento identificativo dello \textit{Sprint}}\label{uc:40.1}
+\subsubsection{UC41.1: Inserimento identificativo dello \textit{Sprint}}\label{uc:41.1}
 Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da parte dell'utente, dato necessario per l'estrazione dei task completati dal sistema esterno.
 
 \begin{itemize}
@@ -2705,7 +2736,7 @@ Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \tex
     
     \item \textbf{Precondizioni}:
     \begin{itemize}
-        \item L'utente ha innescato l'operazione di generazione \textbf{Changelog} (UC40).
+        \item L'utente ha innescato l'operazione di generazione \textbf{Changelog} (UC41).
         \item Il sistema ha caricato e mostra correttamente il modulo per l'inserimento dei parametri del \textbf{Changelog}.
     \end{itemize}
     
@@ -2720,7 +2751,7 @@ Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \tex
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC41: Annullamento dell'inserimento dello \textit{Sprint} ID}\label{uc:41}
+\subsubsection{UC42: Annullamento dell'inserimento dello \textit{Sprint} ID}\label{uc:42}
 Questo caso d'uso descrive l'interruzione volontaria del processo di generazione del \textit{Changelog} qualora l'utente, alla richiesta di inserimento dello \textit{Sprint} ID, decida di non procedere.
 
 \begin{itemize}
@@ -2744,13 +2775,13 @@ Questo caso d'uso descrive l'interruzione volontaria del processo di generazione
 \end{itemize}
 
 
-\subsubsection{UC42: Avviso e gestione task con metadati insufficienti}\label{uc:42}
+\subsubsection{UC43: Avviso e gestione task con metadati insufficienti}\label{uc:43}
 Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{Changelog} rilevi la presenza di task contrassegnati come completati ma qualitativamente poveri di informazioni, chiedendo all'utente come procedere.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
     \item \textbf{Trigger:} Il modulo di analisi dati rileva che una o più \textit{User Stories} estratte presentano campi testuali vuoti o sotto la soglia minima di caratteri stabilita.
-    \item \textbf{Precondizioni:} Il sistema ha completato il filtraggio dei task dello Sprint (Passo 4 di UC40).
+    \item \textbf{Precondizioni:} Il sistema ha completato il filtraggio dei task dello Sprint (Passo 4 di UC41).
     \item \textbf{Postcondizioni:} 
     \begin{itemize}
         \item I task privi di metadati vengono scartati e l'elaborazione prosegue esclusivamente con i task validi.
@@ -2761,21 +2792,22 @@ Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{C
         \item Il sistema mostra a schermo una finestra di avviso contenente l'elenco degli ID dei task informativamente insufficienti, presentando le opzioni per annullare o per proseguire.
         \item L'utente interagisce con il comando "Procedi escludendo i task incompleti".
         \item Il sistema rimuove le \textit{User Stories} segnalate dal \textit{payload} da inviare al Modello \textit{AI}.
-        \item L'estensione termina e il flusso principale riprende dal passo 5 di UC40.
+        \item L'estensione termina e il flusso principale riprende dal passo 5 di UC41.
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC43: Annullamento generazione per metadati mancanti.} Estende il passo 3 qualora l'utente scelga l'opzione "Annulla operazione", bloccando il processo per recarsi sul Sistema di Task Management ad integrare manualmente i testi mancanti.
+        \item \textbf{UC31: Notifica email per richiesta validazione umana}. Estende il passo 2 qualora l'utente non sia attivamente sulla piattaforma, inviando un'email per notificare la sospensione e richiedere un intervento manuale.
+        \item \textbf{UC44: Annullamento generazione per metadati mancanti.} Estende il passo 3 qualora l'utente scelga l'opzione "Annulla operazione", bloccando il processo per recarsi sul Sistema di Task Management ad integrare manualmente i testi mancanti.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC43: Annullamento generazione per metadati mancanti}\label{uc:43}
+\subsubsection{UC44: Annullamento generazione per metadati mancanti}\label{uc:44}
 Questo caso d'uso descrive l'interruzione definitiva del processo di generazione qualora l'utente decida di non procedere con un set di dati incompleto.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
     \item \textbf{Trigger:} L'utente seleziona il comando di annullamento all'interno della finestra di avviso sui metadati.
-    \item \textbf{Precondizioni:} Il sistema sta mostrando l'elenco dei task privi di descrizione (UC42).
+    \item \textbf{Precondizioni:} Il sistema sta mostrando l'elenco dei task privi di descrizione (UC43).
     \item \textbf{Postcondizioni:} Il processo viene abortito e lo stato dell'operazione passa a "Fallito".
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2785,7 +2817,7 @@ Questo caso d'uso descrive l'interruzione definitiva del processo di generazione
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC44: Generazione \textit{Changelog} di business (\textit{Dev-to-Client})}\label{uc:44}
+\subsubsection{UC45: Generazione \textit{Changelog} di business (\textit{Dev-to-Client})}\label{uc:45}
 Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Changelog} tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
 
 \begin{itemize}
@@ -2794,7 +2826,7 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
     \item \textbf{Trigger:} L'utente clicca sul comando "Accetta e genera Business" presente all'interno del report tecnico generato precedentemente.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato e sta mostrando all'utente il report del \textit{Changelog} tecnico (UC40).
+        \item Il sistema ha generato e sta mostrando all'utente il report del \textit{Changelog} tecnico (UC41).
         \item L'utente aveva inizialmente selezionato l'operazione "Generazione changelog di buisiness" (UC21.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2813,23 +2845,23 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC45: Annullamento della generazione del \textit{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
+        \item \textbf{UC46: Annullamento della generazione del \textit{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
         \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per rispondere.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita non sia formattata correttamente in \textit{Markdown}.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC45: Annullamento della generazione del \textit{Changelog} di business}\label{uc:45}
+\subsubsection{UC46: Annullamento della generazione del \textit{Changelog} di business}\label{uc:46}
 Questo caso d'uso descrive l'interruzione del processo di generazione del \textit{Changelog} di business qualora l'utente, dopo aver visionato il report tecnico, decida di non procedere oltre.
 
 \begin{itemize}
     \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
     
-    \item \textbf{Trigger}: L'utente interagisce con il comando grafico di rifiuto/annullamento presente nel report tecnico (UC26.2.5).
+    \item \textbf{Trigger}: L'utente interagisce con il comando grafico di annullamento presente nel report tecnico (UC26.2.5).
     
     \item \textbf{Precondizioni}:
     \begin{itemize}
-        \item Il sistema ha generato e sta mostrando all'utente il report del \textit{Changelog} tecnico (UC40).
+        \item Il sistema ha generato e sta mostrando all'utente il report del \textit{Changelog} tecnico (UC41).
         \item L'operazione di generazione di business è in attesa di conferma umana.
     \end{itemize}
     
@@ -2870,159 +2902,161 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     \endhead
 
-    RF.37 & Obbligatorio & Il sistema deve consentire a un utente non autenticato di registrarsi creando un nuovo account e inserendo nome, cognome, email e password. & UC1, UC1.1, UC1.2, UC1.3, UC1.4 \\ \hline
-    RF.38 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & UC1.5 \\ \hline
-    RF.39 & Obbligatorio & Il sistema deve validare i dati inseriti (formato dell'email, robustezza della password) e mostrare un messaggio d'errore in caso di mancata conformità. & UC3 \\ \hline
-    RF.40 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC2 \\ \hline
-    RF.41 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC4, UC4.1, UC4.2 \\ \hline
-    RF.42 & Obbligatorio & Il sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC5 \\ \hline
-    RF.0 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Piattaforma GitHub} e Sistema di Task Management). & UC6, UC6.1, UC6.2, UC7, UC8 \\ \hline
-    RF.1 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC9, UC9.1, UC9.2, UC9.3, UC9.4 \\ \hline
-    RF.2 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC9.2, UC9.5
+    RF.1 & Obbligatorio & Il sistema deve consentire a un utente non autenticato di registrarsi creando un nuovo account e inserendo nome, cognome, email e password. & UC1, UC1.1, UC1.2, UC1.3, UC1.4 \\ \hline
+    RF.2 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & UC1.5 \\ \hline
+    RF.3 & Obbligatorio & Il sistema deve validare i dati inseriti (formato dell'email, robustezza della password) e mostrare un messaggio d'errore in caso di mancata conformità. & UC3 \\ \hline
+    RF.4 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC2 \\ \hline
+    RF.5 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC4, UC4.1, UC4.2 \\ \hline
+    RF.6 & Obbligatorio & Il sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC5 \\ \hline
+    RF.7 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Piattaforma GitHub} e Sistema di Task Management). & UC6, UC6.1, UC6.2, UC7, UC8 \\ \hline
+    RF.8 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC9, UC9.1, UC9.2, UC9.3, UC9.4 \\ \hline
+    RF.9 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC9.2, UC9.5
     \\ \hline
-    RF.48 & Obbligatorio & Il sistema deve validare sintatticamente l'URL del repository inserito e mostrare un messaggio di errore se il formato non è valido. & UC10
+    RF.10 & Obbligatorio & Il sistema deve validare sintatticamente l'URL del repository inserito e mostrare un messaggio di errore se il formato non è valido. & UC10
     \\ \hline
-    RF.49 & Obbligatorio & Il sistema deve verificare la raggiungibilità del repository e la validità dei permessi d'accesso, mostrando un messaggio di errore in caso di fallimento. & UC11
+    RF.11 & Obbligatorio & Il sistema deve verificare la raggiungibilità del repository e la validità dei permessi d'accesso, mostrando un messaggio di errore in caso di fallimento. & UC11
     \\ \hline
-    RF.50 & Obbligatorio & Il sistema deve verificare l'esistenza del branch specificato sul repository remoto e mostrare un messaggio di errore qualora non venga trovato. & UC12
+    RF.12 & Obbligatorio & Il sistema deve verificare l'esistenza del branch specificato sul repository remoto e mostrare un messaggio di errore qualora non venga trovato. & UC12
     \\ \hline
-    RF.51 & Obbligatorio & Il sistema deve verificare l'esistenza dell'hash del commit specificato e la sua appartenenza al branch selezionato, mostrando un errore in caso negativo. & UC13
+    RF.13 & Obbligatorio & Il sistema deve verificare l'esistenza dell'hash del commit specificato e la sua appartenenza al branch selezionato, mostrando un errore in caso negativo. & UC13
     \\ \hline
-    RF.52 & Obbligatorio & Il sistema deve verificare l'esistenza dell'identificativo della Pull Request specificata, mostrando un messaggio di errore qualora non venga trovata. & UC14
+    RF.14 & Obbligatorio & Il sistema deve verificare l'esistenza dell'identificativo della Pull Request specificata, mostrando un messaggio di errore qualora non venga trovata. & UC14
     \\ \hline
-    RF.3 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC15
+    RF.15 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC15
     \\ \hline
-    RF.4 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC16, UC16.2, UC16.3 \\ 
+    RF.16 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC16, UC16.2, UC16.3 \\ 
     \hline
-    RF.5 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC19, UC27.4 \\ 
+    RF.17 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC19, UC27.4 \\ 
     \hline
-    RF.6 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC16.1 \\ 
+    RF.18 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC16.1 \\ 
     \hline
-    RF.53 & Obbligatorio & Il sistema deve bloccare il proseguimento e mostrare un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & UC17 \\ 
+    RF.19 & Obbligatorio & Il sistema deve bloccare il proseguimento e mostrare un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & UC17 \\ 
     \hline
-    RF.54 & Obbligatorio & Il sistema deve verificare l'effettiva esistenza e accessibilità degli elementi selezionati nel \textit{Repository} remoto, mostrando un messaggio di errore in caso di fallimento. & UC18 \\ 
+    RF.20 & Obbligatorio & Il sistema deve verificare l'effettiva esistenza e accessibilità degli elementi selezionati nel \textit{Repository} remoto, mostrando un messaggio di errore in caso di fallimento. & UC18 \\ 
     \hline
-    RF.43 & Obbligatorio & Il sistema deve fornire un'interfaccia grafica (GUI) che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti, permettendo all'utente una selezione esplicita. & UC20, UC21, UC21.1 \\ 
+    RF.21 & Obbligatorio & Il sistema deve fornire un'interfaccia grafica (GUI) che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti, permettendo all'utente una selezione esplicita. & UC20, UC21, UC21.1 \\ 
     \hline
-    RF.56 & Obbligatorio & Il sistema deve mostrare a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'\textbf{Orchestratore}. & UC20.1, UC20.1.1 \\ 
+    RF.22 & Obbligatorio & Il sistema deve mostrare a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'\textbf{Orchestratore}. & UC20.1, UC20.1.1 \\ 
     \hline
-    RF.57 & Obbligatorio & Il sistema deve mostrare a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & UC20.1, UC20.1.2 \\ 
+    RF.23 & Obbligatorio & Il sistema deve mostrare a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & UC20.1, UC20.1.2 \\ 
     \hline
-    RF.44 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di selezionare e avviare più operazioni diverse in contemporanea. & UC21, UC21.1, UC21.3 \\ 
+    RF.24 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di selezionare e avviare più operazioni diverse in contemporanea. & UC21, UC21.1, UC21.3 \\ 
     \hline
-    RF.58 & Obbligatorio & Il sistema deve permettere all'utente di deselezionare un'operazione precedentemente spuntata tramite l'interfaccia grafica, rimuovendola dalla coda di avvio. & UC21.1 \\ 
+    RF.25 & Obbligatorio & Il sistema deve permettere all'utente di deselezionare un'operazione precedentemente spuntata tramite l'interfaccia grafica, rimuovendola dalla coda di avvio. & UC21.1 \\ 
     \hline
-    RF.78 & Opzionale & Il sistema deve consentire all'utente di abilitare o disabilitare la ricezione del report generato tramite notifica email. & UC21, UC21.2 \\ 
+    RF.26 & Opzionale & Il sistema deve consentire all'utente di abilitare o disabilitare la ricezione di comunicazioni via email, includendo la consegna dei report completati e le richieste di intervento manuale in piattaforma. & UC21, UC21.2 \\ 
     \hline
-    RF.45 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & UC21.3 \\ 
+    RF.27 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & UC21.3 \\ 
     \hline
-    RF.59 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista o senza aver prima configurato i parametri di contesto obbligatori per le operazioni selezionate. & UC21.4, UC21.5 \\ 
+    RF.28 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista o senza aver prima configurato i parametri di contesto obbligatori per le operazioni selezionate. & UC21.4, UC21.5 \\ 
     \hline
-    RF.46 & Obbligatorio & Il sistema deve mostrare all'utente una sezione o dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'\textbf{Orchestratore}. & UC22 \\ 
+    RF.29 & Obbligatorio & Il sistema deve mostrare all'utente una sezione o dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'\textbf{Orchestratore}. & UC22 \\ 
     \hline
-    RF.60 & Obbligatorio & Il sistema deve renderizzare a schermo il nome di ogni operazione in fase di elaborazione e mostrare un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato" o "Fallito". & UC22.1, UC22.1.1, UC22.1.2 \\ 
+    RF.30 & Obbligatorio & Il sistema deve renderizzare a schermo il nome di ogni operazione in fase di elaborazione e mostrare un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato" o "Fallito". & UC22.1, UC22.1.1, UC22.1.2 \\ 
     \hline
-    RF.61 & Obbligatorio & Il sistema deve abilitare e rendere interattivi i controlli grafici per le fasi successive  esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & UC22, UC25 \\ 
+    RF.31 & Obbligatorio & Il sistema deve abilitare e rendere interattivi i controlli grafici per le fasi successive  esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & UC22, UC25 \\ 
     \hline
-    RF.47 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore, mostrando il messaggio di fallimento per la \textit{task} interessata e permettendo la regolare prosecuzione delle altre \textit{task} parallele. & UC23, UC21.3, UC22.1.2 \\ 
+    RF.32 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore, mostrando il messaggio di fallimento per la \textit{task} interessata e permettendo la regolare prosecuzione delle altre \textit{task} parallele. & UC23, UC21.3, UC22.1.2 \\ 
     \hline
-    RF.7 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC26, UC26.1, UC26.2, UC25 \\ 
+    RF.33 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC26, UC26.1, UC26.2, UC25 \\ 
     \hline
-    RF.67 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del \textit{repository Git} analizzato, il riferimento base e l'ambito di analisi, oltre al tempo di esecuzione e data e ora di completamento. & UC26.1, UC26.1.1, UC26.1.2, UC26.1.3, UC26.1.4, UC26.1.5, UC26.1.6 \\ 
+    RF.34 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del \textit{repository Git} analizzato, il riferimento base e l'ambito di analisi, oltre al tempo di esecuzione e data e ora di completamento. & UC26.1, UC26.1.1, UC26.1.2, UC26.1.3, UC26.1.4, UC26.1.5, UC26.1.6 \\ 
     \hline
-    RF.68 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & UC26.2.4, UC34 \\ 
+    RF.35 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & UC26.2.4, UC35 \\ 
     \hline
-    RF.8 & Obbligatorio & Il sistema deve garantire un approccio \textit{human-in-the-loop} restituendo le proposte di modifica in formati non distruttivi e soggetti a revisione esterna, demandando all'utente l'applicazione definitiva. & UC26.2.3, UC26.2.4, UC34, UC35, UC37 \\ 
+    RF.36 & Obbligatorio & Il sistema deve garantire un approccio \textit{human-in-the-loop} restituendo le proposte di modifica in formati non distruttivi e soggetti a revisione esterna, demandando all'utente l'applicazione definitiva. & UC26.2.3, UC26.2.4, UC35, UC36, UC38 \\ 
     \hline
-    RF.9 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC27, UC40 \\ 
+    RF.37 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo in caso di fallimento durante l’esecuzione di un agente, indicando, ove possibile, una possibile azione correttiva. & UC27, UC41 \\ 
     \hline
-    RF.10 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC27.1 \\ 
+    RF.38 & Desiderabile & Il sistema deve bloccare l'esecuzione di un agente e delegare la visualizzazione di un messaggio d'errore qualora la richiesta superi i limiti di utilizzo API imposti. & UC27.1 \\ 
     \hline
-    RF.11 & Desiderabile & Il sistema deve interrompere l'esecuzione di un agente e mostrare un messaggio di errore all'utente qualora il tempo di elaborazione del modello \textit{AI} (\textit{LLM}) superi la soglia massima consentita (Timeout di risposta). & UC27.2, UC35, UC37, UC 12, UC 13, UC 14, UC 18, UC 19 \\ 
+    RF.39 & Desiderabile & Il sistema deve interrompere l'esecuzione di un agente e mostrare un messaggio di errore all'utente qualora il tempo di elaborazione del modello \textit{AI} (\textit{LLM}) superi la soglia massima consentita (Timeout di risposta). & UC27.2, UC36, UC38, UC 12, UC 13, UC 14, UC 18, UC 19 \\ 
     \hline
-    RF.62 & Obbligatorio & l sistema deve interrompere l'esecuzione e mostrare un messaggio di errore qualora il formato di output restituito dal modello \textit{LLM} non sia parsabile, interpretabile o validabile secondo le strutture dati attese. &  UC27.3 \\ 
+    RF.40 & Obbligatorio & l sistema deve interrompere l'esecuzione e mostrare un messaggio di errore qualora il formato di output restituito dal modello \textit{LLM} non sia parsabile, interpretabile o validabile secondo le strutture dati attese. &  UC27.3 \\ 
     \hline
-    RF.63 & Obbligatorio & l sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, strettamente necessaria per l'analisi (es. file \texttt{CLAUDE.md}, Sprint ID), risulti mancante o non trovata. & UC27.5 \\ 
+    RF.41 & Obbligatorio & l sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, strettamente necessaria per l'analisi (es. file \texttt{CLAUDE.md}, Sprint ID), risulti mancante o non trovata. & UC27.5 \\ 
     \hline
-    RF.64 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, pur essendo presente, risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & UC27.6 \\ 
+    RF.42 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto, pur essendo presente, risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & UC27.6 \\ 
     \hline
-    RF.72 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente con un messaggio di errore qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & UC27.7 \\ 
+    RF.43 & Obbligatorio & Il sistema deve interrompere l'elaborazione di un agente e notificare l'utente con un messaggio di errore qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & UC27.7 \\ 
     \hline
-    RF.12 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF e notificare l'errore nel caso non sia possibile. & UC28, UC29 \\ 
+    RF.44 & Obbligatorio & Il sistema deve consentire l’esportazione del report generato da un agente in formato PDF e notificare l'errore nel caso non sia possibile. & UC28, UC29 \\ 
     \hline
-    RF.79 & Opzionale & Il sistema deve inviare automaticamente un'email all'indirizzo dell'utente contenente il report PDF in allegato, qualora l'operazione sia completata e la relativa preferenza sia attiva. & UC30, UC28 \\ 
+    RF.45 & Opzionale & Il sistema deve inviare automaticamente un'email all'indirizzo dell'utente contenente il report PDF in allegato, qualora l'operazione sia completata e la relativa preferenza sia attiva. & UC30, UC28 \\ 
     \hline
-    RF.80 & Opzionale & Il sistema deve gestire il fallimento dell'invio dell'email (es. server SMTP irraggiungibile) mantenendo la visualizzazione in piattaforma. & UC31\\ 
+    RF.46 & Opzionale & Il sistema deve inviare automaticamente un'email di notifica contenente un collegamento diretto alla piattaforma, qualora un'operazione richieda un intervento manuale o una validazione umana per proseguire. & UC31, UC41, UC43\\ 
     \hline
-    RF.81 & Opzionale & Il sistema deve inviare l'email priva di allegato, includendo nel corpo del messaggio il collegamento diretto al report in piattaforma, qualora il file generato superi i limiti dimensionali imposti dal server SMTP. & UC32 \\ 
+    RF.47 & Opzionale & Il sistema deve gestire il fallimento dell'invio dell'email (es. server SMTP irraggiungibile) mantenendo la visualizzazione in piattaforma. & UC32\\ 
     \hline
-    RF.13 & Opzionale & Il sistema deve mantenere un archivio storico dei report e permettere all'utente di visualizzare una pagina contenente la lista aggregata dei report generati in passato. & UC24 \\ 
+    RF.48 & Opzionale & Il sistema deve inviare l'email priva di allegato, includendo nel corpo del messaggio il collegamento diretto al report in piattaforma, qualora il file generato superi i limiti dimensionali imposti dal server SMTP. & UC33 \\ 
     \hline
-    RF.65 & Opzionale & Il sistema deve mostrare a schermo, per ogni singolo elemento all'interno dello storico dei report, il relativo codice identificativo univoco e il titolo, oltre alla data e l'ora di completamento. & UC24.1, UC24.1.1, UC24.1.2, UC24.1.3, UC24.1.4 \\ 
+    RF.49 & Opzionale & Il sistema deve mantenere un archivio storico dei report e permettere all'utente di visualizzare una pagina contenente la lista aggregata dei report generati in passato. & UC24 \\ 
     \hline
-    RF.66 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati. & UC24 \\ 
+    RF.50 & Opzionale & Il sistema deve mostrare a schermo, per ogni singolo elemento all'interno dello storico dei report, il relativo codice identificativo univoco e il titolo, oltre alla data e l'ora di completamento. & UC24.1, UC24.1.1, UC24.1.2, UC24.1.3, UC24.1.4 \\ 
     \hline
-    RF.14 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file \texttt{\textit{README}.md}. & UC33, UC33.1 \\ 
+    RF.51 & Opzionale & Il sistema deve mantenere un archivio storico dei report generati. & UC24 \\ 
     \hline
-    RF.69 & Opzionale & Il sistema deve validare il formato del file template caricato e impedire l'operazione mostrando un messaggio di errore qualora l'estensione non sia supportata (.md) o il file risulti malformato. & UC33.2 \\ 
+    RF.52 & Opzionale & Il sistema deve permettere all'utente di impostare un modello di stile personalizzato per il file \texttt{\textit{README}.md}. & UC34, UC34.1 \\ 
     \hline
-    RF.70 & Opzionale & Il sistema deve permettere all'utente di rimuovere il template personalizzato precedentemente caricato, ripristinando il modello di default dell'agente. & UC33, UC33.3 \\ 
+    RF.53 & Opzionale & Il sistema deve validare il formato del file template caricato e impedire l'operazione mostrando un messaggio di errore qualora l'estensione non sia supportata (.md) o il file risulti malformato. & UC34.2 \\ 
     \hline
-    RF.15 & Obbligatorio & Il sistema deve generare o aggiornare il file \texttt{\textit{README}.md} del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC34 \\ 
+    RF.54 & Opzionale & Il sistema deve permettere all'utente di rimuovere il template personalizzato precedentemente caricato, ripristinando il modello di default dell'agente. & UC34, UC34.3 \\ 
     \hline
-    RF.71 & Obbligatorio & Il sistema deve inoltrare le proposte di modifica documentale generate dagli agenti aprendo automaticamente una \textit{Pull Request} sul \textit{Repository Git} di destinazione. & UC34, UC35, UC37 \\ 
+    RF.55 & Obbligatorio & Il sistema deve generare o aggiornare il file \texttt{\textit{README}.md} del progetto in modo coerente con lo stato corrente del Repository e in lingua inglese. & UC35 \\ 
     \hline
-    RF.16 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC35 \\ 
+    RF.56 & Obbligatorio & Il sistema deve inoltrare le proposte di modifica documentale generate dagli agenti aprendo automaticamente una \textit{Pull Request} sul \textit{Repository Git} di destinazione. & UC35, UC36, UC38 \\ 
     \hline
-    RF.17 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC35 \\ 
+    RF.57 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione inline del codice (JSDoc) per gli elementi sorgente supportati. & UC36 \\ 
     \hline
-    RF.18 & Desiderabile & Il sistema deve escludere dalla generazione automatica e segnalare tramite un avviso strutturato nel report (comprensivo delle righe di riferimento) le porzioni di codice o classi la cui logica risulta troppo complessa per una documentazione affidabile. & UC36 \\ 
+    RF.58 & Obbligatorio & Il sistema deve correggere documentazione inline esistente quando questa non è più coerente con il codice. & UC36 \\ 
     \hline
-    RF.19 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle \textit{API} del progetto. & UC37\\
+    RF.59 & Desiderabile & Il sistema deve escludere dalla generazione automatica e segnalare tramite un avviso strutturato nel report (comprensivo delle righe di riferimento) le porzioni di codice o classi la cui logica risulta troppo complessa per una documentazione affidabile. & UC37 \\ 
     \hline
-    RF.73 & Obbligatorio & Il sistema deve identificare, estrarre e analizzare i file di \textit{routing} e i \textit{controller} dal codice sorgente al fine di rilevare gli \textit{Endpoint}, i metodi HTTP, i \textit{Payload} e i formati di risposta per la generazione del documento \textit{API}.md. & UC37\\
+    RF.60 & Obbligatorio & Il sistema deve generare o aggiornare la documentazione delle \textit{API} del progetto. & UC38\\
     \hline
-    RF.21 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC38 \\
+    RF.61 & Obbligatorio & Il sistema deve identificare, estrarre e analizzare i file di \textit{routing} e i \textit{controller} dal codice sorgente al fine di rilevare gli \textit{Endpoint}, i metodi HTTP, i \textit{Payload} e i formati di risposta per la generazione del documento \textit{API}.md. & UC38\\
     \hline
-    RF.22 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC26.2.2.1.3, UC38 \\
+    RF.62 & Obbligatorio & Il sistema deve eseguire un'analisi di sicurezza del codice alla ricerca di vulnerabilità riconducibili alle categorie \textit{OWASP} rilevanti. & UC39 \\
     \hline
-    RF.23 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC26.2.2.1.1, UC26.2.2.1.2, UC38 \\
+    RF.63 & Obbligatorio & Il sistema deve associare ogni vulnerabilità rilevata almeno al file interessato e, se disponibile, alla porzione di codice coinvolta. & UC26.2.2.1.3, UC39 \\
     \hline
-    RF.55 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC26.2.2, UC38 \\
+    RF.64 & Obbligatorio & Il sistema deve classificare le vulnerabilità rilevate indicando almeno categoria \textit{OWASP} e livello di gravità. & UC26.2.2.1.1, UC26.2.2.1.2, UC39 \\
     \hline
-    RF.24 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC39 \\
+    RF.65 & Obbligatorio &  I risultati dell’analisi di sicurezza devono riportare il tipo di problematica rilevata, il livello di gravità e, se disponibile, il riferimento al file o alla porzione di codice interessata. & UC26.2.2, UC39 \\
     \hline
-    RF.25 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC26, UC38, UC39 \\ 
+    RF.66 & Obbligatorio & Il sistema deve verificare la conformità del codice rispetto alle policy di sviluppo sicuro definite dal team nel file CLAUDE.md. & UC40 \\
     \hline
-    RF.26 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da inserire nel report. & UC26.2.3, UC38, UC39 \\
+    RF.67 & Obbligatorio & Il sistema deve generare suggerimenti di remediation per vulnerabilità o violazioni di policy rilevate. & UC26, UC39, UC40 \\ 
     \hline
-    RF.27 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC26.2.1, UC38, UC39 \\ 
+    RF.68 & Obbligatorio & Quando la problematica è sufficientemente localizzata nel codice, il sistema deve poter generare uno snippet di codice correttivo da inserire nel report. & UC26.2.3, UC39, UC40 \\
     \hline
-    RF.28 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC40 \\
+    RF.69 & Obbligatorio & Quando non è possibile proporre in modo affidabile uno snippet locale, il sistema deve generare una descrizione testuale della remediation da effettuare. & UC26.2.1, UC39, UC40 \\ 
     \hline
-    RF.29 & Obbligatorio & Il sistema deve filtrare le User Stories e i task completati relativi a uno specifico Sprint. & UC40 \\
+    RF.70 & Obbligatorio & Il sistema deve recuperare, da un sistema di Task Management esterno, le User Stories e i task completati relativi a uno specifico Sprint. & UC41 \\
     \hline
-    RF.30 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC40 \\
+    RF.71 & Obbligatorio & Il sistema deve filtrare le User Stories e i task completati relativi a uno specifico Sprint. & UC41 \\
     \hline
-    RF.31 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC40 \\ 
+    RF.72 & Obbligatorio & Il sistema deve poter identificare lo Sprint di riferimento attraverso la label contenente il codice dello Sprint associata alle issue o ai task. & UC41 \\
     \hline
-    RF.32 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC42 \\
+    RF.73 & Obbligatorio & Il sistema deve estrarre dai task selezionati almeno titolo, descrizione, criteri di accettazione e commenti rilevanti. & UC41 \\ 
     \hline
-    RF.76 & Obbligatorio & Il sistema deve consentire all'utente di annullare l'operazione di generazione del \textit{Changelog} qualora vengano rilevati task con metadati insufficienti.. & UC43 \\
+    RF.74 & Obbligatorio & Il sistema deve rilevare task con metadati insufficienti e segnalarli all’utente, escludendoli dal flusso di generazione automatica del \textit{Changelog}. & UC43 \\
     \hline
-    RF.34 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC40, UC26.2.1 \\
+    RF.75 & Obbligatorio & Il sistema deve consentire all'utente di annullare l'operazione di generazione del \textit{Changelog} qualora vengano rilevati task con metadati insufficienti.. & UC44 \\
     \hline
-    RF.74 & Obbligatorio & Il sistema deve permettere all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da analizzare. & UC40.1 \\
+    RF.76 & Obbligatorio & Il sistema deve generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai task validati dello Sprint. & UC41, UC26.2.1 \\
     \hline
-    RF.82 & Obbligatorio & Il sistema deve consentire all'utente di annullare volontariamente l'operazione di generazione del \textit{Changelog} durante la fase di richiesta dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID), bloccando l'esecuzione dell'agente. & UC41 \\
+    RF.77 & Obbligatorio & Il sistema deve permettere all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da analizzare. & UC41.1 \\
     \hline
-    RF.35 & Opzionale &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC40, UC26 \\
+    RF.78 & Obbligatorio & Il sistema deve consentire all'utente di annullare volontariamente l'operazione di generazione del \textit{Changelog} durante la fase di richiesta dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID), bloccando l'esecuzione dell'agente. & UC42 \\
     \hline
-    RF.75 & Obbligatorio & Il sistema deve fornire un comando, all'interno del report del \textit{Changelog} Tecnico, per innescare la traduzione in \textit{Changelog} di Business. & UC44 \\
+    RF.79 & Opzionale &  Il \textit{Changelog} tecnico deve includere i collegamenti ipertestuali e gli identificativi dei ticket di origine, quando tali informazioni sono disponibili. & UC41, UC26 \\
     \hline
-    RF.36 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC44, UC26.2.1 \\
+    RF.80 & Obbligatorio & Il sistema deve fornire un comando, all'interno del report del \textit{Changelog} Tecnico, per innescare la traduzione in \textit{Changelog} di Business. & UC45 \\
     \hline
-    RF.77 & Obbligatorio & Il sistema deve permettere all'utente di annullare la generazione del \textit{Changelog} di business dopo aver visionato il report tecnico. & UC45, UC26.2.5 \\
+    RF.81 & Obbligatorio & Il sistema deve generare un \textit{Changelog} orientato al business, comprensibile a stakeholder non tecnici, a partire dal \textit{Changelog} tecnico, generato dai dati validati dello Sprint. & UC45, UC26.2.1 \\
+    \hline
+    RF.82 & Obbligatorio & Il sistema deve permettere all'utente di annullare la generazione del \textit{Changelog} di business dopo aver visionato il report tecnico. & UC46, UC26.2.5 \\
     \hline
 
 \end{xltabular}
@@ -3058,7 +3092,7 @@ RQ.5 & Obbligatorio & Il codice sorgente prodotto deve garantire alti standard d
 \hline
 RQ.6 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (OB\_PROD\_08) del Piano di Qualifica. & Capitolato C2, PdQ(OB\_PROD\_08) \\ 
 \hline
-RQ.7 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC34, UC35, UC37, PdQ(OB\_PROD\_02) \\
+RQ.7 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore del 85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (OB\_PROD\_02) definita nel Piano di Qualifica. & UC35, UC36, UC38, PdQ(OB\_PROD\_02) \\
 \hline
 RQ.8 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 45 secondi. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (OB\_PROD\_05) definita nel Piano di Qualifica. & UC22, PdQ(OB\_PROD\_05) \\ 
 \hline
@@ -3094,49 +3128,49 @@ RQ.13 & Desiderabile & Il processo di verifica delle credenziali e autenticazion
     \hline
     \endhead
 
-    RV.0 & Obbligatorio & Gli agenti devono essere evocati da un \textbf{Orchestratore} che deve essere sviluppato internamente al progetto. La sua logica di smistamento delle richieste deve essere puramente deterministica e non deve basarsi su agenti o modelli \textit{LLM}. & Verbale esterno 2026/06/08 \\
+    RV.1 & Obbligatorio & Gli agenti devono essere evocati da un \textbf{Orchestratore} che deve essere sviluppato internamente al progetto. La sua logica di smistamento delle richieste deve essere puramente deterministica e non deve basarsi su agenti o modelli \textit{LLM}. & Verbale esterno 2026/06/08 \\
     \hline
-    RV.1 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
+    RV.2 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.2 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
+    RV.3 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.3 & Obbligatorio & Il sitema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
+    RV.4 & Obbligatorio & Il sitema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
     \hline
-    RV.4 & Obbligatorio & Il prodotto deve essere sviluppato ed eseguito come un'applicazione Web che deve essere compatibile ed eseguibile senza anomalie grafiche sulle versioni più recenti dei principali browser (Google Chrome v145 o superiore, Mozilla Firefox v145 o superiore, Microsoft Edge v145 o superiore). & Capitolato C2 \\
+    RV.5 & Obbligatorio & Il prodotto deve essere sviluppato ed eseguito come un'applicazione Web che deve essere compatibile ed eseguibile senza anomalie grafiche sulle versioni più recenti dei principali browser (Google Chrome v145 o superiore, Mozilla Firefox v145 o superiore, Microsoft Edge v145 o superiore). & Capitolato C2 \\
     \hline
-    RV.5 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
+    RV.6 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.6 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
+    RV.7 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
     \hline
-    RV.7 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
+    RV.8 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
     \hline
-    RV.8 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript , utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.9 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript , utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.9 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework NestJS. &  Verbale interno 2026/06/02 \\
+    RV.10 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework NestJS. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.10 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework LangGraph. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.11 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework LangGraph. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.11 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su MongoDB per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.12 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su MongoDB per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.12 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da AWS Bedrock. &  Verbale interno 2026/06/02 \\
+    RV.13 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da AWS Bedrock. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.13 & Obbligatorio & L'agente preposto all'analisi di sicurezza (\textit{OWASP}) deve essere istruito utilizzando specificatamente il modello Anthropic Claude. &  Verbale interno 2026/06/02 \\
+    RV.14 & Obbligatorio & L'agente preposto all'analisi di sicurezza (\textit{OWASP}) deve essere istruito utilizzando specificatamente il modello Anthropic Claude. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.14 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.15 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.15 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
+    RV.16 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
     \hline
-    RV.16 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
+    RV.17 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
     \hline
-    RV.17 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
+    RV.18 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
     \hline
-    RV.18 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
+    RV.19 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
     \hline
-    RV.19 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
+    RV.20 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
     \hline
-    RV.20 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
+    RV.21 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
     \hline
-    RV.21 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
+    RV.22 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
     \hline
     
 \end{xltabular}
@@ -3159,15 +3193,15 @@ RQ.13 & Desiderabile & Il processo di verifica delle credenziali e autenticazion
     \hline
     \endhead
 
-    RS.5 & Obbligatorio & Il sistema deve memorizzare le password degli utenti nel database esclusivamente in formato cifrato, applicando tecniche di hashing. & UC1 \\
+    RS.1 & Obbligatorio & Il sistema deve memorizzare le password degli utenti nel database esclusivamente in formato cifrato, applicando tecniche di hashing. & UC1 \\
     \hline
-    RS.0 & Obbligatorio & Il sistema deve memorizzare i token di accesso e le credenziali fornite dall'utente esclusivamente in formato cifrato all'interno del proprio livello di persistenza. & UC6 \\
+    RS.2 & Obbligatorio & Il sistema deve memorizzare i token di accesso e le credenziali fornite dall'utente esclusivamente in formato cifrato all'interno del proprio livello di persistenza. & UC6 \\
     \hline
-    RS.1 & Obbligatorio & L'architettura del sistema deve impedire permessi di scrittura automatica sul \textit{repository Git} da parte degli agenti autonomi. & Verbale esterno 2026/03/23 \\
+    RS.3 & Obbligatorio & L'architettura del sistema deve impedire permessi di scrittura automatica sul \textit{repository Git} da parte degli agenti autonomi. & Verbale esterno 2026/03/23 \\
     \hline
-    RS.3 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC6 \\
+    RS.4 & Obbligatorio & L’accesso a Repository, sistemi di Task Management e servizi esterni deve avvenire tramite credenziali, token o chiavi API validi e coerenti con i permessi richiesti dall’operazione. & UC6 \\
     \hline
-    RS.4 & Desiderabile & Il sistema dovrebbe interfacciarsi con i servizi LLM esterni utilizzando policy o tier di servizio API che garantiscano che il codice sorgente analizzato non venga trattenuto o utilizzato per l'addestramento di modelli di terze parti. & Capitolato C2 \\
+    RS.5 & Desiderabile & Il sistema dovrebbe interfacciarsi con i servizi LLM esterni utilizzando policy o tier di servizio API che garantiscano che il codice sorgente analizzato non venga trattenuto o utilizzato per l'addestramento di modelli di terze parti. & Capitolato C2 \\
     \hline
     
 \end{xltabular}
