@@ -992,7 +992,7 @@ Questo caso d'uso descrive lo scenario in cui uno o più elementi selezionati da
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC19: Errore superamento limiti dimensionali dell'ambito}\label{19}
+\subsubsection{UC19: Errore superamento limiti dimensionali dell'ambito}\label{uc:19}
 Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di file scelti superi la capacità massima dei modelli LLM incaricati dell'analisi.
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
@@ -2399,7 +2399,7 @@ Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti d
 \end{itemize}
 
 
-\subsubsection{UC34.3: Rimozione del template personalizzato}\label{uc:33.3}
+\subsubsection{UC34.3: Rimozione del template personalizzato}\label{uc:34.3}
 Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un template personalizzato precedentemente caricato, ripristinando così il comportamento e il template di default dell'Agente Docs.
 
 \begin{itemize}
@@ -3215,11 +3215,297 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 
 \subsection{Tracciamento Fonte - Requisiti}
 
+\begin{longtable}{|l|p{0.6\textwidth}|}
+\hline
+\textbf{Fonte} & \textbf{Requisiti} \\
+\hline
+\endfirsthead
 
+\hline
+\textbf{Fonte} & \textbf{Requisiti} \\
+\hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+\hyperref[uc:1]{UC1} & RF.1, RS.1 \\ \hline
+\hyperref[uc:1.1]{UC1.1} & RF.1 \\ \hline
+\hyperref[uc:1.2]{UC1.2} & RF.1 \\ \hline
+\hyperref[uc:1.3]{UC1.3} & RF.1 \\ \hline
+\hyperref[uc:1.4]{UC1.4} & RF.1 \\ \hline
+\hyperref[uc:1.5]{UC1.5} & RF.2 \\ \hline
+\hyperref[uc:2]{UC2} & RF.4 \\ \hline
+\hyperref[uc:3]{UC3} & RF.3 \\ \hline
+\hyperref[uc:4]{UC4} & RF.5, RQ.13 \\ \hline
+\hyperref[uc:4.1]{UC4.1} & RF.5 \\ \hline
+\hyperref[uc:4.2]{UC4.2} & RF.5 \\ \hline
+\hyperref[uc:5]{UC5} & RF.6 \\ \hline
+\hyperref[uc:6]{UC6} & RF.7, RS.2, RS.4 \\ \hline
+\hyperref[uc:6.1]{UC6.1} & RF.7 \\ \hline
+\hyperref[uc:6.2]{UC6.2} & RF.7 \\ \hline
+\hyperref[uc:7]{UC7} & RF.7 \\ \hline
+\hyperref[uc:8]{UC8} & RF.7 \\ \hline
+\hyperref[uc:9]{UC9} & RF.8 \\ \hline
+\hyperref[uc:9.1]{UC9.1} & RF.8 \\ \hline
+\hyperref[uc:9.2]{UC9.2} & RF.8, RF.9 \\ \hline
+\hyperref[uc:9.3]{UC9.3} & RF.8 \\ \hline
+\hyperref[uc:9.4]{UC9.4} & RF.8 \\ \hline
+\hyperref[uc:9.5]{UC9.5} & RF.9 \\ \hline
+\hyperref[uc:10]{UC10} & RF.10 \\ \hline
+\hyperref[uc:11]{UC11} & RF.11 \\ \hline
+\hyperref[uc:12]{UC12} & RF.12, RF.39 \\ \hline
+\hyperref[uc:13]{UC13} & RF.13, RF.39 \\ \hline
+\hyperref[uc:14]{UC14} & RF.14, RF.39 \\ \hline
+\hyperref[uc:15]{UC15} & RF.15 \\ \hline
+\hyperref[uc:16]{UC16} & RF.16 \\ \hline
+\hyperref[uc:16.1]{UC16.1} & RF.18 \\ \hline
+\hyperref[uc:16.2]{UC16.2} & RF.16 \\ \hline
+\hyperref[uc:16.3]{UC16.3} & RF.16 \\ \hline
+\hyperref[uc:17]{UC17} & RF.19 \\ \hline
+\hyperref[uc:18]{UC18} & RF.20, RF.39 \\ \hline
+\hyperref[uc:19]{UC19} & RF.17, RF.39 \\ \hline
+\hyperref[uc:20]{UC20} & RF.21 \\ \hline
+\hyperref[uc:20.1]{UC20.1} & RF.22, RF.23 \\ \hline
+\hyperref[uc:20.1.1]{UC20.1.1} & RF.22 \\ \hline
+\hyperref[uc:20.1.2]{UC20.1.2} & RF.23 \\ \hline
+\hyperref[uc:21]{UC21} & RF.21, RF.24, RF.26 \\ \hline
+\hyperref[uc:21.1]{UC21.1} & RF.21, RF.24, RF.25 \\ \hline
+\hyperref[uc:21.2]{UC21.2} & RF.26 \\ \hline
+\hyperref[uc:21.3]{UC21.3} & RF.24, RF.27, RF.32 \\ \hline
+\hyperref[uc:21.4]{UC21.4} & RF.28 \\ \hline
+\hyperref[uc:21.5]{UC21.5} & RF.28 \\ \hline
+\hyperref[uc:22]{UC22} & RF.29, RF.31, RQ.8 \\ \hline
+\hyperref[uc:22.1]{UC22.1} & RF.30 \\ \hline
+\hyperref[uc:22.1.1]{UC22.1.1} & RF.30 \\ \hline
+\hyperref[uc:22.1.2]{UC22.1.2} & RF.30, RF.32 \\ \hline
+\hyperref[uc:23]{UC23} & RF.32 \\ \hline
+\hyperref[uc:24]{UC24} & RF.49, RF.51 \\ \hline
+\hyperref[uc:24.1]{UC24.1} & RF.50 \\ \hline
+\hyperref[uc:24.1.1]{UC24.1.1} & RF.50 \\ \hline
+\hyperref[uc:24.1.2]{UC24.1.2} & RF.50 \\ \hline
+\hyperref[uc:24.1.3]{UC24.1.3} & RF.50 \\ \hline
+\hyperref[uc:24.1.4]{UC24.1.4} & RF.50 \\ \hline
+\hyperref[uc:25]{UC25} & RF.31, RF.33 \\ \hline
+\hyperref[uc:26]{UC26} & RF.33, RF.66, RF.79 \\ \hline
+\hyperref[uc:26.1]{UC26.1} & RF.33, RF.34 \\ \hline
+\hyperref[uc:26.1.1]{UC26.1.1} & RF.34 \\ \hline
+\hyperref[uc:26.1.2]{UC26.1.2} & RF.34 \\ \hline
+\hyperref[uc:26.1.3]{UC26.1.3} & RF.34 \\ \hline
+\hyperref[uc:26.1.4]{UC26.1.4} & RF.34 \\ \hline
+\hyperref[uc:26.1.5]{UC26.1.5} & RF.34 \\ \hline
+\hyperref[uc:26.1.6]{UC26.1.6} & RF.34 \\ \hline
+\hyperref[uc:26.2]{UC26.2} & RF.33 \\ \hline
+\hyperref[uc:26.2.1]{UC26.2.1} & RF.68, RF.76, RF.81 \\ \hline
+\hyperref[uc:26.2.2]{UC26.2.2} & RF.65 \\ \hline
+\hyperref[uc:26.2.2.1.1]{UC26.2.2.1.1} & RF.64 \\ \hline
+\hyperref[uc:26.2.2.1.2]{UC26.2.2.1.2} & RF.64 \\ \hline
+\hyperref[uc:26.2.2.1.3]{UC26.2.2.1.3} & RF.63 \\ \hline
+\hyperref[uc:26.2.3]{UC26.2.3} & RF.36, RF.67 \\ \hline
+\hyperref[uc:26.2.4]{UC26.2.4} & RF.35, RF.36 \\ \hline
+\hyperref[uc:26.2.5]{UC26.2.5} & RF.82 \\ \hline
+\hyperref[uc:27]{UC27} & RF.37 \\ \hline
+\hyperref[uc:27.1]{UC27.1} & RF.38 \\ \hline
+\hyperref[uc:27.2]{UC27.2} & RF.39 \\ \hline
+\hyperref[uc:27.3]{UC27.3} & RF.40 \\ \hline
+\hyperref[uc:27.4]{UC27.4} & RF.17 \\ \hline
+\hyperref[uc:27.5]{UC27.5} & RF.41 \\ \hline
+\hyperref[uc:27.6]{UC27.6} & RF.42 \\ \hline
+\hyperref[uc:27.7]{UC27.7} & RF.43 \\ \hline
+\hyperref[uc:28]{UC28} & RF.44, RF.45 \\ \hline
+\hyperref[uc:29]{UC29} & RF.44 \\ \hline
+\hyperref[uc:30]{UC30} & RF.45 \\ \hline
+\hyperref[uc:31]{UC31} & RF.46 \\ \hline
+\hyperref[uc:32]{UC32} & RF.47 \\ \hline
+\hyperref[uc:33]{UC33} & RF.48 \\ \hline
+\hyperref[uc:34]{UC34} & RF.52, RF.54 \\ \hline
+\hyperref[uc:34.1]{UC34.1} & RF.52 \\ \hline
+\hyperref[uc:34.2]{UC34.2} & RF.53 \\ \hline
+\hyperref[uc:34.3]{UC34.3} & RF.54 \\ \hline
+\hyperref[uc:35]{UC35} & RF.35, RF.36, RF.55, RF.56, RQ.7 \\ \hline
+\hyperref[uc:36]{UC36} & RF.36, RF.39, RF.56, RF.57, RF.58, RQ.7 \\ \hline
+\hyperref[uc:37]{UC37} & RF.59 \\ \hline
+\hyperref[uc:38]{UC38} & RF.36, RF.39, RF.56, RF.60, RF.61, RQ.7 \\ \hline
+\hyperref[uc:39]{UC39} & RF.62, RF.63, RF.64, RF.65, RF.66, RF.67, RF.68 \\ \hline
+\hyperref[uc:40]{UC40} & RF.65, RF.66, RF.67, RF.68 \\ \hline
+\hyperref[uc:41]{UC41} & RF.37, RF.46, RF.69, RF.70, RF.71, RF.72, RF.73, RF.76, RF.79 \\ \hline
+\hyperref[uc:41.1]{UC41.1} & RF.77 \\ \hline
+\hyperref[uc:42]{UC42} & RF.78 \\ \hline
+\hyperref[uc:43]{UC43} & RF.46, RF.74 \\ \hline
+\hyperref[uc:44]{UC44} & RF.75 \\ \hline
+\hyperref[uc:45]{UC45} & RF.80, RF.81 \\ \hline
+\hyperref[uc:46]{UC46} & RF.82 \\ \hline
+Capitolato C2 & RQ.5, RQ.6, RV.5, RV.9, RV.11, RV.12, RV.15, RV.16, RV.17, RV.18, RV.19, RV.20, RV.21, RV.22, RS.5 \\ \hline
+PdQ(OB\_PROD\_01) & RQ.1 \\ \hline
+PdQ(OB\_PROD\_02) & RQ.7 \\ \hline
+PdQ(OB\_PROD\_03) & RQ.4 \\ \hline
+PdQ(OB\_PROD\_04) & RQ.12 \\ \hline
+PdQ(OB\_PROD\_05) & RQ.8 \\ \hline
+PdQ(OB\_PROD\_06) & RQ.9 \\ \hline
+PdQ(OB\_PROD\_07) & RQ.5 \\ \hline
+PdQ(OB\_PROD\_08) & RQ.6 \\ \hline
+PdQ(OB\_PROD\_09) & RQ.10 \\ \hline
+PdQ(OB\_PROD\_10) & RQ.13 \\ \hline
+PdQ(OB\_PROD\_12) & RQ.5 \\ \hline
+PdQ(OB\_PROD\_13) & RQ.5 \\ \hline
+PdQ(MP\_02) & RQ.11 \\ \hline
+PdQ(MP\_03) & RQ.3 \\ \hline
+PdQ(MP\_04) & RQ.2 \\ \hline
+Verbale esterno 2026/03/23 & RV.2, RV.3, RS.3 \\ \hline
+Verbale esterno 2026/04/24 & RQ.10 \\ \hline
+Verbale esterno 2026/06/03 & RV.7, RV.8 \\ \hline
+Verbale esterno 2026/06/08 & RV.1, RV.4 \\ \hline
+Verbale interno 2026/06/02 & RQ.12, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14, RV.15 \\ \hline
+
+\end{longtable}
 
 \newpage
 
 \subsection{Tracciamento Requisito - Fonti}
 
+\begin{longtable}{|l|p{0.6\textwidth}|}
+\hline
+\textbf{Requisito} & \textbf{Fonti} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Requisito} & \textbf{Fonti} \\
+\hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+RF.1 & \hyperref[uc:1]{UC1}, \hyperref[uc:1.1]{UC1.1}, \hyperref[uc:1.2]{UC1.2}, \hyperref[uc:1.3]{UC1.3}, \hyperref[uc:1.4]{UC1.4} \\ \hline
+RF.2 & \hyperref[uc:1.5]{UC1.5} \\ \hline
+RF.3 & \hyperref[uc:3]{UC3} \\ \hline
+RF.4 & \hyperref[uc:2]{UC2} \\ \hline
+RF.5 & \hyperref[uc:4]{UC4}, \hyperref[uc:4.1]{UC4.1}, \hyperref[uc:4.2]{UC4.2} \\ \hline
+RF.6 & \hyperref[uc:5]{UC5} \\ \hline
+RF.7 & \hyperref[uc:6]{UC6}, \hyperref[uc:6.1]{UC6.1}, \hyperref[uc:6.2]{UC6.2}, \hyperref[uc:7]{UC7}, \hyperref[uc:8]{UC8} \\ \hline
+RF.8 & \hyperref[uc:9]{UC9}, \hyperref[uc:9.1]{UC9.1}, \hyperref[uc:9.2]{UC9.2}, \hyperref[uc:9.3]{UC9.3}, \hyperref[uc:9.4]{UC9.4} \\ \hline
+RF.9 & \hyperref[uc:9.2]{UC9.2}, \hyperref[uc:9.5]{UC9.5} \\ \hline
+RF.10 & \hyperref[uc:10]{UC10} \\ \hline
+RF.11 & \hyperref[uc:11]{UC11} \\ \hline
+RF.12 & \hyperref[uc:12]{UC12} \\ \hline
+RF.13 & \hyperref[uc:13]{UC13} \\ \hline
+RF.14 & \hyperref[uc:14]{UC14} \\ \hline
+RF.15 & \hyperref[uc:15]{UC15} \\ \hline
+RF.16 & \hyperref[uc:16]{UC16}, \hyperref[uc:16.2]{UC16.2}, \hyperref[uc:16.3]{UC16.3} \\ \hline
+RF.17 & \hyperref[uc:19]{UC19}, \hyperref[uc:27.4]{UC27.4} \\ \hline
+RF.18 & \hyperref[uc:16.1]{UC16.1} \\ \hline
+RF.19 & \hyperref[uc:17]{UC17} \\ \hline
+RF.20 & \hyperref[uc:18]{UC18} \\ \hline
+RF.21 & \hyperref[uc:20]{UC20}, \hyperref[uc:21]{UC21}, \hyperref[uc:21.1]{UC21.1} \\ \hline
+RF.22 & \hyperref[uc:20.1]{UC20.1}, \hyperref[uc:20.1.1]{UC20.1.1} \\ \hline
+RF.23 & \hyperref[uc:20.1]{UC20.1}, \hyperref[uc:20.1.2]{UC20.1.2} \\ \hline
+RF.24 & \hyperref[uc:21]{UC21}, \hyperref[uc:21.1]{UC21.1}, \hyperref[uc:21.3]{UC21.3} \\ \hline
+RF.25 & \hyperref[uc:21.1]{UC21.1} \\ \hline
+RF.26 & \hyperref[uc:21]{UC21}, \hyperref[uc:21.2]{UC21.2} \\ \hline
+RF.27 & \hyperref[uc:21.3]{UC21.3} \\ \hline
+RF.28 & \hyperref[uc:21.4]{UC21.4}, \hyperref[uc:21.5]{UC21.5} \\ \hline
+RF.29 & \hyperref[uc:22]{UC22} \\ \hline
+RF.30 & \hyperref[uc:22.1]{UC22.1}, \hyperref[uc:22.1.1]{UC22.1.1}, \hyperref[uc:22.1.2]{UC22.1.2} \\ \hline
+RF.31 & \hyperref[uc:22]{UC22}, \hyperref[uc:25]{UC25} \\ \hline
+RF.32 & \hyperref[uc:23]{UC23}, \hyperref[uc:21.3]{UC21.3}, \hyperref[uc:22.1.2]{UC22.1.2} \\ \hline
+RF.33 & \hyperref[uc:26]{UC26}, \hyperref[uc:26.1]{UC26.1}, \hyperref[uc:26.2]{UC26.2}, \hyperref[uc:25]{UC25} \\ \hline
+RF.34 & \hyperref[uc:26.1]{UC26.1}, \hyperref[uc:26.1.1]{UC26.1.1}, \hyperref[uc:26.1.2]{UC26.1.2}, \hyperref[uc:26.1.3]{UC26.1.3}, \hyperref[uc:26.1.4]{UC26.1.4}, \hyperref[uc:26.1.5]{UC26.1.5}, \hyperref[uc:26.1.6]{UC26.1.6} \\ \hline
+RF.35 & \hyperref[uc:26.2.4]{UC26.2.4}, \hyperref[uc:35]{UC35} \\ \hline
+RF.36 & \hyperref[uc:26.2.3]{UC26.2.3}, \hyperref[uc:26.2.4]{UC26.2.4}, \hyperref[uc:35]{UC35}, \hyperref[uc:36]{UC36}, \hyperref[uc:38]{UC38} \\ \hline
+RF.37 & \hyperref[uc:27]{UC27}, \hyperref[uc:41]{UC41} \\ \hline
+RF.38 & \hyperref[uc:27.1]{UC27.1} \\ \hline
+RF.39 & \hyperref[uc:27.2]{UC27.2}, \hyperref[uc:36]{UC36}, \hyperref[uc:38]{UC38}, \hyperref[uc:12]{UC12}, \hyperref[uc:13]{UC13}, \hyperref[uc:14]{UC14}, \hyperref[uc:18]{UC18}, \hyperref[uc:19]{UC19} \\ \hline
+RF.40 & \hyperref[uc:27.3]{UC27.3} \\ \hline
+RF.41 & \hyperref[uc:27.5]{UC27.5} \\ \hline
+RF.42 & \hyperref[uc:27.6]{UC27.6} \\ \hline
+RF.43 & \hyperref[uc:27.7]{UC27.7} \\ \hline
+RF.44 & \hyperref[uc:28]{UC28}, \hyperref[uc:29]{UC29} \\ \hline
+RF.45 & \hyperref[uc:30]{UC30}, \hyperref[uc:28]{UC28} \\ \hline
+RF.46 & \hyperref[uc:31]{UC31}, \hyperref[uc:41]{UC41}, \hyperref[uc:43]{UC43} \\ \hline
+RF.47 & \hyperref[uc:32]{UC32} \\ \hline
+RF.48 & \hyperref[uc:33]{UC33} \\ \hline
+RF.49 & \hyperref[uc:24]{UC24} \\ \hline
+RF.50 & \hyperref[uc:24.1]{UC24.1}, \hyperref[uc:24.1.1]{UC24.1.1}, \hyperref[uc:24.1.2]{UC24.1.2}, \hyperref[uc:24.1.3]{UC24.1.3}, \hyperref[uc:24.1.4]{UC24.1.4} \\ \hline
+RF.51 & \hyperref[uc:24]{UC24} \\ \hline
+RF.52 & \hyperref[uc:34]{UC34}, \hyperref[uc:34.1]{UC34.1} \\ \hline
+RF.53 & \hyperref[uc:34.2]{UC34.2} \\ \hline
+RF.54 & \hyperref[uc:34]{UC34}, \hyperref[uc:34.3]{UC34.3} \\ \hline
+RF.55 & \hyperref[uc:35]{UC35} \\ \hline
+RF.56 & \hyperref[uc:35]{UC35}, \hyperref[uc:36]{UC36}, \hyperref[uc:38]{UC38} \\ \hline
+RF.57 & \hyperref[uc:36]{UC36} \\ \hline
+RF.58 & \hyperref[uc:36]{UC36} \\ \hline
+RF.59 & \hyperref[uc:37]{UC37} \\ \hline
+RF.60 & \hyperref[uc:38]{UC38} \\ \hline
+RF.61 & \hyperref[uc:38]{UC38} \\ \hline
+RF.62 & \hyperref[uc:39]{UC39} \\ \hline
+RF.63 & \hyperref[uc:26.2.2.1.3]{UC26.2.2.1.3}, \hyperref[uc:39]{UC39} \\ \hline
+RF.64 & \hyperref[uc:26.2.2.1.1]{UC26.2.2.1.1}, \hyperref[uc:26.2.2.1.2]{UC26.2.2.1.2}, \hyperref[uc:39]{UC39} \\ \hline
+RF.65 & \hyperref[uc:26.2.2]{UC26.2.2}, \hyperref[uc:39]{UC39}, \hyperref[uc:40]{UC40} \\ \hline
+RF.66 & \hyperref[uc:26]{UC26}, \hyperref[uc:39]{UC39}, \hyperref[uc:40]{UC40} \\ \hline
+RF.67 & \hyperref[uc:26.2.3]{UC26.2.3}, \hyperref[uc:39]{UC39}, \hyperref[uc:40]{UC40} \\ \hline
+RF.68 & \hyperref[uc:26.2.1]{UC26.2.1}, \hyperref[uc:39]{UC39}, \hyperref[uc:40]{UC40} \\ \hline
+RF.69 & \hyperref[uc:41]{UC41} \\ \hline
+RF.70 & \hyperref[uc:41]{UC41} \\ \hline
+RF.71 & \hyperref[uc:41]{UC41} \\ \hline
+RF.72 & \hyperref[uc:41]{UC41} \\ \hline
+RF.73 & \hyperref[uc:41]{UC41} \\ \hline
+RF.74 & \hyperref[uc:43]{UC43} \\ \hline
+RF.75 & \hyperref[uc:44]{UC44} \\ \hline
+RF.76 & \hyperref[uc:41]{UC41}, \hyperref[uc:26.2.1]{UC26.2.1} \\ \hline
+RF.77 & \hyperref[uc:41.1]{UC41.1} \\ \hline
+RF.78 & \hyperref[uc:42]{UC42} \\ \hline
+RF.79 & \hyperref[uc:41]{UC41}, \hyperref[uc:26]{UC26} \\ \hline
+RF.80 & \hyperref[uc:45]{UC45} \\ \hline
+RF.81 & \hyperref[uc:45]{UC45}, \hyperref[uc:26.2.1]{UC26.2.1} \\ \hline
+RF.82 & \hyperref[uc:46]{UC46}, \hyperref[uc:26.2.5]{UC26.2.5} \\ \hline
+RQ.1 & PdQ(OB\_PROD\_01) \\ \hline
+RQ.2 & PdQ(MP\_04) \\ \hline
+RQ.3 & PdQ(MP\_03) \\ \hline
+RQ.4 & PdQ(OB\_PROD\_03) \\ \hline
+RQ.5 & Capitolato C2, PdQ(OB\_PROD\_07), PdQ(OB\_PROD\_12), PdQ(OB\_PROD\_13) \\ \hline
+RQ.6 & Capitolato C2, PdQ(OB\_PROD\_08) \\ \hline
+RQ.7 & \hyperref[uc:35]{UC35}, \hyperref[uc:36]{UC36}, \hyperref[uc:38]{UC38}, PdQ(OB\_PROD\_02) \\ \hline
+RQ.8 & \hyperref[uc:22]{UC22}, PdQ(OB\_PROD\_05) \\ \hline
+RQ.9 & PdQ(OB\_PROD\_06) \\ \hline
+RQ.10 & Verbale esterno 2026/04/24, PdQ(OB\_PROD\_09) \\ \hline
+RQ.11 & PdQ(MP\_02) \\ \hline
+RQ.12 & Verbale interno 2026/06/02, PdQ(OB\_PROD\_04) \\ \hline
+RQ.13 & \hyperref[uc:4]{UC4}, PdQ(OB\_PROD\_10) \\ \hline
+RV.1 & Verbale esterno 2026/06/08 \\ \hline
+RV.2 & Verbale esterno 2026/03/23 \\ \hline
+RV.3 & Verbale esterno 2026/03/23 \\ \hline
+RV.4 & Verbale esterno 2026/06/08 \\ \hline
+RV.5 & Capitolato C2 \\ \hline
+RV.6 & Verbale interno 2026/06/02 \\ \hline
+RV.7 & Verbale esterno 2026/06/03 \\ \hline
+RV.8 & Verbale esterno 2026/06/03 \\ \hline
+RV.9 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.10 & Verbale interno 2026/06/02 \\ \hline
+RV.11 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.12 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.13 & Verbale interno 2026/06/02 \\ \hline
+RV.14 & Verbale interno 2026/06/02 \\ \hline
+RV.15 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.16 & Capitolato C2 \\ \hline
+RV.17 & Capitolato C2 \\ \hline
+RV.18 & Capitolato C2 \\ \hline
+RV.19 & Capitolato C2 \\ \hline
+RV.20 & Capitolato C2 \\ \hline
+RV.21 & Capitolato C2 \\ \hline
+RV.22 & Capitolato C2 \\ \hline
+RS.1 & \hyperref[uc:1]{UC1} \\ \hline
+RS.2 & \hyperref[uc:6]{UC6} \\ \hline
+RS.3 & Verbale esterno 2026/03/23 \\ \hline
+RS.4 & \hyperref[uc:6]{UC6} \\ \hline
+RS.5 & Capitolato C2 \\ \hline
+
+\end{longtable}
 
 \end{document}
