@@ -255,8 +255,7 @@ specializzati coordinati da un \textbf{Orchestratore} centrale deterministrico, 
     file \textit{README} di progetto in base alle modifiche apportate al codice sorgente.
 \item
     \textbf{Gestione documentazione tecnica}: generazione e
-    aggiornamento di documentazione inline (\textit{\glo{Docstring}{docstring}},
-    \textit{\glo{JSDoc}{jsdoc}}) e delle \textit{\glo{API docs}{api-docs}} per riflettere lo stato
+    aggiornamento di documentazione inline (\textit{\glo{JSDoc}{jsdoc}}) e delle \textit{\glo{API docs}{api-docs}} per riflettere lo stato
     attuale del codice.
 \end{itemize}
 \item
@@ -2349,11 +2348,11 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la 
 \end{itemize}
 
 \subsubsection{UC34.1: Caricamento del file template}\label{uc:34.1}
-Questo caso d'uso descrive l'azione materiale con cui l'utente fornisce al sistema il file contenente il modello personalizzato. Se era già presente un template personalizzato precedente, questo viene sovrascritto.
+Questo caso d'uso descrive l'azione con cui l'utente fornisce al sistema il file contenente il template personalizzato. Se era già presente un template personalizzato precedente, questo viene sovrascritto.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Trigger:} L'utente seleziona l'opzione per caricare un nuovo modello.
+    \item \textbf{Trigger:} L'utente seleziona l'opzione per caricare un nuovo template.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema mostra correttamente la sezione di personalizzazione del \textit{README} (UC34).
@@ -2366,7 +2365,7 @@ Questo caso d'uso descrive l'azione materiale con cui l'utente fornisce al siste
     \begin{enumerate}
         \item L'utente seleziona l'opzione di caricamento dal proprio file system.
         \item L'utente fornisce il file con estensione \texttt{.md} contenente la struttura base.
-        \item Il sistema acquisisce e memorizza il modello per il contesto del progetto, notificando il successo dell'operazione.
+        \item Il sistema acquisisce e memorizza il template per il contesto del \textit{Repository}, notificando il successo dell'operazione.
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
@@ -2423,7 +2422,7 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
 
 
 \subsubsection{UC35: Generazione o aggiornamento del \textit{README} di Progetto}\label{uc:35}
-Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per generare o aggiornare il file \texttt{README.md}, interfacciandosi con i servizi esterni necessari.
+Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per generare o aggiornare il file \texttt{README.md}, interfacciandosi con i servizi esterni necessari, a seguito dell'esplicita richiesta di avvio da parte dell'utente.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
@@ -2434,35 +2433,35 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
         \item Lo Sviluppatore è autenticato (UC4).
         \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
         \item È stato configurato con successo il contesto operativo:\textit{ Repository Git} e riferimento di base (UC9).
-        \item L'utente ha selezionato l'operazione "Generazione del \textit{README}" (UC21.1).
+        \item L'utente ha selezionato l'operazione "Generazione del \textit{README}" (UC21.1) e ha confermato l'avvio (UC21.3).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) per il \texttt{README.md}.
-        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito del \textit{task} e il collegamento alla \textit{Pull Request} (UC26.2.4).
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC26.2.4).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
         \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per scaricare la struttura del progetto e l'attuale file \texttt{README.md}.
         \item Il sistema recupera l'eventuale template personalizzato del \textit{README} fornito dallo Sviluppatore (UC34); in sua assenza, carica in memoria il template di default.
-        \item Il sistema compone il prompt contestuale e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la stesura del nuovo documento.
-        \item Il modello \textit{AI} elabora le direttive e restituisce al sistema il contenuto aggiornato.
+        \item Il sistema compone il prompt contestuale e lo invia alle \textit{API} del Modello \textit{LLM} richiedendo la stesura del nuovo documento.
+        \item Il modello \textit{LLM} elabora le direttive e restituisce al sistema il contenuto aggiornato.
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento aggiornato.
-        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
-        \item \textbf{UC27.3: Errore di parsing dell'output LLM.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 5 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
         \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
     \end{itemize}
 \end{itemize}
 
 
 \subsubsection{UC36: Generazione della documentazione inline}\label{uc:36}
-Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente selezionato e generare, o aggiornare, la documentazione inline (\textit{JSDoc}) per le funzioni e le classi rilevate.
+Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente selezionato e generare, o aggiornare, la documentazione inline (\textit{JSDoc}) per le funzioni e le classi rilevate, a seguito dell'esplicita richiesta di avvio da parte dell'utente.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
@@ -2474,30 +2473,30 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
         \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e riferimento di base (UC9).
         \item È stato selezionato e validato un ambito di analisi (UC16).
-        \item L'utente ha selezionato l'operazione "Generazione documentazione inline" (UC21.1).
+        \item L'utente ha selezionato l'operazione "Generazione documentazione inline" (UC21.1) e ha confermato l'avvio (UC21.3).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente i commenti di documentazione inline aggiornati per il codice selezionato.
-        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito del task e il collegamento alla \textit{Pull Request} (UC26.2.4).
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC26.2.4).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
         \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
         \item Il sistema analizza il codice sorgente per identificare funzioni e classi prive di documentazione, o con documentazione obsoleta/non conforme agli standard.
-        \item Il sistema compone il prompt contestuale, includendo le porzioni di codice rilevate, e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la generazione della documentazione inline appropriata.
-        \item Il modello \textit{AI} elabora il codice e restituisce al sistema le proposte di commento standardizzato (\textit{JSDoc}) per gli elementi analizzati.
+        \item Il sistema compone il prompt contestuale, includendo le porzioni di codice rilevate, e lo invia alle \textit{API} del Modello \textit{LLM} richiedendo la generazione della documentazione inline appropriata.
+        \item Il modello \textit{LLM} elabora il codice e restituisce al sistema le proposte di commento standardizzato (\textit{JSDoc}) per gli elementi analizzati.
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente le proposte di documentazione inline integrate nel codice.
-        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal modello \textit{LLM} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
         \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
-        \item \textbf{UC37: Gestione complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il Modello \textit{AI} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
+        \item \textbf{UC37: Gestione complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il modello \textit{LLM} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
         \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
@@ -2507,8 +2506,8 @@ Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di g
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Trigger:} Il Modello \textit{AI} o il modulo di analisi interno rilevano un livello di complessità che impedisce l'estrazione logica o la sintesi del comportamento della classe/funzione corrente.
-    \item \textbf{Precondizioni:} L'Agente sta ciclando sulle funzioni e classi estratte per richiederne la documentazione al Modello \textit{AI}.
+    \item \textbf{Trigger:} Il Modello \textit{LLM} o il modulo di analisi interno rilevano un livello di complessità che impedisce l'estrazione logica o la sintesi del comportamento della classe/funzione corrente.
+    \item \textbf{Precondizioni:} L'Agente sta ciclando sulle funzioni e classi estratte per richiederne la documentazione al Modello \textit{LLM}.
     \item \textbf{Postcondizioni:} 
     \begin{itemize}
         \item Il sistema non genera la proposta di documentazione per l'elemento complesso.
@@ -2519,13 +2518,13 @@ Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di g
         \item Il sistema rileva l'incapacità di interpretare in modo affidabile l'elemento analizzato.
         \item Il sistema esclude la funzione o la classe corrente dalla stesura della \textit{Pull Request}.
         \item Il sistema compila i dati per un nuovo avviso, predisponendolo per essere mostrato nella lista di elementi strutturati del report (UC26.2.2).
-        \item Il sistema valorizza i campi dell'elemento impostando la categoria come "Avviso" (UC26.2.2.1.1), la gravità come informativa (UC26.2.2.1.2) e registrando le righe di codice esatte in cui risiede la classe complessa (UC26.2.2.1.3).
-        \item Il sistema riprende l'analisi a partire dall'eventuale elemento successivo disponibile (Ritorno al passo 3 di UC36).
+        \item Il sistema valorizza i campi dell'elemento impostando la categoria come "Avviso" (UC26.2.2.1.1), la gravità come informativa (UC26.2.2.1.2), registrando le righe di codice esatte e il file in cui risiede la classe complessa (UC26.2.2.1.3).
+        \item Il sistema riprende l'analisi a partire dall'eventuale elemento successivo disponibile (ritorno al passo 3 di UC36).
     \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC38: Generazione documentazione \textit{API}}\label{uc:38}
-Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente (nello specifico i file di \textit{controller} e di definizione delle \textit{\glo{Rotte}{rotte}}) per generare o aggiornare il file \texttt{API.md} contenente la guida tecnica degli \textit{Endpoint}.
+Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente (nello specifico i file di \textit{controller} e di definizione delle \textit{\glo{Rotte}{rotte}}) per generare o aggiornare il file \texttt{API.md} contenente la guida tecnica degli \textit{Endpoint}, a seguito dell'esplicita richiesta di avvio da parte dell'utente.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
@@ -2542,14 +2541,14 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente il file \texttt{API.md} generato o aggiornato.
-        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito del task e il collegamento alla \textit{Pull Request} (UC26.2.4).
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC26.2.4).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
-        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre i file del codice sorgente appartenenti all'ambito selezionato, identificando in particolare i file contenenti la definizione delle rotte e le logiche dei \textit{controller}.
-        \item Il sistema compone il prompt contestuale con il codice estratto e lo invia alle \textit{API} del Modello \textit{AI}, richiedendo l'identificazione degli \textit{Endpoint} e l'estrazione di metodo HTTP, URL, \textit{header}, \textit{Payload} richiesti e formati di risposta.
-        \item Il modello \textit{AI} elabora il codice e restituisce al sistema le informazioni tecniche formattate strutturalmente con la sintassi \textit{Markdown}.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre i file del codice sorgente appartenenti all'ambito selezionato, identificando in particolare i file contenenti la definizione delle \textit{rotte} e le logiche dei \textit{controller}.
+        \item Il sistema compone il prompt contestuale con il codice estratto e lo invia alle \textit{API} del Modello \textit{LLM}, richiedendo l'identificazione degli \textit{Endpoint} e l'estrazione di metodo HTTP, URL, \textit{header}, \textit{Payload} richiesti e formati di risposta.
+        \item Il modello \textit{LLM} elabora il codice e restituisce al sistema le informazioni tecniche formattate strutturalmente con la sintassi \textit{Markdown}.
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento \texttt{API.md} finale.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
     \end{enumerate}
