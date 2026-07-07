@@ -1632,18 +1632,18 @@ Questo caso d'uso descrive la visualizzazione del nome del \textit{repository Gi
 \end{itemize}
 
 \subsubsection{UC26.1.2: Visualizzazione del riferimento di base}\label{uc:26.1.2}
-Questo caso d'uso descrive la visualizzazione del riferimento di base su cui il sistema ha operato, che può consistere nel nome di uno specifico \textit{Branch} o nell'identificativo di una \textit{Pull Request}.
+Questo caso d'uso descrive la visualizzazione del riferimento di base su cui il sistema ha operato, che può consistere nel nome di uno specifico \textit{Branch} (accompagnato dall'identificativo hash del Commit analizzato) o nell'identificativo di una \textit{Pull Request}.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente al riferimento di base (\textit{Branch} o \textit{PR}).
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente al riferimento di base (\textit{Branch} con Commit specifico oppure \textit{PR}).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando l'intestazione del report (UC26.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il riferimento testuale al \textit{Branch} o alla \textit{Pull Request} analizzata è visibile a schermo per l'utente.
+        \item Il riferimento testuale al \textit{Branch} con Commit specifico oppure o alla \textit{Pull Request} analizzata è visibile a schermo per l'utente.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -1652,7 +1652,7 @@ Questo caso d'uso descrive la visualizzazione del riferimento di base su cui il 
 \end{itemize}
 
 \subsubsection{UC26.1.3: Visualizzazione dell'ambito di analisi}\label{uc:26.1.3}
-Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli file o directory che hanno costituito l'ambito specifico dell'analisi dell'agente.
+Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli file o directory (o intero \textit{Repository}) che hanno costituito l'ambito specifico dell'analisi dell'agente.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1660,20 +1660,20 @@ Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli f
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando l'intestazione del report (UC26.1).
-        \item L'analisi è stata eseguita su una selezione parziale di file o directory e non sull'intero repository.
+        \item L'analisi è stata eseguita su una selezione parziale di file o directory oppure sull'intero repository.
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item I percorsi dei file o delle directory analizzate sono visibili a schermo per l'utente.
+        \item L'ambito di analisi è visibile a schermo per l'utente sotto forma di percorsi file e directory nel caso di selezioni parziali o con la scritta "Intero \textit{Repository} analizzato" nel caso di una selezione totale.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema formatta e mostra a schermo i percorsi degli elementi analizzati.
+        \item Il sistema formatta e mostra a schermo il riferimento testuale dell'ambito analizzato.
     \end{enumerate}
 \end{itemize}
 
 \subsubsection{UC26.1.4: Visualizzazione dei tempi di esecuzione}\label{uc:26.1.4}
-Questo caso d'uso descrive la visualizzazione del tempo totale impiegato dal sistema per completare le operazioni e generare il report.
+Questo caso d'uso descrive la visualizzazione del tempo totale impiegato dal sistema per completare l'operazione e generare il report.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1734,7 +1734,7 @@ Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui l'elabor
 
 
 \subsubsection{UC26.2: Visualizzazione del corpo del report}\label{uc:26.2}
-Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica del report. Poiché il contenuto varia a seconda dell'agente che lo ha prodotto, il sistema interpreta il \textit{\glo{Payload}{payload}} e renderizza a schermo i blocchi visivi pertinenti.
+Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica del report. Poiché il contenuto varia a seconda dell'agente che lo ha prodotto, il sistema interpreta i dati restituiti dall'agente e renderizza a schermo i blocchi visivi pertinenti.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1788,7 +1788,7 @@ Questo caso d'uso descrive la visualizzazione di un contenitore a lista per most
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema elabora un array di dati strutturati per mostrarli sotto forma di elenco.
+    \item \textbf{Trigger:} Il sistema elabora una collezione di dati strutturati per mostrarli sotto forma di elenco.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando il corpo del report (UC26.2).
@@ -1809,11 +1809,11 @@ Questo caso d'uso descrive la visualizzazione di un contenitore a lista per most
 \end{itemize}
 
 \subsubsection{UC26.2.2.1: Visualizzazione di un singolo elemento nella lista}\label{uc:26.2.2.1}
-Questo caso d'uso descrive la visualizzazione del contenitore logico relativo a una singola voce all'interno della lista strutturata.
+Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a una singola voce all'interno della lista strutturata.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza la card corrispondente a una singola occorrenza.
+    \item \textbf{Trigger:} Il sistema renderizza il componente grafico corrispondente a una singola occorrenza.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando una lista di elementi strutturati (UC26.2.2).
@@ -1835,18 +1835,18 @@ Questo caso d'uso descrive la visualizzazione del contenitore logico relativo a 
 \end{itemize}
 
 \subsubsection{UC26.2.2.1.1: Visualizzazione della categoria dell'elemento}\label{uc:26.2.2.1.1}
-Questo caso d'uso descrive la visualizzazione del nome identificativo della singola occorrenza (es. il tipo di vulnerabilità rilevata).
+Questo caso d'uso descrive la visualizzazione della categoria della singola occorrenza (es. il tipo di vulnerabilità rilevata).
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza il dato testuale principale dell'elemento.
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale relativo alla categoria dell'elemento.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando un singolo elemento nella lista (UC26.2.2.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il titolo dell'elemento è visibile a schermo per l'utente.
+        \item La categoria dell'elemento è visibile a schermo per l'utente.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -1855,7 +1855,7 @@ Questo caso d'uso descrive la visualizzazione del nome identificativo della sing
 \end{itemize}
 
 \subsubsection{UC26.2.2.1.2: Visualizzazione dell'indicatore di gravità}\label{uc:26.2.2.1.2}
-Questo caso d'uso descrive la visualizzazione dell'etichetta indicante il livello di gravità associato alla singola occorrenza.
+Questo caso d'uso descrive la visualizzazione dell'etichetta indicante il livello di gravità associato alla singola occorrenza (es. la gravità della vulnerabilità rilevata).
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1876,7 +1876,7 @@ Questo caso d'uso descrive la visualizzazione dell'etichetta indicante il livell
 \end{itemize}
 
 \subsubsection{UC26.2.2.1.3: Visualizzazione del riferimento alla porzione di codice}\label{uc:26.2.2.1.3}
-Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di riga in cui è stata rilevata la criticità o su cui deve intervenire la modifica.
+Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di riga e del file in cui è stata rilevata la criticità o su cui deve intervenire la modifica.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1888,11 +1888,11 @@ Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di 
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item I percorsi e le righe di codice interessate sono visibili a schermo per l'utente.
+        \item I percorsi ai file e le righe di codice interessate sono visibili a schermo per l'utente.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema mostra a schermo la stringa contenente le righe di riferimento.
+        \item Il sistema mostra a schermo la stringa contenente le righe di riferimento e il percorso del file interessato.
     \end{enumerate}
 \end{itemize}
 
@@ -1926,7 +1926,7 @@ Questo caso d'uso descrive la visualizzazione di un collegamento ipertestuale ve
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando il corpo del report (UC26.2).
-        \item L'agente ha completato con successo l'apertura di una \textit{Pull Request}.
+        \item L'agente ha creato con successo una \textit{Pull Request}.
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1934,7 +1934,7 @@ Questo caso d'uso descrive la visualizzazione di un collegamento ipertestuale ve
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema formatta e mostra a schermo il collegamento ipertestuale alla piattaforma Git esterna.
+        \item Il sistema formatta e mostra a schermo il collegamento ipertestuale alla piattaforma \textit{GitHub} esterna.
     \end{enumerate}
 \end{itemize}
 
@@ -1947,7 +1947,7 @@ Questo caso d'uso descrive la visualizzazione all'interno del report di un modul
     \item \textbf{Precondizioni}:
     \begin{itemize}
         \item Il sistema sta mostrando il corpo del report (UC26.2).
-        \item L'utente aveva precedentemente richiesto un'operazione composta che richiede validazione intermedia.
+        \item L'utente aveva precedentemente richiesto un'operazione composta che richiede validazione intermedia (es. generazione del \textit{Changelog} di business).
     \end{itemize}
     \item \textbf{Postcondizioni}:
     \begin{itemize}
@@ -1976,8 +1976,8 @@ Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possi
     \end{itemize}
     \item \textbf{Specializzazioni (Casi d'uso derivati):}
     \begin{itemize}
-        \item \textbf{UC27.1}: Visualizzazione errore per superamento soglia massima di utilizzo \textit{AI}.
-        \item \textbf{UC27.2}: Visualizzazione errore per timeout del modello \textit{AI}.
+        \item \textbf{UC27.1}: Visualizzazione errore per superamento soglia massima di utilizzo del modello \textit{LLM}.
+        \item \textbf{UC27.2}: Visualizzazione errore per timeout del modello \textit{LLM}.
         \item \textbf{UC27.3}: Visualizzazione errore di parsing dell'output \textit{LLM}.
         \item \textbf{UC27.4}: Visualizzazione errore per superamento limiti dimensionali a runtime.
         \item \textbf{UC27.5}: Visualizzazione errore per risorsa di contesto mancante.
@@ -1986,12 +1986,12 @@ Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possi
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC27.1: Visualizzazione errore per superamento soglia massima di utilizzo \textit{AI}}\label{uc:27.1}
+\subsubsection{UC27.1: Visualizzazione errore per superamento soglia massima di utilizzo del modello \textit{LLM}}\label{uc:27.1}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione venga bloccata preventivamente dal sistema stesso per aver raggiunto il limite massimo di chiamate o token consentiti, impostato internamente come meccanismo di salvaguardia dei costi.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema rileva che l'operazione in corso comporta il superamento della soglia massima di utilizzo configurata nel sistema.
+    \item \textbf{Trigger:} Il sistema rileva che l'operazione appena avviata comporta il superamento della soglia massima di utilizzo configurata nel sistema.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta per delegare un'elaborazione al modello \textbf{LLM}.
@@ -2000,22 +2000,23 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'elaborazione viene interrotta definitivamente per impedire ulteriori costi.
-        \item Il sistema mostra un messaggio d'errore informando l'utente del blocco per raggiungimento del limite di utilizzo.
+        \item Il sistema mostra un messaggio d'errore informando l'utente del blocco per raggiungimento del limite di utilizzo e su quando il blocco decaderà.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema verifica le quote interne prima della comunicazione con le \textit{API} esterne e rileva il superamento della soglia.
-        \item L'elaborazione dell'agente viene bloccata in modo controllato.
-        \item Il sistema renderizza a schermo il messaggio d'errore testuale (es. "Limite massimo di utilizzo del modello \textit{AI} raggiunto per questa sessione. Operazione interrotta per salvaguardia delle risorse").
+        \item Il sistema blocca preventivamente l'esecuzione.
+        \item Il sistema renderizza a schermo il messaggio d'errore testuale (es. "Limite massimo di utilizzo del modello \textit{AI} raggiunto per questa sessione. Operazione interrotta per salvaguardia delle risorse, torna tra 24 ore").
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC27.2: Visualizzazione errore per timeout del modello \textit{AI}}\label{uc:27.2}
+\subsubsection{UC27.2: Visualizzazione errore per timeout del modello \textit{LLM}}\label{uc:27.2}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora il modello \textit{LLM} non restituisca una risposta entro il tempo massimo consentito dal sistema.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il tempo di attesa per la ricezione della risposta da parte delle \textit{API} esterne del modello \textit{AI} supera la soglia di timeout preimpostata.
+    \item \textbf{Attori Secondari:} Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} Il tempo di attesa per la ricezione della risposta da parte del modello \textit{LLM} supera la soglia di timeout preimpostata.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema ha inviato correttamente la richiesta al provider \textit{AI} ed è in attesa di risposta.
@@ -2023,7 +2024,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item La connessione viene chiusa e l'elaborazione interrotta.
-        \item Il sistema mostra un messaggio d'errore indicante che il modello \textit{AI} sta impiegando troppo tempo a rispondere.
+        \item Il sistema mostra un messaggio d'errore indicante che il modello \textit{LLM} sta impiegando troppo tempo a rispondere.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2039,6 +2040,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} Modello \textit{AI} (\textit{LLM}).
     \item \textbf{Trigger:} Il modulo di validazione interno fallisce nell'estrarre o interpretare i dati strutturati dall'output testuale restituito dall'\textit{LLM}.
     \item \textbf{Precondizioni:}
     \begin{itemize}
@@ -2087,6 +2089,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} Piattaforma \textit{GitHub}, Sistema di \textit{Task Management}.
     \item \textbf{Trigger:} L'agente tenta di accedere a una dipendenza di contesto (es. il file \texttt{CLAUDE.md} o uno \textit{Sprint} ID su un task manager) e rileva che essa non è presente.
     \item \textbf{Precondizioni:}
     \begin{itemize}
@@ -2110,6 +2113,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attori Secondari:} Piattaforma \textit{GitHub}
     \item \textbf{Trigger:} L'agente accede alla risorsa di contesto ma il modulo di validazione solleva un'eccezione semantica o di parsing durante la lettura del suo contenuto.
     \item \textbf{Precondizioni:}
     \begin{itemize}
@@ -2146,7 +2150,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema tenta di aprire la \textit{Pull Request} inviando il \textit{payload} alle \textit{API} della \textit{Piattaforma GitHub}.
+        \item Il sistema tenta di aprire la \textit{Pull Request} inviando la richiesta alle \textit{API} della \textit{Piattaforma GitHub}.
         \item Il servizio remoto restituisce un errore.
         \item Il sistema interrompe l'esecuzione dell'operazione corrente.
         \item Il sistema renderizza a schermo il dettaglio testuale dell'errore (es. "Impossibile creare la Pull Request: verificare che il token \textit{Git} abbia i permessi di scrittura abilitati").
@@ -2161,7 +2165,7 @@ Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esp
     \item \textbf{Trigger:} L'utente interagisce con il comando di esportazione presente all'interno dell'interfaccia di visualizzazione del report.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'utente ha aperto e sta visualizzando il dettaglio di un report (UC26).
+        \item L'utente ha aperto e sta visualizzando i dettagli di un report (UC26).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2172,7 +2176,7 @@ Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esp
         \item L'utente attiva il comando per esportare il report corrente.
         \item Il sistema raccoglie i dati testuali e strutturati presenti nel report.
         \item Il sistema converte e formatta i dati generando un file in formato PDF.
-        \item Il sistema invia il file al client, innescando il download locale.
+        \item Il sistema invia il file all'utente, innescando il download locale.
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
@@ -2251,12 +2255,14 @@ Questo caso d'uso descrive la gestione del fallimento durante la trasmissione de
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'operazione di invio viene bloccata.
+        \item Il sistema predispone un avviso informativo del fallimento dell'invio della email.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema tenta l'inoltro dell'email al Server SMTP.
         \item Il server esterno rifiuta la richiesta o risulta irraggiungibile.
         \item Il sistema interrompe la procedura di notifica.
+        \item Il sistema predispone un avviso informativo del fallimento dell'invio della email, che verrà mostrato all'utente alla prossima apertura della piattaforma \textbf{Code Guardian}.
     \end{enumerate}
 \end{itemize}
 
