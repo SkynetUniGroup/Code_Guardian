@@ -1339,7 +1339,7 @@ Questo caso d'uso descrive la visualizzazione dell'indicatore testuale che espri
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27: Visualizzazione errore durante l'esecuzione dell'agente.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un nomalia interna all'agente.
+        \item \textbf{UC27: Errore durante l'esecuzione dell'agente.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un nomalia interna all'agente.
         \item \textbf{UC23: Errore di orchestrazione o routing.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un problema architetturale di orchestrazione o routing.
     \end{itemize}
 \end{itemize}
@@ -2137,7 +2137,7 @@ Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esp
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente interagisce con il comando di esportazione presente all'interno dell'interfaccia di visualizzazione del report.
+    \item \textbf{Trigger:} L'utente interagisce con il comando di esportazione presente all'interno dell'interfaccia di visualizzazione del report, oppure attiva le notifiche mail per ricevere il PDF del report (UC21.2).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente ha aperto e sta visualizzando i dettagli di un report (UC26).
@@ -2201,7 +2201,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} verifica che l'utente abbia abilitato l'opzione di notifica.
-        \item Il sistema richiede la generazione del report nel formato di esportazione.
+        \item Il sistema genera il report e lo formatta in formato PDF (UC28).
         \item Il sistema compone il messaggio di posta elettronica allegando il file generato.
         \item Il sistema contatta il Server SMTP e inoltra l'email all'indirizzo registrato dall'utente.
     \end{enumerate}
@@ -2211,8 +2211,8 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC32}: Errore invio email. Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
-        \item \textbf{UC33}: Errore allegato troppo grande. Estende il passo 4 qualora il file generato superi i limiti dimensionali imposti dal provider di posta.
+        \item \textbf{UC32: Errore invio email.} Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
+        \item \textbf{UC33: Errore allegato troppo grande.} Estende il passo 4 qualora il file generato superi i limiti dimensionali imposti dal provider di posta.
     \end{itemize}
 \end{itemize}
 
@@ -2453,7 +2453,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 5 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 5 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
         \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
     \end{itemize}
@@ -2493,7 +2493,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal modello \textit{LLM} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
         \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
         \item \textbf{UC37: Gestione complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il modello \textit{LLM} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
@@ -2555,7 +2555,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} non rispetti la formattazione \textit{Markdown} richiesta o non sia parsabile dal sistema.
         \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 5 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
     \end{itemize}
@@ -2613,7 +2613,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output della scansione, superando il limite di timeout.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output della scansione, superando il limite di timeout.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile per la classificazione delle vulnerabilità.
         \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
@@ -2653,7 +2653,7 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWA
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
         \item \textbf{UC27.5: Errore per risorsa di contesto mancante.} Estende il passo 2 qualora il file \texttt{CLAUDE.md} non esista o non venga trovato all'interno del \textit{Repository Git}.
         \item \textbf{UC27.6: Errore per risorsa di contesto non valida o malformata.} Estende il passo 2 qualora il file \texttt{CLAUDE.md} sia illeggibile, contenga errori di sintassi o regole in palese contraddizione logica.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 4 qualora il Modello \textit{AI} superi il tempo limite per l'elaborazione.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} superi il tempo limite per l'elaborazione.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile dal sistema.
         \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
@@ -2718,7 +2718,7 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
         \item \textbf{UC42: Annullamento dell'inserimento dello \textit{Sprint} ID.} Estende il passo 3 qualora l'utente decida di interrompere l'operazione interagendo con il comando di annullamento.
         \item \textbf{UC27.5: Errore per risorsa di contesto mancante.} Estende il passo 4 qualora lo \textit{Sprint ID} inserito dall'utente non esista o la risposta del server restituisca un insieme vuoto.
         \item \textbf{UC43: Avviso e gestione task con metadati insufficienti.} Estende il passo 5 qualora il sistema rilevi all'interno dei task completati l'assenza di descrizioni o di criteri di accettazione minimi.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 6 qualora il Modello \textit{AI} superi il tempo limite per l'elaborazione.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 6 qualora il Modello \textit{LLM} superi il tempo limite per l'elaborazione.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 7 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile.
         \item \textbf{UC31: Notifica email per richiesta validazione umana.} Estende il passo 9 qualora l'utente abbia selezionato originariamente il \textit{Changelog} di Business, inviando un'email per richiedere la validazione del report tecnico e l'innesco del processo di generazione.
         \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
@@ -2845,7 +2845,7 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
         \item \textbf{UC46: Annullamento della generazione del \textit{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{AI}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per rispondere.
+        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{LLM} impieghi troppo tempo per rispondere.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita non sia formattata correttamente in \textit{Markdown}.
     \end{itemize}
 \end{itemize}
