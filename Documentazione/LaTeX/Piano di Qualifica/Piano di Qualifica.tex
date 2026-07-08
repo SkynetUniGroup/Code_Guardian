@@ -19,6 +19,7 @@
 \usepackage{makecell}
 \usepackage{array}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\usepackage{longtable}
 
 \newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
 \newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
@@ -120,6 +121,7 @@ Esempi:
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
         % Esempio di riga, sostituire con il contenuto reale
+        \textit{0.3.0} & \textit{2026/07/08} & \textit{Sviluppo complessivo} & \makecell[l]{Edoardo Granziero} & \makecell[l]{} \\ \hline
         \textit{0.2.0} & \textit{2026/05/25} & \textit{Compilazione "Obiettivi di qualità del processo"} & \makecell[l]{Dario Pirrone} & \makecell[l]{Samuele Bertin} \\ \hline
         \textit{0.1.0} & \textit{2026/05/10} & \textit{Creazione documento e compilazione "Introduzione"} & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
     \end{tabularx}
@@ -193,17 +195,32 @@ I processi primari regolano le attività direttamente collegate alla realizzazio
 \subsubsection{Fornitura e Sviluppo}
 L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il Proponente ed evitare l'accumulo di debito tecnico o complessità strutturale eccessiva nelle fasi di implementazione dell'architettura e degli agenti.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        MP\_01 & \textbf{\glo{Requirements Stability Index (RSI)}{requirements-stability-index}}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
-    \end{tabularx}
-    \caption{Metriche per i Processi Primari}
+\begin{longtable}{|c|p{\dimexpr\textwidth - 1.5cm - 2\LargColVal - 8\tabcolsep}|C{\LargColVal}|C{\LargColVal}|}
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead % Questa parte appare solo sulla prima pagina
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead % Questa parte appare in cima alle pagine successive (ripete l'header)
+        
+    MP\_01 & \textbf{\glo{Requirements Stability Index (RSI)}{requirements-stability-index}}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
+        
+    MP\_12 & \textbf{\glo{Earned Value (EV)}{earned-value}}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
+        
+    MP\_13 & \textbf{\glo{Planned Value (PV)}{planned-value}}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
+
+    MP\_14 & \textbf{\glo{Actual Cost (AC)}{actual-cost}}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline   
+
+    MP\_15 & \textbf{\glo{Estimate At Completion (EAC)}{estimate-at-completion}}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\ge 0$ & $<$ Estimate At Completion \\ \hline
+    
+    MP\_16 & \textbf{\glo{Estimate To Complete (ETC)}{estimate-to-complete}}: Costo per completare. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
+    
+    MP\_17 & \textbf{\glo{Time Estimate At Completion (TEAC)}{time-estimate-at-completion}}: Tempo complessivo stimato. & $\ge 0$ & Durata pianificata \\ \hline
+        
+    \caption{Metriche per i Processi Primari (Fornitura e Sviluppo)}
     \label{tab:metriche_primari}
-\end{table}
+\end{longtable}
 
 \subsection{Processi di supporto}
 I processi di supporto sono attività trasversali che sostengono i processi primari, focalizzandosi sulla corretta evoluzione e verifica della documentazione e del codice sorgente.
@@ -255,7 +272,7 @@ L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazi
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         MP\_09 & \textbf{\glo{Schedule Variance (SV)}{schedule-variance}}: Indicatore dello scostamento temporale tra il lavoro pianificato in fase di planning e quello completato. & $\ge -10\%$ & $\ge 0\%$ \\ \hline
         MP\_10 & \textbf{\glo{Budget Variance (BV)}{budget-variance}}: Indicatore dello scostamento economico tra i costi preventivati e i costi effettivamente sostenuti. & $\ge -5\%$ & $\ge 0\%$ \\ \hline
-        MP\_11 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 2$ & $0$ \\ \hline
+        MP\_11 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 20\%$ & $ 0\%$ \\ \hline
     \end{tabularx}
     \caption{Metriche per i Processi Organizzativi}
     \label{tab:metriche_organizzativi}
@@ -397,12 +414,133 @@ Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elabora
 
 Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textit{Norme di Progetto}:
 \begin{itemize}
-    \item \textbf{Metriche Organizzative e di Fornitura} (es. SV, BV, RSI): calcolate a partire dai dati consuntivati sui fogli di tracciamento condivisi (Google Sheets) al termine di ogni Sprint.
+    \item \textbf{Metriche Organizzative e di Fornitura}: calcolate a partire dai dati consuntivati sui fogli di tracciamento condivisi (Google Sheets) al termine di ogni Sprint.
     \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Build Success Rate, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
 \end{itemize}
 
-\textit{[Nota per la redazione: Inserire in questa sezione, al termine di ogni iterazione, i grafici aggiornati (es. andamento SV/BV, grafici a torta sulla copertura dei requisiti) accompagnati da una sintetica didascalia di analisi oggettiva dei risultati mostrati.]}
+\textit{[Nota: Inserire in questa sezione, i grafici aggiornati insieme alle sezioni RTB e PB.]}
 
+\subsection{MP\_01: Requirements Stability Index}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_12, MP\_13: Earned Value e Planned Value}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_14, MP\_16: Actual Cost e Estimate To Complete}
+
+\textbf{RTB}: osservando il grafico...
+\textbf{PB}: il grafico dimostra...
+
+
+\subsection{MP\_15: Estimate At Completion}
+
+\textbf{RTB}: osservando il grafico...
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_17: Time Estimate At Completion}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+
+\subsection{MP\_02: Indice di Gulpease}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_03: Code Coverage}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_04: Superamento dei Test}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_05: Build Success Rate}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_09: Schedule Variance}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_10: Budget Variance}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{MP\_11: Rischi non Preventivati}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{"OB\_PROD\_01": Copertura dei Requisiti Funzionali:}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_02: Accuratezza delle Risposte AI}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_09: Indice Flesch Reading Ease}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_03: Densità dei Guasti}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_04: Rate Limiting}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_05: Tempo di Risposta dell’Agente}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_06: Ottimizzazione dei Token}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_10: Tempo di Autenticazione}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_07: Maintainability Index}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_08: Promt Isolation}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_12: Complessità Ciclomatica}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
+
+\subsection{OB\_PROD\_13: Linee di Codice Per Metodo}
+\textbf{RTB}: osservando il grafico...
+
+\textbf{PB}: il grafico dimostra...
 
 \section{Valutazioni per il miglioramento}
 Al termine di ogni iterazione, il gruppo SkyNet analizza i dati esposti nel \textit{Cruscotto di valutazione} per individuare deviazioni dai target qualitativi, inefficienze operative e colli di bottiglia. Le seguenti sottosezioni documentano in modo oggettivo le criticità riscontrate e formalizzano le azioni correttive (basate sull'approccio iterativo PDSA - \textit{Plan-Do-Study-Act}) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
