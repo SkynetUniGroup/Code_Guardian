@@ -354,7 +354,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 
     \item \textbf{Server SMTP:} Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
     
-    \item \textbf{\textit{\glo{Claude Code}{claude-code}} / Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
+    \item \textbf{Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
     
     \item \textbf{Sistema di Task Management:} La piattaforma esterna di tracciamento delle attività. Viene interrogata dall'Agente \textit{Changelog} per recuperare i metadati, le descrizioni e i criteri di accettazione dei \textit{\glo{Ticket}{ticket}} completati durante uno \textit{Sprint}.
     
@@ -2263,8 +2263,6 @@ Questo caso d'uso descrive la gestione del fallimento durante la trasmissione de
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item Il sistema tenta l'inoltro dell'email al Server SMTP.
-        \item Il server esterno rifiuta la richiesta o risulta irraggiungibile.
         \item Il sistema interrompe la procedura di notifica.
         \item Il sistema predispone un avviso informativo del fallimento dell'invio della email, che verrà mostrato all'utente alla prossima apertura della piattaforma \textbf{Code Guardian}.
     \end{enumerate}
@@ -2820,7 +2818,7 @@ Questo caso d'uso descrive l'interruzione definitiva del processo di generazione
 Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Changelog} tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Project Manager / Sviluppatore.
+    \item \textbf{Attore Primario:} Project Manager.
     \item \textbf{Attori Secondari:} Modello \textit{AI} (\textit{LLM}).
     \item \textbf{Trigger:} L'utente clicca sul comando "Accetta e genera Business" presente all'interno del report tecnico generato precedentemente.
     \item \textbf{Precondizioni:}
