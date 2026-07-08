@@ -75,7 +75,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.17.0} \\ \hline
+            \textbf{Versione} & \textit{0.18.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -110,6 +110,8 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
 
+    0.18.0 & 2026/07/08 & Aggiunti diagrammi UML degli UC & Dario Pirrone & Sara Ristovic \\ \hline
+    0.17.1 & 2026/07/06 & Correzioni minori agli UC & Dario Pirrone & Sara Ristovic \\ \hline
     0.17.0 & 2026/07/03 & Aggiornati UC specifici per agenti Docs, OWASP e Changelog & Dario Pirrone & Sara Ristovic \\ \hline
     0.16.0 & 2026/06/30 & Aggiunti sottocasi a diversi UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.2 & 2026/06/28 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic \\ \hline
@@ -1511,6 +1513,13 @@ Questo caso d'uso descrive il comportamento del sistema quando si verifica un pr
 \subsubsection{UC24: Visualizzazione della lista dei report salvati}\label{uc:24}
 Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i report salvati all'interno della pagina dello storico.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC24.png}
+    \captionof{figure}{Visualizzazione della lista dei report salvati}
+    \label{fig:UC24}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} Il sistema mostra la struttura della lista all'interno della pagina dello storico dei report.
@@ -1536,6 +1545,13 @@ Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i r
 \subsubsection{UC24.1: Visualizzazione di un singolo elemento report nella lista}\label{uc:24.1}
 Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a un singolo report all'interno della lista.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC24.1.png}
+    \captionof{figure}{Visualizzazione di un singolo elemento report nella lista}
+    \label{fig:UC24.1}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} Il sistema renderizza un singolo elemento all'interno della lista generale.
@@ -1559,6 +1575,13 @@ Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a un s
         \item \textbf{UC24.1.4:} Visualizzazione dell'ora di generazione.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC24.1.1-4.png}
+    \captionof{figure}{Sottocasi di visualizzazione di un singolo elemento report nella lista}
+    \label{fig:UC24.1.1-4}
+\end{center}
 
 \subsubsection{UC24.1.1: Visualizzazione dell'identificativo del report}\label{uc:24.1.1}
 Questo caso d'uso descrive la visualizzazione del codice univoco associato al report all'interno del suo elemento nella lista.
@@ -1644,6 +1667,13 @@ Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui il repor
 \subsubsection{UC25: Selezione di un report per la visualizzazione}\label{uc:25}
 Questo caso d'uso descrive l'interazione attraverso la quale l'utente seleziona un report al fine di aprirne la visualizzazione dettagliata. L'azione può essere innescata indifferentemente dalla dashboard di monitoraggio o dalla pagina dello storico.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC25.png}
+    \captionof{figure}{Selezione di un report per la visualizzazione}
+    \label{fig:UC25}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente interagisce con il comando grafico associato a un report.
@@ -1671,6 +1701,13 @@ Questo caso d'uso descrive l'interazione attraverso la quale l'utente seleziona 
 \subsubsection{UC26: Visualizzazione report prodotto dall'agente}\label{uc:26}
 Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a schermo il report completo generato da un agente a seguito di un'analisi, permettendo all'utente di consultare le informazioni di intestazione e i risultati specifici.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC26.png}
+    \captionof{figure}{Visualizzazione report prodotto dall'agente}
+    \label{fig:UC26}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente seleziona un report da visualizzare (UC25).
@@ -1694,6 +1731,13 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
         \item \textbf{UC26.2:} Visualizzazione del corpo del report.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC26.1-2.png}
+    \captionof{figure}{Sottocasi di visualizzazione report prodotto dall'agente}
+    \label{fig:UC26.1-2}
+\end{center}
 
 \subsubsection{UC26.1: Visualizzazione dell'intestazione del report}\label{uc:26.1}
 Questo caso d'uso descrive la visualizzazione della sezione superiore del report, contenente le informazioni generali e di contesto relative all'elaborazione effettuata dall'agente.
@@ -1723,6 +1767,13 @@ Questo caso d'uso descrive la visualizzazione della sezione superiore del report
         \item \textbf{UC26.1.6:} Visualizzazione dell'ora di generazione.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC26.1.1-6.png}
+    \captionof{figure}{Sottocasi di visualizzazione dell'intestazione del report}
+    \label{fig:UC26.1.1-6}
+\end{center}
 
 \subsubsection{UC26.1.1: Visualizzazione del nome del \textit{repository}}\label{uc:26.1.1}
 Questo caso d'uso descrive la visualizzazione del nome del \textit{repository Git} su cui l'agente ha effettuato la sua elaborazione.
@@ -1875,6 +1926,13 @@ Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica 
     \end{itemize}
 \end{itemize}
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC26.2.1-5.png}
+    \captionof{figure}{Sottocasi di visualizzazione del corpo del report}
+    \label{fig:UC26.2.1-5}
+\end{center}
+
 \subsubsection{UC26.2.1: Visualizzazione blocco testuale formattato}\label{uc:26.2.1}
 Questo caso d'uso descrive la visualizzazione di un componente dedicato al testo lungo e formattato.
 
@@ -1924,6 +1982,13 @@ Questo caso d'uso descrive la visualizzazione di un contenitore a lista per most
 \subsubsection{UC26.2.2.1: Visualizzazione di un singolo elemento nella lista}\label{uc:26.2.2.1}
 Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a una singola voce all'interno della lista strutturata.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC26.2.2.1.png}
+    \captionof{figure}{Visualizzazione di un singolo elemento nella lista}
+    \label{fig:UC26.2.2.1}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} Il sistema renderizza il componente grafico corrispondente a una singola occorrenza.
@@ -1946,6 +2011,14 @@ Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a una 
         \item \textbf{UC26.2.2.1.3:} Visualizzazione del riferimento alla porzione di codice.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC26.2.2.1.1-3.png}
+    \captionof{figure}{Sottocasi di visualizzazione di un singolo elemento nella lista}
+    \label{fig:UC26.2.2.1.1-3}
+\end{center}
+
 
 \subsubsection{UC26.2.2.1.1: Visualizzazione della categoria dell'elemento}\label{uc:26.2.2.1.1}
 Questo caso d'uso descrive la visualizzazione della categoria della singola occorrenza (es. il tipo di vulnerabilità rilevata).
@@ -2074,6 +2147,14 @@ Questo caso d'uso descrive la visualizzazione all'interno del report di un modul
 
 \subsubsection{UC27: Errore durante l'esecuzione dell'agente}\label{uc:27}
 Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possibili anomalie, tecniche o semantiche, che possono verificarsi durante l'elaborazione interna di un agente o del modello \textit{LLM} a esso associato. Essendo un caso d'uso astratto, non viene mai istanziato direttamente, ma si manifesta all'utente esclusivamente attraverso una delle sue specializzazioni.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC27.png}
+    \captionof{figure}{Errore durante l'esecuzione dell'agente}
+    \label{fig:UC27}
+\end{center}
+
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -2273,6 +2354,13 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
 \subsubsection{UC28: Esportazione del report}\label{uc:28}
 Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esportazione del report in formato PDF.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC28.png}
+    \captionof{figure}{Esportazione del report}
+    \label{fig:UC28}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente interagisce con il comando di esportazione presente all'interno dell'interfaccia di visualizzazione del report, oppure attiva le notifiche mail per ricevere il PDF del report (UC21.2).
@@ -2323,6 +2411,13 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui la proce
 \subsubsection{UC30: Invio automatico del report via email}\label{uc:30}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema, al completamento positivo di un'operazione che produce un report, genera l'allegato del report e lo invia all'indirizzo email associato all'account dell'utente.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC30.png}
+    \captionof{figure}{Invio automatico del report via email}
+    \label{fig:UC30}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Attori Secondari:} Server SMTP.
@@ -2356,6 +2451,13 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 
 \subsubsection{UC31: Notifica email per richiesta validazione umana}\label{uc:31}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema invia un'email all'utente per notificare la necessità di un intervento manuale o di una validazione affinché un'operazione sospesa o composta possa proseguire (es. validazione del Changelog Tecnico).
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC31.png}
+    \captionof{figure}{Notifica email per richiesta validazione umana}
+    \label{fig:UC31}
+\end{center}
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -2458,6 +2560,13 @@ Di seguito i \textit{Casi d'uso} dell'Agente Docs.
 \subsubsection{UC34: Gestione del template personalizzato per il \textit{README}}\label{uc:34}
 Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la struttura e lo stile personalizzato per la generazione e l'aggiornamento del file \texttt{\textit{README.md}}, sovrascrivendo o ripristinando il template di default dell'Agente Docs.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC34.png}
+    \captionof{figure}{Gestione del template personalizzato per il \textit{README}}
+    \label{fig:UC34}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
     \item \textbf{Trigger:} Lo Sviluppatore desidera accedere alle opzioni di personalizzazione della generazione del \textit{README} per il \textit{repository} corrente.
@@ -2482,6 +2591,13 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la 
         \item \textbf{UC34.3}: Rimozione del template personalizzato.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC34.1-3.png}
+    \captionof{figure}{Sottocasi di gestione del template personalizzato per il \textit{README}}
+    \label{fig:UC34.1-3}
+\end{center}
 
 \subsubsection{UC34.1: Caricamento del file template}\label{uc:34.1}
 Questo caso d'uso descrive l'azione con cui l'utente fornisce al sistema il file contenente il template personalizzato. Se era già presente un template personalizzato precedente, questo viene sovrascritto.
@@ -2560,6 +2676,13 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
 \subsubsection{UC35: Generazione o aggiornamento del \textit{README} di Progetto}\label{uc:35}
 Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per generare o aggiornare il file \texttt{README.md}, interfacciandosi con i servizi esterni necessari, a seguito dell'esplicita richiesta di avvio da parte dell'utente.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC35.png}
+    \captionof{figure}{Generazione o aggiornamento del \textit{README} di Progetto}
+    \label{fig:UC35}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
@@ -2598,6 +2721,14 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
 
 \subsubsection{UC36: Generazione della documentazione inline}\label{uc:36}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente selezionato e generare, o aggiornare, la documentazione inline (\textit{JSDoc}) per le funzioni e le classi rilevate, a seguito dell'esplicita richiesta di avvio da parte dell'utente.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC36.png}
+    \captionof{figure}{Generazione della documentazione inline}
+    \label{fig:UC36}
+\end{center}
+
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
@@ -2662,6 +2793,13 @@ Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di g
 \subsubsection{UC38: Generazione documentazione \textit{API}}\label{uc:38}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema orchestra l'Agente Docs per analizzare il codice sorgente (nello specifico i file di \textit{controller} e di definizione delle \textit{\glo{Rotte}{rotte}}) per generare o aggiornare il file \texttt{API.md} contenente la guida tecnica degli \textit{Endpoint}, a seguito dell'esplicita richiesta di avvio da parte dell'utente.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC38.png}
+    \captionof{figure}{Generazione documentazione \textit{API}}
+    \label{fig:UC38}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
@@ -2721,6 +2859,13 @@ Di seguito i \textit{Casi d'uso} dell'Agente \textit{OWASP}.
 \subsubsection{UC39: Esecuzione scansione vulnerabilità (\textit{OWASP})}\label{uc:39}
 Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente \textit{OWASP} per analizzare il codice sorgente e identificare pattern riconducibili alle vulnerabilità standard dell'\textit{OWASP Top 10}.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC39.png}
+    \captionof{figure}{Esecuzione scansione vulnerabilità (\textit{OWASP})}
+    \label{fig:UC39}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
@@ -2757,6 +2902,13 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
 
 \subsubsection{UC40: Verifica conformità \textit{Policy-as-code} (\texttt{CLAUDE.md})}\label{uc:40}
 Questo caso d'uso descrive il processo automatizzato in cui l'Agente \textit{OWASP} controlla che il codice sorgente rispetti le pratiche di sviluppo sicuro e le policy interne specificate dal team nel file di configurazione \texttt{CLAUDE.md}.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC40.png}
+    \captionof{figure}{Verifica conformità \textit{Policy-as-code} (\texttt{CLAUDE.md})}
+    \label{fig:UC40}
+\end{center}
 
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
@@ -2817,6 +2969,13 @@ Di seguito i \textit{Casi d'Uso} dell'Agente Changelog.
 \subsubsection{UC41: Generazione \textit{Changelog} tecnico (\textit{Dev-to-Dev})}\label{uc:41}
 Questo caso d'uso descrive il processo mediante il quale il sistema recupera i dati da un sistema di tracciamento esterno e orchestra l'Agente Changelog per la stesura automatica di un resoconto tecnico orientato agli sviluppatori.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC41.png}
+    \captionof{figure}{Generazione \textit{Changelog} tecnico (\textit{Dev-to-Dev})}
+    \label{fig:UC41}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
     \item \textbf{Attori Secondari:} Sistema di Task Management, Modello \textit{AI} (\textit{LLM}).
@@ -2863,6 +3022,13 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
 
 \subsubsection{UC41.1: Inserimento identificativo dello \textit{Sprint}}\label{uc:41.1}
 Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da parte dell'utente, dato necessario per l'estrazione dei task completati dal sistema esterno.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC41.1.png}
+    \captionof{figure}{Inserimento identificativo dello \textit{Sprint}}
+    \label{fig:UC41.1}
+\end{center}
 
 \begin{itemize}
     \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
@@ -2913,6 +3079,13 @@ Questo caso d'uso descrive l'interruzione volontaria del processo di generazione
 \subsubsection{UC43: Avviso e gestione task con metadati insufficienti}\label{uc:43}
 Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{Changelog} rilevi la presenza di task contrassegnati come completati ma qualitativamente poveri di informazioni, chiedendo all'utente come procedere.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC43.png}
+    \captionof{figure}{Avviso e gestione task con metadati insufficienti}
+    \label{fig:UC43}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
     \item \textbf{Trigger:} Il modulo di analisi dati rileva che una o più \textit{User Stories} estratte presentano campi testuali vuoti o sotto la soglia minima di caratteri stabilita.
@@ -2954,6 +3127,14 @@ Questo caso d'uso descrive l'interruzione definitiva del processo di generazione
 
 \subsubsection{UC45: Generazione \textit{Changelog} di business (\textit{Dev-to-Client})}\label{uc:45}
 Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Changelog} tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC45.png}
+    \captionof{figure}{Generazione \textit{Changelog} di business (\textit{Dev-to-Client})}
+    \label{fig:UC45}
+\end{center}
+
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Project Manager.
