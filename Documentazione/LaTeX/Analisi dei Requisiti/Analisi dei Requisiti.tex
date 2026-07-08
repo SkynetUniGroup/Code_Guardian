@@ -1,5 +1,5 @@
 \documentclass[12pt, a4paper]{article}
-
+\usepackage{caption}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{geometry}
@@ -337,12 +337,14 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
     \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente \textit{Changelog} innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} e dei compiti completati.
 \end{itemize}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.6\linewidth]{ATTORI.png}
-    \caption{Attori primari coinvolti}
+
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.6\linewidth]{Attori.png}
+    \captionof{figure}{Gerarchia degli attori primari coinvolti}
     \label{fig:Attori}
-\end{figure}
+\end{center}
 
 
 
@@ -364,15 +366,16 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsection{\textit{Casi d'Uso} trasversali}
 Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\linewidth]{UC trasversali.png}
-    \caption{Use Cases trasversali a tutti gli Agenti}
-    \label{fig:UCtrasv}
-\end{figure}
-
 \subsubsection{UC1: Registrazione di un nuovo utente}\label{uc:1}
 Questo caso d'uso descrive il processo attraverso il quale un utente non ancora registrato (non riconosciuto) crea un nuovo account all'interno del sistema \textbf{Code Guardian}, definendo contestualmente il proprio ruolo operativo per l'accesso alle funzionalità degli agenti.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC1.png}
+    \captionof{figure}{Rregistrazione di un nuovo utente}
+    \label{fig:UC1}
+\end{center}
+
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
@@ -410,6 +413,13 @@ Questo caso d'uso descrive il processo attraverso il quale un utente non ancora 
         \item \textbf{UC3: Errore dati non validi.} Estende il passo 5 qualora il formato dell'email sia errato o la password non rispetti i criteri di sicurezza.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC1.1-5.png}
+    \captionof{figure}{Sottocasi registrazione di un nuovo utente}
+    \label{fig:UC1.1-5}
+\end{center}
 
 \subsubsection{UC1.1: Inserimento nome}\label{uc:1.1}
 Questo caso d'uso descrive l'inserimento del nome da parte dell'utente durante la fase di registrazione.
@@ -511,6 +521,13 @@ Questo caso d'uso descrive la gestione degli errori legati alla validazione sint
 \subsubsection{UC4: Autenticazione dell'utente (Login)}\label{uc:4}
 Questo caso d'uso descrive il processo tramite il quale un utente già registrato, ma non ancora riconosciuto nella sessione corrente, fornisce le proprie credenziali per accedere al sistema e ottenere i permessi associati al proprio ruolo.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC4.png}
+    \captionof{figure}{Autenticazione dell'utente (Login)}
+    \label{fig:UC4}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente registrato desidera accedere al sistema per utilizzare gli agenti o visualizzare i report di \textbf{Code Guardian}.
@@ -542,6 +559,13 @@ Questo caso d'uso descrive il processo tramite il quale un utente già registrat
         \item \textbf{UC5: Errore credenziali errate.} Estende il passo 4 qualora l'indirizzo email o la password non trovino corrispondenza all'interno del sistema.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC4.1-2.png}
+    \captionof{figure}{Sottocasi di autenticazione dell'utente (Login)}
+    \label{fig:UC4.1-2}
+\end{center}
 
 \subsubsection{UC4.1: Inserimento email}\label{uc:4.1}
 Questo caso d'uso descrive l'inserimento dell'indirizzo email da parte dell'utente durante la fase di autenticazione.
@@ -589,6 +613,13 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui le crede
 \subsubsection{UC6: Configurazione delle credenziali servizi esterni}\label{uc:6}
 Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al sistema le credenziali necessarie per autorizzare l'accesso ai servizi esterni (la \textit{Piattaforma GitHub} e il Sistema di \textit{Task Management}).
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC6.png}
+    \captionof{figure}{Configurazione delle credenziali servizi esterni}
+    \label{fig:UC6}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}, Sistema di \textit{Task Management}.
@@ -617,6 +648,13 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
         \item \textbf{UC8: Errore formato credenziali non valido.} Estende il passo 4 qualora i token non rispettino la struttura sintattica attesa prima dell'invio.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC6.1-2.png}
+    \captionof{figure}{Sottocasi di configurazione delle credenziali servizi esterni}
+    \label{fig:UC6.1-2}
+\end{center}
 
 \subsubsection{UC6.1: Inserimento token \textit{Piattaforma GitHub}}\label{uc:6.1}
 Questo caso d'uso descrive l'azione di inserimento del token personale.
@@ -680,6 +718,13 @@ Questo caso d'uso descrive la validazione sintattica locale effettuata dal siste
 \subsubsection{UC9: Selezione \textit{repository} e riferimento di base}\label{uc:9}
 Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e il riferimento di base su cui potranno essere eseguite le successive operazioni degli agenti. La selezione del \textit{repository} non implica necessariamente l'analisi del suo intero contenuto, ma definisce il contesto iniziale da utilizzare nelle funzionalità successive. È una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC9.png}
+    \captionof{figure}{Selezione repository e riferimento di base}
+    \label{fig:UC9}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Attori Secondari}: \textit{Piattaforma GitHub}.
@@ -719,6 +764,13 @@ Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e i
         \item \textbf{UC15: Avviso linguaggio non supportato}. Estende il passo 6 qualora il codice sorgente nel riferimento selezionato sia scritto in un linguaggio non gestito dagli agenti del sistema.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC9.1-5.png}
+    \captionof{figure}{Sottocasi di selezione repository e riferimento di base}
+    \label{fig:UC9.1-5}
+\end{center}
 
 \subsubsection{UC9.1: Inserimento URL del \textit{repository Git}}\label{uc:9.1}
 Questo caso d'uso descrive l'inserimento dell'URL del \textit{repository Git} da parte dell'utente.
