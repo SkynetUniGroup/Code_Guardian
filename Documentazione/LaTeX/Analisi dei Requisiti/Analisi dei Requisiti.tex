@@ -936,6 +936,14 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
 
 \subsubsection{UC16: Selezione ambito di analisi}\label{uc:16}
 Questo caso d'uso consente all'utente di delimitare la porzione del \textit{Repository} su cui eseguire l'analisi di un agente. L'ambito può comprendere l'intero \textit{Repository} oppure essere circoscritto a una selezione personalizzata, combinando liberamente singole directory e file specifici (nel rispetto dei limiti dimensionali imposti dal sistema). L'ambito viene configurato a partire dal \textit{Repository} e dal riferimento di base precedentemente validati in UC9.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC16.png}
+    \captionof{figure}{Selezione ambito di analisi}
+    \label{fig:UC16}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
 
@@ -969,6 +977,13 @@ Questo caso d'uso consente all'utente di delimitare la porzione del \textit{Repo
         \item \textbf{UC19: Errore superamento limiti dimensionali dell'ambito}. Estende il passo 2 qualora il volume complessivo di righe di codice o di file selezionati superi la capacità massima di elaborazione del modello \textit{LLM}, mostrando un messaggio di errore esplicativo e richiedendo di restringere la selezione.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC16.1-3.png}
+    \captionof{figure}{Sottocasi di selezione ambito di analisi}
+    \label{fig:UC16.1-3}
+\end{center}
 
 \subsubsection{UC16.1: Selezione dell'intero \textit{Repository}}\label{uc:16.1}
 Questo caso d'uso descrive la selezione dell'intero \textit{Repository Git} come ambito complessivo dell'analisi.
@@ -1064,6 +1079,13 @@ Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di 
 \subsubsection{UC20: Visualizzazione lista delle operazioni disponibili}\label{uc:20}
 Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a schermo la lista di tutte le operazioni (funzionalità) che l'utente può richiedere.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC20.png}
+    \captionof{figure}{Visualizzazione lista delle operazioni disponibili}
+    \label{fig:UC20}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente accede alla dashboard principale dell'interfaccia grafica per la selezione delle operazioni.
@@ -1089,6 +1111,13 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
 \subsubsection{UC20.1: Visualizzazione di una singola operazione nella lista}\label{uc:20.1}
 Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati a una singola operazione all'interno della lista generata delle operazioni disponibili.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC20.1.png}
+    \captionof{figure}{Visualizzazione di una singola operazione nella lista}
+    \label{fig:UC20.1}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} Il sistema elabora e mostra un elemento della lista delle operazioni.
@@ -1110,6 +1139,14 @@ Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati
         \item \textbf{UC20.1.2}: Visualizzazione della descrizione dell'operazione.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC20.1.1-2.png}
+    \captionof{figure}{Sottocasi di visualizzazione di una singola operazione nella lista}
+    \label{fig:UC20.1.1-2}
+\end{center}
+
 
 \subsubsection{UC20.1.1: Visualizzazione del nome dell'operazione}\label{uc:20.1.1}
 Questo caso d'uso descrive la visualizzazione del nome identificativo della singola operazione all'interno della lista delle operazioni disponibili.
@@ -1154,6 +1191,13 @@ Questo caso d'uso descrive la visualizzazione della spiegazione testuale associa
 \subsubsection{UC21: Gestione della selezione e avvio delle operazioni}\label{uc:21}
 Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce con l'interfaccia grafica per scegliere quali operazioni attivare, tra quelle rese disponibili dal sistema, e ne richiede l'esecuzione.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC21.png}
+    \captionof{figure}{Gestione della selezione e avvio delle operazioni}
+    \label{fig:UC21}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente desidera selezionare e avviare una o più funzionalità messe a disposizione dal sistema.
@@ -1178,6 +1222,13 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce 
         \item \textbf{UC21.3}: Conferma e avvio delle operazioni.
     \end{itemize}
 \end{itemize}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC21.1-2.png}
+    \captionof{figure}{Sottocasi di gestione della selezione e avvio delle operazioni}
+    \label{fig:UC21.1-2}
+\end{center}
 
 \subsubsection{UC21.1: Selezione/Deselezione di un'operazione}\label{uc:21.1}
 Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfaccia per aggiungere o rimuovere una specifica operazione dalla coda di esecuzione.
@@ -1224,6 +1275,13 @@ Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfacc
 
 \subsubsection{UC21.3: Conferma e avvio delle operazioni}\label{uc:21.3}
 Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le scelte all'\textbf{Orchestratore} e avviare l'elaborazione delle operazioni selezionate.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC21.3.png}
+    \captionof{figure}{Conferma e avvio delle operazioni}
+    \label{fig:UC21.3}
+\end{center}
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
@@ -1303,6 +1361,13 @@ Questo caso d'uso gestisce lo scenario anomalo in cui l'utente innesca il comand
 \subsubsection{UC22: Visualizzazione della dashboard di monitoraggio delle operazioni}\label{uc:22}
 Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all'utente lo stato di avanzamento complessivo di tutte le richieste prese in carico in tempo reale.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC22.png}
+    \captionof{figure}{Visualizzazione della dashboard di monitoraggio delle operazioni}
+    \label{fig:UC22}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente ha confermato l'avvio di una o più operazioni (UC21.3).
@@ -1329,6 +1394,13 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all
 \subsubsection{UC22.1: Visualizzazione del progresso di una singola operazione}\label{uc:22.1}
 Questo caso d'uso descrive la visualizzazione del progresso individuale associato a una specifica operazione presente all'interno della dashboard di monitoraggio.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC22.1.png}
+    \captionof{figure}{Visualizzazione del progresso di una singola operazione}
+    \label{fig:UC22.1}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} Il sistema avanza nell'elaborazione dell'operazione e aggiorna l'elemento corrispondente all'interno della lista di monitoraggio.
@@ -1354,6 +1426,13 @@ Questo caso d'uso descrive la visualizzazione del progresso individuale associat
 \subsubsection{UC22.1.1: Visualizzazione del nome dell'operazione monitorata}\label{uc:22.1.1}
 Questo caso d'uso descrive la visualizzazione della stringa testuale che identifica l'operazione attualmente in fase di monitoraggio.
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC22.1.1.png}
+    \captionof{figure}{Visualizzazione del nome dell'operazione monitorata}
+    \label{fig:UC22.1.1}
+\end{center}
+
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} Il sistema renderizza l'etichetta identificativa del singolo elemento monitorato.
@@ -1373,6 +1452,13 @@ Questo caso d'uso descrive la visualizzazione della stringa testuale che identif
 
 \subsubsection{UC22.1.2: Visualizzazione dello stato corrente dell'operazione}\label{uc:22.1.2}
 Questo caso d'uso descrive la visualizzazione dell'indicatore testuale che esprime lo stato dinamico di avanzamento dell'attività monitorata.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC22.1.2.png}
+    \captionof{figure}{Visualizzazione dello stato corrente dell'operazione}
+    \label{fig:UC22.1.2}
+\end{center}
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
