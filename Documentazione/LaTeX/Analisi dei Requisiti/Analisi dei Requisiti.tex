@@ -3218,66 +3218,120 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     \endhead
 
-    RF.1 & Obbligatorio & Il sistema deve consentire a un utente non autenticato di registrarsi creando un nuovo account e inserendo nome, cognome, email e password. & UC1, UC1.1, UC1.2, UC1.3, UC1.4 \\ \hline
-    RF.2 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & UC1.5 \\ \hline
-    RF.3 & Obbligatorio & Il sistema deve validare i dati inseriti (formato dell'email, robustezza della password) e mostrare un messaggio d'errore in caso di mancata conformità. & UC3 \\ \hline
-    RF.4 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & UC2 \\ \hline
-    RF.5 & Obbligatorio & Il sistema deve consentire a un utente registrato di autenticarsi fornendo le proprie credenziali (email e password) e di conseguenza sbloccare i permessi e le funzionalità associate allo specifico ruolo dell'utente. & UC4, UC4.1, UC4.2 \\ \hline
-    RF.6 & Obbligatorio & Il sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non siano valide. & UC5 \\ \hline
-    RF.7 & Obbligatorio & Il sistema deve consentire all'utente di inserire, convalidare e memorizzare in modo sicuro i token di accesso personali necessari per l'integrazione con i servizi esterni (\textit{Piattaforma GitHub} e Sistema di Task Management). & UC6, UC6.1, UC6.2, UC7, UC8 \\ \hline
-    RF.8 & Obbligatorio & Il sistema deve consentire all'utente di selezionare il \textit{Repository Git} da utilizzare come contesto di esecuzione degli agenti, specificando anche il riferimento di base desiderato tra branch e \textit{Commit} specifico. & UC9, UC9.1, UC9.2, UC9.3, UC9.4 \\ \hline
-    RF.9 & Desiderabile & L'utente può utilizzare come riferimento del \textit{Repository Git} una \textit{Pull Request} specifica. & UC9.2, UC9.5
-    \\ \hline
-    RF.10 & Obbligatorio & Il sistema deve validare sintatticamente l'URL del repository inserito e mostrare un messaggio di errore se il formato non è valido. & UC10
-    \\ \hline
-    RF.11 & Obbligatorio & Il sistema deve verificare la raggiungibilità del repository e la validità dei permessi d'accesso, mostrando un messaggio di errore in caso di fallimento. & UC11
-    \\ \hline
-    RF.12 & Obbligatorio & Il sistema deve verificare l'esistenza del branch specificato sul repository remoto e mostrare un messaggio di errore qualora non venga trovato. & UC12
-    \\ \hline
-    RF.13 & Obbligatorio & Il sistema deve verificare l'esistenza dell'hash del commit specificato e la sua appartenenza al branch selezionato, mostrando un errore in caso negativo. & UC13
-    \\ \hline
-    RF.14 & Obbligatorio & Il sistema deve verificare l'esistenza dell'identificativo della Pull Request specificata, mostrando un messaggio di errore qualora non venga trovata. & UC14
-    \\ \hline
-    RF.15 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{repository} selezionato contenga codice sorgente scritto in linguaggi non supportati. & UC15
-    \\ \hline
-    RF.16 & Obbligatorio & Il sistema deve consentire all'utente di selezionare l’ambito di analisi, scegliendo uno o più file o directory del Repository. & UC16, UC16.2, UC16.3 \\ 
-    \hline
-    RF.17 & Desiderabile &Il sistema deve mostrare un messaggio di errore e impedire l'avvio dell'agente qualora l'ambito di analisi selezionato (numero di file o volume di righe di codice) ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili. & UC19, UC27.4 \\ 
-    \hline
-    RF.18 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell’intero Repository come ambito di analisi. & UC16.1 \\ 
-    \hline
-    RF.19 & Obbligatorio & Il sistema deve bloccare il proseguimento e mostrare un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & UC17 \\ 
-    \hline
-    RF.20 & Obbligatorio & Il sistema deve verificare l'effettiva esistenza e accessibilità degli elementi selezionati nel \textit{Repository} remoto, mostrando un messaggio di errore in caso di fallimento. & UC18 \\ 
-    \hline
-    RF.21 & Obbligatorio & Il sistema deve fornire un'interfaccia grafica (GUI) che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti, permettendo all'utente una selezione esplicita. & UC20, UC21, UC21.1 \\ 
-    \hline
-    RF.22 & Obbligatorio & Il sistema deve mostrare a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'\textbf{Orchestratore}. & UC20.1, UC20.1.1 \\ 
-    \hline
-    RF.23 & Obbligatorio & Il sistema deve mostrare a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & UC20.1, UC20.1.2 \\ 
-    \hline
-    RF.24 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di selezionare e avviare più operazioni diverse in contemporanea. & UC21, UC21.1, UC21.3 \\ 
-    \hline
-    RF.25 & Obbligatorio & Il sistema deve permettere all'utente di deselezionare un'operazione precedentemente spuntata tramite l'interfaccia grafica, rimuovendola dalla coda di avvio. & UC21.1 \\ 
-    \hline
-    RF.26 & Opzionale & Il sistema deve consentire all'utente di abilitare o disabilitare la ricezione di comunicazioni via email, includendo la consegna dei report completati e le richieste di intervento manuale in piattaforma. & UC21, UC21.2 \\ 
-    \hline
-    RF.27 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & UC21.3 \\ 
-    \hline
-    RF.28 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista o senza aver prima configurato i parametri di contesto obbligatori per le operazioni selezionate. & UC21.4, UC21.5 \\ 
-    \hline
-    RF.29 & Obbligatorio & Il sistema deve mostrare all'utente una sezione o dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'\textbf{Orchestratore}. & UC22 \\ 
-    \hline
-    RF.30 & Obbligatorio & Il sistema deve renderizzare a schermo il nome di ogni operazione in fase di elaborazione e mostrare un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato" o "Fallito". & UC22.1, UC22.1.1, UC22.1.2 \\ 
-    \hline
-    RF.31 & Obbligatorio & Il sistema deve abilitare e rendere interattivi i controlli grafici per le fasi successive  esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & UC22, UC25 \\ 
-    \hline
-    RF.32 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore, mostrando il messaggio di fallimento per la \textit{task} interessata e permettendo la regolare prosecuzione delle altre \textit{task} parallele. & UC23, UC21.3, UC22.1.2 \\ 
-    \hline
-    RF.33 & Obbligatorio & Il sistema deve consentire all'utente di visualizzare il report prodotto dall’agente, includendo almeno criticità rilevate, suggerimenti proposti e file coinvolti. & UC26, UC26.1, UC26.2, UC25 \\ 
-    \hline
-    RF.34 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del \textit{repository Git} analizzato, il riferimento base e l'ambito di analisi, oltre al tempo di esecuzione e data e ora di completamento. & UC26.1, UC26.1.1, UC26.1.2, UC26.1.3, UC26.1.4, UC26.1.5, UC26.1.6 \\ 
-    \hline
+    RF.1 & Obbligatorio & Il sistema deve permettere a un utente non autenticato di avviare la procedura di registrazione per la creazione di un nuovo account. & \hyperref[uc:1]{UC1} \\ \hline
+    
+    RF.2 & Obbligatorio & Il sistema deve consentire all'utente di inserire il proprio nome e cognome in fase di registrazione. & \hyperref[uc:1.1]{UC1.1}, \hyperref[uc:1.2]{UC1.2} \\ \hline
+    
+    RF.3 & Obbligatorio & Il sistema deve consentire all'utente di inserire il proprio indirizzo email e la password in fase di registrazione. & \hyperref[uc:1.3]{UC1.3}, \hyperref[uc:1.4]{UC1.4} \\ \hline
+    
+    RF.4 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & \hyperref[uc:1.5]{UC1.5} \\ \hline
+    
+    RF.5 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & \hyperref[uc:2]{UC2} \\ \hline
+    
+    RF.6 & Obbligatorio & Il sistema deve validare i dati di registrazione inseriti (formato dell'email e robustezza della password) e mostrare un messaggio d'errore in caso di mancata conformità. & \hyperref[uc:3]{UC3} \\ \hline
+    
+    RF.7 & Obbligatorio & Il sistema deve consentire a un utente registrato di sbloccare i permessi e le funzionalità associate allo specifico ruolo operativo a seguito del login. & \hyperref[uc:4]{UC4} \\ \hline
+    
+    RF.8 & Obbligatorio & Il sistema deve permettere all'utente di autenticarsi inserendo le proprie credenziali, ovvero email e password. & \hyperref[uc:4.1]{UC4.1}, \hyperref[uc:4.2]{UC4.2} \\ \hline
+    
+    RF.9 & Obbligatorio & Il sistema deve negare l'accesso e mostrare un messaggio di errore generico nel caso in cui le credenziali inserite non risultino valide. & \hyperref[uc:5]{UC5} \\ \hline
+    
+    RF.10 & Obbligatorio & Il sistema deve permettere all'utente di configurare e memorizzare in modo sicuro i \textit{Token} di accesso necessari per l'integrazione con i servizi esterni. & \hyperref[uc:6]{UC6} \\ \hline
+    
+    RF.11 & Obbligatorio & Il sistema deve consentire l'inserimento del \textit{Token} personale della \textit{Piattaforma GitHub} per l'integrazione con il servizio esterno. & \hyperref[uc:6.1]{UC6.1}, \hyperref[uc:6.2]{UC6.2} \\ \hline
+
+    RF.12 & Obbligatorio & Il sistema deve consentire l'inserimento del \textit{Token} personale del sistema di \textit{Task Management} per l'integrazione con il servizio esterno. & \hyperref[uc:6.2]{UC6.2} \\ \hline
+    
+    RF.13 & Obbligatorio & Il sistema deve testare la validità dei \textit{Token} tramite una chiamata ai servizi esterni, interrompendo la memorizzazione e mostrando un errore in caso di fallimento. & \hyperref[uc:7]{UC7} \\ \hline
+    
+    RF.14 & Obbligatorio & Il sistema deve validare sintatticamente il formato dei \textit{Token} inseriti e mostrare un messaggio di errore qualora questo non risulti valido. & \hyperref[uc:8]{UC8} \\ \hline
+    
+    RF.15 & Obbligatorio & Il sistema deve finalizzare e registrare la selezione del \textit{Repository Git} e del relativo riferimento di base, rendendoli disponibili come contesto per gli agenti. & \hyperref[uc:9]{UC9} \\ \hline
+    
+    RF.16 & Obbligatorio & Il sistema deve permettere all'utente di inserire l'URL del \textit{Repository Git} e di selezionare la tipologia di riferimento di base. & \hyperref[uc:9.1]{UC9.1}, \hyperref[uc:9.2]{UC9.2} \\ \hline
+    
+    RF.17 & Obbligatorio & Il sistema deve consentire la specificazione del nome del \textit{Branch} e, in via opzionale, l'identificativo di un \textit{Commit} specifico come riferimento di base. & \hyperref[uc:9.3]{UC9.3}, \hyperref[uc:9.4]{UC9.4} \\ \hline
+    
+    RF.18 & Desiderabile & Il sistema deve permettere l'inserimento dell'identificativo di una \textit{Pull Request} specifica da utilizzare come riferimento di base. & \hyperref[uc:9.5]{UC9.5} \\ \hline
+    
+    RF.19 & Obbligatorio & Il sistema deve validare localmente l'\textit{URL} del \textit{Repository Git} inserito e mostrare un messaggio di errore qualora il formato sintattico non sia valido. & \hyperref[uc:10]{UC10} \\ \hline
+    
+    RF.20 & Obbligatorio & Il sistema deve verificare la raggiungibilità del \textit{Repository} remoto e la validità dei permessi d'accesso, mostrando un messaggio di errore in caso di fallimento. & \hyperref[uc:11]{UC11} \\ \hline
+    
+    RF.21 & Obbligatorio & Il sistema deve verificare l'esistenza del branch specificato sul \textit{Repository} remoto e mostrare un messaggio di errore qualora non venga trovato. & \hyperref[uc:12]{UC12} \\ \hline
+    
+    RF.22 & Obbligatorio & Il sistema deve verificare l'esistenza dell'hash del commit specificato e la sua appartenenza al branch selezionato, mostrando un errore in caso negativo. & \hyperref[uc:13]{UC13} \\ \hline
+    
+    RF.23 & Obbligatorio & Il sistema deve verificare l'esistenza dell'identificativo della Pull Request specificata, mostrando un messaggio di errore qualora non venga trovata. & \hyperref[uc:14]{UC14} \\ \hline
+    
+    RF.24 & Obbligatorio & Il sistema deve mostrare un messaggio di avviso all'utente qualora il \textit{Repository} selezionato contenga codice sorgente scritto in linguaggi non supportati. & \hyperref[uc:15]{UC15} \\ \hline
+    
+    RF.25 & Obbligatorio & Il sistema deve consentire all'utente di definire e selezionare l'ambito di analisi del contesto di esecuzione. & \hyperref[uc:16]{UC16} \\ \hline
+    
+    RF.26 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell'intero \textit{Repository} come ambito di analisi. & \hyperref[uc:16.1]{UC16.1} \\ \hline
+    
+    RF.27 & Obbligatorio & Il sistema deve consentire all'utente di selezionare uno o più file del \textit{Repository} come ambito di analisi. & \hyperref[uc:16.2]{UC16.2} \\ \hline
+    
+    RF.28 & Obbligatorio & Il sistema deve consentire all'utente di selezionare una o più directory del \textit{Repository} come ambito di analisi. & \hyperref[uc:16.3]{UC16.3} \\ \hline
+    
+    RF.29 & Obbligatorio & Il sistema deve bloccare il proseguimento e mostrare un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & \hyperref[uc:17]{UC17} \\ \hline
+    
+    RF.30 & Obbligatorio & Il sistema deve verificare l'effettiva esistenza e accessibilità degli elementi selezionati nel \textit{Repository} remoto, mostrando un messaggio di errore in caso di fallimento. & \hyperref[uc:18]{UC18} \\ \hline
+    
+    RF.31 & Desiderabile & Il sistema deve verificare che l'ambito di analisi selezionato (numero di file o volume di righe di codice) non ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili, mostrando un messaggio di errore in caso contrario. & \hyperref[uc:19]{UC19} \\ \hline
+    
+    RF.32 & Obbligatorio & Il sistema deve fornire un'interfaccia grafica che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti. & \hyperref[uc:20]{UC20}, \hyperref[uc:20.1]{UC20.1}\\ \hline
+           
+    RF.33 & Obbligatorio & Il sistema deve mostrare a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'\textbf{Orchestratore}. & \hyperref[uc:20.1.1]{UC20.1.1} \\ \hline
+    
+    RF.34 & Obbligatorio & Il sistema deve mostrare a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & \hyperref[uc:20.1.2]{UC20.1.2} \\ \hline
+    
+    RF.35 & Obbligatorio & Il sistema deve predisporre l'interfaccia grafica per la configurazione e la successiva gestione dell'avvio delle operazioni. & \hyperref[uc:21]{UC21} \\ \hline
+    
+    RF.36 & Obbligatorio & Il sistema deve permettere all'utente una selezione e deselezione esplicita delle singole operazioni tramite una specifica interazione nell'interfaccia grafica. & \hyperref[uc:21.1]{UC21.1} \\ \hline
+
+    RF.37 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di selezionare più operazioni diverse in contemporanea. & \hyperref[uc:21.1]{UC21.1} \\ \hline
+
+    RF.38 & Opzionale & Il sistema deve consentire all'utente di abilitare o disabilitare la ricezione di comunicazioni via email, includendo la consegna dei report completati e le richieste di intervento manuale in piattaforma. & \hyperref[uc:21.2]{UC21.2} \\ \hline
+    
+    RF.39 & Desiderabile & Il sistema deve permettere all'utente, tramite l'interfaccia grafica, di avviare più operazioni selezionate in contemporanea. & \hyperref[uc:21.3]{UC21.3} \\ \hline
+    
+    RF.40 & Obbligatorio & L'\textbf{Orchestratore} deve mappare deterministicamente le operazioni selezionate dall'utente e instradare le richieste ai rispettivi agenti. & \hyperref[uc:21.3]{UC21.3} \\ \hline
+    
+    RF.41 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista. & \hyperref[uc:21.4]{UC21.4} \\ \hline
+    
+    RF.42 & Obbligatorio & Il sistema deve inibire la procedura di esecuzione dell'\textbf{Orchestratore} e mostrare un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver prima configurato i parametri di contesto obbligatori per le operazioni selezionate. & \hyperref[uc:21.5]{UC21.5} \\ \hline
+    
+    RF.43 & Obbligatorio & Il sistema deve mostrare all'utente una dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'\textbf{Orchestratore}. & \hyperref[uc:22]{UC22} \\ \hline
+    
+    RF.44 & Obbligatorio & Il sistema deve visualizzare lo stato di avanzamento in tempo reale delle singole attività monitorate all'interno della dashboard. & \hyperref[uc:22.1]{UC22.1} \\ \hline
+    
+    RF.45 & Obbligatorio & Il sistema deve renderizzare a schermo il nome di ogni operazione in fase di elaborazione. & \hyperref[uc:22.1.1]{UC22.1.1} \\ \hline
+    
+    RF.46 & Obbligatorio & Il sistema deve mostrare un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato", "Fallito" o "Annullato". & \hyperref[uc:22.1.2]{UC22.1.2} \\ \hline
+
+    RF.47 & Obbligatorio & Il sistema deve abilitare i controlli grafici per le fasi successive esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & \hyperref[uc:22]{UC22} \\ \hline
+    
+    RF.48 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{Task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore per non compromettere le altre attività parallele in corso. & \hyperref[uc:23]{UC23} \\ \hline
+    
+    RF.49 & Opzionale & Il sistema deve mantenere un archivio storico dei report e permettere all'utente di visualizzare una pagina contenente la lista aggregata dei report generati in passato. & \hyperref[uc:24]{UC24} \\ \hline
+
+    
+    RF.50 & Obbligatorio & Il sistema deve consentire all'utente la selezione e la visualizzazione del report defiderato. & \hyperref[uc:25]{UC25}, \hyperref[uc:26]{UC26} \\ \hline
+    
+    RF.51 & Obbligatorio & Il sistema deve strutturare il report dividendolo in una sezione di intestazione e una di corpo del report con il contenuto effettivo. & \hyperref[uc:26.1]{UC26.1}, \hyperref[uc:26.2]{UC26.2} \\ \hline
+    
+    RF.52 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del \textit{Repository Git} analizzato. & \hyperref[uc:26.1.1]{UC26.1.1} \\ \hline
+    
+    RF.53 & Obbligatorio & Il sistema deve visualizzare nell'intestazione del report il riferimento base e l'ambito di analisi selezionato. & \hyperref[uc:26.1.2]{UC26.1.2}, \hyperref[uc:26.1.3]{UC26.1.3} \\ \hline
+    
+    RF.54 & Obbligatorio & Il sistema deve includere nell'intestazione del report il tempo di esecuzione impiegato dall'agente. & \hyperref[uc:26.1.4]{UC26.1.4} \\ \hline
+    
+    RF.55 & Obbligatorio & Il sistema deve riportare nell'intestazione del report la data e l'ora di completamento dell'operazione. & \hyperref[uc:26.1.5]{UC26.1.5}, \hyperref[uc:26.1.6]{UC26.1.6} \\ \hline
+
+
+    
+
     RF.35 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & UC26.2.4, UC35 \\ 
     \hline
     RF.36 & Obbligatorio & Il sistema deve garantire un approccio \textit{human-in-the-loop} restituendo le proposte di modifica in formati non distruttivi e soggetti a revisione esterna, demandando all'utente l'applicazione definitiva. & UC26.2.3, UC26.2.4, UC35, UC36, UC38 \\ 
