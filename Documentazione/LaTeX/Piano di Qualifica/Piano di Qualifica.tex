@@ -92,24 +92,6 @@
 \newpage
 
 % ==========================================
-% LINK DI SUPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO
-% ==========================================
-[LINK DI SUPORTO PER LO SVILUPPO DA ELIMINARE NEL DOCUMENTO EFFETTIVO]
-
-
-Esempi:
-
-\begin{itemize}
-\item
-  \href{https://gammardx.github.io/Documents/Documenti%20esterni/Piano%20di%20Qualifica%20v2.0.0.pdf}{GammardX}
-\item
-  \href{https://torchlight-swe2324.github.io/docs/pb/Documentazione%20Esterna/piano_qualifica_v2.0.0.pdf}{Torchlight}
-\item
-  \href{https://merlunipd.github.io/login-warrior/output_documenti/esterni/PdQ_V3.pdf}{Merl}
-\end{itemize}
-
-\newpage
-% ==========================================
 % REGISTRO DELLE VERSIONI
 % ==========================================
 \section*{Versioni del documento}
@@ -121,7 +103,7 @@ Esempi:
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
         % Esempio di riga, sostituire con il contenuto reale
-        \textit{0.3.0} & \textit{2026/07/08} & \textit{Sviluppo complessivo} & \makecell[l]{Edoardo Granziero} & \makecell[l]{} \\ \hline
+        \textit{0.3.0} & \textit{2026/07/08} & \textit{Sviluppo complessivo} & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
         \textit{0.2.0} & \textit{2026/05/25} & \textit{Compilazione "Obiettivi di qualità del processo"} & \makecell[l]{Dario Pirrone} & \makecell[l]{Samuele Bertin} \\ \hline
         \textit{0.1.0} & \textit{2026/05/10} & \textit{Creazione documento e compilazione "Introduzione"} & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
     \end{tabularx}
@@ -149,15 +131,15 @@ Esempi:
 % ==========================================
 \section{Introduzione}
 \subsection{Scopo del documento}
-Il presente documento definisce le linee guida, le metriche e le metodologie di verifica necessarie a garantire la qualità del prodotto e dei processi durante l'intero ciclo di vita del progetto. L'obiettivo principale è fornire un quadro di riferimento per il monitoraggio costante delle attività, permettendo al gruppo di individuare tempestivamente eventuali criticità e di perseguire un miglioramento continuo attraverso l'analisi dei dati raccolti. Il piano è da considerarsi un documento dinamico che evolverà incrementalmente per riflettere l'avanzamento dello sviluppo e l'affinamento del metodo di lavoro.
+Il presente documento definisce le linee guida, le metriche, le metodologie di verifica e validazione necessarie a garantire la qualità del prodotto e dei processi durante il ciclo di vita del progetto. L'obiettivo principale è fornire un quadro di riferimento per il monitoraggio costante delle attività, permettendo al gruppo di individuare tempestivamente eventuali criticità e di perseguire un miglioramento continuo attraverso l'analisi dei dati raccolti. Il piano è da considerarsi un documento dinamico che evolverà incrementalmente per riflettere l'avanzamento dello sviluppo e l'affinamento del metodo di lavoro.
 
 \subsection{Glossario}
 Termini tecnici e vocaboli particolarmente importanti il cui
 significato non sia immediatamente noto o chiaro vengono definiti nel
-documento \emph{Glossario} che è in costante aggiornamento. Ogni termine
+documento glossario che è in costante aggiornamento. Ogni termine
 presente nel glossario è contrassegnato da una G a pedice ed è un
 collegamento ipertestuale che rimanda direttamente alla definizione
-corrispondente nel \emph{Glossario}. Tali parole vengono contrassegnate
+corrispondente nel glossario. Tali parole vengono contrassegnate
 solamente alla loro prima occorrenza in questo documento.
 
 
@@ -180,21 +162,31 @@ solamente alla loro prima occorrenza in questo documento.
   Analisi dei Requisiti v1.0.0
 \item  
   \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{Standard ISO/IEC 12207:1995 - Ciclo di vita dei processi}
+\item  
+  Standard ISO/IEC 9126 - Qualità del Sofrware
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T07.pdf}{Dispense Qualità del software}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T08.pdf}{Dispense Qualità di processo}
+  \item
+\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T09.pdf}{Dispense Verifica e validazione: introduzione}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T10.pdf}{Verifica e validazione: analisi statica}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T11.pdf}{Verifica e validazione: analisi dinamica}
 \end{itemize}
 
 
 
 \section{Obiettivi di qualità di processo}
-Per garantire il controllo e il miglioramento continuo delle attività del gruppo, \textbf{SkyNet} adotta lo standard \textbf{ISO/IEC 12207:1995} come modello di riferimento per il ciclo di vita del software, in perfetta coerenza con quanto delineato nelle \textit{Norme di Progetto v1.0.0}. 
 
-La qualità dei processi viene monitorata quantitativamente attraverso metriche specifiche. Per ciascuna di esse viene definito un \textit{Valore di Accettazione} (la soglia minima necessaria per considerare il processo accettabile e stabile) e un \textit{Valore Ottimale} (il livello di eccellenza a cui il team aspira). Ogni metrica è identificata dal codice \textbf{MP\_[Progressivo]} (\textbf{\glo{Metrica di Processo (MP)}{metrica-di-processo}}).
+La qualità dei processi viene monitorata quantitativamente attraverso metriche specifiche. Per ciascuna di esse viene definito un \textit{Valore di Accettazione} (la soglia minima necessaria per considerare il processo accettabile e stabile) e un \textit{Valore Ottimale} (il livello di eccellenza a cui il team aspira). Ogni \textbf{\glo{Metrica di Processo}{metrica-di-processo}} è identificata dal codice \textbf{MP\_[Progressivo]}.
 
 \subsection{Processi primari}
 I processi primari regolano le attività direttamente collegate alla realizzazione materiale del prodotto software, dalla gestione della fornitura fino alle fasi di analisi, progettazione e codifica.
+L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \textbf{Proponente} ed evitare l'accumulo di debito tecnico o complessità strutturale eccessiva nelle fasi di implementazione dell'architettura e degli agenti.
 
-\subsubsection{Fornitura e Sviluppo}
-L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il Proponente ed evitare l'accumulo di debito tecnico o complessità strutturale eccessiva nelle fasi di implementazione dell'architettura e degli agenti.
-
+\subsubsection{Fornitura}
 \begin{longtable}{|c|p{\dimexpr\textwidth - 1.5cm - 2\LargColVal - 8\tabcolsep}|C{\LargColVal}|C{\LargColVal}|}
     \hline
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
@@ -204,22 +196,36 @@ L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il P
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
     \endhead % Questa parte appare in cima alle pagine successive (ripete l'header)
         
-    MP\_01 & \textbf{\glo{Requirements Stability Index (RSI)}{requirements-stability-index}}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
+    MP\_12 & \textbf{Earned Value (EV)}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
         
-    MP\_12 & \textbf{\glo{Earned Value (EV)}{earned-value}}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
-        
-    MP\_13 & \textbf{\glo{Planned Value (PV)}{planned-value}}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
+    MP\_13 & \textbf{Planned Value (PV)}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
 
-    MP\_14 & \textbf{\glo{Actual Cost (AC)}{actual-cost}}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline   
+    MP\_14 & \textbf{Actual Cost (AC)}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline   
 
-    MP\_15 & \textbf{\glo{Estimate At Completion (EAC)}{estimate-at-completion}}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\ge 0$ & $<$ Estimate At Completion \\ \hline
+    MP\_15 & \textbf{Estimate At Completion (EAC)}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\ge 0$ & $<$ Estimate At Completion \\ \hline
     
-    MP\_16 & \textbf{\glo{Estimate To Complete (ETC)}{estimate-to-complete}}: Costo per completare. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
+    MP\_16 & \textbf{Estimate To Complete (ETC)}: Costo per completare. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
     
-    MP\_17 & \textbf{\glo{Time Estimate At Completion (TEAC)}{time-estimate-at-completion}}: Tempo complessivo stimato. & $\ge 0$ & Durata pianificata \\ \hline
+    MP\_17 & \textbf{Time Estimate At Completion (TEAC)}: Tempo complessivo stimato. & $\ge 0$ & Durata pianificata \\ \hline
         
-    \caption{Metriche per i Processi Primari (Fornitura e Sviluppo)}
-    \label{tab:metriche_primari}
+    \caption{Metriche per il processo di fornitura}
+    \label{tab:metriche_fornitura}
+\end{longtable}
+
+\subsubsection{Sviluppo}
+\begin{longtable}{|c|p{\dimexpr\textwidth - 1.5cm - 2\LargColVal - 8\tabcolsep}|C{\LargColVal}|C{\LargColVal}|}
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead % Questa parte appare solo sulla prima pagina
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead % Questa parte appare in cima alle pagine successive (ripete l'header)
+        
+    MP\_01 & \textbf{Requirements Stability Index (RSI)}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
+        
+    \caption{Metriche per il processo di Sviluppo}
+    \label{tab:metriche_sviluppo}
 \end{longtable}
 
 \subsection{Processi di supporto}
@@ -227,6 +233,29 @@ I processi di supporto sono attività trasversali che sostengono i processi prim
 
 \subsubsection{Documentazione e Gestione della Configurazione}
 In conformità con il \textit{Way of Working}, l'obiettivo è assicurare l'alta leggibilità dei documenti in lingua italiana e un flusso di lavoro ordinato sul repository GitHub tramite l'analisi delle Pull Request.
+
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+        \hline
+        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+        MP\_02 & \textbf{Indice di Gulpease}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
+    \end{tabularx}
+    \caption{Metriche per il processo di Documentazione}
+    \label{tab:metriche_documentazione}
+\end{table}
+
+\paragraph{Formula dell'Indice di Gulpease:}
+L'indice di Gulpease utilizzato per la metrica \textbf{MP\_05} è calcolato secondo la seguente formula matematica:
+\begin{equation}
+I_G = 89 + \frac{
+300 \cdot \left( \text{Numero\ totale\ delle\ frasi} \right)
+- 10 \cdot \left( \text{Numero\ totale\ delle\ lettere} \right)
+}{
+\text{Numero\ totale\ delle\ parole}
+}
+\end{equation}
 
 \subsubsection{Verifica}
 La verifica misura l'efficacia del piano di testing applicato al software, garantendo l'assenza di regressioni e una copertura ottimale del codice.
@@ -237,26 +266,15 @@ La verifica misura l'efficacia del piano di testing applicato al software, garan
     \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        MP\_02 & \textbf{\glo{Gulpease}{gulpease}}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
-        MP\_03 & \textbf{\glo{Copertura del Codice (Code Coverage)}{copertura-del-codice}}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
+        MP\_02 & \textbf{Indice di Gulpease}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
+        MP\_03 & \textbf{Copertura del Codice (Code Coverage)}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
         MP\_04 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
-        MP\_05 & \textbf{Frequenza di Commit}: Numero medio di modifiche salvate nel repository per raggruppare le attività in pacchetti atomici. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
-        MP\_05 & \textbf{\glo{Build Success Rate}{Build-success-rate}}: Percentuale di build completate con successo nella pipeline di Continuous Integration (GitHub Actions) rispetto al totale delle build avviate nello Sprint. & $\ge 90\%$ & $100\%$ \\ \hline
+        MP\_05 & \textbf{Frequenza di Commit}: Numero medio di modifiche (commit) salvate nel repository quotidianamente. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
     \end{tabularx}
-    \caption{Metriche per i Processi di Supporto}
-    \label{tab:metriche_supporto}
+    \caption{Metriche per il processo di Verifica}
+    \label{tab:metriche_verifica}
 \end{table}
 
-\paragraph{Formula dell'Indice di Gulpease:}
-L'indice di Gulpease utilizzato per verificare la metrica \textbf{MP\_05} è calcolato secondo la seguente formula matematica:
-\begin{equation}
-I_G = 89 + \frac{
-300 \cdot \left( \text{Numero\ totale\ delle\ frasi} \right)
-- 10 \cdot \left( \text{Numero\ totale\ delle\ lettere} \right)
-}{
-\text{Numero\ totale\ delle\ parole}
-}
-\end{equation}
 
 \subsection{Processi organizzativi}
 I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando l'andamento economico rispetto al budget pianificato e l'efficacia della gestione dei rischi.
@@ -270,8 +288,8 @@ L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazi
     \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        MP\_09 & \textbf{\glo{Schedule Variance (SV)}{schedule-variance}}: Indicatore dello scostamento temporale tra il lavoro pianificato in fase di planning e quello completato. & $\ge -10\%$ & $\ge 0\%$ \\ \hline
-        MP\_10 & \textbf{\glo{Budget Variance (BV)}{budget-variance}}: Indicatore dello scostamento economico tra i costi preventivati e i costi effettivamente sostenuti. & $\ge -5\%$ & $\ge 0\%$ \\ \hline
+        MP\_09 & \textbf{Schedule Variance (SV)}: Indicatore dello scostamento temporale tra il lavoro pianificato in fase di planning e quello completato. & $\ge -10\%$ & $\ge 0\%$ \\ \hline
+        MP\_10 & \textbf{Budget Variance (BV)}: Indicatore dello scostamento economico tra i costi preventivati e i costi effettivamente sostenuti. & $\ge -5\%$ & $\ge 0\%$ \\ \hline
         MP\_11 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 20\%$ & $ 0\%$ \\ \hline
     \end{tabularx}
     \caption{Metriche per i Processi Organizzativi}
@@ -279,7 +297,7 @@ L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazi
 \end{table}
 
 \paragraph{Formule di Project Management:}
-Per il calcolo di \textbf{MP\_09} e \textbf{MP\_10} si adottano le definizioni derivate dall'Ingegneria del Software (\textbf{\glo{Earned Value Managment (EVM)}{earned-value-managment}}):
+Per il calcolo di \textbf{MP\_09} e \textbf{MP\_10} si adottano le definizioni definite dall'Ingegneria del Software (\textbf{\glo{Earned Value Managment (EVM)}{earned-value-managment}}):
 \begin{itemize}
     \item \textbf{Schedule Variance (SV):} $SV = EV - PV$, dove $EV$ (\textit{Earned Value}) rappresenta il valore del lavoro effettivamente realizzato e $PV$ (\textit{Planned Value}) rappresenta il valore del lavoro pianificato.
     \item \textbf{Budget Variance (BV):} $BV = BCWS - ACWP$, dove $BCWS$ (\textit{Budgeted Cost of Work Scheduled}) rappresenta il costo preventivato e $ACWP$ (\textit{Actual Cost of Work Performed}) rappresenta il costo reale sostenuto.
@@ -288,10 +306,10 @@ Per il calcolo di \textbf{MP\_09} e \textbf{MP\_10} si adottano le definizioni d
 
 
 \section{Obiettivi di qualità di prodotto}
-Per garantire l'eccellenza del sistema \textbf{Code Guardian}, il gruppo \textbf{SkyNet} adotta lo standard \textbf{\glo{ISO/IEC 9126}{iso-iec-9126}}. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito. Ciascuna metrica di prodotto è identificata dal codice \textbf{OB\_PROD\_[Progressivo]}.
+Per garantire la qualità del sistema \textbf{Code Guardian}, il gruppo \textbf{SkyNet} adotta lo standard \textbf{\glo{ISO/IEC 9126}{iso-iec-9126}}. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito. Ciascuna metrica di prodotto è identificata dal codice \textbf{OB\_PROD\_[Progressivo]}.
 
 \subsection{Funzionalità}
-La funzionalità rappresenta la capacità del prodotto software di fornire funzioni in grado di soddisfare i requisiti espressi e impliciti concordati con il Proponente \textit{Var Group}.
+La funzionalità rappresenta la capacità del prodotto software di fornire funzioni in grado di soddisfare i requisiti espressi e impliciti concordati con il \textbf{Proponente Var Group}.
 
 \begin{table}[ht]
     \centering
@@ -300,8 +318,6 @@ La funzionalità rappresenta la capacità del prodotto software di fornire funzi
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         OB\_PROD\_01 & \textbf{Copertura dei Requisiti Funzionali}: Percentuale dei requisiti funzionali obbligatori soddisfatti dall'insieme degli agenti. & $100\%$ & $100\%$ \\ \hline
-        OB\_PROD\_02 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{\glo{allucinazioni (ai)}{allucinazioni}} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
-        OB\_PROD\_09 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
     \end{tabularx}
     \caption{Metriche di Funzionalità}
     \label{tab:prod_funzionalita}
@@ -317,7 +333,9 @@ L'affidabilità misura la capacità del sistema di mantenere costanti le proprie
         \hline
         \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
         OB\_PROD\_03 & \textbf{Densità dei Guasti (Anomalie Codice)}: Percentuale di operazioni fallite (es. parsing interrotto) sul totale delle richieste eseguite. & $\le 5\%$ & $0\%$ \\ \hline
-        OB\_PROD\_04 & \textbf{\glo{Rate Limiting}{rate-limiting}}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API. & $100\%$ & $100\%$ \\ \hline
+        OB\_PROD\_04 & \textbf{Rate Limiting}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API. & $100\%$ & $100\%$ \\ \hline
+        OB\_PROD\_02 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{\glo{allucinazioni (ai)}{allucinazioni}} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
+        OB\_PROD\_09 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
     \end{tabularx}
     \caption{Metriche di Affidabilità}
     \label{tab:prod_affidabilita}
@@ -381,18 +399,18 @@ I test di integrazione verificano il corretto funzionamento delle interfacce, lo
 \end{itemize}
 
 \subsection{Test di sistema (TS)}
-I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione end-to-end soddisfi i requisiti architetturali e i flussi d'uso descritti nell'\textit{Analisi dei Requisiti}.
+I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione end-to-end soddisfi i requisiti funzionali e i flussi d'uso descritti nell'\textbf{Analisi dei Requisiti}.
 
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Esecuzione completa di un'analisi su un intero repository di test (Sandbox) comprensiva di generazione simultanea del README, mappatura reale delle 10 vulnerabilità OWASP rilevate e stesura del Changelog cronologico.
-    \item \textbf{Criterio di successo:} Produzione di tutti gli output previsti entro i limiti temporali stabiliti di accettazione e corretta persistenza o visualizzazione dei risultati.
+    \item \textbf{Oggetto di verifica:} Esecuzione completa di un'analisi su un intero repository di test (Sandbox) comprensiva di generazione simultanea del README, mappatura reale delle vulnerabilità identificate con le top 10 OWASP e stesura del Changelog tecnico e di buisiness.
+    \item \textbf{Criterio di successo:} Produzione di tutti gli output previsti entro i limiti temporali stabiliti di accettazione con adeguata qualità, corretta persistenza e visualizzazione dei risultati.
 \end{itemize}
 
 \subsection{Test di accettazione (TA)}
-I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto o su delega del Proponente \textit{Var Group}, al fine di sancire la validità formale del prodotto e autorizzare il rilascio della milestone.
+I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto o su delega del \textbf{Proponente Var Group}, al fine di sancire la validità formale del prodotto e autorizzarne il rilascio.
 
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Corrispondenza puntuale del comportamento degli agenti rispetto al perimetro d'azione previsto dal capitolato d'appalto \textit{Code Guardian}.
+    \item \textbf{Oggetto di verifica:} Corrispondenza puntuale del comportamento degli agenti rispetto al perimetro d'azione previsto nell'\textbf{Analisi dei Requisiti}.
     \item \textbf{Criterio di successo:} Soddisfacimento del $100\%$ dei test concordati e firma del verbale di accettazione esterno da parte dei referenti aziendali.
 \end{itemize}
 
@@ -404,7 +422,7 @@ I test di regressione consistono nella riesecuzione automatizzata della suite di
 \end{itemize}
 
 \subsection{Tracciamento dei Test}
-Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adotta una matrice di tracciamento bidirezionale tra i test pianificati ed eseguiti e i requisiti individuati. Tale tracciamento verrà formalizzato ed esteso in forma tabellare all'interno del \textit{Cruscotto di Valutazione} man mano che le suite di test verranno implementate ed eseguite nei singoli Sprint.
+Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adotta una matrice di tracciamento bidirezionale tra i test pianificati ed eseguiti e i requisiti corrispettivi.
 
 
 
@@ -412,7 +430,7 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
 \section{Cruscotto di valutazione}
 Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elaborati durante l'esecuzione del progetto. L'obiettivo del cruscotto è tracciare l'andamento delle metriche di processo e di prodotto, permettendo di valutare oggettivamente il raggiungimento dei valori di accettazione e dei target ottimali definiti nei capitoli precedenti.
 
-Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textit{Norme di Progetto}:
+Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textbf{Norme di Progetto}:
 \begin{itemize}
     \item \textbf{Metriche Organizzative e di Fornitura}: calcolate a partire dai dati consuntivati sui fogli di tracciamento condivisi (Google Sheets) al termine di ogni Sprint.
     \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Build Success Rate, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
@@ -543,7 +561,7 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 \textbf{PB}: il grafico dimostra...
 
 \section{Valutazioni per il miglioramento}
-Al termine di ogni iterazione, il gruppo SkyNet analizza i dati esposti nel \textit{Cruscotto di valutazione} per individuare deviazioni dai target qualitativi, inefficienze operative e colli di bottiglia. Le seguenti sottosezioni documentano in modo oggettivo le criticità riscontrate e formalizzano le azioni correttive (basate sull'approccio iterativo PDSA - \textit{Plan-Do-Study-Act}) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
+Al termine di ogni iterazione, il gruppo SkyNet analizza i dati esposti nel \textit{Cruscotto di valutazione} per individuare deviazioni dai target qualitativi, inefficienze operative e colli di bottiglia. Le seguenti sottosezioni documentano in modo oggettivo le criticità riscontrate e formalizzano le azioni correttive (basate sull'approccio iterativo PDSA - Plan-Do-Study-Act) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
 
 \subsection{Valutazione sugli strumenti}
 Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo (es. IDE, tool di comunicazione, architettura CI/CD, framework di testing).
