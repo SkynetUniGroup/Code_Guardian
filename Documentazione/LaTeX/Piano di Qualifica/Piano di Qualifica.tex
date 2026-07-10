@@ -1,5 +1,5 @@
 \documentclass[12pt, a4paper]{article}
-
+\usepackage{xltabular}
 % Pacchetti fondamentali
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
@@ -187,46 +187,64 @@ I processi primari regolano le attività direttamente collegate alla realizzazio
 L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \textbf{Proponente} ed evitare l'accumulo di debito tecnico o complessità strutturale eccessiva nelle fasi di implementazione dell'architettura e degli agenti.
 
 \subsubsection{Fornitura}
-\begin{longtable}{|c|p{\dimexpr\textwidth - 1.5cm - 2\LargColVal - 8\tabcolsep}|C{\LargColVal}|C{\LargColVal}|}
-    \hline
-    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-    \endfirsthead % Questa parte appare solo sulla prima pagina
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
     
     \hline
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-    \endhead % Questa parte appare in cima alle pagine successive (ripete l'header)
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
         
-    MP\_12 & \textbf{Earned Value (EV)}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
+    MP\_12 & \textbf{Earned Value (EV)}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
         
-    MP\_13 & \textbf{Planned Value (PV)}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
+    MP\_13 & \textbf{Planned Value (PV)}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
 
     MP\_14 & \textbf{Actual Cost (AC)}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline   
 
-    MP\_15 & \textbf{Estimate At Completion (EAC)}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\ge 0$ & $<$ Estimate At Completion \\ \hline
+    MP\_15 & \textbf{Estimate At Completion (EAC)}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\ge 0$ & Budget At Completion \\ \hline
     
     MP\_16 & \textbf{Estimate To Complete (ETC)}: Costo per completare. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
     
-    MP\_17 & \textbf{Time Estimate At Completion (TEAC)}: Tempo complessivo stimato. & $\ge 0$ & Durata pianificata \\ \hline
+    MP\_17 & \textbf{Time Estimate At Completion (TEAC)}: Tempo complessivo stimato. & $\ge 0$ & $\le$ Durata pianificata \\ \hline
+
+    MP\_18 & \textbf{Cost Performance Index (CPI)}: Misura l'efficienza economica del progetto, calcolata come rapporto tra il valore maturato (EV) e il costo effettivo (AC). & $\ge 0,9$ & $1$ \\ \hline
+        
+    MP\_19 & \textbf{Schedule Performance Index (SPI)}: Misura l'efficienza temporale del progetto, calcolata come rapporto tra il valore maturato (EV) e il valore pianificato (PV). & $\ge 0,9$ & $1$ \\ \hline
         
     \caption{Metriche per il processo di fornitura}
     \label{tab:metriche_fornitura}
-\end{longtable}
+\end{xltabular}
 
 \subsubsection{Sviluppo}
-\begin{longtable}{|c|p{\dimexpr\textwidth - 1.5cm - 2\LargColVal - 8\tabcolsep}|C{\LargColVal}|C{\LargColVal}|}
-    \hline
-    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-    \endfirsthead % Questa parte appare solo sulla prima pagina
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
     
     \hline
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-    \endhead % Questa parte appare in cima alle pagine successive (ripete l'header)
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
         
     MP\_01 & \textbf{Requirements Stability Index (RSI)}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
         
-    \caption{Metriche per il processo di Sviluppo}
+    \caption{Metriche per il processo di sviluppo}
     \label{tab:metriche_sviluppo}
-\end{longtable}
+\end{xltabular}
 
 \subsection{Processi di supporto}
 I processi di supporto sono attività trasversali che sostengono i processi primari, focalizzandosi sulla corretta evoluzione e verifica della documentazione e del codice sorgente.
@@ -234,17 +252,32 @@ I processi di supporto sono attività trasversali che sostengono i processi prim
 \subsubsection{Documentazione e Gestione della Configurazione}
 In conformità con il \textit{Way of Working}, l'obiettivo è assicurare l'alta leggibilità dei documenti in lingua italiana e un flusso di lavoro ordinato sul repository GitHub tramite l'analisi delle Pull Request.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+    
         MP\_02 & \textbf{Indice di Gulpease}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
-    \end{tabularx}
-    \caption{Metriche per il processo di Documentazione}
+
+        MP\_20 & \textbf{Correttezza Ortografica}: Valuta la presenza di errori ortografici e tipografici all'interno dei documenti ufficiali redatti e rilasciati dal gruppo. & $1$ errore & $0$ errori \\ \hline
+        
+        MP\_05 & \textbf{Frequenza di Commit}: Numero medio di modifiche (commit) salvate nel repository quotidianamente. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
+        
+    \caption{Metriche per il processo di documentazione}
     \label{tab:metriche_documentazione}
-\end{table}
+    \end{xltabular}
+
 
 \paragraph{Formula dell'Indice di Gulpease:}
 L'indice di Gulpease utilizzato per la metrica \textbf{MP\_05} è calcolato secondo la seguente formula matematica:
@@ -260,20 +293,28 @@ I_G = 89 + \frac{
 \subsubsection{Verifica}
 La verifica misura l'efficacia del piano di testing applicato al software, garantendo l'assenza di regressioni e una copertura ottimale del codice.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        MP\_02 & \textbf{Indice di Gulpease}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
-        MP\_03 & \textbf{Copertura del Codice (Code Coverage)}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
-        MP\_04 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
-        MP\_05 & \textbf{Frequenza di Commit}: Numero medio di modifiche (commit) salvate nel repository quotidianamente. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
-    \end{tabularx}
-    \caption{Metriche per il processo di Verifica}
-    \label{tab:metriche_verifica}
-\end{table}
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+      
+    MP\_03 & \textbf{Copertura del Codice (Code Coverage)}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
+    MP\_04 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
+    
+    \caption{Metriche per il processo di verifica}
+    \label{tab:metriche_verifica} \\
+\end{xltabular}
 
 
 \subsection{Processi organizzativi}
@@ -282,19 +323,29 @@ I processi organizzativi sovrintendono l'efficienza metodologica del team, monit
 \subsubsection{Gestione di Progetto (Project Management)}
 L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati, sfruttando i dati del foglio di calcolo gestionale e dei diagrammi di Burndown.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
         MP\_09 & \textbf{Schedule Variance (SV)}: Indicatore dello scostamento temporale tra il lavoro pianificato in fase di planning e quello completato. & $\ge -10\%$ & $\ge 0\%$ \\ \hline
         MP\_10 & \textbf{Budget Variance (BV)}: Indicatore dello scostamento economico tra i costi preventivati e i costi effettivamente sostenuti. & $\ge -5\%$ & $\ge 0\%$ \\ \hline
         MP\_11 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 20\%$ & $ 0\%$ \\ \hline
-    \end{tabularx}
-    \caption{Metriche per i Processi Organizzativi}
+        MP\_21 & \textbf{Time Efficiency (Efficienza Temporale)}: Rapporto percentuale tra le ore stimate per il completamento dei task e le ore effettivamente impiegate dai membri del team. & $\ge 70\%$ & $\ge 90\%$ \\ \hline
+
+    \caption{Metriche per i processi organizzativi}
     \label{tab:metriche_organizzativi}
-\end{table}
+\end{xltabular}
 
 \paragraph{Formule di Project Management:}
 Per il calcolo di \textbf{MP\_09} e \textbf{MP\_10} si adottano le definizioni definite dall'Ingegneria del Software (\textbf{\glo{Earned Value Managment (EVM)}{earned-value-managment}}):
@@ -311,71 +362,159 @@ Per garantire la qualità del sistema \textbf{Code Guardian}, il gruppo \textbf{
 \subsection{Funzionalità}
 La funzionalità rappresenta la capacità del prodotto software di fornire funzioni in grado di soddisfare i requisiti espressi e impliciti concordati con il \textbf{Proponente Var Group}.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        OB\_PROD\_01 & \textbf{Copertura dei Requisiti Funzionali}: Percentuale dei requisiti funzionali obbligatori soddisfatti dall'insieme degli agenti. & $100\%$ & $100\%$ \\ \hline
-    \end{tabularx}
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+        OB\_PROD\_01 & \textbf{Copertura dei Requisiti Obbligatori}: Percentuale dei requisiti funzionali obbligatori soddisfatti dall'insieme degli agenti. & $100\%$ & $100\%$ \\ \hline
+        OB\_PROD\_14 & \textbf{Copertura dei Requisiti Desiderabili}: Percentuale dei requisiti funzionali classificati come desiderabili effettivamente soddisfatti dal prodotto finale. & $\ge 40\%$ & $75\%$ \\ \hline
+        OB\_PROD\_15 & \textbf{Copertura dei Requisiti Opzionali}: Percentuale dei requisiti funzionali classificati come opzionali effettivamente soddisfatti dal prodotto finale. & $0\%$ & $\ge 50\%$ \\ \hline
+
     \caption{Metriche di Funzionalità}
     \label{tab:prod_funzionalita}
-\end{table}
+\end{xltabular}
 
 \subsection{Affidabilità}
 L'affidabilità misura la capacità del sistema di mantenere costanti le proprie prestazioni nel tempo, minimizzando i fallimenti applicativi dovuti a downtime delle API esterne (LLM) o a eccezioni di runtime nel parsing delle codebase.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
         OB\_PROD\_03 & \textbf{Densità dei Guasti (Anomalie Codice)}: Percentuale di operazioni fallite (es. parsing interrotto) sul totale delle richieste eseguite. & $\le 5\%$ & $0\%$ \\ \hline
-        OB\_PROD\_04 & \textbf{Rate Limiting}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API. & $100\%$ & $100\%$ \\ \hline
-        OB\_PROD\_02 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{\glo{allucinazioni (ai)}{allucinazioni}} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
+        OB\_PROD\_04 & \textbf{Rate Limiting}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API esterni. & $100\%$ & $100\%$ \\ \hline
+        OB\_PROD\_02 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{allucinazioni (AI)} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
         OB\_PROD\_09 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
-    \end{tabularx}
+        OB\_PROD\_XX & \textbf{Branch Coverage}: Percentuale di rami logico-decisionali (if/else, cicli, switch) del codice sorgente che vengono attraversati e verificati almeno una volta durante l'esecuzione di test automatici. & $\ge 60\%$ & $\ge 85\%$ \\ \hline
+
     \caption{Metriche di Affidabilità}
     \label{tab:prod_affidabilita}
-\end{table}
+\end{xltabular}
+
+\subsection{Usabilità}
+L'usabilità rappresenta la capacità del prodotto software di essere compreso, appreso e utilizzato con facilità dall'utente finale. Essa misura l'immediatezza dell'interazione con il sistema, minimizzando il rischio di errori operativi e lo sforzo cognitivo richiesto per sfruttare appieno le funzionalità offerte.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+    OB\_PROD\_14 & \textbf{Tempo di Apprendimento (Learning Time)}: Tempo massimo necessario affinché un nuovo utente riesca a comprendere e utilizzare autonomamente le funzionalità principali del sistema, senza ricorrere a manuali o supporto esterno. & $\le 30$ min & $\le 15$ min \\ \hline
+    OB\_PROD\_15 & \textbf{Tasso di Errore (Error Rate)}: Percentuale di azioni errate, non valide o annullate commesse dall'utente durante la normale interazione con l'applicativo per completare uno specifico scenario d'uso. & $\le 5\%$ & $\le 2\%$ \\ \hline
+
+\caption{Metriche di usabilità}
+    \label{tab:prod_usabilita}
+\end{xltabular}
 
 \subsection{Efficienza}
 L'efficienza definisce la relazione tra il livello di prestazioni del software e la quantità di risorse (specialmente temporali ed economiche legate al consumo di token dei modelli) utilizzate.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        OB\_PROD\_05 & \textbf{Tempo di Risposta dell'Agente}: Tempo medio impiegato da un singolo agente per completare l'analisi ed emettere l'output. & $\le 45 \text{ s}$ & $\le 20 \text{ s}$ \\ \hline
-        OB\_PROD\_06 & \textbf{Ottimizzazione dei Token}: Rapporto tra i token strettamente necessari nei prompt di sistema e i token totali consumati per richiesta. & $\ge 70\%$ & $\ge 85\%$ \\ \hline
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+        OB\_PROD\_16 & \textbf{Tempo di Risposta Interfaccia}: Tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema, escludendo l'esecuzione in background degli agenti. & $\le 2$ s & $\le 1$ s \\ \hline
+        OB\_PROD\_05 & \textbf{Tempo di Risposta dell'Agente}: Tempo medio impiegato da un singolo agente per completare l'analisi ed emettere l'output. & $\le 5$ min & $\le 1m 30s$ \\ \hline
         OB\_PROD\_10 & \textbf{Tempo di Autenticazione}: Tempo massimo impiegato dal sistema per completare la verifica delle credenziali e autorizzare l'accesso. & $\le 2 \text{ s}$ & $\le 1 \text{ s}$ \\ \hline
-    \end{tabularx}
     \caption{Metriche di Efficienza}
     \label{tab:prod_efficienza}
-\end{table}
+\end{xltabular}
 
 \subsection{Manutenibilità}
 La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al software, inclusi correzioni, miglioramenti o adattamenti degli agenti a nuovi modelli linguistici.
 
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-        \hline
-        \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
-        OB\_PROD\_07 & \textbf{\glo{Maintainability Index (Indice di Manutenibilità)}{maintainability-index}}: Indice numerico standard basato su linee di codice, volume di Halstead e complessità. & $\ge 65$ & $\ge 85$ \\ \hline
-        OB\_PROD\_08 & \textbf{\glo{Prompt Isolation (Disaccoppiamento dei Prompt)}{prompt-isolation}}: Percentuale di prompt archiviati in file di configurazione isolati rispetto alla logica di backend. & $100\%$ & $100\%$ \\ \hline
-        OB\_PROD\_12 & \textbf{\glo{Complessità Ciclomatica}{complessità-ciclomatica}}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite analisi statica). & $\le 10$ & $\le 5$ \\ \hline
-        OB\_PROD\_13 & \textbf{Linee di Codice per Metodo}: Numero di righe di codice effettive che compongono una singola funzione o metodo. & $\le 50$ & $\le 30$ \\ \hline
-    \end{tabularx}
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+        OB\_PROD\_08 & \textbf{Prompt Isolation (Disaccoppiamento dei Prompt)}: Percentuale di prompt archiviati in file di configurazione isolati rispetto alla logica di backend. & $100\%$ & $100\%$ \\ \hline
+        OB\_PROD\_12 & \textbf{Complessità Ciclomatica}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite analisi statica). & $\le 15$ & $\le 10$ \\ \hline
+        OB\_PROD\_07 & \textbf{Code Smell}: Numero di difetti di progettazione o implementazione nel codice (es. codice morto, importazioni superflue) rilevabili tramite strumenti di analisi statica. & $\le 5$ per componente & $0$ difetti \\ \hline
+        OB\_PROD\_13 & \textbf{Duplicazione del Codice}: Percentuale di linee di codice sorgente duplicate all'interno del progetto. & $\le 10\%$ & $\le 3\%$ \\ \hline
+
     \caption{Metriche di Manutenibilità}
     \label{tab:prod_manutenibilita}
-\end{table}
+\end{xltabular}
+
+\subsection{Sicurezza}
+Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati sensibili degli utenti, le credenziali di accesso ai servizi esterni e il codice sorgente analizzato. 
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+
+    OB\_PROD\_17 & \textbf{Esposizione di Credenziali (Secret Key Exposure)}: Numero di token API, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
+    OB\_PROD\_18 & \textbf{Cifratura dei Dati Sensibili (Data Encryption)}: Percentuale di password degli utenti e token di accesso esterni memorizzati nel database utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
+    OB\_PROD\_19 & \textbf{Validazione degli Input (Input Validation)}: Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
+
+    \caption{Metriche di Sicurezza}
+    \label{tab:prod_sicurezza}
+\end{xltabular}
 
 \newpage
 
