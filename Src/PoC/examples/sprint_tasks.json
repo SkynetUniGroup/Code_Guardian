@@ -1,0 +1,61 @@
+{
+  "sprint_id": "S-12",
+  "tasks": [
+    {
+      "id": "CG-101",
+      "sprint_id": "S-12",
+      "title": "Autenticazione con token a scadenza",
+      "status": "done",
+      "labels": ["feature", "auth"],
+      "description": "Introdotto il rilascio di token JWT con scadenza a 15 minuti e refresh token separato, sostituendo le sessioni server-side.",
+      "acceptance_criteria": [
+        "Il token di accesso scade dopo 15 minuti",
+        "Il refresh token consente il rinnovo senza nuovo login"
+      ],
+      "url": "https://github.com/skynet/code-guardian/issues/101"
+    },
+    {
+      "id": "CG-102",
+      "sprint_id": "S-12",
+      "title": "Correzione della paginazione nella lista repository",
+      "status": "done",
+      "labels": ["bugfix"],
+      "description": "La paginazione saltava l'ultimo elemento quando il totale era multiplo esatto della dimensione di pagina; corretto il calcolo dell'offset.",
+      "acceptance_criteria": [
+        "L'ultimo elemento è sempre incluso",
+        "Aggiunto test di regressione sul caso limite"
+      ],
+      "url": "https://github.com/skynet/code-guardian/issues/102"
+    },
+    {
+      "id": "CG-103",
+      "sprint_id": "S-12",
+      "title": "Aggiornate dipendenze",
+      "status": "done",
+      "labels": ["chore"],
+      "description": "fix",
+      "acceptance_criteria": [],
+      "url": "https://github.com/skynet/code-guardian/issues/103"
+    },
+    {
+      "id": "CG-104",
+      "sprint_id": "S-12",
+      "title": "Refactor del modulo di logging",
+      "status": "done",
+      "labels": ["chore"],
+      "description": "Sostituito il logger interno con la libreria standard, uniformando i livelli e il formato dei messaggi su tutti i moduli.",
+      "acceptance_criteria": [],
+      "url": "https://github.com/skynet/code-guardian/issues/104"
+    },
+    {
+      "id": "CG-105",
+      "sprint_id": "S-12",
+      "title": "Esportazione del report in PDF",
+      "status": "in_progress",
+      "labels": ["feature"],
+      "description": "Consente all'utente di esportare il report prodotto dall'agente in formato PDF, con intestazione e numerazione delle pagine.",
+      "acceptance_criteria": ["Il PDF contiene tutti i riscontri"],
+      "url": "https://github.com/skynet/code-guardian/issues/105"
+    }
+  ]
+}

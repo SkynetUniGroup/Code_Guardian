@@ -1,0 +1,34 @@
+{
+  "_commento": "Verita' di riferimento per misurare l'accuratezza dell'agente OWASP (RQ.2 > 85%). Un riscontro e' considerato corretto se colpisce il file giusto e una riga entro la finestra di tolleranza.",
+  "tolleranza_righe": 2,
+  "attesi": [
+    {
+      "file": "src/auth.py",
+      "line": 4,
+      "categoria": "segreto in chiaro",
+      "severita_minima": "high",
+      "nota": "API_KEY hardcoded"
+    },
+    {
+      "file": "src/auth.py",
+      "line": 9,
+      "categoria": "sql injection",
+      "severita_minima": "high",
+      "nota": "query costruita per concatenazione"
+    },
+    {
+      "file": "src/auth.py",
+      "line": 15,
+      "categoria": "crittografia insicura",
+      "severita_minima": "medium",
+      "nota": "MD5 per hash di password"
+    },
+    {
+      "file": "src/render.js",
+      "line": 2,
+      "categoria": "xss",
+      "severita_minima": "medium",
+      "nota": "innerHTML con dati non sanificati"
+    }
+  ]
+}

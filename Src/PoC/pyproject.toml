@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code-guardian-poc"
+version = "0.1.0"
+description = "Proof of Concept degli agenti di Code Guardian (Docs, OWASP, Changelog)"
+requires-python = ">=3.10"
+# models.py (importato da ogni modulo: ports, graph, agenti, cli) usa Pydantic
+# v2: e' quindi una dipendenza di base, non opzionale. I test restano
+# comunque offline, deterministici e a costo zero (nessuna rete, nessun LLM
+# vero: si usa FakeLLMProvider).
+dependencies = ["pydantic>=2.6"]
+
+[project.optional-dependencies]
+# In produzione: sostituire il runner interno con LangGraph. Le firme delle
+# porte non cambiano.
+prod = ["langgraph>=0.2"]
+dev = ["pytest>=8", "coverage>=7"]
+
+[project.scripts]
+code-guardian = "code_guardian.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+code_guardian = ["prompts/*.md"]
