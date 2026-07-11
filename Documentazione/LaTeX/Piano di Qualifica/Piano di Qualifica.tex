@@ -203,21 +203,21 @@ L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \
     
     \endlastfoot
         
-    MP\_12 & \textbf{Earned Value (EV)}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
+    MP\_1 & \textbf{Earned Value (EV)}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
         
-    MP\_13 & \textbf{Planned Value (PV)}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
+    MP\_2 & \textbf{Planned Value (PV)}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
 
-    MP\_14 & \textbf{Actual Cost (AC)}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline   
+    MP\_3 & \textbf{Actual Cost (AC)}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline   
 
-    MP\_15 & \textbf{Estimate At Completion (EAC)}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\ge 0$ & Budget At Completion \\ \hline
+    MP\_4 & \textbf{Estimate At Completion (EAC)}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\le$ Budget At Completion + 5\% & $\le$ Budget At Completion \\ \hline
     
-    MP\_16 & \textbf{Estimate To Complete (ETC)}: Costo per completare. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
+    MP\_5 & \textbf{Estimate To Complete (ETC)}: Costo per completare. & $\ge 0$ & $\le$ Estimate At Completion \\ \hline
     
-    MP\_17 & \textbf{Time Estimate At Completion (TEAC)}: Tempo complessivo stimato. & $\ge 0$ & $\le$ Durata pianificata \\ \hline
+    MP\_6 & \textbf{Time Estimate At Completion (TEAC)}: Tempo complessivo stimato. & $\ge 0$ & $\le$ Durata pianificata \\ \hline
 
-    MP\_18 & \textbf{Cost Performance Index (CPI)}: Misura l'efficienza economica del progetto, calcolata come rapporto tra il valore maturato (EV) e il costo effettivo (AC). & $\ge 0,9$ & $1$ \\ \hline
+    MP\_7 & \textbf{Cost Performance Index (CPI)}: Misura l'efficienza economica del progetto, calcolata come rapporto tra il valore maturato (EV) e il costo effettivo (AC). & $\ge 0,9$ & $1$ \\ \hline
         
-    MP\_19 & \textbf{Schedule Performance Index (SPI)}: Misura l'efficienza temporale del progetto, calcolata come rapporto tra il valore maturato (EV) e il valore pianificato (PV). & $\ge 0,9$ & $1$ \\ \hline
+    MP\_8 & \textbf{Schedule Performance Index (SPI)}: Misura l'efficienza temporale del progetto, calcolata come rapporto tra il valore maturato (EV) e il valore pianificato (PV). & $\ge 0,9$ & $1$ \\ \hline
         
     \caption{Metriche per il processo di fornitura}
     \label{tab:metriche_fornitura}
@@ -240,7 +240,7 @@ L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \
     
     \endlastfoot
         
-    MP\_01 & \textbf{Requirements Stability Index (RSI)}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
+    MP\_9 & \textbf{Requirements Stability Index (RSI)}: Percentuale di requisiti rimasti invariati rispetto al totale approvato a inizio Sprint. & $\ge 80\%$ & $100\%$ \\ \hline
         
     \caption{Metriche per il processo di sviluppo}
     \label{tab:metriche_sviluppo}
@@ -268,11 +268,9 @@ In conformità con il \textit{Way of Working}, l'obiettivo è assicurare l'alta 
     
     \endlastfoot
     
-        MP\_02 & \textbf{Indice di Gulpease}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
+        MP\_10 & \textbf{Indice di Gulpease}: Grado di leggibilità dei documenti testuali scritti in lingua italiana. & $\ge 40$ & $\ge 60$ \\ \hline
 
-        MP\_20 & \textbf{Correttezza Ortografica}: Valuta la presenza di errori ortografici e tipografici all'interno dei documenti ufficiali redatti e rilasciati dal gruppo. & $1$ errore & $0$ errori \\ \hline
-        
-        MP\_05 & \textbf{Frequenza di Commit}: Numero medio di modifiche (commit) salvate nel repository quotidianamente. & $\ge 1$ al giorno & $\ge 3$ al giorno \\ \hline
+        MP\_11 & \textbf{Correttezza Ortografica}: Valuta la presenza di errori ortografici e tipografici all'interno dei documenti ufficiali redatti e rilasciati dal gruppo. & $\le 5$ errori & $0$ errori \\ \hline
         
     \caption{Metriche per il processo di documentazione}
     \label{tab:metriche_documentazione}
@@ -309,8 +307,8 @@ La verifica misura l'efficacia del piano di testing applicato al software, garan
     
     \endlastfoot
       
-    MP\_03 & \textbf{Copertura del Codice (Code Coverage)}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
-    MP\_04 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
+    MP\_12 & \textbf{Copertura del Codice (Code Coverage)}: Percentuale di linee di codice eseguite ed effettivamente coperte dai test unitari. & $\ge 75\%$ & $\ge 90\%$ \\ \hline
+    MP\_13 & \textbf{Superamento dei Test}: Percentuale di test funzionali e di unità superati con successo rispetto al totale dei test eseguiti. & $100\%$ & $100\%$ \\ \hline
     
     \caption{Metriche per il processo di verifica}
     \label{tab:metriche_verifica} \\
@@ -318,10 +316,7 @@ La verifica misura l'efficacia del piano di testing applicato al software, garan
 
 
 \subsection{Processi organizzativi}
-I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando l'andamento economico rispetto al budget pianificato e l'efficacia della gestione dei rischi.
-
-\subsubsection{Gestione di Progetto (Project Management)}
-L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati, sfruttando i dati del foglio di calcolo gestionale e dei diagrammi di Burndown.
+I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
@@ -338,26 +333,18 @@ L'obiettivo fondamentale di questa attività è impedire anomalie di pianificazi
     \endfoot
     
     \endlastfoot
-        MP\_09 & \textbf{Schedule Variance (SV)}: Indicatore dello scostamento temporale tra il lavoro pianificato in fase di planning e quello completato. & $\ge -10\%$ & $\ge 0\%$ \\ \hline
-        MP\_10 & \textbf{Budget Variance (BV)}: Indicatore dello scostamento economico tra i costi preventivati e i costi effettivamente sostenuti. & $\ge -5\%$ & $\ge 0\%$ \\ \hline
-        MP\_11 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 20\%$ & $ 0\%$ \\ \hline
-        MP\_21 & \textbf{Time Efficiency (Efficienza Temporale)}: Rapporto percentuale tra le ore stimate per il completamento dei task e le ore effettivamente impiegate dai membri del team. & $\ge 70\%$ & $\ge 90\%$ \\ \hline
+        
+        MP\_14 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 20\%$ & $ 0\%$ \\ \hline
+        MP\_15 & \textbf{Time Efficiency (Efficienza Temporale)}: Rapporto percentuale tra le ore stimate per il completamento dei task e le ore effettivamente impiegate dai membri del team. & $\ge 60\%$ & $\ge 90\%$ \\ \hline
 
     \caption{Metriche per i processi organizzativi}
     \label{tab:metriche_organizzativi}
 \end{xltabular}
 
-\paragraph{Formule di Project Management:}
-Per il calcolo di \textbf{MP\_09} e \textbf{MP\_10} si adottano le definizioni definite dall'Ingegneria del Software (\textbf{\glo{Earned Value Managment (EVM)}{earned-value-managment}}):
-\begin{itemize}
-    \item \textbf{Schedule Variance (SV):} $SV = EV - PV$, dove $EV$ (\textit{Earned Value}) rappresenta il valore del lavoro effettivamente realizzato e $PV$ (\textit{Planned Value}) rappresenta il valore del lavoro pianificato.
-    \item \textbf{Budget Variance (BV):} $BV = BCWS - ACWP$, dove $BCWS$ (\textit{Budgeted Cost of Work Scheduled}) rappresenta il costo preventivato e $ACWP$ (\textit{Actual Cost of Work Performed}) rappresenta il costo reale sostenuto.
-\end{itemize}
-
 
 
 \section{Obiettivi di qualità di prodotto}
-Per garantire la qualità del sistema \textbf{Code Guardian}, il gruppo \textbf{SkyNet} adotta lo standard \textbf{\glo{ISO/IEC 9126}{iso-iec-9126}}. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito. Ciascuna metrica di prodotto è identificata dal codice \textbf{OB\_PROD\_[Progressivo]}.
+Per garantire la qualità del sistema \textbf{Code Guardian}, il gruppo \textbf{SkyNet} adotta lo standard \textbf{\glo{ISO/IEC 9126}{iso-iec-9126}}. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito. Ciascuna metrica di prodotto è identificata dal codice \textbf{MPD\_[Progressivo]}.
 
 \subsection{Funzionalità}
 La funzionalità rappresenta la capacità del prodotto software di fornire funzioni in grado di soddisfare i requisiti espressi e impliciti concordati con il \textbf{Proponente Var Group}.
@@ -377,9 +364,9 @@ La funzionalità rappresenta la capacità del prodotto software di fornire funzi
     \endfoot
     
     \endlastfoot
-        OB\_PROD\_01 & \textbf{Copertura dei Requisiti Obbligatori}: Percentuale dei requisiti funzionali obbligatori soddisfatti dall'insieme degli agenti. & $100\%$ & $100\%$ \\ \hline
-        OB\_PROD\_14 & \textbf{Copertura dei Requisiti Desiderabili}: Percentuale dei requisiti funzionali classificati come desiderabili effettivamente soddisfatti dal prodotto finale. & $\ge 40\%$ & $75\%$ \\ \hline
-        OB\_PROD\_15 & \textbf{Copertura dei Requisiti Opzionali}: Percentuale dei requisiti funzionali classificati come opzionali effettivamente soddisfatti dal prodotto finale. & $0\%$ & $\ge 50\%$ \\ \hline
+        MPD\_1 & \textbf{Copertura dei Requisiti Obbligatori}: Percentuale dei requisiti funzionali obbligatori soddisfatti dall'insieme degli agenti. & $100\%$ & $100\%$ \\ \hline
+        MPD\_2 & \textbf{Copertura dei Requisiti Desiderabili}: Percentuale dei requisiti funzionali classificati come desiderabili effettivamente soddisfatti dal prodotto finale. & $\ge 40\%$ & $\ge75\%$ \\ \hline
+        MPD\_3 & \textbf{Copertura dei Requisiti Opzionali}: Percentuale dei requisiti funzionali classificati come opzionali effettivamente soddisfatti dal prodotto finale. & $0\%$ & $\ge 50\%$ \\ \hline
 
     \caption{Metriche di Funzionalità}
     \label{tab:prod_funzionalita}
@@ -403,11 +390,11 @@ L'affidabilità misura la capacità del sistema di mantenere costanti le proprie
     \endfoot
     
     \endlastfoot
-        OB\_PROD\_03 & \textbf{Densità dei Guasti (Anomalie Codice)}: Percentuale di operazioni fallite (es. parsing interrotto) sul totale delle richieste eseguite. & $\le 5\%$ & $0\%$ \\ \hline
-        OB\_PROD\_04 & \textbf{Rate Limiting}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API esterni. & $100\%$ & $100\%$ \\ \hline
-        OB\_PROD\_02 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{allucinazioni (AI)} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
-        OB\_PROD\_09 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
-        OB\_PROD\_XX & \textbf{Branch Coverage}: Percentuale di rami logico-decisionali (if/else, cicli, switch) del codice sorgente che vengono attraversati e verificati almeno una volta durante l'esecuzione di test automatici. & $\ge 60\%$ & $\ge 85\%$ \\ \hline
+        MPD\_4 & \textbf{Densità dei Guasti (Anomalie Codice)}: Percentuale di operazioni fallite (es. parsing interrotto) sul totale delle richieste eseguite. & $\le 5\%$ & $0\%$ \\ \hline
+        MPD\_5 & \textbf{Rate Limiting}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API esterni. & $100\%$ & $100\%$ \\ \hline
+        MPD\_6 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{allucinazioni (AI)} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
+        MPD\_7 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
+        MPD\_8 & \textbf{Branch Coverage}: Percentuale di rami logico-decisionali (if/else, cicli, switch) del codice sorgente che vengono attraversati e verificati almeno una volta durante l'esecuzione di test automatici. & $\ge 60\%$ & $\ge 85\%$ \\ \hline
 
     \caption{Metriche di Affidabilità}
     \label{tab:prod_affidabilita}
@@ -431,8 +418,8 @@ L'usabilità rappresenta la capacità del prodotto software di essere compreso, 
     \endfoot
     
     \endlastfoot
-    OB\_PROD\_14 & \textbf{Tempo di Apprendimento (Learning Time)}: Tempo massimo necessario affinché un nuovo utente riesca a comprendere e utilizzare autonomamente le funzionalità principali del sistema, senza ricorrere a manuali o supporto esterno. & $\le 30$ min & $\le 15$ min \\ \hline
-    OB\_PROD\_15 & \textbf{Tasso di Errore (Error Rate)}: Percentuale di azioni errate, non valide o annullate commesse dall'utente durante la normale interazione con l'applicativo per completare uno specifico scenario d'uso. & $\le 5\%$ & $\le 2\%$ \\ \hline
+    MPD\_9 & \textbf{Tempo di Apprendimento (Learning Time)}: Tempo massimo necessario affinché un nuovo utente riesca a comprendere e utilizzare autonomamente le funzionalità principali del sistema, senza ricorrere a manuali o supporto esterno. & $\le 30$ min & $\le 15$ min \\ \hline
+    MPD\_10 & \textbf{Tasso di Errore (Error Rate)}: Percentuale di azioni errate, non valide o annullate commesse dall'utente durante la normale interazione con l'applicativo per completare uno specifico scenario d'uso. & $\le 5\%$ & $\le 2\%$ \\ \hline
 
 \caption{Metriche di usabilità}
     \label{tab:prod_usabilita}
@@ -456,9 +443,9 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
     \endfoot
     
     \endlastfoot
-        OB\_PROD\_16 & \textbf{Tempo di Risposta Interfaccia}: Tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema, escludendo l'esecuzione in background degli agenti. & $\le 2$ s & $\le 1$ s \\ \hline
-        OB\_PROD\_05 & \textbf{Tempo di Risposta dell'Agente}: Tempo medio impiegato da un singolo agente per completare l'analisi ed emettere l'output. & $\le 5$ min & $\le 1m 30s$ \\ \hline
-        OB\_PROD\_10 & \textbf{Tempo di Autenticazione}: Tempo massimo impiegato dal sistema per completare la verifica delle credenziali e autorizzare l'accesso. & $\le 2 \text{ s}$ & $\le 1 \text{ s}$ \\ \hline
+        MPD\_11 & \textbf{Tempo di Risposta Interfaccia}: Tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema, escludendo l'esecuzione in background degli agenti. & $\le 2$ s & $\le 1$ s \\ \hline
+        MPD\_12 & \textbf{Tempo di Risposta dell'Agente}: Tempo medio impiegato da un singolo agente per completare l'analisi ed emettere l'output. & $\le 5$ min & $\le 1m 30s$ \\ \hline
+        MPD\_13 & \textbf{Tempo di Autenticazione}: Tempo massimo impiegato dal sistema per completare la verifica delle credenziali e autorizzare l'accesso. & $\le 2 \text{ s}$ & $\le 1 \text{ s}$ \\ \hline
     \caption{Metriche di Efficienza}
     \label{tab:prod_efficienza}
 \end{xltabular}
@@ -481,10 +468,10 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
     \endfoot
     
     \endlastfoot
-        OB\_PROD\_08 & \textbf{Prompt Isolation (Disaccoppiamento dei Prompt)}: Percentuale di prompt archiviati in file di configurazione isolati rispetto alla logica di backend. & $100\%$ & $100\%$ \\ \hline
-        OB\_PROD\_12 & \textbf{Complessità Ciclomatica}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite analisi statica). & $\le 15$ & $\le 10$ \\ \hline
-        OB\_PROD\_07 & \textbf{Code Smell}: Numero di difetti di progettazione o implementazione nel codice (es. codice morto, importazioni superflue) rilevabili tramite strumenti di analisi statica. & $\le 5$ per componente & $0$ difetti \\ \hline
-        OB\_PROD\_13 & \textbf{Duplicazione del Codice}: Percentuale di linee di codice sorgente duplicate all'interno del progetto. & $\le 10\%$ & $\le 3\%$ \\ \hline
+        MPD\_14 & \textbf{Prompt Isolation (Disaccoppiamento dei Prompt)}: Percentuale di prompt archiviati in file di configurazione isolati rispetto alla logica di backend. & $100\%$ & $100\%$ \\ \hline
+        MPD\_15 & \textbf{Complessità Ciclomatica}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite analisi statica). & $\le 15$ & $\le 10$ \\ \hline
+        MPD\_16 & \textbf{Code Smell}: Numero di difetti di progettazione o implementazione nel codice (es. codice morto, importazioni superflue) rilevabili tramite strumenti di analisi statica. & $\le 5$ per componente & $0$ difetti \\ \hline
+        MPD\_17 & \textbf{Duplicazione del Codice}: Percentuale di linee di codice sorgente duplicate all'interno del progetto. & $\le 10\%$ & $\le 3\%$ \\ \hline
 
     \caption{Metriche di Manutenibilità}
     \label{tab:prod_manutenibilita}
@@ -508,9 +495,9 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
     
     \endlastfoot
 
-    OB\_PROD\_17 & \textbf{Esposizione di Credenziali (Secret Key Exposure)}: Numero di token API, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
-    OB\_PROD\_18 & \textbf{Cifratura dei Dati Sensibili (Data Encryption)}: Percentuale di password degli utenti e token di accesso esterni memorizzati nel database utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
-    OB\_PROD\_19 & \textbf{Validazione degli Input (Input Validation)}: Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
+    MPD\_18 & \textbf{Esposizione di Credenziali (Secret Key Exposure)}: Numero di token API, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
+    MPD\_19 & \textbf{Cifratura dei Dati Sensibili (Data Encryption)}: Percentuale di password degli utenti e token di accesso esterni memorizzati nel database utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
+    MPD\_20 & \textbf{Validazione degli Input (Input Validation)}: Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
 
     \caption{Metriche di Sicurezza}
     \label{tab:prod_sicurezza}
@@ -639,62 +626,62 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{"OB\_PROD\_01": Copertura dei Requisiti Funzionali:}
+\subsection{"MPD\_01": Copertura dei Requisiti Funzionali:}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_02: Accuratezza delle Risposte AI}
+\subsection{MPD\_02: Accuratezza delle Risposte AI}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_09: Indice Flesch Reading Ease}
+\subsection{MPD\_09: Indice Flesch Reading Ease}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_03: Densità dei Guasti}
+\subsection{MPD\_03: Densità dei Guasti}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_04: Rate Limiting}
+\subsection{MPD\_04: Rate Limiting}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_05: Tempo di Risposta dell’Agente}
+\subsection{MPD\_05: Tempo di Risposta dell’Agente}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_06: Ottimizzazione dei Token}
+\subsection{MPD\_06: Ottimizzazione dei Token}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_10: Tempo di Autenticazione}
+\subsection{MPD\_10: Tempo di Autenticazione}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_07: Maintainability Index}
+\subsection{MPD\_07: Maintainability Index}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_08: Promt Isolation}
+\subsection{MPD\_08: Promt Isolation}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_12: Complessità Ciclomatica}
+\subsection{MPD\_12: Complessità Ciclomatica}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{OB\_PROD\_13: Linee di Codice Per Metodo}
+\subsection{MPD\_13: Linee di Codice Per Metodo}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
