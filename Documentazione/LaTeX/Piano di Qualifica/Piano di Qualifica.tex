@@ -203,21 +203,21 @@ L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \
     
     \endlastfoot
         
-    MP\_1 & \textbf{Earned Value (EV)}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 80\%$ Planned Value & $\le$ Planned Value \\ \hline
+    MP\_1 & \textbf{\glo{Earned Value (EV)}{earned-value}}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 80\%$ Planned Value & $\le$ Planned Value \\ \hline
         
-    MP\_2 & \textbf{Planned Value (PV)}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
+    MP\_2 & \textbf{\glo{Planned Value (PV)}{planned-value}}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ \textit{\glo{Budget At Completion}{budget-at-completion}} \\ \hline
 
-    MP\_3 & \textbf{Actual Cost (AC)}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Earned Value \\ \hline   
+    MP\_3 & \textbf{\glo{Actual Cost (AC)}{actual-cost-ac}}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Earned Value \\ \hline   
 
-    MP\_4 & \textbf{Estimate At Completion (EAC)}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\le$ Budget At Completion + 5\% & $\le$ Budget At Completion \\ \hline
+    MP\_4 & \textbf{\glo{Estimate At Completion (EAC)}{estimate-at-completion}}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\le$ Budget At Completion + 5\% & $\le$ Budget At Completion \\ \hline
     
-    MP\_5 & \textbf{Estimate To Complete (ETC)}: Costo per completare. & $\ge 0$ & $\le$ BAC - AC \\ \hline
+    MP\_5 & \textbf{\glo{Estimate To Complete (ETC)}{estimate-to-complete}}: Costo per completare. & $\ge 0$ & $\le$ BAC - AC \\ \hline
     
-    MP\_6 & \textbf{Time Estimate At Completion (TEAC)}: Tempo complessivo stimato. & $\ge 0$ & $\le$ Durata pianificata \\ \hline
+    MP\_6 & \textbf{\glo{Time Estimate At Completion (TEAC)}{time-estimate-at-completion}}: Tempo complessivo stimato. & $\ge 0$ & $\le$ Durata pianificata \\ \hline
 
-    MP\_7 & \textbf{Cost Performance Index (CPI)}: Misura l'efficienza economica del progetto, calcolata come rapporto tra il valore maturato (EV) e il costo effettivo (AC). & $\ge 0,9$ & $1$ \\ \hline
+    MP\_7 & \textbf{\glo{Cost Performance Index (CPI)}{cost-performance-index}}: Misura l'efficienza economica del progetto, calcolata come rapporto tra il valore maturato (EV) e il costo effettivo (AC). & $\ge 0,9$ & $1$ \\ \hline
         
-    MP\_8 & \textbf{Schedule Performance Index (SPI)}: Misura l'efficienza temporale del progetto, calcolata come rapporto tra il valore maturato (EV) e il valore pianificato (PV). & $\ge 0,9$ & $1$ \\ \hline
+    MP\_8 & \textbf{\glo{Schedule Performance Index (SPI)}{schedule-performance-index}}: Misura l'efficienza temporale del progetto, calcolata come rapporto tra il valore maturato (EV) e il valore pianificato (PV). & $\ge 0,9$ & $1$ \\ \hline
         
     \caption{Metriche per il processo di fornitura}
     \label{tab:metriche_fornitura}
@@ -316,7 +316,7 @@ La verifica misura l'efficacia del piano di testing applicato al software, garan
 
 
 \subsection{Processi organizzativi}
-I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando anomalie di pianificazione temporale.
+I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
@@ -334,7 +334,8 @@ I processi organizzativi sovrintendono l'efficienza metodologica del team, monit
     
     \endlastfoot
         
-        MP\_14 & \textbf{Time Efficiency (Efficienza Temporale)}: Rapporto percentuale tra le ore stimate per il completamento dei task e le ore effettivamente impiegate dai membri del team. & $\ge 60\%$ & $\ge 90\%$ \\ \hline
+        MP\_14 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 20\%$ & $ 0\%$ \\ \hline
+        MP\_15 & \textbf{\glo{Time Efficiency}{time-efficiency}}: Rapporto percentuale tra le ore stimate per il completamento dei task e le ore effettivamente impiegate dai membri del team. & $\ge 60\%$ & $\ge 90\%$ \\ \hline
 
     \caption{Metriche per i processi organizzativi}
     \label{tab:metriche_organizzativi}
@@ -372,7 +373,7 @@ La funzionalità rappresenta la capacità del prodotto software di fornire funzi
 \end{xltabular}
 
 \subsection{Affidabilità}
-L'affidabilità misura la capacità del sistema di mantenere costanti le proprie prestazioni nel tempo, minimizzando i fallimenti applicativi dovuti a downtime delle API esterne (LLM) o a eccezioni di runtime nel parsing delle codebase.
+L'affidabilità misura la capacità del sistema di mantenere costanti le proprie prestazioni nel tempo, minimizzando i fallimenti applicativi dovuti a \textit{\glo{downtime}{downtime}} delle API esterne (LLM) o a eccezioni di runtime nel \textit{\glo{parsing}{parsing}} delle codebase.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
@@ -391,7 +392,7 @@ L'affidabilità misura la capacità del sistema di mantenere costanti le proprie
     \endlastfoot
         MPD\_4 & \textbf{Densità dei Guasti (Anomalie Codice)}: Percentuale di operazioni fallite (es. parsing interrotto) sul totale delle richieste eseguite. & $\le 5\%$ & $0\%$ \\ \hline
         MPD\_5 & \textbf{Rate Limiting}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API esterni. & $100\%$ & $100\%$ \\ \hline
-        MPD\_6 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{allucinazioni (AI)} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
+        MPD\_6 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di allucinazioni (AI) evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
         MPD\_7 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
         MPD\_8 & \textbf{Branch Coverage}: Percentuale di rami logico-decisionali (if/else, cicli, switch) del codice sorgente che vengono attraversati e verificati almeno una volta durante l'esecuzione di test automatici. & $\ge 60\%$ & $\ge 85\%$ \\ \hline
 
@@ -494,9 +495,9 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
     
     \endlastfoot
 
-    MPD\_18 & \textbf{Esposizione di Credenziali (Secret Key Exposure)}: Numero di token API, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
-    MPD\_19 & \textbf{Cifratura dei Dati Sensibili (Data Encryption)}: Percentuale di password degli utenti e token di accesso esterni memorizzati nel database utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
-    MPD\_20 & \textbf{Validazione degli Input (Input Validation)}: Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
+    MPD\_18 & \textbf{Esposizione di Credenziali}: Numero di token API, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
+    MPD\_19 & \textbf{Cifratura dei Dati Sensibili}: Percentuale di password degli utenti e token di accesso esterni memorizzati nel database utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
+    MPD\_20 & \textbf{\glo{Input Validation}{input-validation}}: Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
 
     \caption{Metriche di Sicurezza}
     \label{tab:prod_sicurezza}
@@ -519,144 +520,17 @@ I test di unità isolano e verificano la correttezza logica dei singoli moduli s
 I test di integrazione verificano il corretto funzionamento delle interfacce, lo scambio di dati e le dipendenze tra i diversi moduli interni precedentemente testati in isolamento.
 
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la pipeline di input degli agenti AI; integrazione dei tre agenti (README, OWASP, Changelog) con il cruscotto di backend centrale o con l'interfaccia CLI.
+    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la \textit{\glo{pipeline}{pipeline}} di input degli agenti AI; integrazione dei tre agenti (README, OWASP, Changelog) con il cruscotto di backend centrale o con l'\textit{\glo{interfaccia CLI}{interfaccia-cli}}.
     \item \textbf{Criterio di successo:} Corretto instradamento dei dati senza perdite informative, incoerenze di tipo o sollevamento di eccezioni non gestite nel passaggio tra i sub-sistemi.
 \end{itemize}
 
 \subsection{Test di sistema (TS)}
-I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione end-to-end soddisfi i requisiti funzionali e i flussi d'uso descritti nell'\textbf{Analisi dei Requisiti}.
+I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione \textit{\glo{end-to-end}{end-to-end}} soddisfi i requisiti funzionali e i flussi d'uso descritti nell'\textbf{Analisi dei Requisiti}.
 
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Esecuzione completa di un'analisi su un intero repository di test (Sandbox) comprensiva di generazione simultanea del README, mappatura reale delle vulnerabilità identificate con le top 10 OWASP e stesura del Changelog tecnico e di buisiness.
+    \item \textbf{Oggetto di verifica:} Esecuzione completa di un'analisi su un intero repository di test comprensiva di generazione simultanea del README, mappatura reale delle vulnerabilità identificate con le top 10 OWASP e stesura del Changelog tecnico e di buisiness.
     \item \textbf{Criterio di successo:} Produzione di tutti gli output previsti entro i limiti temporali stabiliti di accettazione con adeguata qualità, corretta persistenza e visualizzazione dei risultati.
 \end{itemize}
-
-\renewcommand{\arraystretch}{1.3}
-\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-    
-    \hline
-    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
-    \endfirsthead
-
-    \hline
-    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
-    \endhead
-    \hline
-    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
-    \endfoot
-    
-    \endlastfoot
-
-    TS\_1 & Verificare che il sistema permetta a un utente non autenticato di avviare la procedura di registrazione per la creazione di un nuovo account. & RF.1 & NI \\ \hline
-    TS\_2 & Verificare che il sistema consenta all'utente di inserire il proprio nome e cognome in fase di registrazione. & RF.2 & NI \\ \hline
-    TS\_3 & Verificare che il sistema consenta all'utente di inserire il proprio indirizzo email e la password in fase di registrazione. & RF.3 & NI \\ \hline
-    TS\_4 & Verificare che il sistema permetta all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, Security Auditor, Project Manager). & RF.4 & NI \\ \hline
-    TS\_5 & Verificare che il sistema impedisca la registrazione e mostri un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & RF.5 & NI \\ \hline
-    TS\_6 & Verificare che il sistema validi i dati di registrazione inseriti (formato dell'email e robustezza della password) e mostri un messaggio d'errore in caso di mancata conformità. & RF.6 & NI \\ \hline
-    TS\_7 & Verificare che il sistema consenta a un utente registrato di sbloccare i permessi e le funzionalità associate allo specifico ruolo operativo a seguito del login. & RF.7 & NI \\ \hline
-    TS\_8 & Verificare che il sistema permetta all'utente di autenticarsi inserendo le proprie credenziali, ovvero email e password. & RF.8 & NI \\ \hline
-    TS\_9 & Verificare che il sistema neghi l'accesso e mostri un messaggio di errore generico nel caso in cui le credenziali inserite non risultino valide. & RF.9 & NI \\ \hline
-    TS\_10 & Verificare che il sistema permetta all'utente di configurare e memorizzare in modo sicuro i Token di accesso necessari per l'integrazione con i servizi esterni. & RF.10 & NI \\ \hline
-    TS\_11 & Verificare che il sistema consenta l'inserimento del Token personale della Piattaforma GitHub per l'integrazione con il servizio esterno. & RF.11 & NI \\ \hline
-    TS\_12 & Verificare che il sistema consenta l'inserimento del Token personale del sistema di Task Management per l'integrazione con il servizio esterno. & RF.12 & NI \\ \hline
-    TS\_13 & Verificare che il sistema testi la validità dei Token tramite una chiamata ai servizi esterni, interrompendo la memorizzazione e mostrando un errore in caso di fallimento. & RF.13 & NI \\ \hline
-    TS\_14 & Verificare che il sistema validi sintatticamente il formato dei Token inseriti e mostri un messaggio di errore qualora questo non risulti valido. & RF.14 & NI \\ \hline
-    TS\_15 & Verificare che il sistema finalizzi e registri la selezione del Repository Git e del relativo riferimento di base, rendendoli disponibili come contesto per gli agenti. & RF.15 & NI \\ \hline
-    TS\_16 & Verificare che il sistema permetta all'utente di inserire l'URL del Repository Git e di selezionare la tipologia di riferimento di base. & RF.16 & NI \\ \hline
-    TS\_17 & Verificare che il sistema consenta la specificazione del nome del Branch e, in via opzionale, l'identificativo di un Commit specifico come riferimento di base. & RF.17 & NI \\ \hline
-    TS\_18 & Verificare che il sistema permetta l'inserimento dell'identificativo di una Pull Request specifica da utilizzare come riferimento di base. & RF.18 & NI \\ \hline
-    TS\_19 & Verificare che il sistema validi localmente l'URL del Repository Git inserito e mostri un messaggio di errore qualora il formato sintattico non sia valido. & RF.19 & NI \\ \hline
-    TS\_20 & Verificare che il sistema verifichi la raggiungibilità del Repository remoto e la validità dei permessi d'accesso, mostrando un messaggio di errore in caso di fallimento. & RF.20 & NI \\ \hline
-    TS\_21 & Verificare che il sistema verifichi l'esistenza del branch specificato sul Repository remoto e mostri un messaggio di errore qualora non venga trovato. & RF.21 & NI \\ \hline
-    TS\_22 & Verificare che il sistema verifichi l'esistenza dell'hash del commit specificato e la sua appartenenza al branch selezionato, mostrando un errore in caso negativo. & RF.22 & NI \\ \hline
-    TS\_23 & Verificare che il sistema verifichi l'esistenza dell'identificativo della Pull Request specificata, mostrando un messaggio di errore qualora non venga trovata. & RF.23 & NI \\ \hline
-    TS\_24 & Verificare che il sistema mostri un messaggio di avviso all'utente qualora il Repository selezionato contenga codice sorgente scritto in linguaggi non supportati. & RF.24 & NI \\ \hline
-    TS\_25 & Verificare che il sistema consenta all'utente di definire e selezionare l'ambito di analisi del contesto di esecuzione. & RF.25 & NI \\ \hline
-    TS\_26 & Verificare che il sistema consenta la selezione dell'intero Repository come ambito di analisi. & RF.26 & NI \\ \hline
-    TS\_27 & Verificare che il sistema consenta all'utente di selezionare uno o più file del Repository come ambito di analisi. & RF.27 & NI \\ \hline
-    TS\_28 & Verificare che il sistema consenta all'utente di selezionare una o più directory del Repository come ambito di analisi. & RF.28 & NI \\ \hline
-    TS\_29 & Verificare che il sistema blocchi il proseguimento e mostri un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & RF.29 & NI \\ \hline
-    TS\_30 & Verificare che il sistema verifichi l'effettiva esistenza e accessibilità degli elementi selezionati nel Repository remoto, mostrando un messaggio di errore in caso di fallimento. & RF.30 & NI \\ \hline
-    TS\_31 & Verificare che il sistema verifichi che l'ambito di analisi selezionato (numero di file o volume di righe di codice) non ecceda i limiti dimensionali entro i quali il modello LLM garantisce performance affidabili, mostrando un messaggio di errore in caso contrario. & RF.31 & NI \\ \hline
-    TS\_32 & Verificare che il sistema fornisca un'interfaccia grafica che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti. & RF.32 & NI \\ \hline
-    TS\_33 & Verificare che il sistema mostri a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'Orchestratore. & RF.33 & NI \\ \hline
-    TS\_34 & Verificare che il sistema mostri a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & RF.34 & NI \\ \hline
-    TS\_35 & Verificare che il sistema predisponga l'interfaccia grafica per la configurazione e la successiva gestione dell'avvio delle operazioni. & RF.35 & NI \\ \hline
-    TS\_36 & Verificare che il sistema permetta all'utente una selezione e deselezione esplicita delle singole operazioni tramite una specifica interazione nell'interfaccia grafica. & RF.36 & NI \\ \hline
-    TS\_37 & Verificare che il sistema permetta all'utente, tramite l'interfaccia grafica, di selezionare più operazioni diverse in contemporanea. & RF.37 & NI \\ \hline
-    TS\_38 & Verificare che il sistema consenta all'utente di abilitare o disabilitare la ricezione di comunicazioni via email, includendo la consegna dei report completati e le richieste di intervento manuale in piattaforma. & RF.38 & NI \\ \hline
-    TS\_39 & Verificare che il sistema permetta all'utente, tramite l'interfaccia grafica, di avviare più operazioni selezionate in contemporanea. & RF.39 & NI \\ \hline
-    TS\_40 & Verificare che l'Orchestratore mappi deterministicamente le operazioni selezionate dall'utente e instradi le richieste ai rispettivi agenti. & RF.40 & NI \\ \hline
-    TS\_41 & Verificare che il sistema inibisca la procedura di esecuzione dell'Orchestratore e mostri un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista. & RF.41 & NI \\ \hline
-    TS\_42 & Verificare che il sistema inibisca la procedura di esecuzione dell'Orchestratore e mostri un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver prima configurato i parametri di contesto obbligatori per le operazioni selezionate. & RF.42 & NI \\ \hline
-    TS\_43 & Verificare che il sistema mostri all'utente una dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'Orchestratore. & RF.43 & NI \\ \hline
-    TS\_44 & Verificare che il sistema visualizzi lo stato di avanzamento in tempo reale delle singole attività monitorate all'interno della dashboard. & RF.44 & NI \\ \hline
-    TS\_45 & Verificare che il sistema renderizzi a schermo il nome di ogni operazione in fase di elaborazione. & RF.45 & NI \\ \hline
-    TS\_46 & Verificare che il sistema mostri un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato", "Fallito" o "Annullato". & RF.46 & NI \\ \hline
-    TS\_47 & Verificare che il sistema abiliti i controlli grafici per le fasi successive esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & RF.47 & NI \\ \hline
-    TS\_48 & Verificare che, in caso di fallimento architetturale o di routing di una specifica Task, l'Orchestratore garantisca l'isolamento dell'errore per non compromettere le altre attività parallele in corso. & RF.48 & NI \\ \hline
-    TS\_49 & Verificare che il sistema permetta all'utente di accedere ad un archivio storico e visualizzare la lista aggregata di tutti i report precedentemente generati e salvati, mostrando delle informazioni per ogni elemento. & RF.49 & NI \\ \hline
-    TS\_50 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nel archivio storico, il relativo codice identificativo univoco. & RF.50 & NI \\ \hline
-    TS\_51 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nel archivio storico, il relativo titolo descrittivo. & RF.51 & NI \\ \hline
-    TS\_52 & Verificare che il sistema visualizzi all'interno del blocco grafico del singolo report le informazioni temporali di completamento, nello specifico la data e l'orario esatto di generazione. & RF.52 & NI \\ \hline
-    TS\_53 & Verificare che il sistema consenta all'utente la selezione e la visualizzazione del report desiderato. & RF.53 & NI \\ \hline
-    TS\_54 & Verificare che il sistema strutturi il report dividendolo in una sezione di intestazione e una di corpo del report con il contenuto effettivo. & RF.54 & NI \\ \hline
-    TS\_55 & Verificare che il sistema visualizzi, all'interno dell'intestazione del report, il nome identificativo del Repository Git analizzato. & RF.55 & NI \\ \hline
-    TS\_56 & Verificare che il sistema visualizzi nell'intestazione del report il riferimento base e l'ambito di analisi selezionato. & RF.56 & NI \\ \hline
-    TS\_57 & Verificare che il sistema includa nell'intestazione del report il tempo di esecuzione impiegato dall'agente. & RF.57 & NI \\ \hline
-    TS\_58 & Verificare che il sistema riporti nell'intestazione del report la data e l'ora di completamento dell'operazione. & RF.58 & NI \\ \hline
-    TS\_59 & Verificare che il sistema visualizzi all'interno del corpo del report blocchi di testo formattato (Markdown), convertendo correttamente i tag testuali in elementi grafici leggibili a schermo. & RF.59 & NI \\ \hline
-    TS\_60 & Verificare che il sistema renderizzi nel corpo del report una lista contenitore strutturata, mostrando gli spazi grafici e popolando i dettagli attributivi di ciascun singolo elemento in essa iterato. & RF.60 & NI \\ \hline
-    TS\_61 & Verificare che il sistema esponga per ogni singolo elemento strutturato l'indicatore testuale relativo alla sua categoria (es. tipo di vulnerabilità) e l'etichetta classificatoria della sua gravità o priorità. & RF.61 & NI \\ \hline
-    TS\_62 & Verificare che il sistema riporti, per gli elementi che lo richiedono, i riferimenti puntuali alla porzione di codice interessata (percorso del file e numeri di riga) ed esponga eventuali Snippet di codice sorgente suggerito all'interno di un contenitore dedicato. & RF.62 & NI \\ \hline
-    TS\_63 & Verificare che, qualora l'agente abbia generato una proposta di modifica sul Repository remoto, il sistema renderizzi nel report un collegamento ipertestuale interattivo verso la rispettiva Pull Request. & RF.63 & NI \\ \hline
-    TS\_64 & Verificare che il sistema visualizzi all'interno del report un modulo interattivo con comandi di validazione e avanzamento per le operazioni che richiedono un'approvazione umana o un feedback esplicito. & RF.64 & NI \\ \hline
-    TS\_65 & Verificare che il sistema mostri un messaggio di errore esplicativo e blocchi l'esecuzione in caso di fallimento o anomalia generale durante l'elaborazione interna di un agente. & RF.65 & NI \\ \hline
-    TS\_66 & Verificare che il sistema blocchi preventivamente l'esecuzione di un agente e mostri un messaggio d'errore qualora venga superato il limite massimo di utilizzo (chiamate) configurato. & RF.66 & NI \\ \hline
-    TS\_67 & Verificare che il sistema interrompa l'attesa, chiuda la connessione e notifichi l'utente con un errore qualora il modello LLM non restituisca una risposta entro il tempo limite prefissato (Timeout di risposta). & RF.67 & NI \\ \hline
-    TS\_68 & Verificare che il sistema blocchi l'elaborazione e mostri un errore qualora l'output fornito dal modello LLM non sia parsabile, interpretabile o conforme alle strutture dati attese. & RF.68 & NI \\ \hline
-    TS\_69 & Verificare che il sistema interrompa l'esecuzione prima dell'invio e notifichi l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello LLM a runtime. & RF.69 & NI \\ \hline
-    TS\_70 & Verificare che il sistema inibisca l'elaborazione di un agente e notifichi l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file CLAUDE.md, Sprint ID) risulti assente o non trovata. & RF.70 & NI \\ \hline
-    TS\_71 & Verificare che il sistema blocchi l'elaborazione di un agente e notifichi l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & RF.71 & NI \\ \hline
-    TS\_72 & Verificare che il sistema interrompa l'operazione e mostri un messaggio d'errore qualora la Piattaforma GitHub rifiuti la creazione di una Pull Request a causa di permessi insufficienti o problemi di rete. & RF.72 & NI \\ \hline
-    TS\_73 & Verificare che il sistema consenta all'utente di esportare il report attualmente visualizzato, raccogliendo e formattando i dati per innescare il download locale in formato PDF. & RF.73 & NI \\ \hline
-    TS\_74 & Verificare che il sistema annulli il processo di esportazione e notifichi l'utente con un messaggio d'errore qualora si verifichi un'anomalia interna durante la conversione e impaginazione del report in PDF. & RF.74 & NI \\ \hline
-    TS\_75 & Verificare che il sistema invii automaticamente un'email all'indirizzo dell'utente contenente il report PDF in allegato, qualora l'operazione sia completata e la relativa preferenza sia attiva. & RF.75 & NI \\ \hline
-    TS\_76 & Verificare che il sistema invii automaticamente un'email di notifica contenente un collegamento diretto alla piattaforma, qualora un'operazione richieda un intervento manuale o una validazione umana per proseguire. & RF.76 & NI \\ \hline
-    TS\_77 & Verificare che il sistema gestisca il fallimento dell'invio dell'email (es. server SMTP irraggiungibile) interrompendo la notifica ma predisponendo un avviso e mantenendo la visualizzazione in piattaforma. & RF.77 & NI \\ \hline
-    TS\_78 & Verificare che il sistema invii l'email priva di allegato, includendo nel corpo del messaggio il collegamento diretto al report in piattaforma, qualora il file generato superi i limiti dimensionali imposti dal server SMTP. & RF.78 & NI \\ \hline
-    TS\_79 & Verificare che il sistema permetta all'utente di gestire la struttura del file README.md, consentendo il caricamento e il salvataggio di un file template personalizzato. & RF.79 & NI \\ \hline
-    TS\_80 & Verificare che il sistema validi il file template caricato e blocchi l'operazione mostrando un messaggio di errore qualora il formato non sia valido o non abbia estensione .md. & RF.80 & NI \\ \hline
-    TS\_81 & Verificare che il sistema consenta all'utente di rimuovere un template personalizzato precedentemente caricato, ripristinando il modello di default dell'Agente Docs. & RF.81 & NI \\ \hline
-    TS\_82 & Verificare che il sistema orchestri l'Agente Docs per generare e proporre l'aggiornamento del file README.md di progetto tramite l'apertura automatica di una Pull Request. & RF.82 & NI \\ \hline
-    TS\_83 & Verificare che il sistema orchestri l'Agente Docs per analizzare il codice e proporre l'aggiornamento della documentazione Inline (JSDoc) tramite l'apertura automatica di una Pull Request. & RF.83 & NI \\ \hline
-    TS\_84 & Verificare che il sistema corregga documentazione Inline esistente quando questa non è più coerente con il codice. & RF.84 & NI \\ \hline
-    TS\_85 & Verificare che il sistema escluda dalla generazione documentale inline e segnali nel report tramite avviso le porzioni di codice o classi la cui complessità impedisce un'interpretazione affidabile. & RF.85 & NI \\ \hline
-    TS\_86 & Verificare che il sistema orchestri l'Agente Docs per estrarre le informazioni relative agli Endpoint, generando e proponendo il documento API.md tramite Pull Request. & RF.86 & NI \\ \hline
-    TS\_87 & Verificare che il sistema orchestri l'Agente OWASP per eseguire una scansione del codice sorgente al fine di individuare pattern riconducibili alle vulnerabilità dell'OWASP Top 10. & RF.87 & NI \\ \hline
-    TS\_88 & Verificare che il sistema classifichi le vulnerabilità rilevate dall'Agente OWASP indicando la relativa categoria OWASP e il livello di gravità. & RF.88 & NI \\ \hline
-    TS\_89 & Verificare che il sistema associ ciascuna vulnerabilità rilevata al file specifico interessato e, se disponibile, alla puntuale porzione di codice coinvolta. & RF.89 & NI \\ \hline
-    TS\_90 & Verificare che il sistema generi suggerimenti di Remediation per ciascuna vulnerabilità o violazione di policy rilevata, proponendo uno Snippet di codice correttivo qualora la problematica risulti sufficientemente localizzata. & RF.90 & NI \\ \hline
-    TS\_91 & Verificare che il sistema generi una descrizione testuale della Remediation da effettuare qualora non sia possibile proporre in modo affidabile uno Snippet di codice correttivo. & RF.91 & NI \\ \hline
-    TS\_92 & Verificare che il sistema orchestri l'Agente OWASP per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file CLAUDE.md. & RF.92 & NI \\ \hline
-    TS\_93 & Verificare che il sistema interroghi le API del sistema di Task Management esterno per recuperare e filtrare le User Stories e i Task in stato di completamento associati allo specifico Sprint richiesto. & RF.93 & NI \\ \hline
-    TS\_94 & Verificare che il sistema estragga dai Task validati i metadati rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & RF.94 & NI \\ \hline
-    TS\_95 & Verificare che il sistema orchestri l'Agente Changelog per generare un Changelog tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai Task dello Sprint. & RF.95 & NI \\ \hline
-    TS\_96 & Verificare che il Changelog tecnico generato includa i collegamenti ipertestuali diretti e gli identificativi dei Ticket di origine, qualora tali informazioni siano disponibili. & RF.96 & NI \\ \hline
-    TS\_97 & Verificare che il sistema permetta all'utente di inserire testualmente l'identificativo dello Sprint (Sprint ID) da analizzare. & RF.97 & NI \\ \hline
-    TS\_98 & Verificare che il sistema consenta all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello Sprint, bloccando l'esecuzione dell'agente. & RF.98 & NI \\ \hline
-    TS\_99 & Verificare che il sistema rilevi i task completati che risultano privi di metadati sufficienti (es. descrizioni o criteri mancanti) e li segnali all'utente tramite una finestra di avviso. & RF.99 & NI \\ \hline
-    TS\_100 & Verificare che il sistema permetta all'utente di proseguire l'elaborazione del Changelog escludendo automaticamente i Task segnalati come informativamente insufficienti. & RF.100 & NI \\ \hline
-    TS\_101 & Verificare che il sistema consenta all'utente di interrompere e annullare definitivamente la generazione del Changelog qualora decida di non procedere a fronte della segnalazione di metadati mancanti. & RF.101 & NI \\ \hline
-    TS\_102 & Verificare che il sistema fornisca un comando interattivo, all'interno del report del Changelog tecnico, per innescare la sua traduzione in un documento di business. & RF.102 & NI \\ \hline
-    TS\_103 & Verificare che il sistema orchestri l'Agente Changelog per generare un Changelog orientato al business, comprensibile agli Stakeholder, a partire dal testo del Changelog tecnico. & RF.103 & NI \\ \hline
-    TS\_104 & Verificare che il sistema consenta all'utente di annullare la generazione del Changelog di business dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & RF.104 & NI \\ \hline
-
-    \caption{Test di Sistema}
-    \label{tab:test_sistema}
-\end{xltabular}
-
-
 
 \subsection{Test di accettazione (TA)}
 I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto o su delega del \textbf{Proponente Var Group}, al fine di sancire la validità formale del prodotto e autorizzarne il rilascio.
@@ -666,55 +540,8 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
     \item \textbf{Criterio di successo:} Soddisfacimento del $100\%$ dei test concordati e firma del verbale di accettazione esterno da parte dei referenti aziendali.
 \end{itemize}
 
-
-\renewcommand{\arraystretch}{1.3}
-\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-    
-    \hline
-    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
-    \endfirsthead
-
-    \hline
-    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
-    \endhead
-    \hline
-    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
-    \endfoot
-    
-    \endlastfoot
-
-    TA\_01 & Verificare che l'utente non autenticato possa completare l'intero flusso di registrazione gestendo correttamente eventuali errori e che possa successivamente effettuare l'autenticazione sbloccando i permessi del proprio ruolo. & RF.1, RF.5, RF.6, RF.7 & NI \\ \hline
-    
-    TA\_02 & Verificare che l'utente possa configurare i Token per GitHub e per il sistema di Task Management, e che il sistema ne validi sia la correttezza sintattica sia l'effettiva validità tramite una chiamata di test ai servizi remoti. & RF.10, RF.13, RF.14 & NI \\ \hline
-    
-    TA\_03 & Verificare che l'utente possa selezionare con successo un Repository Git, impostare un riferimento di base e definire l'ambito di analisi desiderato, con il sistema che controlla permessi e raggiungibilità. & RF.15, RF.20, RF.25, RF.30 & NI \\ \hline
-    
-    TA\_04 & Verificare che l'utente possa navigare la dashboard, consultare le descrizioni delle operazioni disponibili, selezionarne molteplici contemporaneamente e avviare l'elaborazione. & RF.32, RF.35, RF.37 & NI \\ \hline
-    
-    TA\_05 & Verificare che la dashboard di monitoraggio si aggiorni dinamicamente mostrando lo stato di avanzamento garantendo l'isolamento in caso di errore di una singola task. & RF.43, RF.46, RF.48 & NI \\ \hline
-    
-    TA\_06 & Verificare l'intero flusso di gestione del template personalizzato: l'utente deve poter caricare un file Markdown valido per il README, ricevere un errore in caso di formato errato, e poterlo rimuovere per ripristinare il template di default dell'Agente Docs. & RF.79, RF.80, RF.81 & NI \\ \hline
-    
-    TA\_07 & Verificare che l'Agente Docs sia in grado di generare o aggiornare il file README.md di progetto e proponga in automatico le modifiche tramite l'apertura di una Pull Request sul repository, riportando il collegamento interattivo nel report. & RF.82, RF.63 & NI \\ \hline
-
-    TA\_08 & Verificare che l'Agente Docs analizzi il codice per aggiornare o generare la documentazione inline, escluda le porzioni eccessivamente complesse segnalandole tramite avviso nel report, e apra con successo la Pull Request con le modifiche. & RF.83, RF.84, RF.85, RF.63 & NI \\ \hline
-    
-    TA\_09 & Verificare che l'Agente OWASP esegua con successo la scansione del codice sorgente alla ricerca di vulnerabilità (OWASP Top 10) e generi un report contenente le criticità classificate per gravità. & RF.87, RF.88, RF.89, RF.90, RF.91 & NI \\ \hline
-    
-    TA\_10 & Verificare che l'Agente OWASP analizzi il codice per confermarne l'aderenza alle policy aziendali definite nel file CLAUDE.md, gestendo correttamente il blocco in caso di file mancante o malformato e producendo un report con le non-conformità e le relative soluzioni. & RF.92, RF.90, RF.91, RF.70, RF.71 & NI \\ \hline
-    
-    TA\_11 & Verificare il flusso completo delle notifiche via email: dalla corretta attivazione da parte dell'utente, alla ricezione automatica del report via mail o della richiesta di intervento umano, inclusa la gestione delle anomalie. & RF.38, RF.75, RF.76, RF.77, RF.78 & NI \\ \hline
-    
-    TA\_12 & Verificare che l'Agente Changelog estragga i task dallo Sprint ID fornito, gestisca l'eventuale interruzione o filtro per metadati insufficienti e completi la generazione del Changelog Tecnico, consentendo poi la traduzione opzionale in Changelog di Business. & RF.93, RF.95, RF.97, RF.99, RF.100, RF.102, RF.103 & NI \\ \hline
-    
-    TA\_13 & Verificare l'intero flusso di esportazione e storicizzazione: l'utente deve poter visualizzare la lista dei report salvati nell'archivio, selezionarne uno e avviare il download in PDF. & RF.49, RF.53, RF.58, RF.73, RF.75 & NI \\ \hline
-
-    \caption{Test di Accettazione}
-    \label{tab:test_accettazione}
-\end{xltabular}
-
 \subsection{Test di regressione (TR)}
-I test di regressione consistono nella riesecuzione automatizzata della suite di test (TU e TI) ad ogni modifica sostanziale del codice sorgente o all'aggiornamento delle librerie di core dell'AI (es. aggiornamenti di LangChain o delle SDK di OpenAI).
+I test di regressione consistono nella riesecuzione automatizzata della suite di test (TU e TI) ad ogni modifica sostanziale del codice sorgente o all'aggiornamento delle librerie di core dell'AI.
 
 \begin{itemize}
     \item \textbf{Metodologia:} Integrati nativamente nel flusso di \textbf{\glo{Continuous Integration (CI)}{continuous-integration}} tramite GitHub Actions, impediscono che l'introduzione di nuove funzionalità o il raffinamento dei prompt comprometta le funzionalità precedentemente consolidate.
@@ -732,7 +559,7 @@ Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elabora
 Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textbf{Norme di Progetto}:
 \begin{itemize}
     \item \textbf{Metriche Organizzative e di Fornitura}: calcolate a partire dai dati consuntivati sui fogli di tracciamento condivisi (Google Sheets) al termine di ogni Sprint.
-    \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Build Success Rate, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
+    \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
 \end{itemize}
 
 \textit{[Nota: Inserire in questa sezione, i grafici aggiornati insieme alle sezioni RTB e PB.]}
@@ -775,21 +602,6 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 \textbf{PB}: il grafico dimostra...
 
 \subsection{MP\_04: Superamento dei Test}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_05: Build Success Rate}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_09: Schedule Variance}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_10: Budget Variance}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
@@ -839,11 +651,6 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{MPD\_07: Maintainability Index}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
 \subsection{MPD\_08: Promt Isolation}
 \textbf{RTB}: osservando il grafico...
 
@@ -863,16 +670,16 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 Al termine di ogni iterazione, il gruppo SkyNet analizza i dati esposti nel \textit{Cruscotto di valutazione} per individuare deviazioni dai target qualitativi, inefficienze operative e colli di bottiglia. Le seguenti sottosezioni documentano in modo oggettivo le criticità riscontrate e formalizzano le azioni correttive (basate sull'approccio iterativo PDSA - Plan-Do-Study-Act) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
 
 \subsection{Valutazione sugli strumenti}
-Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo (es. IDE, tool di comunicazione, architettura CI/CD, framework di testing).
+Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo.
 \begin{itemize}
-    \item \textbf{Criticità riscontrate:} \textit{[Descrizione formale del limite o malfunzionamento riscontrato nell'uso di uno strumento. Esempio: "Riscontrata lentezza eccessiva nell'esecuzione della pipeline su GitHub Actions dovuta all'assenza di meccanismi di caching."]}
-    \item \textbf{Azioni correttive:} \textit{[Soluzione ingegneristica applicata. Esempio: "Implementato il caching delle dipendenze nel file YAML della pipeline, riducendo i tempi di build del 40\%."]}
+    \item \textbf{Criticità riscontrate:} \textit{[Descrizione formale del limite o malfunzionamento riscontrato nell'uso di uno strumento. Esempio:]}
+    \item \textbf{Azioni correttive:} \textit{[Soluzione ingegneristica applicata."]}
 \end{itemize}
 
 \subsection{Valutazione sull'organizzazione}
-Esame dell'efficacia delle metodologie di pianificazione, della stima degli effort (preventivo vs consuntivo), del coordinamento asincrono e dell'efficacia delle riunioni interne ed esterne.
+Esame dell'efficacia delle metodologie di pianificazione, stima dell'impegno richiesto (preventivo vs consuntivo), del coordinamento asincrono e dell'efficacia delle riunioni interne ed esterne.
 \begin{itemize}
-    \item \textbf{Criticità riscontrate:} \textit{[Esempio: "Sottostima cronica del tempo necessario per la fase di verifica dei documenti in fase di planning, con conseguente accumulo di lavoro negli ultimi giorni dello Sprint."]}
+    \item \textbf{Criticità riscontrate:} \textit{[Esempio]}
     \item \textbf{Azioni correttive:} \textit{[Esempio: "Aggiornati i pesi di stima per l'attività di verifica su GitHub Projects. Stabilita una propedeuticità rigida che vieta l'apertura di nuove issue di stesura se la coda di verifica supera le 3 issue pendenti."]}
 \end{itemize}
 
@@ -880,7 +687,7 @@ Esame dell'efficacia delle metodologie di pianificazione, della stima degli effo
 Valutazione dell'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, efficacia della rotazione e individuazione di eventuali carenze di competenze (knowledge gap) che richiedono formazione.
 \begin{itemize}
     \item \textbf{Criticità riscontrate:} \textit{[Esempio: "Rilevata sovrapposizione operativa tra Analisti e Progettisti, con i primi che hanno definito dettagli architetturali non di loro competenza."]}
-    \item \textbf{Azioni correttive:} \textit{[Esempio: "Introdotto un checkpoint di validazione condotto dal Responsabile prima del passaggio di consegne tra Analisti e Progettisti, per garantire una netta separazione delle responsabilità."]}
+    \item \textbf{Azioni correttive:} \textit{[Esempio]}
 \end{itemize}
 
 
