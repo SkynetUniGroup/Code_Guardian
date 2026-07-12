@@ -839,30 +839,52 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 \textbf{PB}: il grafico dimostra...
 
 \section{Valutazioni per il miglioramento}
-Al termine di ogni iterazione, il gruppo SkyNet analizza i dati esposti nel \textit{Cruscotto di valutazione} per individuare deviazioni dai target qualitativi, inefficienze operative e colli di bottiglia. Le seguenti sottosezioni documentano in modo oggettivo le criticità riscontrate e formalizzano le azioni correttive (basate sull'approccio iterativo PDSA - Plan-Do-Study-Act) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
+Al termine di ogni iterazione, il gruppo SkyNet identifica le criticità emerse durante ogni sprint e definisce azioni correttive concrete da applicare negli sprint successivi. Le informazioni qui presentate sono tratte dalle discussioni che si sono svolte alla fine di ogni sprint e sono state annotate nel Piano di Progetto. Di seguito, sono elencate le problematiche riscontrate in modo chiaro e le azioni intraprese per superarle (basate sull'approccio iterativo PDSA - Plan Do-Study-Act) intraprese per garantire il miglioramento continuo del Way of Working.
 
 \subsection{Valutazione sugli strumenti}
 Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo.
+
+\subsubsection{Criticità}
 \begin{itemize}
-    \item \textbf{Criticità riscontrate:} \textit{[Descrizione formale del limite o malfunzionamento riscontrato nell'uso di uno strumento. Esempio:]}
-    \item \textbf{Azioni correttive:} \textit{[Soluzione ingegneristica applicata."]}
+    \item I tempi per la formattazione dei documenti in \textit{LaTeX} si sono rivelati sensibilmente superiori al previsto, configurando un'inefficienza pratica assimilabile al rischio tecnologico sugli strumenti (RT4 - Inefficacia degli Strumenti di Supporto).
+    \item Si è verificato un disallineamento informativo con il Proponente sull'architettura: l'assenza di un orchestratore agenti proprietario preesistente ha imposto lo sviluppo di un motore di esecuzione interno (RV.1), causando un imprevisto incremento del carico di lavoro sul PoC.
+\end{itemize}
+
+\subsubsection{Soluzioni}
+\begin{itemize}
+    \item Sono stati sviluppati dei template pre-impostati per ogni tipologia di documento in \textit{LaTeX}, rendendo il lavoro documentale più omogeneo e abbattendo i tempi per le future stesure tecniche.
+    \item Il team ha parallelizzato lo sviluppo assegnando in modo mirato le ore al ruolo di Progettista, riuscendo a definire con successo lo scheletro architetturale dell'orchestratore per compensare la mancanza esterna.
 \end{itemize}
 
 \subsection{Valutazione sull'organizzazione}
 Esame dell'efficacia delle metodologie di pianificazione, stima dell'impegno richiesto (preventivo vs consuntivo), del coordinamento asincrono e dell'efficacia delle riunioni interne ed esterne.
+
+\subsubsection{Criticità}
 \begin{itemize}
-    \item \textbf{Criticità riscontrate:} \textit{[Esempio]}
-    \item \textbf{Azioni correttive:} \textit{[Esempio: "Aggiornati i pesi di stima per l'attività di verifica su GitHub Projects. Stabilita una propedeuticità rigida che vieta l'apertura di nuove issue di stesura se la coda di verifica supera le 3 issue pendenti."]}
+    \item Una scomposizione eccessivamente generica delle attività iniziali ha generato colli di bottiglia, spillover di \textit{Issue} non chiuse tra gli Sprint e reso inefficace la lettura dei \textit{Burndown Chart} (RO1 - Scarsa Pianificazione).
+    \item Si sono registrati ritardi e risposte lente nell'organizzazione degli incontri con il Proponente (necessari per discutere e validare l'Analisi dei Requisiti), rallentando la risoluzione dei dubbi (RO3 - Comunicazione Esterna Inefficace/Inefficiente).
+\end{itemize}
+
+\subsubsection{Soluzioni}
+\begin{itemize}
+    \item È stata imposta una scomposizione delle macro-attività in \textit{Issue} atomiche fin dalla fase di Planning e stabilita una chiara propedeuticità per governare l'ordine di esecuzione delle attività dipendenti.
+    \item È stato stabilito di formulare le richieste importanti in forma scritta, di taggare specificamente i referenti esterni su Slack e di introdurre riunioni interne a metà Sprint per monitorare proattivamente l'avanzamento dei compiti.
 \end{itemize}
 
 \subsection{Valutazione sui ruoli}
-Valutazione dell'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, efficacia della rotazione e individuazione di eventuali carenze di competenze (knowledge gap) che richiedono formazione.
+Valutazione dell'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, efficacia della rotazione e individuazione di eventuali carenze di competenze che richiedono formazione.
+
+\subsubsection{Criticità}
 \begin{itemize}
-    \item \textbf{Criticità riscontrate:} \textit{[Esempio: "Rilevata sovrapposizione operativa tra Analisti e Progettisti, con i primi che hanno definito dettagli architetturali non di loro competenza."]}
-    \item \textbf{Azioni correttive:} \textit{[Esempio]}
+    \item L'introduzione di \textit{Issue} estremamente granulari ha fatto emergere una difficoltà iniziale nel coordinare in modo sincrono i diversi ruoli, ritardando le linee guida per il lavoro degli Analisti (RO2 - Comunicazione Interna Inefficace).
+    \item Si è verificata una drastica riduzione della disponibilità oraria e produttiva di tutti i membri, causata dal vincolo accademico della sessione estiva di esami (RI1 - Indisponibilità e Vincoli di Tempo).
 \end{itemize}
 
-
+\subsubsection{Soluzioni}
+\begin{itemize}
+    \item La comunicazione tra i ruoli è stata intensificata su \textit{WhatsApp} e \textit{Discord} per redistribuire in tempo reale il carico. Inoltre, per massimizzare la produttività, sono state introdotte le "\textit{Issue} non assegnate", permettendo ai membri che terminano in anticipo i propri compiti di assumere autonomamente nuovo lavoro.
+    \item È stata effettuata una ripianificazione basata su un carico di lavoro minimo per non bloccare le attività propedeutiche, affiancata da una successiva rimodulazione intensiva del budget orario per recuperare il disavanzo nello sviluppo dell'architettura.
+\end{itemize}
 
 
 \end{document}
