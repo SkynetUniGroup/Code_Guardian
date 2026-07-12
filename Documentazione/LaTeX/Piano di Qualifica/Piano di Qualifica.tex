@@ -203,21 +203,21 @@ L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \
     
     \endlastfoot
         
-    MP\_1 & \textbf{Earned Value (EV)}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 80\%$ Planned Value & $\le$ Planned Value \\ \hline
+    MP\_1 & \textbf{\glo{Earned Value (EV)}{earned-value}}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 80\%$ Planned Value & $\le$ Planned Value \\ \hline
         
-    MP\_2 & \textbf{Planned Value (PV)}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ Budget At Completion \\ \hline
+    MP\_2 & \textbf{\glo{Planned Value (PV)}{planned-value}}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ \textit{\glo{Budget At Completion}{budget-at-completion}} \\ \hline
 
-    MP\_3 & \textbf{Actual Cost (AC)}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Earned Value \\ \hline   
+    MP\_3 & \textbf{\glo{Actual Cost (AC)}{actual-cost-ac}}: Costo effettivo e documentato sostenuto per il lavoro completato in un dato periodo. & $\ge 0$ & $\le$ Earned Value \\ \hline   
 
-    MP\_4 & \textbf{Estimate At Completion (EAC)}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\le$ Budget At Completion + 5\% & $\le$ Budget At Completion \\ \hline
+    MP\_4 & \textbf{\glo{Estimate At Completion (EAC)}{estimate-at-completion}}: Stima aggiornata del costo totale del progetto ricalcolata al momento della misurazione. & $\le$ Budget At Completion + 5\% & $\le$ Budget At Completion \\ \hline
     
-    MP\_5 & \textbf{Estimate To Complete (ETC)}: Costo per completare. & $\ge 0$ & $\le$ BAC - AC \\ \hline
+    MP\_5 & \textbf{\glo{Estimate To Complete (ETC)}{estimate-to-complete}}: Costo per completare. & $\ge 0$ & $\le$ BAC - AC \\ \hline
     
-    MP\_6 & \textbf{Time Estimate At Completion (TEAC)}: Tempo complessivo stimato. & $\ge 0$ & $\le$ Durata pianificata \\ \hline
+    MP\_6 & \textbf{\glo{Time Estimate At Completion (TEAC)}{time-estimate-at-completion}}: Tempo complessivo stimato. & $\ge 0$ & $\le$ Durata pianificata \\ \hline
 
-    MP\_7 & \textbf{Cost Performance Index (CPI)}: Misura l'efficienza economica del progetto, calcolata come rapporto tra il valore maturato (EV) e il costo effettivo (AC). & $\ge 0,9$ & $1$ \\ \hline
+    MP\_7 & \textbf{\glo{Cost Performance Index (CPI)}{cost-performance-index}}: Misura l'efficienza economica del progetto, calcolata come rapporto tra il valore maturato (EV) e il costo effettivo (AC). & $\ge 0,9$ & $1$ \\ \hline
         
-    MP\_8 & \textbf{Schedule Performance Index (SPI)}: Misura l'efficienza temporale del progetto, calcolata come rapporto tra il valore maturato (EV) e il valore pianificato (PV). & $\ge 0,9$ & $1$ \\ \hline
+    MP\_8 & \textbf{\glo{Schedule Performance Index (SPI)}{schedule-performance-index}}: Misura l'efficienza temporale del progetto, calcolata come rapporto tra il valore maturato (EV) e il valore pianificato (PV). & $\ge 0,9$ & $1$ \\ \hline
         
     \caption{Metriche per il processo di fornitura}
     \label{tab:metriche_fornitura}
@@ -316,7 +316,7 @@ La verifica misura l'efficacia del piano di testing applicato al software, garan
 
 
 \subsection{Processi organizzativi}
-I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando anomalie di pianificazione temporale.
+I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
@@ -334,7 +334,8 @@ I processi organizzativi sovrintendono l'efficienza metodologica del team, monit
     
     \endlastfoot
         
-        MP\_14 & \textbf{Time Efficiency (Efficienza Temporale)}: Rapporto percentuale tra le ore stimate per il completamento dei task e le ore effettivamente impiegate dai membri del team. & $\ge 60\%$ & $\ge 90\%$ \\ \hline
+        MP\_14 & \textbf{Rischi non Preventivati}: Numero di criticità o problemi occorsi durante uno Sprint che non erano stati identificati nell'analisi dei rischi. & $\le 20\%$ & $ 0\%$ \\ \hline
+        MP\_15 & \textbf{\glo{Time Efficiency}{time-efficiency}}: Rapporto percentuale tra le ore stimate per il completamento dei task e le ore effettivamente impiegate dai membri del team. & $\ge 60\%$ & $\ge 90\%$ \\ \hline
 
     \caption{Metriche per i processi organizzativi}
     \label{tab:metriche_organizzativi}
@@ -372,7 +373,7 @@ La funzionalità rappresenta la capacità del prodotto software di fornire funzi
 \end{xltabular}
 
 \subsection{Affidabilità}
-L'affidabilità misura la capacità del sistema di mantenere costanti le proprie prestazioni nel tempo, minimizzando i fallimenti applicativi dovuti a downtime delle API esterne (LLM) o a eccezioni di runtime nel parsing delle codebase.
+L'affidabilità misura la capacità del sistema di mantenere costanti le proprie prestazioni nel tempo, minimizzando i fallimenti applicativi dovuti a \textit{\glo{downtime}{downtime}} delle API esterne (LLM) o a eccezioni di runtime nel \textit{\glo{parsing}{parsing}} delle codebase.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
@@ -391,7 +392,7 @@ L'affidabilità misura la capacità del sistema di mantenere costanti le proprie
     \endlastfoot
         MPD\_4 & \textbf{Densità dei Guasti (Anomalie Codice)}: Percentuale di operazioni fallite (es. parsing interrotto) sul totale delle richieste eseguite. & $\le 5\%$ & $0\%$ \\ \hline
         MPD\_5 & \textbf{Rate Limiting}: Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textbf{\glo{Token}{token}} API esterni. & $100\%$ & $100\%$ \\ \hline
-        MPD\_6 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di \textbf{allucinazioni (AI)} evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
+        MPD\_6 & \textbf{Accuratezza delle Risposte AI}: Percentuale di report (o file generati) validati come corretti e privi di allucinazioni (AI) evidenti. & $\ge 85\%$ & $\ge 95\%$ \\ \hline
         MPD\_7 & \textbf{Indice Flesch Reading Ease}: Grado di leggibilità dei report di Business (Dev-to-Client) generati in lingua inglese dall'Agente Changelog. & $\ge 50$ & $\ge 65$ \\ \hline
         MPD\_8 & \textbf{Branch Coverage}: Percentuale di rami logico-decisionali (if/else, cicli, switch) del codice sorgente che vengono attraversati e verificati almeno una volta durante l'esecuzione di test automatici. & $\ge 60\%$ & $\ge 85\%$ \\ \hline
 
@@ -494,9 +495,9 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
     
     \endlastfoot
 
-    MPD\_18 & \textbf{Esposizione di Credenziali (Secret Key Exposure)}: Numero di token API, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
-    MPD\_19 & \textbf{Cifratura dei Dati Sensibili (Data Encryption)}: Percentuale di password degli utenti e token di accesso esterni memorizzati nel database utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
-    MPD\_20 & \textbf{Validazione degli Input (Input Validation)}: Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
+    MPD\_18 & \textbf{Esposizione di Credenziali}: Numero di token API, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
+    MPD\_19 & \textbf{Cifratura dei Dati Sensibili}: Percentuale di password degli utenti e token di accesso esterni memorizzati nel database utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
+    MPD\_20 & \textbf{\glo{Input Validation}{input-validation}}: Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
 
     \caption{Metriche di Sicurezza}
     \label{tab:prod_sicurezza}
@@ -519,21 +520,21 @@ I test di unità isolano e verificano la correttezza logica dei singoli moduli s
 I test di integrazione verificano il corretto funzionamento delle interfacce, lo scambio di dati e le dipendenze tra i diversi moduli interni precedentemente testati in isolamento.
 
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la pipeline di input degli agenti AI; integrazione dei tre agenti (README, OWASP, Changelog) con il cruscotto di backend centrale o con l'interfaccia CLI.
+    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la \textit{\glo{pipeline}{pipeline}} di input degli agenti AI; integrazione dei tre agenti (README, OWASP, Changelog) con il cruscotto di backend centrale o con l'\textit{\glo{interfaccia CLI}{interfaccia-cli}}.
     \item \textbf{Criterio di successo:} Corretto instradamento dei dati senza perdite informative, incoerenze di tipo o sollevamento di eccezioni non gestite nel passaggio tra i sub-sistemi.
 \end{itemize}
 
 \subsection{Test di sistema (TS)}
-I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione end-to-end soddisfi i requisiti funzionali e i flussi d'uso descritti nell'\textbf{Analisi dei Requisiti}.
+I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione \textit{\glo{end-to-end}{end-to-end}} soddisfi i requisiti funzionali e i flussi d'uso descritti nell'\textbf{Analisi dei Requisiti}.
 
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Esecuzione completa di un'analisi su un intero repository di test (Sandbox) comprensiva di generazione simultanea del README, mappatura reale delle vulnerabilità identificate con le top 10 OWASP e stesura del Changelog tecnico e di buisiness.
+    \item \textbf{Oggetto di verifica:} Esecuzione completa di un'analisi su un intero repository di test comprensiva di generazione simultanea del README, mappatura reale delle vulnerabilità identificate con le top 10 OWASP e stesura del Changelog tecnico e di buisiness.
     \item \textbf{Criterio di successo:} Produzione di tutti gli output previsti entro i limiti temporali stabiliti di accettazione con adeguata qualità, corretta persistenza e visualizzazione dei risultati.
 \end{itemize}
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-    
+
     \hline
     \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
     \endfirsthead
@@ -544,7 +545,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     \hline
     \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
     \endfoot
-    
+
     \endlastfoot
 
     TS\_1 & Verificare che il sistema permetta a un utente non autenticato di avviare la procedura di registrazione per la creazione di un nuovo account. & RF.1 & NI \\ \hline
@@ -656,8 +657,6 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     \label{tab:test_sistema}
 \end{xltabular}
 
-
-
 \subsection{Test di accettazione (TA)}
 I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto o su delega del \textbf{Proponente Var Group}, al fine di sancire la validità formale del prodotto e autorizzarne il rilascio.
 
@@ -669,7 +668,7 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
-    
+
     \hline
     \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
     \endfirsthead
@@ -680,33 +679,33 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
     \hline
     \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
     \endfoot
-    
+
     \endlastfoot
 
     TA\_01 & Verificare che l'utente non autenticato possa completare l'intero flusso di registrazione gestendo correttamente eventuali errori e che possa successivamente effettuare l'autenticazione sbloccando i permessi del proprio ruolo. & RF.1, RF.5, RF.6, RF.7 & NI \\ \hline
-    
+
     TA\_02 & Verificare che l'utente possa configurare i Token per GitHub e per il sistema di Task Management, e che il sistema ne validi sia la correttezza sintattica sia l'effettiva validità tramite una chiamata di test ai servizi remoti. & RF.10, RF.13, RF.14 & NI \\ \hline
-    
+
     TA\_03 & Verificare che l'utente possa selezionare con successo un Repository Git, impostare un riferimento di base e definire l'ambito di analisi desiderato, con il sistema che controlla permessi e raggiungibilità. & RF.15, RF.20, RF.25, RF.30 & NI \\ \hline
-    
+
     TA\_04 & Verificare che l'utente possa navigare la dashboard, consultare le descrizioni delle operazioni disponibili, selezionarne molteplici contemporaneamente e avviare l'elaborazione. & RF.32, RF.35, RF.37 & NI \\ \hline
-    
+
     TA\_05 & Verificare che la dashboard di monitoraggio si aggiorni dinamicamente mostrando lo stato di avanzamento garantendo l'isolamento in caso di errore di una singola task. & RF.43, RF.46, RF.48 & NI \\ \hline
-    
+
     TA\_06 & Verificare l'intero flusso di gestione del template personalizzato: l'utente deve poter caricare un file Markdown valido per il README, ricevere un errore in caso di formato errato, e poterlo rimuovere per ripristinare il template di default dell'Agente Docs. & RF.79, RF.80, RF.81 & NI \\ \hline
-    
+
     TA\_07 & Verificare che l'Agente Docs sia in grado di generare o aggiornare il file README.md di progetto e proponga in automatico le modifiche tramite l'apertura di una Pull Request sul repository, riportando il collegamento interattivo nel report. & RF.82, RF.63 & NI \\ \hline
 
     TA\_08 & Verificare che l'Agente Docs analizzi il codice per aggiornare o generare la documentazione inline, escluda le porzioni eccessivamente complesse segnalandole tramite avviso nel report, e apra con successo la Pull Request con le modifiche. & RF.83, RF.84, RF.85, RF.63 & NI \\ \hline
-    
+
     TA\_09 & Verificare che l'Agente OWASP esegua con successo la scansione del codice sorgente alla ricerca di vulnerabilità (OWASP Top 10) e generi un report contenente le criticità classificate per gravità. & RF.87, RF.88, RF.89, RF.90, RF.91 & NI \\ \hline
-    
+
     TA\_10 & Verificare che l'Agente OWASP analizzi il codice per confermarne l'aderenza alle policy aziendali definite nel file CLAUDE.md, gestendo correttamente il blocco in caso di file mancante o malformato e producendo un report con le non-conformità e le relative soluzioni. & RF.92, RF.90, RF.91, RF.70, RF.71 & NI \\ \hline
-    
+
     TA\_11 & Verificare il flusso completo delle notifiche via email: dalla corretta attivazione da parte dell'utente, alla ricezione automatica del report via mail o della richiesta di intervento umano, inclusa la gestione delle anomalie. & RF.38, RF.75, RF.76, RF.77, RF.78 & NI \\ \hline
-    
+
     TA\_12 & Verificare che l'Agente Changelog estragga i task dallo Sprint ID fornito, gestisca l'eventuale interruzione o filtro per metadati insufficienti e completi la generazione del Changelog Tecnico, consentendo poi la traduzione opzionale in Changelog di Business. & RF.93, RF.95, RF.97, RF.99, RF.100, RF.102, RF.103 & NI \\ \hline
-    
+
     TA\_13 & Verificare l'intero flusso di esportazione e storicizzazione: l'utente deve poter visualizzare la lista dei report salvati nell'archivio, selezionarne uno e avviare il download in PDF. & RF.49, RF.53, RF.58, RF.73, RF.75 & NI \\ \hline
 
     \caption{Test di Accettazione}
@@ -714,7 +713,7 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
 \end{xltabular}
 
 \subsection{Test di regressione (TR)}
-I test di regressione consistono nella riesecuzione automatizzata della suite di test (TU e TI) ad ogni modifica sostanziale del codice sorgente o all'aggiornamento delle librerie di core dell'AI (es. aggiornamenti di LangChain o delle SDK di OpenAI).
+I test di regressione consistono nella riesecuzione automatizzata della suite di test (TU e TI) ad ogni modifica sostanziale del codice sorgente o all'aggiornamento delle librerie di core dell'AI.
 
 \begin{itemize}
     \item \textbf{Metodologia:} Integrati nativamente nel flusso di \textbf{\glo{Continuous Integration (CI)}{continuous-integration}} tramite GitHub Actions, impediscono che l'introduzione di nuove funzionalità o il raffinamento dei prompt comprometta le funzionalità precedentemente consolidate.
@@ -732,7 +731,7 @@ Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elabora
 Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textbf{Norme di Progetto}:
 \begin{itemize}
     \item \textbf{Metriche Organizzative e di Fornitura}: calcolate a partire dai dati consuntivati sui fogli di tracciamento condivisi (Google Sheets) al termine di ogni Sprint.
-    \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Build Success Rate, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
+    \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
 \end{itemize}
 
 \textit{[Nota: Inserire in questa sezione, i grafici aggiornati insieme alle sezioni RTB e PB.]}
@@ -775,21 +774,6 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 \textbf{PB}: il grafico dimostra...
 
 \subsection{MP\_04: Superamento dei Test}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_05: Build Success Rate}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_09: Schedule Variance}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_10: Budget Variance}
 \textbf{RTB}: osservando il grafico...
 
 \textbf{PB}: il grafico dimostra...
@@ -839,11 +823,6 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 
 \textbf{PB}: il grafico dimostra...
 
-\subsection{MPD\_07: Maintainability Index}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
 \subsection{MPD\_08: Promt Isolation}
 \textbf{RTB}: osservando il grafico...
 
@@ -863,16 +842,16 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 Al termine di ogni iterazione, il gruppo SkyNet analizza i dati esposti nel \textit{Cruscotto di valutazione} per individuare deviazioni dai target qualitativi, inefficienze operative e colli di bottiglia. Le seguenti sottosezioni documentano in modo oggettivo le criticità riscontrate e formalizzano le azioni correttive (basate sull'approccio iterativo PDSA - Plan-Do-Study-Act) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
 
 \subsection{Valutazione sugli strumenti}
-Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo (es. IDE, tool di comunicazione, architettura CI/CD, framework di testing).
+Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo.
 \begin{itemize}
-    \item \textbf{Criticità riscontrate:} \textit{[Descrizione formale del limite o malfunzionamento riscontrato nell'uso di uno strumento. Esempio: "Riscontrata lentezza eccessiva nell'esecuzione della pipeline su GitHub Actions dovuta all'assenza di meccanismi di caching."]}
-    \item \textbf{Azioni correttive:} \textit{[Soluzione ingegneristica applicata. Esempio: "Implementato il caching delle dipendenze nel file YAML della pipeline, riducendo i tempi di build del 40\%."]}
+    \item \textbf{Criticità riscontrate:} \textit{[Descrizione formale del limite o malfunzionamento riscontrato nell'uso di uno strumento. Esempio:]}
+    \item \textbf{Azioni correttive:} \textit{[Soluzione ingegneristica applicata."]}
 \end{itemize}
 
 \subsection{Valutazione sull'organizzazione}
-Esame dell'efficacia delle metodologie di pianificazione, della stima degli effort (preventivo vs consuntivo), del coordinamento asincrono e dell'efficacia delle riunioni interne ed esterne.
+Esame dell'efficacia delle metodologie di pianificazione, stima dell'impegno richiesto (preventivo vs consuntivo), del coordinamento asincrono e dell'efficacia delle riunioni interne ed esterne.
 \begin{itemize}
-    \item \textbf{Criticità riscontrate:} \textit{[Esempio: "Sottostima cronica del tempo necessario per la fase di verifica dei documenti in fase di planning, con conseguente accumulo di lavoro negli ultimi giorni dello Sprint."]}
+    \item \textbf{Criticità riscontrate:} \textit{[Esempio]}
     \item \textbf{Azioni correttive:} \textit{[Esempio: "Aggiornati i pesi di stima per l'attività di verifica su GitHub Projects. Stabilita una propedeuticità rigida che vieta l'apertura di nuove issue di stesura se la coda di verifica supera le 3 issue pendenti."]}
 \end{itemize}
 
@@ -880,7 +859,7 @@ Esame dell'efficacia delle metodologie di pianificazione, della stima degli effo
 Valutazione dell'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, efficacia della rotazione e individuazione di eventuali carenze di competenze (knowledge gap) che richiedono formazione.
 \begin{itemize}
     \item \textbf{Criticità riscontrate:} \textit{[Esempio: "Rilevata sovrapposizione operativa tra Analisti e Progettisti, con i primi che hanno definito dettagli architetturali non di loro competenza."]}
-    \item \textbf{Azioni correttive:} \textit{[Esempio: "Introdotto un checkpoint di validazione condotto dal Responsabile prima del passaggio di consegne tra Analisti e Progettisti, per garantire una netta separazione delle responsabilità."]}
+    \item \textbf{Azioni correttive:} \textit{[Esempio]}
 \end{itemize}
 
 

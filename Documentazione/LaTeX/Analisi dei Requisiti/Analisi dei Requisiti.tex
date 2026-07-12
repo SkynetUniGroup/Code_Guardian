@@ -284,7 +284,7 @@ specializzati coordinati da un \textbf{Orchestratore} centrale deterministrico, 
     Stories} completate durante uno specifico \textit{Sprint} di sviluppo.
 \item
     \textbf{Traduzione Business-Oriented:} conversione del linguaggio
-    tecnico delle task in un linguaggio chiaro e comprensibile per il
+    tecnico delle \textit{\glo{task}{task}} in un linguaggio chiaro e comprensibile per il
     cliente, producendo \textit{Changelog} sia tecnici che di business.
 \end{itemize}
 \end{enumerate}
@@ -308,7 +308,7 @@ Il prodotto è concepito come un ecosistema di agenti integrati in
 un'infrastruttura già esistente, operante principalmente
 in ambiente cloud \textit{\glo{AWS}{aws}}. Essendo il sistema basato su interfacce
 di programmazione e automazione, l'esecuzione è
-garantita attraverso i principali ambienti di runtime come
+garantita attraverso i principali ambienti di \textit{\glo{runtime}{runtime}} come
 \textit{\glo{Node.js}{node-js}} e \textit{\glo{Python}{python}}.
 L'interazione con il codice sorgente avviene tramite la piattaforma \textit{\glo{GitHub}{github}}. 
 \newpage
@@ -357,11 +357,11 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \begin{itemize}
     \item \textbf{\textit{Piattaforma GitHub}:} Il sistema di controllo di versione esterno GitHub rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{\glo{Pull Request}{pull-request}}.
 
-    \item \textbf{Server SMTP:} Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
+    \item \textbf{\glo{Server SMTP}{Server-smtp}}: Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
     
     \item \textbf{Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
     
-    \item \textbf{Sistema di Task Management:} La piattaforma esterna di tracciamento delle attività. Viene interrogata dall'Agente \textit{Changelog} per recuperare i metadati, le descrizioni e i criteri di accettazione dei \textit{\glo{Ticket}{ticket}} completati durante uno \textit{Sprint}.
+    \item \textbf{Sistema di Task Management:} La piattaforma esterna di tracciamento delle attività. Viene interrogata dall'Agente \textit{Changelog} per recuperare i \textit{\glo{metadati}{metadati}}, le descrizioni e i criteri di accettazione dei \textit{\glo{Ticket}{ticket}} completati durante uno \textit{Sprint}.
     
 \end{itemize}
 
@@ -412,7 +412,7 @@ Questo caso d'uso descrive il processo attraverso il quale un utente non ancora 
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC2: Errore email già registrata.} Estende il passo 5 qualora il sistema rilevi che l'indirizzo email inserito è già presente nel database.
+        \item \textbf{UC2: Errore email già registrata.} Estende il passo 5 qualora il sistema rilevi che l'indirizzo email inserito è già presente nel \textit{\glo{database}{database}}.
         \item \textbf{UC3: Errore dati non validi.} Estende il passo 5 qualora il formato dell'email sia errato o la password non rispetti i criteri di sicurezza.
     \end{itemize}
 \end{itemize}
@@ -742,9 +742,9 @@ Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e i
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'utente accede alla sezione dedicata alla selezione del \textit{repository}.
-            \item L'utente fornisce l'\textit{URL} del \textit{repository} Git.
+            \item L'utente fornisce l'\textit{\glo{URL}{URL}} del \textit{repository} Git.
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
-            \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra branch e specifico \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
+            \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra \textit{\glo{branch}{branch}} e specifico \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
             \item Se l'utente seleziona un branch senza indicare un \textit{Commit} specifico, il sistema considera di default l'ultimo \textit{Commit} disponibile sul branch selezionato.
             \item Il sistema analizza i metadati del \textit{repository} per verificare i linguaggi di programmazione principali utilizzati nel riferimento selezionato.
             \item Il sistema registra il \textit{repository} e il riferimento selezionati come contesto per le successive operazioni degli agenti.
@@ -762,7 +762,7 @@ Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e i
         \item \textbf{UC10: Errore URL \textit{repository} non valido}. Estende il passo 2 qualora il sistema rilevi localmente che l'URL del \textit{repository} non rispetti il formato sintattico valido.
         \item \textbf{UC11: Errore \textit{repository} non raggiungibile o permessi insufficienti}. Estende il passo 3 qualora, interrogando il servizio remoto, il \textit{repository} risulti inesistente o privato senza opportuna autorizzazione.
         \item \textbf{UC12: Errore branch inesistente}. Estende il passo 4 qualora il nome del branch specificato non venga trovato nel \textit{repository} remoto.
-        \item \textbf{UC13: Errore \textit{commit} inesistente}. Estende il passo 4  qualora l'hash del \textit{commit} inserito non esista o non appartenga al branch selezionato.
+        \item \textbf{UC13: Errore \textit{commit} inesistente}. Estende il passo 4  qualora l'\textit{\glo{hash}{hash}} del \textit{commit} inserito non esista o non appartenga al branch selezionato.
         \item \textbf{UC14: Errore \textit{Pull Reques}t inesistente}. Estende il passo 4 qualora l'identificativo della Pull Request inserito non corrisponda ad alcuna \textit{PR} attiva o esistente.
         \item \textbf{UC15: Avviso linguaggio non supportato}. Estende il passo 6 qualora il codice sorgente nel riferimento selezionato sia scritto in un linguaggio non gestito dagli agenti del sistema.
     \end{itemize}
@@ -1307,7 +1307,7 @@ Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le 
     \begin{itemize}
         \item \textbf{UC21.4: Errore mancata selezione delle operazioni.} Estende il passo 2 qualora l'elenco delle operazioni selezionate risulti vuoto.
         \item \textbf{UC21.5: Errore prerequisiti operazione mancanti.} Estende il passo 2 qualora per una o più operazioni selezionate manchino i prerequisiti di contesto necessari (Token \textit{Git}, \textit{Repository}, Ambito di analisi).
-        \item \textbf{UC23: Errore di orchestrazione o routing.} Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare l'operazione.
+        \item \textbf{UC23: Errore di orchestrazione o \textit{\glo{routing}{routing}}.} Estende il passo 3 qualora il sistema non riesca ad instradare o comunicare correttamente la richiesta per avviare l'operazione.
     \end{itemize}
 \end{itemize}
 
@@ -1921,7 +1921,7 @@ Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica 
     \begin{itemize}
         \item \textbf{UC26.2.1:} Visualizzazione blocco testuale formattato.
         \item \textbf{UC26.2.2:} Visualizzazione lista di elementi strutturati.
-        \item \textbf{UC26.2.3:} Visualizzazione Snippet di codice.
+        \item \textbf{UC26.2.3:} Visualizzazione \textbf{\glo{Snippet}{Snippet}} di codice.
         \item \textbf{UC26.2.4:} Visualizzazione collegamento a una \textit{Pull Request}.
         \item \textbf{UC26.2.5:} Visualizzazione comandi di validazione e avanzamento.
     \end{itemize}
@@ -2172,7 +2172,7 @@ Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possi
     \item \textbf{Specializzazioni (Casi d'uso derivati):}
     \begin{itemize}
         \item \textbf{UC27.1}: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.
-        \item \textbf{UC27.2}: Errore per timeout del modello \textit{LLM}.
+        \item \textbf{UC27.2}: Errore per \textit{\glo{timeout}{timeout}} del modello \textit{LLM}.
         \item \textbf{UC27.3}: Errore di parsing dell'output \textit{LLM}.
         \item \textbf{UC27.4}: Errore per superamento limiti dimensionali a runtime.
         \item \textbf{UC27.5}: Errore per risorsa di contesto mancante.
@@ -2263,7 +2263,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Trigger:} Il calcolo dei \textit{token} o della dimensione dei file selezionati supera le specifiche hardware/software massime del modello in uso.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'agente sta assemblando il \textit{prompt} e il contesto da inviare al modello \textit{LLM}.
+        \item L'agente sta assemblando il \textit{\glo{prompt}{prompt}} e il contesto da inviare al modello \textit{LLM}.
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2822,7 +2822,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
         \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre i file del codice sorgente appartenenti all'ambito selezionato, identificando in particolare i file contenenti la definizione delle \textit{rotte} e le logiche dei \textit{controller}.
-        \item Il sistema compone il prompt contestuale con il codice estratto e lo invia alle \textit{API} del Modello \textit{LLM}, richiedendo l'identificazione degli \textit{Endpoint} e l'estrazione di metodo HTTP, URL, \textit{header}, \textit{Payload} richiesti e formati di risposta.
+        \item Il sistema compone il prompt contestuale con il codice estratto e lo invia alle \textit{API} del Modello \textit{LLM}, richiedendo l'identificazione degli \textit{Endpoint} e l'estrazione di metodo HTTP, URL, \textit{\glo{header}{header}}, \textit{Payload} richiesti e formati di risposta.
         \item Il modello \textit{LLM} elabora il codice e restituisce al sistema le informazioni tecniche formattate strutturalmente con la sintassi \textit{Markdown}.
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento \texttt{API.md} finale.
         \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
@@ -3451,27 +3451,27 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
 
 
 \hline
-RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del Piano di Qualifica. & PdQ (MP\_13) \\ 
+RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del Piano di Qualifica. & PdQ(MP\_13) \\ 
 \hline
-RQ.2 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\%, come stabilito dalla metrica MP\_12 del Piano di Qualifica. & Capitolato C2, PdQ (MP\_12) \\ 
+RQ.2 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\%, come stabilito dalla metrica MP\_12 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_12) \\ 
 \hline
-RQ.3 & Obbligatorio & Il codice sorgente prodotto deve garantire alti standard di manutenibilità, mantenendo una complessità ciclomatica minore o uguale a 15, non superando i 5 Code Smell per componente e limitando la duplicazione del codice a un massimo del 10\%. La verifica seguirà le metriche MPD\_15, MPD\_16 e MPD\_17 del Piano di Qualifica. & Capitolato C2, PdQ (MPD\_15), PdQ (MPD\_16), PdQ (MPD\_17) \\ 
+RQ.3 & Obbligatorio & Il codice sorgente prodotto deve garantire alti standard di manutenibilità, mantenendo una complessità ciclomatica minore o uguale a 15, non superando i 5 \textbf{\glo{Code Smell}{code-smell}} per componente e limitando la duplicazione del codice a un massimo del 10\%. La verifica seguirà le metriche MPD\_15, MPD\_16 e MPD\_17 del Piano di Qualifica. & Capitolato C2, PdQ(MPD\_15), PdQ(MPD\_16), PdQ(MPD\_17) \\ 
 \hline
-RQ.4 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (MPD\_14) del Piano di Qualifica. & Capitolato C2, PdQ (MPD\_14) \\ 
+RQ.4 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (MPD\_14) del Piano di Qualifica. & Capitolato C2, PdQ(MPD\_14) \\ 
 \hline
-RQ.5 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore o uguale all'85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (MPD\_6) definita nel Piano di Qualifica. & PdQ (MPD\_6) \\ 
+RQ.5 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore o uguale all'85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (MPD\_6) definita nel Piano di Qualifica. & PdQ(MPD\_6) \\ 
 \hline
-RQ.6 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 5 minuti. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (MPD\_12) definita nel Piano di Qualifica. & UC27.2, PdQ (MPD\_12) \\ 
+RQ.6 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 5 minuti. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (MPD\_12) definita nel Piano di Qualifica. & UC27.2, PdQ(MPD\_12) \\ 
 \hline
-RQ.7 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità 'Flesch Reading Ease' superiore a 50. La valutazione seguirà la metrica MPD\_7. & Verbale esterno 2026/04/24, PdQ (MPD\_7) \\ 
+RQ.7 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità '\textbf{\glo{Flesch Reading Ease}{flesch-reading-ease}}' superiore a 50. La valutazione seguirà la metrica MPD\_7. & Verbale esterno 2026/04/24, PdQ(MPD\_7) \\ 
 \hline
-RQ.8 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare con successo il 100\% delle eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting), conformemente alla metrica MPD\_5 del Piano di Qualifica. & Verbale interno 2026/06/02, PdQ (MPD\_5) \\ 
+RQ.8 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare con successo il 100\% delle eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting), conformemente alla metrica MPD\_5 del Piano di Qualifica. & Verbale interno 2026/06/02, PdQ(MPD\_5) \\ 
 \hline
-RQ.9 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi, conformemente alla metrica Tempo di Autenticazione (MPD\_13). & UC4, PdQ (MPD\_13) \\ 
+RQ.9 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi, conformemente alla metrica Tempo di Autenticazione (MPD\_13). & UC4, PdQ(MPD\_13) \\ 
 \hline
-RQ.10 & Obbligatorio & Il tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema non deve superare i 2 secondi. La misurazione deve rispettare la metrica Tempo di Risposta Interfaccia (MPD\_11). & PdQ (MPD\_11) \\ 
+RQ.10 & Obbligatorio & Il tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema non deve superare i 2 secondi. La misurazione deve rispettare la metrica Tempo di Risposta Interfaccia (MPD\_11). & PdQ(MPD\_11) \\ 
 \hline
-RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo a un nuovo utente di apprenderne le funzionalità in un tempo minore o uguale a 30 minuti, in conformità con la metrica Tempo di Apprendimento (MPD\_9). & PdQ (MPD\_9) \\ 
+RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo a un nuovo utente di apprenderne le funzionalità in un tempo minore o uguale a 30 minuti, in conformità con la metrica Tempo di Apprendimento (MPD\_9). & PdQ(MPD\_9) \\ 
 \hline
     
 \end{xltabular}
@@ -3513,13 +3513,13 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     \hline
     RV.9 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript , utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.10 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework NestJS. &  Verbale interno 2026/06/02 \\
+    RV.10 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework \textit{\glo{NestJS}{NestJS}}. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.11 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework LangGraph. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.11 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework \textbf{\glo{LangGraph}{LangGraph}}. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.12 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su MongoDB per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.12 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su \textit{\glo{MongoDB}{MongoDB}} per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.13 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da AWS Bedrock. &  Verbale interno 2026/06/02 \\
+    RV.13 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da \textit{\glo{AWS Bedrock}{aws-bedrock}}. &  Verbale interno 2026/06/02 \\
     \hline
     RV.14 & Obbligatorio & L'agente preposto all'analisi di sicurezza (\textit{OWASP}) deve essere istruito utilizzando specificatamente il modello Anthropic Claude. &  Verbale interno 2026/06/02 \\
     \hline
