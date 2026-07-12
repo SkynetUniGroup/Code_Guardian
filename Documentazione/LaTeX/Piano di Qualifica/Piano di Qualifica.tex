@@ -666,6 +666,53 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
     \item \textbf{Criterio di successo:} Soddisfacimento del $100\%$ dei test concordati e firma del verbale di accettazione esterno da parte dei referenti aziendali.
 \end{itemize}
 
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+    
+    \hline
+    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+    
+    \endlastfoot
+
+    TA\_01 & Verificare che l'utente non autenticato possa completare l'intero flusso di registrazione gestendo correttamente eventuali errori e che possa successivamente effettuare l'autenticazione sbloccando i permessi del proprio ruolo. & RF.1, RF.5, RF.6, RF.7 & NI \\ \hline
+    
+    TA\_02 & Verificare che l'utente possa configurare i Token per GitHub e per il sistema di Task Management, e che il sistema ne validi sia la correttezza sintattica sia l'effettiva validità tramite una chiamata di test ai servizi remoti. & RF.10, RF.13, RF.14 & NI \\ \hline
+    
+    TA\_03 & Verificare che l'utente possa selezionare con successo un Repository Git, impostare un riferimento di base e definire l'ambito di analisi desiderato, con il sistema che controlla permessi e raggiungibilità. & RF.15, RF.20, RF.25, RF.30 & NI \\ \hline
+    
+    TA\_04 & Verificare che l'utente possa navigare la dashboard, consultare le descrizioni delle operazioni disponibili, selezionarne molteplici contemporaneamente e avviare l'elaborazione. & RF.32, RF.35, RF.37 & NI \\ \hline
+    
+    TA\_05 & Verificare che la dashboard di monitoraggio si aggiorni dinamicamente mostrando lo stato di avanzamento garantendo l'isolamento in caso di errore di una singola task. & RF.43, RF.46, RF.48 & NI \\ \hline
+    
+    TA\_06 & Verificare l'intero flusso di gestione del template personalizzato: l'utente deve poter caricare un file Markdown valido per il README, ricevere un errore in caso di formato errato, e poterlo rimuovere per ripristinare il template di default dell'Agente Docs. & RF.79, RF.80, RF.81 & NI \\ \hline
+    
+    TA\_07 & Verificare che l'Agente Docs sia in grado di generare o aggiornare il file README.md di progetto e proponga in automatico le modifiche tramite l'apertura di una Pull Request sul repository, riportando il collegamento interattivo nel report. & RF.82, RF.63 & NI \\ \hline
+
+    TA\_08 & Verificare che l'Agente Docs analizzi il codice per aggiornare o generare la documentazione inline, escluda le porzioni eccessivamente complesse segnalandole tramite avviso nel report, e apra con successo la Pull Request con le modifiche. & RF.83, RF.84, RF.85, RF.63 & NI \\ \hline
+    
+    TA\_09 & Verificare che l'Agente OWASP esegua con successo la scansione del codice sorgente alla ricerca di vulnerabilità (OWASP Top 10) e generi un report contenente le criticità classificate per gravità. & RF.87, RF.88, RF.89, RF.90, RF.91 & NI \\ \hline
+    
+    TA\_10 & Verificare che l'Agente OWASP analizzi il codice per confermarne l'aderenza alle policy aziendali definite nel file CLAUDE.md, gestendo correttamente il blocco in caso di file mancante o malformato e producendo un report con le non-conformità e le relative soluzioni. & RF.92, RF.90, RF.91, RF.70, RF.71 & NI \\ \hline
+    
+    TA\_11 & Verificare il flusso completo delle notifiche via email: dalla corretta attivazione da parte dell'utente, alla ricezione automatica del report via mail o della richiesta di intervento umano, inclusa la gestione delle anomalie. & RF.38, RF.75, RF.76, RF.77, RF.78 & NI \\ \hline
+    
+    TA\_12 & Verificare che l'Agente Changelog estragga i task dallo Sprint ID fornito, gestisca l'eventuale interruzione o filtro per metadati insufficienti e completi la generazione del Changelog Tecnico, consentendo poi la traduzione opzionale in Changelog di Business. & RF.93, RF.95, RF.97, RF.99, RF.100, RF.102, RF.103 & NI \\ \hline
+    
+    TA\_13 & Verificare l'intero flusso di esportazione e storicizzazione: l'utente deve poter visualizzare la lista dei report salvati nell'archivio, selezionarne uno e avviare il download in PDF. & RF.49, RF.53, RF.58, RF.73, RF.75 & NI \\ \hline
+
+    \caption{Test di Accettazione}
+    \label{tab:test_accettazione}
+\end{xltabular}
+
 \subsection{Test di regressione (TR)}
 I test di regressione consistono nella riesecuzione automatizzata della suite di test (TU e TI) ad ogni modifica sostanziale del codice sorgente o all'aggiornamento delle librerie di core dell'AI (es. aggiornamenti di LangChain o delle SDK di OpenAI).
 
