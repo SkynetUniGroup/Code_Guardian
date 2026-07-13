@@ -869,113 +869,78 @@ Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elabora
 
 Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textbf{Norme di Progetto}:
 \begin{itemize}
-    \item \textbf{Metriche Organizzative e di Fornitura}: calcolate a partire dai dati consuntivati sui fogli di tracciamento condivisi (Google Sheets) al termine di ogni Sprint.
-    \item \textbf{Metriche di Supporto e Qualità del Codice} (es. Indice di Gulpease, Code Coverage): misurate in modo automatizzato tramite script Python dedicati e attraverso l'integrazione di tool di analisi statica all'interno della pipeline di \textit{Continuous Integration} (GitHub Actions).
+    \item \textbf{Metriche Organizzative e di Fornitura}: calcolate a partire dai dati esposti nel \textbf{Piano di Progetto}, il Budget at Completion (BAC), ossia il budget totale stimato  in fase di pianificazione, è di €11.250.
+    \item \textbf{Metriche di Supporto e di Prodotto}: misurate in modo automatizzato tramite script Python dedicati o attraverso l'integrazione di tool di analisi statica, le metriche che richiedono codice sorgente verranno attivate a partire dalla Product Baseline (PB) e popolate progressivamente.
 \end{itemize}
 
-\textit{[Nota: Inserire in questa sezione, i grafici aggiornati insieme alle sezioni RTB e PB.]}
-
-\subsection{MP\_01: Requirements Stability Index}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_12, MP\_13: Earned Value e Planned Value}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_14, MP\_16: Actual Cost e Estimate To Complete}
-
-\textbf{RTB}: osservando il grafico...
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_01 e MP\_2 - Earned Value (EV) e Planned Value (PV)}
 
 
-\subsection{MP\_15: Estimate At Completion}
-
-\textbf{RTB}: osservando il grafico...
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MP\_17: Time Estimate At Completion}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Complition (EAC) e Estimate To Complete (ETC)}
 
 
-\subsection{MP\_02: Indice di Gulpease}
-\textbf{RTB}: osservando il grafico...
+\subsection{MP\_6: Time Estimate At Completion (TEAC}
 
-\textbf{PB}: il grafico dimostra...
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Sprint} & \textbf{TEAC (settimane)} \\ \hline
+1  & 24 \\ \hline
+2  & 24 \\ \hline
+3  & 24 \\ \hline
+4  & 24 \\ \hline
+5  & 24 \\ \hline
+6  & 24 \\ \hline
+7  & 25 \\ \hline
+8  & 25 \\ \hline
+9  &    \\ \hline
+10 &    \\ \hline
+\end{tabular}
+\caption{Dati TEAC per Sprint}
+\label{tab:teac_sprint}
+\end{table}
 
-\subsection{MP\_03: Code Coverage}
-\textbf{RTB}: osservando il grafico...
 
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_7 e MP\_8: Cost Performance Index (CPI), Schedule Performance Index (SPI)}
 
-\subsection{MP\_04: Superamento dei Test}
-\textbf{RTB}: osservando il grafico...
 
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_9: Requirements Stability Index (RSI)}
 
-\subsection{MP\_11: Rischi non Preventivati}
-\textbf{RTB}: osservando il grafico...
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Sprint} & \textbf{Requisiti totali} & \textbf{Requisiti modificati} & \textbf{RSI} & \textbf{Soglia accettabile} \\ \hline
+1  & N/A & N/A & N/A & 80\%\\ \hline
+2  & 15  & 0  & 100\% & 80\% \\ \hline
+3  & 62  & 3  & 95\% & 80\% \\ \hline
+4  & 76  & 2  & 97\% & 80\% \\ \hline
+5  & 84  & 0  & 100\% & 80\% \\ \hline
+6  & 97  & 4  & 96\% & 80\% \\ \hline
+7  & 121 & 11 & 91\% & 80\% \\ \hline
+8  & 142 & 8  & 94\% & 80\% \\ \hline
+9  &     &    &      & 80\% \\ \hline
+10 &     &    &      & 80\% \\ \hline
+\end{tabular}
+\caption{Andamento del Requirements Stability Index (RSI)}
+\label{tab:mp9_rsi}
+\end{table}
 
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_10: Indice di Gulpease}
 
-\subsection{"MPD\_01": Copertura dei Requisiti Funzionali:}
-\textbf{RTB}: osservando il grafico...
 
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_11: Correttezza Ortografica}
 
-\subsection{MPD\_02: Accuratezza delle Risposte AI}
-\textbf{RTB}: osservando il grafico...
 
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_14: Rischi non Preventivati}
 
-\subsection{MPD\_09: Indice Flesch Reading Ease}
-\textbf{RTB}: osservando il grafico...
 
-\textbf{PB}: il grafico dimostra...
+\subsection{MP\_15: Time Efficiency (TE)}
 
-\subsection{MPD\_03: Densità dei Guasti}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MPD\_04: Rate Limiting}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MPD\_05: Tempo di Risposta dell’Agente}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MPD\_06: Ottimizzazione dei Token}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MPD\_10: Tempo di Autenticazione}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MPD\_08: Promt Isolation}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MPD\_12: Complessità Ciclomatica}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
-
-\subsection{MPD\_13: Linee di Codice Per Metodo}
-\textbf{RTB}: osservando il grafico...
-
-\textbf{PB}: il grafico dimostra...
 
 \section{Valutazioni per il miglioramento}
 Al termine di ogni iterazione, il gruppo SkyNet identifica le criticità emerse durante ogni sprint e definisce azioni correttive concrete da applicare negli sprint successivi. Le informazioni qui presentate sono tratte dalle discussioni che si sono svolte alla fine di ogni sprint e sono state annotate nel Piano di Progetto. Di seguito, sono elencate le problematiche riscontrate in modo chiaro e le azioni intraprese per superarle (basate sull'approccio iterativo PDSA - Plan Do-Study-Act) intraprese per garantire il miglioramento continuo del Way of Working.
