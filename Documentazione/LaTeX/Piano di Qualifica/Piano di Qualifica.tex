@@ -507,30 +507,18 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 
 \section{Strategie di Testing}
 Le attività di verifica dinamica del software seguono un approccio incrementale, volto a validare progressivamente i singoli componenti architetturali, l'orchestrazione interna degli agenti e la rispondenza complessiva ai requisiti concordati. Ciascun test è formalmente tracciato tramite la sintassi \textbf{T[Tipo]\_[Progressivo]}.
-
-\subsection{Test di unità (TU)}
-I test di unità isolano e verificano la correttezza logica dei singoli moduli software indipendenti, prescindendo dalle chiamate di rete reali. In questo contesto, l'esecuzione di componenti che interrogano gli LLM sfrutta tecniche di \textbf{\glo{Mocking}{mocking}} per simulare in modo deterministico le risposte delle API.
-
+\\ \\
+Per ogni test viene riportato il codice identificativo, una descrizione, il requisito di rifermimento e uno stato, gli stati usati per classificare i test sono i seguenti:
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Moduli di parsing dei file di configurazione, funzioni di estrazione delle User Stories dalle issue, algoritmi di calcolo delle metriche di vulnerabilità OWASP, classi di formattazione del file Markdown di output.
-    \item \textbf{Criterio di successo:} Superamento del $100\%$ dei test di unità configurati e raggiungimento delle soglie minime di \textit{Code Coverage} stabilite nelle metriche di processo.
-\end{itemize}
-
-\subsection{Test di integrazione (TI)}
-I test di integrazione verificano il corretto funzionamento delle interfacce, lo scambio di dati e le dipendenze tra i diversi moduli interni precedentemente testati in isolamento.
-
-\begin{itemize}
-    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la \textit{\glo{pipeline}{pipeline}} di input degli agenti AI; integrazione dei tre agenti (README, OWASP, Changelog) con il cruscotto di backend centrale o con l'\textit{\glo{interfaccia CLI}{interfaccia-cli}}.
-    \item \textbf{Criterio di successo:} Corretto instradamento dei dati senza perdite informative, incoerenze di tipo o sollevamento di eccezioni non gestite nel passaggio tra i sub-sistemi.
+    \item \textbf{NI – Non Implementato}: il test è stato definito ma deve ancora essere implementato;
+    \item \textbf{I – Implementato}: il test è stato implementato ma deve ancora essere eseguito;
+    \item \textbf{S – Superato}: il test è stato eseguito e ha ottenuto esito positivo;
+    \item \textbf{NS – Non Superato}: il test è stato eseguito e ha ottenuto esito negativo;
 \end{itemize}
 
 \subsection{Test di sistema (TS)}
-I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione \textit{\glo{end-to-end}{end-to-end}} soddisfi i requisiti funzionali e i flussi d'uso descritti nell'\textbf{Analisi dei Requisiti}.
+I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione \textit{\glo{end-to-end}{end-to-end}} soddisfi i requisiti funzionali descritti nell'\textbf{Analisi dei Requisiti}, è stato definito un test per ciascun requisito funzionale per garantire una copertura completa dei requisiti.
 
-\begin{itemize}
-    \item \textbf{Oggetto di verifica:} Esecuzione completa di un'analisi su un intero repository di test comprensiva di generazione simultanea del README, mappatura reale delle vulnerabilità identificate con le top 10 OWASP e stesura del Changelog tecnico e di buisiness.
-    \item \textbf{Criterio di successo:} Produzione di tutti gli output previsti entro i limiti temporali stabiliti di accettazione con adeguata qualità, corretta persistenza e visualizzazione dei risultati.
-\end{itemize}
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
@@ -578,7 +566,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_28 & Verificare che il sistema consenta all'utente di selezionare una o più directory del Repository come ambito di analisi. & RF.28 & NI \\ \hline
     TS\_29 & Verificare che il sistema blocchi il proseguimento e mostri un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & RF.29 & NI \\ \hline
     TS\_30 & Verificare che il sistema verifichi l'effettiva esistenza e accessibilità degli elementi selezionati nel Repository remoto, mostrando un messaggio di errore in caso di fallimento. & RF.30 & NI \\ \hline
-    TS\_31 & Verificare che il sistema verifichi che l'ambito di analisi selezionato (numero di file o volume di righe di codice) non ecceda i limiti dimensionali entro i quali il modello LLM garantisce performance affidabili, mostrando un messaggio di errore in caso contrario. & RF.31 & NI \\ \hline
+    TS\_31 & Verificare che il sistema verifichi che l'ambito di analisi selezionato non ecceda i limiti dimensionali entro i quali il modello LLM garantisce performance affidabili, mostrando un messaggio di errore in caso contrario. & RF.31 & NI \\ \hline
     TS\_32 & Verificare che il sistema fornisca un'interfaccia grafica che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti. & RF.32 & NI \\ \hline
     TS\_33 & Verificare che il sistema mostri a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'Orchestratore. & RF.33 & NI \\ \hline
     TS\_34 & Verificare che il sistema mostri a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & RF.34 & NI \\ \hline
@@ -646,7 +634,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_96 & Verificare che il Changelog tecnico generato includa i collegamenti ipertestuali diretti e gli identificativi dei Ticket di origine, qualora tali informazioni siano disponibili. & RF.96 & NI \\ \hline
     TS\_97 & Verificare che il sistema permetta all'utente di inserire testualmente l'identificativo dello Sprint (Sprint ID) da analizzare. & RF.97 & NI \\ \hline
     TS\_98 & Verificare che il sistema consenta all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello Sprint, bloccando l'esecuzione dell'agente. & RF.98 & NI \\ \hline
-    TS\_99 & Verificare che il sistema rilevi i task completati che risultano privi di metadati sufficienti (es. descrizioni o criteri mancanti) e li segnali all'utente tramite una finestra di avviso. & RF.99 & NI \\ \hline
+    TS\_99 & Verificare che il sistema rilevi i task completati che risultano privi di metadati sufficienti e li segnali all'utente tramite una finestra di avviso. & RF.99 & NI \\ \hline
     TS\_100 & Verificare che il sistema permetta all'utente di proseguire l'elaborazione del Changelog escludendo automaticamente i Task segnalati come informativamente insufficienti. & RF.100 & NI \\ \hline
     TS\_101 & Verificare che il sistema consenta all'utente di interrompere e annullare definitivamente la generazione del Changelog qualora decida di non procedere a fronte della segnalazione di metadati mancanti. & RF.101 & NI \\ \hline
     TS\_102 & Verificare che il sistema fornisca un comando interattivo, all'interno del report del Changelog tecnico, per innescare la sua traduzione in un documento di business. & RF.102 & NI \\ \hline
@@ -658,12 +646,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
 \end{xltabular}
 
 \subsection{Test di accettazione (TA)}
-I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto o su delega del \textbf{Proponente Var Group}, al fine di sancire la validità formale del prodotto e autorizzarne il rilascio.
-
-\begin{itemize}
-    \item \textbf{Oggetto di verifica:} Corrispondenza puntuale del comportamento degli agenti rispetto al perimetro d'azione previsto nell'\textbf{Analisi dei Requisiti}.
-    \item \textbf{Criterio di successo:} Soddisfacimento del $100\%$ dei test concordati e firma del verbale di accettazione esterno da parte dei referenti aziendali.
-\end{itemize}
+I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto del \textbf{Proponente Var Group} al fine di sancire la validità formale del prodotto e autorizzarne il rilascio, i test di accettazione coprono flussi operativi completi, nella colonna dei requisiti vengono scritti i principali requisiti funzionali comperti da ciascun test.
 
 
 \renewcommand{\arraystretch}{1.3}
@@ -712,6 +695,22 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
     \label{tab:test_accettazione}
 \end{xltabular}
 
+\subsection{Test di unità (TU)}
+I test di unità isolano e verificano la correttezza logica dei singoli moduli software indipendenti, prescindendo dalle chiamate di rete reali. In questo contesto, l'esecuzione di componenti che interrogano gli LLM sfrutta tecniche di \textbf{\glo{Mocking}{mocking}} per simulare in modo deterministico le risposte delle API.
+
+
+\begin{itemize}
+    \item \textbf{Oggetto di verifica:} Moduli di parsing dei file di configurazione, funzioni di estrazione delle User Stories dalle issue, algoritmi di calcolo delle metriche di vulnerabilità OWASP, classi di formattazione del file Markdown di output.
+\end{itemize}
+
+\subsection{Test di integrazione (TI)}
+I test di integrazione verificano il corretto funzionamento delle interfacce, lo scambio di dati e le dipendenze tra i diversi moduli interni precedentemente testati in isolamento.
+
+\begin{itemize}
+    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la \textit{\glo{pipeline}{pipeline}} di input degli agenti AI; integrazione dei tre agenti (README, OWASP, Changelog) con il cruscotto di backend centrale o con l'\textit{\glo{interfaccia CLI}{interfaccia-cli}}.
+\end{itemize}
+
+
 \subsection{Test di regressione (TR)}
 I test di regressione consistono nella riesecuzione automatizzata della suite di test (TU e TI) ad ogni modifica sostanziale del codice sorgente o all'aggiornamento delle librerie di core dell'AI.
 
@@ -721,6 +720,146 @@ I test di regressione consistono nella riesecuzione automatizzata della suite di
 
 \subsection{Tracciamento dei Test}
 Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adotta una matrice di tracciamento bidirezionale tra i test pianificati ed eseguiti e i requisiti corrispettivi.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|c|}
+    \hline
+    \textbf{Codice} & \textbf{Requisito} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Requisito} \\ \hline
+    \endhead
+    
+    \hline
+    \multicolumn{2}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+
+    \endlastfoot
+
+    TS\_1 & RF.1 \\\hline
+    TS\_2 & RF.2 \\\hline
+    TS\_3 & RF.3 \\\hline
+    TS\_4 & RF.4 \\\hline
+    TS\_5 & RF.5 \\\hline
+    TS\_6 & RF.6 \\\hline
+    TS\_7 & RF.7 \\\hline
+    TS\_8 & RF.8 \\\hline
+    TS\_9 & RF.9 \\\hline
+    TS\_10 & RF.10 \\\hline
+    TS\_11 & RF.11 \\\hline
+    TS\_12 & RF.12 \\\hline
+    TS\_13 & RF.13 \\\hline
+    TS\_14 & RF.14 \\\hline
+    TS\_15 & RF.15 \\\hline
+    TS\_16 & RF.16 \\\hline
+    TS\_17 & RF.17 \\\hline
+    TS\_18 & RF.18 \\\hline
+    TS\_19 & RF.19 \\\hline
+    TS\_20 & RF.20 \\\hline
+    TS\_21 & RF.21 \\\hline
+    TS\_22 & RF.22 \\\hline
+    TS\_23 & RF.23 \\\hline
+    TS\_24 & RF.24 \\\hline
+    TS\_25 & RF.25 \\\hline
+    TS\_26 & RF.26 \\\hline
+    TS\_27 & RF.27 \\\hline
+    TS\_28 & RF.28 \\\hline
+    TS\_29 & RF.29 \\\hline
+    TS\_30 & RF.30 \\\hline
+    TS\_31 & RF.31 \\\hline
+    TS\_32 & RF.32 \\\hline
+    TS\_33 & RF.33 \\\hline
+    TS\_34 & RF.34 \\\hline
+    TS\_35 & RF.35 \\\hline
+    TS\_36 & RF.36 \\\hline
+    TS\_37 & RF.37 \\\hline
+    TS\_38 & RF.38 \\\hline
+    TS\_39 & RF.39 \\\hline
+    TS\_40 & RF.40 \\\hline
+    TS\_41 & RF.41 \\\hline
+    TS\_42 & RF.42 \\\hline
+    TS\_43 & RF.43 \\\hline
+    TS\_44 & RF.44 \\\hline
+    TS\_45 & RF.45 \\\hline
+    TS\_46 & RF.46 \\\hline
+    TS\_47 & RF.47 \\\hline
+    TS\_48 & RF.48 \\\hline
+    TS\_49 & RF.49 \\\hline
+    TS\_50 & RF.50 \\\hline
+    TS\_51 & RF.51 \\\hline
+    TS\_52 & RF.52 \\\hline
+    TS\_53 & RF.53 \\\hline
+    TS\_54 & RF.54 \\\hline
+    TS\_55 & RF.55 \\\hline
+    TS\_56 & RF.56 \\\hline
+    TS\_57 & RF.57 \\\hline
+    TS\_58 & RF.58 \\\hline
+    TS\_59 & RF.59 \\\hline
+    TS\_60 & RF.60 \\\hline
+    TS\_61 & RF.61 \\\hline
+    TS\_62 & RF.62 \\\hline
+    TS\_63 & RF.63 \\\hline
+    TS\_64 & RF.64 \\\hline
+    TS\_65 & RF.65 \\\hline
+    TS\_66 & RF.66 \\\hline
+    TS\_67 & RF.67 \\\hline
+    TS\_68 & RF.68 \\\hline
+    TS\_69 & RF.69 \\\hline
+    TS\_70 & RF.70 \\\hline
+    TS\_71 & RF.71 \\\hline
+    TS\_72 & RF.72 \\\hline
+    TS\_73 & RF.73 \\\hline
+    TS\_74 & RF.74 \\\hline
+    TS\_75 & RF.75 \\\hline
+    TS\_76 & RF.76 \\\hline
+    TS\_77 & RF.77 \\\hline
+    TS\_78 & RF.78 \\\hline
+    TS\_79 & RF.79 \\\hline
+    TS\_80 & RF.80 \\\hline
+    TS\_81 & RF.81 \\\hline
+    TS\_82 & RF.82 \\\hline
+    TS\_83 & RF.83 \\\hline
+    TS\_84 & RF.84 \\\hline
+    TS\_85 & RF.85 \\\hline
+    TS\_86 & RF.86 \\\hline
+    TS\_87 & RF.87 \\\hline
+    TS\_88 & RF.88 \\\hline
+    TS\_89 & RF.89 \\\hline
+    TS\_90 & RF.90 \\\hline
+    TS\_91 & RF.91 \\\hline
+    TS\_92 & RF.92 \\\hline
+    TS\_93 & RF.93 \\\hline
+    TS\_94 & RF.94 \\\hline
+    TS\_95 & RF.95 \\\hline
+    TS\_96 & RF.96 \\\hline
+    TS\_97 & RF.97 \\\hline
+    TS\_98 & RF.98 \\\hline
+    TS\_99 & RF.99 \\\hline
+    TS\_100 & RF.100 \\\hline
+    TS\_101 & RF.101 \\\hline
+    TS\_102 & RF.102 \\\hline
+    TS\_103 & RF.103 \\\hline
+    TS\_104 & RF.104 \\\hline
+    \hline
+    TA\_01 & RF.1, RF.5, RF.6, RF.7 \\\hline
+    TA\_02 & RF.10, RF.13, RF.14 \\\hline
+    TA\_03 & RF.15, RF.20, RF.25, RF.30 \\\hline
+    TA\_04 & RF.32, RF.35, RF.37 \\\hline
+    TA\_05 & RF.43, RF.46, RF.48 \\\hline
+    TA\_06 & RF.79, RF.80, RF.81 \\\hline
+    TA\_07 & RF.82, RF.63 \\\hline
+    TA\_08 & RF.83, RF.84, RF.85, RF.63 \\\hline
+    TA\_09 & RF.87, RF.88, RF.89, RF.90, RF.91 \\\hline
+    TA\_10 & RF.92, RF.90, RF.91, RF.70, RF.71 \\\hline
+    TA\_11 & RF.38, RF.75, RF.76, RF.77, RF.78 \\\hline
+    TA\_12 & RF.93, RF.95, RF.97, RF.99, RF.100, RF.102, RF.103 \\\hline
+    TA\_13 & RF.49, RF.53, RF.58, RF.73, RF.75 \\\hline
+
+    \caption{Tracciamento Test}
+    \label{tab:tracciamento_test}
+\end{xltabular}
+
 
 
 
