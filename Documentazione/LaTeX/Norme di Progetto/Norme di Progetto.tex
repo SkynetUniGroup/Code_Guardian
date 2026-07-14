@@ -1,6 +1,7 @@
 \documentclass[12pt, a4paper]{article}
-
+\usepackage{amsmath}
 % Pacchetti fondamentali
+\usepackage{float}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{geometry}
@@ -71,7 +72,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.6.0} \\ \hline
+            \textbf{Versione} & \textit{0.7.0} \\ \hline
   
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -101,6 +102,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.7 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone &  \\ \hline
         0.6 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
         0.5 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
         0.4 & 2026/05/12 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & Dario Pirrone \\ \hline
@@ -720,5 +722,590 @@ Si confrontano le conoscenze di ogni membro del gruppo con le tecnologie indicat
  \paragraph{Implementazione del processo}
 
 Viene effettuata una revisione dei requisiti del progetto per identificare più dettagliatamente le competenze tecniche e gestionali necessarie. In base alle competenze di ogni singolo membro, ai loro interessi e alle necessità del progetto, viene creato un piano di formazione personalizzato per ogni membro del gruppo. L'obiettivo non è che ogni membro sappia fare tutto, ma che le loro competenze individuali siano complementari e che la loro unione corrisponda all\textquotesingle insieme delle competenze richieste del progetto. Il piano specifica strumenti, tecnologie, livelli di approfondimento richiesti e scadenze.
+
+\section{Metriche per la Qualità}
+Il gruppo adotta un sistema di misurazione rigoroso e basato su metriche al fine di garantire un approccio quantitativo e oggettivo alla valutazione della qualità. L'obiettivo principale di questo sistema è fornire un quadro di riferimento strutturato per il monitoraggio costante delle attività, permettendo al gruppo di individuare tempestivamente eventuali criticità, prevenire l'accumulo di debito tecnico e perseguire un miglioramento continuo attraverso l'analisi dei dati raccolti durante l'intero ciclo di vita del progetto.
+
+\subsection{Classificazione, Nomenclatura e Struttura}
+Al fine di garantire l'univocità, la reperibilità e una chiara interpretazione dei dati, le metriche sono suddivise in due macro-categorie:
+\begin{itemize}
+    \item \textbf{Metriche di Qualità di Processo}: indicatori utilizzati per monitorare l'andamento delle attività di progetto, l'efficienza del team e la gestione delle risorse (tempi, costi e stabilità dei requisiti). Regolano i processi primari, di supporto e organizzativi. Sono identificate dal prefisso \textbf{MP\_[Progressivo]} (es. MP\_01).
+    \item \textbf{Metriche di Qualità di Prodotto}: indicatori focalizzati sulle caratteristiche degli artefatti prodotti (documentali o software). Sono identificate dal prefisso \textbf{MPD\_[Progressivo]} (es. MPD\_01).
+\end{itemize}
+
+Per definire ogni metrica in modo rigoroso, il gruppo ha stabilito un formato standardizzato per la loro tracciatura. Ogni metrica viene documentata definendo i seguenti campi:
+\begin{itemize}
+    \item \textbf{Nome e Identificativo}: il codice univoco e la denominazione chiara della metrica.
+    \item \textbf{Descrizione}: l'illustrazione dello scopo della misurazione e del contesto di applicazione.
+    \item \textbf{Formula di calcolo}: il metodo matematico o la procedura per ottenere il valore quantitativo.
+    \item \textbf{Valore di Accettazione}: la soglia minima necessaria per considerare il processo stabile o il requisito di prodotto soddisfatto. Risultati inferiori a tale soglia richiedono interventi correttivi immediati.
+    \item \textbf{Valore Ottimale}: il livello target di eccellenza a cui il team aspira, che rappresenta lo standard qualitativo ideale per il progetto.
+\end{itemize}
+
+\subsection{Obiettivi di Qualità di Prodotto}
+Per garantire che il sistema software finale sia robusto, affidabile e in linea con le aspettative del \textbf{Proponente}, il gruppo adotta il modello ISO/IEC 9126. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito, declinandole nelle seguenti categorie e sotto-attributi.
+
+\subsubsection{Funzionalità}
+La funzionalità rappresenta la capacità del prodotto software di fornire funzioni in grado di soddisfare i requisiti, espliciti e impliciti, concordati in fase di analisi. Un'elevata funzionalità garantisce che il software faccia esattamente ciò per cui è stato progettato. I sotto-attributi misurati includono:
+\begin{itemize}
+    \item \textbf{Adeguatezza}: la capacità di fornire un insieme di funzioni appropriate per i compiti specificati e per gli obiettivi dell'utente.
+    \item \textbf{Interoperabilità}: l'abilità del sistema di interagire e scambiare informazioni correttamente con servizi esterni.
+    \item \textbf{Conformità}: l'aderenza del software a standard, convenzioni o normative di dominio, incluse le specifiche contrattuali.
+\end{itemize}
+
+\subsubsection{Affidabilità}
+L'affidabilità misura la stabilità operativa del prodotto nel tempo e in condizioni d'uso standard, valutando la sua capacità di mantenere inalterato il livello di prestazioni. Questo aspetto è critico per gestire, ad esempio, le comunicazioni con i modelli linguistici (\textit{LLM}). L'affidabilità si declina in:
+\begin{itemize}
+    \item \textbf{Maturità}: la capacità del sistema di prevenire malfunzionamenti derivanti da errori logici interni o da difetti del codice sorgente.
+    \item \textbf{Tolleranza ai guasti (o agli errori)}: la resilienza del sistema nell'assorbire comportamenti anomali, quali il superamento delle soglie dei \textit{token} o le eccezioni a tempo di esecuzione durante il parsing del codice, garantendo il mantenimento delle operazioni fondamentali.
+\end{itemize}
+
+\subsubsection{Usabilità}
+L'usabilità rappresenta la facilità con cui l'utente finale interagisce con il prodotto. Misura l'immediatezza dell'interazione, lo sforzo cognitivo richiesto e la capacità dell'interfaccia di prevenire errori umani. I fattori analizzati sono:
+\begin{itemize}
+    \item \textbf{Comprensibilità}: la chiarezza con cui le funzionalità e lo scopo dell'interfaccia sono comunicati all'utente al primo utilizzo.
+    \item \textbf{Apprendibilità (Learning Time)}: il tempo e lo sforzo necessari a un nuovo utente per padroneggiare in autonomia le funzionalità principali, senza dover ricorrere a un esteso supporto manualistico.
+\end{itemize}
+
+\subsubsection{Efficienza}
+L'efficienza definisce il rapporto ottimale tra il livello delle prestazioni fornite dal software e la quantità di risorse (sia computazionali che temporali) utilizzate. Viene valutata attraverso:
+\begin{itemize}
+    \item \textbf{Comportamento temporale (Tempo di Risposta)}: la velocità con cui l'interfaccia reagisce a un input dell'utente e il tempo medio di elaborazione impiegato dai singoli agenti operativi per completare le analisi in background.
+\end{itemize}
+
+\subsubsection{Manutenibilità}
+La manutenibilità descrive lo sforzo richiesto per analizzare, isolare e implementare modifiche al software. Un software altamente manutenibile abbatte i costi futuri legati a bug fix, evoluzione e refactoring. Essa comprende:
+\begin{itemize}
+    \item \textbf{Analizzabilità}: la facilità di diagnosticare la causa di un malfunzionamento e di identificare le parti di codice da correggere.
+    \item \textbf{Modificabilità}: l'agilità nell'estendere l'applicativo, garantita da un basso accoppiamento.
+    \item \textbf{Stabilità}: la resistenza del sistema all'introduzione di nuovi effetti collaterali indesiderati a seguito di una modifica al codice.
+    \item \textbf{Testabilità}: lo sforzo necessario per validare l'efficacia delle modifiche attraverso metriche di copertura automatica e controllo della complessità ciclomatica.
+\end{itemize}
+
+\subsubsection{Sicurezza}
+La sicurezza riveste un'importanza fondamentale in scenari in cui l'applicativo gestisce codebase esterne e credenziali. Valuta la capacità del sistema di blindare i dati e gli accessi, mediante:
+\begin{itemize}
+    \item \textbf{Confidenzialità e Protezione Credenziali}: la garanzia che chiavi segrete, password, e \textit{Token API} non vengano esposti in chiaro nei log, nei report o nel codice sorgente tracciato nei sistemi di versionamento.
+    \item \textbf{Integrità e Cifratura}: la conservazione sicura e l'hashing crittografico delle credenziali a riposo.
+    \item \textbf{Validazione degli Input}: la corretta sanificazione dei dati in ingresso e degli URL forniti dall'utente, al fine di prevenire vulnerabilità strutturali e iniezioni di codice nocivo.
+\end{itemize}
+
+\subsection{Metriche di Qualità di Processo}
+
+\subsubsection{Processi primari}
+I processi primari regolano le attività direttamente collegate alla realizzazione materiale del prodotto software, dalla gestione della fornitura fino alle fasi di analisi, progettazione e codifica. L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \textbf{Proponente} ed evitare l'accumulo di debito tecnico o complessità strutturale eccessiva nelle fasi di implementazione dell'architettura e degli agenti.
+
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_1 - Earned Value (EV) \\ \hline
+\textbf{Formula} & $EV=PV\times\frac{\text{Ore Completate}}{\text{Ore Pianificate}}$ \\ \hline
+\textbf{Utilità} & Valuta in modo oggettivo il valore economico del lavoro effettivamente completato all'interno del periodo di riferimento. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_2 - Planned Value (PV) \\ \hline
+\textbf{Formula} & $PV=\sum_{i=1}^{n}(\text{Ore Previste}_{i}\times \text{Tariffa Oraria}_{i})$ \\ \hline
+\textbf{Utilità} & Rappresenta il costo totale preventivato e pianificato per le attività da svolgere nel periodo di riferimento. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_3 - Actual Cost (AC) \\ \hline
+\textbf{Formula} & $AC = \sum_{i=1}^{n} (\text{Ore Effettive}_{i} \times \text{Tariffa Oraria}_{i})$ \\ \hline
+\textbf{Utilità} & Quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_4 - Estimated At Completion (EAC) \\ \hline
+\textbf{Formula} & $EAC=\frac{BAC}{CPI}$  \begin{itemize}
+    \item BAC: Budget at Completion (totale previsto nel preventivo)
+\end{itemize}\\ \hline
+\textbf{Utilità} & Fornisce una stima aggiornata del costo totale finale del progetto proiettando l'efficienza di costo corrente (CPI). \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_5 - Estimate To Complete (ETC) \\ \hline
+\textbf{Formula} & $ETC=EAC-AC_{cum}$ \\ \hline
+\textbf{Utilità} & Stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_6 - Time Estimate At Completion (TEAC) \\ \hline
+\textbf{Formula} & $TEAC=\frac{\text{Durata pianificata}}{SPI}$ \\ \hline
+\textbf{Utilità} & Proietta la durata complessiva finale del progetto basandosi sulla performance di avanzamento temporale finora registrata. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_7 - Cost Performance Index (CPI) \\ \hline
+\textbf{Formula} & $CPI=\frac{EV_{cum}}{AC_{cum}}$ \\ \hline
+\textbf{Utilità} & Misura l'efficienza economica del progetto indicando se il valore prodotto è in linea con i costi sostenuti. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_8 - Schedule Performance Index (SPI) \\ \hline
+\textbf{Formula} & $SPI=\frac{EV_{cum}}{PV_{cum}}$ \\ \hline
+\textbf{Utilità} & Misura l'efficienza temporale del progetto segnalando la presenza di eventuali anticipi o ritardi sulla pianificazione. \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_9 - Requirements Stability Index (RSI) \\ \hline
+\textbf{Formula} & $RSI=\left(\frac{NR+NR_{modificati}}{NR}\right)\times100$ \begin{itemize}
+    \item NR: Numero Requisiti
+\end{itemize}\\ \hline
+\textbf{Utilità} & Misura la maturità e la stabilità dei requisiti nel tempo, evidenziando l'entità delle variazioni. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Processi di supporto}
+I processi di supporto sono attività trasversali che sostengono i processi primari, focalizzandosi sulla corretta evoluzione e verifica della documentazione e del codice sorgente.
+
+
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_10 - Indice di Gulpease \\ \hline
+\textbf{Formula} & $IG=89+\frac{300\cdot NF-10\cdot NL}{NP}$ 
+\begin{itemize}
+    \item NF: Numero Frasi
+    \item NL: Numero Lettere
+    \item NP: Numero Parole
+\end{itemize}\\ \hline
+\textbf{Utilità} & Valuta in modo oggettivo la complessità e il grado di leggibilità dei documenti testuali scritti in lingua italiana. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_11 - Correttezza Ortografica \\ \hline
+\textbf{Formula} & $CO = \text{Numero di Errori Ortografici Rilevati}$ \\ \hline
+\textbf{Utilità} & Quantifica gli errori grammaticali e di battitura al fine di garantire l'elevata qualità formale dei documenti rilasciati. \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_12 - Copertura del Codice (Code Coverage) \\ \hline
+\textbf{Formula} & $CC=\frac{\text{Linee di Codice Eseguite dai Test}}{\text{Linee di Codice Totali}}\times 100$ \\ \hline
+\textbf{Utilità} & Misura la percentuale di codice sorgente effettivamente eseguita e coperta durante i test automatici per individuare carenze di verifica. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_13 - Superamento dei Test (Test Success Rate) \\ \hline
+\textbf{Formula} & $TSR=\frac{\text{Test Superati}}{\text{Test Eseguiti}}\times 100$ \\ \hline
+\textbf{Utilità} & Indica la percentuale di test automatici con esito positivo per certificare la stabilità del software e l'assenza di regressioni. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Processi organizzativi}
+I processi organizzativi sovrintendono l'efficienza metodologica del team, monitorando anomalie di pianificazione temporale (ritardi) e sforamenti dei costi preventivati.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_14 - Rischi non Preventivati \\ \hline
+\textbf{Formula} & $PRI=\frac{N_{rischi~inattesi}}{N_{rischi~totali~manifestati}}\times 100\%$ \\ \hline
+\textbf{Utilità} & Valuta la qualità dell'analisi preventiva dei rischi misurando la percentuale di criticità verificatesi ma non identificate nel registro. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MP\_15 - Time Efficiency \\ \hline
+\textbf{Formula} & $TE=\frac{\text{Ore previste cumulative}}{\text{Ore effettive cumulative}}\times 100$ \\ \hline
+\textbf{Utilità} & Monitora l'efficienza organizzativa quantificando la percentuale di tempo dedicato ad attività direttamente utili all'avanzamento del progetto. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Metriche di Qualità di Prodotto}
+Per garantire la qualità del sistema software, il gruppo adotta lo standard ISO/IEC 9126. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito.
+
+\subsubsection{Funzionalità}
+La funzionalità rappresenta la capacità del prodotto software di fornire funzioni in grado di soddisfare i requisiti espressi e impliciti concordati con il Proponente.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_1 - Copertura dei Requisiti Obbligatori \\ \hline
+\textbf{Formula} & $CRO = \frac{N_{ROS}}{N_{ROT}} \times 100$
+\begin{itemize}
+    \item $N_{ROS}$: Numero Requisiti Obbligatori Soddisfatti
+    \item $N_{ROT}$: Numero Requisiti Obbligatori Totali
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale dei requisiti funzionali obbligatori soddisfatti dall'insieme degli agenti. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_2 - Copertura dei Requisiti Desiderabili \\ \hline
+\textbf{Formula} & $CRD = \frac{N_{RDS}}{N_{RDT}} \times 100$
+\begin{itemize}
+    \item $N_{RDS}$: Numero Requisiti Desiderabili Soddisfatti
+    \item $N_{RDT}$: Numero Requisiti Desiderabili Totali
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale dei requisiti funzionali classificati come desiderabili effettivamente soddisfatti dal prodotto finale. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_3 - Copertura dei Requisiti Opzionali \\ \hline
+\textbf{Formula} & $CRO = \frac{N_{ROS}}{N_{ROT}} \times 100$
+\begin{itemize}
+    \item $N_{ROS}$: Numero Requisiti Opzionali Soddisfatti
+    \item $N_{ROT}$: Numero Requisiti Opzionali Totali
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale dei requisiti funzionali classificati come opzionali effettivamente soddisfatti dal prodotto finale. \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Affidabilità}
+L'affidabilità misura la capacità del sistema di mantenere costanti le proprie prestazioni nel tempo, minimizzando i fallimenti applicativi dovuti a downtime delle \textit{API} esterne (\textit{LLM}) o a eccezioni di runtime nel parsing delle codebase.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_4 - Densità dei Guasti (Anomalie Codice) \\ \hline
+\textbf{Formula} & $DG = \frac{NF}{KLOC}$
+\begin{itemize}
+    \item $NF$: Numero di failure rilevati
+    \item $KLOC$: Migliaia di linee di codice 
+\end{itemize} \\ \hline
+\textbf{Utilità} & Indica la percentuale di operazioni fallite sul totale delle richieste eseguite in base alla mole del codice sorgente. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_5 - Rate Limiting \\ \hline
+\textbf{Formula} & $RL = \frac{NEGS}{NET} \times 100$
+\begin{itemize}
+    \item $NEGS$: Numero di eccezioni di Rate Limiting gestite con successo
+    \item $NET$: Numero di eccezioni di Rate Limiting totali generate
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di successo nella gestione delle eccezioni di superamento soglia dei \textit{Token API} esterni. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_6 - Accuratezza delle Risposte AI \\ \hline
+\textbf{Formula} & $ARA = \frac{NRV}{NRT} \times 100$
+\begin{itemize}
+    \item $NRV$: Numero di report AI validate come corrette
+    \item $NRT$: Numero di report AI totali generate
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di report validati come corretti e privi di allucinazioni (\textit{AI}) evidenti. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_7 - Indice Flesch Reading Ease \\ \hline
+\textbf{Formula} & $FRE = 206.835 - 1.015 \cdot \left(\frac{NP}{NF}\right) - 84.6 \cdot \left(\frac{NS}{NP}\right)$
+\begin{itemize}
+    \item $NP$: Numero Parole
+    \item $NF$: Numero Frasi
+    \item $NS$: Numero Sillabe
+\end{itemize} \\ \hline
+\textbf{Utilità} & Calcola il grado di leggibilità dei report di Business generati in lingua inglese dall'Agente Changelog. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_8 - Branch Coverage \\ \hline
+\textbf{Formula} & $BC = \frac{N_{RDE}}{N_{RDT}} \times 100$
+\begin{itemize}
+    \item $N_{RDE}$: Numero di Rami Decisionali Eseguiti dai test
+    \item $N_{RDT}$: Numero di Rami Decisionali Totali
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di rami logico-decisionali del codice sorgente che vengono attraversati e verificati durante l'esecuzione di test automatici. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Usabilità}
+L'usabilità rappresenta la capacità del prodotto software di essere compreso, appreso e utilizzato con facilità dall'utente finale. Essa misura l'immediatezza dell'interazione con il sistema, minimizzando il rischio di errori operativi e lo sforzo cognitivo richiesto per sfruttare appieno le funzionalità offerte.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_9 - Tempo di Apprendimento (Learning Time) \\ \hline
+\textbf{Formula} & $LT = \frac{\sum_{i=1}^{n} T_{apprendimento\_i}}{n}$
+\begin{itemize}
+    \item $n$: Numero di utenti coinvolti nella sessione di test
+    \item $T_{apprendimento\_i}$: Tempo impiegato dall'utente $i$-esimo per completare le funzionalità senza assistenza
+\end{itemize} \\ \hline
+\textbf{Utilità} & Tempo massimo necessario affinché un nuovo utente riesca a comprendere e utilizzare autonomamente le funzionalità principali del sistema, senza ricorrere a manuali o supporto esterno. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_10 - Tasso di Errore (Error Rate) \\ \hline
+\textbf{Formula} & $ER = \frac{N_{E}}{N_{AT}} \times 100$
+\begin{itemize}
+    \item $N_{E}$: Numero di errori (azioni errate o non valide) commessi
+    \item $N_{AT}$: Numero totale di azioni eseguite per lo scenario d'uso
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di azioni errate, non valide o annullate commesse dall'utente durante la normale interazione con l'applicativo per completare uno specifico scenario d'uso. \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Efficienza}
+L'efficienza definisce la relazione tra il livello di prestazioni del software e la quantità di risorse utilizzate.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_11 - Tempo di Risposta Interfaccia \\ \hline
+\textbf{Formula} & $TRI = \frac{\sum_{i=1}^{n} (T_{risposta\_i} - T_{richiesta\_i})}{n}$
+\begin{itemize}
+    \item $n$: Numero di misurazioni effettuate
+    \item $T_{risposta\_i}$: Istante in cui il sistema fornisce il feedback visivo per la richiesta $i$-esima
+    \item $T_{richiesta\_i}$: Istante in cui l'utente invia l'input o l'azione per la richiesta $i$-esima
+\end{itemize} \\ \hline
+\textbf{Utilità} & Tempo medio di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema, escludendo l'esecuzione in background degli agenti. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_12 - Tempo di Risposta dell'Agente \\ \hline
+\textbf{Formula} & $TRA = \frac{\sum_{i=1}^{n} (T_{completamento\_analisi\_i} - T_{avvio\_agente\_i})}{n}$
+\begin{itemize}
+    \item $n$: Numero di esecuzioni dell'agente misurate
+    \item $T_{completamento\_analisi\_i}$: Istante in cui l'agente restituisce l'output elaborato per l'esecuzione $i$-esima
+    \item $T_{avvio\_agente\_i}$: Istante in cui la richiesta viene instradata all'agente (LLM) per l'esecuzione $i$-esima
+\end{itemize} \\ \hline
+\textbf{Utilità} & Tempo medio impiegato da un singolo agente per elaborare i dati, comunicare con i servizi esterni ed emettere l'output definitivo. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_13 - Tempo di Autenticazione \\ \hline
+\textbf{Formula} & $TA = \frac{\sum_{i=1}^{n} (T_{successo\_i} - T_{invio\_credenziali\_i})}{n}$
+\begin{itemize}
+    \item $n$: Numero di tentativi di autenticazione misurati
+    \item $T_{successo\_i}$: Istante in cui il sistema sblocca i permessi e la dashboard per il tentativo $i$-esimo
+    \item $T_{invio\_credenziali\_i}$: Istante in cui l'utente richiede l'accesso tramite credenziali per il tentativo $i$-esimo
+\end{itemize} \\ \hline
+\textbf{Utilità} & Tempo medio impiegato dal sistema per completare la verifica delle credenziali nel database, validare il token e autorizzare l'accesso utente. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Manutenibilità}
+La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al software, inclusi correzioni, miglioramenti o adattamenti degli agenti a nuovi modelli linguistici.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_14 - Prompt Isolation (Disaccoppiamento dei Prompt) \\ \hline
+\textbf{Formula} & $PI = \frac{N_{PI}}{N_{PT}} \times 100$
+\begin{itemize}
+    \item $N_{PI}$: Numero di prompt archiviati in file di configurazione isolati
+    \item $N_{PT}$: Numero di prompt totali utilizzati nel sistema
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di prompt isolati rispetto alla logica di backend, al fine di garantire una facile modificabilità senza alterare il codice sorgente. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_15 - Complessità Ciclomatica \\ \hline
+\textbf{Formula} & $CC = E - N + 2P$
+\begin{itemize}
+    \item $E$: Numero di archi nel grafo di controllo del flusso
+    \item $N$: Numero di nodi (istruzioni) nel grafo
+    \item $P$: Numero di componenti connesse
+\end{itemize} \\ \hline
+\textbf{Utilità} & Misura il grado di complessità logica dei metodi e delle funzioni del codice sorgente calcolando i percorsi linearmente indipendenti. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_16 - Code Smell \\ \hline
+\textbf{Formula} & $CS = N_{CS}$
+\begin{itemize}
+    \item $N_{CS}$: Numero totale di code smell rilevati tramite analisi statica
+\end{itemize} \\ \hline
+\textbf{Utilità} & Indica il numero di difetti di progettazione o implementazione nel codice (es. codice morto, importazioni superflue), che ne riducono la manutenibilità. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_17 - Duplicazione del Codice \\ \hline
+\textbf{Formula} & $DC = \frac{L_{CD}}{L_{CT}} \times 100$
+\begin{itemize}
+    \item $L_{CD}$: Linee di codice sorgente duplicate
+    \item $L_{CT}$: Linee di codice sorgente totali
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di linee di codice sorgente duplicate all'interno del progetto, indicatore di una scarsa modularità. \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Sicurezza}
+Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati sensibili degli utenti, le credenziali di accesso ai servizi esterni e il codice sorgente analizzato.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_18 - Esposizione di Credenziali \\ \hline
+\textbf{Formula} & $EC = N_{CE}$
+\begin{itemize}
+    \item $N_{CE}$: Numero totale di chiavi, password o token API trovati esposti in chiaro
+\end{itemize} \\ \hline
+\textbf{Utilità} & Numero di \textit{token API}, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_19 - Cifratura dei Dati Sensibili \\ \hline
+\textbf{Formula} & $CDS = \frac{N_{DSC}}{N_{DST}} \times 100$
+\begin{itemize}
+    \item $N_{DSC}$: Numero di record di dati sensibili archiviati in formato cifrato o sottoposti ad hashing
+    \item $N_{DST}$: Numero totale di record di dati sensibili memorizzati nel database
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di password degli utenti e token di accesso esterni memorizzati in modo sicuro utilizzando algoritmi crittografici. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+\textbf{Metrica} & MPD\_20 - Input Validation \\ \hline
+\textbf{Formula} & $IV = \frac{N_{IV}}{N_{IT}} \times 100$
+\begin{itemize}
+    \item $N_{IV}$: Numero di input sanificati e validati con successo
+    \item $N_{IT}$: Numero totale di input forniti dall'utente e intercettati dal sistema
+\end{itemize} \\ \hline
+\textbf{Utilità} & Percentuale di input forniti dall'utente (inclusi URL di repository, token e configurazioni) sottoposti a validazione prima dell'elaborazione per prevenire iniezioni. \\ \hline
+\end{tabular}
+\end{table}
+
 
 \end{document}
