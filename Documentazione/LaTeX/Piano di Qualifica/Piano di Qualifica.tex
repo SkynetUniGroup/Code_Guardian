@@ -1,6 +1,7 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{xltabular}
 % Pacchetti fondamentali
+\usepackage{caption}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{geometry}
@@ -879,7 +880,8 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 \subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Complition (EAC) e Estimate To Complete (ETC)}
 
 
-\subsection{MP\_6: Time Estimate At Completion (TEAC}
+\subsection{MP\_6: Time Estimate At Completion (TEAC)}
+Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del progetto basandosi sulla performance di avanzamento temporale finora registrata.
 
 \begin{table}[htbp]
 \centering
@@ -887,26 +889,34 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 \begin{tabular}{|c|c|}
 \hline
 \textbf{Sprint} & \textbf{TEAC (settimane)} \\ \hline
-1  & 24 \\ \hline
-2  & 24 \\ \hline
-3  & 24 \\ \hline
+1  & 21 \\ \hline
+2  & 23 \\ \hline
+3  & 23 \\ \hline
 4  & 24 \\ \hline
 5  & 24 \\ \hline
 6  & 24 \\ \hline
-7  & 25 \\ \hline
-8  & 25 \\ \hline
+7  & 24 \\ \hline
+8  &  \\ \hline
 9  &    \\ \hline
 10 &    \\ \hline
 \end{tabular}
-\caption{Dati TEAC per Sprint}
+\caption{Andamento Time Estimate At Completion (TEAC)}
 \label{tab:teac_sprint}
 \end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{TEAC.png}
+    \captionof{figure}{Grafico dell'andamento del Time Estimate At Completion}
+    \label{fig:TEAC}
+\end{center}
 
 
 \subsection{MP\_7 e MP\_8: Cost Performance Index (CPI), Schedule Performance Index (SPI)}
 
 
 \subsection{MP\_9: Requirements Stability Index (RSI)}
+Il Requirements Stability Index (RSI) misura la maturità e la stabilità dei requisiti nel tempo, evidenziando l’entità delle variazioni.
 
 \begin{table}[htbp]
 \centering
@@ -927,8 +937,17 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 10 &     &    &      & 80\% \\ \hline
 \end{tabular}
 \caption{Andamento del Requirements Stability Index (RSI)}
-\label{tab:mp9_rsi}
+\label{RSI}
 \end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{RSI.png}
+    \captionof{figure}{Grafico dell'andamento del Requirements Stability Index}
+    \label{fig:RSI}
+\end{center}
+
+
 
 \subsection{MP\_10: Indice di Gulpease}
 
