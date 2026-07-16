@@ -606,7 +606,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_67 & Verificare che il sistema interrompa l'attesa, chiuda la connessione e notifichi l'utente con un errore qualora il modello LLM non restituisca una risposta entro il tempo limite prefissato (Timeout di risposta). & RF.67 & NI \\ \hline
     TS\_68 & Verificare che il sistema blocchi l'elaborazione e mostri un errore qualora l'output fornito dal modello LLM non sia parsabile, interpretabile o conforme alle strutture dati attese. & RF.68 & NI \\ \hline
     TS\_69 & Verificare che il sistema interrompa l'esecuzione prima dell'invio e notifichi l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello LLM a runtime. & RF.69 & NI \\ \hline
-    TS\_70 & Verificare che il sistema inibisca l'elaborazione di un agente e notifichi l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file CLAUDE.md, Sprint ID) risulti assente o non trovata. & RF.70 & NI \\ \hline
+    TS\_70 & Verificare che il sistema inibisca l'elaborazione di un agente e notifichi l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file POLICY.md, Sprint ID) risulti assente o non trovata. & RF.70 & NI \\ \hline
     TS\_71 & Verificare che il sistema blocchi l'elaborazione di un agente e notifichi l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & RF.71 & NI \\ \hline
     TS\_72 & Verificare che il sistema interrompa l'operazione e mostri un messaggio d'errore qualora la Piattaforma GitHub rifiuti la creazione di una Pull Request a causa di permessi insufficienti o problemi di rete. & RF.72 & NI \\ \hline
     TS\_73 & Verificare che il sistema consenta all'utente di esportare il report attualmente visualizzato, raccogliendo e formattando i dati per innescare il download locale in formato PDF. & RF.73 & NI \\ \hline
@@ -623,24 +623,25 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_84 & Verificare che il sistema corregga documentazione Inline esistente quando questa non è più coerente con il codice. & RF.84 & NI \\ \hline
     TS\_85 & Verificare che il sistema escluda dalla generazione documentale inline e segnali nel report tramite avviso le porzioni di codice o classi la cui complessità impedisce un'interpretazione affidabile. & RF.85 & NI \\ \hline
     TS\_86 & Verificare che il sistema orchestri l'Agente Docs per estrarre le informazioni relative agli Endpoint, generando e proponendo il documento API.md tramite Pull Request. & RF.86 & NI \\ \hline
-    TS\_87 & Verificare che il sistema orchestri l'Agente OWASP per eseguire una scansione del codice sorgente al fine di individuare pattern riconducibili alle vulnerabilità dell'OWASP Top 10. & RF.87 & NI \\ \hline
-    TS\_88 & Verificare che il sistema classifichi le vulnerabilità rilevate dall'Agente OWASP indicando la relativa categoria OWASP e il livello di gravità. & RF.88 & NI \\ \hline
+    TS\_87 & Verificare che il sistema orchestri l'Agente Security per eseguire una scansione del codice sorgente al fine di individuare pattern riconducibili alle vulnerabilità dell'OWASP Top 10. & RF.87 & NI \\ \hline
+    TS\_88 & Verificare che il sistema classifichi le vulnerabilità rilevate dall'Agente Security indicando la relativa categoria OWASP e il livello di gravità. & RF.88 & NI \\ \hline
     TS\_89 & Verificare che il sistema associ ciascuna vulnerabilità rilevata al file specifico interessato e, se disponibile, alla puntuale porzione di codice coinvolta. & RF.89 & NI \\ \hline
     TS\_90 & Verificare che il sistema generi suggerimenti di Remediation per ciascuna vulnerabilità o violazione di policy rilevata, proponendo uno Snippet di codice correttivo qualora la problematica risulti sufficientemente localizzata. & RF.90 & NI \\ \hline
     TS\_91 & Verificare che il sistema generi una descrizione testuale della Remediation da effettuare qualora non sia possibile proporre in modo affidabile uno Snippet di codice correttivo. & RF.91 & NI \\ \hline
-    TS\_92 & Verificare che il sistema orchestri l'Agente OWASP per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file CLAUDE.md. & RF.92 & NI \\ \hline
-    TS\_93 & Verificare che il sistema interroghi le API del sistema di Task Management esterno per recuperare e filtrare le User Stories e i Task in stato di completamento associati allo specifico Sprint richiesto. & RF.93 & NI \\ \hline
-    TS\_94 & Verificare che il sistema estragga dai Task validati i metadati rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & RF.94 & NI \\ \hline
-    TS\_95 & Verificare che il sistema orchestri l'Agente Changelog per generare un Changelog tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai Task dello Sprint. & RF.95 & NI \\ \hline
-    TS\_96 & Verificare che il Changelog tecnico generato includa i collegamenti ipertestuali diretti e gli identificativi dei Ticket di origine, qualora tali informazioni siano disponibili. & RF.96 & NI \\ \hline
-    TS\_97 & Verificare che il sistema permetta all'utente di inserire testualmente l'identificativo dello Sprint (Sprint ID) da analizzare. & RF.97 & NI \\ \hline
-    TS\_98 & Verificare che il sistema consenta all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello Sprint, bloccando l'esecuzione dell'agente. & RF.98 & NI \\ \hline
-    TS\_99 & Verificare che il sistema rilevi i task completati che risultano privi di metadati sufficienti e li segnali all'utente tramite una finestra di avviso. & RF.99 & NI \\ \hline
-    TS\_100 & Verificare che il sistema permetta all'utente di proseguire l'elaborazione del Changelog escludendo automaticamente i Task segnalati come informativamente insufficienti. & RF.100 & NI \\ \hline
-    TS\_101 & Verificare che il sistema consenta all'utente di interrompere e annullare definitivamente la generazione del Changelog qualora decida di non procedere a fronte della segnalazione di metadati mancanti. & RF.101 & NI \\ \hline
-    TS\_102 & Verificare che il sistema fornisca un comando interattivo, all'interno del report del Changelog tecnico, per innescare la sua traduzione in un documento di business. & RF.102 & NI \\ \hline
-    TS\_103 & Verificare che il sistema orchestri l'Agente Changelog per generare un Changelog orientato al business, comprensibile agli Stakeholder, a partire dal testo del Changelog tecnico. & RF.103 & NI \\ \hline
-    TS\_104 & Verificare che il sistema consenta all'utente di annullare la generazione del Changelog di business dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & RF.104 & NI \\ \hline
+    TS\_92 & Verificare che il sistema orchestri l'Agente Security per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file POLICY.md. & RF.92 & NI \\ \hline
+    TS\_93 & Verificare che il sistema, durante l'esecuzione dell'analisi policy-as-code, processi e applichi esclusivamente le direttive riguardanti alla sicurezza del software del file POLICY.md. & RF.93 & NI \\ \hline
+    TS\_94 & Verificare che il sistema interroghi le API del sistema di Task Management esterno per recuperare e filtrare le User Stories e i Task in stato di completamento associati allo specifico Sprint richiesto. & RF.94 & NI \\ \hline
+    TS\_95 & Verificare che il sistema estragga dai Task validati i metadati rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & RF.95 & NI \\ \hline
+    TS\_96 & Verificare che il sistema orchestri l'Agente Changelog per generare un Changelog tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai Task dello Sprint. & RF.96 & NI \\ \hline
+    TS\_97 & Verificare che il Changelog tecnico generato includa i collegamenti ipertestuali diretti e gli identificativi dei Ticket di origine, qualora tali informazioni siano disponibili. & RF.97 & NI \\ \hline
+    TS\_98 & Verificare che il sistema permetta all'utente di inserire testualmente l'identificativo dello Sprint (Sprint ID) da analizzare. & RF.98 & NI \\ \hline
+    TS\_99 & Verificare che il sistema consenta all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello Sprint, bloccando l'esecuzione dell'agente. & RF.99 & NI \\ \hline
+    TS\_100 & Verificare che il sistema rilevi i task completati che risultano privi di metadati sufficienti e li segnali all'utente tramite una finestra di avviso. & RF.100 & NI \\ \hline
+    TS\_101 & Verificare che il sistema permetta all'utente di proseguire l'elaborazione del Changelog escludendo automaticamente i Task segnalati come informativamente insufficienti. & RF.101 & NI \\ \hline
+    TS\_102 & Verificare che il sistema consenta all'utente di interrompere e annullare definitivamente la generazione del Changelog qualora decida di non procedere a fronte della segnalazione di metadati mancanti. & RF.102 & NI \\ \hline
+    TS\_103 & Verificare che il sistema fornisca un comando interattivo, all'interno del report del Changelog tecnico, per innescare la sua traduzione in un documento di business. & RF.103 & NI \\ \hline
+    TS\_104 & Verificare che il sistema orchestri l'Agente Changelog per generare un Changelog orientato al business, comprensibile agli Stakeholder, a partire dal testo del Changelog tecnico. & RF.104 & NI \\ \hline
+    TS\_105 & Verificare che il sistema consenta all'utente di annullare la generazione del Changelog di business dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & RF.105 & NI \\ \hline
 
     \caption{Test di Sistema}
     \label{tab:test_sistema}
@@ -682,13 +683,13 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
 
     TA\_08 & Verificare che l'Agente Docs analizzi il codice per aggiornare o generare la documentazione inline, escluda le porzioni eccessivamente complesse segnalandole tramite avviso nel report, e apra con successo la Pull Request con le modifiche. & RF.83, RF.84, RF.85, RF.63 & NI \\ \hline
 
-    TA\_09 & Verificare che l'Agente OWASP esegua con successo la scansione del codice sorgente alla ricerca di vulnerabilità (OWASP Top 10) e generi un report contenente le criticità classificate per gravità. & RF.87, RF.88, RF.89, RF.90, RF.91 & NI \\ \hline
+    TA\_09 & Verificare che l'Agente Security esegua con successo la scansione del codice sorgente alla ricerca di vulnerabilità (OWASP Top 10) e generi un report contenente le criticità classificate per gravità. & RF.87, RF.88, RF.89, RF.90, RF.91 & NI \\ \hline
 
-    TA\_10 & Verificare che l'Agente OWASP analizzi il codice per confermarne l'aderenza alle policy aziendali definite nel file CLAUDE.md, gestendo correttamente il blocco in caso di file mancante o malformato e producendo un report con le non-conformità e le relative soluzioni. & RF.92, RF.90, RF.91, RF.70, RF.71 & NI \\ \hline
+    TA\_10 & Verificare che l'Agente Security analizzi il codice per confermarne l'aderenza alle policy aziendali definite nel file POLICY.md, gestendo correttamente il blocco in caso di file mancante o malformato e producendo un report con le non-conformità e le relative soluzioni. & RF.92, RF.90, RF.91, RF.70, RF.71 & NI \\ \hline
 
     TA\_11 & Verificare il flusso completo delle notifiche via email: dalla corretta attivazione da parte dell'utente, alla ricezione automatica del report via mail o della richiesta di intervento umano, inclusa la gestione delle anomalie. & RF.38, RF.75, RF.76, RF.77, RF.78 & NI \\ \hline
 
-    TA\_12 & Verificare che l'Agente Changelog estragga i task dallo Sprint ID fornito, gestisca l'eventuale interruzione o filtro per metadati insufficienti e completi la generazione del Changelog Tecnico, consentendo poi la traduzione opzionale in Changelog di Business. & RF.93, RF.95, RF.97, RF.99, RF.100, RF.102, RF.103 & NI \\ \hline
+    TA\_12 & Verificare che l'Agente Changelog estragga i task dallo Sprint ID fornito, gestisca l'eventuale interruzione o filtro per metadati insufficienti e completi la generazione del Changelog Tecnico, consentendo poi la traduzione opzionale in Changelog di Business. & RF.94, RF.96, RF.98, RF.100, RF.101, RF.103, RF.104 & NI \\ \hline
 
     TA\_13 & Verificare l'intero flusso di esportazione e storicizzazione: l'utente deve poter visualizzare la lista dei report salvati nell'archivio, selezionarne uno e avviare il download in PDF. & RF.49, RF.53, RF.58, RF.73, RF.75 & NI \\ \hline
 
@@ -708,7 +709,7 @@ I test di unità isolano e verificano la correttezza logica dei singoli moduli s
 I test di integrazione verificano il corretto funzionamento delle interfacce, lo scambio di dati e le dipendenze tra i diversi moduli interni precedentemente testati in isolamento.
 
 \begin{itemize}
-    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la \textit{\glo{pipeline}{pipeline}} di input degli agenti AI; integrazione dei tre agenti (README, OWASP, Changelog) con il cruscotto di backend centrale o con l'\textit{\glo{interfaccia CLI}{interfaccia-cli}}.
+    \item \textbf{Oggetto di verifica:} Connessione e flusso informativo tra l'estrattore di codice sorgente e la \textit{\glo{pipeline}{pipeline}} di input degli agenti AI; integrazione dei tre agenti (Docs, Security, Changelog) con il cruscotto di backend centrale o con l'\textit{\glo{interfaccia CLI}{interfaccia-cli}}.
 \end{itemize}
 
 
@@ -842,6 +843,7 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_102 & RF.102 \\\hline
     TS\_103 & RF.103 \\\hline
     TS\_104 & RF.104 \\\hline
+    TS\_105 & RF.105 \\\hline
     \hline
     TA\_01 & RF.1, RF.5, RF.6, RF.7 \\\hline
     TA\_02 & RF.10, RF.13, RF.14 \\\hline
@@ -854,7 +856,7 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TA\_09 & RF.87, RF.88, RF.89, RF.90, RF.91 \\\hline
     TA\_10 & RF.92, RF.90, RF.91, RF.70, RF.71 \\\hline
     TA\_11 & RF.38, RF.75, RF.76, RF.77, RF.78 \\\hline
-    TA\_12 & RF.93, RF.95, RF.97, RF.99, RF.100, RF.102, RF.103 \\\hline
+    TA\_12 & RF.94, RF.96, RF.98, RF.100, RF.101, RF.103, RF.104 \\\hline
     TA\_13 & RF.49, RF.53, RF.58, RF.73, RF.75 \\\hline
 
     \caption{Tracciamento Test}

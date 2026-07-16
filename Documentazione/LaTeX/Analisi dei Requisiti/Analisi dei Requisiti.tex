@@ -1,4 +1,5 @@
 \documentclass[12pt, a4paper]{article}
+
 \usepackage{caption}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
@@ -70,7 +71,7 @@
     \vspace{3cm}
     
     % Tabella Informazioni Documento, sostituire con il contenuto reale
-    \begin{table}[h]
+    \begin{table}[ht]
         \centering
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
@@ -267,14 +268,13 @@ specializzati coordinati da un \textbf{Orchestratore} centrale deterministrico, 
 
   \begin{itemize}
   \item
-    \textbf{Analisi \textit{Vulnerabilità}}: utilizzo delle \textit{API} di \textit{\glo{Claude
-    Code}{claude-code}} per l'identificazione di \textit{Vulnerabilità}
+    \textbf{Analisi \textit{Vulnerabilità}}: utilizzo di un modello \textit{LLM} per l'identificazione di \textit{Vulnerabilità}
     standard \textit{OWASP Top 10}.
 \item
     \textbf{Verifica policy interne}: controllo
     dell'adozione di pratiche di sviluppo sicuro
     specifiche del team, utilizzando i file di configurazione
-    \emph{CLAUDE.md} presenti nel \textit{Repository} come contesto operativo.
+    \emph{POLICY.md} presenti nel \textit{Repository} come contesto operativo.
 \end{itemize}
 \item
   \textbf{Agente di \textit{Changelog} da \textit{User Stories} (Agente \textit{Changelog})}:
@@ -299,7 +299,7 @@ cliente finale.
 
 L'utente principale è rappresentato dallo \textbf{sviluppatore}, il quale interagisce direttamente con il sistema fornendo il contesto operativo attraverso il \textit{Repository} \textit{\glo{Git}{git}} di riferimento. Egli beneficia dell'automatizzazione della documentazione tecnica e del feedback immediato sulla sicurezza, che gli permette di correggere eventuali \textit{vulnerabilità} o difformità rispetto alle policy aziendali in tempo reale, senza attendere revisioni manuali. 
 
-Una seconda figura chiave è il \textit{\glo{Team Lead}{team-lead}} o lo \textit{\glo{Security Auditor}{security-auditor}}. Questi utenti utilizzano il sistema come strumento di monitoraggio della sicurezza del software. Delegano all’agente Security sia la verifica delle categorie di vulnerabilità più critiche individuate dall’\textit{OWASP Top 10}, sia il controllo dell’aderenza alle regole di sviluppo sicuro definite dal team all’interno del file CLAUDE.md.
+Una seconda figura chiave è il \textit{\glo{Team Lead}{team-lead}} o lo \textit{\glo{Security Auditor}{security-auditor}}. Questi utenti utilizzano il sistema come strumento di monitoraggio della sicurezza del software. Delegano all’agente Security sia la verifica delle categorie di vulnerabilità più critiche individuate dall’\textit{OWASP Top 10}, sia il controllo dell’aderenza alle regole di sviluppo sicuro definite dal team all’interno del file POLICY.md.
 
 Infine, il sistema si rivolge agli \textit{\glo{Stakeholder}{stakeholder}} di business (come \textit{\glo{Project Manager}{project-manager}} o il cliente finale). Questi soggetti non necessitano di competenze tecniche approfondite, ma hanno bisogno di visibilità sull'andamento del progetto. Per loro, l'agente di \textit{Changelog} funge da "traduttore", trasformando il gergo tecnico delle \textit{User Stories} e dei compiti completati in report di valore che sintetizzano i progressi funzionali raggiunti al termine di ogni \textit{Sprint}.
 
@@ -336,7 +336,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
     
     \item \textbf{Sviluppatore:} Specializzazione di Utente Generico ed utente principale del sistema. Interagisce con gli agenti per delegare la redazione e l'aggiornamento della documentazione tecnica, per validare le proposte di modifica (approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}) e per ricevere feedback immediati sulle vulnerabilità di sicurezza del codice prodotto.
     
-    \item \textbf{\textit{Security Auditor} / \textit{Team Lead}:} Specializzazione di Utente Generico con responsabilità di governance. Definisce le regole di sviluppo sicuro e le policy interne tramite il file di configurazione \texttt{CLAUDE.md}, che l'Agente Security utilizzerà per verificare la conformità del codice prodotto dal team secondo il paradigma \textit{Policy-as-code}.
+    \item \textbf{\textit{Security Auditor} / \textit{Team Lead}:} Specializzazione di Utente Generico con responsabilità di governance. Definisce le regole di sviluppo sicuro e le policy interne tramite il file di configurazione \texttt{POLICY.md}, che l'Agente Security utilizzerà per verificare la conformità del codice prodotto dal team secondo il paradigma \textit{Policy-as-code}.
     
     \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente \textit{Changelog} innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} e dei compiti completati.
 \end{itemize}
@@ -2286,7 +2286,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Attori Secondari:} Piattaforma \textit{GitHub}, Sistema di \textit{Task Management}.
-    \item \textbf{Trigger:} L'agente tenta di accedere a una dipendenza di contesto (es. il file \texttt{CLAUDE.md} o uno \textit{Sprint} ID su un task manager) e rileva che essa non è presente.
+    \item \textbf{Trigger:} L'agente tenta di accedere a una dipendenza di contesto (es. il file \texttt{POLICY.md} o uno \textit{Sprint} ID su un task manager) e rileva che essa non è presente.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'agente richiede l'accesso a una specifica risorsa esterna per avviare la propria logica di business.
@@ -2300,7 +2300,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \begin{enumerate}
         \item Il sistema intercetta un'eccezione di tipo "risorsa non trovata" (Not Found) durante il recupero del contesto preliminare.
         \item Il sistema interrompe l'esecuzione dell'operazione corrente.
-        \item Il sistema renderizza a schermo il dettaglio testuale dell'errore (es. "File CLAUDE.md non trovato nel \textit{repository}" oppure "\textit{Sprint} ID inesistente").
+        \item Il sistema renderizza a schermo il dettaglio testuale dell'errore (es. "File POLICY.md non trovato nel \textit{repository}" oppure "\textit{Sprint} ID inesistente").
     \end{enumerate}
 \end{itemize}
 
@@ -2313,7 +2313,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Trigger:} L'agente accede alla risorsa di contesto ma il modulo di validazione solleva un'eccezione semantica o di parsing durante la lettura del suo contenuto.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item La risorsa esterna necessaria (es. il file \texttt{CLAUDE.md}) esiste ed è stata correttamente individuata.
+        \item La risorsa esterna necessaria (es. il file \texttt{POLICY.md}) esiste ed è stata correttamente individuata.
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2324,7 +2324,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \begin{enumerate}
         \item Il sistema acquisisce la risorsa ma fallisce nella sua validazione sintattica o logica (es. regole in conflitto nel file di policy).
         \item Il sistema interrompe l'esecuzione dell'operazione corrente.
-        \item Il sistema renderizza a schermo il dettaglio dell'errore (es. "Il file CLAUDE.md presenta errori di sintassi o regole in palese contraddizione logica").
+        \item Il sistema renderizza a schermo il dettaglio dell'errore (es. "Il file POLICY.md presenta errori di sintassi o regole in palese contraddizione logica").
     \end{enumerate}
 \end{itemize}
 
@@ -2842,7 +2842,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 \section{Agente Security: Scansione \textit{Vulnerabilità} di Sicurezza Software}
 
 \subsection{Introduzione all'agente}
-Questo agente ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L’analisi di sicurezza viene svolta su due livelli complementari. Il primo consiste nell’individuazione di vulnerabilità riconducibili alle categorie di rischio dell’OWASP Top 10 e rilevabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc. Il secondo consiste nella verifica dell’aderenza del codice alle regole di sviluppo sicuro definite dal team nel file CLAUDE.md, secondo l'approccio \textit{Policy-as-code}.
+Questo agente ha l'obiettivo di supportare il \textit{Security Auditor} nell'individuazione di possibili \textit{vulnerabilità} di sicurezza presenti nel codice sorgente del \textit{Repository}. L’analisi di sicurezza viene svolta su due livelli complementari. Il primo consiste nell’individuazione di vulnerabilità riconducibili alle categorie di rischio dell’OWASP Top 10 e rilevabili tramite analisi del codice, come: \textit{\glo{Injection}{injection}}, gestione non sicura dell'autenticazione, controllo degli accessi incompleto, gestione errata di dati sensibili, configurazioni insicure, ecc. Il secondo consiste nella verifica dell’aderenza del codice alle regole di sviluppo sicuro definite dal team nel file POLICY.md, secondo l'approccio \textit{Policy-as-code}.
 \\ 
 L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP Top 10}. Il suo scopo è fornire una revisione automatizzata assistita, producendo segnalazioni, priorità e suggerimenti di \textit{\glo{Remediation}{remediation}} che devono essere successivamente valutati da un \textit{Team Lead} o \textit{Security Auditor}.
 
@@ -2850,7 +2850,7 @@ L'agente non garantisce la copertura esaustiva dell'intera \textit{OWASP Top 10}
 L'agente si concentra su tre aree principali:
 \begin{enumerate}
 \item \textbf{Analisi delle \textit{Vulnerabilità} \textit{OWASP Top 10}}: individuazione di pattern di codice potenzialmente riconducibili a \textit{vulnerabilità} note, come SQL \textit{Injection}, uso insicuro di funzioni crittografiche, esposizione di informazioni sensibili, \textit{\glo{Hardcoded secrets}{hardcoded-secrets}}, ecc.
-\item \textbf{Verifica delle policy interne di sicurezza}: controllo dell'aderenza del codice alle regole definite dal team nel file CLAUDE.md, secondo un approccio di tipo \textit{Policy-as-code}.
+\item \textbf{Verifica delle policy interne di sicurezza}: controllo dell'aderenza del codice alle regole definite dal team nel file POLICY.md, secondo un approccio di tipo \textit{Policy-as-code}.
 \item \textbf{Generazione di remediation}: produzione di suggerimenti testuali o modifiche al codice correttive per mitigare le \textit{vulnerabilità} o le non conformità rilevate, senza applicare modifiche automatiche prima della validazione umana.
 \end{enumerate}
 
@@ -2902,13 +2902,13 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC40: Verifica conformità \textit{Policy-as-code} (\texttt{CLAUDE.md})}\label{uc:40}
-Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security verifica che il codice sorgente rispetti le pratiche di sviluppo sicuro specificate dal team nel file di configurazione \texttt{CLAUDE.md}, secondo il concetto di \textit{policy-as-code}.
+\subsubsection{UC40: Verifica conformità \textit{Policy-as-code} (\texttt{POLICY.md})}\label{uc:40}
+Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security verifica che il codice sorgente rispetti le pratiche di sviluppo sicuro specificate dal team nel file di configurazione \texttt{POLICY.md}, secondo il concetto di \textit{policy-as-code}.
 
 \begin{center}
     \captionsetup{hypcap=false}
     \includegraphics[width=1\linewidth]{UC40.png}
-    \captionof{figure}{Verifica conformità \textit{Policy-as-code} (\texttt{CLAUDE.md})}
+    \captionof{figure}{Verifica conformità \textit{Policy-as-code} (\texttt{POLICY.md})}
     \label{fig:UC40}
 \end{center}
 
@@ -2931,7 +2931,7 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security ve
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente \textit{Security}.
-        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} ricercando e leggendo il contenuto del file di configurazione \texttt{CLAUDE.md} alla radice del progetto, identificando al suo interno le sole direttive pertinenti allo sviluppo sicuro.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} ricercando e leggendo il contenuto del file di configurazione \texttt{POLICY.md} alla radice del progetto, identificando al suo interno le sole direttive pertinenti allo sviluppo sicuro.
         \item Il sistema estrae il codice sorgente dell'ambito selezionato tramite le \textit{API} di Git.
         \item Il sistema compone il prompt contestuale unendo il codice estratto con le regole di \textit{policy} lette, per poi inviarlo alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} confronta il codice con le direttive di sviluppo sicuro e restituisce al sistema l'elenco delle violazioni normative riscontrate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
@@ -2941,8 +2941,8 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security ve
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.5: Errore per risorsa di contesto mancante.} Estende il passo 2 qualora il file \texttt{CLAUDE.md} non esista o non venga trovato all'interno del \textit{Repository Git}.
-        \item \textbf{UC27.6: Errore per risorsa di contesto non valida o malformata.} Estende il passo 2 qualora il file \texttt{CLAUDE.md} sia illeggibile, contenga errori di sintassi o regole in palese contraddizione logica.
+        \item \textbf{UC27.5: Errore per risorsa di contesto mancante.} Estende il passo 2 qualora il file \texttt{POLICY.md} non esista o non venga trovato all'interno del \textit{Repository Git}.
+        \item \textbf{UC27.6: Errore per risorsa di contesto non valida o malformata.} Estende il passo 2 qualora il file \texttt{POLICY.md} sia illeggibile, contenga errori di sintassi o regole in palese contraddizione logica.
         \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} superi il tempo limite per l'elaborazione.
         \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile dal sistema.
         \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
@@ -3270,7 +3270,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.25 & Obbligatorio & Il sistema deve consentire all'utente di definire e selezionare l'ambito di analisi del contesto di esecuzione. & \hyperref[uc:16]{UC16} \\ \hline
     
-    RF.26 & Desiderabile & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell'intero \textit{Repository} come ambito di analisi. & \hyperref[uc:16.1]{UC16.1} \\ \hline
+    RF.26 & Obbligatorio & Se supportato dalla configurazione del sistema, il sistema deve consentire la selezione dell'intero \textit{Repository} come ambito di analisi. & \hyperref[uc:16.1]{UC16.1} \\ \hline
     
     RF.27 & Obbligatorio & Il sistema deve consentire all'utente di selezionare uno o più file del \textit{Repository} come ambito di analisi. & \hyperref[uc:16.2]{UC16.2} \\ \hline
     
@@ -3358,7 +3358,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.69 & Obbligatorio & Il sistema deve interrompere l'esecuzione prima dell'invio e notificare l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello \textit{LLM} a runtime. & \hyperref[uc:27.4]{UC27.4} \\ \hline
     
-    RF.70 & Obbligatorio & Il sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file \texttt{CLAUDE.md}, Sprint ID) risulti assente o non trovata. & \hyperref[uc:27.5]{UC27.5} \\ \hline
+    RF.70 & Obbligatorio & Il sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file \texttt{POLICY.md}, Sprint ID) risulti assente o non trovata. & \hyperref[uc:27.5]{UC27.5} \\ \hline
     
     RF.71 & Obbligatorio & Il sistema deve bloccare l'elaborazione di un agente e notificare l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & \hyperref[uc:27.6]{UC27.6} \\ \hline
     
@@ -3402,34 +3402,36 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.91 & Obbligatorio & Il sistema deve generare una descrizione testuale della \textit{Remediation} da effettuare qualora non sia possibile proporre in modo affidabile uno \textit{Snippet} di codice correttivo. & \hyperref[uc:39]{UC39}, \hyperref[uc:40]{UC40} \\ \hline
     
-    RF.92 & Obbligatorio & Il sistema deve orchestrare l'Agente Security per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file \texttt{CLAUDE.md}. & \hyperref[uc:40]{UC40} \\ \hline
+    RF.92 & Obbligatorio & Il sistema deve orchestrare l'Agente Security per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file \texttt{POLICY.md}. & \hyperref[uc:40]{UC40} \\ \hline
     
-    RF.93 & Obbligatorio & Il sistema deve interrogare le \textit{API} del sistema di \textit{Task Management} esterno per recuperare e filtrare le \textit{User Stories} e i \textit{Task} in stato di completamento associati allo specifico \textit{Sprint} richiesto. & \hyperref[uc:41]{UC41} \\ \hline
+    RF.93 & Obbligatorio & Il sistema deve limitare la verifica di conformità \textit{policy-as-code} alle sole regole e direttive del file \texttt{POLICY.md} pertinenti alla sicurezza del software, ignorando quelle non riconducibili a pratiche di sviluppo sicuro. & \hyperref[uc:40]{UC40} \\ \hline
     
-    RF.94 & Obbligatorio & Il sistema deve estrarre dai \textit{Task} validati i metadati rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & \hyperref[uc:41]{UC41} \\ \hline
+    RF.94 & Obbligatorio & Il sistema deve interrogare le \textit{API} del sistema di \textit{Task Management} esterno per recuperare e filtrare le \textit{User Stories} e i \textit{Task} in stato di completamento associati allo specifico \textit{Sprint} richiesto. & \hyperref[uc:41]{UC41} \\ \hline
     
-    RF.95 & Obbligatorio & Il sistema deve orchestrare l'Agente Changelog per generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai \textit{Task} dello \textit{Sprint}. & \hyperref[uc:41]{UC41} \\ \hline
+    RF.95 & Obbligatorio & Il sistema deve estrarre dai \textit{Task} validati i metadati rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & \hyperref[uc:41]{UC41} \\ \hline
     
-    RF.96 & Opzionale & Il \textit{Changelog} tecnico generato deve includere i collegamenti ipertestuali diretti e gli identificativi dei \textit{Ticket} di origine, qualora tali informazioni siano disponibili. & \hyperref[uc:41]{UC41} \\ \hline
+    RF.96 & Obbligatorio & Il sistema deve orchestrare l'Agente Changelog per generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai \textit{Task} dello \textit{Sprint}. & \hyperref[uc:41]{UC41} \\ \hline
     
-    RF.97 & Obbligatorio & Il sistema deve permettere all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da analizzare. & \hyperref[uc:41.1]{UC41.1} \\ \hline
+    RF.97 & Opzionale & Il \textit{Changelog} tecnico generato deve includere i collegamenti ipertestuali diretti e gli identificativi dei \textit{Ticket} di origine, qualora tali informazioni siano disponibili. & \hyperref[uc:41]{UC41} \\ \hline
     
-    RF.98 & Obbligatorio & Il sistema deve consentire all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello \textit{Sprint}, bloccando l'esecuzione dell'agente. & \hyperref[uc:42]{UC42} \\ \hline
+    RF.98 & Obbligatorio & Il sistema deve permettere all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da analizzare. & \hyperref[uc:41.1]{UC41.1} \\ \hline
     
-    RF.99 & Obbligatorio & Il sistema deve rilevare i \textit{task} completati che risultano privi di metadati sufficienti (es. descrizioni o criteri mancanti) e segnalarli all'utente tramite una finestra di avviso. & \hyperref[uc:43]{UC43} \\ \hline
+    RF.99 & Obbligatorio & Il sistema deve consentire all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello \textit{Sprint}, bloccando l'esecuzione dell'agente. & \hyperref[uc:42]{UC42} \\ \hline
     
-    RF.100 & Obbligatorio & Il sistema deve permettere all'utente di proseguire l'elaborazione del \textit{Changelog} escludendo automaticamente i \textit{Task} segnalati come informativamente insufficienti. & \hyperref[uc:43]{UC43} \\ \hline
+    RF.100 & Obbligatorio & Il sistema deve rilevare i \textit{task} completati che risultano privi di metadati sufficienti (es. descrizioni o criteri mancanti) e segnalarli all'utente tramite una finestra di avviso. & \hyperref[uc:43]{UC43} \\ \hline
     
-    RF.101 & Obbligatorio & Il sistema deve consentire all'utente di interrompere e annullare definitivamente la generazione del \textit{Changelog} qualora decida di non procedere a fronte della segnalazione di metadati mancanti. & \hyperref[uc:44]{UC44} \\ \hline
+    RF.101 & Obbligatorio & Il sistema deve permettere all'utente di proseguire l'elaborazione del \textit{Changelog} escludendo automaticamente i \textit{Task} segnalati come informativamente insufficienti. & \hyperref[uc:43]{UC43} \\ \hline
     
-    RF.102 & Obbligatorio & Il sistema deve fornire un comando interattivo, all'interno del report del \textit{Changelog} tecnico, per innescare la sua traduzione in un documento di business. & \hyperref[uc:45]{UC45} \\ \hline
+    RF.102 & Obbligatorio & Il sistema deve consentire all'utente di interrompere e annullare definitivamente la generazione del \textit{Changelog} qualora decida di non procedere a fronte della segnalazione di metadati mancanti. & \hyperref[uc:44]{UC44} \\ \hline
     
-    RF.103 & Obbligatorio & Il sistema deve orchestrare l'Agente \textit{Changelog} per generare un \textit{Changelog} orientato al business, comprensibile agli \textit{Stakeholder}, a partire dal testo del \textit{Changelog} tecnico. & \hyperref[uc:45]{UC45} \\ \hline
+    RF.103 & Obbligatorio & Il sistema deve fornire un comando interattivo, all'interno del report del \textit{Changelog} tecnico, per innescare la sua traduzione in un documento di business. & \hyperref[uc:45]{UC45} \\ \hline
     
-    RF.104 & Obbligatorio & Il sistema deve consentire all'utente di annullare la generazione del \textit{Changelog} di \textit{business} dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & \hyperref[uc:46]{UC46} \\ \hline
+    RF.104 & Obbligatorio & Il sistema deve orchestrare l'Agente \textit{Changelog} per generare un \textit{Changelog} orientato al business, comprensibile agli \textit{Stakeholder}, a partire dal testo del \textit{Changelog} tecnico. & \hyperref[uc:45]{UC45} \\ \hline
+    
+    RF.105 & Obbligatorio & Il sistema deve consentire all'utente di annullare la generazione del \textit{Changelog} di \textit{business} dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & \hyperref[uc:46]{UC46} \\ \hline
 
-    RF.105 & Obbligatorio & Il sistema deve limitare la verifica di conformità \textit{policy-as-code} alle sole regole e direttive del file \texttt{CLAUDE.md} pertinenti alla sicurezza del software, ignorando quelle non riconducibili a pratiche di sviluppo sicuro & \hyperref[uc:40]{UC40} \\ \hline
-   
+    \caption{Requisiti funzionali}
+    \label{tab:rf}
 
 \end{xltabular}
 \endgroup
@@ -3476,6 +3478,9 @@ RQ.10 & Obbligatorio & Il tempo massimo di attesa tra un'azione dell'utente nell
 \hline
 RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo a un nuovo utente di apprenderne le funzionalità in un tempo minore o uguale a 30 minuti, in conformità con la metrica Tempo di Apprendimento (MPD\_9). & PdQ(MPD\_9) \\ 
 \hline
+
+    \caption{Requisiti qualitativi}
+    \label{tab:rq}
     
 \end{xltabular}
 \endgroup
@@ -3524,24 +3529,25 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     \hline
     RV.13 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da \textit{\glo{AWS Bedrock}{aws-bedrock}}. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.14 & Obbligatorio & L'agente preposto all'analisi di sicurezza (Agente Security) deve essere istruito utilizzando specificatamente il modello Anthropic Claude. &  Verbale interno 2026/06/02 \\
+    RV.14 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.15 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.15 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
     \hline
-    RV.16 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
+    RV.16 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
     \hline
-    RV.17 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
+    RV.17 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
     \hline
-    RV.18 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
+    RV.18 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
     \hline
-    RV.19 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
+    RV.19 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
     \hline
-    RV.20 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
+    RV.20 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
     \hline
-    RV.21 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
+    RV.21 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
     \hline
-    RV.22 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
-    \hline
+
+    \caption{Requisiti di vincolo}
+    \label{tab:rv}
     
 \end{xltabular}
 \endgroup
@@ -3573,6 +3579,9 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     \hline
     RS.5 & Desiderabile & Il sistema dovrebbe interfacciarsi con i servizi LLM esterni utilizzando policy o tier di servizio API che garantiscano che il codice sorgente analizzato non venga trattenuto o utilizzato per l'addestramento di modelli di terze parti. & Capitolato C2 \\
     \hline
+
+    \caption{Requisiti di sicurezza}
+    \label{tab:rs}
     
 \end{xltabular}
 \endgroup
@@ -3701,15 +3710,15 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \hyperref[uc:37]{UC37} & RF.85 \\ \hline
 \hyperref[uc:38]{UC38} & RF.86 \\ \hline
 \hyperref[uc:39]{UC39} & RF.87, RF.88, RF.89, RF.90, RF.91 \\ \hline
-\hyperref[uc:40]{UC40} & RF.90, RF.91, RF.92, RF.105 \\ \hline
-\hyperref[uc:41]{UC41} & RF.93, RF.94, RF.95, RF.96 \\ \hline
-\hyperref[uc:41.1]{UC41.1} & RF.97 \\ \hline
-\hyperref[uc:42]{UC42} & RF.98 \\ \hline
-\hyperref[uc:43]{UC43} & RF.99, RF.100 \\ \hline
-\hyperref[uc:44]{UC44} & RF.101 \\ \hline
-\hyperref[uc:45]{UC45} & RF.102, RF.103 \\ \hline
-\hyperref[uc:46]{UC46} & RF.104 \\ \hline
-Capitolato C2 & RQ.2, RQ.3, RQ.4, RS.5, RV.5, RV.9, RV.11, RV.12, RV.15, RV.16, RV.17, RV.18, RV.19, RV.20, RV.21, RV.22 \\ \hline
+\hyperref[uc:40]{UC40} & RF.90, RF.91, RF.92, RF.93 \\ \hline
+\hyperref[uc:41]{UC41} & RF.94, RF.95, RF.96, RF.97 \\ \hline
+\hyperref[uc:41.1]{UC41.1} & RF.98 \\ \hline
+\hyperref[uc:42]{UC42} & RF.99 \\ \hline
+\hyperref[uc:43]{UC43} & RF.100, RF.101 \\ \hline
+\hyperref[uc:44]{UC44} & RF.102 \\ \hline
+\hyperref[uc:45]{UC45} & RF.103, RF.104 \\ \hline
+\hyperref[uc:46]{UC46} & RF.105 \\ \hline
+Capitolato C2 & RQ.2, RQ.3, RQ.4, RS.5, RV.5, RV.9, RV.11, RV.12, RV.14, RV.15, RV.16, RV.17, RV.18, RV.19, RV.20, RV.21 \\ \hline
 PdQ(MP 12) & RQ.2 \\ \hline
 PdQ(MP 13) & RQ.1 \\ \hline
 PdQ(MPD 11) & RQ.10 \\ \hline
@@ -3727,7 +3736,10 @@ Verbale esterno 2026/03/23 & RS.3, RV.2, RV.3 \\ \hline
 Verbale esterno 2026/04/24 & RQ.7 \\ \hline
 Verbale esterno 2026/06/03 & RV.7, RV.8 \\ \hline
 Verbale esterno 2026/06/08 & RV.1, RV.4 \\ \hline
-Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14, RV.15 \\ \hline
+Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14 \\ \hline
+    \caption{Tracciamento Fonte - Requisiti}
+    \label{tab:tracciamento_f-r}
+
 \end{longtable}
 
 \newpage
@@ -3843,19 +3855,19 @@ RF.89 & \hyperref[uc:39]{UC39} \\ \hline
 RF.90 & \hyperref[uc:39]{UC39}, \hyperref[uc:40]{UC40} \\ \hline
 RF.91 & \hyperref[uc:39]{UC39}, \hyperref[uc:40]{UC40} \\ \hline
 RF.92 & \hyperref[uc:40]{UC40} \\ \hline
-RF.93 & \hyperref[uc:41]{UC41} \\ \hline
+RF.93 & \hyperref[uc:40]{UC40} \\ \hline
 RF.94 & \hyperref[uc:41]{UC41} \\ \hline
 RF.95 & \hyperref[uc:41]{UC41} \\ \hline
 RF.96 & \hyperref[uc:41]{UC41} \\ \hline
-RF.97 & \hyperref[uc:41.1]{UC41.1} \\ \hline
-RF.98 & \hyperref[uc:42]{UC42} \\ \hline
-RF.99 & \hyperref[uc:43]{UC43} \\ \hline
+RF.97 & \hyperref[uc:41]{UC41} \\ \hline
+RF.98 & \hyperref[uc:41.1]{UC41.1} \\ \hline
+RF.99 & \hyperref[uc:42]{UC42} \\ \hline
 RF.100 & \hyperref[uc:43]{UC43} \\ \hline
-RF.101 & \hyperref[uc:44]{UC44} \\ \hline
-RF.102 & \hyperref[uc:45]{UC45} \\ \hline
+RF.101 & \hyperref[uc:43]{UC43} \\ \hline
+RF.102 & \hyperref[uc:44]{UC44} \\ \hline
 RF.103 & \hyperref[uc:45]{UC45} \\ \hline
-RF.104 & \hyperref[uc:46]{UC46} \\ \hline
-RF.105 & \hyperref[uc:40]{UC40} \\ \hline
+RF.104 & \hyperref[uc:45]{UC45} \\ \hline
+RF.105 & \hyperref[uc:46]{UC46} \\ \hline
 RQ.1 & PdQ(MP 13) \\ \hline
 RQ.2 & Capitolato C2, PdQ(MP 12) \\ \hline
 RQ.3 & Capitolato C2, PdQ(MPD 15), PdQ(MPD 16), PdQ(MPD 17) \\ \hline
@@ -3880,20 +3892,23 @@ RV.10 & Verbale interno 2026/06/02 \\ \hline
 RV.11 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
 RV.12 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
 RV.13 & Verbale interno 2026/06/02 \\ \hline
-RV.14 & Verbale interno 2026/06/02 \\ \hline
-RV.15 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.14 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.15 & Capitolato C2 \\ \hline
 RV.16 & Capitolato C2 \\ \hline
 RV.17 & Capitolato C2 \\ \hline
 RV.18 & Capitolato C2 \\ \hline
 RV.19 & Capitolato C2 \\ \hline
 RV.20 & Capitolato C2 \\ \hline
 RV.21 & Capitolato C2 \\ \hline
-RV.22 & Capitolato C2 \\ \hline
 RS.1 & \hyperref[uc:1]{UC1} \\ \hline
 RS.2 & \hyperref[uc:6]{UC6} \\ \hline
 RS.3 & Verbale esterno 2026/03/23 \\ \hline
 RS.4 & \hyperref[uc:6]{UC6} \\ \hline
 RS.5 & Capitolato C2 \\ \hline
+
+    \caption{Tracciamento Requisiti - Fonte}
+    \label{tab:tracciamento_r-f}
+
 \end{longtable}
 
 \end{document}
