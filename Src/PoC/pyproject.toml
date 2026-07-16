@@ -8,15 +8,13 @@ version = "0.1.0"
 description = "Proof of Concept degli agenti di Code Guardian (Docs, OWASP, Changelog)"
 requires-python = ">=3.10"
 # models.py (importato da ogni modulo: ports, graph, agenti, cli) usa Pydantic
-# v2: e' quindi una dipendenza di base, non opzionale. I test restano
-# comunque offline, deterministici e a costo zero (nessuna rete, nessun LLM
-# vero: si usa FakeLLMProvider).
-dependencies = ["pydantic>=2.6"]
+# v2, config.py usa pydantic-settings e graph.py usa LangGraph: sono tutte
+# dipendenze di base, non opzionali, perche' importate incondizionatamente dal
+# pacchetto. I test restano comunque offline, deterministici e a costo zero
+# (nessuna rete, nessun LLM vero: si usa FakeLLMProvider).
+dependencies = ["pydantic>=2.6", "pydantic-settings>=2.6", "langgraph>=0.2"]
 
 [project.optional-dependencies]
-# In produzione: sostituire il runner interno con LangGraph. Le firme delle
-# porte non cambiano.
-prod = ["langgraph>=0.2"]
 dev = ["pytest>=8", "coverage>=7"]
 
 [project.scripts]

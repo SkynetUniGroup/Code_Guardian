@@ -7,3 +7,8 @@ build/
 *.egg-info/
 .coverage
 htmlcov/
+
+# Contenuto montato nei container Docker (repository/fixture dell'utente):
+# la cartella resta tracciata solo per il suo placeholder .gitkeep.
+data/*
+!data/.gitkeep

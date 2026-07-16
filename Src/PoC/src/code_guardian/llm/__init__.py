@@ -124,11 +124,17 @@ def _join_text_blocks(content: list[dict]) -> str:
     return "\n".join(b.get("text", "") for b in content if b.get("type") == "text")
 
 
-def build_provider(name: str | None = None) -> LLMProvider:
-    """Fabbrica: l'unico punto che traduce configurazione in classe concreta."""
+def build_provider(name: str | None = None, api_key: str | None = None) -> LLMProvider:
+    """Fabbrica: l'unico punto che traduce configurazione in classe concreta.
+
+    `api_key`, se fornita (es. dalla modalità guidata della CLI), vale solo
+    per questa chiamata: non passa da `settings` e non viene scritta da
+    nessuna parte. Se assente, `AnthropicProvider` ricade sulla
+    configurazione abituale (`.env` o ambiente), esattamente come prima.
+    """
     name = (name or settings.llm_provider).lower()
     if name == "anthropic":
-        return AnthropicProvider()
+        return AnthropicProvider(api_key=api_key)
     if name == "ollama":
         return OllamaProvider()
     if name == "fake":

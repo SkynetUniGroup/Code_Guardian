@@ -1,0 +1,28 @@
+services:
+  code-guardian:
+    build: .
+    environment:
+      # Provider e chiavi: letti dal file `.env` accanto a questo compose
+      # (Docker Compose lo carica automaticamente per l'interpolazione
+      # `${...}`). Se una variabile non è definita né in `.env` né
+      # nell'ambiente della shell, si usa il default dopo `:-`.
+      - LLM_PROVIDER=${LLM_PROVIDER:-anthropic}
+      - LLM_MODEL=${LLM_MODEL:-claude-sonnet-4-6}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      # Ollama NON è containerizzato (vedi README, "Scelte progettuali"): se
+      # vuoi usare il provider `ollama`, avvialo nativamente sull'host. Su
+      # Docker Desktop (macOS/Windows) `host.docker.internal` risolve
+      # automaticamente all'host; su Linux serve la voce `extra_hosts` sotto.
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5-coder:7b}
+      - AGENT_TIMEOUT_S=${AGENT_TIMEOUT_S:-45}
+      - MAX_OUTPUT_TOKENS=${MAX_OUTPUT_TOKENS:-4096}
+      - MAX_SCOPE_CHARS=${MAX_SCOPE_CHARS:-180000}
+    extra_hosts:
+      # Necessario solo su Linux, dove `host.docker.internal` non è
+      # risolto in automatico come lo è su Docker Desktop (macOS/Windows).
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # Cartella per i tuoi repository/fixture: mettici dentro ciò che vuoi
+      # analizzare e riferiscilo dentro al container come /data/....
+      - ./data:/data
