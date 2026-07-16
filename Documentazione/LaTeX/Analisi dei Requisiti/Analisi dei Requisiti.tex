@@ -137,7 +137,7 @@
     0.2.0 & 2026/04/12 & Scrittura della sezione 2 & Dario Pirrone & Marco Barbiero \\ \hline
     0.1.0 & 2026/04/08 & Creazione documento e scrittura della sezione 1 & Dario Pirrone & Marco Barbiero\\ \hline
 \end{xltabular}
-
+\addtocounter{table}{-1}
 \newpage
 
 % ==========================================
@@ -203,11 +203,6 @@ I termini evidenziati in grassetto identificano concetti tecnici specifici del p
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento
   del Progetto Didattico}
 
-\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_04_24.pdf}{Verbale esterno 24 aprile}
-
-\item
-\href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_03_23.pdf}{Verbale esterno 23 marzo}
-
 \end{itemize}
 
 \subsubsection{Riferimenti informativi}
@@ -221,6 +216,18 @@ I termini evidenziati in grassetto identificano concetti tecnici specifici del p
 \item
   \href{https://www.math.unipd.it/~rcardin/swea/2022/Diagrammi\%20Use\%20Case.pdf}{Dispense
   \textit{Casi d'Uso}}
+  
+  \item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_04_24.pdf}{Verbale esterno 24 aprile}
+
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_03_23.pdf}{Verbale esterno 23 marzo}
+
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_06_03.pdf}{Verbale esterno 3 giugno}
+
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Esterni/VE_2026_06_08.pdf}{Verbale esterno 8 giugno}
+
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/Verbali/Interni/VI_2026_06_02.pdf}{Verbale interno 2 giugno}
+
+
 \end{itemize}
 
 \newpage
@@ -521,7 +528,7 @@ Questo caso d'uso descrive la gestione degli errori legati alla validazione sint
         \item Il sistema mostra a schermo dei messaggi d'errore contestuali accanto ai campi non validi (es. "Formato email non valido" o "La password deve contenere almeno 8 caratteri"), invitando l'utente a correggere i dati.
     \end{enumerate}
 \end{itemize}
-
+\newpage
 \subsubsection{UC4: Autenticazione dell'utente (Login)}\label{uc:4}
 Questo caso d'uso descrive il processo tramite il quale un utente già registrato, ma non ancora riconosciuto nella sessione corrente, fornisce le proprie credenziali per accedere al sistema e ottenere i permessi associati al proprio ruolo.
 
@@ -719,6 +726,8 @@ Questo caso d'uso descrive la validazione sintattica locale effettuata dal siste
     \end{enumerate}
 \end{itemize}
 
+\newpage
+
 \subsubsection{UC9: Selezione \textit{repository} e riferimento di base}\label{uc:9}
 Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e il riferimento di base su cui potranno essere eseguite le successive operazioni degli agenti. La selezione del \textit{repository} non implica necessariamente l'analisi del suo intero contenuto, ma definisce il contesto iniziale da utilizzare nelle funzionalità successive. È una fase preliminare comune alle funzionalità di analisi, documentazione, sicurezza e generazione di report.
 
@@ -789,6 +798,7 @@ Questo caso d'uso descrive l'inserimento dell'URL del \textit{repository Git} da
     \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC9.2: Selezione tipologia di riferimento}\label{uc:9.2}
 Questo caso d'uso descrive la selezione del tipo di riferimento base (Branch o \textit{Pull Request}).
 \begin{itemize}
@@ -815,6 +825,7 @@ Questo caso d'uso descrive l'azione di inserimento o selezione del nome del bran
     \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC9.4: Inserimento identificativo del \textit{Commit}}\label{uc:9.4}
 Questo caso d'uso descrive l'inserimento facoltativo dell'identificativo (hash) di un \textit{Commit} specifico per vincolare l'analisi a una precisa versione cronologica del branch.
 \begin{itemize}
@@ -937,7 +948,7 @@ Questo caso d'uso descrive l'emissione di un avviso (warning) non bloccante quan
     \end{enumerate}
 \end{itemize}
 
-
+\newpage
 \subsubsection{UC16: Selezione ambito di analisi}\label{uc:16}
 Questo caso d'uso consente all'utente di delimitare la porzione del \textit{Repository} su cui eseguire l'analisi di un agente. L'ambito può comprendere l'intero \textit{Repository} oppure essere circoscritto a una selezione personalizzata, combinando liberamente singole directory e file specifici (nel rispetto dei limiti dimensionali imposti dal sistema). L'ambito viene configurato a partire dal \textit{Repository} e dal riferimento di base precedentemente validati in UC9.
 
@@ -989,6 +1000,7 @@ Questo caso d'uso consente all'utente di delimitare la porzione del \textit{Repo
     \label{fig:UC16.1-3}
 \end{center}
 
+\newpage
 \subsubsection{UC16.1: Selezione dell'intero \textit{Repository}}\label{uc:16.1}
 Questo caso d'uso descrive la selezione dell'intero \textit{Repository Git} come ambito complessivo dell'analisi.
     \begin{itemize}
@@ -1062,6 +1074,7 @@ Questo caso d'uso descrive lo scenario in cui uno o più elementi selezionati da
     \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC19: Errore superamento limiti dimensionali dell'ambito}\label{uc:19}
 Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di file scelti superi la capacità massima dei modelli LLM incaricati dell'analisi.
 \begin{itemize}
@@ -1079,7 +1092,7 @@ Questo caso d'uso gestisce il fallimento della validazione qualora l'insieme di 
     \end{enumerate}
 \end{itemize}
 
-
+\newpage
 \subsubsection{UC20: Visualizzazione lista delle operazioni disponibili}\label{uc:20}
 Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a schermo la lista di tutte le operazioni (funzionalità) che l'utente può richiedere.
 
@@ -1112,6 +1125,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
     \end{itemize}
 \end{itemize}
 
+\newpage
 \subsubsection{UC20.1: Visualizzazione di una singola operazione nella lista}\label{uc:20.1}
 Questo caso d'uso descrive la visualizzazione dei dettagli informativi associati a una singola operazione all'interno della lista generata delle operazioni disponibili.
 
@@ -1172,12 +1186,14 @@ Questo caso d'uso descrive la visualizzazione del nome identificativo della sing
     \end{enumerate}
 \end{itemize}
 
+
 \subsubsection{UC20.1.2: Visualizzazione della descrizione dell'operazione}\label{uc:20.1.2}
 Questo caso d'uso descrive la visualizzazione della spiegazione testuale associata alle funzionalità della singola operazione all'interno della lista delle operazioni disponibili.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza il testo descrittivo di supporto dell'elemento della lista.
+    \item \textbf{Trigger:} Il sistema renderizza il testo descrittivo di supporto dell'elemento della lista.    
+    \newpage
     \item \textbf{Precondizioni:} 
     \begin{itemize}
         \item Il sistema sta mostrando una specifica operazione nella lista (UC20.1).
@@ -1212,7 +1228,7 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce 
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'\textbf{Orchestratore} ha ricevuto gli input e ha avviato le esecuzioni richieste, oppure il processo è stato bloccato a causa di un errore (es. nessuna operazione selezionata).
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'utente interagisce con gli elementi della lista selezionando o deselezionando le operazioni di suo interesse.
@@ -1277,6 +1293,7 @@ Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfacc
     \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC21.3: Conferma e avvio delle operazioni}\label{uc:21.3}
 Questo caso d'uso descrive l'innesco finale da parte dell'utente per passare le scelte all'\textbf{Orchestratore} e avviare l'elaborazione delle operazioni selezionate.
 
@@ -1371,7 +1388,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all
     \captionof{figure}{Visualizzazione della dashboard di monitoraggio delle operazioni}
     \label{fig:UC22}
 \end{center}
-
+\newpage
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente ha confermato l'avvio di una o più operazioni (UC21.3).
@@ -1447,7 +1464,7 @@ Questo caso d'uso descrive la visualizzazione della stringa testuale che identif
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il nome descrittivo dell'operazione è visibile a schermo per l'utente.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema mostra a schermo il nome dell'attività in esecuzione (es. "Generazione Changelog Tecnico").
@@ -1511,7 +1528,7 @@ Questo caso d'uso descrive il comportamento del sistema quando si verifica un pr
     \end{enumerate}
 \end{itemize}
 
-
+\newpage
 \subsubsection{UC24: Visualizzazione della lista dei report salvati}\label{uc:24}
 Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i report salvati all'interno della pagina dello storico.
 
@@ -1544,6 +1561,7 @@ Questo caso d'uso descrive la visualizzazione dell'elenco aggregato di tutti i r
     \end{itemize}
 \end{itemize}
 
+\newpage
 \subsubsection{UC24.1: Visualizzazione di un singolo elemento report nella lista}\label{uc:24.1}
 Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a un singolo report all'interno della lista.
 
@@ -2027,7 +2045,7 @@ Questo caso d'uso descrive la visualizzazione della categoria della singola occo
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza il dato testuale relativo alla categoria dell'elemento.
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale relativo alla categoria dell'elemento.\newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando un singolo elemento nella lista (UC26.2.2.1).
@@ -2073,7 +2091,7 @@ Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di 
     \begin{itemize}
         \item Il sistema sta mostrando un singolo elemento nella lista (UC26.2.2.1).
         \item È disponibile un riferimento esplicito a una porzione di codice.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item I percorsi ai file e le righe di codice interessate sono visibili a schermo per l'utente.
@@ -2147,6 +2165,7 @@ Questo caso d'uso descrive la visualizzazione all'interno del report di un modul
     \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC27: Errore durante l'esecuzione dell'agente}\label{uc:27}
 Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possibili anomalie, tecniche o semantiche, che possono verificarsi durante l'elaborazione interna di un agente o del modello \textit{LLM} a esso associato. Essendo un caso d'uso astratto, non viene mai istanziato direttamente, ma si manifesta all'utente esclusivamente attraverso una delle sue specializzazioni.
 
@@ -2206,6 +2225,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC27.2: Errore per timeout del modello \textit{LLM}}\label{uc:27.2}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora il modello \textit{LLM} non restituisca una risposta entro il tempo massimo consentito dal sistema.
 
@@ -2409,7 +2429,7 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui la proce
     \end{enumerate}
 \end{itemize}
 
-
+\newpage
 \subsubsection{UC30: Invio automatico del report via email}\label{uc:30}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema, al completamento positivo di un'operazione che produce un report, genera l'allegato del report e lo invia all'indirizzo email associato all'account dell'utente.
 
@@ -2473,7 +2493,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Un'email contenente l'avviso e un collegamento diretto alla piattaforma è stata inviata con successo all'indirizzo dell'utente.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} rileva che un agente è in attesa di validazione o di un input manuale.
@@ -2586,7 +2606,7 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la 
     \begin{enumerate}
         \item L'utente accede alla sezione dedicata alla personalizzazione del \texttt{\textit{README.md}} tramite l'interfaccia grafica.
         \item L'utente seleziona l'operazione desiderata sul template.
-    \end{enumerate}
+    \end{enumerate}\newpage
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
         \item \textbf{UC34.1}: Caricamento del file template.
@@ -2657,7 +2677,7 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Trigger:} L'utente seleziona l'apposito comando grafico di eliminazione o ripristino default.
+    \item \textbf{Trigger:} L'utente seleziona l'apposito comando grafico di eliminazione o ripristino default.\newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema mostra correttamente la sezione di personalizzazione del README (UC34).
@@ -2688,7 +2708,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
-    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di generazione del README dalla lista delle operazioni disponibili nella dashboard (UC21.3).
+    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di generazione del README dalla lista delle operazioni disponibili nella dashboard (UC21.3).\newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC4).
@@ -3032,6 +3052,7 @@ Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \tex
     \label{fig:UC41.1}
 \end{center}
 
+\newpage
 \begin{itemize}
     \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
     
@@ -3127,6 +3148,7 @@ Questo caso d'uso descrive l'interruzione definitiva del processo di generazione
     \end{enumerate}
 \end{itemize}
 
+\newpage
 \subsubsection{UC45: Generazione \textit{Changelog} di business (\textit{Dev-to-Client})}\label{uc:45}
 Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Changelog} tecnico, attraverso il quale il sistema orchestra la traduzione del gergo tecnico in benefici funzionali e di \textit{business} comprensibili al cliente finale.
 
@@ -3151,7 +3173,7 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
     \begin{itemize}
         \item Il sistema ha generato un \textit{Changelog} di Business scritto in formato \textit{Markdown} ed inserito nel report (UC26.2.1).
         \item L'utente visualizza un nuovo report aggiornato (UC26) con il testo finale.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema riceve il comando di generazione innescato dall'interfaccia del report del \textit{Changelog} tecnico.
@@ -3485,7 +3507,7 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
 \end{xltabular}
 \endgroup
 
-
+\newpage
 \subsection{Requisiti di vincolo}
 
 \begingroup
@@ -3542,7 +3564,7 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     RV.19 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
     \hline
     RV.20 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
-    \hline
+    \hline\pagebreak
     RV.21 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
     \hline
 
@@ -3609,6 +3631,8 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \endfoot
 
 \hline
+    \caption{Tracciamento Fonte - Requisiti}
+    \label{tab:tracciamento_f-r}\\
 \endlastfoot
 
 \hyperref[uc:1]{UC1} & RF.1, RS.1 \\ \hline
@@ -3737,12 +3761,10 @@ Verbale esterno 2026/04/24 & RQ.7 \\ \hline
 Verbale esterno 2026/06/03 & RV.7, RV.8 \\ \hline
 Verbale esterno 2026/06/08 & RV.1, RV.4 \\ \hline
 Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14 \\ \hline
-    \caption{Tracciamento Fonte - Requisiti}
-    \label{tab:tracciamento_f-r}
 
 \end{longtable}
 
-\newpage
+
 
 \subsection{Tracciamento Requisito - Fonti}
 
@@ -3761,6 +3783,8 @@ Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14
 \endfoot
 
 \hline
+\caption{Tracciamento Requisiti - Fonte}
+\label{tab:tracciamento_r-f} \\         
 \endlastfoot
 
 RF.1 & \hyperref[uc:1]{UC1} \\ \hline
@@ -3905,9 +3929,6 @@ RS.2 & \hyperref[uc:6]{UC6} \\ \hline
 RS.3 & Verbale esterno 2026/03/23 \\ \hline
 RS.4 & \hyperref[uc:6]{UC6} \\ \hline
 RS.5 & Capitolato C2 \\ \hline
-
-    \caption{Tracciamento Requisiti - Fonte}
-    \label{tab:tracciamento_r-f}
 
 \end{longtable}
 
