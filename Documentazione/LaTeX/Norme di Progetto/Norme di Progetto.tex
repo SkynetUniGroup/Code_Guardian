@@ -102,7 +102,9 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  \\ \hline
         0.7 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone &  \\ \hline
+        0.6 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
         0.6 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
         0.5 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
         0.4 & 2026/05/12 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & Dario Pirrone \\ \hline
@@ -209,7 +211,7 @@ solamente alla loro prima occorrenza in questo documento.
 
 \subsection{Fornitura}
 \subsubsection{Avvio}
-Viene condotto un esame preliminare dei requisiti di ogni \textit{\glo{capitolato}{capitolato}} d'appalto tenendo conto delle politiche organizzative e di altri regolamenti, anche contattando i \textbf{\glo{Proponenti}{proponente}} per chiarimenti. I risultati sono documentati nella Valutazione dei Capitolati (LINK) per l'invio ai \textbf{\glo{Committenti}{committente}}. 
+Viene condotto un esame preliminare dei requisiti di ogni \textit{\glo{capitolato}{capitolato}} d'appalto tenendo conto delle politiche organizzative e di altri regolamenti, anche contattando i \textbf{\glo{Proponenti}{proponente}} per chiarimenti. I risultati sono documentati nella \href{https://github.com/SkynetUniGroup/Code_Guardian/blob/main/Documentazione/Candidatura/valutazione_capitolati_v1.0.pdf}{Valutazione dei Capitolati} per l'invio ai \textbf{\glo{Committenti}{committente}}. 
 
 Il gruppo decide collegialmente a quale capitolato candidarsi, assegnando a ogni capitolato un punteggio secondo parametri prestabiliti. Per ogni capitolato, deve essere data motivazione per l'accettazione o il rifiuto.
 
@@ -224,15 +226,15 @@ Può essere richiesta modifica degli obbiettivi di fornitura secondo il meccanis
 \subsubsection{Pianificazione}
 Deve essere condotta una revisione dei requisiti di acquisizione per definire il \textbf{\glo{framework}{framework}} del progetto e della qualità del prodotto SW. I risultati dell'\textbf{\glo{Analisi dei Requisiti}{analisi-dei-requisiti}} devono essere raccolti nel relativo documento e classificati. Gli obbiettivi e i criteri di qualità individuati devono essere raccolti e organizzati nel \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. 
 
-Deve essere scelto un modello di ciclo di vita. Il progetto è normato secondo un modello incrementale con metodologia \textit{\glo{Agile}{agile}} e framework \textit{\glo{Scrumban}{scrumban}}. La scelta di \textit{Scrumban} è motivata dall'avere la struttura di \textit{\glo{Scrum}{scrum}}, in grado di dare ordine al flusso di lavoro, ma con la flessibilità di \textit{\glo{Kanban}{kanban}}, venendo così incontro alla ristrettezza di personale e all'inesperienza del gruppo nell'applicare \textit{Scrum}, riducendo gli \textit{\glo{overhead gestionali}{overhead-gestionali}}. Si adottano \textit{\glo{Sprint}{sprint}} della durata di 2 settimane, con una riunione all'apertura/chiusura per l'organizzazione del lavoro e la \textit{\glo{Retrospettiva}{retrospettiva}} dello \textit{Sprint} precedente. I compiti individuati sono tracciati e assegnati nella board \textit{Kanban} di \textit{\glo{GitHub Projects}{github-projects}}. 
+Deve essere scelto un modello di ciclo di vita. Il progetto è normato secondo un modello incrementale con metodologia \textit{\glo{Agile}{agile}} e framework \textit{\glo{Scrumban}{scrumban}}. La scelta di \textit{Scrumban} è motivata dall'avere la struttura di \textit{\glo{Scrum}{scrum}}, in grado di dare ordine al flusso di lavoro, ma con la flessibilità di \textit{\glo{Kanban}{kanban}}, venendo così incontro alla ristrettezza di personale e all'inesperienza del gruppo nell'applicare \textit{Scrum}, riducendo gli \textit{\glo{overhead gestionali}{overhead-gestionali}}. Si adottano \textit{\glo{Sprint}{sprint}}, periodi a durata fissa di sviluppo focalizzato, con una riunione all'apertura/chiusura per l'organizzazione del lavoro e la \textit{\glo{Retrospettiva}{retrospettiva}} dello \textit{Sprint} precedente. I compiti individuati sono tracciati e assegnati nella board \textit{Kanban} di \textit{\glo{GitHub Projects}{github-projects}}. 
 
-Devono essere impostati il \textbf{\glo{Piano di Progetto}{piano-di-progetto}} (PdP) e il \textbf{Piano di Qualifica} (PdQ). Il PdP conterrà i costi totali previsti, in conformità con il \textit{Preventivo} Costi, e dividerà il lavoro in milestone associate alle \textit{\glo{Baseline}{baseline}} stabilite dal \textbf{Committente}. A livello operativo, ogni milestone sarà raggiunta con uno o più \textit{Sprint}, ognuno organizzato individualmente al suo inizio. Il \textbf{Piano di Progetto} deve contenere preventivi dei costi di ogni \textit{Sprint} e monitorarne l'andamento tramite \textit{\glo{Consuntivi}{consuntivo}} di fine \textit{Sprint}. Inoltre deve essere previsto il coinvolgimento del \textbf{Proponente}, con l'instaurazione di canali di comunicazione e riunioni periodiche.\\
+Devono essere impostati il \textbf{\glo{Piano di Progetto}{piano-di-progetto}} (PdP) e il \textbf{Piano di Qualifica} (PdQ). Il PdP conterrà i costi totali previsti, in conformità con il \textit{Preventivo} Costi, e dividerà il lavoro in milestone associate alle \textit{\glo{Baseline}{baseline}} stabilite dal \textbf{Committente}. A livello operativo, ogni milestone sarà raggiunta con più \textit{Sprint}, ognuno organizzato individualmente al suo inizio. Il \textbf{Piano di Progetto} deve contenere preventivi dei costi di ogni \textit{Sprint} e monitorarne l'andamento tramite \textit{\glo{Consuntivi}{consuntivo}} di fine \textit{Sprint}. Inoltre deve essere previsto il coinvolgimento del \textbf{Proponente}, con l'instaurazione di canali di comunicazione e riunioni periodiche.\\
 I requisiti del PdQ non sono ancora stati definiti.
 
 \textbf{Code Guardian} deve essere sviluppato internamente con l'uso dei servizi esterni previsti dal capitolato (es. \textit{\glo{AWS}{aws}}, \textit{\glo{Anthropic Claude}{anthropic-claude}}). I \textbf{Piani di Progetto} e \textbf{Qualifica} devono essere sviluppati in conformità con i requisiti qui sopra citati. Per una lista non esaustiva degli elementi da considerare nei piani, si può fare riferimento alla clausola 5.2.4.5 dello standard \textit{ISO/IEC 12207:1995}.
 
 \subsubsection{Esecuzione e controllo}
-SkyNet deve implementare ed eseguire i piani di gestione del progetto sviluppati e deve sviluppare il prodotto secondo il Processo di Sviluppo, \textit{Sprint} dopo \textit{Sprint}. 
+SkyNet deve implementare ed eseguire i piani di gestione del progetto sviluppati e deve sviluppare il prodotto secondo il Processo di Sviluppo (sezione 2.2), \textit{Sprint} dopo \textit{Sprint}. 
 
 Il progresso e la qualità del SW prodotto devono essere monitorati e controllati per tutta la durata del progetto. Questo compito deve essere continuativo, iterativo e deve provvedere a:
 \begin{itemize}
@@ -240,13 +242,13 @@ Il progresso e la qualità del SW prodotto devono essere monitorati e controllat
     \item Identificare, registrare, analizzare e risolvere i problemi.
 \end{itemize}
 
-SkyNet deve interfacciarsi con le altri parti (\textbf{Committenti}, \textbf{Proponente}) come specificato nel Regolamento di Progetto e nei \textbf{Piani di Progetto}. Per quanto riguarda i \textbf{Committenti}, ciò significa partecipare ai diari di bordo e candidarsi alle revisioni previste.
+SkyNet deve interfacciarsi con le altre parti come specificato nel Regolamento di Progetto e nei \textbf{Piani di Progetto}. Per quanto riguarda i \textbf{Committenti}, ciò significa partecipare ai diari di bordo, candidarsi alle revisioni previste e parteciparvi. Per quanto riguarda il \textbf{Proponente}, concordare i requisiti del progetto, cercare riscontro e conferma sui prodotti del progetto, partecipare alle riunioni esterne con l'azienda proponente e presentare e consegnare l'\textbf{MVP}.
 
 \subsubsection{Revisione e valutazione}
-Var Group: saranno condotte revisioni del progetto e del codice e Q\&A con Var Group nel corso delle riunioni settimanali o in appuntamenti prefissati, in conformità con i processi di revisione e ispezione (\textit{\glo{Audit}{audit}}).\\
+Var Group: saranno condotte revisioni del progetto e del codice e Q\&A con Var Group in appuntamenti prefissati, in conformità con i processi di revisione e ispezione (\textit{\glo{Audit}{audit}}).\\
 \textbf{Committenti}: le revisioni \textbf{\glo{RTB}{rtb}} e \textbf{\glo{PB}{pb}} avverranno ai momenti previsti dal Regolamento di Progetto, a sportello. Verrà messa a disposizione l'intera \textit{\glo{Repository}{repository}} con tutti gli artefatti, evidenziando i documenti essenziali come \textbf{\glo{Norme di Progetto}{norme-di-progetto}}, \textbf{Piano di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Qualifica}.
 
-Saranno eseguiti verifica e validazione, in conformità coi rispettivi processi qui definiti, per dimostrare che il prodotto SW soddisfi pienamente i requisiti.
+Saranno eseguiti verifica e validazione, in conformità con i rispettivi processi qui definiti, per dimostrare che il prodotto SW soddisfi pienamente i requisiti.
 
 \subsubsection{Consegna e completamento}
 SkyNet si impegna a consegnare il prodotto \textbf{Code Guardian}, composto dai seguenti elementi:
@@ -268,7 +270,6 @@ Non è prevista alcuna attività di installazione, supporto o manutenzione del p
 
 \subsection{Sviluppo}
 
-\subsubsection{Descrizione}
 Il processo di sviluppo regola l'organizzazione tecnica del team nella realizzazione del sistema. Per gestire in modo efficace la complessità del progetto e assegnare i compiti in modo delineato, le attività sono state suddivise in tre fasi principali:
 \begin{itemize}
     \item \textbf{Analisi dei Requisiti}
@@ -286,22 +287,23 @@ L'analisi ha l'obiettivo di formalizzare i bisogni del \textbf{Proponente} e tra
     \item individuare ed estrarre tutti i requisiti di sistema;
     \item modellare le funzionalità attese tramite \textit{\glo{Casi d'Uso}{use-case}};
     \item identificare gli \textit{\glo{Attori}{attore}} che interagiranno con l'applicativo;
-    \item fornire direttive chiare ai \textbf{\glo{Progettisti}{progettista}};
+    \item fornire ai \textbf{\glo{Progettisti}{progettista}} una base di riferimento da rispettare durante lo sviluppo del sistema;
     \item preparare una base solida per le successive attività di verifica.
 \end{itemize}
 
 Questa attività, in carico principalmente al ruolo di \textbf{\glo{Analista}{analista}}, porta alla stesura e all'aggiornamento del documento \textbf{Analisi dei Requisiti}. Tale documento costituisce la base di conoscenza fondamentale per lo sviluppo, mappando dettagliatamente il dominio del problema e le interazioni previste.
 
 \paragraph{\textit{Casi d'Uso}}
-I \textit{Casi d'Uso} descrivono le interazioni pratiche tra gli \textit{Attori} e il sistema. Ogni scenario, che sia principale o alternativo, viene definito indicando precondizioni, postcondizioni e il flusso degli eventi. Per la loro classificazione viene utilizzata la seguente convenzione:
+I \textit{Casi d'Uso} descrivono le interazioni pratiche tra gli \textit{Attori} e il sistema. Ogni scenario viene definito indicando precondizioni, postcondizioni e il flusso degli eventi. Per la loro classificazione viene utilizzata la seguente convenzione:
 
 \begin{center}
-\textbf{\texttt{UC[Id\ Principale].[Id\ Secondario] : [Nome\ Descrittivo]}}
+\textbf{\texttt{UC[Id\ Principale].[Id\ Secondario].[Id\ Terziario] : [Nome\ Descrittivo]}}
 \end{center}
 \begin{itemize}
     \item \textbf{UC}: acronimo di \textit{Use Case};
     \item \textbf{Id\ Principale}: numero progressivo che identifica il \textit{Caso d'Uso};
     \item \textbf{Id\ Secondario}: numero opzionale per indicare scenari specifici o diramazioni;
+    \item \textbf{Id\ Terziario}: numero opzionale per indicare scenari specifici o diramazioni;
     \item \textbf{Nome\ Descrittivo}: titolo sintetico che riassume l'azione descritta.
 \end{itemize}
 
@@ -353,25 +355,6 @@ Breve descrizione.
 \end{itemize}
 
 \newpage
-\subparagraph{Codice {\LaTeX} per gli scenari alternativi}
-\begin{verbatim}
-    \item \textbf{(Scenari alternativi)}:
-        \begin{enumerate}
-        \renewcommand{\labelenumi}{\Alph{enumi}.}
-        \renewcommand{\labelenumii}{\arabic{enumii}.}
-            \item Alternativa 1:
-            \begin{enumerate}
-                \item Passo 1.
-                \item ...
-            \end{enumerate}
-            \item Alternativa 2:
-            \begin{enumerate}
-                \item Passo 1.
-                \item ...
-            \end{enumerate}
-            \item ...
-        \end{enumerate}
-\end{verbatim}
 
 \paragraph{Requisiti}
 I requisiti identificano le singole funzionalità, i vincoli o le metriche di performance richieste al sistema. La loro tracciabilità è assicurata dal seguente formato:
@@ -386,7 +369,7 @@ I requisiti identificano le singole funzionalità, i vincoli o le metriche di pe
         \item \textbf{F}: \textit{Funzionale}, descrive un comportamento o un'operazione del sistema;
         \item \textbf{Q}: \textit{Qualitativo}, impone uno standard di sviluppo da rispettare;
         \item \textbf{V}: \textit{Vincolo}, indica una limitazione tecnologica o architetturale;
-        \item \textbf{S}: \textit{Sicurezza}, definisce i requisiti legati alla sicurezza.
+        \item \textbf{S}: \textit{Sicurezza}, definisce i requisiti legati alla sicurezza di SW.
     \end{itemize}
     \item \textbf{Identificativo}: indice numerico progressivo per l'identificazione univoca.
 \end{itemize}
@@ -400,12 +383,12 @@ Le scelte progettuali vengono formalizzate graficamente e testualmente all'inter
 \paragraph{Suddivisione delle Fasi Progettuali}
 Il ciclo di progettazione di \textbf{SkyNet} viene affrontato in modo incrementale, suddividendosi in due macro-fasi strategiche:
 \begin{itemize}
-    \item \textbf{Requirements and Technology Baseline (RTB):} questa fase è fortemente orientata allo studio di fattibilità e alla riduzione dei rischi tecnologici. Il team valuta i framework, le librerie e gli strumenti candidati per lo sviluppo. L'attività principale consiste nella realizzazione di un \textbf{\glo{Proof of Concept (PoC)}{poc}}, un prototipo software semplificato utile a verificare l'integrazione tra le tecnologie e a validare le scelte architetturali di base prima della produzione su larga scala.
+    \item \textbf{Requirements and Technology Baseline (RTB):} questa fase è fortemente orientata allo studio di fattibilità e alla riduzione dei rischi tecnologici. Il team valuta i framework, le librerie e gli strumenti candidati per lo sviluppo. L'attività principale consiste nella realizzazione di un \textbf{\glo{Proof of Concept (PoC)}{poc}}, un prototipo software semplificato utile a verificare la fattibilià dell'idea di progetto e l'integrazione tra le tecnologie scielte, prima della produzione su larga scala.
     \item \textbf{Product Baseline (PB):} una volta consolidata la fattibilità tecnologica, si passa alla progettazione di dettaglio del sistema definitivo. In questa fase viene definita l'architettura logica completa, specificando l'organizzazione dei pacchetti, la struttura delle classi, le interfacce di comunicazione e le modalità di \textbf{\glo{deployment}{deployment}} dell'applicazione.
 \end{itemize}
 
 \paragraph{Tracciamento dei Componenti}
-Al fine di garantire che nessuna funzionalità venga tralasciata e che non venga introdotto codice superfluo, \textbf{SkyNet} adotta una rigorosa strategia di tracciamento bidirezionale. Ogni componente software, classe o modulo descritto nella progettazione deve essere esplicitamente associato a uno o più requisiti funzionali o di vincolo individuati durante l'analisi. Questo processo permette di verificare costantemente la copertura dei requisiti e facilita l'analisi dell'impatto delle modifiche in caso di evoluzione del sistema.
+Al fine di garantire che nessuna funzionalità venga tralasciata e che non venga introdotto codice superfluo, \textbf{SkyNet} adotta una rigorosa strategia di tracciamento bidirezionale. Ogni componente software, classe o modulo descritto nella progettazione deve essere esplicitamente associato a uno o più requisiti individuati durante l'analisi. Questo processo permette di verificare costantemente la copertura dei requisiti e facilita l'analisi dell'impatto delle modifiche dureante evoluzione del sistema.
 
 \subsubsection{Codifica}
 
@@ -418,7 +401,7 @@ Per garantire un codice leggibile, facilmente manutenibile e ispezionabile dagli
     \item \textbf{Nomenclatura dei File:} i File devono avere nome univoco ed esplicativo del contenuto del File stesso;
     \item \textbf{Nomenclatura di Variabili e Funzioni:} i nomi devono essere autodescrittivi, scritti in lingua inglese e formattati tutto minuscolo e con underscore tra parole.
     \item \textbf{Nomenclatura delle Classi:} come per le variabili, i nomi sono in lingua inglese ma utilizzano la convenzione di avere iniziale maiuscola per ogni parola.
-    \item \textbf{Commenti:} l'uso di commenti strutturati è obbligatorio per ogni classe o funzione non banale, i commenti devono essere redatti in lingua italiana.
+    \item \textbf{Commenti:} l'uso di commenti strutturati è obbligatorio per ogni classe o funzione non banale, i commenti devono essere redatti in lingua inglese.
 \end{itemize}
 
 \section{Processi di supporto}
@@ -488,9 +471,9 @@ Questa sezione descrive come il gruppo gestisce le attività e i compiti previst
 
 Le attività previste per la gestione di processi sono le seguenti:
 
-\textbf{Inizializzazione} - \ldots le attività e i compiti da svolgere vengono identificati individuando gruppi di requisiti correlati, che possono essere obbligatori o facoltativi. E' necessario valutare attentamente la fattibilità di ogni singola attività e compito analizzando la disponibilità delle risorse necessarie per lo svolgimento.
+\textbf{Inizializzazione} - Le attività e i compiti da svolgere vengono identificati individuando gruppi di requisiti correlati, che possono essere obbligatori o facoltativi. È necessario valutare attentamente la fattibilità di ogni singola attività e compito analizzando la disponibilità delle risorse necessarie per lo svolgimento.
 
- \textbf{Pianificazione} - \ldots Pianificazione dell'esecuzione di attività e compiti. Il piano deve descrivere bene il compito, gli strumenti che utilizzeremo, preventivo e consuntivo dei costi, a chi viene assegnato il compito, scadenze e rischi potenziali.
+ \textbf{Pianificazione} - È la pianificazione dell'esecuzione di attività e compiti. Il piano deve descrivere bene il compito, gli strumenti che utilizzeremo, preventivo e consuntivo dei costi, a chi viene assegnato il compito, scadenze e rischi potenziali.
  
  \textbf{Esecuzione e Controllo} - Durante l'esecuzione del piano, per un'attività/compito è importante monitorare il progresso, i costi ed eventuali imprevisti. In caso di problemi il piano può essere modificato. Durante gli incontri con gli altri membri del gruppo, ed eventualmente anche con i tutor esterni, è necessario comunicare lo stato di avanzamento dell'attività.
  
@@ -520,9 +503,9 @@ Per assicurare che ogni aspetto di ogni attività precedente viene compiuto adot
 
 \paragraph{Riunioni}
 
-Ci sono 3 tipologie di riunioni in cui è necessario partecipare: interne, esterne, diari di bordo''.
+Ci sono 3 tipologie di riunioni in cui è necessario partecipare: interne, esterne, diari di bordo.
 
- {Riunioni Interne}\\
+\paragraph{Riunioni Interne}\mbox{}\\
 In queste riunioni partecipano esclusivamente i membri del gruppo SkyNet che lavorano sul progetto. Ogni membro è tenuto a partecipare.\\
 Le riunioni si svolgono alla fine e all'inizio di ogni \textit{Sprint}, e in caso di necessità, qualora si verifichino situazioni in cui sia necessario affrontare e risolvere un problema collettivamente.
 
@@ -547,7 +530,7 @@ Le tematiche discusse sono:
 
 Per ogni riunione interna occorre redigere un verbale che riassume gli argomenti discussi e le decisioni prese durante l'incontro, in ordine cronologico.
 
- {Riunioni Esterne}\\
+\paragraph{Riunioni Esterne}\mbox{}\\
 Partecipano i membri del gruppo SkyNet che lavorano sul progetto e collaboratori dall'agenzia \textbf{Proponente}. Vengono svolte quando una delle parti ritiene che sia necessario incontrarsi. Le tematiche di solito sono:
 
 \begin{itemize}
@@ -567,8 +550,8 @@ Partecipano i membri del gruppo SkyNet che lavorano sul progetto e collaboratori
 
 Per ogni riunione esterna occorre redigere un verbale che riassume gli argomenti discussi e le decisioni prese durante l'incontro, in ordine cronologico.
 
- {Diari di Bordo}\\
-\ldots{}
+\paragraph{Diari di Bordo}\mbox{}\\
+\ldots{[spiegare...]}
 
 \paragraph{Comunicazioni}
 
@@ -604,7 +587,7 @@ Questo processo si prende cura dell'infrastruttura necessaria per qualsiasi altr
 
 Le attività previste di questo processo sono:
 
-\textbf{Implementazione} - definizione ed implementazione dell'infrastruttura adottata. E' necessario considerare prestazioni, sicurezza, disponibilità, costi e vincoli di tempo.
+\textbf{Implementazione} - definizione ed implementazione dell'infrastruttura adottata. È necessario considerare prestazioni, sicurezza, disponibilità, costi e vincoli di tempo.
 
 \textbf{Creazione} - La configurazione dell'infrastruttura va pianificata e documentata.
 
@@ -612,7 +595,7 @@ Le attività previste di questo processo sono:
 
  \paragraph{Implementazione}
 
- \textit{Overleaf} - Un editor {\LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}}. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale. {[}Utilizziamo la versione gratuita che permette la collaborazione di al massimo due persone su un file.{]}
+ \textit{Overleaf} - Un editor {\LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}}. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale.
 
  Google Docs - Un elaboratore di testi gratuito basato sul web. Utilizzato per la scrittura collaborativa dei file di documentazione.
 
@@ -624,16 +607,16 @@ Le attività previste di questo processo sono:
  
  \textit{WhatsApp} - Un'app di messaggistica istantanea, utilizzata per la comunicazione interna, veloce e breve.
  
- \textit{GitHub} - Una piattaforma basata sul cloud che funge da servizio di hosting per i \textit{Repository} \textit{Git}, consentendo agli sviluppatori di archiviare, gestire, condividere e collaborare ai progetti di codice. E' inoltre un sistema di \textit{\glo{ticketing}{ticketing}}.\\
+ \textit{GitHub} - Una piattaforma basata sul cloud che funge da servizio di hosting per i \textit{Repository} \textit{Git}, consentendo agli sviluppatori di archiviare, gestire, condividere e collaborare ai progetti di codice. È inoltre un sistema di \textit{\glo{ticketing}{ticketing}}.\\
 Utilizzato per l'hosting del nostro \textit{Repository} di progetto e per tracciare ed organizzare i compiti (chiamati \textit{\glo{Issue}{issue}}) pianificati.
 
  \textit{Git} - È un sistema di controllo di versione distribuito \textbf{\glo{open source}{open-source}}. Permette di gestire la cronologia delle modifiche ai file in modo non lineare, facilitando la collaborazione tra più persone attraverso la ramificazione (\textit{\glo{Branching}{branching}}) e la fusione (\textit{\glo{Merging}{merging}}) del codice, indipendentemente dalla piattaforma di hosting utilizzata.
 
- \textit{\glo{GitHub Pages}{GitHub-Pages}} - E' un servizio gratuito di hosting per siti statici che trasforma i \textit{Repository} \textit{GitHub} direttamente in siti web ospitati. Lo utilizziamo per l'hosting del nostro sito web (\href{https://skynetunigroup.github.io/Code_Guardian/}{ {https://skynetunigroup.github.io/Code\_Guardian/}}) per la documentazione del progetto.
+ \textit{\glo{GitHub Pages}{GitHub-Pages}} - È un servizio gratuito di hosting per siti statici che trasforma i \textit{Repository} \textit{GitHub} direttamente in siti web ospitati. Lo utilizziamo per l'hosting del nostro sito web (\href{https://skynetunigroup.github.io/Code_Guardian/}{ {https://skynetunigroup.github.io/Code\_Guardian/}}) per la documentazione del progetto.
 
  \paragraph{Creazione}
 
- Google Docs - E' stato creato un file testuale condiviso per ogni documento necessario per la documentazione di progetto completa: Glossario, \textbf{Norme di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Progetto}, \ldots{[}aggiungeremo più dopo{]}.
+ Google Docs - È stato creato un file testuale condiviso per ciascun documento necessario per la documentazione di progetto completa: \textbf{Glossario}, \textbf{Norme di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica} e altri documenti che saranno aggiunti successivamente.
  
  Google Sheets - Sono stati creati due fogli di calcolo:
 
@@ -645,9 +628,9 @@ Utilizzato per l'hosting del nostro \textit{Repository} di progetto e per tracci
   grafico \textit{Burndown} - tracciamo quante \textit{Issue} chiudiamo ad ogni giorno dello \textit{Sprint} e quante ne rimangono
 \end{enumerate}
 
- \textit{Gmail} - E' stato creato un account di gruppo (\href{mailto:skynetunigroup@gmail.com}{ {skynetunigroup@gmail.com}}). Ogni membro può utilizzare liberamente l\textquotesingle account, previo consenso del gruppo per l\textquotesingle invio di email.
+ \textit{Gmail} - È stato creato un account di gruppo (\href{mailto:skynetunigroup@gmail.com}{ {skynetunigroup@gmail.com}}). Ogni membro può utilizzare liberamente l\textquotesingle account, previo consenso del gruppo per l\textquotesingle invio di email.
  
- \textit{Discord} - E' stato creato un server di gruppo che si chiama ``SkyNet - Code Guardian''. All'interno ci sono multipli canali testuali, divisi per argomento:
+ \textit{Discord} - È stato creato un server di gruppo che si chiama ``SkyNet - Code Guardian''. All'interno ci sono multipli canali testuali, divisi per argomento:
 
 \begin{itemize}
 \item
@@ -660,7 +643,7 @@ Utilizzato per l'hosting del nostro \textit{Repository} di progetto e per tracci
 
 C'è anche un canale vocale chiamato Incontro Interno.
 
- \textit{WhatsApp} - E' stato creato un gruppo \textit{WhatsApp} chiamato ``SkyNet SWE'' con ogni singolo membro presente.
+ \textit{WhatsApp} - È stato creato un gruppo \textit{WhatsApp} chiamato ``SkyNet SWE'' con ogni singolo membro presente.
  
  \textit{GitHub} - Il nostro \textit{Repository} remoto ``Code\_Guardian'' di progetto è presente al seguente indirizzo: \href{https://github.com/SkynetUniGroup/Code_Guardian}{ {https://github.com/SkynetUniGroup/Code\_Guardian}}. Contiene il codice sorgente, la documentazione e le risorse per il nostro sito web.\\
 Inoltre, è stato creato un ``progetto'' del \textit{Repository} chiamato ``TO DO Blackboard''. Lo scopo è di implementare il nostro \textit{Scrumban} \textit{Way of Working}. Contiene sei colonne tra cui spostiamo tutte le \textit{Issue} aperte finché non vengono chiuse. Le colonne sono:
@@ -696,7 +679,7 @@ Il processo di miglioramento ha lo scopo di stabilire, valutare, misurare, contr
 
 \paragraph{Valutazione del processo}
 
-Questa attività viene svolta a intervalli appropriati con lo scopo di identificare i punti di forza, criticità e le aree di miglioramento. E' un'attività cruciale per assicurare l'utilizzo di processi davvero utili ed efficienti, permettendo di intervenire tempestivamente su quelli che risultano non sufficientemente buoni, evitando così lo spreco di risorse.\\
+Questa attività viene svolta a intervalli appropriati con lo scopo di identificare i punti di forza, criticità e le aree di miglioramento. È un'attività cruciale per assicurare l'utilizzo di processi davvero utili ed efficienti, permettendo di intervenire tempestivamente su quelli che risultano non sufficientemente buoni, evitando così lo spreco di risorse.\\
 Al termine di ogni \textit{Sprint}, il gruppo svolge la \textit{Retrospettiva} esaminando i nuovi processi e i processi identificati come deboli. L'obiettivo è di documentare se e perché i risultati dei processi siano stati insoddisfacenti oppure se possono essere migliorati o velocizzati. Quest'attività viene svolta mettendo a confronto i risultati effettivi con quelli attesi attraverso una riflessione collettiva tra i membri coinvolti.
 
  \paragraph{Miglioramento del processo}
@@ -705,7 +688,7 @@ A seguito della valutazione del processo per ogni punto debole si identificano i
 
  \subsection{Formazione del Personale}
 
-Questo processo è parte integrante di un progetto sfidante, che prevede l'uso di tecniche e tecnologie nuove. E' volto a fornire e mantenere personale qualificato, allineando le competenze del gruppo alle esigenze tecniche del progetto.
+Questo processo è parte integrante di un progetto sfidante, che prevede l'uso di tecniche e tecnologie nuove. È volto a fornire e mantenere personale qualificato, allineando le competenze del gruppo alle esigenze tecniche del progetto.
 
  \subsubsection{Attività previste}
 
