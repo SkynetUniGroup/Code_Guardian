@@ -76,7 +76,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.18.1} \\ \hline
+            \textbf{Versione} & \textit{1.0.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -111,6 +111,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
 
+    1.0.0 & 2026/07/09 & Correzzioni minori e approvazione & Dario Pirrone & Sara Ristovic \\ \hline
     0.18.1 & 2026/07/09 & Aggiornati requisiti funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.18.0 & 2026/07/08 & Aggiunti diagrammi UML degli UC & Dario Pirrone & Sara Ristovic \\ \hline
     0.17.2 & 2026/07/07 & Verifica dettagliata del documento fino alla sezione 4 Agente Docs & Sara Ristovic & \textemdash \\ \hline
@@ -180,7 +181,7 @@ Per evitare ambiguità terminologiche e garantire una comprensione
 univoca del documento, i termini tecnici, gli acronimi e le parole che
 assumono un significato specifico nel contesto del progetto sono
 riportati nel documento \emph{Glossario}. Questi termini sono
-contrassegnati nel presente documento da una "G" a pedice ed è un
+contrassegnati nel presente documento da una "G" a pedice ed un
 collegamento ipertestuale che rimanda direttamente alla definizione
 corrispondente nel \emph{Glossario}. Tali parole vengono contrassegnate
 solamente alla loro prima occorrenza in questo documento.
@@ -193,9 +194,9 @@ I termini evidenziati in grassetto identificano concetti tecnici specifici del p
 
 \begin{itemize}
 \item
-  \textbf{\glo{Norme di Progetto}{norme-di-progetto}} v1.0.0
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/norme_di_progetto_v0.7.1.pdf}{\textbf{Norme di Progetto} v0.7.1}
 \item
-  \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}} v1.0.0
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/piano_di_qualifica_v0.5.0.pdf}{\textbf{Piano di Qualifica} v0.5.0}
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2p.pdf}{Capitolato
   d'appalto C2 - \textbf{Code Guardian}}
@@ -209,7 +210,7 @@ I termini evidenziati in grassetto identificano concetti tecnici specifici del p
 
 \begin{itemize}
 \item
-  Glossario v1.0.0
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf}{Glossario v0.2}
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T05.pdf}{Dispense
   \textbf{Analisi dei Requisiti}}
@@ -844,7 +845,7 @@ Questo caso d'uso descrive l'inserimento dell'identificativo numerico di una spe
 \begin{itemize}
     \item \textbf{Attore Primario}: Utente Generico.
     \item \textbf{Trigger}: L'utente seleziona il campo dedicato all'identificativo della \textit{Pull Request}.
-    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "\textit{Pull Request}" all'interno del menù a tendina della tipologia di riferimento (UC9.2).\end{itemize}
+    \item \textbf{Precondizioni}:\begin{itemize}\item L'utente ha selezionato l'opzione "\textit{Pull Request}" come tipologia di riferimento (UC9.2).\end{itemize}
     \item \textbf{Postcondizioni}:\begin{itemize}\item L'identificativo numerico della \textit{Pull Request} è stato valorizzato all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
@@ -3478,7 +3479,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
 
 
 \hline
-RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del Piano di Qualifica. & PdQ(MP\_13) \\ 
+RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. & PdQ(MP\_13) \\ 
 \hline
 RQ.2 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\%, come stabilito dalla metrica MP\_12 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_12) \\ 
 \hline
