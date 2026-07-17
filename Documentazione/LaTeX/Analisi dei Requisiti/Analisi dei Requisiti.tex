@@ -82,7 +82,7 @@
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic, Marco Barbiero, Dario Pirrone, Andrea Fistarol} \\ \hline
             \textbf{Verifica} & \textit{Dario Pirrone, Marco Barbiero, Samuele Bertin, Edoardo Granziero, Sara Ristovic} \\ \hline
-            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic} \\ \hline
+            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic, Marco Barbiero} \\ \hline
 
         \end{tabularx}
     \end{table}
@@ -111,8 +111,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
 
-    1.0.0 & 2026/07/09 & Correzzioni ad Agente Security & Sara Ristovic & Andrea Fistarol \\ \hline
-    0.18.2 & 2026/07/09 & Correzzioni minori e approvazione & Dario Pirrone & Sara Ristovic \\ \hline
+    1.0.0 & 2026/07/09 & Correzioni minori e approvazione da parte di Marco Barbiero & Sara Ristovic & Andrea Fistarol \\ \hline
     0.18.1 & 2026/07/09 & Aggiornati requisiti funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.18.0 & 2026/07/08 & Aggiunti diagrammi UML degli UC & Dario Pirrone & Sara Ristovic \\ \hline
     0.17.2 & 2026/07/07 & Verifica dettagliata del documento fino alla sezione 4 Agente Docs & Sara Ristovic & \textemdash \\ \hline
@@ -122,11 +121,11 @@
     0.15.2 & 2026/06/28 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic \\ \hline
     0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & Dario Pirrone & Sara Ristovic \\ \hline
-    0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazone e login & Dario Pirrone & Sara Ristovic \\ \hline
+    0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazione e login & Dario Pirrone & Sara Ristovic \\ \hline
     0.13.0 & 2026/06/08 & Aggiunti diagrammi UML per Agente Security e Agente Changelog & Dario Pirrone & Edoardo Granziero \\ \hline 
     0.12.1 & 2026/06/06 & Modificata numerazione UC e requisiti & Dario Pirrone & Edoardo Granziero \\ \hline 
-    0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito di incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero \\ \hline 
-    0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. ex UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
+    0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito del incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero \\ \hline 
+    0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. Ex UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero \\ \hline   
     0.10.0 & 2026/05/30 & Aggiunti requisiti RF.20 e RQ.4 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero \\ \hline        
     0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & Dario Pirrone & Edoardo Granziero \\ \hline
     0.8.1 & 2026/05/26 & Raffinati casi dell'agente Docs e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin \\ \hline
@@ -256,7 +255,7 @@ codice. Nello specifico, il prodotto si prefigge di:
 \subsection{Funzioni del prodotto}
 
 Il prodotto offre le sue funzionalità attraverso tre agenti
-specializzati coordinati da un \textbf{Orchestratore} centrale deterministrico, le funzioni degli agenti sono le seguenti:
+specializzati coordinati da un \textbf{Orchestratore} centrale deterministico, le funzioni degli agenti sono le seguenti:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -339,11 +338,11 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \subsubsection{\textit{Attori} Primari}
 
 \begin{itemize}
-    \item \textbf{Utente non Autenticato:} Rappresenta un individuo che visita la piattaforma \textbf{Code Guardian} ma non possiede ancora un account o non è stato ancora riconosciuto nella sessione corrente. Le sue interazioni con il sistema sono limitate esclusivamente alle procedure di ingresso: può effettuare la registrazione di un nuovo account oppure eseguire l'autenticazione (login), al fine di avviare una sessione attiva e acquisire i permessi associati alla propria specializzazione di Utente Generico.
+    \item \textbf{Utente non Autenticato:} Rappresenta un individuo che visita la piattaforma \textbf{Code Guardian} ma non possiede ancora un account o non è stato ancora riconosciuto nella sessione corrente. Le sue interazioni con il sistema sono limitate esclusivamente alle procedure d'ingresso: può effettuare la registrazione di un nuovo account oppure eseguire l'autenticazione (login), al fine di avviare una sessione attiva e acquisire i permessi associati alla propria specializzazione di Utente Generico.
 
     \item \textbf{Utente Generico:} Rappresenta l'\textit{Attore} di base del sistema dal quale ereditano tutti gli altri \textit{Attori} primari. Questo ruolo racchiude le facoltà e le interazioni comuni a qualsiasi utilizzatore della piattaforma, consentendo l'esecuzione dei casi d'uso definiti come trasversali, tra cui la selezione del \textit{Repository} \textit{Git}, la visualizzazione dei messaggi di errore e l'esportazione dei report prodotti.
     
-    \item \textbf{Sviluppatore:} Specializzazione di Utente Generico ed utente principale del sistema. Interagisce con gli agenti per delegare la redazione e l'aggiornamento della documentazione tecnica, per validare le proposte di modifica (approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}) e per ricevere feedback immediati sulle vulnerabilità di sicurezza del codice prodotto.
+    \item \textbf{Sviluppatore:} Specializzazione di Utente Generico e utente principale del sistema. Interagisce con gli agenti per delegare la redazione e l'aggiornamento della documentazione tecnica, per validare le proposte di modifica (approccio \textit{\glo{Human-in-the-loop}{human-in-the-loop}}) e per ricevere feedback immediati sulle vulnerabilità di sicurezza del codice prodotto.
     
     \item \textbf{\textit{Security Auditor} / \textit{Team Lead}:} Specializzazione di Utente Generico con responsabilità di governance. Definisce le regole di sviluppo sicuro e le policy interne tramite il file di configurazione \texttt{POLICY.md}, che l'Agente Security utilizzerà per verificare la conformità del codice prodotto dal team secondo il paradigma \textit{Policy-as-code}.
     
@@ -377,7 +376,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 
 \newpage
 \subsection{\textit{Casi d'Uso} trasversali}
-Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sotto-sezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
+Di seguito sono riportati i \textit{Casi d'Uso} trasversali, ovvero validi per due o più agenti, mentre quelli specifici verranno esposti nelle sottosezioni apposite all'interno di ciascuna sezione dedicata a ciascun agente.
 
 \subsubsection{UC1: Registrazione di un nuovo utente}\label{uc:1}
 Questo caso d'uso descrive il processo attraverso il quale un utente non ancora registrato (non riconosciuto) crea un nuovo account all'interno del sistema \textbf{Code Guardian}, definendo contestualmente il proprio ruolo operativo per l'accesso alle funzionalità degli agenti.
@@ -647,7 +646,7 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente fornisce al 
             \item L'utente accede alla sezione di configurazione del sistema.
             \item Il sistema richiede l'inserimento dei parametri di autenticazione.
             \item L'utente inserisce i dati richiesti.
-            \item Il sistema verifica la correttezza formale e effettua una chiamata di test per verificare i permessi delle chiavi inserite.
+            \item Il sistema verifica la correttezza formale ed effettua una chiamata di test per verificare i permessi delle chiavi inserite.
             \item Il sistema salva le credenziali e notifica all'utente il successo dell'operazione.
         \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
@@ -989,7 +988,7 @@ Questo caso d'uso consente all'utente di delimitare la porzione del \textit{Repo
     \end{itemize}
     \item \textbf{Estensioni}:
     \begin{itemize}
-        \item \textbf{UC17: Errore mancata selezione dell'ambito}. Estende il passo 1 qualora l'utente tenti di confermare l'avvio delle operazioni senza aver selezionato alcun elemento o opzione di analisi, mostrando un messaggio informativo a schermo.
+        \item \textbf{UC17: Errore mancata selezione dell'ambito}. Estende il passo 1 qualora l'utente tenti di confermare l'avvio delle operazioni senza aver selezionato alcun elemento od opzione di analisi, mostrando un messaggio informativo a schermo.
         \item \textbf{UC18: Errore elementi non esistenti o non accessibili}. Estende il passo 2 qualora uno o più file o directory selezionati non siano più presenti o accessibili nel riferimento remoto, mostrando un messaggio di errore esplicativo.
         \item \textbf{UC19: Errore superamento limiti dimensionali dell'ambito}. Estende il passo 2 qualora il volume complessivo di righe di codice o di file selezionati superi la capacità massima di elaborazione del modello \textit{LLM}, mostrando un messaggio di errore esplicativo e richiedendo di restringere la selezione.
     \end{itemize}
@@ -1012,7 +1011,7 @@ Questo caso d'uso descrive la selezione dell'intero \textit{Repository Git} come
     \item \textbf{Postcondizioni}:\begin{itemize}\item L'intero \textit{Repository} è stato impostato e valorizzato come ambito di analisi nel form.\end{itemize}
     \item \textbf{Scenario Principale}:
     \begin{enumerate}
-        \item L'utente seleziona il comando di inclusione totale del \textit{Repository}.
+        \item L'utente seleziona il comando d'inclusione totale del \textit{Repository}.
         \item Il sistema seleziona automaticamente tutte le cartelle e i file contenuti nel \textit{Repository Git}.
     \end{enumerate}
     \end{itemize}
@@ -2117,7 +2116,7 @@ Questo caso d'uso descrive la visualizzazione di un contenitore formattato speci
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il codice è visibile a schermo, preferibilmente con evidenziazione della sintassi.
+        \item Il codice è visibile a schermo.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2957,7 +2956,7 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security ve
         \item Il sistema estrae il codice sorgente dell'ambito selezionato tramite le \textit{API} di Git.
         \item Il sistema compone il prompt contestuale unendo il codice estratto con le regole di \textit{policy} lette, per poi inviarlo alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} confronta il codice con le direttive di sviluppo sicuro e restituisce al sistema l'elenco delle violazioni normative riscontrate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
-        \item Il sistema formatta le non-conformità ottenute per la visualizzazione strutturata nel report, associandole alla categoria di regola infranta, al file/riga in cui si verifica l'anomalia (UC26.2.2) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC26.2.3) o di testo formattato (UC26.2.1).
+        \item Il sistema formatta le non conformità ottenute per la visualizzazione strutturata nel report, associandole alla categoria di regola infranta, al file/riga in cui si verifica l'anomalia (UC26.2.2) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC26.2.3) o di testo formattato (UC26.2.1).
         \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile all'utente il report (UC26).
     \end{enumerate}
     \item \textbf{Estensioni:}
@@ -3011,7 +3010,7 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato un Changelog tecnico scritto in formato \textit{Markdown} ed inserito nel report (UC26.2.1).
+        \item Il sistema ha generato un Changelog tecnico scritto in formato \textit{Markdown} e inserito nel report (UC26.2.1).
         \item L'utente visualizza il report dell'operazione (UC26), all'interno del quale è presente, se richiesta inizialmente, l'opzione per proseguire con la generazione del Changelog di Business.
     \end{itemize}
     \item \textbf{Scenario Principale:}
@@ -3130,7 +3129,7 @@ Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{C
     \item \textbf{Estensioni:}
     \begin{itemize}
         \item \textbf{UC31: Notifica email per richiesta validazione umana}. Estende il passo 2 qualora l'utente non sia attivamente sulla piattaforma, inviando un'email per notificare la sospensione e richiedere un intervento manuale.
-        \item \textbf{UC44: Annullamento generazione per metadati mancanti.} Estende il passo 3 qualora l'utente scelga l'opzione "Annulla operazione", bloccando il processo per recarsi sul Sistema di Task Management ad integrare manualmente i testi mancanti.
+        \item \textbf{UC44: Annullamento generazione per metadati mancanti.} Estende il passo 3 qualora l'utente scelga l'opzione "Annulla operazione", bloccando il processo per recarsi sul Sistema di Task Management a integrare manualmente i testi mancanti.
     \end{itemize}
 \end{itemize}
 
@@ -3173,7 +3172,7 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato un \textit{Changelog} di Business scritto in formato \textit{Markdown} ed inserito nel report (UC26.2.1).
+        \item Il sistema ha generato un \textit{Changelog} di Business scritto in formato \textit{Markdown} e inserito nel report (UC26.2.1).
         \item L'utente visualizza un nuovo report aggiornato (UC26) con il testo finale.
     \end{itemize}\newpage
     \item \textbf{Scenario Principale:}
@@ -3340,7 +3339,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.48 & Obbligatorio & In caso di fallimento architetturale o di routing di una specifica \textit{Task}, l'\textbf{Orchestratore} deve garantire l'isolamento dell'errore per non compromettere le altre attività parallele in corso. & \hyperref[uc:23]{UC23} \\ \hline
     
-    RF.49 & Opzionale & Il sistema deve permettere all'utente di accedere ad un archivio storico e visualizzare la lista aggregata di tutti i report precedentemente generati e salvati, mostrando delle informazioni per ogni elemento. & \hyperref[uc:24]{UC24}, \hyperref[uc:24.1]{UC24.1} \\ \hline
+    RF.49 & Opzionale & Il sistema deve permettere all'utente di accedere a un archivio storico e visualizzare la lista aggregata di tutti i report precedentemente generati e salvati, mostrando delle informazioni per ogni elemento. & \hyperref[uc:24]{UC24}, \hyperref[uc:24.1]{UC24.1} \\ \hline
     
     RF.50 & Opzionale & Il sistema deve mostrare all'interno del blocco grafico del singolo report nel archivio storico, il relativo codice identificativo univoco. & \hyperref[uc:24.1]{UC24.1}, \hyperref[uc:24.1.1]{UC24.1.1} \\ \hline
     
@@ -3348,7 +3347,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.52 & Opzionale & Il sistema deve visualizzare all'interno del blocco grafico del singolo report le informazioni temporali di completamento, nello specifico la data e l'orario esatto di generazione. & \hyperref[uc:24.1.3]{UC24.1.3}, \hyperref[uc:24.1.4]{UC24.1.4} \\ \hline
 
-    RF.53 & Obbligatorio & Il sistema deve consentire all'utente la selezione e la visualizzazione del report defiderato. & \hyperref[uc:25]{UC25}, \hyperref[uc:26]{UC26} \\ \hline
+    RF.53 & Obbligatorio & Il sistema deve consentire all'utente la selezione e la visualizzazione del report desiderato. & \hyperref[uc:25]{UC25}, \hyperref[uc:26]{UC26} \\ \hline
     
     RF.54 & Obbligatorio & Il sistema deve strutturare il report dividendolo in una sezione di intestazione e una di corpo del report con il contenuto effettivo. & \hyperref[uc:26.1]{UC26.1}, \hyperref[uc:26.2]{UC26.2} \\ \hline
     
