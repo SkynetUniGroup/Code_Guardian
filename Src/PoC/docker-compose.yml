@@ -13,7 +13,14 @@ services:
       # vuoi usare il provider `ollama`, avvialo nativamente sull'host. Su
       # Docker Desktop (macOS/Windows) `host.docker.internal` risolve
       # automaticamente all'host; su Linux serve la voce `extra_hosts` sotto.
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      # Valore FISSO, non interpolato da `.env`: quel file di solito contiene
+      # OLLAMA_BASE_URL=http://localhost:11434 (il default corretto per l'uso
+      # nativo), che dentro un container punterebbe al container stesso, non
+      # all'host. Se lasciassimo `${OLLAMA_BASE_URL:-...}`, quel valore
+      # vincerebbe silenziosamente sul default qui sotto ogni volta che
+      # esiste un `.env` — esattamente il bug che ha causato ore di
+      # debugging su un errore "Connection refused" del tutto innocente.
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
       - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5-coder:7b}
       - AGENT_TIMEOUT_S=${AGENT_TIMEOUT_S:-45}
       - MAX_OUTPUT_TOKENS=${MAX_OUTPUT_TOKENS:-4096}

@@ -32,7 +32,10 @@ esattamente come se avessi passato quegli argomenti a mano. È il modo più
 rapido per fare una prima prova. Se scegli Claude, ti chiede anche la
 chiave — a schermo non la vedi comparire mentre la digiti — e la tiene solo
 in memoria per quell'esecuzione: non la scrive né in `.env` né altrove. Se
-ne hai già una configurata e non vuoi ridigitarla, basta premere Invio.
+ne hai già una configurata e non vuoi ridigitarla, basta premere Invio. Al
+termine ti chiede se vuoi eseguire un'altra operazione: puoi provare più
+agenti, o lo stesso agente su repository diversi, senza rilanciare il
+comando ogni volta.
 
 ### Opzione 1 — Docker (consigliata)
 
@@ -47,7 +50,10 @@ progettuali](#scelte-progettuali), con tanto di numeri. In breve: se vuoi
 usare il provider `ollama`, installalo ed eseguilo direttamente sulla tua
 macchina (stessi comandi dell'[Opzione 2, sezione
 A](#opzione-a--ollama-locale-gratis)); il container lo raggiunge comunque,
-tramite `host.docker.internal`.
+tramite `host.docker.internal` — un indirizzo **fisso**, definito solo in
+`docker-compose.yml`, che non risente di eventuali valori diversi lasciati
+in `.env` (dove `OLLAMA_BASE_URL` punta correttamente a `localhost`, ma
+solo per l'installazione nativa).
 
 #### 1. Configurazione
 
@@ -68,7 +74,7 @@ docker compose build
 docker compose run --rm --entrypoint make code-guardian test
 ```
 
-I 51 test non hanno bisogno di nessun provider: girano offline dentro al
+I 62 test non hanno bisogno di nessun provider: girano offline dentro al
 container, esattamente come nell'installazione nativa.
 
 #### 3. Esegui un agente
@@ -89,12 +95,18 @@ docker compose run --rm code-guardian changelog --tasks examples/sprint_tasks.js
 
 Il provider usato è quello che hai messo in `LLM_PROVIDER` in `.env`; per
 una singola esecuzione puoi sovrascriverlo aggiungendo `--provider ollama`
-(o `anthropic`, `fake`) in coda al comando. Per verificare rapidamente che
-l'immagine funzioni, senza bisogno di un provider vero:
+(o `anthropic`, `fake`) in coda al comando.
 
 ```bash
 docker compose run --rm code-guardian owasp --repo examples/sample_repo --provider fake
 ```
+
+Questo comando **non produce un risultato utile**: `fake` non chiama nessun
+modello, risponde sempre con dati finti, quindi il report che ottieni sarà
+sempre `status: fallito`. Serve solo a controllare che l'immagine sia
+costruita bene e che il collegamento fra i pezzi funzioni — se vuoi vedere
+un riscontro vero (una vulnerabilità trovata, una proposta di
+documentazione), ti serve `--provider ollama` o `--provider anthropic`.
 
 #### 4. Analizza un tuo repository (non quello d'esempio)
 
@@ -120,8 +132,9 @@ docker compose down
 
 | Sintomo | Causa probabile | Cosa fare |
 |---|---|---|
-| `RuntimeError: ANTHROPIC_API_KEY non impostata` | Hai scelto il provider `anthropic` ma non hai messo la chiave in `.env` | Aggiungi `ANTHROPIC_API_KEY` a `.env`, oppure usa `--provider ollama`/`fake` |
-| Report con `status: fallito` e `"Ollama non raggiungibile"` | Non hai un Ollama nativo in esecuzione sull'host, oppure `host.docker.internal` non risolve | Avvia `ollama serve` sull'host (vedi Opzione 2, sezione A); su Linux assicurati di avere Docker ≥ 20.10 (serve per `host-gateway`) |
+| `Configurazione mancante: ANTHROPIC_API_KEY non impostata` | Hai scelto il provider `anthropic` ma non hai messo la chiave in `.env` | Aggiungi `ANTHROPIC_API_KEY` a `.env`, oppure usa `--provider ollama`/`fake`. In modalità guidata non blocca l'app: rispondi "sì" a "Vuoi eseguire un'altra operazione?" e scegli un altro provider |
+| Report con `status: fallito` e `"Ollama non raggiungibile"` (`Errno 111`/`Errno 61`, "Connection refused") | 1) Ollama non è in esecuzione sull'host, oppure 2) — solo se hai un `.env` creato prima di [questo fix](#scelte-progettuali) — `OLLAMA_BASE_URL` in `.env` sovrascriveva `host.docker.internal` con `localhost`, indirizzando il container verso se stesso | Verifica che `ollama serve` sia attivo sull'host (Opzione 2, sezione A); se il problema persiste con Ollama sicuramente attivo, prova a farlo ascoltare su tutte le interfacce (`OLLAMA_HOST=0.0.0.0`, vedi il riquadro nella sezione A) — capita più spesso su Windows con WSL2 |
+| Report con `status: fallito` e `"Nessuna risposta entro Ns"` col provider `ollama` | Un modello locale (specie il 7B di default) è lento: è normale che superi qualche decina di secondi, anche su hardware con GPU | Di norma non serve fare nulla: il default per `ollama` è già 300s (vedi sotto). Se serve ancora di più, aggiungi `--timeout 600` (o il valore che preferisci) |
 | Il file passato con `--repo`/`--tasks` non si trova dentro al container | Hai passato un percorso del tuo host, ma dentro al container non esiste | Copia il file o la cartella in `./data/` e usa il percorso `/data/...` (vedi passo 4) |
 
 ### Opzione 2 — installazione nativa (senza Docker)
@@ -191,11 +204,19 @@ Il progetto supporta tre `LLMProvider`, intercambiabili tra loro. Nessuno è
 richiesto per eseguire i test (passo 4): serve solo quando vuoi far girare
 davvero un agente (passo 5).
 
-| Provider | Cosa richiede | Costo | Quando ha senso |
-|---|---|---|---|
-| `fake` | Niente | Zero | Prove rapide in locale, senza rete |
-| `ollama` | Ollama installato e **in esecuzione** | Zero | Sviluppo offline |
-| `anthropic` | Una `ANTHROPIC_API_KEY` valida | A pagamento | Quando vuoi risultati di qualità (Claude) |
+**Solo `ollama` e `anthropic` producono risultati veri** (una vulnerabilità
+trovata, una proposta di documentazione, un changelog). `fake` non chiama
+nessun modello: risponde sempre con dati finti, quindi qualunque agente tu
+lanci con `--provider fake` otterrà un report con `status: fallito` — è il
+comportamento atteso, non un errore. Serve solo a verificare che
+l'installazione (venv, dipendenze, Docker) funzioni, senza spendere nulla e
+senza toccare la rete.
+
+| Provider | Cosa richiede | Costo | Produce risultati veri? | Quando ha senso |
+|---|---|---|---|---|
+| `fake` | Niente | Zero | **No, sempre `fallito`** | Verificare che l'installazione funzioni |
+| `ollama` | Ollama installato e **in esecuzione** | Zero | Sì | Sviluppo offline |
+| `anthropic` | Una `ANTHROPIC_API_KEY` valida | A pagamento | Sì | Quando vuoi risultati di qualità (Claude) |
 
 **Il default è `anthropic`**, se non specifichi nulla. Puoi cambiarlo in due
 modi equivalenti — se li usi entrambi, vince quello sulla riga di comando:
@@ -226,6 +247,39 @@ succede niente di drammatico: l'agente restituisce semplicemente un report
 con `status: fallito` e un messaggio che dice "Ollama non raggiungibile:
 [Errno 61] Connection refused".
 
+Un modello locale è più lento di Claude — anche con accelerazione GPU, una
+scansione OWASP può richiedere un minuto o più. Per questo, quando il
+provider è `ollama` e non passi `--timeout` esplicitamente, il limite di
+default non è i 45s di RQ.7 (pensati per Claude) ma **300s**
+(`OLLAMA_AGENT_TIMEOUT_S` in `.env`, se vuoi cambiarlo). Se anche 300s non
+bastano — hardware più lento, repository più grandi — aggiungi
+`--timeout 600` o il valore che preferisci.
+
+**Solo se esegui l'app tramite Docker** (Opzione 1) mentre Ollama resta
+nativo su questa macchina, e nonostante `host.docker.internal` risolva
+correttamente il container continua a ricevere "Connection refused": può
+darsi che Ollama, in ascolto solo su `127.0.0.1`, rifiuti richieste che
+arrivano dalla rete virtuale di Docker invece che da loopback — capita più
+spesso su Windows con WSL2, più raramente su macOS. Fallo ascoltare su
+tutte le interfacce prima di avviarlo:
+
+```bash
+# macOS / Linux
+OLLAMA_HOST=0.0.0.0 ollama serve
+```
+
+```powershell
+# Windows (PowerShell)
+$env:OLLAMA_HOST = "0.0.0.0"
+ollama serve
+```
+
+Se usi l'app Ollama invece del comando da terminale, imposta `OLLAMA_HOST`
+come variabile d'ambiente di sistema permanente e riavvia l'app — non legge
+variabili impostate solo per la sessione del terminale. Se esegui l'app
+nativamente (Opzione 2, senza Docker) sulla stessa macchina, questo passo
+non serve: `localhost` funziona già senza modifiche.
+
 ##### Opzione B — Claude (Anthropic, a pagamento)
 
 In `.env`:
@@ -235,10 +289,12 @@ LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=sk-...
 ```
 
-Senza questa chiave, i comandi che usano il provider `anthropic` si
-fermano con un errore Python (`RuntimeError: ANTHROPIC_API_KEY non
-impostata`) ancora prima di eseguire l'agente. Non è un malfunzionamento
-dell'applicazione: è solo una configurazione mancante.
+Senza questa chiave, i comandi che usano il provider `anthropic` si fermano
+prima di eseguire l'agente, con il messaggio "Configurazione mancante:
+ANTHROPIC_API_KEY non impostata" e codice d'uscita `1` — niente traceback,
+in modalità guidata puoi anche scegliere subito un altro provider senza che
+il programma si chiuda. Non è un malfunzionamento dell'applicazione: è solo
+una configurazione mancante.
 
 > **Nota di sicurezza (RS.4).** Se usi l'API Anthropic diretta, scegli un
 > livello di servizio che garantisca che il codice sorgente analizzato non
@@ -247,7 +303,7 @@ dell'applicazione: è solo una configurazione mancante.
 #### 4. Esegui i test (nessun provider richiesto)
 
 ```bash
-make test        # 51 test, offline, deterministici, a costo zero
+make test        # 62 test, offline, deterministici, a costo zero
 make coverage     # come sopra, con in più il report di copertura
 ```
 
@@ -286,7 +342,7 @@ python3 scripts/measure_accuracy.py --provider ollama
 
 | Sintomo | Causa probabile | Cosa fare |
 |---|---|---|
-| `RuntimeError: ANTHROPIC_API_KEY non impostata` (traceback Python) | Hai scelto il provider `anthropic` ma manca la chiave | Impostala in `.env`, oppure `export ANTHROPIC_API_KEY=sk-...`, oppure passa `--provider ollama`/`fake` |
+| `Configurazione mancante: ANTHROPIC_API_KEY non impostata` | Hai scelto il provider `anthropic` ma manca la chiave | Impostala in `.env`, oppure `export ANTHROPIC_API_KEY=sk-...`, oppure passa `--provider ollama`/`fake`. In modalità guidata non blocca l'app: puoi scegliere subito un altro provider |
 | Report con `status: fallito` e `"Ollama non raggiungibile"` | Il server Ollama non è in esecuzione | Apri un terminale ed esegui `ollama serve` |
 | `ModuleNotFoundError: No module named 'code_guardian'` | Il pacchetto non è installato e non hai impostato `PYTHONPATH` | `pip install -e ".[dev]"` dentro un venv attivo, oppure anteponi `PYTHONPATH=src` al comando |
 | `ModuleNotFoundError: No module named 'pydantic'` (o `langgraph`, `pydantic_settings`) | Il venv non è attivo, o l'installazione è incompleta | `source .venv/bin/activate` poi `pip install -e ".[dev]"` |
@@ -337,6 +393,17 @@ piedi.
 
 ## Scelte progettuali
 
+**Il timeout di RQ.7 vale per Claude, non per Ollama.** `config.py` ha due
+soglie separate: `agent_timeout_s` (45s, RQ.7) e `ollama_agent_timeout_s`
+(300s). `cli.py` sceglie quale usare in base al provider effettivo *solo*
+se `--timeout` non è stato passato esplicitamente (che vince sempre,
+qualunque provider). Non è un default scelto a caso: misurato su questo
+stesso progetto, una scansione OWASP con `qwen2.5-coder:7b` ha impiegato
+oltre 60 secondi anche su Apple Silicon con accelerazione Metal — un
+modello locale è strutturalmente più lento di un'API cloud, e forzarlo
+sotto lo stesso limite avrebbe reso `ollama` di fatto inutilizzabile per
+qualunque repository non banale.
+
 **L'app è containerizzata, Ollama no.** Solo `code-guardian` gira in un
 container; il provider `ollama` resta pensato per un'installazione nativa
 sull'host, che il container raggiunge tramite `host.docker.internal` (la
@@ -353,6 +420,20 @@ secondi. Anche la variante più leggera, da 1,5 miliardi di parametri,
 restava sotto i 6 token al secondo. Containerizzare comunque Ollama avrebbe
 solo spostato il problema (un'immagine da ~2,7 GB, più modelli da 1 a 5 GB
 l'uno), senza risolvere la questione di fondo, che è la velocità.
+
+**`OLLAMA_BASE_URL` è un valore fisso in `docker-compose.yml`, non
+interpolato da `.env`.** Una prima versione usava
+`${OLLAMA_BASE_URL:-http://host.docker.internal:11434}`: sembra innocuo
+(un default con fallback), ma se `.env` esiste — cioè sempre, dato che il
+passo 1 chiede di crearlo da `.env.example` — la variabile lì dentro
+(`OLLAMA_BASE_URL=http://localhost:11434`, corretta per l'installazione
+nativa) vinceva silenziosamente sul default pensato per Docker. Il
+risultato: il container tentava di contattare se stesso invece dell'host,
+con un errore di connessione (`Errno 111`/`Errno 61`) indistinguibile, nei
+sintomi, da un Ollama davvero spento o da un problema di rete — abbiamo
+perso tempo reale a diagnosticarlo prima di trovare la causa. La lezione:
+quando un valore deve restare sotto controllo del compose e non del `.env`
+dell'utente, va scritto letterale, senza interpolazione `${...}`.
 
 **Il grafo gira su LangGraph.** I cinque nodi sono uno `StateGraph`, e
 usano `AgentState` — la dataclass già definita in `ports.py`, non
@@ -399,7 +480,17 @@ flag (script, CI) non vede alcuna differenza, perché il wizard scatta solo
 a fronte di un argv vuoto; se l'input finisce prima del previsto — capita
 facilmente in ambienti non interattivi, come un container senza terminale
 — la modalità guidata se ne accorge e chiude con un messaggio chiaro,
-invece di un traceback su `EOFError`.
+invece di un traceback su `EOFError`. Dopo ogni esecuzione, `main` chiede se
+proseguire: se sì, richiama `run_wizard` da capo — è l'unico punto in cui
+l'invocazione guidata si comporta diversamente da quella con i flag, che
+resta a esecuzione singola apposta, per non sorprendere script e pipeline.
+
+Un'eccezione a parte è `RuntimeError` (ad esempio `ANTHROPIC_API_KEY` non
+impostata): non nasce dal grafo — arriva da `build_provider`, chiamato
+*prima* che il grafo esista, quindi la garanzia "il grafo non solleva mai"
+non la copre. `_run_once` la cattura esplicitamente e stampa un messaggio,
+così una configurazione mancante non fa uscire dal ciclo: chi è in modalità
+guidata torna semplicemente al menu.
 
 **La chiave Anthropic inserita nel wizard non tocca mai il disco.** Se
 scegli il provider `anthropic` in modalità guidata, `run_wizard` la chiede
@@ -440,7 +531,7 @@ diverso da zero in questo caso, il che torna utile in una pipeline CI.
 
 ## Stato della verifica
 
-- 51 test, tutti verdi, eseguiti senza toccare la rete.
+- 62 test, tutti verdi, eseguiti senza toccare la rete.
 - Copertura dei moduli core: circa il **92%** (l'obiettivo RQ.5 era ≥ 75%).
 - Il diff prodotto dall'agente Docs è stato verificato applicandolo davvero,
   con `patch`.

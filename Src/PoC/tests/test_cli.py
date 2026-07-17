@@ -5,7 +5,8 @@ import unittest
 from contextlib import redirect_stdout
 from unittest.mock import Mock, patch
 
-from code_guardian.cli import AGENT_CHOICES, PROVIDER_CHOICES, _choose, main, run_wizard
+from code_guardian.cli import AGENT_CHOICES, PROVIDER_CHOICES, _ask_continue, _choose, _run_once, main, run_wizard
+from code_guardian.config import settings
 
 
 def _scripted(*responses):
@@ -83,13 +84,77 @@ class TestRunWizard(unittest.TestCase):
         secret_fn.assert_not_called()
 
 
+class TestAskContinue(unittest.TestCase):
+    def test_risposte_affermative(self):
+        for risposta in ("s", "S", "si", "sì", "y", "yes", "  si  "):
+            self.assertTrue(_ask_continue(_scripted(risposta)), risposta)
+
+    def test_invio_o_risposta_negativa(self):
+        for risposta in ("", "n", "no", "boh"):
+            self.assertFalse(_ask_continue(_scripted(risposta)), risposta)
+
+    def test_input_esaurito_non_solleva(self):
+        def _eof(_prompt=""):
+            raise EOFError
+
+        self.assertFalse(_ask_continue(_eof))
+
+
+class TestRunOnce(unittest.TestCase):
+    def test_chiave_anthropic_mancante_non_solleva(self):
+        argv = ["owasp", "--repo", "examples/sample_repo", "--provider", "anthropic"]
+        with patch("code_guardian.cli.build_provider", side_effect=RuntimeError("ANTHROPIC_API_KEY non impostata")):
+            out = io.StringIO()
+            with redirect_stdout(out):
+                exit_code = _run_once(argv, api_key=None)
+        self.assertEqual(exit_code, 1)
+        self.assertIn("Configurazione mancante", out.getvalue())
+        self.assertIn("ANTHROPIC_API_KEY non impostata", out.getvalue())
+
+
+class TestRunOnceTimeout(unittest.TestCase):
+    def _timeout_usato(self, argv):
+        with patch("code_guardian.cli.build_provider"):
+            with patch("code_guardian.cli.AgentGraph") as agent_graph_cls:
+                fake_report = Mock(status="completato")
+                fake_report.to_json.return_value = "{}"
+                agent_graph_cls.return_value.run.return_value = fake_report
+                with redirect_stdout(io.StringIO()):
+                    _run_once(argv, api_key=None)
+        return agent_graph_cls.call_args.kwargs["timeout_s"]
+
+    def test_ollama_usa_il_default_piu_alto(self):
+        argv = ["owasp", "--repo", "examples/sample_repo", "--provider", "ollama", "--format", "json"]
+        self.assertEqual(self._timeout_usato(argv), settings.ollama_agent_timeout_s)
+
+    def test_altri_provider_usano_rq7(self):
+        for provider in ("anthropic", "fake"):
+            argv = ["owasp", "--repo", "examples/sample_repo", "--provider", provider, "--format", "json"]
+            self.assertEqual(self._timeout_usato(argv), settings.agent_timeout_s, provider)
+
+    def test_flag_esplicito_vince_sempre(self):
+        argv = [
+            "owasp",
+            "--repo",
+            "examples/sample_repo",
+            "--provider",
+            "ollama",
+            "--timeout",
+            "10",
+            "--format",
+            "json",
+        ]
+        self.assertEqual(self._timeout_usato(argv), 10)
+
+
 class TestMainModalitaGuidata(unittest.TestCase):
     def test_nessun_argomento_attiva_il_wizard(self):
         argv_sintetizzato = ["owasp", "--repo", "examples/sample_repo", "--provider", "fake"]
         out = io.StringIO()
         with patch("code_guardian.cli.run_wizard", return_value=(argv_sintetizzato, None)) as wizard:
-            with redirect_stdout(out):
-                main([])
+            with patch("code_guardian.cli._ask_continue", return_value=False):
+                with redirect_stdout(out):
+                    main([])
         wizard.assert_called_once()
         self.assertIn("agente `owasp`", out.getvalue())
 
@@ -99,14 +164,63 @@ class TestMainModalitaGuidata(unittest.TestCase):
                 main(["owasp", "--repo", "examples/sample_repo", "--provider", "fake"])
         wizard.assert_not_called()
 
+    def test_argomenti_espliciti_non_chiedono_di_continuare(self):
+        # Invocazione scriptabile: una sola esecuzione, mai il prompt del loop.
+        with patch("code_guardian.cli._ask_continue") as ask_continue:
+            with redirect_stdout(io.StringIO()):
+                main(["owasp", "--repo", "examples/sample_repo", "--provider", "fake"])
+        ask_continue.assert_not_called()
+
     def test_chiave_raccolta_dal_wizard_arriva_al_provider(self):
         argv_sintetizzato = ["owasp", "--repo", "examples/sample_repo", "--provider", "anthropic"]
         with patch("code_guardian.cli.run_wizard", return_value=(argv_sintetizzato, "sk-dal-wizard")):
-            with patch("code_guardian.cli.build_provider") as build_provider:
-                build_provider.return_value.complete.return_value = "{}"
+            with patch("code_guardian.cli._ask_continue", return_value=False):
+                with patch("code_guardian.cli.build_provider") as build_provider:
+                    build_provider.return_value.complete.return_value = "{}"
+                    with redirect_stdout(io.StringIO()):
+                        main([])
+        build_provider.assert_called_once_with("anthropic", api_key="sk-dal-wizard")
+
+    def test_il_wizard_si_ripete_finche_lutente_non_si_ferma(self):
+        argv1 = ["owasp", "--repo", "examples/sample_repo", "--provider", "fake"]
+        argv2 = ["docs", "--repo", "examples/sample_repo", "--provider", "fake"]
+        with patch("code_guardian.cli.run_wizard", side_effect=[(argv1, None), (argv2, None)]) as wizard:
+            with patch("code_guardian.cli._ask_continue", side_effect=[True, False]) as ask_continue:
                 with redirect_stdout(io.StringIO()):
                     main([])
-        build_provider.assert_called_once_with("anthropic", api_key="sk-dal-wizard")
+        self.assertEqual(wizard.call_count, 2)
+        self.assertEqual(ask_continue.call_count, 2)
+
+    def test_una_sola_risposta_negativa_ferma_il_wizard(self):
+        argv = ["owasp", "--repo", "examples/sample_repo", "--provider", "fake"]
+        with patch("code_guardian.cli.run_wizard", return_value=(argv, None)) as wizard:
+            with patch("code_guardian.cli._ask_continue", return_value=False):
+                with redirect_stdout(io.StringIO()):
+                    main([])
+        wizard.assert_called_once()
+
+    def test_chiave_mancante_torna_al_menu_invece_di_bloccare_lapp(self):
+        # Riproduce lo scenario segnalato: provider anthropic senza chiave,
+        # nessun traceback, e il wizard riparte per un secondo giro.
+        argv_anthropic = ["owasp", "--repo", "examples/sample_repo", "--provider", "anthropic"]
+        argv_fake = ["owasp", "--repo", "examples/sample_repo", "--provider", "fake"]
+        provider_fake_riuscito = Mock()
+        provider_fake_riuscito.complete.return_value = "{}"
+        with patch(
+            "code_guardian.cli.run_wizard",
+            side_effect=[(argv_anthropic, None), (argv_fake, None)],
+        ) as wizard:
+            with patch("code_guardian.cli._ask_continue", side_effect=[True, False]):
+                with patch(
+                    "code_guardian.cli.build_provider",
+                    side_effect=[RuntimeError("ANTHROPIC_API_KEY non impostata"), provider_fake_riuscito],
+                ):
+                    out = io.StringIO()
+                    with redirect_stdout(out):
+                        exit_code = main([])
+        self.assertEqual(wizard.call_count, 2)
+        self.assertIn("Configurazione mancante", out.getvalue())
+        self.assertEqual(exit_code, 1)
 
 
 if __name__ == "__main__":

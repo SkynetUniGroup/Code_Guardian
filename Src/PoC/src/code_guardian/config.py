@@ -41,8 +41,13 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "qwen2.5-coder:7b"
 
-    # RQ.7: un singolo agente non deve superare i 45 secondi.
+    # RQ.7: un singolo agente non deve superare i 45 secondi. Pensato per
+    # Claude (cloud): un modello locale via Ollama e' strutturalmente piu'
+    # lento (misurato: oltre 60s anche su Apple Silicon con accelerazione
+    # Metal per una scansione OWASP), quindi ha un default piu' alto e
+    # separato invece di sforare sistematicamente RQ.7.
     agent_timeout_s: int = 45
+    ollama_agent_timeout_s: int = 300
     max_output_tokens: int = 4096
 
     # RV.6: linguaggi supportati.

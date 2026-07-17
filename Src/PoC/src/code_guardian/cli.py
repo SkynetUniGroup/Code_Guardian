@@ -11,7 +11,10 @@ Esempi:
 
 Lanciata senza argomenti, la CLI entra invece in una modalità guidata: chiede
 agente e modello a domande, poi si comporta esattamente come sopra (vedi
-`run_wizard`).
+`run_wizard`). Al termine chiede se eseguire un'altra operazione, così puoi
+provare più agenti o più repository senza rilanciare il comando ogni volta;
+l'invocazione con i flag resta invece a esecuzione singola, per non
+sorprendere script e pipeline CI.
 """
 
 from __future__ import annotations
@@ -39,7 +42,7 @@ AGENT_CHOICES = [
 PROVIDER_CHOICES = [
     ("anthropic", "Claude (Anthropic) — la qualità migliore, richiede una chiave API a pagamento"),
     ("ollama", "Ollama — gratis, gira in locale, deve essere già avviato"),
-    ("fake", "Fake — nessuna rete, utile solo per una prova rapida"),
+    ("fake", "Fake — nessuna rete, risposta finta: verifica solo che l'app funzioni, NON produce riscontri reali"),
 ]
 
 
@@ -68,7 +71,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--tasks", help="fixture JSON delle User Stories (agente changelog)")
     p.add_argument("--sprint", help="identificativo dello sprint (agente changelog)")
     p.add_argument("--provider", choices=["anthropic", "ollama", "fake"], help="fornitore di modello")
-    p.add_argument("--timeout", type=int, default=settings.agent_timeout_s, help="limite in secondi (RQ.7)")
+    p.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help=(
+            "limite in secondi; default in base al provider "
+            f"({settings.agent_timeout_s}s, RQ.7, o {settings.ollama_agent_timeout_s}s per ollama)"
+        ),
+    )
     p.add_argument("--format", choices=["json", "md"], default="md", help="formato dell'esito")
     return p
 
@@ -116,8 +127,6 @@ def run_wizard(
     digitare nulla lascia decidere alla configurazione abituale (`.env` o
     ambiente), esattamente come nell'invocazione con i flag.
     """
-    print("Nessun comando indicato: parto in modalità guidata.\n")
-
     agent = _choose("Quale agente vuoi eseguire?", AGENT_CHOICES, input_fn)
     provider = _choose("\nQuale modello vuoi usare?", PROVIDER_CHOICES, input_fn)
 
@@ -145,12 +154,64 @@ def run_wizard(
     return argv, api_key
 
 
+def _ask_continue(input_fn: Callable[[str], str] = input) -> bool:
+    """Chiede se eseguire un'altra operazione. Invio, input esaurito o
+    risposta non affermativa: no."""
+    try:
+        raw = input_fn("Vuoi eseguire un'altra operazione? [s/N]: ")
+    except EOFError:
+        return False
+    return raw.strip().lower() in ("s", "si", "sì", "y", "yes")
+
+
+def _run_once(raw_argv: list[str], api_key: str | None) -> int:
+    """Esegue un agente e stampa il report. Usata sia dall'invocazione con i
+    flag (una sola volta) sia da ciascun giro della modalità guidata."""
+    args = build_parser().parse_args(raw_argv)
+
+    loader, profile, ref = _wire(args)
+    try:
+        provider = build_provider(args.provider, api_key=api_key)
+    except RuntimeError as exc:
+        # Configurazione mancante (es. ANTHROPIC_API_KEY assente): non è un
+        # errore dell'agente, quindi non passa dal grafo — il provider non
+        # esiste ancora a questo punto. Lo segnaliamo senza far esplodere il
+        # processo, cosi' la modalità guidata puo' tornare al menu invece di
+        # chiudersi con un traceback.
+        print(f"Configurazione mancante: {exc}")
+        return 1
+
+    # Stessa risoluzione di build_provider(): se --timeout non è stato dato
+    # esplicitamente, il default dipende dal provider effettivo (ollama, in
+    # locale, è strutturalmente più lento di Claude — vedi config.py).
+    timeout_s = args.timeout
+    if timeout_s is None:
+        provider_name = (args.provider or settings.llm_provider).lower()
+        timeout_s = settings.ollama_agent_timeout_s if provider_name == "ollama" else settings.agent_timeout_s
+
+    graph = AgentGraph(loader=loader, profile=profile, provider=provider, timeout_s=timeout_s)
+
+    report = graph.run(ref)
+
+    print(report.to_json() if args.format == "json" else to_markdown(report))
+    # Codice d'uscita non nullo se l'agente è fallito: utile in pipeline CI.
+    return 1 if report.status == "fallito" else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     raw_argv = sys.argv[1:] if argv is None else argv
-    wizard_api_key = None
-    if not raw_argv:
+    if raw_argv:
+        # Argomenti espliciti: un'esecuzione sola, comportamento scriptabile
+        # invariato (script, CI). Il ciclo qui sotto vale solo per la
+        # modalità guidata.
+        return _run_once(raw_argv, api_key=None)
+
+    print("Nessun comando indicato: parto in modalità guidata.\n")
+
+    exit_code = 0
+    while True:
         try:
-            raw_argv, wizard_api_key = run_wizard()
+            wizard_argv, wizard_api_key = run_wizard()
         except EOFError:
             print("Nessun input disponibile: passa gli argomenti da riga di comando (--help per l'elenco).")
             return 1
@@ -158,17 +219,18 @@ def main(argv: list[str] | None = None) -> int:
             print("\nInterrotto.")
             return 130
 
-    args = build_parser().parse_args(raw_argv)
+        exit_code = _run_once(wizard_argv, wizard_api_key)
 
-    loader, profile, ref = _wire(args)
-    provider = build_provider(args.provider, api_key=wizard_api_key)
-    graph = AgentGraph(loader=loader, profile=profile, provider=provider, timeout_s=args.timeout)
+        print()
+        try:
+            if not _ask_continue():
+                break
+        except KeyboardInterrupt:
+            print("\nInterrotto.")
+            break
+        print()
 
-    report = graph.run(ref)
-
-    print(report.to_json() if args.format == "json" else to_markdown(report))
-    # Codice d'uscita non nullo se l'agente è fallito: utile in pipeline CI.
-    return 1 if report.status == "fallito" else 0
+    return exit_code
 
 
 if __name__ == "__main__":
