@@ -20,9 +20,8 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-# --------------------------------------------------------------------------
+
 # Enumerazioni
-# --------------------------------------------------------------------------
 
 AgentName = Literal["docs", "owasp", "changelog"]
 Status = Literal["completato", "avviso", "fallito", "annullato"]
@@ -38,9 +37,8 @@ class _Immutable(BaseModel):
     model_config = ConfigDict(frozen=True)
 
 
-# --------------------------------------------------------------------------
+
 # Contesto ed errore
-# --------------------------------------------------------------------------
 
 
 class Ref(_Immutable):
@@ -64,9 +62,8 @@ class ErrorInfo(_Immutable):
     message: str
 
 
-# --------------------------------------------------------------------------
+
 # Remediation
-# --------------------------------------------------------------------------
 
 
 class TextRemediation(_Immutable):
@@ -83,9 +80,8 @@ class SnippetRemediation(_Immutable):
 Remediation = Annotated[Union[TextRemediation, SnippetRemediation], Field(discriminator="kind")]
 
 
-# --------------------------------------------------------------------------
+
 # Blocchi del corpo del report
-# --------------------------------------------------------------------------
 
 
 class Location(_Immutable):
@@ -125,9 +121,8 @@ class FindingBlock(_Immutable):
 Block = Annotated[Union[TextBlock, FindingBlock], Field(discriminator="kind")]
 
 
-# --------------------------------------------------------------------------
+
 # Proposta di modifica (mai applicata: solo proposta -- RS.1)
-# --------------------------------------------------------------------------
 
 
 class FileChange(_Immutable):
@@ -142,9 +137,8 @@ class Proposal(_Immutable):
     pr_link: str | None = None
 
 
-# --------------------------------------------------------------------------
+
 # Envelope
-# --------------------------------------------------------------------------
 
 
 class Report(BaseModel):
@@ -158,7 +152,7 @@ class Report(BaseModel):
     proposal: Proposal | None = None
     error: ErrorInfo | None = None
 
-    # -- serializzazione ---------------------------------------------------
+    # -- serializzazione
 
     def to_dict(self) -> dict:
         return self.model_dump(mode="json")

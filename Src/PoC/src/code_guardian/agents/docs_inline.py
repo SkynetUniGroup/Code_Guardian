@@ -37,9 +37,9 @@ class Unit:
 
     file: str
     name: str
-    line: int        # 1-based, riga della definizione
+    line: int        
     indent: str
-    source: str      # estratto di codice mostrato al modello
+    source: str      
 
 
 class DocsInlineProfile(AgentProfile):
@@ -52,7 +52,7 @@ class DocsInlineProfile(AgentProfile):
         self._units: dict[tuple[str, int], Unit] = {}
         self._sources: dict[str, str] = {}
 
-    # -- composizione del prompt -------------------------------------------
+    # -- composizione del prompt
 
     def build_prompt(self, ctx: LoadedContext) -> Prompt:
         system, user_tpl = load_template(self._template)
@@ -64,8 +64,7 @@ class DocsInlineProfile(AgentProfile):
                 self._units[(u.file, u.line)] = u
 
         if not self._units:
-            # Nessuna unita' da documentare: si interroga comunque il modello con
-            # un elenco vuoto, che restituira' {"docs": [], "warnings": []}.
+            # Nessuna unita' da documentare: si interroga comunque il modello con un elenco vuoto, che restituira' {"docs": [], "warnings": []}.
             rendered = "(nessuna unita' priva di documentazione)"
         else:
             rendered = "\n\n".join(
@@ -75,7 +74,7 @@ class DocsInlineProfile(AgentProfile):
 
         return Prompt(system=system, user=render(user_tpl, units=rendered))
 
-    # -- rilevamento (eseguito PRIMA della chiamata al modello) --------------
+    # -- rilevamento (eseguito PRIMA della chiamata al modello)
 
     def detect_undocumented(self, path: str, text: str) -> list[Unit]:
         if path.endswith(PY_EXT):
@@ -98,8 +97,7 @@ class DocsInlineProfile(AgentProfile):
                 continue
             line = node.lineno
             indent = " " * (node.col_offset)
-            # L'AST conosce il confine reale dell'unita': l'estratto non sconfina
-            # nella definizione successiva.
+            # L'AST conosce il confine reale dell'unita': l'estratto non sconfina nella definizione successiva.
             end = min(node.end_lineno or line, line - 1 + self._context_lines)
             out.append(
                 Unit(path, node.name, line, indent, "\n".join(lines[line - 1 : end]))
@@ -132,7 +130,7 @@ class DocsInlineProfile(AgentProfile):
         end = min(len(lines), line - 1 + self._context_lines)
         return "\n".join(lines[line - 1 : end])
 
-    # -- validazione e parsing ---------------------------------------------
+    # -- validazione e parsing
 
     def parse_output(self, raw: str) -> tuple[tuple[Block, ...], Proposal | None]:
         data = extract_json(raw)
@@ -160,7 +158,7 @@ class DocsInlineProfile(AgentProfile):
         blocks = tuple(self._warning(w, i) for i, w in enumerate(data.get("warnings", []) or []))
         return blocks, proposal
 
-    # -- interni ------------------------------------------------------------
+    # -- interni
 
     def _diff(self, path: str, items: list[dict]) -> str:
         original = self._sources.get(path, "")

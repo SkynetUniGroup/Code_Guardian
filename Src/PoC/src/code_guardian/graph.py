@@ -57,7 +57,7 @@ class AgentGraph:
         self._timeout_s = timeout_s or settings.agent_timeout_s
         self._compiled = self._build_graph()
 
-    # -- costruzione del grafo -----------------------------------------------
+    # -- costruzione del grafo
 
     def _build_graph(self):
         g = StateGraph(AgentState)
@@ -86,7 +86,7 @@ class AgentGraph:
     def _route(st: AgentState) -> str:
         return "errore" if st.error is not None else "continua"
 
-    # -- nodi di lavoro -------------------------------------------------------
+    # -- nodi di lavoro
     # Ognuno cattura le proprie eccezioni: prima le AgentError (che portano
     # gia' il proprio error_type), poi qualunque altra eccezione imprevista,
     # ricondotta a ParseError. Nessuno dei due casi propaga: entrambi scrivono
@@ -101,7 +101,7 @@ class AgentGraph:
                 )
         except AgentError as exc:
             return {"error": exc}
-        except Exception as exc:  # pragma: no cover - adapter esterni imprevisti
+        except Exception as exc: 
             return {"error": ParseError(str(exc))}
         return {"loaded_context": ctx}
 
@@ -111,7 +111,7 @@ class AgentGraph:
             prompt = self._profile.build_prompt(st.loaded_context)
         except AgentError as exc:
             return {"error": exc}
-        except Exception as exc:  # pragma: no cover
+        except Exception as exc:
             return {"error": ParseError(str(exc))}
         return {"prompt": prompt}
 
@@ -130,7 +130,7 @@ class AgentGraph:
                 )
         except AgentError as exc:
             return {"error": exc}
-        except Exception as exc:  # pragma: no cover - rete/IO imprevisti
+        except Exception as exc: 
             return {"error": ParseError(str(exc))}
         return {"raw_output": raw}
 
@@ -140,11 +140,11 @@ class AgentGraph:
             blocks, proposal = self._profile.parse_output(st.raw_output)
         except AgentError as exc:
             return {"error": exc}
-        except Exception as exc:  # pragma: no cover - es. ValidationError di Pydantic
+        except Exception as exc: 
             return {"error": ParseError(str(exc))}
         return {"blocks": blocks, "proposal": proposal}
 
-    # -- nodi terminali ---------------------------------------------------
+    # -- nodi terminali
     # `started_at`/`duration_ms` non fanno parte dello stato: vengono
     # valorizzati da `run()` sul Report finale, cosi' la durata misurata
     # copre l'intera esecuzione del grafo (compresa la costruzione del
@@ -156,7 +156,7 @@ class AgentGraph:
         if any(getattr(b, "category", None) == "avviso" for b in st.blocks):
             status = "avviso"
         report = Report(
-            agent=self._profile.agent,  # type: ignore[arg-type]
+            agent=self._profile.agent, 
             operation=self._profile.operation,
             context=st.context_ref,
             status=status,
@@ -169,17 +169,17 @@ class AgentGraph:
         exc = st.error
         error_type = getattr(exc, "error_type", "parse")
         report = Report(
-            agent=self._profile.agent,  # type: ignore[arg-type]
+            agent=self._profile.agent, 
             operation=self._profile.operation,
             context=st.context_ref,
             status="fallito",
             blocks=(),
             proposal=None,
-            error=ErrorInfo(type=error_type, message=str(exc)),  # type: ignore[arg-type]
+            error=ErrorInfo(type=error_type, message=str(exc)),
         )
         return {"report": report}
 
-    # -- esecuzione ---------------------------------------------------------
+    # -- esecuzione 
 
     def run(self, ref) -> Report:
         """Esegue la pipeline. Non solleva mai: gli errori finiscono nel Report."""
@@ -189,9 +189,9 @@ class AgentGraph:
         try:
             result = self._compiled.invoke(AgentState(context_ref=ref))
             report = result["report"]
-        except Exception as exc:  # pragma: no cover - difesa: LangGraph non deve mai propagare
+        except Exception as exc: 
             report = Report(
-                agent=self._profile.agent,  # type: ignore[arg-type]
+                agent=self._profile.agent, 
                 operation=self._profile.operation,
                 context=ref,
                 status="fallito",

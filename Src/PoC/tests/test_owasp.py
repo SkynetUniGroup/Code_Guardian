@@ -27,7 +27,7 @@ def _resp(**over):
 class TestOwaspProfile(unittest.TestCase):
     def setUp(self):
         self.p = OwaspScanProfile()
-        self.p.build_prompt(CTX)  # popola i file noti
+        self.p.build_prompt(CTX)
 
     def test_prompt_da_file_esterno(self):
         prompt = self.p.build_prompt(CTX)

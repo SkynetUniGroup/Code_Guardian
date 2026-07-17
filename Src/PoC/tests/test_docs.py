@@ -66,7 +66,7 @@ class TestDocsParsing(unittest.TestCase):
         self.assertEqual(blocks, ())
         self.assertIsNotNone(proposal)
         self.assertEqual(proposal.kind, "inline_doc")
-        self.assertIsNone(proposal.pr_link)  # RS.1: nessuna PR nel PoC
+        self.assertIsNone(proposal.pr_link) 
         diff = proposal.files[0].unified_diff
         self.assertIn('+    """Somma due numeri."""', diff)
         self.assertIn("--- a/m.py", diff)

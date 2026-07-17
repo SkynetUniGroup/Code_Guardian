@@ -1,5 +1,3 @@
-<!-- Prompt dell'agente OWASP, operazione: owasp_scan.
-     File esterno e versionato: nessuna istruzione al modello vive nel codice (RQ.8). -->
 
 [SYSTEM]
 Sei un revisore di sicurezza applicativa. Analizzi codice sorgente alla ricerca

@@ -67,7 +67,7 @@ class TestChangelogProfile(unittest.TestCase):
     def test_esito_testuale_con_avvisi_per_gli_scarti(self):
         self.p.build_prompt(_ctx([BUONO, POVERO]))
         blocks, proposal = self.p.parse_output("# Changelog\n\n## Funzionalità\n- Token a scadenza.")
-        self.assertIsNone(proposal)  # nessuna proposta di diff
+        self.assertIsNone(proposal)
         self.assertEqual(blocks[0].kind, "text")
         avvisi = [b for b in blocks if getattr(b, "category", None) == "avviso"]
         self.assertEqual(len(avvisi), 1)

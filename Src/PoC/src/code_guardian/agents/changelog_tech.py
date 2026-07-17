@@ -20,8 +20,7 @@ from ._base import load_template, render
 
 DONE_STATES = {"done", "closed", "completed", "completato", "chiuso"}
 
-#: Soglia minima di una descrizione utile. Sotto questa, la storia non porta
-#: informazione sufficiente per un changelog e viene esclusa.
+#: Soglia minima di una descrizione utile. Sotto questa, la storia non porta informazione sufficiente per un changelog e viene esclusa.
 MIN_DESCRIPTION_CHARS = 30
 
 
@@ -42,7 +41,7 @@ class ChangelogTechProfile(AgentProfile):
         self._kept: list[dict] = []
         self._sprint_id: str = "?"
 
-    # -- composizione del prompt -------------------------------------------
+    # -- composizione del prompt
 
     def build_prompt(self, ctx: LoadedContext) -> Prompt:
         system, user_tpl = load_template(self._template)
@@ -62,7 +61,7 @@ class ChangelogTechProfile(AgentProfile):
             user=render(user_tpl, sprint_id=self._sprint_id, tasks=self._format(self._kept)),
         )
 
-    # -- cancello di qualita' (UC42) ----------------------------------------
+    # -- cancello di qualita' (UC42)
 
     @staticmethod
     def quality_gate(tasks: list[dict]) -> tuple[list[dict], list[Excluded]]:
@@ -98,11 +97,10 @@ class ChangelogTechProfile(AgentProfile):
             )
         return "\n\n".join(out)
 
-    # -- validazione e parsing ---------------------------------------------
+    # -- validazione e parsing
 
     def parse_output(self, raw: str) -> tuple[tuple[Block, ...], Proposal | None]:
-        # L'esito e' prosa Markdown, non dati strutturati: la validazione e' piu'
-        # lieve, ma non assente.
+        # L'esito e' prosa Markdown, non dati strutturati: la validazione e' piu'lieve, ma non assente.
         text = (raw or "").strip()
         if not text:
             raise ParseError("Il modello ha restituito un changelog vuoto.")
@@ -123,7 +121,6 @@ class ChangelogTechProfile(AgentProfile):
         )
         return tuple(blocks), None
 
-    # -- arricchimento ------------------------------------------------------
 
     def _enrich(self, markdown: str) -> str:
         """Aggiunge in coda i collegamenti alle storie originarie."""

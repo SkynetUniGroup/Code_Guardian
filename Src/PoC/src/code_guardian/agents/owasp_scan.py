@@ -44,7 +44,7 @@ class OwaspScanProfile(AgentProfile):
         self._template = template
         self._known_files: dict[str, int] = {}
 
-    # -- composizione del prompt -------------------------------------------
+    # -- composizione del prompt
 
     def build_prompt(self, ctx: LoadedContext) -> Prompt:
         system, user_tpl = load_template(self._template)
@@ -66,7 +66,7 @@ class OwaspScanProfile(AgentProfile):
 
         return Prompt(system=system, user=render(user_tpl, policy=policy, files="\n\n".join(blocks)))
 
-    # -- validazione e parsing ---------------------------------------------
+    # -- validazione e parsing
 
     def parse_output(self, raw: str) -> tuple[tuple[Block, ...], Proposal | None]:
         data = extract_json(raw)
@@ -77,10 +77,10 @@ class OwaspScanProfile(AgentProfile):
 
         blocks: list[Block] = [self._to_finding(item, i) for i, item in enumerate(data["findings"])]
         # Ordina per gravita' decrescente: l'utente vede prima cio' che conta.
-        blocks.sort(key=lambda b: SEVERITY_ORDER.index(b.severity), reverse=True)  # type: ignore[attr-defined]
+        blocks.sort(key=lambda b: SEVERITY_ORDER.index(b.severity), reverse=True) 
         return tuple(blocks), None
 
-    # -- interni ------------------------------------------------------------
+    # -- interni
 
     def _to_finding(self, item: object, idx: int) -> FindingBlock:
         if not isinstance(item, dict):

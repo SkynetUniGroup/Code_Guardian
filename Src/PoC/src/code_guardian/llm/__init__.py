@@ -138,8 +138,7 @@ def build_provider(name: str | None = None, api_key: str | None = None) -> LLMPr
     if name == "ollama":
         return OllamaProvider()
     if name == "fake":
-        # Pilotabile da riga di comando per gli smoke test:
-        #   FAKE_RESPONSE="$(cat risposta.json)" python -m code_guardian.cli owasp ...
+        # Pilotabile da riga di comando per gli smoke test: FAKE_RESPONSE="$(cat risposta.json)" python -m code_guardian.cli owasp ...
         import os
 
         return FakeLLMProvider(os.environ.get("FAKE_RESPONSE", "{}"))

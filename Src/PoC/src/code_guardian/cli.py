@@ -84,7 +84,7 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
-# -- modalità guidata --------------------------------------------------------
+# -- modalità guidata
 #
 # Attiva solo quando la CLI è lanciata senza argomenti: chi conosce già i
 # flag continua a usarli esattamente come prima, in modo scriptabile (CI

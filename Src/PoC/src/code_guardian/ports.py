@@ -13,9 +13,8 @@ from typing import Any
 from .models import Block, ContextRef, Proposal, Report
 
 
-# --------------------------------------------------------------------------
+
 # Tipi di scambio fra i nodi
-# --------------------------------------------------------------------------
 
 
 @dataclass(frozen=True)
@@ -26,9 +25,9 @@ class LoadedContext:
     `payload` e' un contenitore libero per contesti non-codice (Changelog).
     """
 
-    files: tuple[tuple[str, str], ...] = ()  # (path relativo, contenuto)
+    files: tuple[tuple[str, str], ...] = () 
     payload: Any = None
-    extra: dict[str, Any] = field(default_factory=dict)  # es. CLAUDE.md
+    extra: dict[str, Any] = field(default_factory=dict) 
 
     def is_empty(self) -> bool:
         return not self.files and not self.payload
@@ -54,9 +53,8 @@ class AgentState:
     error: Exception | None = None
 
 
-# --------------------------------------------------------------------------
+
 # Porte
-# --------------------------------------------------------------------------
 
 
 class ContextLoader(ABC):

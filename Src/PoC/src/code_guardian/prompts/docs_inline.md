@@ -1,4 +1,3 @@
-<!-- Prompt dell'agente Docs, operazione: inline_docs. -->
 
 [SYSTEM]
 Sei un redattore di documentazione tecnica. Ricevi unita' di codice (funzioni,
