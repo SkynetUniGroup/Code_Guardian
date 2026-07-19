@@ -278,16 +278,6 @@ In conformità con il \textit{Way of Working}, l'obiettivo è assicurare l'alta 
     \end{xltabular}
 
 
-\paragraph{Formula dell'Indice di Gulpease:}
-L'indice di Gulpease utilizzato per la metrica \textbf{MP\_05} è calcolato secondo la seguente formula matematica:
-\begin{equation}
-I_G = 89 + \frac{
-300 \cdot \left( \text{Numero\ totale\ delle\ frasi} \right)
-- 10 \cdot \left( \text{Numero\ totale\ delle\ lettere} \right)
-}{
-\text{Numero\ totale\ delle\ parole}
-}
-\end{equation}
 
 \subsubsection{Verifica}
 La verifica misura l'efficacia del piano di testing applicato al software, garantendo l'assenza di regressioni e una copertura ottimale del codice.
@@ -877,10 +867,67 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
 \end{itemize}
 
 \subsection{MP\_01 e MP\_2 - Earned Value (EV) e Planned Value (PV)}
+L'Earned Value (EV) valuta in modo oggettivo il valore economico del lavoro effettivamente completato all’interno del periodo di riferimento, mentre il Planned Value (PV) rappresenta il costo totale preventivato e pianificato per le attività da svolgere nel periodo di riferimento.
+
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Sprint} & \textbf{Planned Value} & \textbf{Earned Value} & \textbf{PV accumulato} & \textbf{EV accumulato} \\ \hline
+1  & € 400,00 & € 453,33 & € 400,00 & € 453,33 \\ \hline
+2  & € 415,00 & € 393,16 & € 815,00 & € 846,49 \\ \hline
+3  & € 650,00 & € 650,00 & € 1.465,00 & € 1.496,49 \\ \hline
+4  & € 640,00 & € 595,86 & € 2.105,00 & € 2.092,35 \\ \hline
+5  & € 795,00 & € 771,62 & € 2.900,00 & € 2.863,97 \\ \hline
+6  & € 195,00 & € 195,00 & € 3.095,00 & € 3.058,97 \\ \hline
+7  & € 1.025,00 & € 1.025,00 & € 4.120,00 & € 4.083,97 \\ \hline
+8  & & & & \\ \hline
+9  & & & & \\ \hline
+10 & & & & \\ \hline
+\end{tabular}
+\caption{Andamento Planned Value (PV) ed Earned Value (EV)}
+\label{tab:valori_sprint}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/PV_EC.png}
+    \captionof{figure}{Grafico dell'andamento del Planned Value ed Earned Value}
+    \label{fig:PV_EC}
+\end{center}
 
 
 \subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Complition (EAC) e Estimate To Complete (ETC)}
+L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto, mentre l'Estimate To Complete (ETC) stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale, infine l'Estimate At Complition (EAC) fornisce una stima aggiornata del costo totale finale del progetto proiettando l’efficienza di costo corrente (CPI).
 
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Sprint} & \textbf{Actual Cost} & \textbf{AC accumulato} & \textbf{ETC} & \textbf{EAC} & \textbf{BAC} \\ \hline
+1  & € 355,00 & € 355,00 & € 8.454,74 & € 8.809,74 & € 11.250,00 \\ \hline
+2  & € 435,00 & € 790,00 & € 9.709,22 & € 10.499,22 & € 11.250,00 \\ \hline
+3  & € 650,00 & € 1.440,00 & € 9.385,32 & € 10.825,32 & € 11.250,00 \\ \hline
+4  & € 685,00 & € 2.125,00 & € 9.300,53 & € 11.425,53 & € 11.250,00 \\ \hline
+5  & € 815,00 & € 2.940,00 & € 8.608,65 & € 11.548,65 & € 11.250,00 \\ \hline
+6  & € 195,00 & € 3.135,00 & € 8.394,61 & € 11.529,61 & € 11.250,00 \\ \hline
+7  & € 1.055,00 & € 4.190,00 & € 7.352,08 & € 11.542,08 & € 11.250,00 \\ \hline
+8  &  &  & & & € 11.250,00 \\ \hline
+9  &  &  & & & € 11.250,00 \\ \hline
+10 &  &  & & & € 11.250,00 \\ \hline
+\end{tabular}
+\caption{Andamento Actual Cost (AC), Estimate To Complete (ETC) ed Estimate At Complition (EAC)}
+\label{tab:costi_sprint}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/AC_ETC_EAC.png}
+    \captionof{figure}{Grafico dell'andamento del Actual Cost, Estimate To Complete ed Estimate At Complition}
+    \label{fig:AC_ETC_EAC}
+\end{center}
 
 \subsection{MP\_6: Time Estimate At Completion (TEAC)}
 Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del progetto basandosi sulla performance di avanzamento temporale finora registrata.
@@ -908,14 +955,42 @@ Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del 
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=0.9\linewidth]{TEAC.png}
+    \includegraphics[width=0.9\linewidth]{grafici/TEAC.png}
     \captionof{figure}{Grafico dell'andamento del Time Estimate At Completion}
     \label{fig:TEAC}
 \end{center}
 
 
 \subsection{MP\_7 e MP\_8: Cost Performance Index (CPI), Schedule Performance Index (SPI)}
+Il Cost Performance Index (CPI) misura l’efficienza economica del progetto indicando se il valore prodotto è in linea con i costi sostenuti, mentre lo Schedule Performance Index (SPI) misura l’efficienza temporale del progetto segnalando la presenza di eventuali anticipi o ritardi sulla pianificazione.
 
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Sprint} & \textbf{\# SPI} & \textbf{\# CPI} & \textbf{Soglia accettabile} \\ \hline
+1  & 1,13 & 1,28 & 0,9 \\ \hline
+2  & 1,04 & 1,07 & 0,9 \\ \hline
+3  & 1,02 & 1,04 & 0,9 \\ \hline
+4  & 0,99 & 0,98 & 0,9 \\ \hline
+5  & 0,99 & 0,97 & 0,9 \\ \hline
+6  & 0,99 & 0,98 & 0,9 \\ \hline
+7  & 0,99 & 0,97 & 0,9 \\ \hline
+8  & & & 0,9 \\ \hline
+9  & & & 0,9 \\ \hline
+10 & & & 0,9 \\ \hline
+\end{tabular}
+\caption{Andamento Schedule Performance Index (SPI) e Cost Performance Index (CPI)}
+\label{tab:spi_cpi_sprint}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/SPI_CPI.png}
+    \captionof{figure}{Grafico dell'andamento del Schedule Performance Index e Cost Performance Index}
+    \label{fig:SPI_CPI}
+\end{center}
 
 \subsection{MP\_9: Requirements Stability Index (RSI)}
 Il Requirements Stability Index (RSI) misura la maturità e la stabilità dei requisiti nel tempo, evidenziando l’entità delle variazioni.
@@ -944,24 +1019,73 @@ Il Requirements Stability Index (RSI) misura la maturità e la stabilità dei re
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=0.9\linewidth]{RSI.png}
+    \includegraphics[width=0.9\linewidth]{grafici/RSI.png}
     \captionof{figure}{Grafico dell'andamento del Requirements Stability Index}
     \label{fig:RSI}
 \end{center}
 
 
+\subsection{MP\_10: Indice di Gulpease (IG)}
+L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di leggibilità dei documenti testuali scritti in lingua italiana.
 
-\subsection{MP\_10: Indice di Gulpease}
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Documento} & \textbf{\# IG} & \textbf{Soglia accettabile} \\ \hline
+AdR & 68,00 & 40 \\ \hline
+PdP & 54,00 & 40 \\ \hline
+PdQ & 57,00 & 40 \\ \hline
+NdP & 59,00 & 40 \\ \hline
+\end{tabular}
+\caption{Indice di Gulpease (IG) per documento}
+\label{tab:ig_documento}
+\end{table}
 
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/IG.png}
+    \captionof{figure}{Grafico dell'andamento del Indice di Gulpease per documento}
+    \label{fig:IG}
+\end{center}
 
 \subsection{MP\_11: Correttezza Ortografica}
-
+La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al fine di garantire l’elevata qualità formale dei documenti rilasciati.
 
 \subsection{MP\_14: Rischi non Preventivati}
-
+L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiva dei rischi misurando la percentuale di criticità verificatesi ma non identificate nel registro presente nel Piano di Progetto.
 
 \subsection{MP\_15: Time Efficiency (TE)}
+Il Time Efficiency (TE) monitora l’efficienza organizzativa quantificando la percentuale di tempo dedicato ad attività direttamente utili all’avanzamento del progetto.
 
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Sprint} & \textbf{Ore previste cum.} & \textbf{Ore effettive cum.} & \textbf{\% TE} & \textbf{Soglia accettabile} \\ \hline
+1  & 17  & 15  & 113,3\% & 80\% \\ \hline
+2  & 35  & 34  & 102,9\% & 80\% \\ \hline
+3  & 63  & 62  & 101,6\% & 80\% \\ \hline
+4  & 90  & 91  & 98,9\%  & 80\% \\ \hline
+5  & 123 & 125 & 98,4\%  & 80\% \\ \hline
+6  & 131 & 133 & 98,5\%  & 80\% \\ \hline
+7  & 178 & 180 & 98,9\%  & 80\% \\ \hline
+8  &     &     &         & 80\% \\ \hline
+9  &     &     &         & 80\% \\ \hline
+10 &     &     &         & 80\% \\ \hline
+\end{tabular}
+\caption{Andamento Time Efficiency (TE)}
+\label{tab:ore_te_sprint}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/TE.png}
+    \captionof{figure}{Grafico dell'andamento del Time Efficiency}
+    \label{fig:TE}
+\end{center}
 
 \section{Valutazioni per il miglioramento}
 Al termine di ogni iterazione, il gruppo SkyNet identifica le criticità emerse durante ogni sprint e definisce azioni correttive concrete da applicare negli sprint successivi. Le informazioni qui presentate sono tratte dalle discussioni che si sono svolte alla fine di ogni sprint e sono state annotate nel Piano di Progetto. Di seguito, sono elencate le problematiche riscontrate in modo chiaro e le azioni intraprese per superarle (basate sull'approccio iterativo PDSA - Plan Do-Study-Act) intraprese per garantire il miglioramento continuo del Way of Working.
