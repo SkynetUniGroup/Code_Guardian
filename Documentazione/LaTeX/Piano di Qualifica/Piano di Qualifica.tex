@@ -1053,8 +1053,41 @@ NdP & 59,00 & 40 \\ \hline
 \subsection{MP\_11: Correttezza Ortografica}
 La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al fine di garantire l’elevata qualità formale dei documenti rilasciati.
 
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.3} 
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Documento} & \textbf{Errori versioni prec.} & \textbf{Errori v1.0.0} & \textbf{Soglia accettabile} \\ \hline
+AdR & 9 & 0 & $\leq 5$ \\ \hline
+PdP & 5 & 0 & $\leq 5$ \\ \hline
+PdQ & 4 & 0 & $\leq 5$ \\ \hline
+NdP & 6 & 0 & $\leq 5$ \\ \hline
+\end{tabular}
+\caption{Correttezza Ortografica per documennto}
+\label{tab:errori_documento}
+\end{table}
+
 \subsection{MP\_14: Rischi non Preventivati}
 L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiva dei rischi misurando la percentuale di criticità verificatesi ma non identificate nel registro presente nel Piano di Progetto.
+
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|c|X|c|}
+\hline
+\textbf{Sprint} & \textbf{Rischio Occorso} & \textbf{Rischio preventivato?} \\ \hline
+1 & Scarsa pianificazione dovuta a una definizione eccessivamente generica delle attività, che ha ostacolato il monitoraggio e la gestione del tempo. & Sì, (RO1) \\ \hline
+2 & Comunicazione interna inefficace nel coordinare i ruoli e il lavoro sincrono, sorta a seguito dell'introduzione di issue più fini. & Sì, (RO2) \\ \hline
+3 & Nuova problematica di scarsa pianificazione, in quanto la divisione delle issue si è rivelata poco granulare, causando colli di bottiglia. & Sì, (RO1) \\ \hline
+4 & Comunicazione esterna inefficace che ha causato ritardi nel ricevere riscontri dal Proponente e nel fissare un incontro sui requisiti. & Sì, (RO3) \\ \hline
+5 & Analisi dei requisiti incompleta o errata, emersa da un disallineamento con il Proponente riguardo all'assenza di un orchestratore preesistente. & Sì, (RR1) \\ \hline
+6 & Indisponibilità e vincoli di tempo dovuti alla drastica riduzione delle ore lavorabili da parte dei membri per la concomitanza con la sessione d'esami. & Sì, (RI1) \\ \hline
+7 & Sottostima e sovrastima delle attività, manifestatesi con uno scostamento tra le ore preventivate e quelle effettivamente impiegate dai singoli. & Sì, (RO4, RO5) \\ \hline
+\end{tabularx}
+\caption{Analisi dei rischi occorsi per Sprint}
+\label{tab:rischi_sprint}
+\end{table}
 
 \subsection{MP\_15: Time Efficiency (TE)}
 Il Time Efficiency (TE) monitora l’efficienza organizzativa quantificando la percentuale di tempo dedicato ad attività direttamente utili all’avanzamento del progetto.
