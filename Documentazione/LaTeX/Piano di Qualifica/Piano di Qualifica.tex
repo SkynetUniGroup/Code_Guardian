@@ -204,7 +204,7 @@ L'obiettivo cardine è garantire la stabilità dei requisiti concordati con il \
     
     \endlastfoot
         
-    MP\_1 & \textbf{\glo{Earned Value (EV)}{earned-value}}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 80\%$ Planned Value & $\le$ Planned Value \\ \hline
+    MP\_1 & \textbf{\glo{Earned Value (EV)}{earned-value}}: Valore del lavoro effettivamente completato in un dato periodo, quantificato economicamente in base al budget allocato. & $\ge 80\%$ Planned Value & $\ge$ Planned Value \\ \hline
         
     MP\_2 & \textbf{\glo{Planned Value (PV)}{planned-value}}: Valore del lavoro la cui esecuzione era stata preventivata e pianificata per un dato periodo. & $\ge 0$ & $\le$ \textit{\glo{Budget At Completion}{budget-at-completion}} \\ \hline
 
@@ -866,7 +866,7 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
     \item \textbf{Metriche di Supporto e di Prodotto}: misurate in modo automatizzato tramite script Python dedicati o attraverso l'integrazione di tool di analisi statica, le metriche che richiedono codice sorgente verranno attivate a partire dalla Product Baseline (PB) e popolate progressivamente.
 \end{itemize}
 
-\subsection{MP\_01 e MP\_2 - Earned Value (EV) e Planned Value (PV)}
+\subsection{MP\_1 e MP\_2 - Earned Value (EV) e Planned Value (PV)}
 L'Earned Value (EV) valuta in modo oggettivo il valore economico del lavoro effettivamente completato all’interno del periodo di riferimento, mentre il Planned Value (PV) rappresenta il costo totale preventivato e pianificato per le attività da svolgere nel periodo di riferimento.
 
 \begin{table}[htbp]
@@ -897,6 +897,20 @@ L'Earned Value (EV) valuta in modo oggettivo il valore economico del lavoro effe
     \label{fig:PV_EC}
 \end{center}
 
+\subsubsection*{Valutazione dell'andamento}
+Il confronto tra \textit{Planned Value} e \textit{Earned Value} mostra un andamento generale adeguato. Nello sprint 1, il rapporto tra ore completate e pianificate è stato superiore all'unità, portando un EV (453,33 €) maggiore del PV (400,00 €). Negli Sprint 2, 4 e 5 si è registrato un EV di periodo leggermente inferiore al PV, indicando una frazione di ore completate lievemente minore del previsto. Negli Sprint 3, 6 e 7 i due valori si equivalgono, segnalando un allineamento tra la pianificazione e l'esecuzione. Nel complesso, il valore cumulato attesta una stima adeguata e un carico di lavoro gestito in modo conforme alle previsioni.
+
+\paragraph*{MP\_1 - Earned Value (EV)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 80\%$ del PV):} Il vincolo è sempre rispettato, in nessuno sprint il valore dell'EV è sceso sotto la soglia minima dell'80\% rispetto al PV di periodo.
+    \item \textbf{Valore ottimale ($\ge$ PV):} Il vincolo è rispettato negli Sprint 1, 3, 6 e 7. Il parametro non è soddisfatto negli Sprint 2, 4 e 5, nei quali l'EV si è attestato rispettivamente al 94\%, 93\% e 97\% del PV.
+\end{itemize}
+
+\paragraph*{MP\_2 - Planned Value (PV)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo risulta rispettato in tutte le iterazioni misurate.
+    \item \textbf{Valore ottimale ($<$ Budget At Completion):} Il vincolo è rispettato. Il PV cumulato cresce in maniera coerente, raggiungendo i 4.120,00 € al termine dello Sprint 7. Tale cifra rimane ampiamente inferiore al BAC (Budget At Completion) di 11.250,00 €.
+\end{itemize}
 
 \subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Complition (EAC) e Estimate To Complete (ETC)}
 L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto, mentre l'Estimate To Complete (ETC) stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale, infine l'Estimate At Complition (EAC) fornisce una stima aggiornata del costo totale finale del progetto proiettando l’efficienza di costo corrente (CPI).
@@ -929,6 +943,28 @@ L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le 
     \label{fig:AC_ETC_EAC}
 \end{center}
 
+\subsubsection*{Valutazione dell'andamento}
+L'analisi dei costi mostra un andamento complessivamente adeguato e coerente con lo stato di avanzamento del progetto. L'\textit{Actual Cost} (AC) cresce in modo lineare, accumulandosi fino a 4.190,00 € nello Sprint 7. L'\textit{Estimate At Completion} (EAC) deriva analiticamente dall'efficienza economica del team, nei primi tre sprint il valore si mantiene al di sotto del \textit{Budget At Completion} (BAC), stabilito a 11.250,00 €, a partire dallo Sprint 4, si nota un lieve scostamento al rialzo, con un EAC che si stabilizza attorno agli 11.500,00 €. 
+Di conseguenza, l'\textit{Estimate To Complete} (ETC), calcolato come differenza tra il costo finale stimato e i costi già sostenuti, registra un picco nello Sprint 2 per poi seguire una fisiologica e costante decrescita fino a 7.352,08 € nello Sprint 7, in linea con il progressivo completamento delle attività.
+
+\paragraph*{MP\_3 - Actual Cost (AC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo è sempre rispettato in tutte le iterazioni.
+    \item \textbf{Valore ottimale ($\le$ EV):} Il vincolo è rispettato nei primi tre sprint, a partire dallo Sprint 4, l'AC cumulato supera lievemente l'EV, non rispettando la soglia di ottimalità. Il parametro si mantiene in ogni caso entro limiti adeguati per la stabilità economica del progetto.
+\end{itemize}
+
+\paragraph*{MP\_4 - Estimate At Completion (EAC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($<$ BAC $+ 5\%$):} Il vincolo è sempre rispettato. La soglia massima di tolleranza ammonta a 11.812,50 € (BAC di 11.250,00 € maggiorato del 5\%). Il valore massimo registrato per l'EAC è di 11.548,65 € nello Sprint 5, rimanendo all'interno del margine di accettazione.
+    \item \textbf{Valore ottimale ($<$ BAC):} Il vincolo è rispettato limitatamente agli Sprint 1, 2 e 3. Dallo Sprint 4 allo Sprint 7, il valore dell'EAC supera la soglia ottimalità di 11.250,00 €.
+\end{itemize}
+
+\paragraph*{MP\_5 - Estimate To Complete (ETC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo risulta sempre rispettato.
+    \item \textbf{Valore ottimale ($<$ BAC - AC):} La soglia di ottimalità dell'ETC ricalca esattamente quella dell'EAC: risulta rispettata nei primi tre sprint e non soddisfatta a partire dallo Sprint 4.
+\end{itemize}
+
 \subsection{MP\_6: Time Estimate At Completion (TEAC)}
 Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del progetto basandosi sulla performance di avanzamento temporale finora registrata.
 
@@ -960,6 +996,15 @@ Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del 
     \label{fig:TEAC}
 \end{center}
 
+\subsubsection*{Valutazione dell'andamento}
+L'analisi della stima temporale evidenzia un allineamento progressivo con la pianificazione di base. La metrica \textit{Time Estimate At Completion} (TEAC) prende in considerazione l'intera durata del progetto, proiettando il tempo complessivo necessario al completamento sulla base delle prestazioni attuali. La durata inizialmente pianificata per il progetto è pari a 24 settimane (166 giorni per la precisione). I dati in tabella mostrano un TEAC iniziale di 21 settimane nel primo sprint, dovuto a un valore di SPI superiore all'unità, che è successivamente risalito a 23 settimane nel secondo e terzo sprint, per poi stabilizzarsi esattamente a 24 settimane a partire dallo Sprint 4. 
+Va precisato che la durata massima consentita per il progetto è di 26 settimane, che rappresenta un limite invalicabile. Pertanto, anche qualora si rispetti il valore ottimale, è imperativo monitorare i processi per non far aumentare la metrica, evitando di avvicinarsi alla soglia di criticità assoluta.
+
+\paragraph*{MP\_6 - Time Estimate At Completion (TEAC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo è sempre rispettato in tutte le iterazioni.
+    \item \textbf{Valore ottimale ($\le$ Durata pianificata):} Il vincolo risulta strettamente rispettato limitatamente ai primi tre sprint, in cui il TEAC stimato (21 e 23 settimane) si è mantenuto al di sotto delle 24 settimane previste. Dallo Sprint 4 allo Sprint 7, il valore si attesta a 24 settimane esatte.
+\end{itemize}
 
 \subsection{MP\_7 e MP\_8: Cost Performance Index (CPI), Schedule Performance Index (SPI)}
 Il Cost Performance Index (CPI) misura l’efficienza economica del progetto indicando se il valore prodotto è in linea con i costi sostenuti, mentre lo Schedule Performance Index (SPI) misura l’efficienza temporale del progetto segnalando la presenza di eventuali anticipi o ritardi sulla pianificazione.
@@ -991,6 +1036,21 @@ Il Cost Performance Index (CPI) misura l’efficienza economica del progetto ind
     \captionof{figure}{Grafico dell'andamento del Schedule Performance Index e Cost Performance Index}
     \label{fig:SPI_CPI}
 \end{center}
+
+\subsubsection*{Valutazione dell'andamento}
+L'analisi degli indici di performance mostra una stabilizzazione adeguata dell'efficienza nel corso delle iterazioni. Nei primi tre sprint, entrambi gli indici registrano valori ampiamente superiori all'unità, tale condizione matematica indica che l'\textit{Earned Value} cumulato eccedeva sia i costi sostenuti (AC) sia il valore pianificato (PV). A partire dallo Sprint 4, si osserva una fisiologica flessione e successiva convergenza: entrambi gli indici si stabilizzano su valori marginalmente inferiori a 1 (tra 0,97 e 0,99). Questo andamento evidenzia un bilanciamento consono tra le stime preventive e l'esecuzione reale, senza scostamenti critici.
+
+\paragraph*{MP\_7 - Cost Performance Index (CPI)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è sempre rispettato. In nessuna iterazione il valore è sceso sotto la soglia di tolleranza, registrando un valore minimo di 0,97 negli sprint 5 e 7.
+    \item \textbf{Valore ottimale ($= 1$):} Il vincolo risulta soddisfatto nei primi tre sprint. Nelle iterazioni successive la metrica si attesta su valori lievemente inferiori al target ideale (tra 0,97 e 0,98). Tale lieve scostamento indica un impiego di budget leggermente superiore al valore maturato, mantenendosi tuttavia entro limiti adeguati per il progetto.
+\end{itemize}
+
+\paragraph*{MP\_8 - Schedule Performance Index (SPI)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è sempre rispettato. Il valore minimo registrato per l'efficienza temporale non è mai sceso sotto lo 0,99.
+    \item \textbf{Valore ottimale ($= 1$):} Analogamente al CPI, il vincolo è rispettato negli sprint 1, 2 e 3. Dallo Sprint 4 in poi, la metrica si fissa a 0,99. Sebbene non si raggiunga l'unità perfetta, uno scostamento di 0,01 risulta trascurabile, denotando un adeguato allineamento con la pianificazione temporale prevista.
+\end{itemize}
 
 \subsection{MP\_9: Requirements Stability Index (RSI)}
 Il Requirements Stability Index (RSI) misura la maturità e la stabilità dei requisiti nel tempo, evidenziando l’entità delle variazioni.
@@ -1033,11 +1093,11 @@ L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di
 \renewcommand{\arraystretch}{1.3} 
 \begin{tabular}{|c|c|c|}
 \hline
-\textbf{Documento} & \textbf{\# IG} & \textbf{Soglia accettabile} \\ \hline
-AdR & 68,00 & 40 \\ \hline
-PdP & 54,00 & 40 \\ \hline
-PdQ & 57,00 & 40 \\ \hline
-NdP & 59,00 & 40 \\ \hline
+\textbf{Documento} & \textbf{IG} & \textbf{Soglia accettabile} \\ \hline
+AdR & 68 & 40 \\ \hline
+PdP & 54 & 40 \\ \hline
+PdQ & 57 & 40 \\ \hline
+NdP & 59 & 40 \\ \hline
 \end{tabular}
 \caption{Indice di Gulpease (IG) per documento}
 \label{tab:ig_documento}
