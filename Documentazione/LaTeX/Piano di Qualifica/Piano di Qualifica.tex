@@ -1084,6 +1084,15 @@ Il Requirements Stability Index (RSI) misura la maturità e la stabilità dei re
     \label{fig:RSI}
 \end{center}
 
+\subsubsection*{Valutazione dell'andamento}
+L'analisi del \textit{Requirements Stability Index} (RSI) evidenzia un andamento complessivamente adeguato, seppur con alcune dinamiche che meritano contestualizzazione. Nello Sprint 1 la metrica non è calcolabile (N/A) in quanto il periodo è stato dedicato a uno studio generale del dominio, rimandando la definizione concreta dei requisiti allo sprint 2.
+Osservando i dati, emerge un incremento significativo e costante del numero totale di requisiti iterazione dopo iterazione (passando da 15 nello Sprint 2 a 142 nello Sprint 8). Sebbene una crescita così marcata in corso d'opera rappresenti in linea di principio un fattore negativo, sintomo di una possibile instabilità del perimetro di progetto, il numero dei requisiti effettivamente modificati resta molto contenuto, il calo dell'indice è stato mitigato dal fatto che il team ha operato principalmente per aggiunta, inoltre, l'ampio aumento dei requisiti negli sprint 7 e 8 è attribuibile a un lavoro di scomposizione di macro-requisiti in unità più granulari, senza che vi fossero reali modifiche al contenuto preesistente.
+
+\paragraph*{MP\_9 - Requirements Stability Index (RSI)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 80\%$):} Il vincolo è sempre rispettato.
+    \item \textbf{Valore ottimale ($= 100\%$):} Il vincolo risulta soddisfatto pienamente solo negli Sprint 2 e 5. Nelle restanti iterazioni (3, 4, 6, 7 e 8) si registrano flessioni comprese tra il 91\% e il 97\%. 
+\end{itemize}
 
 \subsection{MP\_10: Indice di Gulpease (IG)}
 L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di leggibilità dei documenti testuali scritti in lingua italiana.
@@ -1110,6 +1119,12 @@ NdP & 59 & 40 \\ \hline
     \label{fig:IG}
 \end{center}
 
+\paragraph*{MP\_10 - Indice di Gulpease (IG)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 40$):} Il vincolo è sempre rispettato. Tutti i documenti prodotti superano la soglia di tolleranza minima (registrando valori tra 54 e 68).
+    \item \textbf{Valore ottimale ($\ge 60$):} Il vincolo risulta rispettato limitatamente al documento \textit{Analisi dei Requisiti} (AdR), che raggiunge un indice pari a 68. Per i restanti documenti (\textit{Piano di Progetto}, \textit{Piano di Qualifica} e \textit{Norme di Progetto}), l'indice si attesta su valori compresi tra 54 e 59. Sebbene al di sotto della soglia di ottimalità, tali risultati descrivono un grado di leggibilità accettabile tenendo in considerazione la natura tecnica e formale dei contenuti trattati.
+\end{itemize}
+
 \subsection{MP\_11: Correttezza Ortografica}
 La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al fine di garantire l’elevata qualità formale dei documenti rilasciati.
 
@@ -1128,15 +1143,32 @@ NdP & 6 & 0 & $\leq 5$ \\ \hline
 \label{tab:errori_documento}
 \end{table}
 
+Prima del rilascio dei documenti nella loro versione 1.0.0, il team effettua un controllo semi-automatico volto a individuare eventuali errori ortografici. Le imperfezioni riscontrate nelle versioni in lavorazione vengono così corrette in modo sistematico prima dell'approvazione finale, garantendo la correttezza linguistica dei documenti.
+
+\paragraph*{MP\_11 - Correttezza Ortografica}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\le 5$ errori):} Il vincolo risulta sempre rispettato nella versione 1.0.0. Nelle versioni precedenti la soglia di tolleranza era stata superata in due documenti (\textbf{Analisi dei Requisiti} con 9 errori e \textbf{Norme di Progetto} con 6 errori).
+    \item \textbf{Valore ottimale ($= 0$ errori):} Il vincolo è pienamente soddisfatto per tutti i documenti. A seguito delle correzioni applicate, nessun documento in versione 1.0.0 presenta errori ortografici.
+\end{itemize}
+
 \subsection{MP\_14: Rischi non Preventivati}
 L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiva dei rischi misurando la percentuale di criticità verificatesi ma non identificate nel registro presente nel Piano di Progetto.
 
-\begin{table}[htbp]
-\centering
 \renewcommand{\arraystretch}{1.5}
-\begin{tabularx}{\textwidth}{|c|X|c|}
-\hline
-\textbf{Sprint} & \textbf{Rischio Occorso} & \textbf{Rischio preventivato?} \\ \hline
+\begin{xltabular}{\textwidth}{|c|X|c|}
+    \hline
+    \textbf{Sprint} & \textbf{Rischio Occorso} & \textbf{Rischio preventivato?} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Sprint} & \textbf{Rischio Occorso} & \textbf{Rischio preventivato?} \\ \hline
+    \endhead
+    
+    \hline
+    \multicolumn{2}{r}{\textit{Continua nella pagina successiva...}} \\
+    \endfoot
+
+    \endlastfoot
 1 & Scarsa pianificazione dovuta a una definizione eccessivamente generica delle attività, che ha ostacolato il monitoraggio e la gestione del tempo. & Sì, (RO1) \\ \hline
 2 & Comunicazione interna inefficace nel coordinare i ruoli e il lavoro sincrono, sorta a seguito dell'introduzione di issue più fini. & Sì, (RO2) \\ \hline
 3 & Nuova problematica di scarsa pianificazione, in quanto la divisione delle issue si è rivelata poco granulare, causando colli di bottiglia. & Sì, (RO1) \\ \hline
@@ -1144,10 +1176,18 @@ L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiv
 5 & Analisi dei requisiti incompleta o errata, emersa da un disallineamento con il Proponente riguardo all'assenza di un orchestratore preesistente. & Sì, (RR1) \\ \hline
 6 & Indisponibilità e vincoli di tempo dovuti alla drastica riduzione delle ore lavorabili da parte dei membri per la concomitanza con la sessione d'esami. & Sì, (RI1) \\ \hline
 7 & Sottostima e sovrastima delle attività, manifestatesi con uno scostamento tra le ore preventivate e quelle effettivamente impiegate dai singoli. & Sì, (RO4, RO5) \\ \hline
-\end{tabularx}
+
 \caption{Analisi dei rischi occorsi per Sprint}
 \label{tab:rischi_sprint}
-\end{table}
+\end{xltabular}
+
+L'analisi delle criticità evidenzia che tutti i problemi occorsi durante i vari sprint possono essere ricondotti direttamente ai rischi già identificati e preventivati all'interno del \textbf{Piano di Progetto}. Poiché il numero di criticità inattese è nullo l'indice dei Rischi non Preventivati si attesta allo 0\%, a dimostrazione di una solida analisi preventiva che ha permesso al team di affrontare le difficoltà con strategie di mitigazione già preparate, anche se non sempre queste strategie sono state applicate con rigorosità, portando al ripetersi di alcuni rischi (RO1 nello sprint 3).
+
+\paragraph*{MP\_14 - Rischi non Preventivati}
+\begin{itemize}
+\item \textbf{Valore di accettazione ($\le 20\%$):} Il vincolo è sempre rispettato.
+\item \textbf{Valore ottimale ($= 0\%$):} Il vincolo è pienamente soddisfatto. La totalità degli imprevisti riscontrati era stata correttamente contemplata in fase di pianificazione.
+\end{itemize}
 
 \subsection{MP\_15: Time Efficiency (TE)}
 Il Time Efficiency (TE) monitora l’efficienza organizzativa quantificando la percentuale di tempo dedicato ad attività direttamente utili all’avanzamento del progetto.
@@ -1180,52 +1220,91 @@ Il Time Efficiency (TE) monitora l’efficienza organizzativa quantificando la p
     \label{fig:TE}
 \end{center}
 
+\subsubsection*{Valutazione dell'andamento}
+L'analisi del \textit{Time Efficiency} (TE) mostra una fisiologica riduzione della varianza dei valori con il progredire delle iterazioni: nello sprint 1 si registra un picco del 113,3\%, un discostamento percentuale marcato che è tuttavia giustificato dal monte ore totale iniziale molto ridotto; in tale contesto, una minima discrepanza assoluta (17 ore previste contro 15 effettive) produce un impatto matematico sproporzionato sul risultato. Essendo una metrica cumulativa, procedendo con gli sprint successivi il "peso" specifico di poche ore di differenza diminuisce sempre di più in proporzione al totale. La discrpanza numerica tra le ore previste e quelle effettive resta molto bassa, indicando una buona pianificazione oraria senza sottostime o sovrastime estreme.
+
+\paragraph*{MP\_15 - Time Efficiency (TE)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 60\%$):} Il vincolo è sempre rispettato, la percentuale minima registrata è stata del 98,4\% (Sprint 5), mantenendosi abbondantemente al di sopra della soglia di tolleranza richiesta.
+    \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo risulta costantemente soddisfatto per l'intera durata del progetto.
+\end{itemize}
+
 \section{Valutazioni per il miglioramento}
 Al termine di ogni iterazione, il gruppo SkyNet identifica le criticità emerse durante ogni sprint e definisce azioni correttive concrete da applicare negli sprint successivi. Le informazioni qui presentate sono tratte dalle discussioni che si sono svolte alla fine di ogni sprint e sono state annotate nel Piano di Progetto. Di seguito, sono elencate le problematiche riscontrate in modo chiaro e le azioni intraprese per superarle (basate sull'approccio iterativo PDSA - Plan Do-Study-Act) intraprese per garantire il miglioramento continuo del Way of Working.
 
 \subsection{Valutazione sugli strumenti}
-Analisi dell'adeguatezza, delle performance e dell'integrazione degli strumenti software a supporto dello sviluppo.
+Questa sezione analizza l'adeguatezza, le performance e l'effettivo utilizzo degli strumenti software a supporto dello sviluppo e della gestione operativa. Per ogni categoria tecnologica sono state identificate le efficienze riscontrate, le criticità d'uso e le relative prospettive di miglioramento, al fine di ottimizzare continuamente il \textit{Way of Working}.
 
-\subsubsection{Criticità}
+\subsubsection{Strumenti per la Documentazione e Redazione}
+Nel complesso, l'infrastruttura documentale si è rivelata utile e adeguata alle esigenze del progetto, sebbene abbia richiesto alcuni adattamenti in corso d'opera.
 \begin{itemize}
-    \item I tempi per la formattazione dei documenti in \textit{LaTeX} si sono rivelati sensibilmente superiori al previsto, configurando un'inefficienza pratica assimilabile al rischio tecnologico sugli strumenti (RT4 - Inefficacia degli Strumenti di Supporto).
-    \item Si è verificato un disallineamento informativo con il Proponente sull'architettura: l'assenza di un orchestratore agenti proprietario preesistente ha imposto lo sviluppo di un motore di esecuzione interno (RV.1), causando un imprevisto incremento del carico di lavoro sul PoC.
+    \item \textbf{Punti di forza:} \textit{Google Sheets} si è confermato uno strumento estremamente versatile e ampiamente utilizzato dal gruppo per molteplici aspetti gestionali, in particolare per il tracciamento delle ore, la gestione dei preventivi e la generazione dei \textit{Burndown Chart}.
+    \item \textbf{Criticità e Soluzioni:} Lo strumento che ha presentato maggiori criticità è \textit{Overleaf}. I limiti imposti dalla versione gratuita e le frizioni nella stesura collaborativa lo rendono uno strumento probabilmente non ottimale per il nostro specifico caso d'uso. Per risolvere i conflitti, il gruppo ha adottato un approccio ibrido: la stesura e la modifica avvengono ora su istanze separate dei documenti testuali, demandando l'unione del lavoro al sistema di versionamento su \textit{GitHub}. Nonostante queste limitazioni, il team ha deciso di continuare a utilizzarlo in quanto produce risultati di formattazione validi ed è una tecnologia con cui i membri hanno ormai acquisito una buona familiarità.
 \end{itemize}
 
-\subsubsection{Soluzioni}
+\subsubsection{Strumenti per la Comunicazione}
+L'ecosistema di comunicazione ha raggiunto una stabilità eccellente: tutti gli strumenti selezionati si sono rivelati utili e ognuno ha trovato il proprio spazio operativo senza creare ridondanze.
 \begin{itemize}
-    \item Sono stati sviluppati dei template pre-impostati per ogni tipologia di documento in \textit{LaTeX}, rendendo il lavoro documentale più omogeneo e abbattendo i tempi per le future stesure tecniche.
-    \item Il team ha parallelizzato lo sviluppo assegnando in modo mirato le ore al ruolo di Progettista, riuscendo a definire con successo lo scheletro architetturale dell'orchestratore per compensare la mancanza esterna.
+    \item \textbf{Comunicazione interna:} \textit{Discord} si è affermato come il protagonista assoluto per il coordinamento del team. I suoi canali vocali e testuali sono risultati molto utili e vengono usati quotidianamente per la sincronizzazione del lavoro.
+    \item \textbf{Comunicazione esterna:} \textit{Slack} si è rivelato il canale primario, nonché il protagonista, per le interazioni dirette, i chiarimenti e la comunicazione tempestiva con l'azienda Proponente (VarGroup).
+\end{itemize}
+
+\subsubsection{Strumenti per la Gestione del Progetto e il Versionamento}
+Gli strumenti di versionamento e tracciamento si confermano essenziali e centrali per la riuscita del progetto.
+\begin{itemize}
+    \item \textbf{Punti di forza:} La \textit{TO DO Blackboard} (implementata tramite \textit{GitHub Projects}) rappresenta un solido punto di riferimento per l'intero gruppo. Permette di mantenere il focus e avere sempre chiara la situazione di avanzamento durante lo svolgimento degli Sprint.
+    \item \textbf{Aree di miglioramento:} Sebbene l'attuale configurazione sia funzionale, il team ritiene che ci sia potenziale inespresso. Nei prossimi Sprint si valuterà di approfondire ulteriormente le funzionalità di questi strumenti per integrare un'organizzazione del \textit{workflow} ancora migliore di quella attuale.
+\end{itemize}
+
+\subsubsection{Strumenti per l'Automazione e il Deployment}
+\begin{itemize}
+    \item \textbf{Stato attuale e prospettive:} Fino ad oggi, gli strumenti di automazione (es. \textit{GitHub Actions}) sono stati impiegati solo in modo marginale, prevalentemente per automatizzare la pubblicazione della documentazione sul sito statico del progetto. 
+    \item \textbf{Aree di miglioramento:} Con l'avanzamento dello sviluppo verso le fasi centrali del \textit{Proof of Concept} e del prodotto finale, il gruppo ritiene che sarebbe estremamente utile un utilizzo più approfondito di queste tecnologie. L'obiettivo futuro è integrare pipeline automatiche per snellire i processi di test e \textit{Continuous Integration}.
 \end{itemize}
 
 \subsection{Valutazione sull'organizzazione}
-Esame dell'efficacia delle metodologie di pianificazione, stima dell'impegno richiesto (preventivo vs consuntivo), del coordinamento asincrono e dell'efficacia delle riunioni interne ed esterne.
+Questa sezione analizza l'efficacia delle metodologie di pianificazione adottate dal gruppo, la stima dell'impegno richiesto (confronto tra preventivo e consuntivo), il coordinamento asincrono e l'efficacia delle riunioni interne ed esterne. Nel corso degli sprint, il gruppo ha monitorato costantemente i processi organizzativi, identificando le inefficienze e applicando iterativamente azioni correttive per raffinare il \textit{Way of Working}.
 
 \subsubsection{Criticità}
+Durante l'avanzamento del progetto, le metriche organizzative e l'analisi dei \textit{Burndown Chart} hanno fatto emergere le seguenti criticità, tutte riconducibili a rischi preventivati nel Piano di Progetto:
+
 \begin{itemize}
-    \item Una scomposizione eccessivamente generica delle attività iniziali ha generato colli di bottiglia, spillover di \textit{Issue} non chiuse tra gli Sprint e reso inefficace la lettura dei \textit{Burndown Chart} (RO1 - Scarsa Pianificazione).
-    \item Si sono registrati ritardi e risposte lente nell'organizzazione degli incontri con il Proponente (necessari per discutere e validare l'Analisi dei Requisiti), rallentando la risoluzione dei dubbi (RO3 - Comunicazione Esterna Inefficace/Inefficiente).
+    \item \textbf{[RO1] - Scarsa Pianificazione (Sprint 1 e Sprint 3):} Nel primo Sprint, la definizione delle attività è risultata eccessivamente generica (es. "Inizio stesura Analisi dei Requisiti"). Questa mancanza di granularità ha ostacolato il monitoraggio dei progressi. Nonostante un primo tentativo di risoluzione, il problema si è ripresentato nello Sprint 3, dove la scomposizione delle \textit{Issue} non si è rivelata ancora sufficientemente atomica. Ciò ha generato colli di bottiglia e ha impedito la chiusura definitiva di diverse attività, causando uno slittamento dei task allo Sprint successivo.
+    \item \textbf{[RO3] - Comunicazione Esterna Inefficace/Inefficiente (Sprint 4):} Si è registrata una forte difficoltà comunicativa con l'azienda Proponente (VarGroup), caratterizzata da risposte lente che hanno ritardato l'organizzazione di un incontro fondamentale per la validazione dell'Analisi dei Requisiti. Questo ha costretto il gruppo a dover rivalutare alcune scadenze interne, rallentando la tabella di marcia.
+    \item \textbf{[RO4] Sottostima e [RO5] Sovrastima delle Attività (Sprint 7):} Si è verificato un lieve scostamento, a livello individuale, tra le ore preventivate e quelle effettivamente impiegate per lo svolgimento delle mansioni. L'analisi retrospettiva ha inoltre evidenziato come la durata bisettimanale degli Sprint favorisse, in alcuni casi, la tendenza a concentrare il carico di lavoro verso la fine del periodo, inficiando la qualità dei risultati e rallentando il flusso di lavoro continuo.
 \end{itemize}
 
 \subsubsection{Soluzioni}
+Per mitigare le criticità organizzative riscontrate, il gruppo ha implementato le seguenti soluzioni secondo il ciclo di miglioramento continuo (PDSA):
+
 \begin{itemize}
-    \item È stata imposta una scomposizione delle macro-attività in \textit{Issue} atomiche fin dalla fase di Planning e stabilita una chiara propedeuticità per governare l'ordine di esecuzione delle attività dipendenti.
-    \item È stato stabilito di formulare le richieste importanti in forma scritta, di taggare specificamente i referenti esterni su Slack e di introdurre riunioni interne a metà Sprint per monitorare proattivamente l'avanzamento dei compiti.
+    \item \textbf{Scomposizione atomica e propedeuticità:} Per risolvere il rischio \textbf{[RO1]}, a partire dallo Sprint 2 e ulteriormente dopo lo Sprint 3 si è imposta una scomposizione delle macro-attività in \textit{Issue} atomiche, piccole e indipendenti, fin dalla fase di pianificazione. È stato inoltre integrato l'uso dei \textit{Burndown Chart} per un monitoraggio \textit{data-driven} dell'andamento.
+    \item \textbf{Flessibilità operativa (Issue non assegnate):} Per ottimizzare i tempi e assorbire eventuali variazioni di carico, sono state introdotte le "issue non assegnate". I membri che terminano in anticipo i propri compiti (\textbf{[RO5]}) possono ora assegnarsi autonomamente nuove attività, aumentando la produttività globale.
+    \item \textbf{Miglioramento dei protocolli di comunicazione esterna:} A fronte del rischio \textbf{[RO3]}, il team ha standardizzato le interazioni con il Proponente: le richieste critiche vengono ora formulate sempre per iscritto, i referenti aziendali vengono taggati esplicitamente su Slack per garantire visibilità, e le richieste di incontro vengono inoltrate con largo anticipo.
+    \item \textbf{Riduzione della durata degli Sprint:} Per contrastare i rischi \textbf{[RO4]} e \textbf{[RO5]} e mantenere alta la concentrazione, a partire dallo Sprint 8 la durata delle iterazioni è stata ridotta a una singola settimana. L'effetto psicologico di una scadenza ravvicinata mira ad aumentare la costanza produttiva.
 \end{itemize}
+
 
 \subsection{Valutazione sui ruoli}
-Valutazione dell'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, efficacia della rotazione e individuazione di eventuali carenze di competenze che richiedono formazione.
+Questa sezione valuta l'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, l'efficacia della rotazione, la capacità di collaborazione inter-ruolo e la gestione delle disponibilità individuali. L'obiettivo è garantire che il carico di lavoro sia distribuito equamente e che le competenze vengano sfruttate e condivise in modo ottimale.
 
 \subsubsection{Criticità}
+L'interazione tra i vari ruoli ha fatto emergere alcune difficoltà pratiche e imprevisti legati al fattore umano e alle competenze, mappati come segue:
+
 \begin{itemize}
-    \item L'introduzione di \textit{Issue} estremamente granulari ha fatto emergere una difficoltà iniziale nel coordinare in modo sincrono i diversi ruoli, ritardando le linee guida per il lavoro degli Analisti (RO2 - Comunicazione Interna Inefficace).
-    \item Si è verificata una drastica riduzione della disponibilità oraria e produttiva di tutti i membri, causata dal vincolo accademico della sessione estiva di esami (RI1 - Indisponibilità e Vincoli di Tempo).
+    \item \textbf{[RO2] - Comunicazione Interna Inefficace (Sprint 2):} L'introduzione di issue più fini e granulari ha generato, inizialmente, una difficoltà di coordinamento sincrono tra i ruoli, evidenziando una latenza nei passaggi di consegna.
+    \item \textbf{[RR1] - Analisi dei Requisiti Incompleta o Errata (Sprint 5):} A causa di un disallineamento informativo con il Proponente (l'assenza di un orchestratore agentico preesistente), è nata la necessità di modificare in parte l'Analisi dei Requisiti e la progettazione fatta su quel aspetto architetturale.
+    \item \textbf{[RI1] - Indisponibilità e Vincoli di Tempo (Sprint 6):} La concomitanza con la sessione estiva di esami ha comportato una drastica, seppur prevista, riduzione della disponibilità oraria di tutti i componenti del team. Questo vincolo ha rallentato temporaneamente il ritmo delle attività di sviluppo e stesura, rendendo difficile per i ruoli operativi mantenere il passo precedente.
 \end{itemize}
 
 \subsubsection{Soluzioni}
+Le azioni intraprese per migliorare le dinamiche di ruolo e il bilanciamento delle risorse sono state le seguenti:
+
 \begin{itemize}
-    \item La comunicazione tra i ruoli è stata intensificata su \textit{WhatsApp} e \textit{Discord} per redistribuire in tempo reale il carico. Inoltre, per massimizzare la produttività, sono state introdotte le "\textit{Issue} non assegnate", permettendo ai membri che terminano in anticipo i propri compiti di assumere autonomamente nuovo lavoro.
-    \item È stata effettuata una ripianificazione basata su un carico di lavoro minimo per non bloccare le attività propedeutiche, affiancata da una successiva rimodulazione intensiva del budget orario per recuperare il disavanzo nello sviluppo dell'architettura.
+    \item \textbf{Comunicazione inter-ruolo:} Per mitigare il rischio \textbf{[RO2]}, i membri del gruppo si sono impegnati a mantenere una comunicazione reciproca costante tramite canali a bassa latenza (WhatsApp e canali Discord). Questo ha portato a buoni risultati, come dimostrato nello Sprint 7, dove i ruoli di Analista e Verificatore hanno iniziato a collaborare in parallelo, implementando correzioni e verifiche in modo continuo e senza tempi morti.
+    \item \textbf{Revisione documentale e riprogettazione sinergica tra ruoli:} Per far fronte alla criticità \textbf{[RR1]}, il lavoro degli \textit{Analisti} è stato intensificato per correggere i casi d'uso e i requisiti definiti, aggiornare il tracciamento e riallineare il documento di Analisi dei Requisiti alla nuova realtà di progetto. Parallelamente, il focus del \textit{Progettista} è stato reindirizzato: anziché studiare l'integrazione di un sistema di terze parti, il carico di lavoro è stato spostato verso la progettazione ex novo di un orchestratore deterministico interno e basilare.
+    \item \textbf{Pianificazione di mantenimento e recupero intensivo:} In risposta all'indisponibilità per gli esami (\textbf{[RI1]}), si è deciso di non forzare il lavoro, adottando per lo Sprint 6 una pianificazione di "mantenimento" volta a preservare l'integrità dei requisiti base senza generare codice di bassa qualità. Conclusa la sessione, il ruolo di \textit{Programmatore} è stato potenziato nello Sprint 7 tramite una rimodulazione intensiva delle ore, parallelizzando lo sviluppo per recuperare il disavanzo accumulato.
+    \item \textbf{Trasparenza e tempestività:} È stata inserita come regola ferrea nel \textit{Way of Working} la comunicazione tempestiva (e non a ridosso delle scadenze) di eventuali indisponibilità personali, dubbi sulle proprie competenze riguardo a un task, o blocchi tecnici. Questo permette al \textit{Responsabile} di riassegnare i ruoli o affiancare membri più esperti (\textit{Peer Review}) prima che il ritardo diventi critico.
 \end{itemize}
 
 
