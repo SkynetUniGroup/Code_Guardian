@@ -207,6 +207,7 @@ solamente alla loro prima occorrenza in questo documento.
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T04.pdf}
 \end{itemize}
 
+\newpage
 \section{Processi Primari}
 
 \subsection{Fornitura}
@@ -404,63 +405,103 @@ Per garantire un codice leggibile, facilmente manutenibile e ispezionabile dagli
     \item \textbf{Commenti:} l'uso di commenti strutturati è obbligatorio per ogni classe o funzione non banale, i commenti devono essere redatti in lingua inglese.
 \end{itemize}
 
-\section{Processi di supporto}
-
-Il presente capitolo definisce le attività di supporto che assistono gli altri processi, garantendo l'integrità e la qualità dei prodotti durante l'intero ciclo di vita del progetto, in conformità allo standard \textit{ISO/IEC 12207:1995}.
+\newpage
+\section{Processi di Supporto}
+{[descr. breve]}
 
 \subsection{Documentazione}
-Il processo di documentazione stabilisce le modalità di redazione, revisione e pubblicazione di tutti gli artefatti prodotti dal gruppo \textbf{SkyNet}.
-
-\subsubsection{Strumenti di redazione}
-Il gruppo utilizza i seguenti strumenti per la gestione documentale:
+Questo processo registra le informazioni prodotte durante un processo di ciclo di vita o durante un'attività di progetto. È fondamentale per molte ragioni:
 \begin{itemize}
-    \item \textbf{Google Docs}: utilizzato per la stesura collaborativa iniziale e la creazione di bozze;
-    \item \textbf{Google Sheets}: utilizzato per la creazione di tabelle condivise, la pianificazione e il monitoraggio delle risorse e dei costi di progetto;
-    \item \textbf{\textit{\glo{Overleaf}{overleaf}}} (\textit{\glo{LaTeX}{LaTeX}}): utilizzato per la formattazione finale e la produzione dei documenti ufficiali, garantendo uniformità stilistica.
- \end{itemize}
+    \item favorisce la chiarezza delle informazioni stabilite e l'assenza di ambiguità
+    \item fornisce un accesso facile agli interessati
+    \item aiuta la comprensione uguale di tutti i membri del gruppo
+    \item definisce le regole e i processi da seguire e le metriche da rispettare
+    \item descrive il prodotto software, ne spiega e ne facilita l'utilizzo
+\end{itemize}
+Come si può vedere dagli scopi della documentazione, ci sono vari enti interessati in vari documenti, tra cui ingegneri, sviluppatori, manager, utenti finali del prodotto software, ecc.
 
-\subsubsection{Struttura e convenzioni dei documenti}
-Ogni documento ufficiale deve presentare una struttura coerente composta da:
+\subsubsection{Attività previste}
+Le attività di documentazione previste per il progetto \textbf{Code Guardian} sono:
 \begin{itemize}
-    \item \textbf{\textit{\glo{Frontespizio}{frontespizio}}}: contenente logo, nome del gruppo, email di contatto, titolo del documento e la tabella informativa (\textit{Versione, Uso, Redattori, Verifica, Approvazione});
-    \item \textbf{Registro delle versioni}: tabella che traccia cronologicamente l'evoluzione del documento;
-    \item \textbf{Glossario}: i termini tecnici definiti nel \textit{Glossario} devono essere contrassegnati da una \textbf{G} a pedice con un collegamento ipertestuale alla relativa definizione;
-    \item \textbf{Nomenclatura file}: i file pdf devono essere nominati seguendo il formato \texttt{Nome\_Documento.pdf}.
- \end{itemize}
+    \item \textbf{Progettazione} - in questa attività si eseguono: 
+    \begin{itemize}
+        \item l'identificazione di documenti necessari
+        \item l'identificazione di tutti gli elementi principali in comune ad ogni documento
+        \item la progettazione degli indici di documenti
+        \item stabilizzazione di un template documentale (o più) che verrà utilizzato durante la redazione di documenti, per standardizzarli
+    \end{itemize}
+    
+    \item \textbf{Produzione} - la redazione stessa dei documenti e la loro fornitura
+    \item \textbf{Manutenzione} - l'aggiornamento dei documenti già presenti per preservarne la rilevanza e l'utilità 
+\end{itemize}
 
-\subsubsection{Verbali}
-I verbali sono classificati in Interni (VI) ed Esterni (VE). La nomenclatura segue il formato \texttt{VI\_AAAA\_MM\_GG.pdf} o \texttt{VE\_AAAA\_MM\_GG.pdf}. Ogni verbale deve includere: informazioni generali (luogo, data, orari), registro delle presenze, temi affrontati e tabella delle attività definite.
+\subsubsection{Progettazione}
 
-\subsection{Gestione della configurazione}
-Il processo di configurazione permette di tracciare e controllare le modifiche apportate agli elementi del progetto. Il gruppo utilizza \textit{\glo{Git}{git}} per il controllo versione e \textit{GitHub} per l'\textit{\glo{hosting}{hosting}} dei \textit{Repository}.
+All'inizio di ogni fase principale del progetto (candidatura al capitolato, RTB, PB) bisogna identificare quali documenti servono per concludere la milestone con successo.
 
-\subsubsection{Versionamento dei documenti}
-Ogni documento deve riportare una versione per tracciarne l'evoluzione. Il gruppo utilizza una numerazione progressiva (es. 0.1, 0.2, 1.0).
+Gli elementi in comune alla maggioranza dei documenti sono: 
+\begin{itemize}
+    \item titolo
+    \item logo del gruppo
+    \item intestazione
+    \item piè di pagina
+    \item tabella delle informazioni principali sul documento:
+        \begin{itemize}
+            \item versione
+            \item uso (interno cioè serve esclusivamente ai membri del gruppo; esterno cioè ...)
+            \item destinatari (di solito i professori commitenti)
+            \item redattori - i membri del gruppo che hanno contribuito nella scrittura del contenuto
+            \item verifica - i membri che hanno fatto verifiche
+            \item approvazione - i membri che hanno approvato il documento
+        \end{itemize}
+    \item tabellone di versionamento - ogni riga contiene:
+        \begin{itemize}
+            \item versione
+            \item data - la data in cui il membro ha finito una certa modifica al documento
+            \item descrizione - la spiegazione breve delle modifiche fatte al documento
+            \item autore - chi ha effettuato le modifiche
+            \item verificatore - chi ha verificato ed approvato le modifiche
+        \end{itemize}
+    \item indice
+    \item contenuto vero e proprio del documento
+\end{itemize}
 
-\subsubsection{Gestione delle attività}
-Il lavoro è organizzato tramite la board \textit{GitHub Projects} (``TO DO Blackboard''), composta dalle colonne: \textit{Backlog, Ready, In progress, In review, Done, Approved}.
+Nel repository \textit{Git} di progetto è disponibile un template generico che serve come il punto di partenza nella redazione di documenti nuovi. Crea, posiziona e formatta gli elementi elencati sopra. L'idea è di avere una documentazione facilmente navigabile e con un aspetto professionale e standardizzato. 
 
-\subsection{Qualità}
-Il processo di qualità assicura che i processi e i prodotti siano conformi alle norme stabilite dal gruppo.
- \begin{itemize}
-    \item \textbf{Obiettivi}: garantire la coerenza tra i vari documenti e l'aderenza ai requisiti richiesti da Var Group;
-    \item \textbf{Monitoraggio}: il monitoraggio dei processi avviene tramite l'analisi delle attività svolte durante ogni \textit{Sprint}. Le metriche specifiche sono dettagliate nel documento \textbf{Piano di Qualifica}.
- \end{itemize}
+\subsubsection{Produzione}
+\subsubsection{Manutenzione}
 
+\subsubsection{Documenti del progetto}
+I documenti che il gruppo ha prodotto finora e ne sta manutenendo la maggioranza sono:
+\begin{itemize}
+    \item \textbf{Analisi dei Requisiti (AdR)} - raccoglie i \textit{casi d'uso} e i \textbf{requisiti} del progetto, stabiliti assieme all'agenzia \textbf{Proponente}
+    \item \textbf{Piano di Progetto (PdP)} - gestisce i rischi possibili nel progetto, pianifica il progetto e ne segue l'andamento
+    \item \textbf{Norme di Progetto (NdP)} - definisce il \textit{Way-of-Working} del gruppo
+    \item \textbf{Glossario} - descrive i termini tecnici presenti nel resto della documentazione
+    \item \textbf{Piano di Qualifica (PdQ)} - si occupa dei processi di verifica e validazione per assicurare la qualità del prodotto e dei processi
+    \item \textbf{Lettere di presentazione} - una lettera per ogni degli eventi principali dell'insegnamento finora: candidatura al capitolato del progetto preferito e la revisione RTB. Queste lettere non vengono mantenute più dopo il loro invio al \textbf{Committente} via email. 
+\end{itemize}
+I loro scopi sono ben spiegati all'interno dei documenti stessi.
+
+\subsubsection{Strumenti}
+Gli strumenti che si utilizzano in questo processo sono:
+\begin{itemize}
+    \item \textit{Overleaf} - Un editor {\LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}}. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale.
+
+    \item \textit{TeXPage} - Un altro editor {\LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}} con lo stesso uso come \textit{Overleaf}. Offre il vantaggio di più tempo di compilazione a disposizione, che rende possibile la compilazione di documenti {\LaTeX} grandi come ad esempio l'\textbf{Analisi dei Requisiti}.
+
+    \item {[lo strumento per la verifica ortografica]}
+    \item {[lo str. per l'indice di Gulpease, se usato]}
+\end{itemize}
+Gli altri strumenti trasversali che vengono utilizzati per supportare anche il processo di documentazione sono spiegati nella sezione 4.2 "Infrastruttura di Supporto". 
+
+
+
+\subsection{Gestione delle configurazioni}
 \subsection{Verifica}
-La verifica accerta che ogni attività produca output corretti rispetto ai requisiti iniziali.
- \begin{itemize}
-    \item \textbf{Revisione incrociata (\textit{\glo{Peer Review}{peer-review}})}: ogni documento o parte di codice deve essere verificato da un membro del gruppo diverso dall'autore;
-    \item \textbf{Automazione}: viene utilizzato uno \textbf{\glo{script}{script}} \textit{\glo{Python}{python}} integrato con \textit{\glo{GitHub Actions}{github-actions}} per l'aggiornamento automatico della pagina web del progetto al caricamento di nuovi verbali.
- \end{itemize}
-
 \subsection{Validazione}
-Il processo di validazione conferma che il prodotto finale soddisfi le necessità dell'azienda \textbf{Proponente}. Essa avviene tramite:
-\begin{itemize}
-    \item \textbf{Incontri esterni}: colloqui periodici con i referenti di Var Group per presentare l'avanzamento dei lavori e ricevere feedback;
-    \item \textbf{Soddisfacimento requisiti}: verifica finale che le funzionalità implementate corrispondano a quanto concordato nel capitolato C2.
- \end{itemize}
 
+\newpage
 \section{Processi Organizzativi}
 
 \subsection{Gestione di Processi}
@@ -706,7 +747,10 @@ Si confrontano le conoscenze di ogni membro del gruppo con le tecnologie indicat
 
 Viene effettuata una revisione dei requisiti del progetto per identificare più dettagliatamente le competenze tecniche e gestionali necessarie. In base alle competenze di ogni singolo membro, ai loro interessi e alle necessità del progetto, viene creato un piano di formazione personalizzato per ogni membro del gruppo. L'obiettivo non è che ogni membro sappia fare tutto, ma che le loro competenze individuali siano complementari e che la loro unione corrisponda all\textquotesingle insieme delle competenze richieste del progetto. Il piano specifica strumenti, tecnologie, livelli di approfondimento richiesti e scadenze.
 
+
+\newpage
 \section{Metriche per la Qualità}
+
 Il gruppo adotta un sistema di misurazione rigoroso e basato su metriche al fine di garantire un approccio quantitativo e oggettivo alla valutazione della qualità. L'obiettivo principale di questo sistema è fornire un quadro di riferimento strutturato per il monitoraggio costante delle attività, permettendo al gruppo di individuare tempestivamente eventuali criticità, prevenire l'accumulo di debito tecnico e perseguire un miglioramento continuo attraverso l'analisi dei dati raccolti durante l'intero ciclo di vita del progetto.
 
 \subsection{Classificazione, Nomenclatura e Struttura}
