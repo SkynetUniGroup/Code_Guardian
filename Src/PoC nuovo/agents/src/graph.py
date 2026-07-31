@@ -121,23 +121,21 @@ class AgentGraph:
             remaining_timeout = max(1, int(self._timeout_s - elapsed))
             
             tools = self._get_langchain_tools(st.toolset, st.context_ref)
-            # Passiamo remaining_timeout al posto di self._timeout_s
             response = await self._provider.invoke_agent(st.messages, tools, remaining_timeout)
             
-            raw_out = str(response.content) if not response.tool_calls else None
-            return {"messages": [response], "raw_output": raw_out}
-        except Exception as exc:
-            return {"error": exc}
-
-    async def _node_invoca_llm(self, st: AgentState) -> dict:
-        await self._check_interrupts(st.task_id, self._current_redis_client, "invoca_llm")
-        try:
-            tools = self._get_langchain_tools(st.toolset, st.context_ref)
-            response = await self._provider.invoke_agent(st.messages, tools, self._timeout_s)
+            new_tokens = 0
+            if hasattr(response, "usage_metadata") and response.usage_metadata:
+                new_tokens = response.usage_metadata.get("total_tokens", 0)
+            elif hasattr(response, "response_metadata") and "token_usage" in response.response_metadata:
+                new_tokens = response.response_metadata["token_usage"].get("total_tokens", 0)
             
-            # Se l'LLM non ha chiamato tool, estraiamo la stringa cruda per il parser
             raw_out = str(response.content) if not response.tool_calls else None
-            return {"messages": [response], "raw_output": raw_out}
+            
+            return {
+                "messages": [response], 
+                "raw_output": raw_out,
+                "tokens_consumed": st.tokens_consumed + new_tokens # Accumuliamo i token totali
+            }
         except Exception as exc:
             return {"error": exc}
 
@@ -164,7 +162,13 @@ class AgentGraph:
         @tool
         async def read_file(sha: str, path: str) -> dict:
             """Usa questo tool per leggere il contenuto sorgente di un singolo file."""
-            return await toolset.read_file(context_ref.repoOwner, context_ref.repoName, sha, path)
+            result = await toolset.read_file(context_ref.repoOwner, context_ref.repoName, sha, path)
+            
+            if "content" in result and isinstance(result["content"], str):
+                if len(result["content"]) > settings.max_scope_chars:
+                    result["content"] = result["content"][:settings.max_scope_chars] + "\n...[TRONCATO: SUPERATO LIMITE CARATTERI]"
+                    
+            return result
 
         @tool
         async def read_issues(state: str = "closed") -> dict:
@@ -194,6 +198,10 @@ class AgentGraph:
         await self._check_interrupts(st.task_id, self._current_redis_client, "componi_prompt")
         try:
             prompt = self._profile.build_prompt(st.loaded_context)
+            
+            if len(prompt) > settings.max_scope_chars:
+                raise ValueError(f"Il contesto d'analisi supera il limite dimensionale ({len(prompt)} > {settings.max_scope_chars} caratteri).")
+                
             return {"prompt": prompt, "messages": [HumanMessage(content=prompt)]}
         except Exception as exc:
             print(f"🔴 ERRORE IN COMPONI_PROMPT: {exc}")
@@ -215,6 +223,8 @@ class AgentGraph:
     # -- Nodi Terminali --
 
     async def _node_assembla_report(self, st: AgentState) -> dict:
+        await self._check_interrupts(st.task_id, self._current_redis_client, "assembla_report")
+        
         # Generiamo un summary dinamico contando i blocchi
         num_blocks = len(st.blocks)
         summary_text = f"Analisi completata. Trovati {num_blocks} elementi."
@@ -286,6 +296,17 @@ class AgentGraph:
             
         except AgentCancelled as ac:
             return {"status": "CANCELLED", "stage": ac.stage}
+            
+        except AgentTimeout as at:
+            report = Report(
+                taskId=task_id,
+                agentId=self._profile.agent,
+                operation=self._profile.operation,
+                status="FAILED",
+                error=ReportError(kind="TIMEOUT", message=str(at), stage=at.stage)
+            )
+            report.durationMs = int((time.monotonic() - t0) * 1000)
+            return report
             
         except Exception as exc:
             # Fallback assoluto per panici di sistema

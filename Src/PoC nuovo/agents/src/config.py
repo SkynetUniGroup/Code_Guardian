@@ -23,13 +23,15 @@ class Settings(BaseSettings):
     prompts_dir: str = Field(default="/app/prompts", alias="PROMPTS_DIR")
 
     # --- Configurazioni Modelli LLM ---
-    llm_provider: str = Field(default="ollama", alias="LLM_PROVIDER")
+    llm_provider: str = Field(default="managed", alias="LLM_PROVIDER")
     llm_api_key: str = Field(default="", alias="LLM_API_KEY")
-    llm_base_url: str = Field(default="http://localhost:11434/v1", alias="LLM_BASE_URL")
-    llm_model: str = Field(default="qwen2.5-coder:7b", alias="LLM_MODEL")
+    # Endpoint OpenAI-compatibile tipico per DashScope/Qwen
+    llm_base_url: str = Field(default="https://dashscope-intl.aliyuncs.com/compatible-mode/v1", alias="LLM_BASE_URL")
+    # Tag del modello su cloud, non tag locale
+    llm_model: str = Field(default="qwen2.5-coder-32b-instruct", alias="LLM_MODEL")
 
     # --- Limiti Operativi ---
-    agent_timeout_s: int = 45 # Requisito RQ.7
+    agent_timeout_s: int = 45 # Requisito RQ.6
     max_output_tokens: int = 4096
     max_scope_chars: int = 180_000
 

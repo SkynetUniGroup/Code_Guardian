@@ -50,9 +50,7 @@ export class OctokitGitHubClient {
     }
 
     // 1. AccessLog Guard
-    if (taskId) {
-      await this.accessLogRepo.logAccess(taskId, endpoint, `${params.owner}/${params.repo}`);
-    }
+    await this.accessLogRepo.logAccess(taskId, endpoint, `${params.owner}/${params.repo}`);
 
     const octokit = await this.getOctokit(userId);
     try {
@@ -102,7 +100,8 @@ export class OctokitGitHubClient {
 
   async getFileContent(taskId: string | null, userId: string, owner: string, repo: string, sha: string, path: string) {
     // 3. Cache Redis Guard
-    const cacheKey = `github:file:${owner}:${repo}:${sha}:${path}`;
+    const cacheKey = `${repo}@${sha}:${path}`;
+    
     const cached = await this.cache.get(cacheKey);
     if (cached) return JSON.parse(cached);
 

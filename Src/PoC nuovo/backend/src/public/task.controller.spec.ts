@@ -54,4 +54,22 @@ describe('TaskController - Cancellazione Cooperativa', () => {
     expect(mockRedis.set).toHaveBeenCalledWith('cancel:task:task-123', '1', 'EX', 120);
     expect(result).toEqual({ message: 'Annullamento richiesto, in attesa dell\'agente' });
   });
+
+  it('dovrebbe ignorare la cancellazione se la task è in stato terminale (Documento Cancellazione § 6)', async () => {
+    // Setup task simulata terminale (es. COMPLETED)
+    const mockTask = {
+      _id: 'task-123',
+      userId: 'user-1',
+      status: 'COMPLETED',
+      canTransitionTo: jest.fn().mockReturnValue(false),
+    };
+    mockTaskModel.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(mockTask) });
+
+    // Act
+    const result = await controller.cancelTask('task-123', 'user-1');
+
+    // Assert: la funzione deve restituire il messaggio senza toccare Redis
+    expect(mockRedis.set).not.toHaveBeenCalled();
+    expect(result).toEqual({ message: 'Cancellazione ignorata: la task è già in stato COMPLETED' });
+  });
 });

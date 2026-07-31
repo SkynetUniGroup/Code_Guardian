@@ -75,8 +75,12 @@ import {
     {
       provide: ACCESS_LOG_REPOSITORY,
       useFactory: (accessLogModel: Model<AccessLogDocument>) => ({
-        logAccess: async (taskId: string, endpoint: string, resource: string) => {
-          const log = new accessLogModel({ taskId, endpoint, resource });
+        logAccess: async (taskId: string | null, endpoint: string, resource: string) => {
+          const logData: any = { endpoint, resource };
+          if (taskId) {
+            logData.taskId = taskId;
+          }
+          const log = new accessLogModel(logData);
           return log.save();
         }
       }),

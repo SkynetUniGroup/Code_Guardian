@@ -67,6 +67,7 @@ class PolicyViolationBlock(_Immutable):
     ruleText: str
     filePath: str
     explanation: str
+    remediation: str
 
 
 class ChangelogItemBlock(_Immutable):

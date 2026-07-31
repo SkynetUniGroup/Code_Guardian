@@ -19,7 +19,7 @@ class GoldenSetGitHubToolset(GitHubToolset):
     async def read_file(self, owner: str, repo: str, sha: str, path: str):
         return {"content": self.vulnerable_code, "path": path}
 
-    async def report_progress(self, task_id: str, stage: str, percent: int):
+    async def report_progress(self, stage: str, percent: int):
         pass
 
 @pytest.mark.asyncio

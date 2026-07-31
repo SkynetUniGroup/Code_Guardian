@@ -77,7 +77,8 @@ class SecurityProfile:
                         ruleId=str(item.get("ruleId", "unknown")),
                         ruleText=str(item.get("ruleText", "")),
                         filePath=str(item.get("filePath", "unknown")),
-                        explanation=str(item.get("explanation", ""))
+                        explanation=str(item.get("explanation", "")),
+                        remediation=str(item.get("remediation", "Nessuna remediation fornita"))
                     )
                 )
             else:

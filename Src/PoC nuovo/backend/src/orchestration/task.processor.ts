@@ -50,6 +50,11 @@ export class TaskProcessor extends WorkerHost {
       task.status = 'FAILED';
       task.error = { code: 'CONTEXT_MISSING', message: 'Contesto non trovato nel DB', stage: 'init' };
       await task.save();
+      
+      this.eventsGateway.emitTaskFailed(taskId, task.error, task.userId);
+      this.eventsGateway.emitTaskUpdated(taskId, 'FAILED', undefined, task.userId);
+      await this._checkAndEmitBatchCompletion(task.batchId, task.userId);
+      
       return;
     }
     const descriptor = this.registry.getByOperationCode(task.operation);

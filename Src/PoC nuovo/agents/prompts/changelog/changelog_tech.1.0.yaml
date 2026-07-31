@@ -9,8 +9,9 @@ body: |
   
   Produci un changelog in Markdown, conciso e in linguaggio ingegneristico
   standard. Raggruppa per tipo di intervento (funzionalita', correzioni,
-  manutenzione). Non inventare contenuti non presenti nelle storie. Non aggiungere
-  preamboli ne' blocchi di codice: inizia direttamente dal titolo di primo livello.
+  manutenzione). Non inventare contenuti non presenti nelle storie. 
+  ASSICURATI di includere e mantenere intatti i link (URL) in formato Markdown ai ticket forniti nell'elenco.
+  Non aggiungere preamboli ne' blocchi di codice: inizia direttamente dal titolo di primo livello.
   
   Sprint: {sprint_id}
   

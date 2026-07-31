@@ -28,12 +28,16 @@ class ChangelogLoader:
             if sprint_id != "Sprint Attuale" and issue_milestone != sprint_id:
                 continue # Scarta le issue che non appartengono allo sprint richiesto
             
-            # Requisito: le storie con descrizione vuota o troppo povera vengono ESCLUSE
+            issue_num = issue.get('number')
+            
+            # e storie con descrizione vuota o troppo povera vengono ESCLUSE
             if not issue.get("hasSufficientMetadata", True):
-                excluded_tasks.append(f"#{issue.get('number')} {issue.get('title')} (metadati insufficienti)")
+                excluded_tasks.append(f"#{issue_num} {issue.get('title')} (metadati insufficienti)")
             else:
                 labels = issue.get('labels', '')
-                kept_tasks.append(f"- [#{issue.get('number')}] {issue.get('title')} (Labels: {labels})")
+                # Costruiamo dinamicamente l'URL del ticket e lo formattiamo in Markdown
+                issue_url = f"https://github.com/{owner}/{repo}/issues/{issue_num}"
+                kept_tasks.append(f"- [#{issue_num}]({issue_url}) {issue.get('title')} (Labels: {labels})")
 
         # Avanzamento
         await toolset.report_progress(stage="changelog_issues_filtered", percent=30)

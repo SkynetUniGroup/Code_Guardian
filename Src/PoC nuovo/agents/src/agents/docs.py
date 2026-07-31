@@ -3,7 +3,7 @@ Trova codice non documentato, interpella l'LLM e produce una Proposal di diff.
 """
 import re
 from typing import Any, Tuple, List, Optional
-from ..models import Proposal, FindingBlock, Block
+from ..models import Proposal, Block, TextBlock
 from ..github_toolset import GitHubToolset
 from ._base import load_prompt_template, render_prompt, extract_json
 
@@ -125,19 +125,22 @@ class DocsProfile:
         data = extract_json(raw)
         blocks: List[Block] = []
         order = 0
-        
-        # 1. Gestione dei Warning come FindingBlock 
+
         for w in data.get("warnings", []):
+            file_path = w.get("file", "unknown")
+            unit_name = w.get("unit", "unità")
+            line_num = w.get("line", "?")
+            message = w.get("message", "Complessità eccessiva")
+            
+            warning_md = (
+                f"**⚠️ Avviso di complessità:** L'unità `{unit_name}` nel file `{file_path}` "
+                f"(riga {line_num}) è stata saltata.\n\n*Motivo:* {message}"
+            )
+            
             blocks.append(
-                FindingBlock(
+                TextBlock(
                     order=order,
-                    owaspCategory="N/A",
-                    severity="info",
-                    filePath=str(w.get("file", "unknown")),
-                    startLine=int(w.get("line", 1)),
-                    endLine=int(w.get("line", 1)),
-                    explanation=str(w.get("message", "Complessità eccessiva")),
-                    remediation="Rivedere manualmente la funzione"
+                    markdown=warning_md
                 )
             )
             order += 1
@@ -162,8 +165,13 @@ class DocsProfile:
             for item in items:
                 line = item.get("line", 1)
                 doc_text = item.get("doc", "")
-                # Aggiungiamo l'hunk di riga corretto per la sintassi diff
-                diff_unified += f"@@ Riga {line} @@\n+ {doc_text}\n"
+                
+                doc_lines = doc_text.splitlines()
+                num_lines = len(doc_lines)
+                
+                diff_unified += f"@@ -{line},0 +{line},{num_lines} @@\n"
+                for doc_line in doc_lines:
+                    diff_unified += f"+{doc_line}\n"
 
         files_involved = list(docs_by_file.keys())
         target_path = files_involved[0] if len(files_involved) == 1 else "Multi-file scope"
