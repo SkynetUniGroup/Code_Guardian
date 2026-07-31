@@ -2,20 +2,15 @@ import { Injectable, Logger, RequestTimeoutException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AgentDescriptor } from './agent.registry.js';
 import { firstValueFrom, catchError } from 'rxjs';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AgentGatewayService {
   private readonly logger = new Logger(AgentGatewayService.name);
 
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
   async invokeAgent(descriptor: AgentDescriptor, payload: any): Promise<any> {
-    // Sganciamo l'URL dalla variabile del frontend. Usiamo AGENTS_BASE_URL o il default interno
-    const baseUrl = this.configService.get<string>('AGENTS_BASE_URL') || 'http://agents:8000';
+    const baseUrl = 'http://agents:8000';
     const url = `${baseUrl}${descriptor.destinationUrl}`;
 
     this.logger.log(`Invocazione agente all'URL: ${url}`);
@@ -23,8 +18,9 @@ export class AgentGatewayService {
     try {
       const response = await firstValueFrom(
         this.httpService.post(url, payload, {
-          // Timeout rigoroso di 5 minuti (RQ.6)
-          timeout: 300000, 
+          // Timeout aumentato a 55s per permettere all'agente Python (che ha 45s) 
+          // di impacchettare correttamente il report di errore/timeout.
+          timeout: 55000, 
         }).pipe(
           catchError((error) => {
             this.logger.error(`Errore HTTP verso l'agente: ${error.message}`);
@@ -35,7 +31,7 @@ export class AgentGatewayService {
       return response.data;
     } catch (error: any) {
       if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-        throw new RequestTimeoutException('Timeout dell\'agente (superati i 5 minuti)');
+        throw new RequestTimeoutException('Timeout dell\'agente (superati i 55 secondi di attesa totale)');
       }
       throw error;
     }

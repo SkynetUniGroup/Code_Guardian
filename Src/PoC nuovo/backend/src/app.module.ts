@@ -25,9 +25,6 @@ import { EventsModule } from './events.module.js';
         CREDENTIAL_MASTER_KEY: Joi.string().required(),
         INTERNAL_SHARED_SECRET: Joi.string().required(),
         
-        // Nuova variabile per gli Agenti
-        AGENTS_BASE_URL: Joi.string().optional(),
-        
         // Servizi Esterni (Opzionali per sviluppo)
         SMTP_HOST: Joi.string().optional(),
         SMTP_PORT: Joi.number().optional(),

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray, ValidateIf, ArrayNotEmpty } from 'class-validator';
 import type { ScopeType } from './types.js';
 
 export class CreateContextDto {
@@ -24,10 +24,16 @@ export class CreateContextDto {
   scopeType: ScopeType;
 
   @ApiProperty({ required: false, type: [String], description: 'Richiesto se scopeType != FULL_REPOSITORY' })
-  @IsOptional()
+  @ValidateIf(o => o.scopeType !== 'FULL_REPOSITORY')
   @IsArray()
+  @ArrayNotEmpty({ message: 'L\'array paths non può essere vuoto se scopeType non è FULL_REPOSITORY' })
   @IsString({ each: true })
   paths?: string[];
+
+  @ApiProperty({ required: false, description: 'Nome della milestone/sprint per filtrare le issue su GitHub' })
+  @IsString()
+  @IsOptional()
+  sprintId?: string;
 }
 
 export class AnalysisContextDto {

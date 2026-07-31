@@ -32,6 +32,9 @@ export class AnalysisContext {
 
   @Prop()
   estimatedFileCount: number;
+
+  @Prop()
+  sprintId?: string;
 }
 
 export const AnalysisContextSchema = SchemaFactory.createForClass(AnalysisContext);

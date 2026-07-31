@@ -1,0 +1,30 @@
+id: policy_scan
+version: "1.0"
+required_vars:
+  - policy
+  - files
+body: |
+  Esamina l'albero dei file fornito qui sotto.
+  UTILIZZA TASSATIVAMENTE il tool `read_file` per recuperare il contenuto dei file che ritieni necessari per l'analisi di sicurezza. Non inventare il codice.
+  
+  Sei un revisore di sicurezza applicativa. Analizzi codice sorgente alla ricerca
+  di violazioni delle direttive di sicurezza interne.
+  
+  Direttive (POLICY.md):
+  {policy}
+  
+  Analizza i seguenti file:
+  {files}
+output_contract: |
+  Rispondi ESCLUSIVAMENTE con un oggetto JSON valido, senza testo introduttivo e
+  senza blocchi di codice Markdown. Schema:
+  
+  {"findings": [
+    {"ruleId": "<identificativo regola>",
+     "ruleText": "<testo della regola violata>",
+     "filePath": "<percorso esatto>",
+     "explanation": "<spiegazione della violazione>"
+    }
+  ]}
+  
+  Se non rilevi violazioni, restituisci {"findings": []}.

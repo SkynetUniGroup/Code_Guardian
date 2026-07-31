@@ -1,4 +1,6 @@
-import { Controller, Post, Get, Body, Param, HttpCode, HttpStatus, UseGuards, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, HttpCode, HttpStatus, UseGuards, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -20,6 +22,7 @@ export class TaskController {
     private readonly queueService: TaskQueueService,
     private readonly orchestrator: OrchestratorService,
     private readonly eventsGateway: EventsGateway,
+    @InjectRedis() private readonly redis: Redis, 
   ) {}
 
   @Get('operations')
@@ -66,27 +69,41 @@ export class TaskController {
   }
 
   @Get('tasks/:id')
-  async getTask(@Param('id') id: string, @CurrentUser() userId: string) {
+  async getTaskById(@Param('id') id: string, @CurrentUser() userId: string) {
     const task = await this.taskModel.findOne({ _id: id, userId }).lean().exec();
     if (!task) {
-      throw new NotFoundException('Task non trovata');
+      throw new NotFoundException('Task non trovata o non autorizzata');
     }
     return task;
   }
 
   @Post('tasks/:id/cancel')
-@HttpCode(HttpStatus.NO_CONTENT)
-async cancelTask(@Param('id') id: string, @CurrentUser() userId: string) {
-  const task = await this.taskModel.findOne({ _id: id, userId }).exec();
-  if (!task) {
-    throw new NotFoundException('Task non trovata');
+  @HttpCode(HttpStatus.ACCEPTED) // Meglio 202 Accepted per richieste asincrone
+  async cancelTask(@Param('id') id: string, @CurrentUser() userId: string) {
+    const task = await this.taskModel.findOne({ _id: id, userId }).exec();
+    if (!task) {
+      throw new NotFoundException('Task non trovata');
+    }
+    if (!task.canTransitionTo('CANCELLED')) {
+      throw new BadRequestException(`Impossibile annullare una task nello stato ${task.status}`);
+    }
+
+    if (task.status === 'PENDING') {
+      // Rimuoviamo fisicamente il job dalla coda BullMQ 
+      await this.queueService.removeTask(id);
+      
+      task.status = 'CANCELLED';
+      await task.save();
+      this.eventsGateway.emitTaskUpdated(id, 'CANCELLED', undefined, userId);
+      return { message: 'Task annullata prima dell\'avvio' };
+    }
+    
+    if (task.status === 'RUNNING') {
+      // Cancellazione cooperativa: scriviamo il flag su Redis
+      await this.redis.set(`cancel:task:${id}`, '1', 'EX', 120);
+      
+      // Il frontend mostrerà "Annullamento in corso" finché l'agente non coopera
+      return { message: 'Annullamento richiesto, in attesa dell\'agente' };
+    }
   }
-  if (!task.canTransitionTo('CANCELLED')) {
-    throw new BadRequestException(`Impossibile annullare una task nello stato ${task.status}`);
-  }
-  task.status = 'CANCELLED';
-  await task.save();
-  this.eventsGateway.emitTaskUpdated(id, 'CANCELLED', undefined, userId);
-  return;
-}
 }

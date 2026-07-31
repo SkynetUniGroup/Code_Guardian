@@ -4,19 +4,22 @@ WORKDIR /app
 
 RUN npm install -g pnpm@9
 
-
-COPY package.json ./
-
-
+# Imposta pnpm per fare l'hoisting delle dipendenze 
 RUN echo "node-linker=hoisted" > .npmrc
 
+# Copia i file fondamentali del monorepo dalla root
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY backend/package.json ./backend/
 
-RUN pnpm install --ignore-scripts
+# Installa le dipendenze in modo riproducibile filtrando solo per il backend
+RUN pnpm install --filter backend... --frozen-lockfile --ignore-scripts
+
+# Copia il sorgente del backend
+COPY backend/ ./backend/
 
 
-COPY . .
+WORKDIR /app/backend
 
 EXPOSE 3000
-
 
 CMD ["pnpm", "run", "start:dev"]

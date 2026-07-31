@@ -1,63 +1,75 @@
-"""Lo scheletro condiviso: il grafo a cinque nodi, su LangGraph.
-
-Questo modulo e' identico per i tre agenti. Importa SOLO le porte astratte,
-mai una classe concreta (inversione delle dipendenze). Grazie a cio' puo'
-essere testato con FakeLLMProvider e un profilo fittizio.
-
-Nodi "di lavoro": carica_contesto -> componi_prompt -> invoca_llm ->
-valida_e_parsa -> assembla_report.
-
-Rami d'errore: dopo ciascuno dei quattro nodi di lavoro un arco condizionale
-controlla `AgentState.error`. Se valorizzato (timeout UC27.2, parse UC27.3,
-context_missing), la rotta salta a `gestisci_errore` invece di proseguire: e'
-la traduzione nativa LangGraph del try/except che avvolgeva l'intera pipeline
-nella versione con il runner interno.
-
-Stato del grafo: e' `AgentState`, la dataclass gia' definita in `ports.py` (non
-duplicata qui). LangGraph supporta le dataclass come `state_schema` senza
-adattatori. Non usiamo un modello Pydantic per lo stato perche' il campo
-`error` porta istanze di eccezione vere (TimeoutErr, ParseError,
-ContextMissing, o qualunque eccezione imprevista sollevata da un adapter
-esterno): non c'e' nulla da validare o serializzare, e' uno stato di lavoro
-interno al grafo, non il contratto dati pubblico (quello resta `Report` in
-`models.py`, gia' Pydantic). Una TypedDict non avrebbe aggiunto nulla: avrebbe
-solo duplicato i default gia' presenti nella dataclass.
-
-Nota: ogni nodo di lavoro cattura le proprie eccezioni e le scrive in
-`AgentState.error`, non le rilancia. E' questo, insieme al bordo esterno in
-`run()`, a garantire che `AgentGraph.run()` non sollevi mai.
+"""Lo scheletro condiviso: il grafo a cinque nodi su LangGraph.
+Adattato per l'esecuzione asincrona (FastAPI) e per usare la Facade GitHub.
 """
-
-from __future__ import annotations
-
+import redis.asyncio as aioredis 
 import time
-from datetime import datetime, timezone
+from dataclasses import dataclass, field
+from typing import Any, Optional, List, Union
 
 from langgraph.graph import END, START, StateGraph
 
 from .config import settings
-from .errors import AgentError, ContextMissing, ParseError, TimeoutErr
-from .models import ErrorInfo, Report
-from .ports import AgentProfile, AgentState, ContextLoader, LLMProvider
+from .models import Report, ReportError, Block, Proposal
+from .github_toolset import GitHubToolset
+
+import operator
+from typing import Annotated, Sequence
+from langchain_core.messages import BaseMessage, HumanMessage
+from langgraph.prebuilt import ToolNode
+from langchain_core.tools import tool
+
+class AgentCancelled(Exception):
+    """Eccezione sollevata quando la task viene annullata dall'utente."""
+    def __init__(self, stage: str):
+        self.stage = stage
+        super().__init__(f"Agent cancelled during stage: {stage}")
+
+
+class AgentTimeout(Exception):
+    """Eccezione sollevata quando l'agente supera il tempo massimo totale consentito."""
+    def __init__(self, stage: str):
+        self.stage = stage
+        self.error_type = "TIMEOUT"
+        super().__init__(f"Agent global timeout exceeded during stage: {stage}")
+
+
+@dataclass
+class AgentState:
+    """Lo stato che scorre attraverso i nodi del grafo LangGraph."""
+    user_id: str
+    task_id: str
+    context_ref: Any
+    toolset: GitHubToolset
+    
+    loaded_context: Any = None
+    prompt: Any = None
+    raw_output: Optional[str] = None
+    blocks: List[Block] = field(default_factory=list)
+    proposal: Optional[Proposal] = None
+    
+    error: Optional[Exception] = None
+    report: Optional[Report] = None
+    tokens_consumed: int = 0
+    messages: Annotated[List[BaseMessage], operator.add] = field(default_factory=list)
 
 
 class AgentGraph:
-    """Motore di esecuzione di un agente. Riceve le tre porte per iniezione."""
+    """Motore di esecuzione LangGraph condiviso da tutti gli agenti."""
 
     def __init__(
         self,
-        loader: ContextLoader,
-        profile: AgentProfile,
-        provider: LLMProvider,
-        timeout_s: int | None = None,
+        loader: Any,
+        profile: Any,
+        provider: Any,
+        timeout_s: int = settings.agent_timeout_s
     ) -> None:
         self._loader = loader
         self._profile = profile
         self._provider = provider
-        self._timeout_s = timeout_s or settings.agent_timeout_s
+        self._timeout_s = timeout_s
         self._compiled = self._build_graph()
 
-    # -- costruzione del grafo
+    # -- Costruzione del Grafo --
 
     def _build_graph(self):
         g = StateGraph(AgentState)
@@ -65,145 +77,240 @@ class AgentGraph:
         g.add_node("carica_contesto", self._node_carica_contesto)
         g.add_node("componi_prompt", self._node_componi_prompt)
         g.add_node("invoca_llm", self._node_invoca_llm)
+        g.add_node("esegui_tools", self._node_esegui_tools) # NODO AGGIUNTO
         g.add_node("valida_e_parsa", self._node_valida_e_parsa)
         g.add_node("assembla_report", self._node_assembla_report)
         g.add_node("gestisci_errore", self._node_gestisci_errore)
 
         g.add_edge(START, "carica_contesto")
-        for nodo, successivo in (
-            ("carica_contesto", "componi_prompt"),
-            ("componi_prompt", "invoca_llm"),
-            ("invoca_llm", "valida_e_parsa"),
-            ("valida_e_parsa", "assembla_report"),
-        ):
-            g.add_conditional_edges(nodo, self._route, {"continua": successivo, "errore": "gestisci_errore"})
+        g.add_edge("carica_contesto", "componi_prompt")
+        g.add_edge("componi_prompt", "invoca_llm")
+
+        # Arco condizionale: il loop vitale dell'agente!
+        g.add_conditional_edges(
+            "invoca_llm", 
+            self._route_llm_output, 
+            {"tools": "esegui_tools", "continua": "valida_e_parsa", "errore": "gestisci_errore"}
+        )
+        
+        # Dopo aver eseguito i tool, torna all'LLM per fargli leggere i risultati
+        g.add_edge("esegui_tools", "invoca_llm")
+        
+        g.add_conditional_edges("valida_e_parsa", self._route, {"continua": "assembla_report", "errore": "gestisci_errore"})
         g.add_edge("assembla_report", END)
         g.add_edge("gestisci_errore", END)
 
         return g.compile()
 
     @staticmethod
-    def _route(st: AgentState) -> str:
-        return "errore" if st.error is not None else "continua"
+    def _route_llm_output(st: AgentState) -> str:
+        if st.error is not None:
+            return "errore"
+        
+        last_message = st.messages[-1]
+        # Se il modello restituisce un messaggio che richiede tool calls, devia sui tool
+        if hasattr(last_message, "tool_calls") and len(last_message.tool_calls) > 0:
+            return "tools"
+            
+        return "continua"
 
-    # -- nodi di lavoro
-    # Ognuno cattura le proprie eccezioni: prima le AgentError (che portano
-    # gia' il proprio error_type), poi qualunque altra eccezione imprevista,
-    # ricondotta a ParseError. Nessuno dei due casi propaga: entrambi scrivono
-    # in `error`, e l'arco condizionale successivo devia a `gestisci_errore`.
-
-    def _node_carica_contesto(self, st: AgentState) -> dict:
+    async def _node_invoca_llm(self, st: AgentState) -> dict:
+        await self._check_interrupts(st.task_id, self._current_redis_client, "invoca_llm")
         try:
-            ctx = self._loader.load(st.context_ref)
-            if ctx.is_empty():
-                raise ContextMissing(
-                    "L'ambito selezionato non contiene alcun contenuto analizzabile."
-                )
-        except AgentError as exc:
-            return {"error": exc}
-        except Exception as exc: 
-            return {"error": ParseError(str(exc))}
-        return {"loaded_context": ctx}
-
-    def _node_componi_prompt(self, st: AgentState) -> dict:
-        assert st.loaded_context is not None
-        try:
-            prompt = self._profile.build_prompt(st.loaded_context)
-        except AgentError as exc:
-            return {"error": exc}
+            elapsed = time.monotonic() - self._start_time
+            remaining_timeout = max(1, int(self._timeout_s - elapsed))
+            
+            tools = self._get_langchain_tools(st.toolset, st.context_ref)
+            # Passiamo remaining_timeout al posto di self._timeout_s
+            response = await self._provider.invoke_agent(st.messages, tools, remaining_timeout)
+            
+            raw_out = str(response.content) if not response.tool_calls else None
+            return {"messages": [response], "raw_output": raw_out}
         except Exception as exc:
-            return {"error": ParseError(str(exc))}
-        return {"prompt": prompt}
-
-    def _node_invoca_llm(self, st: AgentState) -> dict:
-        assert st.prompt is not None
-        started = time.monotonic()
-        try:
-            raw = self._provider.complete(st.prompt, timeout_s=self._timeout_s)
-            elapsed = time.monotonic() - started
-            # Difesa in profondita': anche se il provider non ha rispettato il
-            # proprio timeout, il grafo non accetta risposte fuori tempo massimo.
-            if elapsed > self._timeout_s:
-                raise TimeoutErr(
-                    f"Il modello ha risposto in {elapsed:.1f}s, oltre il limite di "
-                    f"{self._timeout_s}s."
-                )
-        except AgentError as exc:
             return {"error": exc}
-        except Exception as exc: 
-            return {"error": ParseError(str(exc))}
-        return {"raw_output": raw}
 
-    def _node_valida_e_parsa(self, st: AgentState) -> dict:
-        assert st.raw_output is not None
+    async def _node_invoca_llm(self, st: AgentState) -> dict:
+        await self._check_interrupts(st.task_id, self._current_redis_client, "invoca_llm")
         try:
-            blocks, proposal = self._profile.parse_output(st.raw_output)
-        except AgentError as exc:
+            tools = self._get_langchain_tools(st.toolset, st.context_ref)
+            response = await self._provider.invoke_agent(st.messages, tools, self._timeout_s)
+            
+            # Se l'LLM non ha chiamato tool, estraiamo la stringa cruda per il parser
+            raw_out = str(response.content) if not response.tool_calls else None
+            return {"messages": [response], "raw_output": raw_out}
+        except Exception as exc:
             return {"error": exc}
-        except Exception as exc: 
-            return {"error": ParseError(str(exc))}
-        return {"blocks": blocks, "proposal": proposal}
 
-    # -- nodi terminali
-    # `started_at`/`duration_ms` non fanno parte dello stato: vengono
-    # valorizzati da `run()` sul Report finale, cosi' la durata misurata
-    # copre l'intera esecuzione del grafo (compresa la costruzione del
-    # Report), esattamente come nel runner interno che sostituiscono.
 
-    def _node_assembla_report(self, st: AgentState) -> dict:
-        status = "completato"
-        # Se l'agente ha prodotto solo segnalazioni di avviso, lo stato lo riflette.
-        if any(getattr(b, "category", None) == "avviso" for b in st.blocks):
-            status = "avviso"
-        report = Report(
-            agent=self._profile.agent, 
-            operation=self._profile.operation,
-            context=st.context_ref,
-            status=status,
-            blocks=st.blocks,
-            proposal=st.proposal,
-        )
-        return {"report": report}
 
-    def _node_gestisci_errore(self, st: AgentState) -> dict:
-        exc = st.error
-        error_type = getattr(exc, "error_type", "parse")
-        report = Report(
-            agent=self._profile.agent, 
-            operation=self._profile.operation,
-            context=st.context_ref,
-            status="fallito",
-            blocks=(),
-            proposal=None,
-            error=ErrorInfo(type=error_type, message=str(exc)),
-        )
-        return {"report": report}
-
-    # -- esecuzione 
-
-    def run(self, ref) -> Report:
-        """Esegue la pipeline. Non solleva mai: gli errori finiscono nel Report."""
-        started_at = datetime.now(timezone.utc)
-        t0 = time.monotonic()
-
+    async def _node_esegui_tools(self, st: AgentState) -> dict:
+        await self._check_interrupts(st.task_id, self._current_redis_client, "esegui_tools")
         try:
-            result = self._compiled.invoke(AgentState(context_ref=ref))
-            report = result["report"]
-        except Exception as exc: 
-            report = Report(
-                agent=self._profile.agent, 
-                operation=self._profile.operation,
-                context=ref,
-                status="fallito",
-                blocks=(),
-                proposal=None,
-                error=ErrorInfo(type="parse", message=str(exc)),
-            )
+            tools = self._get_langchain_tools(st.toolset, st.context_ref)
+            tool_node = ToolNode(tools)
+            result = await tool_node.ainvoke({"messages": st.messages})
+            return {"messages": result["messages"]}
+        except Exception as exc:
+            return {"error": exc}
 
-        report.started_at = started_at
-        report.duration_ms = self._ms(t0)
-        return report
+    def _get_langchain_tools(self, toolset, context_ref):
+        """Espone le chiamate HTTP alla facade come tool annotati per l'LLM."""
+        @tool
+        async def read_tree(sha: str) -> dict:
+            """Usa questo tool per ottenere l'albero dei file del repository. 
+            Esplora le cartelle per capire l'architettura prima di leggere i file."""
+            return await toolset.read_tree(context_ref.repoOwner, context_ref.repoName, sha)
+
+        @tool
+        async def read_file(sha: str, path: str) -> dict:
+            """Usa questo tool per leggere il contenuto sorgente di un singolo file."""
+            return await toolset.read_file(context_ref.repoOwner, context_ref.repoName, sha, path)
+
+        @tool
+        async def read_issues(state: str = "closed") -> dict:
+            """Usa questo tool per leggere i ticket e le issue del progetto."""
+            return await toolset.read_issues(context_ref.repoOwner, context_ref.repoName, {"state": state})
+
+        return [read_tree, read_file, read_issues]
 
     @staticmethod
-    def _ms(t0: float) -> int:
-        return int((time.monotonic() - t0) * 1000)
+    def _route(st: AgentState) -> str:
+        """Controlla se c'è un'eccezione nello stato per deviare il grafo verso l'errore."""
+        return "errore" if st.error is not None else "continua"
+
+    # -- Nodi del Grafo (Asincroni per supportare HTTPX verso NestJS) --
+
+    async def _node_carica_contesto(self, st: AgentState) -> dict:
+        await self._check_interrupts(st.task_id, self._current_redis_client, "carica_contesto")
+        try:
+            ctx = await self._loader.load(st.context_ref, st.toolset)
+            return {"loaded_context": ctx}
+        except Exception as exc:
+            print(f"🔴 ERRORE IN CARICA_CONTESTO: {exc}") 
+            return {"error": exc}
+
+
+    async def _node_componi_prompt(self, st: AgentState) -> dict:
+        await self._check_interrupts(st.task_id, self._current_redis_client, "componi_prompt")
+        try:
+            prompt = self._profile.build_prompt(st.loaded_context)
+            return {"prompt": prompt, "messages": [HumanMessage(content=prompt)]}
+        except Exception as exc:
+            print(f"🔴 ERRORE IN COMPONI_PROMPT: {exc}")
+            return {"error": exc}
+
+    async def _node_valida_e_parsa(self, st: AgentState) -> dict:
+        await self._check_interrupts(st.task_id, self._current_redis_client, "valida_e_parsa")
+        try:
+            blocks, proposal = self._profile.parse_output(st.raw_output)
+            return {"blocks": blocks, "proposal": proposal}
+        except Exception as exc:
+            from json import JSONDecodeError
+            if isinstance(exc, (JSONDecodeError, ValueError)) or "json" in str(exc).lower() or "parse" in str(exc).lower():
+                exc.error_type = "PARSING"
+            else:
+                exc.error_type = "PARSING" 
+            return {"error": exc}
+
+    # -- Nodi Terminali --
+
+    async def _node_assembla_report(self, st: AgentState) -> dict:
+        # Generiamo un summary dinamico contando i blocchi
+        num_blocks = len(st.blocks)
+        summary_text = f"Analisi completata. Trovati {num_blocks} elementi."
+        if st.proposal:
+            summary_text += " Generata proposta di modifica (diff)."
+
+        report = Report(
+            taskId=st.task_id,
+            agentId=self._profile.agent,
+            operation=self._profile.operation,
+            status="COMPLETED",
+            body=st.blocks,
+            proposal=st.proposal,
+            summary=summary_text,               
+            tokensConsumed=st.tokens_consumed   
+        )
+        return {"report": report}
+
+    async def _node_gestisci_errore(self, st: AgentState) -> dict:
+        """Costruisce un report di fallimento, assicurandosi di non violare il contratto DTO."""
+        error_msg = str(st.error) if st.error else ""
+        error_kind = getattr(st.error, "error_type", None)
+        
+        error_repr = repr(st.error).lower() if st.error else ""
+
+        # Mappatura ferrea per intercettare qualsiasi errore di parsing/json
+        if "json" in error_msg.lower() or "json" in error_repr or "parse" in error_msg.lower() or "decode" in error_msg.lower():
+            error_kind = "PARSING"
+        elif "timeout" in error_msg.lower() or "timeout" in error_repr:
+            error_kind = "TIMEOUT"
+        elif error_kind not in ("TIMEOUT", "PARSING", "UPSTREAM"):
+            error_kind = "UPSTREAM"
+
+        if not error_kind:
+            error_kind = "UPSTREAM"
+
+        report = Report(
+            taskId=st.task_id,
+            agentId=self._profile.agent,
+            operation=self._profile.operation,
+            status="FAILED",
+            error=ReportError(kind=error_kind, message=error_msg, stage="agent_execution")
+        )
+        return {"report": report}
+
+    # -- Metodo Pubblico di Esecuzione --
+
+    async def run(self, task_id: str, user_id: str, context_ref: Any, toolset: GitHubToolset) -> Union[Report, dict]:
+        """Avvia la pipeline asincrona per questo agente e ritorna l'oggetto Report o un dict in caso di cancel."""
+        self._start_time = time.monotonic()
+        t0 = time.monotonic()
+        
+        initial_state = AgentState(
+            user_id=user_id,
+            task_id=task_id,
+            context_ref=context_ref,
+            toolset=toolset
+        )
+        
+        # Inizializza il client Redis una sola volta per l'intera esecuzione 
+        self._current_redis_client = aioredis.from_url(settings.redis_url)
+        
+        try:
+            # 'ainvoke' è la versione asincrona per eseguire il grafo
+            result = await self._compiled.ainvoke(initial_state)
+            report = result["report"]
+            report.durationMs = int((time.monotonic() - t0) * 1000)
+            return report
+            
+        except AgentCancelled as ac:
+            return {"status": "CANCELLED", "stage": ac.stage}
+            
+        except Exception as exc:
+            # Fallback assoluto per panici di sistema
+            report = Report(
+                taskId=task_id,
+                agentId=self._profile.agent,
+                operation=self._profile.operation,
+                status="FAILED",
+                error=ReportError(kind="UPSTREAM", message=str(exc), stage="graph_initialization")
+            )
+            report.durationMs = int((time.monotonic() - t0) * 1000)
+            return report
+            
+        finally:
+            # Assicura la chiusura del client Redis al termine dell'agente
+            await self._current_redis_client.aclose()
+            self._current_redis_client = None
+
+    async def _check_interrupts(self, task_id: str, redis_client: aioredis.Redis, stage: str):
+        """Verifica sia il timeout globale (RQ.6) sia se il backend ha richiesto l'annullamento cooperativo."""
+        # 1. Controlla il timeout globale
+        if time.monotonic() - self._start_time > self._timeout_s:
+            raise AgentTimeout(stage=stage)
+            
+        # 2. Controlla la cancellazione utente
+        flag = await redis_client.get(f"cancel:task:{task_id}")
+        if flag is not None:
+            raise AgentCancelled(stage=stage)

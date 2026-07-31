@@ -20,6 +20,8 @@ const ALLOWED_ENDPOINTS = [
 export class OctokitGitHubClient {
   private readonly logger = new Logger(OctokitGitHubClient.name);
 
+  private octokitInstances = new Map<string, { client: Octokit; expiresAt: number }>();
+
   constructor(
     private vault: CredentialVaultService,
     @InjectRedis() private readonly cache: Redis,
@@ -27,8 +29,19 @@ export class OctokitGitHubClient {
   ) {}
 
   private async getOctokit(userId: string): Promise<Octokit> {
+    const now = Date.now();
+    const cached = this.octokitInstances.get(userId);
+    
+    if (cached && cached.expiresAt > now) {
+      return cached.client;
+    }
+
     const token = await this.vault.getDecryptedToken(userId, 'GITHUB');
-    return new Octokit({ auth: token });
+    const client = new Octokit({ auth: token });
+    
+    this.octokitInstances.set(userId, { client, expiresAt: now + 60000 });
+    
+    return client;
   }
 
   private async executeSafely(taskId: string | null, userId: string, endpoint: string, params: any) {

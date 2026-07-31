@@ -11,6 +11,15 @@ export class TaskQueueService {
   async enqueue(task: TaskDocument): Promise<void> {
     await this.tasksQueue.add('execute-agent', {
       taskId: task._id.toString(),
+    }, {
+      jobId: task._id.toString() 
     });
+  }
+
+  async removeTask(taskId: string): Promise<void> {
+    const job = await this.tasksQueue.getJob(taskId);
+    if (job) {
+      await job.remove();
+    }
   }
 }

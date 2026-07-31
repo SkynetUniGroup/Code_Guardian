@@ -64,8 +64,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (userId) {
       this.server.to(`user:${userId}`).emit(event, payload);
     } else {
-      // fallback: nessun userId disponibile, broadcast globale (da evitare)
-      this.server.emit(event, payload);
+      this.logger.warn(`Tentativo di emissione evento '${event}' senza userId. Evento scartato per evitare data leak.`);
     }
   }
 }

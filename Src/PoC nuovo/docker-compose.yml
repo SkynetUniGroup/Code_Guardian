@@ -1,4 +1,3 @@
-version: '3.8'
 
 networks:
   codeguardian-net:
@@ -8,21 +7,22 @@ services:
 
   # SERVIZI APPLICATIVI
  
-  frontend:
-    build: 
-      context: ./frontend
-    ports:
-      - "5173:5173"
-    networks:
-      - codeguardian-net
-    depends_on:
-      - backend
-    environment:
-      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:3000/api/v1}
+frontend:
+  build: 
+    context: ./frontend
+  ports:
+    - "5173:5173"
+  networks:
+    - codeguardian-net
+  depends_on:
+   - backend
+  environment:
+   - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:3000/api/v1}
 
   backend:
     build:
-      context: ./backend
+      context: . 
+      dockerfile: backend/Dockerfile
     ports:
       - "3000:3000"
     networks:
@@ -34,15 +34,20 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/v1/auth/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   agents:
     build:
       context: ./agents
-    # Nessuna porta esposta sull'host come da specifiche (raggiungibile internamente sulla 8000)
     networks:
       - codeguardian-net
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     env_file:
       - .env
 

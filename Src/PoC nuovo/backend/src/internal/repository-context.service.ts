@@ -28,7 +28,12 @@ export class RepositoryContextService {
     // Filtriamo i file in base allo scope e ai paths passati nel DTO
     let files = treeNodes.filter((node: any) => node.type === 'file');
     
-    if (dto.scopeType !== 'FULL_REPOSITORY' && dto.paths && dto.paths.length > 0) {
+
+    if (dto.scopeType !== 'FULL_REPOSITORY') {
+      if (!dto.paths || dto.paths.length === 0) {
+        throw new BadRequestException(`L'ambito ${dto.scopeType} richiede di specificare almeno un path.`);
+      }
+      // Se arriviamo qui siamo certi che i paths ci siano
       files = files.filter((f: any) => dto.paths!.some(p => f.path.startsWith(p)));
     }
 
@@ -54,6 +59,7 @@ export class RepositoryContextService {
       paths: dto.paths || [],
       detectedLanguages,
       estimatedFileCount,
+      sprintId: dto.sprintId,
     });
   }
 
