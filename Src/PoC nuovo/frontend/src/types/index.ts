@@ -3,7 +3,7 @@ export type OperationCode =
   | 'SECURITY_OWASP' | 'SECURITY_POLICY'
   | 'CHANGELOG_TECHNICAL' | 'CHANGELOG_BUSINESS';
 
-export type ReportStatus = 'pending' | 'completed' | 'failed' | 'cancelled';
+export type ReportStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 
 
 export interface TextBlock {

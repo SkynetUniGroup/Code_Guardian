@@ -64,7 +64,7 @@ const DiffViewer = ({ proposal }: { proposal: any }) => {
 };
 
 export default function ReportView() {
-  const { reportId } = useParams({ select: ['reportId'] });
+  const { reportId } = useParams({ strict: false }) as { reportId: string };
   const { reports, addReport } = useAppStore();
   const [loading, setLoading] = useState(true);
 
@@ -109,7 +109,7 @@ export default function ReportView() {
           <p className="text-gray-500 mt-1">Generato il {new Date(report.generatedAt).toLocaleString()}</p>
         </div>
         <span className={`px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider ${
-          report.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          report.status === 'COMPLETED' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
         }`}>
           {report.status}
         </span>

@@ -102,7 +102,7 @@ export default function RepositorySelection() {
               value={formData.repoName}
               onChange={(e) => setFormData({ ...formData, repoName: e.target.value })}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              placeholder="code-guardian"
+              placeholder="code_guardian"
               required
             />
           </div>
@@ -127,7 +127,7 @@ export default function RepositorySelection() {
               value={formData.scope}
               onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              placeholder="es. src/"
+              placeholder="es. Src/"
             />
           </div>
         </div>

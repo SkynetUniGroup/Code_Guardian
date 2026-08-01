@@ -53,7 +53,7 @@ export const useWebSocket = () => {
     });
 
     const handleTaskProgress = (data: TaskProgressData) => {
-      updateTask(data.taskId, { status: 'pending' });
+      updateTask(data.taskId, { status: 'RUNNING' });
     };
 
     const handleTaskUpdated = async (data: TaskUpdatedData) => {
@@ -62,7 +62,7 @@ export const useWebSocket = () => {
         reportId: data.reportId,
       });
 
-      if (data.status === 'completed' && data.reportId && !reports[data.reportId]) {
+      if (data.status === 'COMPLETED' && data.reportId && !reports[data.reportId]) {
         try {
           const report = await getReport(data.reportId);
           addReport(report);
@@ -73,11 +73,8 @@ export const useWebSocket = () => {
     };
 
     const handleTaskFailed = (data: TaskFailedData) => {
-      updateTask(data.taskId, { status: 'failed' });
-      
-      // Feedback visivo per l'utente (non blocca le altre task)
+      updateTask(data.taskId, { status: 'FAILED' });
       console.error(`Analisi fallita per la task ${data.taskId}:`, data.error.message);
-      // alert(`Attenzione: una task ha riportato un errore (${data.error.kind}). Controlla i dettagli.`);
     };
 
     const handleBatchCompleted = (data: BatchCompletedData) => {

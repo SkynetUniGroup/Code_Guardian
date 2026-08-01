@@ -1,9 +1,9 @@
 import { useParams, Link } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { useAppStore } from '../stores/useAppStore';
-import type { ReportStatus } from '../types';
 
 export default function TaskExecution() {
-  const { taskId } = useParams({ select: ['taskId'] });
+  const { taskId } = useParams({ strict: false }) as { taskId: string };
   const { tasks, reports, setCurrentTask } = useAppStore();
 
   const task = tasks.find((t) => t.id === taskId);
@@ -16,7 +16,7 @@ export default function TaskExecution() {
   }, [taskId, setCurrentTask]);
 
   if (!task) {
-    return <div className="p-4">Task non trovato</div>;
+    return <div className="p-4">Task non trovata</div>;
   }
 
   return (
@@ -27,7 +27,8 @@ export default function TaskExecution() {
         <div className="mb-4">
           <h2 className="text-lg font-medium">Stato: {task.status}</h2>
 
-          {task.status === 'pending' && (
+          {/* Aggiornato in maiuscolo per PENDING e RUNNING */}
+          {(task.status === 'PENDING' || task.status === 'RUNNING') && (
             <div className="mt-2">
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div className="bg-blue-600 h-2.5 rounded-full animate-pulse"></div>
@@ -36,20 +37,22 @@ export default function TaskExecution() {
             </div>
           )}
 
-          {task.status === 'completed' && task.reportId && (
+          {/* Aggiornato in maiuscolo per COMPLETED */}
+          {task.status === 'COMPLETED' && task.reportId && (
             <div className="mt-4 p-4 bg-green-50 rounded-lg">
               <p className="text-green-800">Analisi completata!</p>
               <Link
                 to="/reports/$reportId"
                 params={{ reportId: task.reportId }}
-                className="mt-2 inline-block text-blue-600 hover:text-blue-800"
+                className="mt-2 inline-block text-blue-600 hover:text-blue-800 font-medium"
               >
                 Visualizza Report →
               </Link>
             </div>
           )}
 
-          {task.status === 'failed' && (
+          {/* Aggiornato in maiuscolo per FAILED */}
+          {task.status === 'FAILED' && (
             <div className="mt-4 p-4 bg-red-50 rounded-lg">
               <p className="text-red-800">Analisi fallita</p>
               <Link to="/" className="mt-2 inline-block text-blue-600 hover:text-blue-800">
