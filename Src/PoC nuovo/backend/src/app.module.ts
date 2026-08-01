@@ -27,6 +27,7 @@ import { ReportModule } from './report/report.module';
         INTERNAL_SHARED_SECRET: Joi.string().required(),
         
         // Servizi Esterni (Opzionali per sviluppo)
+        AGENTS_BASE_URL: Joi.string().optional(),
         SMTP_HOST: Joi.string().optional(),
         SMTP_PORT: Joi.number().optional(),
         S3_ENDPOINT: Joi.string().optional(),

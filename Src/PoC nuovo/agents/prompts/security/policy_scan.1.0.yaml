@@ -23,7 +23,8 @@ output_contract: |
     {"ruleId": "<identificativo regola>",
      "ruleText": "<testo della regola violata>",
      "filePath": "<percorso esatto>",
-     "explanation": "<spiegazione della violazione>"
+     "explanation": "<spiegazione della violazione>",
+     "remediation": "<come mitigare o correggere la violazione>"
     }
   ]}
   

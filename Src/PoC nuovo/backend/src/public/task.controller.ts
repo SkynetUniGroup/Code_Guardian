@@ -78,14 +78,15 @@ export class TaskController {
   }
 
   @Post('tasks/:id/cancel')
-  @HttpCode(HttpStatus.ACCEPTED) // Meglio 202 Accepted per richieste asincrone
+  @HttpCode(HttpStatus.ACCEPTED) 
   async cancelTask(@Param('id') id: string, @CurrentUser() userId: string) {
     const task = await this.taskModel.findOne({ _id: id, userId }).exec();
     if (!task) {
       throw new NotFoundException('Task non trovata');
     }
+    
     if (!task.canTransitionTo('CANCELLED')) {
-      throw new BadRequestException(`Impossibile annullare una task nello stato ${task.status}`);
+      return { message: `Cancellazione ignorata: la task è già in stato ${task.status}` };
     }
 
     if (task.status === 'PENDING') {

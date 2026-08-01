@@ -5,8 +5,8 @@ export type AccessLogDocument = HydratedDocument<AccessLog>;
 
 @Schema({ timestamps: { createdAt: true, updatedAt: false } })
 export class AccessLog {
-  @Prop({ type: Types.ObjectId, ref: 'Task', required: true })
-  taskId: Types.ObjectId | string;
+  @Prop({ type: Types.ObjectId, ref: 'Task', required: false })
+  taskId?: Types.ObjectId | string;
 
   @Prop({ required: true })
   endpoint: string;

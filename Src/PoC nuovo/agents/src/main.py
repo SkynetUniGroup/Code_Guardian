@@ -82,7 +82,7 @@ async def test_hmac_connection():
     toolset = GitHubToolset(user_id="test-user", task_id=dummy_task_id) 
     
     try:
-        await toolset.report_progress(task_id=dummy_task_id, stage="hmac_test_stage", percent=42)
+        await toolset.report_progress(stage="hmac_test_stage", percent=42)
         
         return {
             "status": "success", 

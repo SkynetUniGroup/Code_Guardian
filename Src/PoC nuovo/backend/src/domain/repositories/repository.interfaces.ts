@@ -12,7 +12,7 @@ export interface IAnalysisContextRepository {
 }
 
 export interface IAccessLogRepository {
-  logAccess(taskId: string, endpoint: string, resource: string): Promise<AccessLogDocument>;
+  logAccess(taskId: string | null, endpoint: string, resource: string): Promise<AccessLogDocument>;
 }
 
 export interface IServiceCredentialRepository {
