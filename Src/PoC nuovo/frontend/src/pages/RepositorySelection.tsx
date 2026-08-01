@@ -32,23 +32,47 @@ export default function RepositorySelection() {
 
     setLoading(true);
     try {
+      // 1. Mappiamo lo scope del form sui campi attesi dal Backend
+      const scopeType = formData.scope ? 'DIRECTORIES' : 'FULL_REPOSITORY';
+      const paths = formData.scope ? [formData.scope] : undefined;
+
       // Crea contesto
-      const context = await createContext(
+      const contextData = await createContext(
         formData.repoOwner,
         formData.repoName,
         formData.ref,
-        formData.scope,
+        scopeType,
+        paths
       );
-      addContext(context);
+      
+      // Il backend ritorna { contextId: '...' }
+      addContext({
+        id: contextData.contextId,
+        repoOwner: formData.repoOwner,
+        repoName: formData.repoName,
+        ref: formData.ref,
+        scope: formData.scope
+      });
 
-      // Avvia task
-      const task = await createTask(context.id, selectedOperation);
-      addTask(task);
-      setCurrentTask(task.id);
+      // 2. Avvia task
+      const taskResponse = await createTask(contextData.contextId, selectedOperation);
+      
+      // Il backend ritorna { taskIds: ['...'], batchId: '...' }
+      const newTaskId = taskResponse.taskIds[0];
 
-      navigate({ to: '/tasks/$taskId', params: { taskId: task.id } });
-    } catch (error) {
+      addTask({
+        id: newTaskId,
+        contextId: contextData.contextId,
+        operation: selectedOperation,
+        status: 'pending'
+      });
+      setCurrentTask(newTaskId);
+
+      // Naviga alla pagina della task usando il nuovo ID
+      navigate({ to: '/tasks/$taskId', params: { taskId: newTaskId } });
+    } catch (error: any) {
       console.error('Failed to start task:', error);
+      alert(`Errore nell'avvio dell'analisi: ${error.response?.data?.message || error.message}`);
     } finally {
       setLoading(false);
     }
@@ -97,13 +121,13 @@ export default function RepositorySelection() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Scope</label>
+            <label className="block text-sm font-medium text-gray-700">Scope (Opzionale)</label>
             <input
               type="text"
               value={formData.scope}
               onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              placeholder="src/"
+              placeholder="es. src/"
             />
           </div>
         </div>
@@ -114,7 +138,7 @@ export default function RepositorySelection() {
             <button
               type="button"
               onClick={loadOperations}
-              className="mt-1 text-blue-600 hover:text-blue-800"
+              className="mt-1 text-blue-600 hover:text-blue-800 font-medium"
             >
               Carica operazioni disponibili
             </button>
@@ -123,7 +147,7 @@ export default function RepositorySelection() {
             <select
               value={selectedOperation}
               onChange={(e) => setSelectedOperation(e.target.value as OperationCode)}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white"
               required
             >
               <option value="">Seleziona un'operazione</option>
@@ -139,7 +163,7 @@ export default function RepositorySelection() {
         <button
           type="submit"
           disabled={loading || !selectedOperation}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300"
+          className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
         >
           {loading ? 'Avvio in corso...' : 'Avvia Analisi'}
         </button>

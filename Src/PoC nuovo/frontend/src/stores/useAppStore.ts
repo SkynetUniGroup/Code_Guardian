@@ -15,6 +15,7 @@ interface AppState {
   reports: Record<string, Report>;
   currentTaskId: string | null;
   websocketConnected: boolean;
+  isConfigured: boolean;
 }
 
 interface AppActions {
@@ -25,6 +26,7 @@ interface AppActions {
   setCurrentTask: (taskId: string | null) => void;
   addReport: (report: Report) => void;
   setWebSocketConnected: (connected: boolean) => void;
+  setConfigured: (status: boolean) => void;
 }
 
 type AppStore = AppState & AppActions;
@@ -36,6 +38,7 @@ export const useAppStore = create<AppStore>((set) => ({
   reports: {},
   currentTaskId: null,
   websocketConnected: false,
+  isConfigured: !!localStorage.getItem('jwt_token'),
 
   // Actions
   addContext: (context) => set((state) => ({
@@ -57,8 +60,10 @@ export const useAppStore = create<AppStore>((set) => ({
   setCurrentTask: (taskId) => set({ currentTaskId: taskId }),
 
   addReport: (report) => set((state) => ({
-    reports: { ...state.reports, [report._id]: report }
+    reports: { ...state.reports, [report.id]: report }
   })),
 
   setWebSocketConnected: (connected) => set({ websocketConnected: connected }),
+
+  setConfigured: (status) => set({ isConfigured: status }),
 }));

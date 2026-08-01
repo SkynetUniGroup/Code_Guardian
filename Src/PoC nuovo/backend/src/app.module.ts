@@ -8,7 +8,7 @@ import { OrchestrationModule } from './orchestration/orchestration.module';
 import { PublicModule } from './public/public.module';
 import { InternalModule } from './internal/internal.module.js';
 import { EventsModule } from './events.module.js';
-import { ReportModule } from './report/report.module';
+import { ReportModule } from './domain/report.module.js';
 
 @Module({
   imports: [
@@ -59,6 +59,7 @@ import { ReportModule } from './report/report.module';
     PublicModule,
     InternalModule,
     EventsModule,
+    ReportModule,
   ],
   controllers: [],
   providers: [],

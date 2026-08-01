@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Report, ReportDocument } from './schemas/report.schema.ts';
-import type { ReportStatus, OperationCode } from '../../common/dto/types.ts';
-
+import { Report, ReportDocument } from './schemas/report.schema.js';
+import type { ReportStatus, OperationCode } from '../common/dto/types.js';
 @Injectable()
 export class ReportService {
   constructor(
