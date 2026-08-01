@@ -8,6 +8,7 @@ import { OrchestrationModule } from './orchestration/orchestration.module';
 import { PublicModule } from './public/public.module';
 import { InternalModule } from './internal/internal.module.js';
 import { EventsModule } from './events.module.js';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [

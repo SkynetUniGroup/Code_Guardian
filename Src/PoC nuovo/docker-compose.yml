@@ -4,20 +4,19 @@ networks:
     driver: bridge
 
 services:
-
   # SERVIZI APPLICATIVI
  
-frontend:
-  build: 
-    context: ./frontend
-  ports:
-    - "5173:5173"
-  networks:
-    - codeguardian-net
-  depends_on:
-   - backend
-  environment:
-   - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:3000/api/v1}
+  frontend:
+    build: 
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - codeguardian-net
+    depends_on:
+     - backend
+    environment:
+     - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:3000/api/v1}
 
   backend:
     build:
@@ -51,13 +50,14 @@ frontend:
     env_file:
       - .env
 
-
   # SERVIZI INFRASTRUTTURALI
 
   mongo:
     image: mongo:7
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
     networks:
       - codeguardian-net
     healthcheck:
@@ -93,3 +93,6 @@ frontend:
     networks:
       - codeguardian-net
     command: server /data --console-address ":9001"
+    
+volumes:
+    mongo_data:
