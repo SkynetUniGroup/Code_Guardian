@@ -23,5 +23,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
+    "pytest-asyncio",
     "ruff>=0.3.0",
 ]

@@ -11,6 +11,7 @@ RUN apt-get update \
 # Copiamo la gestione dipendenze
 COPY pyproject.toml ./
 COPY src ./src
+COPY tests ./tests
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
