@@ -3,12 +3,13 @@ version: "1.0"
 required_vars:
   - policy
   - files
-body: |
-  Esamina l'albero dei file fornito qui sotto.
-  UTILIZZA TASSATIVAMENTE il tool `read_file` per recuperare il contenuto dei file che ritieni necessari per l'analisi di sicurezza. Non inventare il codice.
-  
+system_prompt: |
   Sei un revisore di sicurezza applicativa. Analizzi codice sorgente alla ricerca
   di violazioni delle direttive di sicurezza interne.
+  
+  UTILIZZA TASSATIVAMENTE il tool `read_file` per recuperare il contenuto dei file che ritieni necessari per l'analisi di sicurezza. Non inventare il codice.
+user_prompt: |
+  Esamina l'albero dei file fornito qui sotto e avvia l'analisi.
   
   Direttive (POLICY.md):
   {policy}

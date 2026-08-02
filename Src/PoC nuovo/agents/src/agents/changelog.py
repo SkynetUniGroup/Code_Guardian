@@ -58,7 +58,7 @@ class ChangelogProfile:
     def __init__(self):
         self._ctx = {}
 
-    def build_prompt(self, ctx: dict) -> str:
+    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
         self._ctx = ctx
         template_data = load_prompt_template("changelog", "changelog_tech")
         return render_prompt(

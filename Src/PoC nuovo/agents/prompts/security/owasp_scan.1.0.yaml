@@ -3,19 +3,22 @@ version: "1.0"
 required_vars:
   - policy
   - files
-body: |
-  Esamina l'albero dei file fornito qui sotto.
-  UTILIZZA TASSATIVAMENTE il tool `read_file` per recuperare il contenuto dei file che ritieni necessari per l'analisi di sicurezza. Non inventare il codice.
-
+system_prompt: |
   Sei un revisore di sicurezza applicativa. Analizzi codice sorgente alla ricerca
   delle vulnerabilita' della OWASP Top 10: SQL injection, cross-site scripting,
   segreti scritti in chiaro, crittografia insicura, controllo degli accessi
   incompleto, deserializzazione insicura, componenti vulnerabili, logging
   insufficiente, SSRF, errori di configurazione.
+
+  UTILIZZA TASSATIVAMENTE il tool `read_file` per recuperare il contenuto dei file 
+  che ritieni necessari per l'analisi di sicurezza. Non inventare il codice.
+user_prompt: |
+  Esamina l'albero dei file fornito qui sotto e avvia l'analisi.
   
+  Direttive (POLICY.md):
   {policy}
   
-  Analizza i seguenti file:
+  File supportati nel repository:
   {files}
 output_contract: |
   Rispondi ESCLUSIVAMENTE con un oggetto JSON valido, senza testo introduttivo e

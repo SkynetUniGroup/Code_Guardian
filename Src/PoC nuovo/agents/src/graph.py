@@ -14,7 +14,7 @@ from .github_toolset import GitHubToolset
 
 import operator
 from typing import Annotated, Sequence
-from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langgraph.prebuilt import ToolNode
 from langchain_core.tools import tool
 
@@ -197,12 +197,21 @@ class AgentGraph:
     async def _node_componi_prompt(self, st: AgentState) -> dict:
         await self._check_interrupts(st.task_id, self._current_redis_client, "componi_prompt")
         try:
-            prompt = self._profile.build_prompt(st.loaded_context)
+            # Ora riceviamo la tupla (system, user)
+            system_prompt, user_prompt = self._profile.build_prompt(st.loaded_context)
             
-            if len(prompt) > settings.max_scope_chars:
-                raise ValueError(f"Il contesto d'analisi supera il limite dimensionale ({len(prompt)} > {settings.max_scope_chars} caratteri).")
+            # Controllo limiti sul totale dei caratteri inviati
+            total_len = len(system_prompt) + len(user_prompt)
+            if total_len > settings.max_scope_chars:
+                raise ValueError(f"Il contesto d'analisi supera il limite dimensionale ({total_len} > {settings.max_scope_chars} caratteri).")
                 
-            return {"prompt": prompt, "messages": [HumanMessage(content=prompt)]}
+            # Creazione messaggi differenziati
+            messages = [
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=user_prompt)
+            ]
+                
+            return {"prompt": (system_prompt, user_prompt), "messages": messages}
         except Exception as exc:
             print(f"🔴 ERRORE IN COMPONI_PROMPT: {exc}")
             return {"error": exc}

@@ -53,7 +53,7 @@ class SecurityProfile:
         self.operation = operation
         self._ctx = {}
 
-    def build_prompt(self, ctx: dict) -> str:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]: 
         template_id = "owasp_scan" if self.operation == "SECURITY_OWASP" else "policy_scan"
         template_data = load_prompt_template("security", template_id)
         
