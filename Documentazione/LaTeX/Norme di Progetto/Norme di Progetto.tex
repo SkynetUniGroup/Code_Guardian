@@ -102,7 +102,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  \\ \hline
+        0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  Edoardo Granziero \\ \hline
         0.7 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone &  \\ \hline
         0.6 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
         0.6 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
@@ -396,94 +396,115 @@ Per garantire un codice leggibile, facilmente manutenibile e ispezionabile dagli
 
 \newpage
 \section{Processi di Supporto}
-Questa sezione descrive le attività che assistono gli altri processi, con l'obiettivo di garantire la qualità, la coerenza e il successo del progetto. Tali processi includono la gestione sistematica della documentazione, il controllo delle configurazioni e le procedure di verifica e validazione necessarie per assicurare che ogni artefatto rispetti gli standard stabiliti.
+
+Questa sezione descrive le attività che assistono gli altri processi, con l'obiettivo di garantire la qualità, la coerenza e il buon esito del progetto. Tali processi includono la gestione sistematica della documentazione, il controllo delle configurazioni e le procedure di verifica e validazione necessarie per assicurare che ogni artefatto rispetti gli standard stabiliti.
 
 \subsection{Documentazione}
-Questo processo registra le informazioni prodotte durante un processo di ciclo di vita o durante un'attività di progetto. È fondamentale per molte ragioni:
+
+Questo processo riguarda la registrazione delle informazioni prodotte durante un processo di ciclo di vita o durante un'attività di progetto. È fondamentale per molte ragioni:
+
 \begin{itemize}
-    \item favorisce la chiarezza delle informazioni stabilite e l'assenza di ambiguità
-    \item fornisce un accesso facile agli interessati
-    \item aiuta la comprensione uguale di tutti i membri del gruppo
+    \item favorisce la chiarezza delle informazioni stabilite e riduce le ambiguità
+    \item fornisce un accesso agevole alle informazioni da parte dei soggetti interessati
+    \item favorisce una comprensione condivisa tra tutti i membri del gruppo
     \item definisce le regole e i processi da seguire e le metriche da rispettare
-    \item descrive il prodotto software, ne spiega e ne facilita l'utilizzo
+    \item descrive il prodotto software, spiegandone e facilitandone l'utilizzo.
 \end{itemize}
-Come si può vedere dagli scopi della documentazione, ci sono vari enti interessati in vari documenti, tra cui ingegneri, sviluppatori, manager, utenti finali del prodotto software, ecc.
+
+Considerati gli scopi della documentazione, i documenti prodotti si rivolgono a diversi soggetti interessati, tra cui sviluppatori, responsabili di progetto, utenti finali del prodotto software e altri destinatari coinvolti nel progetto.
 
 \subsubsection{Attività previste}
+
 Le attività di documentazione previste per il progetto \textbf{Code Guardian} sono:
+
 \begin{itemize}
-    \item \textbf{Progettazione} - in questa attività si eseguono: 
+    \item \textbf{Progettazione} - in questa attività si eseguono:
     \begin{itemize}
-        \item l'identificazione di documenti necessari
-        \item l'identificazione di tutti gli elementi principali in comune ad ogni documento
-        \item la progettazione degli indici di documenti
-        \item stabilizzazione di un template documentale (o più) che verrà utilizzato durante la redazione di documenti, per standardizzarli
+        \item l'identificazione dei documenti necessari
+        \item l'identificazione degli elementi principali comuni a tutti i documenti
+        \item la progettazione degli indici dei documenti
+        \item la definizione di uno o più template documentali da utilizzare durante la redazione dei documenti, al fine di standardizzarli.
     \end{itemize}
-    
-    \item \textbf{Produzione} - la redazione stessa dei documenti e la loro fornitura
-    \item \textbf{Manutenzione} - l'aggiornamento dei documenti già presenti per preservarne la rilevanza e l'utilità 
+
+    \item \textbf{Produzione} - la redazione dei documenti e la loro pubblicazione
+
+    \item \textbf{Manutenzione} - l'aggiornamento dei documenti già presenti, al fine di preservarne la rilevanza e l'utilità.
 \end{itemize}
 
 \subsubsection{Progettazione}
 
-All'inizio di ogni fase principale del progetto (candidatura al capitolato, RTB, PB) bisogna identificare quali documenti servono per concludere la milestone con successo.
+Per ogni milestone principale del progetto (candidatura al capitolato, RTB, PB) devono essere identificati i documenti necessari per completarla con successo.
 
-Gli elementi in comune alla maggioranza dei documenti sono: 
+Gli elementi comuni alla maggior parte dei documenti sono: 
+
 \begin{itemize}
     \item titolo
     \item logo del gruppo
     \item intestazione
     \item piè di pagina
+
     \item tabella delle informazioni principali sul documento:
-        \begin{itemize}
-            \item versione
-            \item uso (interno cioè serve esclusivamente ai membri del gruppo; esterno cioè ...)
-            \item destinatari (di solito i professori commitenti)
-            \item redattori - i membri del gruppo che hanno contribuito nella scrittura del contenuto
-            \item verifica - i membri che hanno fatto verifiche
-            \item approvazione - i membri che hanno approvato il documento
-        \end{itemize}
-    \item tabellone di versionamento - ogni riga contiene:
-        \begin{itemize}
-            \item versione
-            \item data - la data in cui il membro ha finito una certa modifica al documento
-            \item descrizione - la spiegazione breve delle modifiche fatte al documento
-            \item autore - chi ha effettuato le modifiche
-            \item verificatore - chi ha verificato ed approvato le modifiche
-        \end{itemize}
+    \begin{itemize}
+        \item versione
+        \item uso del documento (interno o esterno)
+        \item destinatari
+        \item redattori, ovvero i membri del gruppo che hanno contribuito alla stesura del contenuto
+        \item verificatori, ovvero i membri che hanno verificato il documento
+        \item approvazione, ovvero i membri che hanno approvato il documento.
+    \end{itemize}
+
+    \item registro delle modifiche del documento, in cui ogni riga contiene:
+    \begin{itemize}
+        \item versione
+        \item data di completamento della modifica
+        \item descrizione sintetica delle modifiche apportate
+        \item autore delle modifiche
+        \item verificatore delle modifiche
+    \end{itemize}
+
     \item indice
-    \item contenuto vero e proprio del documento
+    \item contenuto del documento.
 \end{itemize}
 
-Nel repository \textit{Git} di progetto è disponibile un template generico che serve come il punto di partenza nella redazione di documenti nuovi. Crea, posiziona e formatta gli elementi elencati sopra. L'idea è di avere una documentazione facilmente navigabile e con un aspetto professionale e standardizzato. 
+Nel repository \textit{Git} di progetto è disponibile un template generico, utilizzabile come punto di partenza per la redazione di nuovi documenti. Il template definisce, posiziona e formatta gli elementi elencati sopra, con l'obiettivo di produrre una documentazione facilmente navigabile, professionale e standardizzata.
 
 \subsubsection{Produzione}
 \subsubsection{Manutenzione}
 
 \subsubsection{Documenti del progetto}
-I documenti che il gruppo ha prodotto finora e ne sta manutenendo la maggioranza sono:
+
+I principali documenti prodotti e mantenuti dal gruppo sono:
+
 \begin{itemize}
-    \item \textbf{Analisi dei Requisiti (AdR)} - raccoglie i \textit{casi d'uso} e i \textbf{requisiti} del progetto, stabiliti assieme all'agenzia \textbf{Proponente}
-    \item \textbf{Piano di Progetto (PdP)} - gestisce i rischi possibili nel progetto, pianifica il progetto e ne segue l'andamento
-    \item \textbf{Norme di Progetto (NdP)} - definisce il \textit{Way-of-Working} del gruppo
+    \item \textbf{Analisi dei Requisiti (AdR)} - raccoglie i \textit{casi d'uso} e i requisiti del progetto, concordati con il \textbf{Proponente}
+
+    \item \textbf{Piano di Progetto (PdP)} - contiene l'analisi dei rischi, la pianificazione del progetto e il monitoraggio del suo andamento e dei suoi costi
+
+    \item \textbf{Norme di Progetto (NdP)} - definisce il \textit{Way of Working} adottato dal gruppo
+
     \item \textbf{Glossario} - descrive i termini tecnici presenti nel resto della documentazione
-    \item \textbf{Piano di Qualifica (PdQ)} - si occupa dei processi di verifica e validazione per assicurare la qualità del prodotto e dei processi
-    \item \textbf{Lettere di presentazione} - una lettera per ogni degli eventi principali dell'insegnamento finora: candidatura al capitolato del progetto preferito e la revisione RTB. Queste lettere non vengono mantenute più dopo il loro invio al \textbf{Committente} via email. 
+
+    \item \textbf{Piano di Qualifica (PdQ)} - definisce gli obiettivi di qualità, le metriche e le attività di verifica e validazione necessarie per assicurare la qualità del prodotto e dei processi
+
+    \item \textbf{Lettere di presentazione} - documenti redatti in occasione degli eventi principali dell'insegnamento (candidatura al capitolato, RTB, PB). Tali lettere non sono soggette a manutenzione successiva dopo il loro invio al \textbf{Committente} via email.
 \end{itemize}
-I loro scopi sono ben spiegati all'interno dei documenti stessi.
+
+Gli scopi specifici dei documenti sono descritti all'interno dei documenti stessi.
 
 \subsubsection{Strumenti}
-Gli strumenti che si utilizzano in questo processo sono:
+Gli strumenti utilizzati in questo processo sono:
+
 \begin{itemize}
-    \item \textit{Overleaf} - Un editor {\LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}}. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale.
+    \item \textit{Overleaf} - editor \LaTeX{} collaborativo basato su \textbf{\glo{cloud}{cloud}}, utilizzato per la redazione, la formattazione e l'affinamento finale dei documenti
 
-    \item \textit{TeXPage} - Un altro editor {\LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}} con lo stesso uso come \textit{Overleaf}. Offre il vantaggio di più tempo di compilazione a disposizione, che rende possibile la compilazione di documenti {\LaTeX} grandi come ad esempio l'\textbf{Analisi dei Requisiti}.
+    \item \textit{TeXPage} - editor \LaTeX{} collaborativo basato su \textbf{\glo{cloud}{cloud}}, utilizzato in alternativa a \textit{Overleaf} per la compilazione di documenti di grandi dimensioni, come ad esempio l'\textbf{Analisi dei Requisiti};
 
-    \item {[lo strumento per la verifica ortografica]}
-    \item {[lo str. per l'indice di Gulpease, se usato]}
+    \item {[Nome Strumento di verifica ortografica]} - utilizzato per individuare errori ortografici e tipografici nei documenti prodotti
+
+    \item {[Nome Strumento per il calcolo dell'Indice di Gulpease]} - utilizzato per valutare la leggibilità dei documenti redatti in lingua italiana
 \end{itemize}
-Gli altri strumenti trasversali che vengono utilizzati per supportare anche il processo di documentazione sono spiegati nella sezione 4.2 "Infrastruttura di Supporto". 
 
+Gli altri strumenti trasversali utilizzati anche a supporto del processo di documentazione sono descritti nella sezione 4.2, "Infrastruttura di Supporto".
 
 
 \subsection{Gestione delle configurazioni}
@@ -633,13 +654,12 @@ Le attività previste di questo processo sono:
 
  \textbf{Mantenimento} - l'infrastruttura deve essere mantenuta, monitorata e modificata per assicurare il soddisfacimento dei requisiti che la necessitano.
 
- \paragraph{Implementazione}
+ \paragraph{Implementazione}\mbox{}\\
+ \textit{Overleaf} - Un editor \textit{LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}}. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale.
 
- \textit{Overleaf} - Un editor {\LaTeX} collaborativo basato su \textbf{\glo{cloud}{cloud}}. Utilizzato per la formattazione precisa dei file di documentazione e per il loro affinamento finale.
+ \textit{Google Docs} - Un elaboratore di testi gratuito basato sul web. Utilizzato per la scrittura collaborativa dei file di documentazione.
 
- Google Docs - Un elaboratore di testi gratuito basato sul web. Utilizzato per la scrittura collaborativa dei file di documentazione.
-
- Google Sheets - Un\textquotesingle applicazione per fogli di calcolo basata sul cloud che consente agli utenti di collaborare sui dati in tempo reale.
+ \textit{Google Sheets} - Un\textquotesingle applicazione per fogli di calcolo basata sul cloud che consente agli utenti di collaborare sui dati in tempo reale.
  
  \textit{\glo{Gmail}{gmail}} - Servizio di posta elettronica basato sul web. Utilizzato principalmente per la comunicazione esterna.
  
@@ -654,11 +674,10 @@ Utilizzato per l'hosting del nostro \textit{Repository} di progetto e per tracci
 
  \textit{\glo{GitHub Pages}{GitHub-Pages}} - È un servizio gratuito di hosting per siti statici che trasforma i \textit{Repository} \textit{GitHub} direttamente in siti web ospitati. Lo utilizziamo per l'hosting del nostro sito web (\href{https://skynetunigroup.github.io/Code_Guardian/}{ {https://skynetunigroup.github.io/Code\_Guardian/}}) per la documentazione del progetto.
 
- \paragraph{Creazione}
-
- Google Docs - È stato creato un file testuale condiviso per ciascun documento necessario per la documentazione di progetto completa: \textbf{Glossario}, \textbf{Norme di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica} e altri documenti che saranno aggiunti successivamente.
+ \paragraph{Creazione}\mbox{}\\
+ \textit{Google Docs} - È stato creato un file testuale condiviso per ciascun documento necessario per la documentazione di progetto completa: \textbf{Glossario}, \textbf{Norme di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica} e altri documenti che saranno aggiunti successivamente.
  
- Google Sheets - Sono stati creati due fogli di calcolo:
+ \textit{Google Sheets} - Sono stati creati due fogli di calcolo:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
