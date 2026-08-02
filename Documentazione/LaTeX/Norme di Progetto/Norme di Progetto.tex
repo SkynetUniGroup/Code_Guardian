@@ -154,14 +154,12 @@ suddividendo le attività in tre tipologie di processi:
         \hline
         primari & 
         includono le attività fondamentali per la realizzazione del prodotto
-        (sviluppo, fornitura, manutenzione, ecc.) di supporto assistono gli altri processi garantendo la qualità e
-        l\textquotesingle integrità del software (verifica, validazione,
-        documentazione) \\ \hline 
+        (sviluppo, fornitura, manutenzione, ecc.) \\ \hline
         di supporto &
-        assistono gli altri processi garantendo la qualità e l'integrità del software (verifica, validazione, documentazione) \\ \hline
+        assistono gli altri processi garantendo la qualità del software \\ \hline
         organizzativi & 
-        aiutano il buon svolgimento di progetto. Essi stabiliscono
-        l'infrastruttura e i processi di base e si occupano della loro gestione. Inoltre, definiscono l'approccio al miglioramento continuo del \textit{Way of Working} e contribuiscono a garantire un\textquotesingle adeguata formazione del personale. \\ \hline
+        aiutano il buon svolgimento di progetto. Stabiliscono
+        l'infrastruttura e i processi di base, definiscono l'approccio al miglioramento continuo del \textit{Way of Working} e contribuiscono a garantire un'adeguata formazione del personale. \\ \hline
     \end{tabularx}
 \end{table}
 
@@ -209,8 +207,11 @@ solamente alla loro prima occorrenza in questo documento.
 
 \newpage
 \section{Processi Primari}
+Questa sezione definisce le attività fondamentali necessarie per l'intero ciclo di vita del software, includendo la fornitura del servizio e tutte le fasi tecniche dello sviluppo, dall'analisi dei requisiti alla codifica. Il loro scopo è fornire un percorso operativo strutturato per trasformare le necessità del \textbf{Proponente} in un prodotto software funzionante e conforme alle specifiche.
 
 \subsection{Fornitura}
+Questo processo comprende tutte le attività che vanno dalla preparazione della risposta al capitolato del \textbf{Proponente} fino alla consegna del prodotto e alla chiusura del progetto. Le attività sono trasversali e indipendenti dal tema specifico del progetto, poiché rappresentano le fasi in cui il progetto si colloca all'interno del processo di fornitura.
+
 \subsubsection{Avvio}
 Viene condotto un esame preliminare dei requisiti di ogni \textit{\glo{capitolato}{capitolato}} d'appalto tenendo conto delle politiche organizzative e di altri regolamenti, anche contattando i \textbf{\glo{Proponenti}{proponente}} per chiarimenti. I risultati sono documentati nella \href{https://github.com/SkynetUniGroup/Code_Guardian/blob/main/Documentazione/Candidatura/valutazione_capitolati_v1.0.pdf}{Valutazione dei Capitolati} per l'invio ai \textbf{\glo{Committenti}{committente}}. 
 
@@ -220,17 +221,16 @@ Il gruppo decide collegialmente a quale capitolato candidarsi, assegnando a ogni
 Il capitolato selezionato viene esplorato ulteriormente per raffinare la candidatura e massimizzare le possibilità di successo della candidatura. Va realizzato il \textit{\glo{Preventivo}{preventivo}} costi e assunzione impegni, secondo le modalità e i vincoli specificati nel Regolamento di Progetto, e va preparata la Lettera di Presentazione.
 
 \subsubsection{Contrattazione}
-Essendo questo un progetto didattico, le modalità del contratto sono definite a priori dai \textbf{Committenti} nel Regolamento di Progetto. Tuttavia, l'entità del prodotto da fornire è da definire con il \textbf{Proponente}, con il quale è necessario negoziare per adattare le richieste alle esigenze esterne del gruppo, in particolare gli altri obblighi universitari. 
-
-Può essere richiesta modifica degli obbiettivi di fornitura secondo il meccanismo di controllo dei cambiamenti.
+Essendo questo un progetto didattico, le modalità del contratto sono definite a priori dai \textbf{Committenti} nel Regolamento di Progetto. Tuttavia, l'entità del prodotto da fornire è da definire con il \textbf{Proponente}, con il quale è necessario negoziare per adattare le richieste alle esigenze esterne del gruppo, in particolare gli altri obblighi universitari.
 
 \subsubsection{Pianificazione}
-Deve essere condotta una revisione dei requisiti di acquisizione per definire il \textbf{\glo{framework}{framework}} del progetto e della qualità del prodotto SW. I risultati dell'\textbf{\glo{Analisi dei Requisiti}{analisi-dei-requisiti}} devono essere raccolti nel relativo documento e classificati. Gli obbiettivi e i criteri di qualità individuati devono essere raccolti e organizzati nel \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. 
+Deve essere condotta una revisione delle richieste del \textit{capitolato} per definire il \textbf{\glo{framework}{framework}} del progetto e della qualità del prodotto SW. I risultati dell'\textbf{\glo{Analisi dei Requisiti}{analisi-dei-requisiti}} devono essere raccolti nel relativo documento e classificati. Gli obbiettivi e i criteri di qualità individuati devono essere raccolti e organizzati nel \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}.
 
 Deve essere scelto un modello di ciclo di vita. Il progetto è normato secondo un modello incrementale con metodologia \textit{\glo{Agile}{agile}} e framework \textit{\glo{Scrumban}{scrumban}}. La scelta di \textit{Scrumban} è motivata dall'avere la struttura di \textit{\glo{Scrum}{scrum}}, in grado di dare ordine al flusso di lavoro, ma con la flessibilità di \textit{\glo{Kanban}{kanban}}, venendo così incontro alla ristrettezza di personale e all'inesperienza del gruppo nell'applicare \textit{Scrum}, riducendo gli \textit{\glo{overhead gestionali}{overhead-gestionali}}. Si adottano \textit{\glo{Sprint}{sprint}}, periodi a durata fissa di sviluppo focalizzato, con una riunione all'apertura/chiusura per l'organizzazione del lavoro e la \textit{\glo{Retrospettiva}{retrospettiva}} dello \textit{Sprint} precedente. I compiti individuati sono tracciati e assegnati nella board \textit{Kanban} di \textit{\glo{GitHub Projects}{github-projects}}. 
 
-Devono essere impostati il \textbf{\glo{Piano di Progetto}{piano-di-progetto}} (PdP) e il \textbf{Piano di Qualifica} (PdQ). Il PdP conterrà i costi totali previsti, in conformità con il \textit{Preventivo} Costi, e dividerà il lavoro in milestone associate alle \textit{\glo{Baseline}{baseline}} stabilite dal \textbf{Committente}. A livello operativo, ogni milestone sarà raggiunta con più \textit{Sprint}, ognuno organizzato individualmente al suo inizio. Il \textbf{Piano di Progetto} deve contenere preventivi dei costi di ogni \textit{Sprint} e monitorarne l'andamento tramite \textit{\glo{Consuntivi}{consuntivo}} di fine \textit{Sprint}. Inoltre deve essere previsto il coinvolgimento del \textbf{Proponente}, con l'instaurazione di canali di comunicazione e riunioni periodiche.\\
-I requisiti del PdQ non sono ancora stati definiti.
+Devono essere impostati il \textbf{\glo{Piano di Progetto}{piano-di-progetto}} (PdP) e il \textbf{Piano di Qualifica} (PdQ).\\
+Il PdP conterrà i costi totali previsti, in conformità con il \textit{Preventivo} Costi, e dividerà il lavoro in milestone associate alle \textit{\glo{Baseline}{baseline}} stabilite dal \textbf{Committente}. A livello operativo, ogni milestone sarà raggiunta con più \textit{Sprint}, ognuno organizzato individualmente al suo inizio. Il PdP deve contenere preventivi dei costi di ogni \textit{Sprint} e monitorarne l'andamento tramite \textit{\glo{Consuntivi}{consuntivo}} di fine \textit{Sprint}. Inoltre deve essere previsto il coinvolgimento del \textbf{Proponente}, con l'instaurazione di canali di comunicazione e riunioni.\\
+Il PdQ definisce gli obiettivi di qualità necessari per garantire il successo dei processi e l'affidabilità del prodotto finale. In conformità con lo standard \textit{ISO/IEC 12207:1995}, sono stati stabiliti obiettivi di qualità di prodotto e obiettivi di qualità di processo. Ogni obiettivo è monitorato attraverso metriche quantitative specifiche, per le quali sono stati fissati valori di accettazione e valori ottimali.
 
 \textbf{Code Guardian} deve essere sviluppato internamente con l'uso dei servizi esterni previsti dal capitolato. I \textbf{Piani di Progetto} e \textbf{Qualifica} devono essere sviluppati in conformità con i requisiti qui sopra citati. Per una lista non esaustiva degli elementi da considerare nei piani, si può fare riferimento alla clausola 5.2.4.5 dello standard \textit{ISO/IEC 12207:1995}.
 
@@ -246,10 +246,10 @@ Il progresso e la qualità del SW prodotto devono essere monitorati e controllat
 SkyNet deve interfacciarsi con le altre parti come specificato nel Regolamento di Progetto e nei \textbf{Piani di Progetto}. Per quanto riguarda i \textbf{Committenti}, ciò significa partecipare ai diari di bordo, candidarsi alle revisioni previste e parteciparvi. Per quanto riguarda il \textbf{Proponente}, concordare i requisiti del progetto, cercare riscontro e conferma sui prodotti del progetto, partecipare alle riunioni esterne con l'azienda proponente e presentare e consegnare l'\textbf{MVP}.
 
 \subsubsection{Revisione e valutazione}
-Var Group: saranno condotte revisioni del progetto e del codice e Q\&A con Var Group in appuntamenti prefissati, in conformità con i processi di revisione e ispezione (\textit{\glo{Audit}{audit}}).\\
-\textbf{Committenti}: le revisioni \textbf{\glo{RTB}{rtb}} e \textbf{\glo{PB}{pb}} avverranno ai momenti previsti dal Regolamento di Progetto, a sportello. Verrà messa a disposizione l'intera \textit{\glo{Repository}{repository}} con tutti gli artefatti, evidenziando i documenti essenziali come \textbf{\glo{Norme di Progetto}{norme-di-progetto}}, \textbf{Piano di Progetto}, \textbf{Analisi dei Requisiti}, \textbf{Piano di Qualifica}.
+Con l'azienda \textbf{Proponente} \textbf{VarGroup} verranno svolte revisioni del progetto e del codice, oltre ad attività di Q\&A in appuntamenti prefissati, in conformità con i processi di revisione e ispezione (\textit{\glo{Audit}{audit}}).\\
+Con i \textbf{Committenti}, le revisioni \textbf{\glo{RTB}{rtb}} e \textbf{\glo{PB}{pb}} avverranno nei momenti previsti dal \textit{Regolamento di Progetto} e quando il gruppo comunicherà di essere pronto. Verrà messo a disposizione l'intero \textit{\glo{Repository}{repository}} con tutti gli artefatti, evidenziando i documenti essenziali.
 
-Saranno eseguiti verifica e validazione, in conformità con i rispettivi processi qui definiti, per dimostrare che il prodotto SW soddisfi pienamente i requisiti.
+Saranno eseguite attività di verifica e validazione, in conformità con i rispettivi processi qui definiti, per dimostrare che il prodotto software soddisfi pienamente i requisiti.
 
 \subsubsection{Consegna e completamento}
 SkyNet si impegna a consegnare il prodotto \textbf{Code Guardian}, composto dai seguenti elementi:
@@ -258,7 +258,7 @@ SkyNet si impegna a consegnare il prodotto \textbf{Code Guardian}, composto dai 
     \item \textbf{Analisi dei Requisiti}
     \item \textbf{Piano di Progetto}
     \item \textbf{Piano di Qualifica}
-    \item Glossario
+    \item \textbf{Glossario}
     \item \textbf{\glo{MVP}{mvp}} funzionante
     \item \textbf{\glo{Demo}{demo}} live
     \item \textbf{\glo{Swagger}{swagger}} \textit{\glo{API}{api}}
@@ -273,14 +273,14 @@ Non è prevista alcuna attività di installazione, supporto o manutenzione del p
 
 Il processo di sviluppo regola l'organizzazione tecnica del team nella realizzazione del sistema. Per gestire in modo efficace la complessità del progetto e assegnare i compiti in modo delineato, le attività sono state suddivise in tre fasi principali:
 \begin{itemize}
-    \item \textbf{Analisi dei Requisiti}
+    \item Analisi dei Requisiti
     \item Progettazione
     \item Codifica
 \end{itemize}
 
-Da questo processo si attende la realizzazione di un prodotto robusto e aderente alle richieste del \textbf{Proponente}. Si punta a risolvere le ambiguità tecnologiche fin dalle prime fasi, definendo un'architettura solida e producendo codice ben strutturato, pronto per le successive fasi di verifica.
+Da questo processo ci si attende la realizzazione di un prodotto robusto e aderente alle richieste del \textbf{Proponente}. L'\textbf{Analisi dei Requisiti} permette di chiarire i bisogni del \textbf{Proponente} e di ridurre le ambiguità iniziali. La progettazione traduce tali requisiti in una soluzione tecnica coerente, mentre la codifica realizza concretamente il prodotto, producendo codice strutturato.
 
-\subsubsection{\textbf{Analisi dei Requisiti}}
+\subsubsection{Analisi dei Requisiti}
 
 L'analisi ha l'obiettivo di formalizzare i bisogni del \textbf{Proponente} e tradurli in specifiche tecniche. Le finalità specifiche includono:
 \begin{itemize}
@@ -294,25 +294,29 @@ L'analisi ha l'obiettivo di formalizzare i bisogni del \textbf{Proponente} e tra
 
 Questa attività, in carico principalmente al ruolo di \textbf{\glo{Analista}{analista}}, porta alla stesura e all'aggiornamento del documento \textbf{Analisi dei Requisiti}. Tale documento costituisce la base di conoscenza fondamentale per lo sviluppo, mappando dettagliatamente il dominio del problema e le interazioni previste.
 
-\paragraph{\textit{Casi d'Uso}}
-I \textit{Casi d'Uso} descrivono le interazioni pratiche tra gli \textit{Attori} e il sistema. Ogni scenario viene definito indicando precondizioni, postcondizioni e il flusso degli eventi. Per la loro classificazione viene utilizzata la seguente convenzione:
+%%%%%%%%%%%%%%%%%%%
+\paragraph{Casi d'Uso}\mbox{}\\
+I \textit{Casi d'Uso} descrivono le interazioni tra gli \textit{Attori} e il sistema, evidenziando gli obiettivi che l'utente intende raggiungere e il comportamento atteso dell'applicativo.
+
+Per la loro classificazione viene utilizzata la seguente convenzione:
 
 \begin{center}
-\textbf{\texttt{UC[Id\ Principale].[Id\ Secondario].[Id\ Terziario] : [Nome\ Descrittivo]}}
+    \texttt{UC[Identificativo]: [Nome Descrittivo]}
 \end{center}
+
 \begin{itemize}
-    \item \textbf{UC}: acronimo di \textit{Use Case};
-    \item \textbf{Id\ Principale}: numero progressivo che identifica il \textit{Caso d'Uso};
-    \item \textbf{Id\ Secondario}: numero opzionale per indicare scenari specifici o diramazioni;
-    \item \textbf{Id\ Terziario}: numero opzionale per indicare scenari specifici o diramazioni;
-    \item \textbf{Nome\ Descrittivo}: titolo sintetico che riassume l'azione descritta.
+    \item \textbf{UC} (acronimo di \textit{Use Case});
+
+    \item \textbf{Identificativo}: sequenza numerica progressiva che identifica in modo univoco il caso d'uso. Può essere composta da uno o più livelli separati da punti, in base al grado di dettaglio del caso d'uso;
+
+    \item \textbf{Nome Descrittivo}: titolo sintetico che riassume l'interazione o l'obiettivo descritto dal caso d'uso.
 \end{itemize}
 
 \newpage
-\subparagraph{Struttura}
-I \textit{Casi d'Uso} devono seguire la seguente struttura: 
+\subparagraph{Struttura}\mbox{}\\
+I \textit{Casi d'Uso} devono esplicitare i seguenti elementi (tra parentesi tonde sono opzionali) e seguire la seguente struttura: 
 
-\noindent \textbf{UC1.2: Titolo} \newline
+\noindent \textbf{UC[Identificativo]: Titolo} \newline
 Breve descrizione.
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}:
@@ -335,26 +339,11 @@ Breve descrizione.
             \item ...
         \end{enumerate}
     \item \textbf{(Scenari alternativi)}:
-        \begin{enumerate}
-        \renewcommand{\labelenumi}{\Alph{enumi}.}
-        \renewcommand{\labelenumii}{\arabic{enumii}.}
-            \item Alternativa 1:
-            \begin{enumerate}
-                \item Passo 1.
-                \item ...
-            \end{enumerate}
-            \item Alternativa 2:
-            \begin{enumerate}
-                \item Passo 1.
-                \item ...
-            \end{enumerate}
-            \item ...
-        \end{enumerate}
+        breve descrizione degli eventuali flussi alternativi
     \item \textbf{(Specializzazioni)}:
     \item \textbf{(Inclusioni)}:
     \item \textbf{(Estensioni)}:
 \end{itemize}
-
 \newpage
 
 \paragraph{Requisiti}
@@ -377,9 +366,9 @@ I requisiti identificano le singole funzionalità, i vincoli o le metriche di pe
 
 \subsubsection{Progettazione}
 
-L'attività di progettazione ha lo scopo di definire l'architettura logica e strutturale del sistema software, traducendo i requisiti emersi dall'analisi in soluzioni tecniche concrete. L'obiettivo principale è dominare la complessità del sistema, garantendo che l'applicazione finale sia modulare, scalabile, manutenibile e facilmente estendibile nel tempo.
+L'attività di progettazione ha lo scopo di definire l'architettura logica e strutturale del sistema software, traducendo i requisiti emersi dall'analisi in soluzioni tecniche concrete. L'obiettivo principale è gestire la complessità del sistema attraverso scelte progettuali chiare e coerenti, favorendo la comprensibilità, la manutenibilità e la futura estendibilità del prodotto.
 
-Le scelte progettuali vengono formalizzate graficamente e testualmente all'interno della documentazione tecnica, avvalendosi dello standard \textit{\glo{UML (Unified Modeling Language)}{uml}}.
+Le scelte progettuali vengono formalizzate graficamente e testualmente all'interno della documentazione tecnica, avvalendosi anche del linguaggio di modellazione \textit{\glo{UML (Unified Modeling Language)}{uml}}.
 
 \paragraph{Suddivisione delle Fasi Progettuali}
 Il ciclo di progettazione di \textbf{SkyNet} viene affrontato in modo incrementale, suddividendosi in due macro-fasi strategiche:
@@ -399,7 +388,7 @@ Durante lo sviluppo, è richiesto il rigoroso rispetto delle norme stilistiche c
 \paragraph{Stile di Codifica}
 Per garantire un codice leggibile, facilmente manutenibile e ispezionabile dagli strumenti di \textit{\glo{analisi statica}{analisi-statica}}, sono state definite le seguenti convenzioni:
 \begin{itemize}
-    \item \textbf{Nomenclatura dei File:} i File devono avere nome univoco ed esplicativo del contenuto del File stesso;
+    \item \textbf{Nomenclatura dei File:} i file devono avere nome univoco ed esplicativo del contenuto del file stesso;
     \item \textbf{Nomenclatura di Variabili e Funzioni:} i nomi devono essere autodescrittivi, scritti in lingua inglese e formattati tutto minuscolo e con underscore tra parole.
     \item \textbf{Nomenclatura delle Classi:} come per le variabili, i nomi sono in lingua inglese ma utilizzano la convenzione di avere iniziale maiuscola per ogni parola.
     \item \textbf{Commenti:} l'uso di commenti strutturati è obbligatorio per ogni classe o funzione non banale, i commenti devono essere redatti in lingua inglese.
@@ -407,7 +396,7 @@ Per garantire un codice leggibile, facilmente manutenibile e ispezionabile dagli
 
 \newpage
 \section{Processi di Supporto}
-{[descr. breve]}
+Questa sezione descrive le attività che assistono gli altri processi, con l'obiettivo di garantire la qualità, la coerenza e il successo del progetto. Tali processi includono la gestione sistematica della documentazione, il controllo delle configurazioni e le procedure di verifica e validazione necessarie per assicurare che ogni artefatto rispetti gli standard stabiliti.
 
 \subsection{Documentazione}
 Questo processo registra le informazioni prodotte durante un processo di ciclo di vita o durante un'attività di progetto. È fondamentale per molte ragioni:
@@ -592,10 +581,19 @@ Partecipano i membri del gruppo SkyNet che lavorano sul progetto e collaboratori
 Per ogni riunione esterna occorre redigere un verbale che riassume gli argomenti discussi e le decisioni prese durante l'incontro, in ordine cronologico.
 
 \paragraph{Diari di Bordo}\mbox{}\\
-\ldots{[spiegare...]}
+I \textbf{diari di bordo} sono incontri periodici con il Prof. Vardanega, che rappresenta il \textbf{Committente}, e con gli altri gruppi del II lotto. Per ogni diario di bordo, il gruppo prepara una breve presentazione \textit{PowerPoint} in cui riporta:
 
-\paragraph{Comunicazioni}
+\begin{itemize}
+    \item le attività completate dalla riunione precedente
+    \item le attività pianificate per il periodo successivo
+    \item le difficoltà riscontrate
+    \item eventuali dubbi su come procedere.
+\end{itemize}
 
+La presentazione viene esposta dal membro del gruppo che in quel periodo svolge il ruolo di \textbf{Responsabile}, con un tempo massimo di circa 4 minuti.\\
+Lo scopo di questi incontri, svolti tramite \textit{Zoom}, è monitorare l'andamento del progetto, confrontarsi sulle difficoltà incontrate e ricevere indicazioni dal Prof. Vardanega.
+
+\paragraph{Comunicazioni}\mbox{}\\
 Comunicazioni interne avvengono tramite:
 
 \begin{itemize}
@@ -619,6 +617,7 @@ Comunicazioni esterne avvengono tramite:
 \item
   diari di bordo con i \textbf{Committenti}
 \end{itemize}
+
 
 \subsection{Infrastruttura di Supporto}
 
