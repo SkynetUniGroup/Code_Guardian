@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { useAppStore } from '../stores/useAppStore';
 import { getReport } from '../utils/api';
 import type { ReportStatus } from '../types';
+import { silentLoginStub } from '../utils/api';
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3000';
 
@@ -33,76 +34,89 @@ interface BatchCompletedData {
 }
 
 export const useWebSocket = () => {
-  const {
+    const {
     addReport,
     updateTask,
     setWebSocketConnected,
     reports,
-  } = useAppStore();
+    } = useAppStore();
 
-  useEffect(() => {
-    const socket: Socket = io(WS_URL, {
-      transports: ['websocket'],
-      auth: {
-        token: sessionStorage.getItem('jwt_token')
-      },
-      autoConnect: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
+    useEffect(() => {
+      let socket: Socket | null = null;
+      let handleTaskProgress: ((data: TaskProgressData) => void) | null = null;
+      let handleTaskUpdated: ((data: TaskUpdatedData) => void) | null = null;
+      let handleTaskFailed: ((data: TaskFailedData) => void) | null = null;
+      let handleBatchCompleted: ((data: BatchCompletedData) => void) | null = null;
 
-    const handleTaskProgress = (data: TaskProgressData) => {
-      updateTask(data.taskId, { status: 'RUNNING' });
-    };
-
-    const handleTaskUpdated = async (data: TaskUpdatedData) => {
-      updateTask(data.taskId, {
-        status: data.status,
-        reportId: data.reportId,
-      });
-
-      if (data.status === 'COMPLETED' && data.reportId && !reports[data.reportId]) {
-        try {
-          const report = await getReport(data.reportId);
-          addReport(report);
-        } catch (error) {
-          console.error('Errore nel recupero del report:', error);
+      const initializeSocket = async () => {
+        if (!sessionStorage.getItem('jwt_token')) {
+          try {
+            await silentLoginStub();
+          } catch (err) {
+            console.error("Errore nel login silenzioso:", err);
+            return;
+          }
         }
-      }
-    };
 
-    const handleTaskFailed = (data: TaskFailedData) => {
-      updateTask(data.taskId, { status: 'FAILED' });
-      console.error(`Analisi fallita per la task ${data.taskId}:`, data.error.message);
-    };
+        const token = sessionStorage.getItem('jwt_token');
+        socket = io(WS_URL, {
+          transports: ['websocket'],
+          auth: { token },
+          autoConnect: true,
+          reconnection: true,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 1000,
+        });
 
-    const handleBatchCompleted = (data: BatchCompletedData) => {
-      console.log(`Batch ${data.batchId} completato. Successi: ${data.completed}, Falliti/Annullati: ${data.failed}`);
-      // Qui è possibile triggerare logiche aggiuntive di UI, come l'abilitazione di bottoni 
-      // o la notifica di "Tutte le analisi concluse".
-    };
+        handleTaskProgress = (data: TaskProgressData) => {
+          updateTask(data.taskId, { status: 'RUNNING' });
+        };
 
-    socket.on('connect', () => setWebSocketConnected(true));
-    socket.on('disconnect', () => setWebSocketConnected(false));
-    socket.on('task.progress', handleTaskProgress);
-    socket.on('task.updated', handleTaskUpdated);
-    
-    // Registrazione dei nuovi eventi previsti dalle specifiche
-    socket.on('task.failed', handleTaskFailed);
-    socket.on('batch.completed', handleBatchCompleted);
+        handleTaskUpdated = async (data: TaskUpdatedData) => {
+          updateTask(data.taskId, {
+            status: data.status,
+            reportId: data.reportId,
+          });
 
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('task.progress', handleTaskProgress);
-      socket.off('task.updated', handleTaskUpdated);
-      
-      // Cleanup dei nuovi eventi
-      socket.off('task.failed', handleTaskFailed);
-      socket.off('batch.completed', handleBatchCompleted);
-      
-      socket.disconnect();
-    };
-  }, [addReport, updateTask, setWebSocketConnected, reports]);
+          if (data.status === 'COMPLETED' && data.reportId && !reports[data.reportId]) {
+            try {
+              const report = await getReport(data.reportId);
+              addReport(report);
+            } catch (error) {
+              console.error('Errore nel recupero del report:', error);
+            }
+          }
+        };
+
+        handleTaskFailed = (data: TaskFailedData) => {
+          updateTask(data.taskId, { status: 'FAILED' });
+          console.error(`Analisi fallita per la task ${data.taskId}:`, data.error.message);
+        };
+
+        handleBatchCompleted = (data: BatchCompletedData) => {
+          console.log(`Batch ${data.batchId} completato. Successi: ${data.completed}, Falliti/Annullati: ${data.failed}`);
+        };
+
+        socket.on('connect', () => setWebSocketConnected(true));
+        socket.on('disconnect', () => setWebSocketConnected(false));
+        socket.on('task.progress', handleTaskProgress);
+        socket.on('task.updated', handleTaskUpdated);
+        socket.on('task.failed', handleTaskFailed);
+        socket.on('batch.completed', handleBatchCompleted);
+      };
+
+      initializeSocket();
+
+      return () => {
+        if (socket) {
+          socket.off('connect');
+          socket.off('disconnect');
+          if (handleTaskProgress) socket.off('task.progress', handleTaskProgress);
+          if (handleTaskUpdated) socket.off('task.updated', handleTaskUpdated);
+          if (handleTaskFailed) socket.off('task.failed', handleTaskFailed);
+          if (handleBatchCompleted) socket.off('batch.completed', handleBatchCompleted);
+          socket.disconnect();
+        }
+      };
+    }, [addReport, updateTask, setWebSocketConnected, reports]);
 };
