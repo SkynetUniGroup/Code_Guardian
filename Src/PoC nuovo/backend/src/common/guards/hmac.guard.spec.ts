@@ -31,11 +31,11 @@ describe('HmacGuard', () => {
     expect(() => guard.canActivate(context)).toThrow(UnauthorizedException);
   });
 
-  it('dovrebbe rifiutare (408) se il timestamp è più vecchio di 60 secondi (Appendice C)', () => {
-    const expiredTimestamp = Date.now() - 65000; // 65 secondi fa
+  it('dovrebbe rifiutare (408) se il timestamp è nel futuro di oltre 60 secondi', () => {
+    const futureTimestamp = Date.now() + 65000; // 65 secondi nel futuro
     const context = createMockContext({
       'x-signature': 'fake-signature',
-      'x-timestamp': expiredTimestamp.toString(),
+      'x-timestamp': futureTimestamp.toString(),
     }, { data: 'test' });
 
     expect(() => guard.canActivate(context)).toThrow(RequestTimeoutException);

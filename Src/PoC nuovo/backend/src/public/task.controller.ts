@@ -30,6 +30,7 @@ export class TaskController {
     return [
       { code: 'DOCS_INLINE', name: 'Documentazione Inline' },
       { code: 'SECURITY_OWASP', name: 'Scansione OWASP' },
+      { code: 'SECURITY_POLICY', name: 'Scansione Policy (POLICY.md)' },
       { code: 'CHANGELOG_TECHNICAL', name: 'Changelog Tecnico' },
     ];
   }

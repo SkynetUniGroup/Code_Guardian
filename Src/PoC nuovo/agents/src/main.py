@@ -74,19 +74,3 @@ async def run_changelog_agent(request: AgentRunRequest):
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "provider": settings.llm_provider}
-
-@app.post("/test-hmac")
-async def test_hmac_connection():
-    """Endpoint temporaneo per testare la firma HMAC verso NestJS."""
-    dummy_task_id = "60d5ecb8b392d70015342345"
-    toolset = GitHubToolset(user_id="test-user", task_id=dummy_task_id) 
-    
-    try:
-        await toolset.report_progress(stage="hmac_test_stage", percent=42)
-        
-        return {
-            "status": "success", 
-            "message": "Firma HMAC accettata da NestJS! Il guard ha autorizzato la richiesta."
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Errore di comunicazione: {str(e)}")

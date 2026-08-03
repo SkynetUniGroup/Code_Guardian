@@ -18,9 +18,9 @@ export class HmacGuard implements CanActivate {
     const timestamp = parseInt(timestampStr, 10);
     const now = Date.now();
 
-    // Rifiuta con 408 se il timestamp è più vecchio di 60 secondi
-    if (now - timestamp > 60000) {
-      throw new RequestTimeoutException('Richiesta scaduta');
+   // Rifiuta con 408 se il timestamp è sfasato di oltre 60 secondi 
+    if (Math.abs(now - timestamp) > 60000) {
+      throw new RequestTimeoutException('Richiesta scaduta o timestamp non valido');
     }
 
     const secret = this.configService.get<string>('INTERNAL_SHARED_SECRET');

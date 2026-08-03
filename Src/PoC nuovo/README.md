@@ -11,11 +11,8 @@ Three agents are implemented, each with one representative operation:
 |---|---|---|
 | **Docs** | `DOCS_INLINE` | Reads source files, finds undocumented functions/classes and proposes inline documentation as a diff |
 | **Security** | `SECURITY_OWASP` | Scans the selected scope for OWASP Top 10 vulnerabilities and returns structured findings |
+| **Security** | `SECURITY_POLICY` | Scans the selected scope against internal security rules defined in a `POLICY.md` file |
 | **Changelog** | `CHANGELOG_TECHNICAL` | Reads closed GitHub Issues for a sprint and generates a dev-facing technical changelog |
-
-> A fourth operation, `SECURITY_POLICY` (policy-as-code scan against a `POLICY.md` file),
-> is implemented end-to-end on the backend/agents side but is **not yet exposed** in the
-> frontend's operation picker.
 
 This is an internal, didactic PoC — not a production system. It intentionally leaves out
 a full orchestrator, authentication, AWS deployment, and Pull Request automation. See
@@ -282,7 +279,7 @@ This PoC deliberately covers **one vertical slice per agent**, not the full prod
 - Full authentication, registration, password recovery, multi-user support, and email
   notifications.
 - The remaining operations of each agent (Docs README/API docs, Changelog business
-  variant) and full exposure of the Security policy-as-code scan in the UI.
+  variant).
 
 ## Troubleshooting
 
