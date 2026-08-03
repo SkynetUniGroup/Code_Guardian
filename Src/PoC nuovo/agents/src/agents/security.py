@@ -9,7 +9,10 @@ from ._base import load_prompt_template, render_prompt, extract_json
 
 class SecurityLoader:
     """Carica il contesto (codice e policy) via Facade."""
-    
+
+    def __init__(self, operation: str = "SECURITY_OWASP"):
+        self.operation = operation
+
     async def load(self, context_ref: Any, toolset: GitHubToolset) -> dict:
         owner = context_ref.repoOwner
         repo = context_ref.repoName
@@ -31,6 +34,15 @@ class SecurityLoader:
 
         # 3. Leggiamo POLICY.md se esiste, come richiesto dalle specifiche
         policy_node = next((n for n in nodes if n["path"].lower() == "policy.md"), None)
+
+        if policy_node is None and self.operation == "SECURITY_POLICY":
+            # La Policy Scan richiede direttive esplicite: senza POLICY.md
+            # l'operazione non ha senso e deve fallire in modo chiaro,
+            # invece di ripiegare silenziosamente su regole OWASP generiche.
+            raise ValueError(
+                "POLICY.md non trovato nel repository: impossibile eseguire la Policy Scan senza direttive esplicite."
+            )
+
         policy_content = "Nessuna policy specifica fornita. Applica regole OWASP standard."
         if policy_node:
             p_resp = await toolset.read_file(owner, repo, sha, policy_node["path"])
@@ -48,7 +60,11 @@ class SecurityLoader:
 class SecurityProfile:
     """Gestisce il prompt e il parsing dell'output per l'agente Security."""
     agent = "security"
-    
+    # Le scansioni di sicurezza richiedono piu' round di read_file rispetto al
+    # default globale per poter ispezionare un numero di file sufficiente a
+    # una scansione affidabile.
+    max_tool_rounds = 12
+
     def __init__(self, operation: str = "SECURITY_OWASP"):
         self.operation = operation
         self._ctx = {}

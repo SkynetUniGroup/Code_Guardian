@@ -46,10 +46,18 @@ async def run_docs_agent(request: AgentRunRequest):
 @app.post("/agents/security/run")
 async def run_security_agent(request: AgentRunRequest):
     toolset = GitHubToolset(user_id=request.userId, task_id=request.taskId)
-    provider = get_llm_provider()
-    
-    op = request.operation or "SECURITY_OWASP" 
-    graph = AgentGraph(SecurityLoader(), SecurityProfile(operation=op), provider)
+    provider = get_llm_provider(
+        temperature=settings.security_temperature,
+        max_tokens=settings.security_max_output_tokens
+    )
+
+    op = request.operation or "SECURITY_OWASP"
+    graph = AgentGraph(
+        SecurityLoader(operation=op),
+        SecurityProfile(operation=op),
+        provider,
+        timeout_s=settings.security_agent_timeout_s
+    )
     try:
         report = await graph.run(request.taskId, request.userId, request.context_ref, toolset)
         if isinstance(report, dict):

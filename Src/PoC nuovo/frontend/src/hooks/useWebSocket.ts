@@ -44,7 +44,7 @@ export const useWebSocket = () => {
     const socket: Socket = io(WS_URL, {
       transports: ['websocket'],
       auth: {
-        token: localStorage.getItem('jwt_token') 
+        token: sessionStorage.getItem('jwt_token')
       },
       autoConnect: true,
       reconnection: true,

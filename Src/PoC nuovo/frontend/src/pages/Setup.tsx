@@ -11,7 +11,7 @@ export default function Setup() {
 
   useEffect(() => {
     // Effettua il login silenzioso dello stub non appena si apre l'app
-    if (!localStorage.getItem('jwt_token')) {
+    if (!sessionStorage.getItem('jwt_token')) {
       silentLoginStub().catch(err => console.error("Errore nello stub di login:", err));
     }
   }, []);

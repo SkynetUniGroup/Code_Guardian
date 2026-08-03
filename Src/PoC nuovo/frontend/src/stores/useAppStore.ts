@@ -38,7 +38,11 @@ export const useAppStore = create<AppStore>((set) => ({
   reports: {},
   currentTaskId: null,
   websocketConnected: false,
-  isConfigured: !!localStorage.getItem('jwt_token'),
+  // Non deriva da un JWT eventualmente presente: il JWT del login silenzioso
+  // non implica che il PAT GitHub sia stato salvato. Si riparte sempre dalla
+  // schermata di setup, che è l'unica a impostarlo a true (dopo il salvataggio
+  // riuscito della credenziale GitHub).
+  isConfigured: false,
 
   // Actions
   addContext: (context) => set((state) => ({

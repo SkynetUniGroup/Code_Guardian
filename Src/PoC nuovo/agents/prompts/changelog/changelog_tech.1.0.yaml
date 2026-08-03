@@ -19,3 +19,20 @@ user_prompt: |
   {tasks}
 output_contract: |
   Testo in Markdown libero, partendo direttamente dai titoli di primo livello.
+
+  --- ESEMPIO FEW-SHOT ---
+
+  Input (Storie completate):
+  - [#142](https://github.com/org/repo/issues/142): Aggiunta paginazione cursor-based all'endpoint GET /tasks
+  - [#150](https://github.com/org/repo/issues/150): Corretto memory leak nel worker Redis che processava le code
+
+  Output atteso (Markdown):
+  # Changelog Tecnico - Sprint Attuale
+
+  ## Funzionalita'
+  - Implementata paginazione cursor-based sull'endpoint `GET /tasks` per ridurre il carico su dataset grandi ([#142](https://github.com/org/repo/issues/142))
+
+  ## Correzioni
+  - Risolto memory leak nel worker Redis responsabile del processing delle code, causato da listener non deregistrati ([#150](https://github.com/org/repo/issues/150))
+
+  --- FINE ESEMPIO ---

@@ -68,13 +68,12 @@ def extract_json(raw: str) -> dict:
                 
             return json.loads(clean_text)
         except Exception:
-            # Struttura di sicurezza minima per non far fallire il Grafo
-            return {
-                "docs": [], 
-                "warnings": [{
-                    "file": "Sconosciuto", 
-                    "unit": "Generale", 
-                    "line": 0, 
-                    "message": "Generazione LLM troncata o JSON invalido."
-                }]
-            }
+            # Non restituire una struttura vuota "silenziosa": mascherava una
+            # generazione troncata/invalida come un risultato valido con zero
+            # elementi (es. scansione di sicurezza "completata" con zero finding).
+            # Propaghiamo un errore esplicito: il grafo lo instrada correttamente
+            # come esito FAILED/PARSING.
+            raise ValueError(
+                "Impossibile interpretare la risposta del modello come JSON valido: "
+                "risposta troncata, malformata o vuota."
+            )

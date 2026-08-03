@@ -35,6 +35,14 @@ class Settings(BaseSettings):
     max_output_tokens: int = 4096
     max_scope_chars: int = 180_000
 
+    # --- Limiti dedicati agli agenti di sicurezza (OWASP/Policy scan) ---
+    # Le scansioni di sicurezza esplorano piu' file via tool-calling e beneficiano
+    # di un budget di tempo maggiore, output piu' ampio e bassa temperatura per
+    # ridurre l'aleatorieta' dei finding tra un'esecuzione e l'altra.
+    security_agent_timeout_s: int = 180
+    security_max_output_tokens: int = 6000
+    security_temperature: float = 0.1
+
     # --- Code e Storage ---
     redis_url: str = Field(default="redis://redis:6379", alias="REDIS_URL")
 

@@ -7,7 +7,7 @@ e predisposizione per AWS Bedrock (attualmente disabilitato per mancanza di cred
 from abc import ABC, abstractmethod
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, BaseMessage
-from typing import List, Any
+from typing import List, Any, Optional
 
 from .config import settings
 
@@ -21,16 +21,22 @@ class LLMProvider(ABC):
 class ManagedAPIProvider(LLMProvider):
     """Adapter per API gestita (es. DashScope/Qwen) usando l'SDK OpenAI compatibile."""
     
-    def __init__(self):
+    def __init__(self, temperature: Optional[float] = None, max_tokens: Optional[int] = None):
         # Assicura che la chiave esista (lancia RuntimeError altrimenti, come da config.py)
         api_key = settings.require_llm_key()
-        
-        self.llm = ChatOpenAI(
-            api_key=api_key,
-            base_url=settings.llm_base_url,
-            model=settings.llm_model,
-            max_tokens=settings.max_output_tokens
-        )
+
+        kwargs: dict = {
+            "api_key": api_key,
+            "base_url": settings.llm_base_url,
+            "model": settings.llm_model,
+            "max_tokens": max_tokens or settings.max_output_tokens,
+        }
+        # Passata solo se esplicitamente richiesta: altrimenti si mantiene il
+        # comportamento storico (default del provider, non fissato da noi).
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+
+        self.llm = ChatOpenAI(**kwargs)
 
     async def invoke_agent(self, messages: List[BaseMessage], tools: List[Any], timeout_s: int) -> BaseMessage:
         # bind_tools aggancia le definizioni JSON Schema dei tool al modello
@@ -57,10 +63,10 @@ class BedrockProvider(LLMProvider):
         pass
 
 
-def get_llm_provider() -> LLMProvider:
+def get_llm_provider(temperature: Optional[float] = None, max_tokens: Optional[int] = None) -> LLMProvider:
     """Factory per istanziare il provider corretto in base alla configurazione."""
     if settings.llm_provider.lower() == "bedrock":
         return BedrockProvider()
-    
+
     # Default su API gestita
-    return ManagedAPIProvider()
+    return ManagedAPIProvider(temperature=temperature, max_tokens=max_tokens)

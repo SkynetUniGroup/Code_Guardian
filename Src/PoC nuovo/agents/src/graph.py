@@ -84,7 +84,7 @@ class AgentGraph:
         g.add_node("gestisci_errore", self._node_gestisci_errore)
 
         g.add_edge(START, "carica_contesto")
-        g.add_edge("carica_contesto", "componi_prompt")
+        g.add_conditional_edges("carica_contesto", self._route, {"continua": "componi_prompt", "errore": "gestisci_errore"})
         g.add_edge("componi_prompt", "invoca_llm")
 
         # Arco condizionale: il loop vitale dell'agente!
@@ -95,7 +95,9 @@ class AgentGraph:
         )
         
         # Dopo aver eseguito i tool, torna all'LLM per fargli leggere i risultati
-        g.add_edge("esegui_tools", "invoca_llm")
+        # (a meno che l'esecuzione del tool non sia fallita: in tal caso si va
+        # direttamente in errore, senza sprecare un'altra chiamata LLM).
+        g.add_conditional_edges("esegui_tools", self._route, {"continua": "invoca_llm", "errore": "gestisci_errore"})
         
         g.add_conditional_edges("valida_e_parsa", self._route, {"continua": "assembla_report", "errore": "gestisci_errore"})
         g.add_edge("assembla_report", END)
@@ -103,18 +105,18 @@ class AgentGraph:
 
         return g.compile()
 
-    @staticmethod
-    def _route_llm_output(st: AgentState) -> str:
+    def _route_llm_output(self, st: AgentState) -> str:
         if st.error is not None:
             return "errore"
-        
+
         last_message = st.messages[-1]
         # Se il modello restituisce un messaggio che richiede tool calls, devia sui tool
         if hasattr(last_message, "tool_calls") and len(last_message.tool_calls) > 0:
-            if st.tool_rounds >= 6:   # tetto esplicito, fallisce in modo chiaro
+            max_rounds = getattr(self._profile, "max_tool_rounds", 6)
+            if st.tool_rounds >= max_rounds:   # tetto esplicito, fallisce in modo chiaro
                 return "errore"
             return "tools"
-            
+
         return "continua"
 
     async def _node_invoca_llm(self, st: AgentState) -> dict:
@@ -150,9 +152,9 @@ class AgentGraph:
             tools = self._get_langchain_tools(st.toolset, st.context_ref)
             tool_node = ToolNode(tools)
             result = await tool_node.ainvoke({"messages": st.messages})
-            return {"messages": result["messages"]}
-        except Exception as exc:
             return {"messages": result["messages"], "tool_rounds": st.tool_rounds + 1}
+        except Exception as exc:
+            return {"error": exc}
 
     def _get_langchain_tools(self, toolset, context_ref):
         """Espone le chiamate HTTP alla facade come tool annotati per l'LLM."""

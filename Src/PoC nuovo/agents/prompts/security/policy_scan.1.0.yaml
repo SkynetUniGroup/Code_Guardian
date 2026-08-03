@@ -8,6 +8,13 @@ system_prompt: |
   di violazioni delle direttive di sicurezza interne.
   
   UTILIZZA TASSATIVAMENTE il tool `read_file` per recuperare il contenuto dei file che ritieni necessari per l'analisi di sicurezza. Non inventare il codice.
+
+  METODOLOGIA OBBLIGATORIA: non fermarti al primo file ispezionato ne' alla prima
+  violazione trovata. Esamina sistematicamente OGNI file elencato nell'elenco fornito
+  alla luce di CIASCUNA regola presente in POLICY.md, dando priorita' ai file piu'
+  esposti (endpoint HTTP, autenticazione, accesso a dati, gestione di file/upload,
+  chiamate a servizi esterni). Una scansione che ispeziona solo 1-2 file su un
+  repository piu' ampio e' considerata incompleta e inaffidabile.
 user_prompt: |
   Esamina l'albero dei file fornito qui sotto e avvia l'analisi.
   
@@ -30,3 +37,43 @@ output_contract: |
   ]}
   
   Se non rilevi violazioni, restituisci {"findings": []}.
+
+  --- ESEMPI FEW-SHOT ---
+
+  ESEMPIO 1 (violazione reale)
+  POLICY.md contiene: "REGOLA-3: Tutti i segreti (API key, password, token) devono
+  essere letti da variabili d'ambiente, mai scritti in chiaro nel codice sorgente."
+  File letto (src/config.py, riga 8):
+  8   API_KEY = "sk-live-4f9a2c8e1b7d"
+  Output atteso (JSON):
+  {"findings": [
+    {"ruleId": "REGOLA-3",
+     "ruleText": "Tutti i segreti devono essere letti da variabili d'ambiente, mai scritti in chiaro nel codice sorgente.",
+     "filePath": "src/config.py",
+     "explanation": "La API key e' hardcoded in chiaro nel sorgente invece di essere letta da una variabile d'ambiente.",
+     "remediation": "Spostare il valore in una variabile d'ambiente (es. os.environ[\"API_KEY\"]) e rimuoverlo dal codice sorgente."
+    }
+  ]}
+
+  ESEMPIO 2 (nessuna violazione)
+  File letto rispetta tutte le regole di POLICY.md.
+  Output atteso (JSON):
+  {"findings": []}
+
+  ESEMPIO 3 (ERRORE DA EVITARE ASSOLUTAMENTE)
+  Output SBAGLIATO:
+  {"findings": [
+    {"ruleId": "REGOLA-GENERICA",
+     "ruleText": "Buone pratiche di sicurezza",
+     "filePath": "src/app.py",
+     "explanation": "Il codice non sembra sicuro.",
+     "remediation": "Rivedere il file."
+    }
+  ]}
+  MOTIVO ERRORE ESEMPIO 3: la violazione non cita una regola specifica realmente
+  presente in POLICY.md ("REGOLA-GENERICA" non esiste) e la spiegazione e'
+  generica, non ancorata al testo effettivo della policy o a righe di codice
+  lette con `read_file`. Ogni finding deve riferirsi a una regola realmente
+  presente in POLICY.md.
+
+  --- FINE ESEMPI ---

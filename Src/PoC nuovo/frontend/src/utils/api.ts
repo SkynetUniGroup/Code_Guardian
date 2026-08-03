@@ -35,7 +35,7 @@ export const getReport = async (reportId: string) => {
 export const silentLoginStub = async () => {
   const { data } = await api.post('/auth/login');
   if (data.accessToken) {
-    localStorage.setItem('jwt_token', data.accessToken);
+    sessionStorage.setItem('jwt_token', data.accessToken);
   }
   return data;
 };
@@ -49,7 +49,7 @@ export const saveGithubCredential = async (token: string) => {
 };
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('jwt_token'); // o dal vostro store Zustand
+  const token = sessionStorage.getItem('jwt_token'); // o dal vostro store Zustand
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
