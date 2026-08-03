@@ -53,6 +53,9 @@ class AgentState:
     tokens_consumed: int = 0
     messages: Annotated[List[BaseMessage], operator.add] = field(default_factory=list)
 
+    parse_retries: int = 0
+    needs_retry: bool = False
+
 
 class AgentGraph:
     """Motore di esecuzione LangGraph condiviso da tutti gli agenti."""
@@ -99,7 +102,11 @@ class AgentGraph:
         # direttamente in errore, senza sprecare un'altra chiamata LLM).
         g.add_conditional_edges("esegui_tools", self._route, {"continua": "invoca_llm", "errore": "gestisci_errore"})
         
-        g.add_conditional_edges("valida_e_parsa", self._route, {"continua": "assembla_report", "errore": "gestisci_errore"})
+        g.add_conditional_edges(
+            "valida_e_parsa", 
+            self._route_post_valida, 
+            {"continua": "assembla_report", "retry": "invoca_llm", "errore": "gestisci_errore"}
+        )
         g.add_edge("assembla_report", END)
         g.add_edge("gestisci_errore", END)
 
@@ -191,6 +198,15 @@ class AgentGraph:
         """Controlla se c'è un'eccezione nello stato per deviare il grafo verso l'errore."""
         return "errore" if st.error is not None else "continua"
 
+    @staticmethod
+    def _route_post_valida(st: AgentState) -> str:
+        """Smista l'output del parsing: fine, errore, o ritorno all'LLM per correzione."""
+        if st.error is not None:
+            return "errore"
+        if st.needs_retry:
+            return "retry"
+        return "continua"
+
     # -- Nodi del Grafo (Asincroni per supportare HTTPX verso NestJS) --
 
     async def _node_carica_contesto(self, st: AgentState) -> dict:
@@ -229,25 +245,64 @@ class AgentGraph:
         await self._check_interrupts(st.task_id, self._current_redis_client, "valida_e_parsa")
         try:
             blocks, proposal = self._profile.parse_output(st.raw_output)
-            return {"blocks": blocks, "proposal": proposal}
+            # Se ha successo, azzeriamo il flag di retry
+            return {"blocks": blocks, "proposal": proposal, "needs_retry": False}
         except Exception as exc:
             from json import JSONDecodeError
-            if isinstance(exc, (JSONDecodeError, ValueError)) or "json" in str(exc).lower() or "parse" in str(exc).lower():
+            is_parsing_error = isinstance(exc, (JSONDecodeError, ValueError)) or "json" in str(exc).lower() or "parse" in str(exc).lower()
+            
+            # --- LOGICA DI AUTOCORREZIONE ---
+            # Se è un errore di parsing e abbiamo fatto meno di 2 tentativi
+            if is_parsing_error and st.parse_retries < 2:
+                from langchain_core.messages import AIMessage, HumanMessage
+                
+                retry_msg = (
+                    f"Il tuo output ha generato un errore di decodifica JSON. "
+                    f"Correggi la formattazione e restituisci SOLO il JSON valido. "
+                    f"Fai attenzione a non inserire testo fuori dalle parentesi graffe e ad usare i corretti caratteri di escape (\\n, \\\").\n\n"
+                    f"Dettaglio eccezione del parser:\n{str(exc)}"
+                )
+                
+                # Aggiungiamo alla cronologia sia la risposta sbagliata sia la correzione richiesta
+                return {
+                    "messages": [
+                        AIMessage(content=st.raw_output or ""),
+                        HumanMessage(content=retry_msg)
+                    ],
+                    "parse_retries": st.parse_retries + 1,
+                    "needs_retry": True
+                }
+
+            # --- FALLIMENTO DEFINITIVO ---
+            # Se esauriamo i tentativi o è un errore di altra natura
+            if is_parsing_error:
                 exc.error_type = "PARSING"
             else:
                 exc.error_type = "PARSING" 
-            return {"error": exc}
+            return {"error": exc, "needs_retry": False}
 
     # -- Nodi Terminali --
 
     async def _node_assembla_report(self, st: AgentState) -> dict:
         await self._check_interrupts(st.task_id, self._current_redis_client, "assembla_report")
         
-        # Generiamo un summary dinamico contando i blocchi
+        # Generiamo un summary dinamico basato sul tipo di operazione
+        op = self._profile.operation
         num_blocks = len(st.blocks)
-        summary_text = f"Analisi completata. Trovati {num_blocks} elementi."
-        if st.proposal:
-            summary_text += " Generata proposta di modifica (diff)."
+        
+        if op.startswith("SECURITY"):
+            summary_text = f"Scansione completata. Trovate {num_blocks} potenziali vulnerabilità o violazioni."
+        elif op.startswith("CHANGELOG"):
+            summary_text = "Generazione del changelog completata con successo."
+            # L'agente changelog restituisce 1 blocco di testo + N blocchi per le issue scartate
+            if num_blocks > 1:
+                summary_text += f" {num_blocks - 1} issue sono state ignorate per metadati insufficienti."
+        elif op.startswith("DOCS"):
+            summary_text = "Analisi della documentazione completata."
+            if st.proposal:
+                summary_text += " È stata generata una proposta di modifica."
+        else:
+            summary_text = f"Analisi completata. Elaborati {num_blocks} elementi."
 
         report = Report(
             taskId=st.task_id,
@@ -263,10 +318,17 @@ class AgentGraph:
 
     async def _node_gestisci_errore(self, st: AgentState) -> dict:
         """Costruisce un report di fallimento, assicurandosi di non violare il contratto DTO."""
-        error_msg = str(st.error) if st.error else ""
-        error_kind = getattr(st.error, "error_type", None)
         
-        error_repr = repr(st.error).lower() if st.error else ""
+        # Gestione esplicita per il superamento dei tool rounds (st.error è None)
+        if st.error is None:
+            max_rounds = getattr(self._profile, "max_tool_rounds", 6)
+            error_msg = f"Raggiunto il limite massimo di interazioni con i tool ({max_rounds} round). L'agente non ha fatto in tempo a ispezionare tutti i file."
+            error_kind = "TIMEOUT"
+            error_repr = "max tool rounds exceeded"
+        else:
+            error_msg = str(st.error)
+            error_kind = getattr(st.error, "error_type", None)
+            error_repr = repr(st.error).lower()
 
         # Mappatura ferrea per intercettare qualsiasi errore di parsing/json
         if "json" in error_msg.lower() or "json" in error_repr or "parse" in error_msg.lower() or "decode" in error_msg.lower():

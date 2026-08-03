@@ -18,27 +18,36 @@ class SecurityLoader:
         repo = context_ref.repoName
         sha = context_ref.ref
         
+        scope_type = getattr(context_ref, "scopeType", "FULL_REPOSITORY")
+        paths = getattr(context_ref, "paths", [])
+        
         # 1. Recuperiamo l'albero per far vedere all'LLM cosa c'è nel repository
         tree_response = await toolset.read_tree(owner, repo, sha)
         nodes = tree_response.get("nodes", [])
         
-        # 2. Invece di scaricare i file, passiamo all'LLM solo i percorsi.
+        # 2. Passiamo all'LLM solo i percorsi filtrati per estensione E per SCOPE
         supported_exts = (".ts", ".js", ".py")
-        files_to_scan = [n["path"] for n in nodes if n["type"] == "file" and n["path"].endswith(supported_exts)]
+        files_to_scan = []
+        
+        for n in nodes:
+            if n["type"] == "file" and n["path"].endswith(supported_exts):
+                if scope_type == "FULL_REPOSITORY":
+                    files_to_scan.append(n["path"])
+                else:
+                    # Se l'utente ha selezionato cartelle/file specifici, consideriamo solo quelli
+                    if any(n["path"].startswith(p) for p in paths):
+                        files_to_scan.append(n["path"])
         
         if not files_to_scan:
-            raise ValueError("Nessun file sorgente trovato per la scansione di sicurezza.")
+            raise ValueError("Nessun file sorgente trovato per la scansione di sicurezza nell'ambito selezionato.")
             
-        tree_str = "File supportati disponibili nel repository (usa il tool read_file per ispezionarli):\n"
+        tree_str = "File supportati disponibili nell'ambito richiesto (usa il tool read_file per ispezionarli):\n"
         tree_str += "\n".join(f"- {f}" for f in files_to_scan)
 
-        # 3. Leggiamo POLICY.md se esiste, come richiesto dalle specifiche
+        # 3. Leggiamo POLICY.md se esiste...
         policy_node = next((n for n in nodes if n["path"].lower() == "policy.md"), None)
 
         if policy_node is None and self.operation == "SECURITY_POLICY":
-            # La Policy Scan richiede direttive esplicite: senza POLICY.md
-            # l'operazione non ha senso e deve fallire in modo chiaro,
-            # invece di ripiegare silenziosamente su regole OWASP generiche.
             raise ValueError(
                 "POLICY.md non trovato nel repository: impossibile eseguire la Policy Scan senza direttive esplicite."
             )
@@ -53,7 +62,6 @@ class SecurityLoader:
         
         return {
             "policy": policy_content,
-            # Passiamo l'albero invece del contenuto concatenato
             "files": tree_str
         }
 
@@ -63,7 +71,7 @@ class SecurityProfile:
     # Le scansioni di sicurezza richiedono piu' round di read_file rispetto al
     # default globale per poter ispezionare un numero di file sufficiente a
     # una scansione affidabile.
-    max_tool_rounds = 12
+    max_tool_rounds = 20
 
     def __init__(self, operation: str = "SECURITY_OWASP"):
         self.operation = operation

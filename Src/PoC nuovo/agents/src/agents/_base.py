@@ -50,30 +50,28 @@ def extract_json(raw: str) -> dict:
     import re
     text = raw.strip()
     
-    # Pulizia wrapper markdown
-    text = re.sub(r'^```(json)?\n?', '', text)
-    text = re.sub(r'\n?```$', '', text).strip()
+    # Estrazione aggressiva: cerca dal primo '{' all'ultimo '}'
+    # Questo scarta automaticamente preamboli e conclusioni discorsive
+    match = re.search(r'\{.*\}', text, re.DOTALL)
+    if match:
+        text = match.group(0)
     
     try:
         return json.loads(text)
-    except json.JSONDecodeError:
-        # Fallback per troncamento token e caratteri di controllo
+    except json.JSONDecodeError as e:
+        # Fallback migliorato per gestire stringhe non chiuse o escape errati
         try:
-            # Escape rapido dei newline interni ai commenti generati
+            # Ripuliamo i newline letterali che spaccano il JSON
             clean_text = text.replace('\n', '\\n').replace('\r', '')
             
-            # Chiusura forzata della struttura in caso di troncamento
+            # Se la stringa è troncata brutalmente
             if not clean_text.endswith('}'):
+                # Cerchiamo di chiudere gli array e gli oggetti principali
                 clean_text += '"}]}'
                 
             return json.loads(clean_text)
         except Exception:
-            # Non restituire una struttura vuota "silenziosa": mascherava una
-            # generazione troncata/invalida come un risultato valido con zero
-            # elementi (es. scansione di sicurezza "completata" con zero finding).
-            # Propaghiamo un errore esplicito: il grafo lo instrada correttamente
-            # come esito FAILED/PARSING.
             raise ValueError(
-                "Impossibile interpretare la risposta del modello come JSON valido: "
-                "risposta troncata, malformata o vuota."
+                f"Impossibile interpretare la risposta del modello come JSON valido: "
+                f"risposta troncata, malformata o vuota.\nDettaglio errore: {str(e)}"
             )

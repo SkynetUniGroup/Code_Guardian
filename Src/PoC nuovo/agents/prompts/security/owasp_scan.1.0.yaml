@@ -29,8 +29,12 @@ user_prompt: |
   File supportati nel repository:
   {files}
 output_contract: |
-  Rispondi ESCLUSIVAMENTE con un oggetto JSON valido, senza testo introduttivo e
-  senza blocchi di codice Markdown. Schema:
+  Rispondi ESCLUSIVAMENTE E TASSATIVAMENTE con un oggetto JSON valido, senza testo introduttivo e
+  senza blocchi di codice Markdown. 
+  
+  ATTENZIONE VITALE AGLI ESCAPE: Nel campo `code` e nel campo `message`, devi FARE L'ESCAPE CORRETTO di tutte le virgolette doppie (\") e dei ritorni a capo (\n). Non inserire newline raw all'interno dei valori stringa JSON!
+  
+  Schema:
   
   {"findings": [
     {"category": "<categoria OWASP>",
