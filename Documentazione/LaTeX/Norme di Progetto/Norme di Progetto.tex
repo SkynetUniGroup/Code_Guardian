@@ -423,7 +423,7 @@ Le attività di documentazione previste per il progetto \textbf{Code Guardian} s
         \item l'identificazione dei documenti necessari
         \item l'identificazione degli elementi principali comuni a tutti i documenti
         \item la progettazione degli indici dei documenti
-        \item la definizione di uno o più template documentali da utilizzare durante la redazione dei documenti, al fine di standardizzarli.
+        \item la definizione di uno o più \textit{template} documentali da utilizzare durante la redazione dei documenti, al fine di standardizzarli.
     \end{itemize}
 
     \item \textbf{Produzione} - la redazione dei documenti e la loro pubblicazione
@@ -466,10 +466,20 @@ Gli elementi comuni alla maggior parte dei documenti sono:
     \item contenuto del documento.
 \end{itemize}
 
-Nel repository \textit{Git} di progetto è disponibile un template generico, utilizzabile come punto di partenza per la redazione di nuovi documenti. Il template definisce, posiziona e formatta gli elementi elencati sopra, con l'obiettivo di produrre una documentazione facilmente navigabile, professionale e standardizzata.
+Nel \textit{repository} \textit{Git} di progetto è disponibile un \textit{template} generico, utilizzabile come punto di partenza per la redazione di nuovi documenti. Il \textit{template} definisce, posiziona e formatta gli elementi elencati sopra, con l'obiettivo di produrre una documentazione facilmente navigabile, professionale e standardizzata.
 
 \subsubsection{Produzione}
+
+Su ogni documento possono lavorare più membri contemporaneamente. Per ridurre il numero di \textit{conflitti merge} da risolvere, ogni membro dovrebbe effettuare un \textit{commit} nel \textit{repository} del progetto al completamento di ogni piccola unità di lavoro
+
+I documenti vengono pubblicati sul sito del gruppo. Non tutti i documenti ci sono pubblicati, ma solo quelli relativi alla milestone principale corrente (candidatura al capitolato, RTB, PB). Tutti i documenti sono comunque presenti nel \textit{repository} \textit{Git} del progetto.\\
+Le versioni pubblicate sul sito vengono aggiornate quando il gruppo lo ritiene opportuno.
+
 \subsubsection{Manutenzione}
+
+Per tracciare chiaramente le modifiche apportate ai documenti, ogni documento contiene un registro delle modifiche, descritto nella sezione \textit{3.1.2 Progettazione}.
+
+Una parte importante della manutenzione di un documento consiste nella sua verifica generale. Questo compito viene svolto quando il gruppo lo ritiene opportuno, soprattutto dopo un lungo periodo di redazione. La verifica generale viene riportata nel registro delle modifiche del documento.
 
 \subsubsection{Documenti del progetto}
 
@@ -504,8 +514,7 @@ Gli strumenti utilizzati in questo processo sono:
     \item {[Nome Strumento per il calcolo dell'Indice di Gulpease]} - utilizzato per valutare la leggibilità dei documenti redatti in lingua italiana
 \end{itemize}
 
-Gli altri strumenti trasversali utilizzati anche a supporto del processo di documentazione sono descritti nella sezione 4.2, "Infrastruttura di Supporto".
-
+Gli altri strumenti trasversali utilizzati anche a supporto del processo di documentazione sono descritti nella sezione \textit{4.2 Infrastruttura di Supporto}.
 
 \subsection{Gestione delle configurazioni}
 \subsection{Verifica}
