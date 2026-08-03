@@ -46,13 +46,35 @@ def render_prompt(template_data: dict, **kwargs) -> tuple[str, str]:
     return system_text, user_text
 
 def extract_json(raw: str) -> dict:
-    """Estrae un oggetto JSON pulito da una stringa prodotta da un LLM."""
     import json
+    import re
     text = raw.strip()
-    if text.startswith("```json"):
-        text = text[7:]
-    elif text.startswith("```"):
-        text = text[3:]
-    if text.endswith("```"):
-        text = text[:-3]
-    return json.loads(text.strip())
+    
+    # Pulizia wrapper markdown
+    text = re.sub(r'^```(json)?\n?', '', text)
+    text = re.sub(r'\n?```$', '', text).strip()
+    
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        # Fallback per troncamento token e caratteri di controllo
+        try:
+            # Escape rapido dei newline interni ai commenti generati
+            clean_text = text.replace('\n', '\\n').replace('\r', '')
+            
+            # Chiusura forzata della struttura in caso di troncamento
+            if not clean_text.endswith('}'):
+                clean_text += '"}]}'
+                
+            return json.loads(clean_text)
+        except Exception:
+            # Struttura di sicurezza minima per non far fallire il Grafo
+            return {
+                "docs": [], 
+                "warnings": [{
+                    "file": "Sconosciuto", 
+                    "unit": "Generale", 
+                    "line": 0, 
+                    "message": "Generazione LLM troncata o JSON invalido."
+                }]
+            }

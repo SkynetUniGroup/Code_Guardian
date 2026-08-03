@@ -53,6 +53,8 @@ class DocsLoader:
         owner = context_ref.repoOwner
         repo = context_ref.repoName
         sha = context_ref.ref
+        scope_type = getattr(context_ref, "scopeType", "FULL_REPOSITORY")
+        paths = getattr(context_ref, "paths", [])
         
         # 1. Chiediamo l'albero dei file
         tree_response = await toolset.read_tree(owner, repo, sha)
@@ -71,7 +73,17 @@ class DocsLoader:
                 readme = resp.get("content", "Non trovato.")
 
         supported_exts = (".ts", ".js", ".py")
-        files_to_doc = [n["path"] for n in nodes if n["type"] == "file" and n["path"].endswith(supported_exts)]
+        
+        # Filtriamo i file in base all'ambito (scope) selezionato
+        files_to_doc = []
+        for n in nodes:
+            if n["type"] == "file" and n["path"].endswith(supported_exts):
+                if scope_type == "FULL_REPOSITORY":
+                    files_to_doc.append(n["path"])
+                else:
+                    # Se l'utente ha selezionato cartelle/file specifici, consideriamo solo quelli
+                    if any(n["path"].startswith(p) for p in paths):
+                        files_to_doc.append(n["path"])
         
         # 3. PRE-ANALISI LOCALE: Rilevamento delle unità non documentate
         undocumented_summary = []
@@ -81,15 +93,18 @@ class DocsLoader:
             if content:
                 units = self._find_undocumented_units(content, path)
                 if units:
-                    undocumented_summary.append(f"- File: {path}")
-                    for u in units:
-                        undocumented_summary.append(f"    - {u}")
+                    # Invece di dirgli di usare read_file, gli forniamo il codice sorgente su un piatto d'argento
+                    undocumented_summary.append(
+                        f"### File: {path} ###\n"
+                        f"```\n{content}\n```\n"
+                        f"Unita' da documentare in questo file: {', '.join(units)}\n"
+                    )
         
         if not undocumented_summary:
-            tree_str = "Nessuna unita' di codice priva di documentazione trovata tramite l'analisi statica locale."
+            tree_str = "Nessuna unita' di codice priva di documentazione trovata nell'ambito selezionato."
         else:
-            tree_str = "Unita' non documentate rilevate dalla pre-analisi locale (usa read_file per ispezionare il codice e generare i commenti):\n"
-            tree_str += "\n".join(undocumented_summary)
+            tree_str = "Ecco il codice sorgente dei file con unita' non documentate (IGNORA il tool read_file, usa questo codice):\n\n"
+            tree_str += "\n\n".join(undocumented_summary)
         
         # Segnaliamo l'avanzamento alla UI
         await toolset.report_progress(stage="docs_context_loaded", percent=30)
@@ -105,6 +120,7 @@ class DocsProfile:
     """Gestisce il prompt e il parsing dell'output per l'agente Docs."""
     agent = "docs"
     operation = "DOCS_INLINE"
+    uses_tools = False
     
     def __init__(self):
         self._ctx = {}

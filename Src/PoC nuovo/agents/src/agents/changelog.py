@@ -54,6 +54,7 @@ class ChangelogProfile:
     """Gestisce il prompt e il parsing per l'agente Changelog."""
     agent = "changelog"
     operation = "CHANGELOG_TECHNICAL"
+    uses_tools = False
     
     def __init__(self):
         self._ctx = {}

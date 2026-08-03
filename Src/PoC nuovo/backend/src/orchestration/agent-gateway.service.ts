@@ -22,9 +22,9 @@ export class AgentGatewayService {
     try {
       const response = await firstValueFrom(
         this.httpService.post(url, payload, {
-          // Timeout aumentato a 55s per permettere all'agente Python (che ha 45s) 
+          // Timeout aumentato a 100s per permettere all'agente Python (che ha 90s) 
           // di impacchettare correttamente il report di errore/timeout.
-          timeout: 55000, 
+          timeout: 100000, 
         }).pipe(
           catchError((error) => {
             this.logger.error(`Errore HTTP verso l'agente: ${error.message}`);
@@ -35,7 +35,7 @@ export class AgentGatewayService {
       return response.data;
     } catch (error: any) {
       if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-        throw new RequestTimeoutException('Timeout dell\'agente (superati i 55 secondi di attesa totale)');
+        throw new RequestTimeoutException('Timeout dell\'agente (superati i 100 secondi di attesa totale)');
       }
       throw error;
     }

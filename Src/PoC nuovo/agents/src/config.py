@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     llm_model: str = Field(default="qwen2.5-coder-32b-instruct", alias="LLM_MODEL")
 
     # --- Limiti Operativi ---
-    agent_timeout_s: int = 45 # Requisito RQ.6
+    agent_timeout_s: int = 90
     max_output_tokens: int = 4096
     max_scope_chars: int = 180_000
 

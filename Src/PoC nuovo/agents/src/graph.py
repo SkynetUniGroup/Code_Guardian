@@ -40,6 +40,7 @@ class AgentState:
     task_id: str
     context_ref: Any
     toolset: GitHubToolset
+    tool_rounds: int = 0
     
     loaded_context: Any = None
     prompt: Any = None
@@ -110,6 +111,8 @@ class AgentGraph:
         last_message = st.messages[-1]
         # Se il modello restituisce un messaggio che richiede tool calls, devia sui tool
         if hasattr(last_message, "tool_calls") and len(last_message.tool_calls) > 0:
+            if st.tool_rounds >= 6:   # tetto esplicito, fallisce in modo chiaro
+                return "errore"
             return "tools"
             
         return "continua"
@@ -141,7 +144,7 @@ class AgentGraph:
 
 
 
-    async def _node_esegui_tools(self, st: AgentState) -> dict:
+    async def _node_esegui_tools(self, st):
         await self._check_interrupts(st.task_id, self._current_redis_client, "esegui_tools")
         try:
             tools = self._get_langchain_tools(st.toolset, st.context_ref)
@@ -149,20 +152,24 @@ class AgentGraph:
             result = await tool_node.ainvoke({"messages": st.messages})
             return {"messages": result["messages"]}
         except Exception as exc:
-            return {"error": exc}
+            return {"messages": result["messages"], "tool_rounds": st.tool_rounds + 1}
 
     def _get_langchain_tools(self, toolset, context_ref):
         """Espone le chiamate HTTP alla facade come tool annotati per l'LLM."""
+        if not getattr(self._profile, "uses_tools", True):
+            return []   
         @tool
-        async def read_tree(sha: str) -> dict:
+        async def read_tree() -> dict:
             """Usa questo tool per ottenere l'albero dei file del repository. 
             Esplora le cartelle per capire l'architettura prima di leggere i file."""
-            return await toolset.read_tree(context_ref.repoOwner, context_ref.repoName, sha)
+            # Prende la sha in automatico da context_ref.ref
+            return await toolset.read_tree(context_ref.repoOwner, context_ref.repoName, context_ref.ref)
 
         @tool
-        async def read_file(sha: str, path: str) -> dict:
+        async def read_file(path: str) -> dict:
             """Usa questo tool per leggere il contenuto sorgente di un singolo file."""
-            result = await toolset.read_file(context_ref.repoOwner, context_ref.repoName, sha, path)
+            # Prende la sha in automatico da context_ref.ref
+            result = await toolset.read_file(context_ref.repoOwner, context_ref.repoName, context_ref.ref, path)
             
             if "content" in result and isinstance(result["content"], str):
                 if len(result["content"]) > settings.max_scope_chars:
