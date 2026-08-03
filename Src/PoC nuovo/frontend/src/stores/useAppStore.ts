@@ -16,6 +16,12 @@ interface AppState {
   currentTaskId: string | null;
   websocketConnected: boolean;
   isConfigured: boolean;
+  formData: {
+    repoOwner: string;
+    repoName: string;
+    ref: string;
+    scope: string;
+  } | null;
 }
 
 interface AppActions {
@@ -27,6 +33,7 @@ interface AppActions {
   addReport: (report: Report) => void;
   setWebSocketConnected: (connected: boolean) => void;
   setConfigured: (status: boolean) => void;
+  setFormData: (data: { repoOwner: string; repoName: string; ref: string; scope: string }) => void;
 }
 
 type AppStore = AppState & AppActions;
@@ -43,6 +50,7 @@ export const useAppStore = create<AppStore>((set) => ({
   // schermata di setup, che è l'unica a impostarlo a true (dopo il salvataggio
   // riuscito della credenziale GitHub).
   isConfigured: false,
+  formData: null,
 
   // Actions
   addContext: (context) => set((state) => ({
@@ -70,4 +78,6 @@ export const useAppStore = create<AppStore>((set) => ({
   setWebSocketConnected: (connected) => set({ websocketConnected: connected }),
 
   setConfigured: (status) => set({ isConfigured: status }),
+  
+  setFormData: (data) => set({ formData: data }),
 }));
