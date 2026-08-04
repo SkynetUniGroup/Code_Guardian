@@ -1,0 +1,101 @@
+
+networks:
+  codeguardian-net:
+    driver: bridge
+
+services:
+  # SERVIZI APPLICATIVI
+ 
+  frontend:
+    build: 
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "5173:5173"
+    networks:
+      - codeguardian-net
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    environment:
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:3000/api/v1}
+
+  backend:
+    build:
+      context: . 
+      dockerfile: backend/Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - codeguardian-net
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/v1/auth/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  agents:
+    build:
+      context: ./agents
+    networks:
+      - codeguardian-net
+    depends_on:
+      backend:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  # SERVIZI INFRASTRUTTURALI
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - codeguardian-net
+    healthcheck:
+      test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    # Nessuna porta esposta sull'host come da specifiche
+    networks:
+      - codeguardian-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025" # UI esposta
+      # La porta SMTP 1025 è esposta solo internamente per il backend
+    networks:
+      - codeguardian-net
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001" # MinIO Console (opzionale per debugging)
+    networks:
+      - codeguardian-net
+    command: server /data --console-address ":9001"
+    
+volumes:
+    mongo_data:

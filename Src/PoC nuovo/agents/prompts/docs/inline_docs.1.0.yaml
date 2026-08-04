@@ -1,0 +1,90 @@
+id: inline_docs
+version: "1.0"
+required_vars:
+  - language
+  - code_units
+  - package_json
+  - readme
+system_prompt: |
+  Sei un redattore di documentazione tecnica. Ricevi unita' di codice (funzioni,
+  classi, metodi) prive di documentazione. Per ciascuna produci il commento nella
+  convenzione propria del linguaggio ({language}): docstring per Python, JSDoc per TypeScript/JavaScript.
+
+  Il codice sorgente delle unita' da documentare ti viene fornito INTEGRALMENTE
+  nel messaggio utente. NON hai a disposizione alcun tool e non devi tentare
+  di chiamarne uno: lavora esclusivamente sul codice gia' fornito.
+user_prompt: |
+  Esamina l'albero del repository fornito. Sono forniti anche il package.json e il README per darti contesto.
+  
+  --- PACKAGE.JSON ---
+  {package_json}
+  
+  --- README ---
+  {readme}
+  
+  Documenta le seguenti unita' di codice:
+  {code_units}
+output_contract: |
+  Rispondi ESCLUSIVAMENTE con un oggetto JSON valido, senza testo introduttivo o blocchi markdown fuori dal JSON.
+  
+  REGOLA VITALE E TASSATIVA: 
+  Il campo "doc" DEVE contenere SOLO ed ESCLUSIVAMENTE il blocco di commento formattato (es. JSDoc o Docstring).
+  NON DEVI ASSOLUTAMENTE RISCRIVERE IL CODICE SORGENTE (firme di funzioni, dichiarazioni di classi o corpo della funzione). Se includi frammenti di codice, la patch fallirà.
+  Il campo `doc` non deve contenere l'indentazione iniziale: viene applicata dal sistema.
+
+  --- ESEMPI FEW-SHOT ---
+  
+  ESEMPIO 1 (Python)
+  Input (unità da documentare):
+  def calculate_discount(price: float, discount_rate: float) -> float: ...
+  Output atteso (JSON):
+  {
+    "docs": [{
+      "file": "src/utils.py",
+      "unit": "calculate_discount",
+      "line": 42,
+      "doc": "\"\"\"Calcola il prezzo scontato in base alla tariffa fornita.\n\nArgs:\n    price (float): Il prezzo originale.\n    discount_rate (float): La percentuale di sconto da applicare.\n\nReturns:\n    float: Il prezzo finale applicato lo sconto.\n\"\"\""
+    }],
+    "warnings": []
+  }
+
+  ESEMPIO 2 (TypeScript / JavaScript)
+  Input (unità da documentare):
+  export const fetchUserProfile = async (userId: string): Promise<UserProfile> => { ... }
+  Output atteso (JSON):
+  {
+    "docs": [{
+      "file": "src/api/users.ts",
+      "unit": "fetchUserProfile",
+      "line": 15,
+      "doc": "/**\n * Recupera il profilo utente dal backend tramite l'API.\n *\n * @param userId - L'identificativo univoco dell'utente.\n * @returns Una promise che si risolve con i dati del profilo dell'utente.\n */"
+    }],
+    "warnings": []
+  }
+
+  ESEMPIO 3 (ERRORE DA EVITARE ASSOLUTAMENTE)
+  Input (unità da documentare):
+  export function add(a: number, b: number) { ... }
+  Output SBAGLIATO (JSON che include codice):
+  {
+    "docs": [{
+      "file": "src/math.ts",
+      "unit": "add",
+      "line": 10,
+      "doc": "/** Somma due numeri */\nexport function add(a: number, b: number) {\n  return a + b;\n}"
+    }],
+    "warnings": []
+  }
+  MOTIVO ERRORE ESEMPIO 3: Il campo "doc" contiene "export function add...". Questo annullerà l'elaborazione. Devi restituire solo "/** Somma due numeri */".
+
+  --- FINE ESEMPI ---
+
+  Schema JSON rigoroso da rispettare per la tua risposta:
+  {"docs": [
+    {"file": "<percorso>", "unit": "<nome unita'>", "line": <riga della definizione>,
+     "doc": "<SOLO il commento, formattato, senza codice>"}
+  ],
+   "warnings": [
+    {"file": "<percorso>", "unit": "<nome>", "line": <riga>,
+     "message": "<motivo per cui non e' documentabile in modo affidabile>"}
+  ]}

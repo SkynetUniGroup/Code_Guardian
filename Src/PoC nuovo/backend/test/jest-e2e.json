@@ -1,0 +1,19 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "transformIgnorePatterns": [
+    "/node_modules/(?!octokit|@octokit)/"
+  ],
+  "moduleNameMapper": {
+    "^octokit$": "<rootDir>/octokit.mock.ts",
+    "^(\\.{1,2}/.*)\\.js$": [
+      "$1.ts",
+      "$1.js"
+    ]
+  }
+}
