@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 import { createContext, createTask, getOperations } from '../utils/api';
 import { useAppStore } from '../stores/useAppStore';
@@ -8,14 +8,15 @@ export default function RepositorySelection() {
   const navigate = useNavigate();
   const { addContext, addTask, setCurrentTask } = useAppStore();
   const [operations, setOperations] = useState<{ code: OperationCode; name: string }[]>([]);
+  const [operationsLoading, setOperationsLoading] = useState(true);
   const [selectedOperation, setSelectedOperation] = useState<OperationCode | ''>('');
   const [loading, setLoading] = useState(false);
   const { formData: storedFormData, setFormData } = useAppStore();
 
   // Stato locale inizializzato con valori di default o dati salvati
   const [localForm, setLocalForm] = useState({
-    repoOwner: '',
-    repoName: '',
+    repoOwner: 'marcobarba60',
+    repoName: 'testrepo1',
     ref: 'main',
     scope: '',
   });
@@ -27,14 +28,21 @@ export default function RepositorySelection() {
     }
   }, [storedFormData]);
 
-  const loadOperations = async () => {
-    try {
-      const ops = await getOperations();
-      setOperations(ops);
-    } catch (error) {
-      console.error('Failed to load operations:', error);
-    }
-  };
+    const loadOperations = async () => {
+      setOperationsLoading(true);
+      try {
+        const ops = await getOperations();
+        setOperations(ops);
+      } catch (error) {
+        console.error('Failed to load operations:', error);
+      } finally {
+        setOperationsLoading(false);
+      }
+    };
+    
+  useEffect(() => {
+    loadOperations();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,6 +88,7 @@ export default function RepositorySelection() {
 
       // Naviga alla pagina della task usando il nuovo ID
       navigate({ to: '/tasks/$taskId', params: { taskId: newTaskId } });
+      //navigate({ to: '/tasks' });
     } catch (error: any) {
       console.error('Failed to start task:', error);
       alert(`Errore nell'avvio dell'analisi: ${error.response?.data?.message || error.message}`);
@@ -90,6 +99,12 @@ export default function RepositorySelection() {
 
   return (
     <div className="max-w-2xl mx-auto">
+      <Link
+        to="/tasks"
+        className="text-blue-600 hover:text-blue-800 mb-4 inline-block"
+      >
+        ← Vedi tutti i task
+      </Link>
       <h1 className="text-2xl font-bold mb-6">Nuova Analisi</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -159,16 +174,9 @@ export default function RepositorySelection() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Operazione</label>
-          {operations.length === 0 && (
-            <button
-              type="button"
-              onClick={loadOperations}
-              className="mt-1 text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Carica operazioni disponibili
-            </button>
-          )}
-          {operations.length > 0 && (
+          {operationsLoading ? (
+            <div className="mt-1 text-gray-500 text-sm">Caricamento operazioni...</div>
+          ) : (
             <select
               value={selectedOperation}
               onChange={(e) => setSelectedOperation(e.target.value as OperationCode)}
