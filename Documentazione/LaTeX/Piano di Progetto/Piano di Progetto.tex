@@ -72,7 +72,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.13.0} \\ \hline
+            \textbf{Versione} & \textit{0.13.1} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -101,6 +101,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        0.13.1 & 2026/08/05 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic & \\ \hline 
         0.13.0 & 2026/07/25 & Scrittura \textit{consuntivo} \textit{sprint} 10 e \textit{preventivo} \textit{sprint} 11 & Dario Pirrone &  \\ \hline
         0.12.0 & 2026/07/25 & Scrittura \textit{consuntivo} \textit{sprint} 9 e \textit{preventivo} \textit{sprint} 10 & Sara Ristovic & Edoardo Granziero \\ \hline
         0.11.0 & 2026/07/17 & Scrittura \textit{consuntivo} \textit{sprint} 8 e \textit{preventivo} \textit{sprint} 9 & Marco Barbiero & Dario Pirrone \\ \hline
@@ -183,6 +184,8 @@ corrispondente nel \textbf{Glossario}.
 Tali parole vengono contrassegnate
 solamente alla loro prima occorrenza in questo documento.
 
+I termini evidenziati in grassetto identificano concetti tecnici ed elementi specifici del progetto, mentre i termini in corsivo indicano concetti tecnici di carattere generale, comuni al dominio dello sviluppo software.
+
 \subsection{Riferimenti}
 
 \subsubsection{Riferimenti normativi}
@@ -203,10 +206,11 @@ solamente alla loro prima occorrenza in questo documento.
   \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf}{\textbf{Glossario} v1.0.0}
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T02.pdf}{Slide T02 del corso Ingegneria del Software}
+\item 
+    \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T03.pdf}{Slide T03 del corso Ingegeria del Software}
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{Slide T04 del corso Ingegneria del Software}
-\item
-  \ldots{}
+  
 \end{itemize}
 
 \section{Analisi dei Rischi}
@@ -220,10 +224,7 @@ rispetto delle scadenze, la qualità del prodotto o il budget orario
 preventivato.
 
 Il gruppo adotta un approccio proattivo: per ogni rischio individuato
-viene definita una strategia di \textbf{precauzione}, volta a
-minimizzare la probabilità che l\textquotesingle evento si verifichi, e
-una strategia di \textbf{mitigazione}, per ridurre
-l\textquotesingle impatto qualora il rischio diventi realtà.
+viene definita una strategia di precauzione, volta a minimizzare la probabilità che l'evento si verifichi, e una strategia di mitigazione, per ridurre l'impatto qualora il rischio diventi realtà.
 
 Per garantire una gestione strutturata, i rischi sono stati classificati
 nelle seguenti categorie:
@@ -273,14 +274,11 @@ contromisure adottate.
         necessarie e nel suddividere i compiti in modo efficiente, causando
         potenziali ritardi e spreco di risorse.
 \\ \hline
-        Probabilità di occorrenza & Media-Alta.
+        Probabilità di occorrenza & Alta.
 \\ \hline
         Grado di pericolosità & Alta.
 \\ \hline
-        Precauzioni & Adottare inizialmente una pianificazione pessimistica, definire attività
-        ed obiettivi molto chiari e con un monitoraggio costante
-        dell\textquotesingle andamento del progetto tramite \textit{Consuntivi} di
-        periodo.
+        Precauzioni & Adottare inizialmente una pianificazione pessimistica, definire attività, compiti ed obiettivi molto chiari e con un monitoraggio costante dell'andamento del progetto tramite \textit{Consuntivi} di periodo.
 \\ \hline
         Mitigazioni possibili & 
         Se la distanza tra \textit{\glo{Preventivo}{preventivo}} e \textit{Consuntivo} di uno \textit{sprint} è eccessiva, il
@@ -352,7 +350,7 @@ incoraggiare l\textquotesingle uso frequente dei canali interni per
 \\ \hline
         Probabilità di occorrenza & Alta.
 \\ \hline
-        Grado di pericolosità & Alta.
+        Grado di pericolosità & Media-Bassa.
 \\ \hline
         Precauzioni &
         Analisi dettagliata dei requisiti e dei compiti prima della stima;
@@ -378,14 +376,13 @@ il
         Il tempo richiesto per completare una 
 task è sensibilmente inferiore al
         previsto, rischiando un utilizzo inefficiente delle ore produttive
-        rimaste.
+        rimaste e del tempo rimasto nello \textit{Sprint}.
 \\ \hline
         Probabilità di occorrenza & Media.
 \\ \hline
         Grado di pericolosità & Bassa.
 \\ \hline
-        Precauzioni & Valutazione più accurata della complessità delle task basandosi
-        sull\textquotesingle esperienza acquisita negli \textit{sprint} precedenti.
+        Precauzioni & Valutazione più accurata della complessità delle task basandosi sull'esperienza acquisita negli \textit{sprint} precedenti.
 \\ \hline
         Mitigazioni possibili & 
         Comunicazione immediata del completamento anticipato;
@@ -562,14 +559,13 @@ per il coordinamento (editor collaborativi,
         Grado di pericolosità & Bassa.
 \\ \hline
         Precauzioni &
-        Effettuare una valutazione preliminare dell\textquotesingle efficacia
+        Effettuare una valutazione preliminare dell'efficacia
         degli strumenti attraverso un periodo di prova limitato prima di
         renderli ufficiali nelle \textbf{Norme di Progetto}.
 \\ \hline
         Mitigazioni possibili &
-        Discussione collegiale sui problemi riscontrati;
-se
-        l\textquotesingle inefficienza è confermata, il \textbf{Responsabile} deve
+        Discussione collegiale sui problemi riscontrati; Se
+        l'inefficienza è confermata, l'\textbf{Amministratore} deve
         disporre la sostituzione tempestiva dello strumento con uno più idoneo.\\ \hline
     \end{tabularx}
     \caption{Inefficacia degli Strumenti di Supporto - RT4}
@@ -582,22 +578,19 @@ se
         \hline
         \multicolumn{2}{|c|}{\textbf{Incompatibilità Tecnologica - RT5}} \\ \hline
         Descrizione &
-        Problemi di integrazione tra 
-diverse librerie, framework o servizi
+        Problemi di integrazione tra diverse librerie, framework o servizi
         esterni scelti che non riescono a comunicare correttamente tra loro,
-        rallentando o bloccando lo sviluppo dell\textquotesingle architettura.
+        rallentando o bloccando lo sviluppo dell'architettura.
 \\ \hline
         Probabilità di occorrenza & Media.
 \\ \hline
         Grado di pericolosità & Media-Alta.
 \\ \hline
         Precauzioni &
-        Realizzazione di un \textbf{\glo{Proof of Concept (PoC)}{poc}} per testare la fattibilità
-        dell\textquotesingle integrazione tra i componenti critici.
+        Realizzazione di un \textbf{\glo{Proof of Concept (PoC)}{poc}} per testare la fattibilità dell'integrazione tra i componenti critici.
 \\ \hline
         Mitigazioni possibili &
-        Rivalutazione dell\textquotesingle architettura e sostituzione del
-        componente incompatibile con uno alternativo già testato o più standard.\\ \hline
+        Rivalutazione dell'architettura e sostituzione del componente incompatibile con uno alternativo già testato o più adatto.\\ \hline
     \end{tabularx}
     \caption{Incompatibilità Tecnologica - RT5}
 \end{table}
@@ -620,7 +613,7 @@ diverse librerie, framework o servizi
 \\ \hline
         Probabilità di occorrenza & Alta.
 \\ \hline
-        Grado di pericolosità & Media.
+        Grado di pericolosità & Media-Alta.
 \\ \hline
         Precauzioni &
         Ogni membro deve comunicare tempestivamente i propri impegni futuri per
@@ -642,10 +635,7 @@ in casi critici, si procede allo
         \hline
         \multicolumn{2}{|c|}{\textbf{Studio Insufficiente di un Argomento - RI2}} \\ \hline
         Descrizione &
-        Un membro affronta lo sviluppo di una funzionalità o la stesura di un
-   
-        documento senza aver acquisito le competenze necessarie, portando a un
-        prodotto di scarsa qualità o errato.
+        Un membro affronta lo sviluppo di una funzionalità o la stesura di un documento senza aver acquisito le competenze necessarie, portando a un prodotto di scarsa qualità o errato.
 \\ \hline
         Probabilità di occorrenza & Media-Alta.
 \\ \hline
@@ -708,8 +698,7 @@ di un membro verso il progetto, che si
 \\ \hline
         Precauzioni &
         Coinvolgimento attivo di tutti i membri nelle scelte decisionali;
-valorizzazione del lavoro svolto attraverso l\textquotesingle analisi
-        dei risultati nei \textit{Consuntivi}.
+valorizzazione del lavoro svolto attraverso gli incontri interni di chiusura dello \textit{Sprint}.
 \\ \hline
         Mitigazioni possibili & 
         Colloquio privato con il membro per identificare le cause del
@@ -777,7 +766,7 @@ avvisare il \textbf{Proponente}
         Mitigazioni possibili &
         Valutazione dell\textquotesingle impatto della modifica sul \textbf{\glo{Piano di Progetto}{piano-di-progetto}};
 se la modifica è critica, il \textbf{Responsabile} deve ripianificare
-        lo \textit{sprint} corrente e quelli futuri.\\ \hline
+        lo \textit{Sprint} corrente e quelli futuri; se le risorse rimaste non permettono di implementare i cambiamenti richiesti, si procede con la negoziazione delle modifiche con il \textbf{Proponente}.\\ \hline
     \end{tabularx}
     \caption{Cambiamento dei Requisiti in Itinere - RR2}
 \end{table}
@@ -804,7 +793,7 @@ se la modifica è critica, il \textbf{Responsabile} deve ripianificare
 \\ \hline
         Mitigazioni possibili &
         In caso di ritardo sulla tabella di marcia, il \textbf{Responsabile} deve
-        disporre l\textquotesingle abbandono immediato dei requisiti opzionali
+        disporre l'abbandono immediato dei requisiti opzionali
         per concentrare tutte le risorse sul nucleo essenziale del software.\\ \hline
     \end{tabularx}
     \caption{Eccessivo Numero di Requisiti Opzionali - RR3}
