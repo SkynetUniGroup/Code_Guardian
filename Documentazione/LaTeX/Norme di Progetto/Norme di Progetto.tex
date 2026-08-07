@@ -599,22 +599,84 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
 
 \subsection{Verifica}
 
-Questo processo determina se gli artefatti del progetto soddisfano i requisiti e le condizioni imposti precedentemente. {[...non abbia introdotto errori...]} Per ogni modifica apportata in documentazione, progettazione o codice, questo processo formalmente non può esegure lo stesso autore della modifica, ma un altro membro del gruppo. Inoltre, sono necessarie verifiche esterne da parte del \textbf{Proponente} per gli artefatti del progetto più importanti e del loro interesse.
+Questo processo determina se gli artefatti del progetto soddisfino i requisiti e le condizioni stabiliti precedentemente. Ha inoltre lo scopo di controllare che le attività di sviluppo, documentazione e progettazione non introducano errori negli artefatti prodotti.
+
+Per ogni modifica apportata alla documentazione, alla progettazione o al codice, la verifica non deve essere svolta dall'autore della modifica, ma da un altro membro del gruppo. Inoltre, per gli artefatti di progetto più rilevanti, possono essere richieste verifiche esterne da parte del \textbf{Proponente}.
+
+Il processo di verifica ha due forme:
+\begin{itemize}
+    \item \textbf{analisi statica},
+    \item \textbf{analisi dinamica}.
+\end{itemize}
 
 \subsubsection{Verifica della documentazione}
-Si verifica se la documentazione sia sufficientemente leggibile, se sia consistente, completa e se l'argomento viene affrontato corretamente e in modo sufficientemente profondo.\\
-Si noti che non basta una lettura delle modifiche e la verifica solamente della loro leggibilità e che quanto scritto abbia senso. 
 
-Le correzioni di verifica vengono riportate evidenziando le parti da correggere nel file .pdf, accompagnate da un commento breve.
+La verifica della documentazione controlla che i documenti siano sufficientemente leggibili, coerenti e completi, e che gli argomenti trattati siano affrontati correttamente e con un adeguato livello di approfondimento. La verifica quindi non si limita alla sola lettura delle modifiche apportate, né al controllo della loro leggibilità.
 
-\subsubsection{Verifica della progettazione}
+Le correzioni individuate vengono riportate evidenziando le parti da correggere nel file PDF, accompagnate da un breve commento.
+
+% \subsubsection{Verifica della progettazione}
+
 \subsubsection{Analisi statica}
+
+L'analisi statica non richiede l'esecuzione dell'oggetto di verifica e può quindi essere applicata in qualsiasi momento dello sviluppo del prodotto software. Può essere svolta su documentazione, progettazione, codice e qualsiasi prodotto di processo. Ha lo scopo di verificare la conformità ai requisiti e standard stabiliti, la presenza delle proprietà attese e l'assenza di difetti.
+
+L'analisi statica può utilizzare metodi di lettura per prodotti semplici, oppure metodi formali basati sulla prova assistita di proprietà per prodotti più complessi.
+
+I metodi di lettura, manuali o automatizzati, si distinguono principalmente per l'approccio iniziale adottato durante la verifica. Questi sono:
+
+\begin{itemize}
+    \item \textit{walkthrough} - il verificatore non parte da un'ipotesi precisa sui punti in cui è più probabile individuare difetti e quindi esamina l'artefatto in modo generale. Poiché i membri del gruppo hanno ancora poca esperienza, questo sarà il metodo adottato nella maggior parte delle verifiche semplici.
+
+    \item \textit{inspection} - il verificatore o lo strumento conosce quali difetti potrebbero essere presenti e in quali punti potrebbero essere localizzati.
+\end{itemize}
+
+L'efficacia di questi metodi dipende dall'esperienza del verificatore e dall'accuratezza degli strumenti utilizzati.
+
+Alcune tecniche di analisi statica del codice sono:
+
+\begin{itemize}
+    \item analisi del flusso di controllo,
+    \item analisi del flusso dei dati,
+    \item verifica dei limiti,
+    \item analisi dell'uso dello \textit{stack},
+    \item analisi del comportamento temporale.
+\end{itemize}
+
 \subsubsection{Analisi dinamica}
+
+L'analisi dinamica richiede l'esecuzione dell'oggetto di verifica ed è quindi applicabile al codice dopo che almeno una sua parte è stata implementata. Viene svolta tramite l'esecuzione di test, con l'obiettivo di verificare il comportamento del software e i risultati prodotti. L'analisi dinamica viene utilizzata anche nel processo di validazione.
+
+I test utilizzati nell'analisi dinamica devono essere ripetibili, in modo da permettere una valutazione affidabile dei risultati nel tempo. Per ogni test è quindi necessario specificare:
+
+\begin{itemize}
+    \item l'ambiente di esecuzione, comprendente hardware, software e stato iniziale
+    \item le attese, cioè gli input accettabili e gli output attesi
+    \item le procedure, cioè le modalità di esecuzione del test e di analisi dei risultati.
+\end{itemize}
+
+Il gruppo mira ad automatizzare il maggior numero possibile di test, così da potersi concentrare sull'analisi degli esiti, sull'individuazione e correzione degli errori e sulla loro esecuzione frequente, senza dover impiegare personale per ogni singola esecuzione.
+
 \subsubsection{Test di Unità}
 \subsubsection{Test di Integrazione}
-\subsubsection{Test di Sistema}
 
 \subsection{Validazione}
+
+La validazione avviene nelle fasi finali del progetto e ha lo scopo di accertare che il prodotto realizzato sia conforme alle aspettative. In particolare, verifica che il prodotto software sia adeguato all'uso previsto e sia in grado di soddisfare i bisogni degli utenti finali.
+
+Una corretta e continua applicazione del processo di verifica contribuisce al buon esito della validazione.
+
+I risultati del processo di validazione verranno documentati nel \textbf{Piano di Qualifica}.
+
+\subsubsection{Test di Sistema}
+
+I test di sistema vengono eseguiti sul prodotto nel suo complesso, con l'obiettivo di verificare che le funzionalità implementate soddisfino i requisiti software definiti nell'\textbf{Analisi dei Requisiti}.
+
+Dal punto di vista dell'utente finale, il prodotto viene testato nel maggior numero possibile di scenari d'uso, includendo anche i casi limite. Gli eventuali bug individuati vengono documentati e corretti. Eventuali bug non critici residui vengono documentati per il \textbf{Proponente}. È necessario che il prodotto soddisfi tutti i requisiti obbligatori stabiliti nell'\textbf{Analisi dei Requisiti}.
+
+\subsubsection{Test di Accettazione}
+
+Questo test segue i \textit{test di sistema} e rappresenta il collaudo finale del prodotto. Viene svolto di fronte al \textbf{Committente}, durante il quale l'\textit{MVP} viene dimostrato in modalità live. Il buon esito del collaudo consente il rilascio finale del prodotto e la conclusione del progetto.
 
 \newpage
 \section{Processi Organizzativi}
