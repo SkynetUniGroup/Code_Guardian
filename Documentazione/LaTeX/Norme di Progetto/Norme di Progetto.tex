@@ -72,7 +72,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.7.0} \\ \hline
+            \textbf{Versione} & \textit{0.7.1} \\ \hline
   
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -102,17 +102,18 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        
         0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  Edoardo Granziero \\ \hline
-        0.7 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone &  \\ \hline
-        0.6 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
-        0.6 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
-        0.5 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
-        0.4 & 2026/05/12 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & Dario Pirrone \\ \hline
-        0.3 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic 
+        0.7.0 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone &  \\ \hline
+        0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
+        0.6.0 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
+        0.5.0 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
+        0.4.0 & 2026/05/12 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & Dario Pirrone \\ \hline
+        0.3.0 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic 
  & Marco Barbiero \\ \hline
-        0.2 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' &
+        0.2.0 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' &
         Sara Ristovic & Marco Barbiero \\ \hline
-        0.1 & 2026/04/10 & Strutturazione iniziale del documento; Scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
+        0.1.0 & 2026/04/10 & Strutturazione iniziale del documento; Scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
         \end{tabularx}
 \end{table}
 
@@ -172,11 +173,13 @@ garantendo così la qualità del prodotto finale. Poiché il gruppo mira al migl
 
 Termini tecnici e vocabolari particolarmente importanti il cui
 significato non sia immediatamente noto o chiaro vengono definiti nel
-documento \emph{glossario} che è in costante aggiornamento. Ogni termine
-presente nel \textit{glossario} è contrassegnato da una G a pedice ed è un
+documento \textbf{Glossario} che è in costante aggiornamento. Ogni termine
+presente nel glossario è contrassegnato da una G a pedice ed è un
 collegamento ipertestuale che rimanda direttamente alla definizione
-corrispondente nel \emph{glossario}. Tali parole vengono contrassegnate
+corrispondente nel \textbf{Glossario}. Tali parole vengono contrassegnate
 solamente alla loro prima occorrenza in questo documento.
+
+I termini evidenziati in grassetto identificano concetti tecnici ed elementi specifici del progetto, mentre i termini in corsivo indicano concetti tecnici di carattere generale, comuni al dominio dello sviluppo software.
 
 \subsection{Riferimenti}
 
@@ -184,25 +187,33 @@ solamente alla loro prima occorrenza in questo documento.
 
 \begin{itemize}
 \item
-  Regolamento Progetto Didattico\\
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/PD1.pdf}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento Progetto Didattico}
 \item
-  Lo standard \textit{ISO/IEC 12207:1995}\\
-  \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2009/Approfondimenti/ISO\_12207-1995.pdf}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{Standard \textit{ISO/IEC 12207:1995}}
+  
 \end{itemize}
 
 \subsubsection{Riferimenti Informativi}
 
 \begin{itemize}
 \item
-  \textit{Glossario}\\
-  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf}{https://skynetunigroup.github.io/Code\_Guardian/Documentazione/RTB/glossario\_v0.2.pdf}
+ \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf}{\textbf{Glossario}}
 \item
-  Slide T02 dell'insegnamento Ingegneria del Software (Processi di Ciclo di Vita)\\
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T02.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T02.pdf}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T02.pdf}{Slide T02 dell'insegnamento Ingegneria del Software (Processi di Ciclo di Vita)}
 \item
-  Slide T04 dell'insegnamento Ingegneria del Software (Gestione di Progetto)\\
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{https://www.math.unipd.it/\textasciitilde tullio/IS-1/2025/Dispense/T04.pdf}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T03.pdf}{Slide T03 del corso Ingegeria del Software (Il Ciclo di Vita del SW)}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{Slide T04 dell'insegnamento Ingegneria del Software (Gestione di Progetto)}
+\item
+  Slide T07 del corso Ingegneria del Software (Qualità del Software) (collegamento non disponibile)
+\item 
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T08.pdf}{Slide T08 del corso  Ingegneria del Software (Qualità di Processo)}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T09.pdf}{Slide T09 del corso  Ingegneria del Software (Verifica e Validazione: introduzione)}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T10.pdf}{Slide T10 del corso  Ingegneria del Software (Verifica e Validazione: analisi statica)}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T11.pdf}{Slide T11 del corso  Ingegneria del Software (Verifica e Validazione: analisi dinamica)}
 \end{itemize}
 
 \newpage
@@ -273,7 +284,7 @@ Non è prevista alcuna attività di installazione, supporto o manutenzione del p
 
 Il processo di sviluppo regola l'organizzazione tecnica del team nella realizzazione del sistema. Per gestire in modo efficace la complessità del progetto e assegnare i compiti in modo delineato, le attività sono state suddivise in tre fasi principali:
 \begin{itemize}
-    \item \textbf{Analisi dei Requisiti}
+    \item Analisi dei Requisiti
     \item Progettazione
     \item Codifica
 \end{itemize}
@@ -472,7 +483,7 @@ Nel \textit{repository} \textit{Git} di progetto è disponibile un \textit{templ
 
 Su ogni documento possono lavorare più membri contemporaneamente. Per ridurre il numero di \textit{conflitti merge} da risolvere, ogni membro dovrebbe effettuare un \textit{\glo{commit}{commit}} nel \textit{repository} del progetto al completamento di ogni piccola unità di lavoro.
 
-I documenti vengono pubblicati sul sito del gruppo. Non tutti i documenti ci sono pubblicati, ma solo quelli relativi alla \textit{milestone} principale corrente (candidatura al \textit{capitolato}, \textbf{RTB}, \textbf{PB}). Tutti i documenti sono comunque presenti nel \textit{repository} \textit{Git} del progetto.\\
+I documenti vengono pubblicati sul \href{https://skynetunigroup.github.io/Code_Guardian/}{sito} del gruppo. Non tutti i documenti ci sono pubblicati, ma solo quelli relativi alla milestone principale corrente (candidatura al capitolato, RTB, PB). Tutti i documenti sono comunque presenti nel \textit{repository} \textit{Git} del progetto.\\
 Le versioni pubblicate sul sito vengono aggiornate quando il gruppo lo ritiene opportuno.
 
 \subsubsection{Manutenzione}
@@ -518,6 +529,22 @@ Gli altri strumenti trasversali utilizzati anche a supporto del processo di docu
 
 \subsection{Gestione delle configurazioni}
 \subsection{Verifica}
+
+Questo processo determina se gli artefatti del progetto soddisfano i requisiti e le condizioni imposti precedentemente. {[...non abbia introdotto errori...]} Per ogni modifica apportata in documentazione, progettazione o codice, questo processo formalmente non può esegure lo stesso autore della modifica, ma un altro membro del gruppo. Inoltre, sono necessarie verifiche esterne da parte del \textbf{Proponente} per gli artefatti del progetto più importanti e del loro interesse.
+
+\subsubsection{Verifica della documentazione}
+Si verifica se la documentazione sia sufficientemente leggibile, se sia consistente, completa e se l'argomento viene affrontato corretamente e in modo sufficientemente profondo.\\
+Si noti che non basta una lettura delle modifiche e la verifica solamente della loro leggibilità e che quanto scritto abbia senso. 
+
+Le correzioni di verifica vengono riportate evidenziando le parti da correggere nel file .pdf, accompagnate da un commento breve.
+
+\subsubsection{Verifica della progettazione}
+\subsubsection{Analisi statica}
+\subsubsection{Analisi dinamica}
+\subsubsection{Test di Unità}
+\subsubsection{Test di Integrazione}
+\subsubsection{Test di Sistema}
+
 \subsection{Validazione}
 
 \newpage
@@ -668,7 +695,7 @@ Le attività previste di questo processo sono:
 
  \textit{Google Docs} - Un elaboratore di testi gratuito basato sul web. Utilizzato per la scrittura collaborativa dei file di documentazione.
 
- \textit{\glo{Google Sheets}{google-sheets}} - Un\textquotesingle applicazione per fogli di calcolo basata sul \textit{cloud} che consente agli utenti di collaborare sui dati in tempo reale.
+ \textit{\glo{Google Sheets}{google-sheets}} - Un'applicazione per fogli di calcolo basata sul \textit{cloud} che consente agli utenti di collaborare sui dati in tempo reale.
  
  \textit{\glo{Gmail}{gmail}} - Servizio di posta elettronica di \textit{Google} basato sul web. Utilizzato principalmente per la comunicazione esterna.
  
@@ -795,7 +822,6 @@ Per definire ogni metrica in modo rigoroso, il gruppo ha stabilito un formato st
     \item \textbf{Valore di Accettazione}: la soglia minima necessaria per considerare il processo stabile o il requisito di prodotto soddisfatto. Risultati inferiori a tale soglia richiedono interventi correttivi immediati.
     \item \textbf{Valore Ottimale}: il livello target di eccellenza a cui il team aspira, che rappresenta lo standard qualitativo ideale per il progetto.
 \end{itemize}
-(I rispettivi Valori di Accettazione e Valori Ottimali per ciascuna metrica sono definiti all'interno del documento Piano di Qualifica)
 
 \subsection{Obiettivi di Qualità di Prodotto}
 Per garantire che il sistema software finale sia robusto, affidabile e in linea con le aspettative del \textbf{Proponente}, il gruppo adotta il modello \textit{\glo{ISO/IEC 9126}{iso-iec-9126}}. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito, declinandole nelle seguenti categorie e sotto-attributi.
