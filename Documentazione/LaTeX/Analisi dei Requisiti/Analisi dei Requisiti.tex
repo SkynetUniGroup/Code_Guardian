@@ -366,7 +366,7 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
 \begin{itemize}
     \item \textbf{\textit{Piattaforma GitHub}:} Il sistema di controllo di versione esterno GitHub rappresenta sia la fonte dei dati su cui gli agenti effettuano le analisi, sia la destinazione delle proposte di modifica tramite \textit{\glo{Pull Request}{pull-request}}.
 
-    \item \textbf{\glo{Server SMTP}{Server-smtp}}: Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
+    \item \textbf{\glo{Server SMTP}{server-smtp}}: Il servizio di posta elettronica esterno delegato alla trasmissione dei messaggi. Viene contattato dal sistema al termine delle operazioni per recapitare automaticamente all'utente le notifiche email contenenti il report PDF in allegato o il collegamento diretto alla piattaforma.
     
     \item \textbf{Modello AI (\textit{LLM}):} I servizi di intelligenza artificiale di grandi dimensioni (\textit{LLM}) interrogati dagli agenti per individuare vulnerabilità complesse, generare codice correttivo e produrre documentazione tecnica descrittiva.
     
@@ -753,7 +753,7 @@ Questo caso d'uso consente all'utente di indicare il \textit{repository Git} e i
     \item \textbf{Scenario Principale}:
         \begin{enumerate}
             \item L'utente accede alla sezione dedicata alla selezione del \textit{repository}.
-            \item L'utente fornisce l'\textit{\glo{URL}{URL}} del \textit{repository} Git.
+            \item L'utente fornisce l'\textit{\glo{URL}{url}} del \textit{repository} Git.
             \item Il sistema verifica che il \textit{repository} sia raggiungibile e accessibile.
             \item L'utente seleziona il riferimento di base da utilizzare, scegliendo tra \textit{\glo{branch}{branch}} e specifico \textit{\glo{Commit}{commit}} o \textit{Pull Request}.
             \item Se l'utente seleziona un branch senza indicare un \textit{Commit} specifico, il sistema considera di default l'ultimo \textit{Commit} disponibile sul branch selezionato.
@@ -1941,7 +1941,7 @@ Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica 
     \begin{itemize}
         \item \textbf{UC26.2.1:} Visualizzazione blocco testuale formattato.
         \item \textbf{UC26.2.2:} Visualizzazione lista di elementi strutturati.
-        \item \textbf{UC26.2.3:} Visualizzazione \textbf{\glo{Snippet}{Snippet}} di codice.
+        \item \textbf{UC26.2.3:} Visualizzazione \textbf{\glo{Snippet}{snippet}} di codice.
         \item \textbf{UC26.2.4:} Visualizzazione collegamento a una \textit{Pull Request}.
         \item \textbf{UC26.2.5:} Visualizzazione comandi di validazione e avanzamento.
     \end{itemize}
@@ -3544,11 +3544,11 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     \hline
     RV.9 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript , utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.10 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework \textit{\glo{NestJS}{NestJS}}. &  Verbale interno 2026/06/02 \\
+    RV.10 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework \textit{\glo{NestJS}{nestjs}}. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.11 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework \textbf{\glo{LangGraph}{LangGraph}}. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.11 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework \textbf{\glo{LangGraph}{langgraph}}. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.12 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su \textit{\glo{MongoDB}{MongoDB}} per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
+    RV.12 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su \textit{\glo{MongoDB}{mongodb}} per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
     RV.13 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da \textit{\glo{AWS Bedrock}{aws-bedrock}}. &  Verbale interno 2026/06/02 \\
     \hline
