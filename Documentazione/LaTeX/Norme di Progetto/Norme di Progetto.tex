@@ -72,11 +72,11 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.7.1} \\ \hline
+            \textbf{Versione} & \textit{0.8.1} \\ \hline
   
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
-            \textbf{Redattori} & \textit{Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic} \\ \hline
+            \textbf{Redattori} & \textit{Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic, Marco Barbiero} \\ \hline
             \textbf{Verifica} & \textit{Marco Barbiero, Dario Pirrone, Samuele Bertin, Edoardo Granziero} \\ \hline
             \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol, Edoardo Granziero} \\ \hline
 
@@ -102,7 +102,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        
+        0.8.1 & 2026/08/07 & Scrittura della sezione 3.2 & Marco Barbiero &  Edoardo Granziero \\ \hline
         0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  Edoardo Granziero \\ \hline
         0.7.0 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone &  \\ \hline
         0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
@@ -527,7 +527,76 @@ Gli strumenti utilizzati in questo processo sono:
 
 Gli altri strumenti trasversali utilizzati anche a supporto del processo di documentazione sono descritti nella sezione \textit{4.2 Infrastruttura di Supporto}.
 
-\subsection{Gestione delle configurazioni}
+\subsection{Gestione della configurazione}
+
+\subsubsection{Scopo}
+Lo scopo di questa sezione è esplicitare le norme, le procedure e gli strumenti con cui il gruppo intende gestire la produzione e l'evoluzione di tutte le risorse (codice, documentazione e configurazioni) durante l'intero ciclo di vita del progetto \textbf{Code Guardian}.
+
+\subsubsection{Aspettative}
+Le attese che il gruppo \textbf{SkyNet} si pone con la gestione della configurazione sono:
+\begin{itemize}
+    \item prevenire e semplificare l'individuazione di conflitti ed errori tra le diverse lavorazioni;
+    \item uniformare gli strumenti e i flussi di lavoro utilizzati dai membri del gruppo;
+    \item garantire la tracciabilità e la riproducibilità di ogni modifica, mantenendo sempre disponibile la cronologia e le versioni precedenti di ogni file.
+\end{itemize}
+
+\subsubsection{Descrizione}
+Il processo di gestione della configurazione crea un ambiente organizzato e sistematico per la produzione di codice e documentazione. Tutti gli artefatti prodotti soggetti a modifica vengono identificati come \textit{\glo{Elementi di Configurazione}{configuration-item}} e tracciati all'interno di un unico sistema di controllo versione centralizzato, in modo da rendere sempre ricostruibile la storia di ogni risorsa e riconducibile ogni modifica al suo autore.
+
+\subsubsection{Versionamento}
+Per garantire che la storia di ogni risorsa sia sempre ricostruibile, si adotta una convenzione di identificazione della versione basata sul formato a tre cifre:
+\begin{center}
+    \textbf{[X].[Y].[Z]}
+\end{center}
+dove:
+\begin{itemize}
+    \item \textbf{X} -- \textbf{Versione di produzione}: rappresenta la versione stabile associata ad approvazioni ufficiali e ai rilasci per le \textit{milestone} principali (\textbf{RTB}, \textbf{PB});
+    \item \textbf{Y} -- \textbf{Integrazione di piccoli incrementi}: indica l'aggiunta o l'integrazione di componenti e sezioni di rilevante entità (es. il completamento di una sotto-sezione o di una nuova funzionalità);
+    \item \textbf{Z} -- \textbf{Incremento di piccole dimensioni}: identifica modifiche minori, correzioni ortografiche o l'esito di attività di verifica; ogni incremento di questo tipo viene verificato dai \textbf{Verificatori} e approvato dal \textbf{Responsabile}.
+\end{itemize}
+Il numero di versione di ogni documento è riportato nella tabella delle informazioni principali e nel registro delle modifiche descritti nella sezione \textit{3.1.2 Progettazione}. Lo stesso codice di versione è riportato anche nel nome dei documenti compilati pubblicati (ad esempio \texttt{norme\_di\_progetto\_v0.7.1.pdf}), così da rendere immediatamente riconoscibile la versione di ciascun artefatto.
+
+\subsubsection{Sistemi Software Utilizzati}
+Per la gestione e il tracciamento delle differenti versioni degli artefatti, il gruppo adotta i seguenti strumenti:
+\begin{itemize}
+    \item \textbf{\textit{Git}}: sistema di controllo versione distribuito utilizzato per monitorare la cronologia delle modifiche locali e distribuite;
+    \item \textbf{\textit{GitHub}}: piattaforma di \textit{hosting} usata per ospitare il \textit{repository} remoto del progetto;
+    \item \textbf{\textit{GitHub Projects} e \textit{Issue}}: utilizzati per la pianificazione e l'assegnazione dei compiti (\textit{issue}) secondo la board \textit{Scrumban};
+    \item \textbf{\textit{Pull Request}}: meccanismo formale con cui le modifiche apportate nei \textit{branch} di lavoro vengono revisionate da un \textbf{Verificatore} prima di essere integrate nel ramo principale;
+    \item \textbf{\textit{GitHub Actions}}: utilizzato per automatizzare il \textit{deploy} della documentazione e del sito del gruppo su \textit{GitHub Pages} ad ogni aggiornamento del ramo principale.
+\end{itemize}
+
+\subsubsection{Struttura Repository}
+\paragraph{Repository utilizzata}\mbox{}\\
+Il \textit{repository} ufficiale del gruppo è pubblico ed è raggiungibile al seguente indirizzo:
+\begin{center}
+    \url{https://github.com/SkynetUniGroup/Code_Guardian}
+\end{center}
+
+\paragraph{Organizzazione dei rami}\mbox{}\\
+L'organizzazione del \textit{repository} si ispira al modello \textit{GitHub Flow} ed è così articolata:
+\begin{itemize}
+    \item \textbf{\texttt{main}}: ramo principale contenente esclusivamente artefatti (codice e documentazione) approvati da almeno un \textbf{Verificatore} e dal \textbf{Responsabile}. Ogni stato del ramo \texttt{main} rappresenta una configurazione stabile del progetto;
+    \item \textbf{Rami secondari}: rami creati a partire da \texttt{main} per lo sviluppo di uno specifico compito o componente. Al termine della lavorazione, le relative modifiche vengono proposte tramite \textit{Pull Request} e, una volta approvate da un \textbf{Verificatore}, integrate (\textit{merge}) nel ramo \texttt{main}. I rami secondari vengono mantenuti nel \textit{repository} anche dopo il \textit{merge}, così da conservare la tracciabilità del lavoro svolto.
+\end{itemize}
+Ogni \textit{\glo{commit}{commit}} deve avere un messaggio conciso e significativo che ne descriva il contenuto. Per ridurre i \textit{conflitti} in fase di \textit{merge}, ogni membro dovrebbe effettuare un \textit{commit} al completamento di ogni piccola unità di lavoro.
+\paragraph{Organizzazione delle cartelle}\mbox{}\\
+Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e file principali:
+\begin{itemize}
+    \item \textbf{\texttt{Documentazione/}}: contiene tutta la documentazione del progetto, suddivisa in:
+    \begin{itemize}
+        \item \textbf{\texttt{LaTeX/}}: sorgenti \LaTeX{} dei documenti, con una sotto-cartella per ciascun documento (\textbf{Analisi dei Requisiti}, \textbf{Norme di Progetto}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica}, \textbf{Glossario}) e la cartella \texttt{Template/} contenente i \textit{template} documentali;
+        \item \textbf{\texttt{Candidatura/}}: documenti compilati (\texttt{.pdf}) relativi alla fase di candidatura al \textit{capitolato} (valutazione dei capitolati, preventivo dei costi, lettera di presentazione);
+        \item \textbf{\texttt{RTB/}}: versioni ufficiali (\texttt{.pdf}) destinate alla revisione \textit{Requirements and Technology Baseline};
+        \item \textbf{\texttt{Verbali/}}: verbali degli incontri, distinti in \texttt{Interni/} ed \texttt{Esterni/}.
+    \end{itemize}
+    \item \textbf{\texttt{Src/}}: contiene il codice sorgente dell'applicativo (agenti, \textit{backend} e \textit{frontend}) e i relativi test automatici;
+    \item \textbf{\texttt{Website/}}: contiene i sorgenti del sito del gruppo, pubblicato tramite \textit{GitHub Pages};
+    \item \textbf{\texttt{.github/workflows/}}: contiene i \textit{workflow} di \textit{GitHub Actions} per l'automazione del \textit{deploy} dei contenuti statici;
+    \item \textbf{\texttt{README.md}} e \textbf{\texttt{LICENSE}}: rispettivamente la descrizione del \textit{repository} e la licenza (\textit{MIT}) con cui è distribuito il progetto;
+    \item \textbf{\texttt{.gitignore}}: file configurato per escludere dal tracciamento i file di sistema generati automaticamente dai sistemi operativi (es. \texttt{.DS\_Store}, \texttt{desktop.ini}).
+\end{itemize}
+
 \subsection{Verifica}
 
 Questo processo determina se gli artefatti del progetto soddisfano i requisiti e le condizioni imposti precedentemente. {[...non abbia introdotto errori...]} Per ogni modifica apportata in documentazione, progettazione o codice, questo processo formalmente non può esegure lo stesso autore della modifica, ma un altro membro del gruppo. Inoltre, sono necessarie verifiche esterne da parte del \textbf{Proponente} per gli artefatti del progetto più importanti e del loro interesse.
