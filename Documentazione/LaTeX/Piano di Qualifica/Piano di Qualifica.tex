@@ -103,10 +103,13 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        \textit{0.5.0} & \textit{2026/07/22} & \textit{Stesura tabelle di test di unità e integrazione} & \makecell[l]{Edoardo Granziero} & \makecell[l]{Andrea Fistarol} \\ \hline
-        \textit{0.4.0} & \textit{2026/07/14} & \textit{Stesura del capitolo 6} & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
-        \textit{0.3.0} & \textit{2026/07/08} & \textit{Integrazione di nuove metriche e revisione di quelle preesistenti} & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline\textit{0.2.0} & \textit{2026/05/25} & \textit{Compilazione "Obiettivi di qualità del processo"} & \makecell[l]{Dario Pirrone} & \makecell[l]{Samuele Bertin} \\ \hline
-        \textit{0.1.0} & \textit{2026/05/10} & \textit{Creazione documento e compilazione "Introduzione"} & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
+        
+        0.5.0 & 2026/07/22 & Stesura tabelle di test di unità e integrazione & \makecell[l]{Edoardo Granziero} & \makecell[l]{Andrea Fistarol} \\ \hline
+        0.4.0 & 2026/07/14 & Stesura del capitolo 6 & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
+        0.3.0 & 2026/07/08 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
+        0.3.0 & 2026/07/08 & Integrazione di nuove metriche e revisione di quelle preesistenti & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
+        0.2.0 & 2026/05/25 & Compilazione "Obiettivi di qualità del processo" & \makecell[l]{Dario Pirrone} & \makecell[l]{Samuele Bertin} \\ \hline
+        0.1.0 & 2026/05/10 & Creazione documento e compilazione "Introduzione" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
     \end{tabularx}
 \end{table}
 
@@ -137,18 +140,19 @@ Il presente documento definisce le linee guida, le metriche, le metodologie di v
 \subsection{Glossario}
 Termini tecnici e vocaboli particolarmente importanti il cui
 significato non sia immediatamente noto o chiaro vengono definiti nel
-documento glossario che è in costante aggiornamento. Ogni termine
-presente nel glossario è contrassegnato da una G a pedice ed è un
+documento \textbf{Glossario} che è in costante aggiornamento. Ogni termine
+presente nel \textbf{Glossario} è contrassegnato da una G a pedice ed è un
 collegamento ipertestuale che rimanda direttamente alla definizione
-corrispondente nel glossario. Tali parole vengono contrassegnate
-solamente alla loro prima occorrenza in questo documento.
-
+corrispondente nel \textbf{Glossario}. Tali parole vengono contrassegnate
+solamente alla loro prima occorrenza in questo documento.\\
+\newline
+I termini evidenziati in grassetto identificano concetti tecnici ed elementi specifici del progetto, mentre i termini in corsivo indicano concetti tecnici di carattere generale, comuni al dominio dello sviluppo software.
 
 \subsection{Riferimenti}
 \subsubsection{Riferimenti normativi}
 \begin{itemize}
 \item
-  \textbf{Norme di Progetto} v1.0.0
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/norme_di_progetto_v0.7.1.pdf}{\textbf{Norme di Progetto}}
 \item  
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento Progetto Didattico}
 \item
@@ -158,23 +162,24 @@ solamente alla loro prima occorrenza in questo documento.
 \subsubsection{Riferimenti informativi}
 \begin{itemize}
 \item
-  Glossario v1.0.0
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf}{\textbf{Glossario}}
 \item
-  \textbf{Analisi dei Requisiti} v1.0.0
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/analisi_dei_requisiti_v1.0.0.pdf}{\textbf{Analisi dei Requisiti}}
 \item  
-  \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{Standard ISO/IEC 12207:1995 - Ciclo di vita dei processi}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{Standard \textit{ISO/IEC 12207:1995} - Processi del Ciclo di Vita del SW}
 \item  
   Standard \textit{ISO/IEC 9126} - Qualità del Software
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T07.pdf}{Dispense Qualità del software}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T07.pdf}{Slide T07 del corso Ingegneria del Software (Qualità del Software)}
+\item 
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T08.pdf}{Slide T08 del corso  Ingegneria del Software (Qualità di Processo)}
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T08.pdf}{Dispense Qualità di processo}
-  \item
-\href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T09.pdf}{Dispense Verifica e validazione: introduzione}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T09.pdf}{Slide T09 del corso  Ingegneria del Software (Verifica e Validazione: introduzione)}
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T10.pdf}{Verifica e validazione: analisi statica}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T10.pdf}{Slide T10 del corso  Ingegneria del Software (Verifica e Validazione: analisi statica)}
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T11.pdf}{Verifica e validazione: analisi dinamica}
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T11.pdf}{Slide T11 del corso  Ingegneria del Software (Verifica e Validazione: analisi dinamica)}
+
 \end{itemize}
 
 
