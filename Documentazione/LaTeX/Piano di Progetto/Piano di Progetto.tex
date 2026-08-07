@@ -77,7 +77,7 @@
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
-            \textbf{Redattori} & \textit{Dario Pirrone, Sara Ristovic, Edoardo Granziero, Marco Barbiero} \\ \hline
+            \textbf{Redattori} & \textit{Dario Pirrone, Sara Ristovic, Edoardo Granziero, Marco Barbiero, Samuele Bertin} \\ \hline
             \textbf{Verifica} & \textit{Marco Barbiero, Samuele Bertin, Edoardo Granziero, Dario Pirrone, Sara Ristovic} \\ \hline
             \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol} \\ \hline
 
@@ -106,6 +106,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead
 
+        0.14.0 & 2026/08/07 & Correzione e adeguamento della sezione \textit{3 Pianificazione} & Sara Ristovic &  \\ \hline 
         0.13.1 & 2026/08/05 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic & Samuele Bertin \\ \hline 
         0.13.0 & 2026/08/05 & Scrittura \textit{consuntivo} \textit{sprint} 10 e \textit{preventivo} \textit{sprint} 11 & Dario Pirrone &  \\ \hline
         0.12.0 & 2026/07/25 & Scrittura \textit{consuntivo} \textit{sprint} 9 e \textit{preventivo} \textit{sprint} 10 & Sara Ristovic & Edoardo Granziero \\ \hline
@@ -837,74 +838,83 @@ se la modifica è critica, il \textbf{Responsabile} deve ripianificare
 \newpage
 \section{Pianificazione}
 
-La pianificazione delle attività è stata definita per garantire uno sviluppo strutturato e incrementale del progetto, il cui obiettivo principale è la realizzazione di tre agenti (agente \textit{\glo{README}{readme}}, agente \textit{OWASP} e agente \textit{\glo{Changelog}{changelog}}).
-Il periodo di lavoro ufficiale si estende dal 10 marzo fino alla data di scadenza finale prevista per il 10 settembre.
-Per gestire al meglio le risorse e rispettare le scadenze, il ciclo di vita del progetto è stato suddiviso in periodi di lavoro ben definiti.
+La pianificazione delle attività è stata definita per promuovere uno sviluppo strutturato e tempestivo del prodotto, il cui obiettivo principale è la realizzazione di tre agenti: agente \textit{\glo{README}{readme}}, agente Security e agente \textit{\glo{Changelog}{changelog}}.
+Il periodo di lavoro ufficiale si estende dal 10 marzo fino al limite finale previsto per il 21 settembre. Per gestire al meglio le risorse e rispettare le scadenze, le attività sono state suddivise in periodi di lavoro ben definiti.
 
 \subsection{\textbf{Macro-fasi} del progetto}
 Il progetto è stato diviso in due \textbf{\glo{macro-fasi}{macro-fasi}} principali, ognuna associata a una \textit{milestone} di revisione fondamentale per valutare l'avanzamento dei lavori e la qualità dei prodotti realizzati:
 
 \begin{itemize}
     \item \textbf{\glo{RTB}{rtb}} (Requirements and Technology Baseline): Questa fase si concentra sull'analisi del problema, la definizione delle norme di lavoro, la stesura dei requisiti e lo studio delle tecnologie necessarie.
-Include anche la realizzazione di un \textbf{Proof of Concept} (\textbf{PoC}) per validare le scelte architetturali e tecnologiche.
+Include anche la realizzazione di un \textbf{Proof of Concept} (\textbf{PoC}) per validare la fattibilità dell'idea del prodotto e le scelte teconlogiche.
 \item \textbf{\glo{PB}{pb}}/\textbf{\glo{MVP}{mvp}} (Product Baseline / Minimum Viable Product): In questa fase il focus si sposta sulla progettazione architetturale di dettaglio e sullo sviluppo effettivo del prodotto.
-L'obiettivo è arrivare al rilascio di un \textbf{MVP} funzionante, integrato e collaudato, pronto per l'approvazione formale da parte del \textbf{\glo{Committente}{committente}} (VarGroup).
+L'obiettivo è arrivare al rilascio di un \textit{MVP} funzionante validato, pronto per il collaudo formale con il \textbf{\glo{Committente}{committente}} e per l'approvazione da parte del \textbf{\glo{Proponente}{proponente} VarGroup}.
 \end{itemize}
 
 Di seguito vengono dettagliate le sotto-\textit{milestone} per ciascuna macro-fase, con le relative tempistiche di previsione e l'elenco delle attività da svolgere.
 (La tabella riassuntiva è riportata al termine del capitolo).
 
 \subsection{Requirements and Technology Baseline (\textbf{RTB})}
-La macro-fase \textbf{RTB} si estende dall'inizio di maggio fino a metà giugno ed è focalizzata sul consolidamento delle basi teoriche, metodologiche e tecnologiche del progetto.
-È suddivisa nelle seguenti sotto-\textit{milestone}:
+La fase di lavoro dedicata al raggiungimento della \textit{milestone} \textbf{RTB} si estende dall'inizio di aprile fino a metà agosto ed è focalizzata sul consolidamento delle basi teoriche, metodologiche e tecnologiche del progetto. Inizialmente era progettata di durare fino a metà giugno.
+Seguono le sue sotto-\textit{milestone}, ognuna con la previsione iniziale di completamento, che purtpoppo non si sono verificate.
 
 \subsubsection{Fondamenta e normativa}
-\textbf{Previsione:} Inizio Maggio \\
+Previsione: Inizio Maggio \\
 In questa fase iniziale il gruppo si concentra sull'organizzazione interna e sulla standardizzazione dei processi.
 \begin{itemize}
     \item Definizione del \textit{Way of Working} del team.
     \item Redazione del documento \textbf{Norme di Progetto} (NdP).
 \end{itemize}
 
-\subsubsection{Analisi e ricerca}
-\textbf{Previsione:} Metà Maggio \\
-Fase dedicata alla comprensione dei bisogni del \textbf{Committente} e alla definizione degli standard qualitativi.
+
+\subsubsection{Analisi e studio}
+Previsione: Metà Maggio \\
+Fase dedicata alla comprensione dei bisogni del \textbf{Proponente} e alla definizione degli standard qualitativi.
 \begin{itemize}
     \item \textbf{Analisi dei Requisiti (AdR)}: individuazione e completamento di tutti gli \textit{Use Case} e dei requisiti di sistema.
 \item \textbf{\glo{Piano di Qualifica (PdQ}{piano-di-qualifica}}): definizione delle metriche di qualità.
 \item Completamento dello studio delle tecnologie necessarie per lo sviluppo dei tre agenti.
 \end{itemize}
 
-\subsubsection{\textbf{PoC} e qualità}
-\textbf{Previsione:} Inizio Giugno \\
-Fase pratica e di verifica delle scelte analizzate nella \textit{milestone} precedente.
+\subsubsection{\textit{PoC}}
+Previsione: Inizio Giugno \\
+Fase pratica di realizzazione di alcuni requisiti precedentemente stabili e dell'implementazione delle scelte teconolgiche principali.
 \begin{itemize}
-    \item Pianificazione e realizzazione del \textbf{Proof of Concept} (\textbf{PoC}).
-\item Esecuzione dei primi test software e di processo come definito nel \textbf{PdQ}.
+    \item Pianificazione e realizzazione del \textit{Proof of Concept} (\textit{PoC}).
 \end{itemize}
 
 \subsubsection{Chiusura \textbf{RTB}}
-\textbf{Previsione:} Metà Giugno \\
+Previsione: Metà Giugno \\
 Consolidamento del lavoro svolto per la presentazione della prima \textit{milestone}.
 \begin{itemize}
-    \item Revisione generale e completamento di tutta la documentazione (rilascio versione v1.0.0).
-\item Preparazione per il colloquio di revisione \textbf{RTB}.
+    \item Completamento di tutta la documentazione (rilascio versione v1.0.0) e validazione generale.
+\item Preparazione per i colloqui di revisione \textbf{RTB}.
 \end{itemize}
 
-\subsection{Product Baseline e \textbf{MVP} (\textbf{PB}/\textbf{MVP})}
-La macro-fase \textbf{PB}/\textbf{MVP} prende il via a fine luglio per concludersi a metà settembre.
-L'obiettivo è concretizzare il lavoro di analisi nello sviluppo del prodotto finale.
-È suddivisa nelle seguenti sotto-\textit{milestone}:
+\subsubsection{Consuntivo della \textit{milestone} \textbf{RTB}}
+Rispetto alle preveisioni, la fase di lavoro in preparazione di questa \textit{milestone} si è prolungata di due mesi. Ciò è dovuto a più ragioni:
+\begin{itemize}
+    \item Definizione non completamente adatta di alcune sotto-\textit{milestone};
+    \item Implementazione e rispetto insufficiente delle sotto-\textit{milestone};
+    \item Periodo molto lungo di adozione delle metodologie di lavoro definite nel \textbf{Norme di Progetto};
+    \item Lavoro svolto che dopo è risultato di qualità insufficiente ed è dovuto essere ripetuto.
+\end{itemize}
+
+Nella prossima fase di lavoro, il gruppo si impegnerà a prevenire che gli stessi rischi si verificassero. È obbligatorio alzare la propria efficienza nel periodo restante, per riuscire a concludere il progetto entro la scadenza finale del 25 settembre.
+
+
+\subsection{Product Baseline (PB)}
+La fase di sviluppo dedicata al raggiungimento della \textit{milestone} \textbf{PB} prende il via a metà agosto per concludersi all'utlimo terzo di settembre. L'obiettivo è concretizzare il lavoro di analisi nello sviluppo del prodotto finale. È suddivisa nelle seguenti sotto-\textit{milestone}:
 
 \subsubsection{Progettazione architetturale}
-\textbf{Previsione:} Fine Luglio \\
+Previsione: Fine Luglio \\
 Passaggio dall'analisi alla progettazione della struttura del software.
 \begin{itemize}
     \item Redazione del documento Specifiche Tecniche (ST) per definire l'architettura degli agenti.
 \end{itemize}
 
 \subsubsection{Sviluppo \textit{core}}
-\textbf{Previsione:} Metà Agosto \\
+Previsione: Metà Agosto \\
 Fase di programmazione intensiva, focalizzata sul nucleo del sistema.
 \begin{itemize}
     \item Codifica delle funzionalità classificate come \emph{must-have}.
@@ -912,7 +922,7 @@ Fase di programmazione intensiva, focalizzata sul nucleo del sistema.
 \end{itemize}
 
 \subsubsection{Test e raffinamento}
-\textbf{Previsione:} Fine Agosto \\
+Previsione: Fine Agosto \\
 Verifica e validazione del codice prodotto prima della presentazione al \textbf{Committente}.
 \begin{itemize}
     \item Esecuzione dei \textit{Test di Unità} e dei \textit{Test di Integrazione}.
@@ -920,7 +930,7 @@ Verifica e validazione del codice prodotto prima della presentazione al \textbf{
 \end{itemize}
 
 \subsubsection{Validazione \textbf{MVP} e consegna}
-\textbf{Previsione:} Inizio Settembre \\
+Previsione: Inizio Settembre \\
 Rilascio della prima versione funzionante del prodotto al \textbf{Committente}.
 \begin{itemize}
     \item Dimostrazione pratica dell'\textbf{MVP} a VarGroup e approvazione formale.
@@ -928,7 +938,7 @@ Rilascio della prima versione funzionante del prodotto al \textbf{Committente}.
 \end{itemize}
 
 \subsubsection{Chiusura progetto}
-\textbf{Previsione:} Metà Settembre \\
+Previsione: Metà Settembre \\
 Attività conclusive prima del termine ufficiale del progetto.
 \begin{itemize}
     \item Revisione finale e consegna di tutto il materiale (codice e documentazione).
@@ -955,12 +965,11 @@ Attività conclusive prima del termine ufficiale del progetto.
             - \textbf{PdQ}: Definite le metriche \newline
             - Completato studio delle tecnologie \\ 
             \cline{2-4}
-            &\textbf{PoC}e qualità & Inizio Giugno & - Pianificato e realizzato \textbf{PoC} \newline
-            - \textbf{PdQ}: effettuati test \\ 
+            &\textbf{PoC} & Inizio Giugno & - Pianificato e realizzato \textbf{PoC} \newline \\ 
        
             \cline{2-4}
             & Chiusura \textbf{RTB} & Metà Giugno & - Revisione e completamento di tutti i documenti (v1.0.0) \newline
-            - Preparazione per il colloquio \\
+            - Preparazione per i colloqui \textbf{RTB} \\
             \hline \hline
             \multirow{5}{*}[-2cm]{\centering \textbf{PB}/\textbf{MVP}} & Progettazione architetturale & Fine Luglio & - Redatte Specifiche Tecniche (ST) \\ 
           

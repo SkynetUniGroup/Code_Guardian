@@ -79,8 +79,8 @@
             \hline
             \textbf{Versione} & \textit{0.5.0} \\ \hline
             \textbf{Uso} & \textit{Esterno} \\ \hline
-            \textbf{Redattori} & \textit{Sara Ristovic} \\ \hline
-            \textbf{Verifica} & \textit{Dario Pirrone} \\ \hline
+            \textbf{Redattori} & \textit{Sara Ristovic, Dario Pirrone, Edoardo Granziero} \\ \hline
+            \textbf{Verifica} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol} \\ \hline
             \textbf{Approvazione} & \textit{Nome Cognome} \\ \hline
 
         \end{tabularx}
@@ -152,7 +152,7 @@ I termini evidenziati in grassetto identificano concetti tecnici ed elementi spe
 \subsubsection{Riferimenti normativi}
 \begin{itemize}
 \item
-  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/norme_di_progetto_v0.7.1.pdf}{\textbf{Norme di Progetto}}
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/norme_di_progetto_v0.7.1.pdf}{\textbf{\glo{Norme di Progetto}{norme-di-progetto}}}
 \item  
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento Progetto Didattico}
 \item
@@ -164,7 +164,7 @@ I termini evidenziati in grassetto identificano concetti tecnici ed elementi spe
 \item
   \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf}{\textbf{Glossario}}
 \item
-  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/analisi_dei_requisiti_v1.0.0.pdf}{\textbf{Analisi dei Requisiti}}
+  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/analisi_dei_requisiti_v1.0.0.pdf}{\textbf{\glo{Analisi dei Requisiti}{analisi-dei-requisiti}}}
 \item  
   \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{Standard \textit{ISO/IEC 12207:1995} - Processi del Ciclo di Vita del SW}
 \item  
@@ -182,8 +182,7 @@ I termini evidenziati in grassetto identificano concetti tecnici ed elementi spe
 
 \end{itemize}
 
-
-
+\newpage
 \section{Obiettivi di qualità di processo}
 
 La qualità dei processi viene monitorata quantitativamente attraverso metriche specifiche. Per ciascuna di esse viene definito un \textit{Valore di Accettazione} (la soglia minima necessaria per considerare il processo accettabile e stabile) e un \textit{Valore Ottimale} (il livello di eccellenza a cui il team aspira). Ogni \textbf{\glo{Metrica di Processo}{metrica-di-processo}} è identificata dal codice \textbf{MP\_[Progressivo]}.
@@ -313,8 +312,9 @@ I processi organizzativi sovrintendono l'efficienza metodologica del team, monit
 \end{xltabular}
 
 
-
+\newpage
 \section{Obiettivi di qualità di prodotto}
+
 Per garantire la qualità del sistema \textbf{Code Guardian}, il gruppo \textbf{SkyNet} adotta lo standard \textbf{\glo{ISO/IEC 9126}{iso-iec-9126}}. Tale modello permette di quantificare le caratteristiche estrinseche ed intrinseche del software distribuito. Ciascuna \textit{metrica di prodotto} è identificata dal codice \textbf{MPD\_[Progressivo]}.
 
 \subsection{Funzionalità}
@@ -451,6 +451,7 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 
 \newpage
 
+\newpage
 \section{Strategie di Testing}
 Le attività di verifica dinamica del software seguono un approccio incrementale, volto a validare progressivamente i singoli componenti architetturali, l'orchestrazione interna degli agenti e la rispondenza complessiva ai requisiti concordati. Ciascun test è formalmente tracciato tramite la sintassi \textbf{T[Tipo]\_[Progressivo]}.
 \\ \\
@@ -845,7 +846,9 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     \label{tab:tracciamento_test}
 \end{xltabular}
 
+\newpage
 \section{Cruscotto di valutazione}
+
 Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elaborati durante l'esecuzione del progetto. L'obiettivo del cruscotto è tracciare l'andamento delle metriche di processo e di prodotto, permettendo di valutare oggettivamente il raggiungimento dei valori di accettazione e dei target ottimali definiti nei capitoli precedenti.
 
 Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textbf{Norme di Progetto}:
@@ -1217,7 +1220,9 @@ L'analisi del \textit{Time Efficiency} (TE) mostra una fisiologica stabilizzazio
     \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è soddisfatto per la maggior parte della durata del progetto. Si sono registrati valori inferiori alla soglia ottimale del 90\% solamente durante gli \textit{Sprint} 3 (87,1\%) e 4 (89,0\%), prima di intraprendere un costante trend di risalita che ha riportato e mantenuto la metrica su valori adeguati fino allo \textit{Sprint} 10 (95,8\%).
 \end{itemize}
 
+\newpage
 \section{Valutazioni per il miglioramento}
+
 Al termine di ogni iterazione, il gruppo SkyNet identifica le criticità emerse durante ogni \textit{Sprint} e definisce azioni correttive concrete da applicare negli \textit{Sprint} successivi. Le informazioni qui presentate sono tratte dalle discussioni che si sono svolte alla fine di ogni \textit{Sprint} e sono state annotate nel \textbf{Piano di Progetto}. Di seguito, sono elencate le problematiche riscontrate in modo chiaro e le azioni intraprese per superarle (basate sull'approccio iterativo PDSA - Plan Do-Study-Act) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
 
 \subsection{Valutazione sugli strumenti}
