@@ -104,7 +104,7 @@
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
         0.8.1 & 2026/08/07 & Scrittura della sezione 3.2 & Marco Barbiero &  Edoardo Granziero \\ \hline
         0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  Edoardo Granziero \\ \hline
-        0.7.0 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone &  \\ \hline
+        0.7.0 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone & Samuele Bertin \\ \hline
         0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
         0.6.0 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
         0.5.0 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
@@ -579,7 +579,7 @@ L'organizzazione del \textit{repository} si ispira al modello \textit{GitHub Flo
     \item \textbf{\texttt{main}}: ramo principale contenente esclusivamente artefatti (codice e documentazione) approvati da almeno un \textbf{Verificatore} e dal \textbf{Responsabile}. Ogni stato del ramo \texttt{main} rappresenta una configurazione stabile del progetto;
     \item \textbf{Rami secondari}: rami creati a partire da \texttt{main} per lo sviluppo di uno specifico compito o componente. Al termine della lavorazione, le relative modifiche vengono proposte tramite \textit{Pull Request} e, una volta approvate da un \textbf{Verificatore}, integrate (\textit{merge}) nel ramo \texttt{main}. I rami secondari vengono mantenuti nel \textit{repository} anche dopo il \textit{merge}, così da conservare la tracciabilità del lavoro svolto.
 \end{itemize}
-Ogni \textit{\glo{commit}{commit}} deve avere un messaggio conciso e significativo che ne descriva il contenuto. Per ridurre i \textit{conflitti} in fase di \textit{merge}, ogni membro dovrebbe effettuare un \textit{commit} al completamento di ogni piccola unità di lavoro.
+Ogni \textit{commit} deve avere un messaggio conciso e significativo che ne descriva il contenuto. Per ridurre i \textit{conflitti} in fase di \textit{merge}, ogni membro dovrebbe effettuare un \textit{commit} al completamento di ogni piccola unità di lavoro.
 \paragraph{Organizzazione delle cartelle}\mbox{}\\
 Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e file principali:
 \begin{itemize}
