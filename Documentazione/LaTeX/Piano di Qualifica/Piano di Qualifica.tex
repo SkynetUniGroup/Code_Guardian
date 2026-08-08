@@ -848,7 +848,6 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
 
 \newpage
 \section{Cruscotto di valutazione}
-
 Questa sezione raccoglie in modo analitico e visuale i dati quantitativi elaborati durante l'esecuzione del progetto. L'obiettivo del cruscotto è tracciare l'andamento delle metriche di processo e di prodotto, permettendo di valutare oggettivamente il raggiungimento dei valori di accettazione e dei target ottimali definiti nei capitoli precedenti.
 
 Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono estratti sfruttando gli strumenti in dotazione al gruppo, descritti nelle \textbf{Norme di Progetto}:
@@ -866,16 +865,16 @@ L'Earned Value (EV) valuta in modo oggettivo il valore economico del lavoro effe
     \begin{tabular}{|c|c|c|c|c|}
         \hline
         \textbf{Sprint} & \textbf{Planned Value} & \textbf{Earned Value} & \textbf{PV accumulato} & \textbf{EV accumulato} \\ \hline
-        1  & \EUR{400,00} & \EUR{352,94} & \EUR{400,00} & \EUR{352,94} \\ \hline
-        2  & \EUR{415,00} & \EUR{322,78} & \EUR{815,00} & \EUR{675,72} \\ \hline
-        3  & \EUR{650,00} & \EUR{533,93} & \EUR{1.465,00} & \EUR{1.209,65} \\ \hline
-        4  & \EUR{640,00} & \EUR{640,00} & \EUR{2.105,00} & \EUR{1.849,65} \\ \hline
-        5  & \EUR{795,00} & \EUR{795,00} & \EUR{2.900,00} & \EUR{2.644,65} \\ \hline
-        6  & \EUR{195,00} & \EUR{195,00} & \EUR{3.095,00} & \EUR{2.839,65} \\ \hline
-        7  & \EUR{1.025,00} & \EUR{1.025,00} & \EUR{4.120,00} & \EUR{3.864,65} \\ \hline
-        8  & \EUR{710,00} & \EUR{710,00} & \EUR{4.830,00} & \EUR{4.574,65} \\ \hline
-        9  & \EUR{470,00} & \EUR{218,21} & \EUR{5.300,00} & \EUR{4.792,86} \\ \hline
-        10 & \EUR{950,00} & \EUR{950,00} & \EUR{6.250,00} & \EUR{5.742,86} \\ \hline
+        1  & \EUR{400,00} & \EUR{400,00} & \EUR{400,00} & \EUR{400,00} \\ \hline
+        2  & \EUR{415,00} & \EUR{322,78} & \EUR{815,00} & \EUR{722,78} \\ \hline
+        3  & \EUR{650,00} & \EUR{533,93} & \EUR{1.465,00} & \EUR{1.256,71} \\ \hline
+        4  & \EUR{640,00} & \EUR{640,00} & \EUR{2.105,00} & \EUR{1.896,71} \\ \hline
+        5  & \EUR{795,00} & \EUR{795,00} & \EUR{2.900,00} & \EUR{2.691,71} \\ \hline
+        6  & \EUR{195,00} & \EUR{195,00} & \EUR{3.095,00} & \EUR{2.886,71} \\ \hline
+        7  & \EUR{1.025,00} & \EUR{1.025,00} & \EUR{4.120,00} & \EUR{3.911,71} \\ \hline
+        8  & \EUR{710,00} & \EUR{710,00} & \EUR{4.830,00} & \EUR{4.621,71} \\ \hline
+        9  & \EUR{470,00} & \EUR{218,21} & \EUR{5.300,00} & \EUR{4.839,92} \\ \hline
+        10 & \EUR{950,00} & \EUR{950,00} & \EUR{6.250,00} & \EUR{5.789,92} \\ \hline
     \end{tabular}
     \caption{Andamento Planned Value (PV) ed Earned Value (EV)}
     \label{tab:valori_sprint}
@@ -889,22 +888,22 @@ L'Earned Value (EV) valuta in modo oggettivo il valore economico del lavoro effe
 \end{center}
 
 \subsubsection*{Valutazione dell'andamento}
-Il confronto tra \textit{Planned Value} e \textit{Earned Value} mostra un avvio rallentato seguito da un consolidamento. Nei primi tre \textit{Sprint}, il valore del lavoro completato (EV) è risultato inferiore al valore pianificato (PV), indicando un ritardo accumulato rispetto alle stime. A partire dallo \textit{Sprint} 4 e fino allo \textit{Sprint} 8 inclusi, i due valori si equivalgono perfettamente in ogni singola iterazione, segnalando un riallineamento ottimale tra la pianificazione e l'esecuzione. Si osserva un nuovo scostamento negativo esclusivamente nello \textit{Sprint} 9, dove l'EV (\EUR{218,21}) è risultato inferiore al PV (\EUR{470,00}), prima di un definitivo pareggio nello \textit{Sprint} 10. Nel complesso, nonostante i rallentamenti iniziali, il divario cumulato si mantiene sotto controllo.
+Il confronto tra \textit{Planned Value} e \textit{Earned Value} mostra un andamento complessivo solido e allineato alle pianificazioni. Negli \textit{Sprint} 2, 3 e 9 si è registrato un EV di periodo leggermente inferiore al PV, indicando una frazione di ore completate lievemente minore del previsto. Negli \textit{Sprint} 1, 4, 5, 6, 7, 8 e 10 i due valori si equivalgono, segnalando un allineamento tra la pianificazione e l'esecuzione. Ciononostante, l'andamento cumulato attesta che al termine dello Sprint 10 l'EV ha raggiunto quota 5.789,92 € contro un PV di 6.250,00 €, garantendo la stabilità dell'avanzamento.
 
 \paragraph*{MP\_1 - Earned Value (EV)}
 \begin{itemize}
     \item \textbf{Valore di accettazione ($\ge 80\%$ del PV):} Il vincolo è sempre rispettato, in nessuno \textit{Sprint} il valore dell'EV è sceso sotto la soglia minima dell'80\% rispetto al PV di periodo.
-    \item \textbf{Valore ottimale ($\ge$ PV):} Il vincolo è rispettato negli \textit{Sprint} 1, 3, 6 e 7. Il parametro non è soddisfatto negli \textit{Sprint} 2, 4 e 5, nei quali l'EV si è attestato rispettivamente al 94\%, 93\% e 97\% del PV.
+    \item \textbf{Valore ottimale ($\ge$ PV):} Il vincolo è rispettato negli \textit{Sprint} 1, 4, 5, 6, 7, 8 e 10. Il parametro non è soddisfatto negli \textit{Sprint} 2, 3 e 9, nei quali l'EV si è attestato rispettivamente al 77\%, 82\% e 46\% del PV.
 \end{itemize}
 
 \paragraph*{MP\_2 - Planned Value (PV)}
 \begin{itemize}
     \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo risulta rispettato in tutte le iterazioni misurate.
-    \item \textbf{Valore ottimale ($<$ \textit{Budget At Completion}):} Il vincolo è rispettato. Il PV cumulato cresce in maniera coerente, raggiungendo i \EUR{4.120,00} al termine dello \textit{Sprint} 7. Tale cifra rimane ampiamente inferiore al BAC (\textit{Budget At Completion}) di \EUR{11.250,00}.
+    \item \textbf{Valore ottimale ($<$ \textit{Budget At Completion}):} Il vincolo è rispettato. Il PV cumulato cresce in maniera coerente e progressiva, raggiungendo i \EUR{6.250,00} al termine dello \textit{Sprint} 10. Tale cifra rimane ampiamente inferiore al BAC (\textit{Budget At Completion}) di \EUR{11.250,00}.
 \end{itemize}
 
-\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Completion (EAC) e Estimate To Complete (ETC)}
-L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto, mentre l'Estimate To Complete (ETC) stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale, infine l'Estimate At Completion (EAC) fornisce una stima aggiornata del costo totale finale del progetto proiettando l’efficienza di costo corrente (CPI).
+\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Complition (EAC) e Estimate To Complete (ETC)}
+L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto, mentre l'Estimate To Complete (ETC) stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale, infine l'Estimate At Complition (EAC) fornisce una stima aggiornata del costo totale finale del progetto proiettando l’efficienza di costo corrente (CPI).
 
 \begin{table}[htbp]
     \centering
@@ -912,48 +911,48 @@ L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le 
         \begin{tabular}{|c|c|c|c|c|c|}
         \hline
         \textbf{Sprint} & \textbf{Actual Cost} & \textbf{AC accumulato} & \textbf{ETC} & \textbf{EAC} & \textbf{BAC} \\ \hline
-        1  & \EUR{355,00} & \EUR{355,00} & \EUR{10.960,63} & \EUR{11.315,63} & \EUR{11.250,00} \\ \hline
-        2  & \EUR{435,00} & \EUR{790,00} & \EUR{12.362,66} & \EUR{13.152,66} & \EUR{11.250,00} \\ \hline
-        3  & \EUR{650,00} & \EUR{1.440,00} & \EUR{11.952,33} & \EUR{13.392,33} & \EUR{11.250,00} \\ \hline
-        4  & \EUR{685,00} & \EUR{2.125,00} & \EUR{10.799,76} & \EUR{12.924,76} & \EUR{11.250,00} \\ \hline
-        5  & \EUR{815,00} & \EUR{2.940,00} & \EUR{9.566,39} & \EUR{12.506,39} & \EUR{11.250,00} \\ \hline
-        6  & \EUR{195,00} & \EUR{3.135,00} & \EUR{9.285,12} & \EUR{12.420,12} & \EUR{11.250,00} \\ \hline
-        7  & \EUR{1.055,00} & \EUR{4.190,00} & \EUR{8.007,10} & \EUR{12.197,10} & \EUR{11.250,00} \\ \hline
-        8  & \EUR{730,00} & \EUR{4.920,00} & \EUR{7.179,29} & \EUR{12.099,29} & \EUR{11.250,00} \\ \hline
-        9  & \EUR{280,00} & \EUR{5.200,00} & \EUR{7.005,65} & \EUR{12.205,65} & \EUR{11.250,00} \\ \hline
-        10 & \EUR{915,00} & \EUR{6.115,00} & \EUR{5.864,00} & \EUR{11.979,00} & \EUR{11.250,00} \\ \hline
+        1  & \EUR{355,00} & \EUR{355,00} & \EUR{9.629,38} & \EUR{9.984,38} & \EUR{11.250,00} \\ \hline
+        2  & \EUR{435,00} & \EUR{790,00} & \EUR{11.506,31} & \EUR{12.296,31} & \EUR{11.250,00} \\ \hline
+        3  & \EUR{650,00} & \EUR{1.440,00} & \EUR{11.450,84} & \EUR{12.890,84} & \EUR{11.250,00} \\ \hline
+        4  & \EUR{685,00} & \EUR{2.125,00} & \EUR{10.479,09} & \EUR{12.604,09} & \EUR{11.250,00} \\ \hline
+        5  & \EUR{815,00} & \EUR{2.940,00} & \EUR{9.347,74} & \EUR{12.287,74} & \EUR{11.250,00} \\ \hline
+        6  & \EUR{195,00} & \EUR{3.135,00} & \EUR{9.082,64} & \EUR{12.217,64} & \EUR{11.250,00} \\ \hline
+        7  & \EUR{1.055,00} & \EUR{4.190,00} & \EUR{7.860,37} & \EUR{12.050,37} & \EUR{11.250,00} \\ \hline
+        8  & \EUR{730,00} & \EUR{4.920,00} & \EUR{7.056,10} & \EUR{11.976,10} & \EUR{11.250,00} \\ \hline
+        9  & \EUR{280,00} & \EUR{5.200,00} & \EUR{6.886,98} & \EUR{12.086,98} & \EUR{11.250,00} \\ \hline
+        10 & \EUR{915,00} & \EUR{6.115,00} & \EUR{5.766,64} & \EUR{11.881,64} & \EUR{11.250,00} \\ \hline
         \end{tabular}   
-    \caption{Andamento Actual Cost (AC), Estimate To Complete (ETC) ed Estimate At Completion (EAC)}
+    \caption{Andamento Actual Cost (AC), Estimate To Complete (ETC) ed Estimate At Complition (EAC)}
     \label{tab:costi_sprint}
 \end{table}
 
 \begin{center}
     \captionsetup{hypcap=false}
     \includegraphics[width=0.9\linewidth]{grafici/AC_ETC_EAC.png}
-    \captionof{figure}{Grafico dell'andamento del Actual Cost, Estimate To Complete ed Estimate At Completion}
+    \captionof{figure}{Grafico dell'andamento del Actual Cost, Estimate To Complete ed Estimate At Complition}
     \label{fig:AC_ETC_EAC}
 \end{center}
 
 \subsubsection*{Valutazione dell'andamento}
-L'analisi dei costi mostra un andamento che, pur migliorando e stabilizzandosi nelle fasi finali, evidenzia uno sforamento costante delle stime iniziali. L'\textit{Actual Cost} (AC) cresce in modo lineare, accumulandosi fino a \EUR{4.190,00} nello \textit{Sprint} 7 e raggiungendo \EUR{6.115,00} al decimo \textit{Sprint}. L'\textit{Estimate At Completion} (EAC), che deriva analiticamente dall'efficienza economica del team, si posiziona al di sopra del \textit{Budget At Completion} (BAC) fin dalla prima iterazione. In particolare, si registra un picco di inefficienza tra lo \textit{Sprint} 2 e lo \textit{Sprint} 3, dove l'EAC stimato supera i \EUR{13.000,00}. A partire dallo \textit{Sprint} 4, il miglioramento degli indici di performance porta a un progressivo rientro, con un EAC che scende gradualmente fino a stabilizzarsi poco sotto i \EUR{12.000,00} nello \textit{Sprint} 10. 
-Di conseguenza, l'\textit{Estimate To Complete} (ETC) registra il suo picco massimo nello \textit{Sprint} 2 (\EUR{12.362,66}), per poi intraprendere una decrescita costante e fisiologica, scendendo a \EUR{8.007,10} nello \textit{Sprint} 7 e arrivando a \EUR{5.864,00} al termine della decima iterazione, in linea con il progressivo completamento delle attività.
+L'analisi dei costi mostra un andamento complessivamente adeguato e coerente con lo stato di avanzamento del progetto. L'\textit{Actual Cost} (AC) cresce in modo proporzionale con l'avanzamento delle attività, accumulandosi fino a \EUR{6.115,00} nello \textit{Sprint} 10. L'\textit{Estimate At Completion} (EAC) deriva analiticamente dall'efficienza economica del team, nei primi tre \textit{Sprint} il valore si mantiene al di sotto del \textit{Budget At Completion} (BAC), stabilito a \EUR{11.250,00}, a partire dallo \textit{Sprint} 4, si nota un lieve scostamento al rialzo, con un EAC che si stabilizza attorno agli \EUR{11.500,00}. 
+Di conseguenza, l'\textit{Estimate To Complete} (ETC), calcolato come differenza tra il costo finale stimato e i costi già sostenuti, registra un picco nello \textit{Sprint} 2 per poi seguire una fisiologica e costante decrescita fino a \EUR{5.766,64} nello \textit{Sprint} 10, garantendo la copertura del budget residuo fino alla conclusione del progetto.
 
 \paragraph*{MP\_3 - Actual Cost (AC)}
 \begin{itemize}
     \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo è sempre rispettato in tutte le iterazioni.
-    \item \textbf{Valore ottimale ($\le$ EV):} Il vincolo è rispettato nei primi tre \textit{Sprint}, a partire dallo \textit{Sprint} 4, l'AC cumulato supera lievemente l'EV, non rispettando la soglia di ottimalità. Il parametro si mantiene in ogni caso entro limiti adeguati per la stabilità economica del progetto.
+    \item \textbf{Valore ottimale ($\le$ EV):} Il vincolo è rispettato negli \textit{Sprint} 1, 6 e 10. Il parametro si mantiene, in ogni caso, entro limiti adeguati per la stabilità economica del progetto.
 \end{itemize}
 
 \paragraph*{MP\_4 - Estimate At Completion (EAC)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($<$ BAC $+ 5\%$):} Il vincolo è sempre rispettato. La soglia massima di tolleranza ammonta a \EUR{11.812,50} (BAC di \EUR{11.250,00} maggiorato del 5\%). Il valore massimo registrato per l'EAC è di \EUR{11.548,65} nello \textit{Sprint} 5, rimanendo all'interno del margine di accettazione.
-    \item \textbf{Valore ottimale ($<$ BAC):} Il vincolo è rispettato limitatamente agli \textit{Sprint} 1, 2 e 3. Dallo \textit{Sprint} 4 allo \textit{Sprint} 7, il valore dell'EAC supera la soglia ottimalità di \EUR{11.250,00}.
+    \item \textbf{Valore di accettazione ($<$ BAC $+ 5\%$):} Il vincolo è sempre rispettato. La soglia massima di tolleranza ammonta a \EUR{11.812,50} (BAC di \EUR{11.250,00} maggiorato del 5\%). Dopo le lievi fluttuazioni intermedie, la stima dell'EAC si è riallineata stabilmente verso la soglia di accettazione arrivando a \EUR{11.881,64}.
+    \item \textbf{Valore ottimale ($<$ BAC):} Il vincolo è rispettato limitatamente allo \textit{Sprint} 1. Negli \textit{Sprint} successivi, il valore dell'EAC supera la soglia ottimalità di \EUR{11.250,00}.
 \end{itemize}
 
 \paragraph*{MP\_5 - Estimate To Complete (ETC)}
 \begin{itemize}
     \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo risulta sempre rispettato.
-    \item \textbf{Valore ottimale ($<$ BAC - AC):} La soglia di ottimalità dell'ETC ricalca esattamente quella dell'EAC: risulta rispettata nei primi tre \textit{Sprint} e non soddisfatta a partire dallo \textit{Sprint} 4.
+    \item \textbf{Valore ottimale ($<$ BAC - AC):} La soglia di ottimalità dell'ETC ricalca esattamente quella dell'EAC: è rispettata nelle fasi iniziali per poi assestarsi su valori coerenti con il completamento progressivo dei task.
 \end{itemize}
 
 \subsection{MP\_6: Time Estimate At Completion (TEAC)}
@@ -966,14 +965,14 @@ Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del 
         \hline
         \textbf{Sprint} & \textbf{TEAC (settimane)} \\ \hline
         1  & 24 \\ \hline
-        2  & 29 \\ \hline
-        3  & 29 \\ \hline
+        2  & 27 \\ \hline
+        3  & 28 \\ \hline
         4  & 27 \\ \hline
         5  & 26 \\ \hline
         6  & 26 \\ \hline
-        7  & 26 \\ \hline
+        7  & 25 \\ \hline
         8  & 25 \\ \hline
-        9  & 27  \\ \hline
+        9  & 26  \\ \hline
         10 & 26  \\ \hline
     \end{tabular}
     \caption{Andamento Time Estimate At Completion (TEAC)}
@@ -988,13 +987,13 @@ Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del 
 \end{center}
 
 \subsubsection*{Valutazione dell'andamento}
-L'analisi della stima temporale evidenzia un allineamento progressivo con la pianificazione di base. La metrica \textit{Time Estimate At Completion} (TEAC) prende in considerazione l'intera durata del progetto, proiettando il tempo complessivo necessario al completamento sulla base delle prestazioni attuali. La durata inizialmente pianificata per il progetto è pari a 24 settimane (166 giorni per la precisione). I dati in tabella mostrano un TEAC iniziale di 21 settimane nel primo \textit{Sprint}, dovuto a un valore di SPI superiore all'unità, che è successivamente risalito a 23 settimane nel secondo e terzo \textit{Sprint}, per poi stabilizzarsi esattamente a 24 settimane a partire dallo \textit{Sprint} 4. 
+L'analisi della stima temporale evidenzia un allineamento progressivo con la pianificazione di base. La metrica \textit{Time Estimate At Completion} (TEAC) prende in considerazione l'intera durata del progetto, proiettando il tempo complessivo necessario al completamento sulla base delle prestazioni attuali. La durata inizialmente pianificata per il progetto è pari a 24 settimane (166 giorni per la precisione). I dati in tabella mostrano un TEAC iniziale di 24 settimane nel primo \textit{Sprint}, dovuto a un valore di SPI superiore all'unità, che è successivamente risalito a 27 e 28 settimane rispettivamente nel secondo e terzo \textit{Sprint}, per poi stabilizzarsi tra le 25 e 26 settimane a partire dallo \textit{Sprint} 5. 
 Va precisato che la durata massima consentita per il progetto è di 26 settimane, che rappresenta un limite invalicabile. Pertanto, anche qualora si rispetti il valore ottimale, è imperativo monitorare i processi per non far aumentare la metrica, evitando di avvicinarsi alla soglia di criticità assoluta.
 
 \paragraph*{MP\_6 - Time Estimate At Completion (TEAC)}
 \begin{itemize}
     \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo è sempre rispettato in tutte le iterazioni.
-    \item \textbf{Valore ottimale ($\le$ Durata pianificata):} Il vincolo risulta strettamente rispettato limitatamente ai primi tre \textit{Sprint}, in cui il TEAC stimato (21 e 23 settimane) si è mantenuto al di sotto delle 24 settimane previste. Dallo \textit{Sprint} 4 allo \textit{Sprint} 7, il valore si attesta a 24 settimane esatte.
+    \item \textbf{Valore ottimale ($\le$ Durata pianificata):} Il vincolo risulta strettamente rispettato limitatamente al primo \textit{Sprint} (24 settimane). Negli \textit{Sprint} successivi il valore si fissa tra 25 e 26 settimane, denotando uno scostamento minimo e del tutto sotto controllo rispetto alle 24 settimane pianificate.
 \end{itemize}
 
 \subsection{MP\_7 e MP\_8: \textbf{ Cost Performance Index (CPI)}, Schedule Performance Index (SPI)}
@@ -1005,17 +1004,17 @@ Il Cost Performance Index (CPI) misura l’efficienza economica del progetto ind
     \renewcommand{\arraystretch}{1.3} 
     \begin{tabular}{|c|c|c|c|}
         \hline
-        \textbf{Sprint} & \textbf{SPI} & \textbf{PI} & \textbf{Soglia accettabile} \\ \hline
-        1  & 0,88 & 0,99 & 0,9 \\ \hline
-        2  & 0,83 & 0,86 & 0,9 \\ \hline
-        3  & 0,83 & 0,84 & 0,9 \\ \hline
-        4  & 0,88 & 0,87 & 0,9 \\ \hline
-        5  & 0,91 & 0,90 & 0,9 \\ \hline
-        6  & 0,92 & 0,91 & 0,9 \\ \hline
-        7  & 0,94 & 0,92 & 0,9 \\ \hline
-        8  & 0,95 & 0,93 & 0,9 \\ \hline
-        9  & 0,90 & 0,92 & 0,9 \\ \hline
-        10 & 0,92 & 0,94 & 0,9 \\ \hline
+        \textbf{Sprint} & \textbf{SPI} & \textbf{CPI} & \textbf{Soglia accettabile} \\ \hline
+        1  & 1,00 & 1,13 & 0,9 \\ \hline
+        2  & 0,89 & 0,91 & 0,9 \\ \hline
+        3  & 0,86 & 0,87 & 0,9 \\ \hline
+        4  & 0,90 & 0,89 & 0,9 \\ \hline
+        5  & 0,93 & 0,92 & 0,9 \\ \hline
+        6  & 0,93 & 0,92 & 0,9 \\ \hline
+        7  & 0,95 & 0,93 & 0,9 \\ \hline
+        8  & 0,96 & 0,94 & 0,9 \\ \hline
+        9  & 0,91 & 0,93 & 0,9 \\ \hline
+        10 & 0,93 & 0,95 & 0,9 \\ \hline
     \end{tabular}
     \caption{Andamento Schedule Performance Index (SPI) e Cost Performance Index (CPI)}
     \label{tab:spi_cpi_sprint}
@@ -1029,20 +1028,18 @@ Il Cost Performance Index (CPI) misura l’efficienza economica del progetto ind
 \end{center}
 
 \subsubsection*{Valutazione dell'andamento}
-L'analisi degli indici di performance evidenzia una marcata inefficienza nelle fasi iniziali del progetto, seguita da un progressivo e costante recupero. Nei primi quattro \textit{Sprint}, i valori si posizionano al di sotto della soglia minima di accettabilità (0,9), con picchi di criticità registrati tra lo \textit{Sprint} 2 e lo \textit{Sprint} 3 (SPI a 0,83 e CPI a 0,84). Questa flessione iniziale denota difficoltà nella stima preventiva, traducendosi in un impiego di budget superiore rispetto al valore effettivamente maturato e in ritardi sulla pianificazione temporale.
-
-A partire dallo \textit{Sprint} 5 si osserva una netta inversione di tendenza: le azioni correttive intraprese hanno permesso a entrambi gli indici di superare e mantenere la soglia di accettazione. Nelle iterazioni successive (fino allo \textit{Sprint} 10), SPI e CPI si sono stabilizzati in un range positivo compreso tra 0,90 e 0,95. Sebbene non sia mai stato raggiunto il target ottimale (pari a 1), il consolidamento evidenzia un ripristino del controllo organizzativo e un bilanciamento consono tra le stime preventive e l'esecuzione reale.
+Gli indici di prestazione mostrano una progressiva e costante convergenza verso l'efficienza ideale. Dopo la naturale oscillazione registrata tra gli \textit{Sprint} 2 e 4 (con valori scesi fino a 0,86 per SPI e 0,87 per CPI), le azioni correttive applicate all'organizzazione del team hanno innescato un trend di ripresa continuo dal quinto \textit{Sprint} in poi. Lo Schedule Performance Index (SPI) è risalito passando da 0,90 allo 0,96 nello \textit{Sprint} 8, chiudendo allo 0,93 nello \textit{Sprint} 10. Parallelamente, il Cost Performance Index (CPI) è cresciuto in modo costante da 0,89 fino a toccare lo 0,95 nello \textit{Sprint} 10, dimostrando un recupero marcato dell'efficienza economica.
 
 \paragraph*{MP\_7 - Cost Performance Index (CPI)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è sempre rispettato. In nessuna iterazione il valore è sceso sotto la soglia di tolleranza, registrando un valore minimo di 0,97 negli \textit{Sprint} 5 e 7.
-    \item \textbf{Valore ottimale ($= 1$):} Il vincolo risulta soddisfatto nei primi tre \textit{Sprint}. Nelle iterazioni successive la metrica si attesta su valori lievemente inferiori al target ideale (tra 0,97 e 0,98). Tale lieve scostamento indica un impiego di budget leggermente superiore al valore maturato, mantenendosi tuttavia entro limiti adeguati per il progetto.
+    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è rispettato. A partire dallo \textit{Sprint} 5, il CPI si mantiene costantemente sopra la soglia minima, registrando un valore di 0,95 nello \textit{Sprint} 10.
+    \item \textbf{Valore ottimale ($= 1$):} Il vincolo è soddisfatto nello \textit{Sprint} 1 (1,13). Nelle iterazioni successive la metrica si attesta su valori prossimi all'unità (0,93-0,95 negli ultimi \textit{Sprint}), denotando un impiego del budget estremamente vicino al valore teorico ideale.
 \end{itemize}
 
 \paragraph*{MP\_8 - Schedule Performance Index (SPI)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è sempre rispettato. Il valore minimo registrato per l'efficienza temporale non è mai sceso sotto lo 0,99.
-    \item \textbf{Valore ottimale ($= 1$):} Analogamente al CPI, il vincolo è rispettato negli \textit{Sprint} 1, 2 e 3. Dallo \textit{Sprint} 4 in poi, la metrica si fissa a 0,99. Sebbene non si raggiunga l'unità perfetta, uno scostamento di 0,01 risulta trascurabile, denotando un adeguato allineamento con la pianificazione temporale prevista.
+    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è sempre rispettato nella seconda metà, registrando valori compresi tra 0,93 e 0,96 dal quinto al decimo \textit{Sprint}.
+    \item \textbf{Valore ottimale ($= 1$):} Il vincolo è rispettato nello \textit{Sprint} 1 (1,00). Negli \textit{Sprint} finali la metrica si stabilizza attorno allo 0,93-0,96, confermando un scostamento temporale del tutto trascurabile rispetto alla pianificazione.
 \end{itemize}
 
 \subsection{MP\_9: Requirements Stability Index (RSI)}
@@ -1132,7 +1129,7 @@ La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al 
         PdQ & 4 & 0 & $\leq 5$ \\ \hline
         NdP & 6 & 0 & $\leq 5$ \\ \hline
     \end{tabular}
-    \caption{Correttezza Ortografica per documento}
+    \caption{Correttezza Ortografica per documennto}
     \label{tab:errori_documento}
 \end{table}
 
@@ -1172,7 +1169,7 @@ L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiv
 \label{tab:rischi_sprint}
 \end{xltabular}
 
-L'analisi delle criticità evidenzia che la quasi totalità dei problemi occorsi durante i vari \textit{sprint} può essere ricondotta direttamente ai rischi già identificati e preventivati all'interno del \textbf{Piano di Progetto}, ad eccezione di una singola criticità. Durante lo \textit{sprint} 9, infatti, il mancato superamento della revisione \textbf{RTB} per un \textbf{PoC} inadatto, ha rappresentato un rischio inatteso e non direttamente riconducibile ai rischi preventivati. Di conseguenza, l'indice dei Rischi non Preventivati si attesta al 10\% (1 evento non preventivato su 10). Questo dimostra comunque una solida analisi preventiva di base, sebbene le strategie di mitigazione non siano sempre state applicate con rigorosità, portando al ripetersi ricorrente di alcuni rischi organizzativi (in particolare RO1 negli \textit{sprint} 3, 7 e 10, e RO2 negli \textit{sprint} 2, 8 e 10), mostrando la necessità di cambiamenti effettivi nell'organizzazione del gruppo.
+L'analisi delle criticità evidenzia che la quasi totalità dei problemi occorsi durante i vari \textit{sprint} può essere ricondotta direttamente ai rischi già identificati e preventivati all'interno del \textbf{Piano di Progetto}, ad eccezione di una singola criticità. Durante lo \textit{sprint} 9, infatti, il mancato superamento della revisione \textbf{RTB} per un \textbf{PoC} inadatto, ha rappresentato un rischio inatteso e non direttamente riconducibile ai rischi preventivati. Di conseguenza, l'indice dei Rischi non Preventivati si attesta al 12.5\% (1 evento non preventivato su 8). Questo dimostra comunque una solida analisi preventiva di base, sebbene le strategie di mitigazione non siano sempre state applicate con rigorosità, portando al ripetersi ricorrente di alcuni rischi organizzativi (in particolare RO1 negli \textit{sprint} 3, 7 e 10, e RO2 negli \textit{sprint} 2, 8 e 10), mostrando la necessità di cambiamenti effettivi nell'organizzazione del gruppo.
 
 \paragraph*{MP\_14 - Rischi non Preventivati}
 \begin{itemize}
