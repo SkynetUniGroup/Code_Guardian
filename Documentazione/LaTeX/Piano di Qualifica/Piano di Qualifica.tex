@@ -80,8 +80,8 @@
             \textbf{Versione} & \textit{0.5.0} \\ \hline
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic, Dario Pirrone, Edoardo Granziero} \\ \hline
-            \textbf{Verifica} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol} \\ \hline
-            \textbf{Approvazione} & \textit{Nome Cognome} \\ \hline
+            \textbf{Verifica} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol, Edoardo Granziero} \\ \hline
+            \textbf{Approvazione} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol, Edoardo Granziero} \\ \hline
 
         \end{tabularx}
     \end{table}
@@ -106,7 +106,7 @@
         
         0.5.0 & 2026/07/22 & Stesura tabelle di test di unità e integrazione & \makecell[l]{Edoardo Granziero} & \makecell[l]{Andrea Fistarol} \\ \hline
         0.4.0 & 2026/07/14 & Stesura del capitolo 6 & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
-        0.3.0 & 2026/07/08 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
+        0.3.0 & 2026/07/08 & Verifica dettagliata del documento intero & Sara Ristovic & {Edoardo Granziero} \\ \hline
         0.3.0 & 2026/07/08 & Integrazione di nuove metriche e revisione di quelle preesistenti & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
         0.2.0 & 2026/05/25 & Compilazione "Obiettivi di qualità del processo" & \makecell[l]{Dario Pirrone} & \makecell[l]{Samuele Bertin} \\ \hline
         0.1.0 & 2026/05/10 & Creazione documento e compilazione "Introduzione" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
@@ -527,8 +527,8 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_47 & Verificare che il sistema abiliti i controlli grafici per le fasi successive esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & RF.47 & NI \\ \hline
     TS\_48 & Verificare che, in caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textit{orchestratore} garantisca l'isolamento dell'errore per non compromettere le altre attività parallele in corso. & RF.48 & NI \\ \hline
     TS\_49 & Verificare che il sistema permetta all'utente di accedere ad un archivio storico e visualizzare la lista aggregata di tutti i report precedentemente generati e salvati, mostrando delle informazioni per ogni elemento. & RF.49 & NI \\ \hline
-    TS\_50 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nel archivio storico, il relativo codice identificativo univoco. & RF.50 & NI \\ \hline
-    TS\_51 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nel archivio storico, il relativo titolo descrittivo. & RF.51 & NI \\ \hline
+    TS\_50 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nell'archivio storico, il relativo codice identificativo univoco. & RF.50 & NI \\ \hline
+    TS\_51 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nell'archivio storico, il relativo titolo descrittivo. & RF.51 & NI \\ \hline
     TS\_52 & Verificare che il sistema visualizzi all'interno del blocco grafico del singolo report le informazioni temporali di completamento, nello specifico la data e l'orario esatto di generazione. & RF.52 & NI \\ \hline
     TS\_53 & Verificare che il sistema consenta all'utente la selezione e la visualizzazione del report desiderato. & RF.53 & NI \\ \hline
     TS\_54 & Verificare che il sistema strutturi il report dividendolo in una sezione di intestazione e una di corpo del report con il contenuto effettivo. & RF.54 & NI \\ \hline
@@ -570,7 +570,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_90 & Verificare che il sistema generi suggerimenti di \textit{Remediation} per ciascuna \textit{vulnerabilità} o violazione di policy rilevata, proponendo uno \textit{snippet} di codice correttivo qualora la problematica risulti sufficientemente localizzata. & RF.90 & NI \\ \hline
     TS\_91 & Verificare che il sistema generi una descrizione testuale della \textit{Remediation} da effettuare qualora non sia possibile proporre in modo affidabile uno \textit{snippet} di codice correttivo. & RF.91 & NI \\ \hline
     TS\_92 & Verificare che il sistema orchestri l'Agente Security per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file POLICY.md. & RF.92 & NI \\ \hline
-    TS\_93 & Verificare che il sistema, durante l'esecuzione dell'analisi \textit{policy-as-code}, processi e applichi esclusivamente le direttive riguardanti alla sicurezza del software del file POLICY.md. & RF.93 & NI \\ \hline
+    TS\_93 & Verificare che il sistema, durante l'esecuzione dell'analisi \textit{policy-as-code}, processi e applichi esclusivamente le direttive riguardanti la sicurezza del software del file POLICY.md. & RF.93 & NI \\ \hline
     TS\_94 & Verificare che il sistema interroghi le \textit{API} del sistema di Task Management esterno per recuperare e filtrare le \textit{User Stories} e i \textit{task} in stato di completamento associati allo specifico \textit{Sprint} richiesto. & RF.94 & NI \\ \hline
     TS\_95 & Verificare che il sistema estragga dai \textit{task} validati i \textit{metadati} rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & RF.95 & NI \\ \hline
     TS\_96 & Verificare che il sistema orchestri l'Agente \textit{Changelog} per generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai \textit{task} dello \textit{Sprint}. & RF.96 & NI \\ \hline
@@ -589,7 +589,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
 \end{xltabular}
 
 \subsection{Test di accettazione (TA)}
-I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto del \textbf{Proponente Var Group} al fine di sancire la validità formale del prodotto e autorizzarne il rilascio, i test di accettazione coprono flussi operativi completi, nella colonna dei requisiti vengono scritti i principali requisiti funzionali comperti da ciascun test.
+I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coordinamento diretto del \textbf{Proponente Var Group} al fine di sancire la validità formale del prodotto e autorizzarne il rilascio, i test di accettazione coprono flussi operativi completi, nella colonna dei requisiti vengono scritti i principali requisiti funzionali coperti da ciascun test.
 
 
 \renewcommand{\arraystretch}{1.3}
@@ -902,8 +902,8 @@ Il confronto tra \textit{Planned Value} e \textit{Earned Value} mostra un andame
     \item \textbf{Valore ottimale ($<$ \textit{Budget At Completion}):} Il vincolo è rispettato. Il PV cumulato cresce in maniera coerente e progressiva, raggiungendo i \EUR{6.250,00} al termine dello \textit{Sprint} 10. Tale cifra rimane ampiamente inferiore al BAC (\textit{Budget At Completion}) di \EUR{11.250,00}.
 \end{itemize}
 
-\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Complition (EAC) e Estimate To Complete (ETC)}
-L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto, mentre l'Estimate To Complete (ETC) stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale, infine l'Estimate At Complition (EAC) fornisce una stima aggiornata del costo totale finale del progetto proiettando l’efficienza di costo corrente (CPI).
+\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Completion (EAC) e Estimate To Complete (ETC)}
+L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto, mentre l'Estimate To Complete (ETC) stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale, infine l'Estimate At Completion (EAC) fornisce una stima aggiornata del costo totale finale del progetto proiettando l’efficienza di costo corrente (CPI).
 
 \begin{table}[htbp]
     \centering
@@ -922,14 +922,14 @@ L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le 
         9  & \EUR{280,00} & \EUR{5.200,00} & \EUR{6.886,98} & \EUR{12.086,98} & \EUR{11.250,00} \\ \hline
         10 & \EUR{915,00} & \EUR{6.115,00} & \EUR{5.766,64} & \EUR{11.881,64} & \EUR{11.250,00} \\ \hline
         \end{tabular}   
-    \caption{Andamento Actual Cost (AC), Estimate To Complete (ETC) ed Estimate At Complition (EAC)}
+    \caption{Andamento Actual Cost (AC), Estimate To Complete (ETC) ed Estimate At Completion (EAC)}
     \label{tab:costi_sprint}
 \end{table}
 
 \begin{center}
     \captionsetup{hypcap=false}
     \includegraphics[width=0.9\linewidth]{grafici/AC_ETC_EAC.png}
-    \captionof{figure}{Grafico dell'andamento del Actual Cost, Estimate To Complete ed Estimate At Complition}
+    \captionof{figure}{Grafico dell'andamento dell'Actual Cost, Estimate To Complete ed Estimate At Completion}
     \label{fig:AC_ETC_EAC}
 \end{center}
 
@@ -1039,7 +1039,7 @@ Gli indici di prestazione mostrano una progressiva e costante convergenza verso 
 \paragraph*{MP\_8 - Schedule Performance Index (SPI)}
 \begin{itemize}
     \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è sempre rispettato nella seconda metà, registrando valori compresi tra 0,93 e 0,96 dal quinto al decimo \textit{Sprint}.
-    \item \textbf{Valore ottimale ($= 1$):} Il vincolo è rispettato nello \textit{Sprint} 1 (1,00). Negli \textit{Sprint} finali la metrica si stabilizza attorno allo 0,93-0,96, confermando un scostamento temporale del tutto trascurabile rispetto alla pianificazione.
+    \item \textbf{Valore ottimale ($= 1$):} Il vincolo è rispettato nello \textit{Sprint} 1 (1,00). Negli \textit{Sprint} finali la metrica si stabilizza attorno allo 0,93-0,96, confermando uno scostamento temporale del tutto trascurabile rispetto alla pianificazione.
 \end{itemize}
 
 \subsection{MP\_9: Requirements Stability Index (RSI)}
@@ -1129,7 +1129,7 @@ La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al 
         PdQ & 4 & 0 & $\leq 5$ \\ \hline
         NdP & 6 & 0 & $\leq 5$ \\ \hline
     \end{tabular}
-    \caption{Correttezza Ortografica per documennto}
+    \caption{Correttezza Ortografica per documento}
     \label{tab:errori_documento}
 \end{table}
 
@@ -1160,7 +1160,7 @@ L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiv
 4 & Comunicazione esterna inefficace che ha causato ritardi nel ricevere riscontri dal \textbf{Proponente} e nel fissare un incontro sui requisiti. & Sì, (RO3) \\ \hline
 5 & \textbf{Analisi dei Requisiti} incompleta o errata, emersa da un disallineamento con il \textbf{Proponente} riguardo all'assenza di un \textit{orchestratore} preesistente. & Sì, (RR1) \\ \hline
 6 & Indisponibilità e vincoli di tempo dovuti alla drastica riduzione delle ore lavorabili da parte dei membri per la concomitanza con la sessione d'esami. & Sì, (RI1) \\ \hline
-7 & Sottostima e sovrastima delle attività, manifestatesi con uno scostamento tra le ore preventivate e quelle effettivamente impiegate dai singoli, oltre ad una scarsa pianificazione dovuta al accumulo del lavoro verso la fine dello \textit{sprint}. & Sì, (RO4, RO5, RO1) \\ \hline
+7 & Sottostima e sovrastima delle attività, manifestatesi con uno scostamento tra le ore preventivate e quelle effettivamente impiegate dai singoli, oltre ad una scarsa pianificazione dovuta all'accumulo del lavoro verso la fine dello \textit{sprint}. & Sì, (RO4, RO5, RO1) \\ \hline
 8 & Comunicazione interna inefficace durante le attività di verifica in parallelo, con conseguente mancanza di tracciamento delle sezioni revisionate e rischio di sovrapposizioni o mancati controlli. & Sì, (RO2) \\ \hline
 9 & Ritardo inatteso dovuto al mancato superamento della revisione \textbf{RTB}, che ha reso necessaria una ristrutturazione del \textbf{Proof of Concept (PoC)} per l'integrazione di ulteriori tecnologie. & No \\ \hline
 10 & Scarsa pianificazione e comunicazione interna inefficace nella distribuzione del carico di lavoro, con un impiego sbilanciato delle risorse che ha generato lievi ritardi a lungo termine. & Sì, (RO1, RO2) \\ \hline
@@ -1236,7 +1236,7 @@ Nel complesso, l'infrastruttura documentale si è rivelata utile e adeguata alle
 L'ecosistema di comunicazione ha raggiunto una stabilità eccellente: tutti gli strumenti selezionati si sono rivelati utili e ognuno ha trovato il proprio spazio operativo senza creare ridondanze.
 \begin{itemize}
     \item \textbf{Comunicazione interna:} \textbf{Discord} si è affermato come il protagonista assoluto per il coordinamento del team. I suoi canali vocali e testuali sono risultati molto utili e vengono usati quotidianamente per la sincronizzazione del lavoro.
-    \item \textbf{Comunicazione esterna:} \textit{Slack} si è rivelato il canale primario, nonché il protagonista, per le interazioni dirette, i chiarimenti e la comunicazione tempestiva con l'azienda \textbf{Proponente (VarGroup)}.
+    \item \textbf{Comunicazione esterna:} \textit{Slack} si è rivelato il canale primario, nonché il protagonista, per le interazioni dirette, i chiarimenti e la comunicazione tempestiva con l'azienda \textbf{Proponente (Var Group)}.
 \end{itemize}
 
 \subsubsection{Strumenti per la Gestione del Progetto e il Versionamento}
@@ -1260,7 +1260,7 @@ Durante l'avanzamento del progetto, le metriche organizzative e l'analisi dei \t
 
 \begin{itemize}
     \item \textbf{[RO1] - Scarsa Pianificazione (\textit{Sprint} 1, 3 e 10):} Nel primo \textit{Sprint}, la definizione delle attività è risultata eccessivamente generica (es. "Inizio stesura \textbf{Analisi dei Requisiti}"). Questa mancanza di granularità ha ostacolato il monitoraggio dei progressi. Nonostante un primo tentativo di risoluzione, il problema si è ripresentato nello \textit{Sprint} 3, dove la scomposizione delle \textit{Issue} non si è rivelata ancora sufficientemente atomica. Ciò ha generato colli di bottiglia e ha impedito la chiusura definitiva di diverse attività, causando uno slittamento dei \textit{task} allo \textit{Sprint} successivo. Infine, nello \textit{Sprint} 10, una mancanza di pianificazione trasversale ha visto impegnati a pieno regime solo i ruoli di progettazione e codifica, lasciando il resto del gruppo con compiti minimi e causando l'accumulo di lievi ritardi sul lungo termine.
-    \item \textbf{[RO3] - Comunicazione Esterna Inefficace/Inefficiente (\textit{Sprint} 4):} Si è registrata una forte difficoltà comunicativa con l'azienda \textbf{Proponente (VarGroup)}, caratterizzata da risposte lente che hanno ritardato l'organizzazione di un incontro fondamentale per la validazione dell'\textbf{Analisi dei Requisiti}. Questo ha costretto il gruppo a dover rivalutare alcune scadenze interne, rallentando la tabella di marcia.
+    \item \textbf{[RO3] - Comunicazione Esterna Inefficace/Inefficiente (\textit{Sprint} 4):} Si è registrata una forte difficoltà comunicativa con l'azienda \textbf{Proponente (Var Group)}, caratterizzata da risposte lente che hanno ritardato l'organizzazione di un incontro fondamentale per la validazione dell'\textbf{Analisi dei Requisiti}. Questo ha costretto il gruppo a dover rivalutare alcune scadenze interne, rallentando la tabella di marcia.
     \item \textbf{[RO4] Sottostima e [RO5] Sovrastima delle Attività (\textit{Sprint} 7):} Si è verificato un lieve scostamento, a livello individuale, tra le ore preventivate e quelle effettivamente impiegate per lo svolgimento delle mansioni. L'analisi retrospettiva ha inoltre evidenziato come la durata bisettimanale degli \textit{Sprint} favorisse, in alcuni casi, la tendenza a concentrare il carico di lavoro verso la fine del periodo, inficiando la qualità dei risultati e rallentando il flusso di lavoro continuo.
 \end{itemize}
 
@@ -1271,7 +1271,7 @@ Per mitigare le criticità organizzative riscontrate, il gruppo ha implementato 
     \item \textbf{Scomposizione atomica e propedeuticità:} Per risolvere il rischio \textbf{[RO1]}, a partire dallo \textit{Sprint} 2 e ulteriormente dopo lo \textit{Sprint} 3 si è imposta una scomposizione delle macro-attività in \textit{Issue} atomiche, piccole e indipendenti, fin dalla fase di pianificazione. È stato inoltre integrato l'uso dei \textit{Burndown Chart} per un monitoraggio \textit{data-driven} dell'andamento.
     \item \textbf{Flessibilità operativa (\textit{Issue} non assegnate):} Per ottimizzare i tempi e assorbire eventuali variazioni di carico, sono state introdotte le "\textit{Issue} non assegnate". I membri che terminano in anticipo i propri compiti \textbf{[RO5]} possono ora assegnarsi autonomamente nuove attività, aumentando la produttività globale.
     \item \textbf{Miglioramento dei protocolli di comunicazione esterna:} A fronte del rischio \textbf{[RO3]}, il team ha standardizzato le interazioni con il \textbf{Proponente}: le richieste critiche vengono ora formulate sempre per iscritto, i referenti aziendali vengono taggati esplicitamente su \textit{Slack} per garantire visibilità, e le richieste di incontro vengono inoltrate con largo anticipo.
-    \item \textbf{Riduzione della durata degli \textit{Sprint}:} Per contrastare i rischi \textbf{[RO4]} e \textbf{[RO5]} e mantenere alta la concentrazione, a partire dallo \textit{Sprint} 8 la durata degli sprint è stata ridotta a circa una settimana ma con amplia flessibilità nelle durate in base alle necessità del momento, questo anche per contrastare il rischio \textbf{[RO1]} avendo maggiore capacità a reagire in modo tempestivo ad errori pianificazione. 
+    \item \textbf{Riduzione della durata degli \textit{Sprint}:} Per contrastare i rischi \textbf{[RO4]} e \textbf{[RO5]} e mantenere alta la concentrazione, a partire dallo \textit{Sprint} 8 la durata degli sprint è stata ridotta a circa una settimana ma con ampia flessibilità nelle durate in base alle necessità del momento, questo anche per contrastare il rischio \textbf{[RO1]} avendo maggiore capacità a reagire in modo tempestivo ad errori di pianificazione. 
 \end{itemize}
 
 \subsection{Valutazione sui ruoli}
