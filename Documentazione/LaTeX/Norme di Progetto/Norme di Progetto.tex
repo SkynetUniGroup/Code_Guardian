@@ -19,7 +19,7 @@
 \usepackage{makecell}
 \usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
 \usepackage{hyperref}
-\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
+\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf} % Da aggiornare con nuove versioni
 \newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
 \pagestyle{fancy}
@@ -72,7 +72,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.8.1} \\ \hline
+            \textbf{Versione} & \textit{1.0.0} \\ \hline
   
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -102,6 +102,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
         0.8.1 & 2026/08/07 & Scrittura della sezione 3.2 & Marco Barbiero &  Edoardo Granziero \\ \hline
         0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  Edoardo Granziero \\ \hline
         0.7.0 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone & Samuele Bertin \\ \hline
@@ -520,9 +521,9 @@ Gli strumenti utilizzati in questo processo sono:
 
     \item \textit{TeXPage} - editor \LaTeX{} collaborativo basato su \textit{{cloud}}, utilizzato in alternativa a \textit{Overleaf} per la compilazione di documenti di grandi dimensioni, come ad esempio l'\textbf{Analisi dei Requisiti};
 
-    \item {[Nome Strumento di verifica ortografica]} - utilizzato per individuare errori ortografici e tipografici nei documenti prodotti
+    \item \textit{LanguageTool} - utilizzato per individuare errori ortografici e tipografici nei documenti prodotti
 
-    \item {[Nome Strumento per il calcolo dell'Indice di Gulpease]} - utilizzato per valutare la leggibilità dei documenti redatti in lingua italiana
+    \item \textit{Script Python custom} - utilizzato per valutare la leggibilità dei documenti redatti in lingua italiana, calcolando l'indice di \textit{\glo{Gulpease}{gulpease}}
 \end{itemize}
 
 Gli altri strumenti trasversali utilizzati anche a supporto del processo di documentazione sono descritti nella sezione \textit{4.2 Infrastruttura di Supporto}.
@@ -1122,7 +1123,7 @@ I processi di supporto sono attività trasversali che sostengono i processi prim
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MP\_10 - Indice di \textit{\glo{Gulpease}{gulpease}} \\ \hline
+\textbf{Metrica} & MP\_10 - Indice di \textit{Gulpease} \\ \hline
 \textbf{Formula} & $IG=89+\frac{300\cdot NF-10\cdot NL}{NP}$ 
 \begin{itemize}
     \item NF: Numero Frasi

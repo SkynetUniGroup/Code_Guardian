@@ -22,7 +22,7 @@
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \usepackage{longtable}
 
-\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v0.2.pdf} % Da aggiornare con nuove versioni
+\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf} % Da aggiornare con nuove versioni
 \newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
 \pagestyle{fancy}
@@ -77,9 +77,9 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.5.0} \\ \hline
+            \textbf{Versione} & \textit{1.0.0} \\ \hline
             \textbf{Uso} & \textit{Esterno} \\ \hline
-            \textbf{Redattori} & \textit{Sara Ristovic, Dario Pirrone, Edoardo Granziero} \\ \hline
+            \textbf{Redattori} & \textit{Sara Ristovic, Dario Pirrone, Edoardo Granziero, Andrea Fistarol} \\ \hline
             \textbf{Verifica} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol, Edoardo Granziero} \\ \hline
             \textbf{Approvazione} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol, Edoardo Granziero} \\ \hline
 
@@ -103,7 +103,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        
+        1.0.0 & 2026/08/13 & Correzione e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
         0.5.0 & 2026/07/22 & Stesura tabelle di test di unità e integrazione & \makecell[l]{Edoardo Granziero} & \makecell[l]{Andrea Fistarol} \\ \hline
         0.4.0 & 2026/07/14 & Stesura del capitolo 6 & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
         0.3.0 & 2026/07/08 & Verifica dettagliata del documento intero & Sara Ristovic & {Edoardo Granziero} \\ \hline
@@ -1093,10 +1093,10 @@ L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di
     \begin{tabular}{|c|c|c|}
         \hline
         \textbf{Documento} & \textbf{IG} & \textbf{Soglia accettabile} \\ \hline
-        AdR & 68 & 40 \\ \hline
-        PdP & 54 & 40 \\ \hline
-        PdQ & 57 & 40 \\ \hline
-        NdP & 59 & 40 \\ \hline
+        AdR & 66.01 & 40 \\ \hline
+        PdP & 64.34 & 40 \\ \hline
+        PdQ & 55.14 & 40 \\ \hline
+        NdP & 60.52 & 40 \\ \hline
     \end{tabular}
     \caption{Indice di Gulpease (IG) per documento}
     \label{tab:ig_documento}
@@ -1111,8 +1111,8 @@ L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di
 
 \paragraph*{MP\_10 - Indice di Gulpease (IG)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 40$):} Il vincolo è sempre rispettato. Tutti i documenti prodotti superano la soglia di tolleranza minima (registrando valori tra 54 e 68).
-    \item \textbf{Valore ottimale ($\ge 60$):} Il vincolo risulta rispettato limitatamente al documento \textbf{Analisi dei Requisiti} (AdR), che raggiunge un indice pari a 68. Per i restanti documenti (\textbf{Piano di Progetto}, \textbf{Piano di Qualifica} e \textbf{Norme di Progetto}), l'indice si attesta su valori compresi tra 54 e 59. Sebbene al di sotto della soglia di ottimalità, tali risultati descrivono un grado di leggibilità accettabile tenendo in considerazione la natura tecnica e formale dei contenuti trattati.
+    \item \textbf{Valore di accettazione ($\ge 40$):} Il vincolo è sempre rispettato. Tutti i documenti prodotti superano la soglia di tolleranza minima (registrando valori tra 55 e 66).
+    \item \textbf{Valore ottimale ($\ge 60$):} Il vincolo risulta rispettato limitatamente al documento \textbf{Analisi dei Requisiti} (AdR), che raggiunge un indice pari a circa 66. Per i restanti documenti (\textbf{Piano di Progetto}, \textbf{Piano di Qualifica} e \textbf{Norme di Progetto}), l'indice si attesta su valori compresi tra 55 e 65. Sebbene al di sotto della soglia di ottimalità, tali risultati descrivono un grado di leggibilità accettabile tenendo in considerazione la natura tecnica e formale dei contenuti trattati.
 \end{itemize}
 
 \subsection{MP\_11: Correttezza Ortografica}
