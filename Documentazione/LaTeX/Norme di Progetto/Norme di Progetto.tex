@@ -7,6 +7,7 @@
 \usepackage{geometry}
 \geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
 \usepackage{tabularx}
+\usepackage{xltabular}
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{eurosym}
@@ -95,28 +96,44 @@
 % ==========================================
 \section*{Versioni del documento}
 \markboth{Versioni del documento}{}
-\begin{table}[h]
-    \centering
-    
- \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
-        \hline
-        \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
-        0.8.1 & 2026/08/07 & Scrittura della sezione 3.2 & Marco Barbiero &  Edoardo Granziero \\ \hline
-        0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic &  Edoardo Granziero \\ \hline
-        0.7.0 & 2026/07/14 & Scrittura della sezione "Metriche per la Qualità" (5) & Dario Pirrone & Samuele Bertin \\ \hline
-        0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
-        0.6.0 & 2026/05/23 & Scrittura della sottosezione "Sviluppo" (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
-        0.5.0 & 2026/05/13 & Scrittura della sezione "Processi di Supporto" & Edoardo Granziero & Dario Pirrone \\ \hline
-        0.4.0 & 2026/05/12 & Scrittura della sottosezione "Fornitura" & Andrea Fistarol & Dario Pirrone \\ \hline
-        0.3.0 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic 
- & Marco Barbiero \\ \hline
-        0.2.0 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' &
-        Sara Ristovic & Marco Barbiero \\ \hline
-        0.1.0 & 2026/04/10 & Strutturazione iniziale del documento; Scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
-        \end{tabularx}
-\end{table}
+{\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|c|X|l|l|}
+\hline
+\textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+\endfirsthead
+
+\hline
+\textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+\endhead
+
+1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
+
+0.10.0 & 2026/08/07 & Riscrittura della sezione 3.2 & Marco Barbiero & Edoardo Granziero \\ \hline
+
+0.9.0 & 2026/07/20 & Riscrittura delle sottosezioni Verifica e Validazione & Sara Ristovic & Andrea Fistarol \\ \hline
+
+0.8.0 & 2026/07/15 & Riscrittura della sottosezione Documentazione & Sara Ristovic & Andrea Fistarol \\ \hline
+
+0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic & Edoardo Granziero \\ \hline
+
+0.7.0 & 2026/07/14 & Scrittura della sezione ``Metriche per la Qualità'' (5) & Dario Pirrone & Samuele Bertin \\ \hline
+
+0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash{} \\ \hline
+
+0.6.0 & 2026/05/23 & Scrittura della sottosezione ``Sviluppo'' (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
+
+0.5.0 & 2026/05/13 & Scrittura della sezione ``Processi di Supporto'' & Edoardo Granziero & Dario Pirrone \\ \hline
+
+0.4.0 & 2026/05/12 & Scrittura della sottosezione ``Fornitura'' & Andrea Fistarol & Dario Pirrone \\ \hline
+
+0.3.0 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic & Marco Barbiero \\ \hline
+
+0.2.0 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' & Sara Ristovic & Marco Barbiero \\ \hline
+
+0.1.0 & 2026/04/10 & Strutturazione iniziale del documento; scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
+
+\end{xltabular}
+}
 
 \newpage
 
@@ -484,6 +501,8 @@ Nel \textit{repository} \textit{Git} di progetto è disponibile un \textit{templ
 
 Su ogni documento possono lavorare più membri contemporaneamente. Per ridurre il numero di \textit{conflitti merge} da risolvere, ogni membro dovrebbe effettuare un \textit{\glo{commit}{commit}} nel \textit{repository} del progetto al completamento di ogni piccola unità di lavoro.
 
+Durante la redazione dei principali documenti di progetto, i termini che identificano concetti tecnici ed elementi specifici del progetto vanno evidenziati in grassetto, mentre i termini che indicano concetti tecnici di carattere generale, comuni al dominio dello sviluppo software, vanno evidenziati in corsivo.
+
 I documenti vengono pubblicati sul \href{https://skynetunigroup.github.io/Code_Guardian/}{sito} del gruppo. Non tutti i documenti ci sono pubblicati, ma solo quelli relativi alla milestone principale corrente (candidatura al capitolato, RTB, PB). Tutti i documenti sono comunque presenti nel \textit{repository} \textit{Git} del progetto.\\
 Le versioni pubblicate sul sito vengono aggiornate quando il gruppo lo ritiene opportuno.
 
@@ -634,15 +653,6 @@ I metodi di lettura, manuali o automatizzati, si distinguono principalmente per 
 
 L'efficacia di questi metodi dipende dall'esperienza del verificatore e dall'accuratezza degli strumenti utilizzati.
 
-Alcune tecniche di analisi statica del codice sono:
-
-\begin{itemize}
-    \item analisi del flusso di controllo,
-    \item analisi del flusso dei dati,
-    \item verifica dei limiti,
-    \item analisi dell'uso dello \textit{stack},
-    \item analisi del comportamento temporale.
-\end{itemize}
 
 \subsubsection{Analisi dinamica}
 
@@ -659,7 +669,12 @@ I test utilizzati nell'analisi dinamica devono essere ripetibili, in modo da per
 Il gruppo mira ad automatizzare il maggior numero possibile di test, così da potersi concentrare sull'analisi degli esiti, sull'individuazione e correzione degli errori e sulla loro esecuzione frequente, senza dover impiegare personale per ogni singola esecuzione.
 
 \subsubsection{Test di Unità}
+
+I test di unità servono a verificare il corretto funzionamento delle parti più piccole del software, chiamate unità, sottoponibili singolarmente al processo di verifica. Anch'essi fanno parte della progettazione dettagliata dell'architettura del software. Ogni test di unità viene implementato da un singolo \textbf{Programmatore}..
+
 \subsubsection{Test di Integrazione}
+
+I test di integrazione verificano che le varie componenti del software, le tecnologie adottate e i servizi implementati comunichino, scambino dati e interagiscano correttamente. Servono quindi a testare funzionalità di livello più alto, che richiedono la collaborazione di più componenti distinti del software.
 
 \subsection{Validazione}
 
