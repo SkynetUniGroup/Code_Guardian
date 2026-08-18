@@ -1,0 +1,1 @@
+Questa cartella ospita tutto il codice sorgente e le risorse del Minimum Viable Product.
