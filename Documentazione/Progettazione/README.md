@@ -1,0 +1,1 @@
+Questa cartella ospita la documentazione progettuale, per uso interno.
