@@ -410,17 +410,68 @@ Il ciclo di progettazione di \textbf{SkyNet} viene affrontato in modo incrementa
 Al fine di garantire che nessuna funzionalità venga tralasciata e che non venga introdotto codice superfluo, \textbf{SkyNet} adotta una rigorosa strategia di tracciamento bidirezionale. Ogni componente software, classe o modulo descritto nella progettazione deve essere esplicitamente associato a uno o più requisiti individuati durante l'analisi. Questo processo permette di verificare costantemente la copertura dei requisiti e facilita l'analisi dell'impatto delle modifiche durante l'evoluzione del sistema.
 
 \subsubsection{Codifica}
+La codifica è la fase in cui i \textbf{\glo{Programmatori}{programmatore}} implementano le specifiche architetturali, rispettando rigorosamente le seguenti norme per garantire manutenibilità, leggibilità e qualità.
 
-La codifica è la fase in cui i \textbf{\glo{Programmatori}{programmatore}} implementano le specifiche architetturali, realizzando concretamente il codice sorgente del prodotto software richiesto.
-Durante lo sviluppo, è richiesto il rigoroso rispetto delle norme stilistiche concordate dal gruppo. Ogni nuova unità software o modifica deve essere opportunamente commentata e integrata nel \textit{repository} tramite la procedura di \textit{\glo{Pull Request}{pull-request}}.
+%Ogni nuova unità software o modifica deve essere opportunamente commentata e integrata nel %\textit{repository} tramite la procedura di \textit{\glo{Pull Request}{pull-request}}.
 
-\paragraph{Stile di Codifica}
-Per garantire un codice leggibile, facilmente manutenibile e ispezionabile dagli strumenti di \textit{\glo{analisi statica}{analisi-statica}}, sono state definite le seguenti convenzioni:
+\paragraph{Lingua} \textbf{Inglese}, inclusi nomi, commenti, \textit{UI} e \textit{logging}.
+
+\paragraph{Convenzioni di Nomenclatura} Tutti i nomi devono essere \textbf{descrittivi} dell'oggetto che rappresentano e \textbf{univoci} nel loro contesto.
+
+\subparagraph{\textit{TypeScript}}
 \begin{itemize}
-    \item \textbf{Nomenclatura dei File:} i file devono avere nome univoco ed esplicativo del contenuto del file stesso;
-    \item \textbf{Nomenclatura di Variabili e Funzioni:} i nomi devono essere autodescrittivi, scritti in lingua inglese e formattati tutti in minuscolo e con underscore tra parole.
-    \item \textbf{Nomenclatura delle Classi:} come per le variabili, i nomi sono in lingua inglese ma utilizzano la convenzione di avere iniziale maiuscola per ogni parola.
-    \item \textbf{Commenti:} l'uso di commenti strutturati è obbligatorio per ogni classe o funzione non banale, i commenti devono essere redatti in lingua inglese.
+    \item File: \texttt{kebab-case}
+    \item Variabili e Funzioni: \texttt{camelCase}
+    \item Classi e Tipi: \texttt{PascalCase}
+    \item Interfacce: \texttt{IPascalCase}
+    \item Costanti: \texttt{UPPER\_SNAKE\_CASE}
+\end{itemize}
+
+\subparagraph{\textit{Python}}
+\begin{itemize}
+    \item File, Variabili e Funzioni: \texttt{snake\_case}
+    \item Classi e Tipi: \texttt{PascalCase}
+    \item Costanti: \texttt{UPPER\_SNAKE\_CASE}
+\end{itemize}
+
+\paragraph{Formattazione}
+\begin{itemize}
+    \item Indentazione: 2 spazi per \textit{TS}, 4 spazi per \textit{Python}.
+    \item Lunghezza massima della riga: 100 caratteri.
+    \item Virgolette: doppie per stringhe in \textit{TS}, singole per \textit{Python}.
+    \item Punto e virgola a fine riga: sempre in \textit{TS}, mai in \textit{Python}.
+\end{itemize}
+
+\newpage
+\paragraph{Gestione Errori}
+\begin{itemize}
+    \item Eccezioni specifiche con messaggi chiari e descrittivi.
+    \item \textit{Logging}: 
+    \begin{itemize}
+        \item Livelli standard: \texttt{DEBUG}, \texttt{INFO}, \texttt{WARNING}, \texttt{ERROR}, \texttt{CRITICAL}.
+        \item Formato: \texttt{[TIMESTAMP] [LEVEL] [MODULE] Message}.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Commenti e Documentazione}
+\begin{itemize}
+    \item \textit{Docstring} obbligatorie per tutte le funzioni o classi pubbliche, in formato \textit{Google} per \textit{Python} e \textit{JSDoc} per \textit{TS}.
+    \item Commenti inline \textbf{solo} per logiche particolarmente complesse o non ovvie.
+\end{itemize}
+
+\paragraph{Struttura dei File}
+\begin{itemize}
+    \item Ordine: \texttt{import} \textrightarrow tipi \textrightarrow costanti \textrightarrow classi \textrightarrow funzioni.
+    \item Una classe o funzione principale per file, raggruppando per responsabilità.
+    \item La lunghezza del file non dovrebbe superare le 500 righe.
+\end{itemize}
+
+\paragraph{Strumenti}
+\begin{itemize}
+    \item \textit{IDE}: \textit{VS Code}, consigliato.
+    \item \textit{Linter}: \textit{Biome} (\textit{TS}), \textit{Pylint} (\textit{Python}).
+    \item \textit{Formatter}: \textit{Biome} (\textit{TS}), \textit{Black} (\textit{Python}).
+    \item Analisi Statica: \textit{SonarQube}.
 \end{itemize}
 
 \newpage
@@ -586,6 +637,7 @@ Per la gestione e il tracciamento delle differenti versioni degli artefatti, il 
     \item \textbf{\textit{GitHub Actions}}: utilizzato per automatizzare il \textit{deploy} della documentazione e del sito del gruppo su \textit{GitHub Pages} ad ogni aggiornamento del ramo principale.
 \end{itemize}
 
+\newpage
 \subsubsection{Struttura Repository}
 \paragraph{Repository utilizzato}\mbox{}\\
 Il \textit{repository} ufficiale del gruppo è pubblico ed è raggiungibile al seguente indirizzo:
@@ -593,14 +645,81 @@ Il \textit{repository} ufficiale del gruppo è pubblico ed è raggiungibile al s
     \url{https://github.com/SkynetUniGroup/Code_Guardian}
 \end{center}
 
-\paragraph{Organizzazione dei rami}\mbox{}\\
+\paragraph{Organizzazione dei rami}~\\
 L'organizzazione del \textit{repository} si ispira al modello \textit{GitHub Flow} ed è così articolata:
+\subparagraph{Rami Principali}
 \begin{itemize}
-    \item \textbf{\texttt{main}}: ramo principale contenente esclusivamente artefatti (codice e documentazione) approvati da almeno un \textbf{Verificatore} e dal \textbf{Responsabile}. Ogni stato del ramo \texttt{main} rappresenta una configurazione stabile del progetto;
-    \item \textbf{Rami secondari}: rami creati a partire da \texttt{main} per lo sviluppo di uno specifico compito o componente. Al termine della lavorazione, le relative modifiche vengono proposte tramite \textit{Pull Request} e, una volta approvate da un \textbf{Verificatore}, integrate (\textit{merge}) nel ramo \texttt{main}. I rami secondari vengono mantenuti nel \textit{repository} anche dopo il \textit{merge}, così da conservare la tracciabilità del lavoro svolto.
+    \item \textbf{\texttt{main}}: ramo contenente esclusivamente artefatti (codice e documentazione) approvati da almeno un \textbf{Verificatore} e dal \textbf{Responsabile}. Ogni stato del ramo \texttt{main} rappresenta una configurazione stabile del progetto.
+    \item \texttt{develop}: ramo di sviluppo, contiene le \textit{feature} completate e testate, confluite dai rami secondari.
 \end{itemize}
-Ogni \textit{commit} deve avere un messaggio conciso e significativo che ne descriva il contenuto. Per ridurre i \textit{conflitti} in fase di \textit{merge}, ogni membro dovrebbe effettuare un \textit{commit} al completamento di ogni piccola unità di lavoro.
-\paragraph{Organizzazione delle cartelle}\mbox{}\\
+
+\subparagraph{Rami secondari}
+\begin{itemize}
+    \item \texttt{feature}
+    \begin{itemize}
+        \item Nome: \texttt{feature/[ID\_ISSUE]-[descrizione-breve-in-kebab-case]}.
+        \item Origine: \texttt{develop}.
+        \item Scopo: sviluppare e testare una nuova funzionalità isolatamente.
+        \item \textit{Merge}: in \texttt{develop} tramite \textit{Pull Request}.
+        \item Durata massima: 2 settimane. Se più lunga, suddividere in sotto-compiti.
+    \end{itemize}
+    \item \texttt{release}
+    \begin{itemize}
+        \item Nome: \texttt{release/[VERSIONE]}.
+        \item Origine: \texttt{develop}.
+        \item Scopo: preparazione del rilascio (test finali, bugfix minori...).
+        \item \textit{Merge}: in \texttt{main} e \texttt{develop} tramite \textit{Pull Request}.
+        \item Tag: creare un \textit{tag} \texttt{v[VERSIONE]} su \texttt{main} dopo il \textit{merge}.
+    \end{itemize}
+    \item \texttt{hotfix}
+    \begin{itemize}
+        \item Nome: \texttt{hotfix/[ID\_ISSUE]-[descrizione-breve-sempre-in-kebab-case]}.
+        \item Origine: \texttt{main}.
+        \item Scopo: correzione di bug critici in produzione.
+        \item \textit{Merge}: in \texttt{main} e \texttt{develop} tramite \textit{Pull Request}.
+        \item \textit{Tag}: create un \textit{tag} \texttt{v[VERSIONE]-hotfix[INCREMENTO]} su \texttt{main} dopo il \textit{merge}.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Regole di \textit{Commit}}~\\
+Viene adottato lo standard \textit{Conventional Commits}, che prescrive la seguente forma per i \textit{commit}:
+\begin{center}
+    [tipo](obbiettivo): descrizione della modifica
+\end{center}
+dove il tipo è uno dei seguenti:
+\begin{itemize}
+    \item \texttt{feat}: aggiunta di nuove funzionalità.
+    \item \texttt{fix}: correzione di bug.
+    \item \texttt{docs}: modifiche alla documentazione.
+    \item \texttt{style}: modifiche alla formattazione o allo stile.
+    \item \texttt{refactor}: modifiche alla struttura del codice che non cambiano il comportamento.
+    \item \texttt{test}: aggiunta o modifica di test.
+    \item \texttt{chore}: modifiche a configurazioni, dipendenze o \textit{script} di \textit{build}.
+\end{itemize}
+e l'obbiettivo è il modulo o il componente interessato.
+
+\paragraph{Regole per le \textit{Pull Request}}
+\begin{itemize}
+    \item Titolo: \texttt{[Tipo] [Scope]: [Descrizione]}.
+    \item Descrizione: \textit{link} all'\textit{issue}, motivazione, \textit{screenshot} (se \textit{UI}), lista delle modifiche.
+    \item Revisione: almeno un \textbf{Verificatore} e il \textbf{Responsabile}.
+    \item Controlli obbligatori:
+    \begin{itemize}
+        \item Tutti i test superati.
+        \item Esame del \textit{linter} passato.
+        \item Copertura dei test superiore alla soglia minima.
+    \end{itemize}
+    \item \textit{Merge}: \textit{squash and merge} per rami \texttt{feature}, \textit{merge commit} per \texttt{release/hotfix}.
+\end{itemize}
+
+\paragraph{Sincronizzazione}
+\begin{itemize}
+    \item \texttt{develop} deve essere sempre aggiornato con \texttt{main}.
+    \item \textit{Merge} regolare (settimanale) di \texttt{main} in \texttt{develop}.
+    \item Rami \texttt{feature}: rebasing frequente su \texttt{develop} per evitare conflitti.
+\end{itemize}
+
+\paragraph{Organizzazione delle cartelle}
 Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e file principali:
 \begin{itemize}
     \item \textbf{\texttt{Documentazione/}}: contiene tutta la documentazione del progetto, suddivisa in:
@@ -616,6 +735,96 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
     \item \textbf{\texttt{README.md}} e \textbf{\texttt{LICENSE}}: rispettivamente la descrizione del \textit{repository} e la licenza (\textit{MIT}) con cui è distribuito il progetto;
     \item \textbf{\texttt{.gitignore}}: file configurato per escludere dal tracciamento i file di sistema generati automaticamente dai sistemi operativi (es. \texttt{.DS\_Store}, \texttt{desktop.ini}).
 \end{itemize}
+
+\newpage
+\subsubsection{Strumenti di Build}
+\paragraph{Gestione dipendenze}
+\begin{itemize}
+    \item \textit{pnpm}: comandi \texttt{pnpm install}, \texttt{pnpm add [package]}, \texttt{pnpm remove [package]}.
+    \item \textit{Lockfile}: \texttt{pnpm-lock.yaml} da "committare". \textbf{Mai} modificarlo manualmente.
+    \item \textit{Workspace}: struttura monorepo con \texttt{pnpm-workspace.yaml}.
+\end{itemize}
+
+\paragraph{\textit{Bundling} e \textit{Dev Server}}
+\begin{itemize}
+    \item \textit{Vite}: configurazione in \texttt{vite.config.ts}.
+    \begin{itemize}
+        \item Motori: \textit{Oxc} (\textit{transpiling}), \textit{Rolldown} (\textit{bundling}).
+    \end{itemize}
+    \item \textit{Script}: \texttt{pnpm dev} (avvio \textit{dev server}), \texttt{pnpm build} (\textit{build} produzione).
+    \item \textit{Output}: \texttt{/dist}. Escludere da \textit{Git} via \texttt{.gitignore}.
+\end{itemize}
+
+\paragraph{\textit{Pipeline CI/CD}}
+\begin{itemize}
+    \item Strumento: \textit{GitHub Actions}. File di configurazione in \texttt{.github/workflows/}.
+    \item \textit{Workflow principali}: \texttt{.github/workflows/ci.yml}.
+    \begin{enumerate}
+        \item Pull Request Check (\texttt{pr-check.yml})
+        \begin{itemize}
+            \item Trigger: \textit{Pull Request} su qualsiasi \textit{branch}.
+            \item Fasi:
+            \begin{enumerate}
+                \item Checkout codice.
+                \item Setup Node.js/Python.
+                \item Installazione dipendenze (\texttt{pnpm install}).
+                \item \textit{Linting} (\texttt{pnpm lint} con \textit{Biome}).
+                \item Test unitari (\texttt{pnpm test:unit}).
+                \item Test di integrazione (\texttt{pnpm test:integration}).
+                \item \textit{Build} (\texttt{pnpm build}).
+            \end{enumerate}
+            \item Requisiti per il \textit{merge}: tutte le fasi devono passare.
+        \end{itemize}
+        \item Deploy Staging (\texttt{deploy-staging.yml})
+        \begin{itemize}
+            \item Trigger: push su \texttt{develop}.
+            \item Fasi: 1-5) Stesse di Pull Request Check. 6) Deploy su GitHub Pages.
+            \item Artefatti: salvati in \texttt{/dist}.
+        \end{itemize}
+        \item Release Production (\texttt{release.yml})
+        \begin{itemize}
+            \item Trigger: \textit{push tag} \texttt{v*} su \texttt{main}.
+            \item Fasi:
+            \begin{enumerate}
+                \item Checkout codice.
+                \item Setup ambienti.
+                \item Installazione dipendenze.
+                \item \textit{Linting}.
+                \item Test unitari.
+                \item Test di integrazione.
+                \item \textit{Build}.
+                \item \textit{Deployment} su \textit{AWS}.
+            \end{enumerate}
+            \item Artefatti: build e tag di rilascio.
+        \end{itemize}
+    \end{enumerate}
+    \item Variabili d'ambiente
+    \begin{itemize}
+        \item \texttt{NODE\_ENV}: \texttt{test} per PR Check, \texttt{production} per Release.
+        \item Segreti: \texttt{GITHUB\_TOKEN}, \texttt{AWS\_ACCESS\_KEY\_ID}, \texttt{AWS\_SECRET\_ACCESS\_KEY}.
+    \end{itemize}
+    \item Artefatti
+    \begin{itemize}
+        \item \textit{Build} salvate per 7 gg in \textit{GitHub Actions}.
+        \item \textit{Log} conservati per 30 gg.
+    \end{itemize}
+\end{itemize}
+
+\newpage
+\paragraph{Script \textit{npm} (in \textit{.json})}
+\begin{verbatim}
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test:unit": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "lint": "biome check ./src",
+    "lint:fix": "biome check --apply ./src",
+    "format": "biome format --write ./src"
+  }
+}
+\end{verbatim}
 
 \subsection{Verifica}
 
@@ -670,12 +879,105 @@ Il gruppo mira ad automatizzare il maggior numero possibile di test, così da po
 
 \subsubsection{Test di Unità}
 
-I test di unità servono a verificare il corretto funzionamento delle parti più piccole del software, chiamate unità, sottoponibili singolarmente al processo di verifica. Anch'essi fanno parte della progettazione dettagliata dell'architettura del software. Ogni test di unità viene implementato da un singolo \textbf{Programmatore}..
+I test di unità servono a verificare il corretto funzionamento delle parti più piccole del software, chiamate unità, sottoponibili singolarmente al processo di verifica. Anch'essi fanno parte della progettazione dettagliata dell'architettura del software. Ogni test di unità viene implementato da un singolo \textbf{Programmatore}.
 
+\paragraph{Framework}
+\begin{itemize}
+    \item \textit{TypeScript}: \textit{Vitest}. Configurazione in \texttt{vite.config.ts}.
+    \item \textit{Python}: \textit{pytest}. Configurazione in \texttt{pytest.ini}.
+\end{itemize}
+
+\paragraph{Copertura Minima}
+\begin{itemize}
+    \item 75\% globale.
+    \item Misurata con \textit{V8 (Vitest)} e \texttt{pytest-cov}).
+\end{itemize}
+
+\paragraph{Convenzioni}
+\begin{itemize}
+    \item Nome file di test:
+    \begin{itemize}
+        \item \textit{TypeScript}: \texttt{[nome\_modulo].test.ts o [nome\_modulo].spec.ts}.
+        \item \textit{Python}: \texttt{test\_[nome\_modulo].py}.
+    \end{itemize}
+    \item Nome dei test:
+    \begin{itemize}
+        \item \textit{TypeScript}: \texttt{describe("[modulo]", ()=>\{it("[scenario]", ()=>\{...\})}
+        \item \textit{Python}: \texttt{test\_[funzione]\_[scenario]}.
+    \end{itemize}
+    \item Struttura: \textit{AAA pattern} (Arrange-Act-Assert).
+\end{itemize}
+
+\paragraph{Casi di test obbligatori}
+\begin{itemize}
+    \item Input validi e invalidi.
+    \item Valori limite.
+    \item Eccezioni attese.
+    \item Casi limite specifici del dominio (es. token scaduto, formato non valido).
+\end{itemize}
+
+\paragraph{\textit{Mocking}}
+\begin{itemize}
+    \item \textit{TypeScript}: integrato in \textit{Vitest} (es. \texttt{vi.fn()}, \texttt{vi.mock()}).
+    \item \textit{Python}: \texttt{unittest.mock}
+\end{itemize}
+
+\paragraph{Automazione}
+\begin{itemize}
+    \item Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} ad ogni \textit{push} su \texttt{main}/ \texttt{develop}.
+    \item Script per test locali:
+    \begin{itemize}
+        \item \textit{TypeScript}: 
+        \begin{verbatim}        
+        "scripts": {
+            "test:unit": "vitest run",
+            "test:unit:coverage": "vitest run --coverage",
+            "test:unit:watch": "vitest"
+        }
+        \end{verbatim}
+        \item \textit{Python}:
+        \begin{verbatim}
+        "scripts": {
+            "test:unit": "pytest tests/unit",
+            "test:unit:coverage": "pytest --cov=src tests/unit"
+         }
+        \end{verbatim}
+    \end{itemize}
+\end{itemize}
+
+\newpage
 \subsubsection{Test di Integrazione}
 
 I test di integrazione verificano che le varie componenti del software, le tecnologie adottate e i servizi implementati comunichino, scambino dati e interagiscano correttamente. Servono quindi a testare funzionalità di livello più alto, che richiedono la collaborazione di più componenti distinti del software.
 
+\paragraph{Framework} \textit{Vitest} e \textit{pytest}.
+
+\paragraph{Ambiente}
+\begin{itemize}
+    \item \textit{Docker} per servizi esterni (\textit{MongoDB}, \textit{API mock}).
+    \item Variabili d'ambiente: prefisso \texttt{TEST\_}.
+\end{itemize}
+
+\paragraph{Casi di test}
+\begin{itemize}
+    \item Interazione tra moduli.
+    \item Flussi end-to-end (es. "Utente richiede audit\textrightarrow agente elabora\textrightarrow report salvato in DB").
+    \item Integrazione con API esterne.
+\end{itemize}
+
+\paragraph{Dati di Test}
+\begin{itemize}
+    \item \textit{Fixture}: file in \texttt{tests/fixtures/}.
+    \item Pulizia: reset DB tra test (es. \texttt{pytest-mongodb} \textit{fixture}).
+\end{itemize}
+
+\paragraph{Esecuzione}
+\begin{itemize}
+    \item Locale: \texttt{pnpm test::integration}
+    \item \textit{CI}: in \textit{workflow} separato dai test d'unità.
+\end{itemize}
+
+\newpage
 \subsection{Validazione}
 
 La validazione avviene nelle fasi finali del progetto e ha lo scopo di accertare che il prodotto realizzato sia conforme alle aspettative. In particolare, verifica che il prodotto software sia adeguato all'uso previsto e sia in grado di soddisfare i bisogni degli utenti finali.
