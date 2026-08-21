@@ -105,7 +105,6 @@
 \hline
 \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
 \endhead
-
 1.0.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & Marco Barbiero & Dario Pirrone \\ \hline
 
 1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
@@ -214,15 +213,15 @@ I termini evidenziati in grassetto identificano concetti tecnici ed elementi spe
 
 \begin{itemize}
 \item
-  \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf}{\textbf{Glossario} v1.0.0}
+ \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf}{\textbf{Glossario} v1.0.0}
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2009/Approfondimenti/ISO_12207-1995.pdf}{Standard \textit{ISO/IEC 12207:1995}} (consultato il 13/08/2026)
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T02.pdf}{Slide T02 dell'insegnamento Ingegneria del Software (Processi di Ciclo di Vita)} (consultato il 13/08/2026)
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T02.pdf}{Slide T02 del corso Ingegneria del Software (Processi di Ciclo di Vita)} (consultato il 13/08/2026)
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T03.pdf}{Slide T03 del corso Ingegneria del Software (Il Ciclo di Vita del SW)} (consultato il 13/08/2026)
 \item
-  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{Slide T04 dell'insegnamento Ingegneria del Software (Gestione di Progetto)} (consultato il 13/08/2026)
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T04.pdf}{Slide T04 del corso Ingegneria del Software (Gestione di Progetto)} (consultato il 13/08/2026)
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/T07.pdf}{Slide T07 del corso Ingegneria del Software (Qualità del Software)} (consultato il 13/08/2026)
 \item
@@ -647,7 +646,7 @@ Il \textit{repository} ufficiale del gruppo è pubblico ed è raggiungibile al s
 \end{center}
 
 \paragraph{Organizzazione dei rami}~\\
-L'organizzazione del \textit{repository} si ispira al modello \textit{GitHub Flow} ed è così articolata:
+L'organizzazione del \textit{repository} si ispira al modello \textit{Git Flow} ed è così articolata:
 \subparagraph{Rami Principali}
 \begin{itemize}
     \item \textbf{\texttt{main}}: ramo contenente esclusivamente artefatti (codice e documentazione) approvati da almeno un \textbf{Verificatore} e dal \textbf{Responsabile}. Ogni stato del ramo \texttt{main} rappresenta una configurazione stabile del progetto.
@@ -759,27 +758,27 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
 \paragraph{\textit{Pipeline CI/CD}}
 \begin{itemize}
     \item Strumento: \textit{GitHub Actions}. File di configurazione in \texttt{.github/workflows/}.
-    \item \textit{Workflow principali}: \texttt{.github/workflows/ci.yml}.
+    \item \textit{Workflow principali}
     \begin{enumerate}
         \item Pull Request Check (\texttt{pr-check.yml})
         \begin{itemize}
             \item Trigger: \textit{Pull Request} su qualsiasi \textit{branch}.
             \item Fasi:
             \begin{enumerate}
-                \item Checkout codice.
+                \item \textit{Checkout} codice.
                 \item Setup Node.js/Python.
-                \item Installazione dipendenze (\texttt{pnpm install}).
-                \item \textit{Linting} (\texttt{pnpm lint} con \textit{Biome}).
-                \item Test unitari (\texttt{pnpm test:unit}).
-                \item Test di integrazione (\texttt{pnpm test:integration}).
-                \item \textit{Build} (\texttt{pnpm build}).
+                \item Installazione dipendenze.
+                \item \textit{Linting}.
+                \item Test unitari.
+                \item Test di integrazione.
+                \item \textit{Build}.
             \end{enumerate}
             \item Requisiti per il \textit{merge}: tutte le fasi devono passare.
         \end{itemize}
         \item Deploy Staging (\texttt{deploy-staging.yml})
         \begin{itemize}
-            \item Trigger: push su \texttt{develop}.
-            \item Fasi: 1-5) Stesse di Pull Request Check. 6) Deploy su GitHub Pages.
+            \item Trigger: \textit{push} su \texttt{develop}.
+            \item Fasi: 1-6) Stesse di \textit{Pull Request Check}. 7) \textit{Deploy} su \textit{GitHub Pages}.
             \item Artefatti: salvati in \texttt{/dist}.
         \end{itemize}
         \item Release Production (\texttt{release.yml})
@@ -787,7 +786,7 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
             \item Trigger: \textit{push tag} \texttt{v*} su \texttt{main}.
             \item Fasi:
             \begin{enumerate}
-                \item Checkout codice.
+                \item \textit{Checkout} codice.
                 \item Setup ambienti.
                 \item Installazione dipendenze.
                 \item \textit{Linting}.
@@ -812,20 +811,6 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
 \end{itemize}
 
 \newpage
-\paragraph{Script \textit{npm} (in \textit{.json})}
-\begin{verbatim}
-{
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "test:unit": "vitest run --coverage",
-    "test:integration": "vitest run --config vitest.integration.config.ts",
-    "lint": "biome check ./src",
-    "lint:fix": "biome check --apply ./src",
-    "format": "biome format --write ./src"
-  }
-}
-\end{verbatim}
 
 \subsection{Verifica}
 
@@ -926,24 +911,6 @@ I test di unità servono a verificare il corretto funzionamento delle parti più
 \paragraph{Automazione}
 \begin{itemize}
     \item Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} ad ogni \textit{push} su \texttt{main}/ \texttt{develop}.
-    \item Script per test locali:
-    \begin{itemize}
-        \item \textit{TypeScript}: 
-        \begin{verbatim}        
-        "scripts": {
-            "test:unit": "vitest run",
-            "test:unit:coverage": "vitest run --coverage",
-            "test:unit:watch": "vitest"
-        }
-        \end{verbatim}
-        \item \textit{Python}:
-        \begin{verbatim}
-        "scripts": {
-            "test:unit": "pytest tests/unit",
-            "test:unit:coverage": "pytest --cov=src tests/unit"
-         }
-        \end{verbatim}
-    \end{itemize}
 \end{itemize}
 
 \newpage
@@ -974,7 +941,7 @@ I test di integrazione verificano che le varie componenti del software, le tecno
 
 \paragraph{Esecuzione}
 \begin{itemize}
-    \item Locale: \texttt{pnpm test::integration}
+    \item Locale: \texttt{pnpm test:integration}
     \item \textit{CI}: in \textit{workflow} separato dai test d'unità.
 \end{itemize}
 
