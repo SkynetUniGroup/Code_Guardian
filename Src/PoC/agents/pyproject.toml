@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code_guardian_agents"
+version = "1.0.0"
+description = "Servizio agenti Python per Code Guardian (FastAPI + LangGraph)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.1",
+    "langgraph>=0.0.26",
+    "langchain-anthropic>=0.1.4",
+    "langchain-openai>=0.1.1",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0.1",
+    "redis>=5.0.0",  
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio",
+    "ruff>=0.3.0",
+]
