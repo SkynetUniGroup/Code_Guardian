@@ -73,8 +73,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.0.1} \\ \hline
-  
+            \textbf{Versione} & \textit{1.1.0} \\ \hline  
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic, Marco Barbiero} \\ \hline
@@ -105,34 +104,21 @@
 \hline
 \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
 \endhead
+1.1.0 & 2026/08/21 & Ampliate e riviste le sezioni Codifica, Struttura Repository, Test di Unità e Test di Integrazione; creata la sezione Strumenti di Build & Andrea Fistarol & Marco Barbiero \\ \hline
 1.0.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & Marco Barbiero & Dario Pirrone \\ \hline
-
 1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
-
 0.10.0 & 2026/08/07 & Riscrittura della sezione 3.2 & Marco Barbiero & Edoardo Granziero \\ \hline
-
 0.9.0 & 2026/07/20 & Riscrittura delle sottosezioni Verifica e Validazione & Sara Ristovic & Andrea Fistarol \\ \hline
-
 0.8.0 & 2026/07/15 & Riscrittura della sottosezione Documentazione & Sara Ristovic & Andrea Fistarol \\ \hline
-
 0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic & Edoardo Granziero \\ \hline
-
 0.7.0 & 2026/07/14 & Scrittura della sezione ``Metriche per la Qualità'' (5) & Dario Pirrone & Samuele Bertin \\ \hline
-
 0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash{} \\ \hline
-
 0.6.0 & 2026/05/23 & Scrittura della sottosezione ``Sviluppo'' (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
-
 0.5.0 & 2026/05/13 & Scrittura della sezione ``Processi di Supporto'' & Edoardo Granziero & Dario Pirrone \\ \hline
-
 0.4.0 & 2026/05/12 & Scrittura della sottosezione ``Fornitura'' & Andrea Fistarol & Dario Pirrone \\ \hline
-
 0.3.0 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic & Marco Barbiero \\ \hline
-
 0.2.0 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' & Sara Ristovic & Marco Barbiero \\ \hline
-
 0.1.0 & 2026/04/10 & Strutturazione iniziale del documento; scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
-
 \end{xltabular}
 }
 
@@ -639,7 +625,7 @@ Per la gestione e il tracciamento delle differenti versioni degli artefatti, il 
 
 \newpage
 \subsubsection{Struttura Repository}
-\paragraph{Repository utilizzato}\mbox{}\\
+\paragraph{Repository utilizzato}~\\
 Il \textit{repository} ufficiale del gruppo è pubblico ed è raggiungibile al seguente indirizzo:
 \begin{center}
     \url{https://github.com/SkynetUniGroup/Code_Guardian}
@@ -659,7 +645,7 @@ L'organizzazione del \textit{repository} si ispira al modello \textit{Git Flow} 
     \begin{itemize}
         \item Nome: \texttt{feature/[ID\_ISSUE]-[descrizione-breve-in-kebab-case]}.
         \item Origine: \texttt{develop}.
-        \item Scopo: sviluppare e testare una nuova funzionalità isolatamente.
+        \item Scopo: sviluppare e testare una nuova funzionalità isolatamente, senza interferire con il lavoro degli altri membri del team.
         \item \textit{Merge}: in \texttt{develop} tramite \textit{Pull Request}.
         \item Durata massima: 2 settimane. Se più lunga, suddividere in sotto-compiti.
     \end{itemize}
@@ -876,7 +862,7 @@ I test di unità servono a verificare il corretto funzionamento delle parti più
 \paragraph{Copertura Minima}
 \begin{itemize}
     \item 75\% globale.
-    \item Misurata con \textit{V8 (Vitest)} e \texttt{pytest-cov}).
+    \item Misurata con \textit{V8 (Vitest)} e \texttt{pytest-cov}.
 \end{itemize}
 
 \paragraph{Convenzioni}
@@ -910,7 +896,7 @@ I test di unità servono a verificare il corretto funzionamento delle parti più
 
 \paragraph{Automazione}
 \begin{itemize}
-    \item Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} ad ogni \textit{push} su \texttt{main}/ \texttt{develop}.
+    \item Esecuzione con \texttt{pnpm test:unit} in \textit{CI/CD} tramite \textit{GitHub Actions} ad ogni \textit{push} (\textit{workflow} \texttt{deploy-staging.yml}) o \textit{Pull Request} (\textit{workflow} \texttt{pr-check.yml}) su \texttt{develop}.
 \end{itemize}
 
 \newpage
@@ -922,7 +908,7 @@ I test di integrazione verificano che le varie componenti del software, le tecno
 
 \paragraph{Ambiente}
 \begin{itemize}
-    \item \textit{Docker} per servizi esterni (\textit{MongoDB}, \textit{API mock}).
+    \item \textit{Docker Compose} per servizi esterni (\textit{MongoDB}, \textit{API mock}).
     \item Variabili d'ambiente: prefisso \texttt{TEST\_}.
 \end{itemize}
 
@@ -942,7 +928,7 @@ I test di integrazione verificano che le varie componenti del software, le tecno
 \paragraph{Esecuzione}
 \begin{itemize}
     \item Locale: \texttt{pnpm test:integration}
-    \item \textit{CI}: in \textit{workflow} separato dai test d'unità.
+    \item \textit{CI}: Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} come parte dei \textit{workflow} \texttt{pr-check.yml} (\textit{Pull Request}) e \texttt{deploy-staging.yml} (\textit{push} su \texttt{develop}), insieme ai test unitari.
 \end{itemize}
 
 \newpage
