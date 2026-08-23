@@ -9,43 +9,34 @@ jobs:
     steps:
       - name: Checkout codice
         uses: actions/checkout@v4
-        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-          
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          
       - name: Install dipendenze
         run: pnpm install
-        
       - name: Linting
         run: pnpm lint
-        
       - name: Test unitari
         run: pnpm test:unit
-        
       - name: Test di integrazione
         run: |
           docker-compose -f docker-compose.test.yml up -d
           pnpm test:integration
           docker-compose -f docker-compose.test.yml down
-          
       - name: Build
         run: pnpm build
-        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-south-1
-          
       - name: Deploy frontend su S3
         run: |
           aws s3 sync ./dist s3://code-guardian-frontend --delete
