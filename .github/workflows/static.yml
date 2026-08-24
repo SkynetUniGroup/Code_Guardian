@@ -26,12 +26,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurazione Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          python-version: '3.13'
 
       # STEP 1: Prepariamo la cartella del sito copiando la documentazione
       - name: Includi Documentazione nel sito
@@ -66,15 +66,15 @@ jobs:
           fi
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       # STEP 4: Caricamento dell'artifact (la cartella Website)
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: './Website'
 
       # STEP 5: Deploy effettivo sui server GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
