@@ -101,11 +101,7 @@ Key points to keep in mind when working on this codebase:
 - **Docker** and **Docker Compose v2** (the `docker compose` CLI plugin) — this is all
   you need to run the whole stack.
 - **Python 3.12**, only if you want to run the agents' pytest suite locally (see
-  [Running the automated tests](#running-the-automated-tests)). Newer versions (tested
-  with 3.14) also work fine.
-- **Node.js 20+** (LTS recommended), only if you want to run the backend or frontend
-  test suites directly on your machine instead of through Docker — see below. Not
-  needed just to run the app via `docker compose up`.
+  [Running the automated tests](#running-the-automated-tests)).
 - A **GitHub Personal Access Token** with **read-only** access (classic PAT with the
   minimal read scopes on `repo`, or a fine-grained PAT with read-only `Contents` and
   `Issues` permissions) — needed to actually run an agent against a real repository.
@@ -181,44 +177,36 @@ docker compose down -v       # also wipe MongoDB data
 
 ## Running the automated tests
 
-> Looking for **what** each test suite actually verifies and what results to expect,
-> rather than the commands to run them? See [`TESTING.md`](TESTING.md).
-
 The commands below assume the stack is already up:
 
 ```bash
 docker compose up -d
 ```
 
-### Backend tests (Jest)
+### Backend tests (Jest) — run inside the running `backend` container
 
-The **unit suite** mocks every external dependency (GitHub client, LLM/agent gateway,
-MongoDB models) and needs no running service at all, so the simplest way to run it is
-directly on your machine:
-
-```bash
-cd backend
-npm install
-npm run test         # unit tests
-npm run test:cov     # unit tests with a coverage report
-npm run test:watch   # watch mode
-```
-
-The **end-to-end suite** (`test/end-to-end.spec.ts`) is different: it boots the real
-`AppModule` and genuinely needs a reachable MongoDB and Redis (GitHub and the agent
-gateway are still mocked inside the test itself, so no real GitHub token or LLM key is
-required). The easiest way to get those is to run it inside the `backend` container,
-which is already wired to the `mongo`/`redis` services over the Docker network:
+The `backend` container is already configured with the `MONGO_URI` / `REDIS_URL` it
+needs (pointing at the `mongo` and `redis` services over the Docker network), so you can
+run every backend test suite directly inside it, with **no changes to `.env`** at all:
 
 ```bash
-docker compose up -d mongo redis backend
-docker compose exec backend pnpm run test:e2e
+docker compose exec backend pnpm run test         # unit tests
+docker compose exec backend pnpm run test:cov     # unit tests with coverage report
+docker compose exec backend pnpm run test:e2e     # end-to-end suite (test/end-to-end.spec.ts)
 ```
 
-> If you'd rather run `test:e2e` on the host too, point `MONGO_URI` / `REDIS_URL` in
-> your shell at `docker compose up -d mongo redis` published ports
-> (`mongodb://localhost:27017/...`, `redis://localhost:6379`) instead of the in-network
-> `mongo`/`redis` hostnames used inside `.env`.
+The unit suite mocks external dependencies (GitHub client, LLM/agent gateway) and would
+run fine on its own; the **end-to-end suite** boots the real `AppModule` and genuinely
+needs a reachable MongoDB and Redis — which is exactly what you get for free by running
+it inside the `backend` container instead of on the host. GitHub and the agent gateway
+are mocked inside the test itself, so no real GitHub token or LLM key is required.
+
+`docker compose exec` allocates an interactive terminal by default, so watch mode also
+works normally:
+
+```bash
+docker compose exec backend pnpm run test:watch
+```
 
 ### Agents tests (pytest) — run locally against the source tree
 
@@ -264,19 +252,6 @@ provider to measure detection accuracy on a known-vulnerable code sample:
 ```powershell
 $env:LLM_API_KEY = "your-llm-api-key-here"   # in addition to PROMPTS_DIR above
 python -m pytest tests/test_golden_set_accuracy.py
-```
-
-### Frontend tests (Vitest)
-
-Fully self-contained: every network call (`utils/api.ts`, WebSocket) is mocked, so no
-backend, no Docker, and no secrets are needed.
-
-```bash
-cd frontend
-npm install
-npm test              # `vitest run` — single pass, CI-friendly
-npm run test:watch    # interactive watch mode
-npm run test:cov      # with a coverage report (text + HTML in coverage/)
 ```
 
 ## Project scope

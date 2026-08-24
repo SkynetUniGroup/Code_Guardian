@@ -3,7 +3,7 @@ Analizza il codice sorgente alla ricerca di vulnerabilità della OWASP Top 10.
 """
 
 from typing import Any, Tuple, List, Optional
-from ..models import Proposal, FindingBlock, Block, PolicyViolationBlock, SEVERITY_ORDER
+from ..models import Proposal, FindingBlock, Block, PolicyViolationBlock
 from ..github_toolset import GitHubToolset
 from ._base import load_prompt_template, render_prompt, extract_json
 
@@ -62,12 +62,7 @@ class SecurityLoader:
         
         return {
             "policy": policy_content,
-            "files": tree_str,
-            # TU_09 (PdQ) -- RF.30: lista strutturata (non solo la stringa per il
-            # prompt) dei percorsi effettivamente ammessi nell'ambito richiesto,
-            # cosi' che parse_output() possa scartare i finding su file che l'LLM
-            # non avrebbe dovuto vedere (allucinati o fuori scope).
-            "files_to_scan": files_to_scan,
+            "files": tree_str
         }
 
 class SecurityProfile:
@@ -92,12 +87,12 @@ class SecurityProfile:
             files=ctx["files"]
         )
 
-    def parse_output(self, raw: str, loaded_context: Optional[dict] = None) -> Tuple[List[Block], Optional[Proposal]]:
+    def parse_output(self, raw: str) -> Tuple[List[Block], Optional[Proposal]]:
         data = extract_json(raw)
-
+        
         blocks: List[Block] = []
         order = 0
-
+        
         for item in data.get("findings", []):
             if self.operation == "SECURITY_POLICY":
                 blocks.append(
@@ -133,21 +128,5 @@ class SecurityProfile:
                     )
                 )
             order += 1
-
-        if self.operation != "SECURITY_POLICY":
-            # TU_09 (PdQ) -- RF.30: scarta i finding su file che non facevano parte
-            # dell'ambito effettivamente passato all'LLM (allucinazioni o percorsi
-            # fuori scope). "Fail open": se l'elenco non e' disponibile (chiamata
-            # senza loaded_context, es. retrocompatibilita'), non filtra nulla.
-            allowed_files = (loaded_context or {}).get("files_to_scan")
-            if allowed_files is not None:
-                allowed_files = set(allowed_files)
-                blocks = [b for b in blocks if b.filePath in allowed_files]
-
-            # TU_10 (PdQ) -- RF.61: ordina i finding dal piu' critico al meno
-            # critico, cosi' che il Security Auditor veda per primi i problemi
-            # piu' gravi nel report.
-            blocks.sort(key=lambda b: SEVERITY_ORDER.index(b.severity), reverse=True)
-            blocks = [b.model_copy(update={"order": i}) for i, b in enumerate(blocks)]
-
+            
         return blocks, None

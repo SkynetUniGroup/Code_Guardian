@@ -50,13 +50,7 @@ async def test_security_golden_set_accuracy():
         provider=provider
     )
     
-    # NOTA (bug trovato eseguendo il test dal vivo con una vera LLM_API_KEY, 2026-08-20):
-    # scopeType="FILES" senza il relativo campo "paths" fa sì che SecurityLoader.load()
-    # (agents/src/agents/security.py) filtri via TUTTI i file (any() su lista vuota),
-    # sollevando sempre "Nessun file sorgente trovato" prima ancora di interpellare l'LLM.
-    # FULL_REPOSITORY bypassa il filtro per path ed è coerente con l'intento del test: il
-    # toolset finto restituisce comunque un solo file (vulnerable_auth.js).
-    fake_context = SimpleNamespace(repoOwner="test", repoName="test", ref="main", scopeType="FULL_REPOSITORY")
+    fake_context = SimpleNamespace(repoOwner="test", repoName="test", ref="main", scopeType="FILES")
     
     # Esegue la scansione reale
     report = await graph.run("task-golden", "user-golden", fake_context, toolset)

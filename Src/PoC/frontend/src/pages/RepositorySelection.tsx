@@ -74,7 +74,7 @@ export default function RepositorySelection() {
         id: newTaskId,
         contextId: contextData.contextId,
         operation: selectedOperation,
-        status: 'PENDING'
+        status: 'pending'
       });
       setCurrentTask(newTaskId);
 

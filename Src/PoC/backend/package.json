@@ -90,12 +90,7 @@
         "$1.js"
       ]
     },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s",
-      "!**/*.module.ts",
-      "!main.ts",
-      "!**/*.dto.ts"
-    ],
+    "collectCoverageFrom": [ "**/*.(t|j)s" ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
