@@ -6,7 +6,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    working-directory: Src/MVP
+    defaults:
+      run:
+        working-directory: Src/MVP
     steps:
       - name: Checkout codice
         uses: actions/checkout@v4
