@@ -1,0 +1,307 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{xltabular}
+% Pacchetti fondamentali
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[figure,table]{totalcount}
+\usepackage{fancyhdr}
+\usepackage{adjustbox}
+\usepackage{extramarks}
+\usepackage{makecell}
+\usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{35pt}
+
+% Setup dei link interattivi (indice)
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\newcommand{\doctitle}{Verbale interno 21 agosto 2026} % Sostituisci con il titolo reale
+
+% --- INTESTAZIONE (HEADER) ---
+\lhead{\nouppercase{\firstleftmark}}
+\rhead{\adjustbox{valign=m}{\includegraphics[height=1cm]{logo_skynet_dark.png}}}
+
+% --- PIÈ DI PAGINA (FOOTER) ---
+\lfoot{\doctitle} 
+\rfoot{\thepage} 
+
+% Linee di separazione
+\renewcommand{\headrulewidth}{0.4pt} % Linea sotto l'intestazione
+\renewcommand{\footrulewidth}{0.4pt} % Linea sopra il piè di pagina
+
+\begin{document}
+
+% ==========================================
+% FRONTESPIZIO
+% ==========================================
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.5\linewidth]{logo_skynet_dark.png}
+    
+    {\Large Gruppo SkyNet}\\
+    {\normalsize \href{mailto:skynetunigroup@gmail.com}{skynetunigroup@gmail.com}}
+    \vspace*{1.5cm}
+    
+    {\Huge \textbf{\doctitle}} \\
+    
+    \vspace{3cm}
+    
+    % Tabella Informazioni Documento
+    \begin{table}[h]
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Uso} & \textit{Interno} \\ \hline
+            \textbf{Redattori} & \textit{Dario Pirrone} \\ \hline
+            \textbf{Verifica} & \textit{Andrea Fistarol} \\ \hline
+            \textbf{Approvazione} & \textit{Andrea Fistarol} \\ \hline
+        \end{tabularx}
+    \end{table}
+    
+    \vfill
+\end{titlepage}
+\stepcounter{page}
+
+\newpage
+
+% ==========================================
+% INDICI
+% ==========================================
+\tableofcontents
+\iftotaltables  
+    \vspace{1cm}
+    \listoftables
+\fi
+
+\iftotalfigures
+    \vspace{1cm}
+    \listoffigures
+\fi
+\newpage
+
+% ==========================================
+% CONTENUTO DEL DOCUMENTO
+% ==========================================
+
+\section{Informazioni generali}
+\subsection{Svolgimento dell'incontro}
+\begin{itemize}
+    \item \textbf{Luogo dell'incontro:} Chiamata \textit{Discord}
+    \item \textbf{Data:} 21 agosto 2026
+    \item \textbf{Orario di inizio:} 15:08
+    \item \textbf{Orario di fine:} 16:55
+\end{itemize}
+
+\subsection{Registro delle presenze}
+\begin{itemize}
+\item \textbf{Presenti:}
+\begin{itemize}
+    \item Marco Barbiero
+    \item Samuele Bertin
+    \item Andrea Fistarol
+    \item Dario Pirrone
+    \item Sara Ristovic
+\end{itemize}
+\item \textbf{Presenze totali:} 5
+
+\item \textbf{Assenti:}
+\begin{itemize}
+    \item Edoardo Granziero
+\end{itemize}
+\item \textbf{Assenze totali:} 1
+\end{itemize}
+
+% ==========================================
+% AGENDA 
+% ==========================================
+\section{Agenda}
+Gli argomenti previsti per la riunione odierna sono:
+\begin{enumerate}
+    \item Discussione miglioramento del \textit{Way of Working} dopo l'esito \textbf{RTB}.
+    \item Chiusura \textit{sprint} 13 e \textit{retrospettiva}.
+    \item Pianificazione delle \textit{issue} per lo \textit{sprint} 14.
+    \item Assegnazione ruoli e stesura del \textit{preventivo} orario.
+\end{enumerate}
+
+\newpage
+% =========== RUOLI ===========
+\section{Ruoli assegnati}
+Sono stati assegnati i ruoli per ogni membro del gruppo, validi fino al termine del corrente \textit{sprint}, che vengono esposti nella seguente tabella:
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Ruolo} & \textbf{Membro} \\ \hline
+        \textbf{Responsabile} & Andrea Fistarol \\ \hline
+        \textbf{Amministratore} & Andrea Fistarol  \\ \hline
+        \textbf{Analista} & Non assegnato\\ \hline
+        \textbf{Progettista} & Sara Ristovic \\ \hline
+        \textbf{Programmatore} & Marco Barbiero, Samuele Bertin, Dario Pirrone, Sara Ristovic \\ \hline
+        \textbf{Verificatore} & Edoardo Granziero \\ \hline
+    \end{tabularx}
+    \caption{Riepilogo ruoli assegnati}
+\end{table}
+
+% ========================================== 
+% TEMI AFFRONTATI
+% ==========================================
+\section{Temi affrontati}
+
+\subsection{Esito colloquio \textbf{RTB} e miglioramento del \textit{Way of Working}}
+Durante l'incontro abbiamo discusso l'esito del colloquio \textbf{RTB} e le migliorie indicate dal professore. Oltre alle modifiche da apportare ai vari documenti in sviluppo, come il \textbf{Piano di Progetto} e il \textbf{Piano di Qualifica}, ci sono stati suggeriti alcuni cambiamenti al \textit{Way of Working} che possiamo applicare da subito per procedere in modo più ordinato. 
+
+In particolare, già a partire da questa riunione, abbiamo deciso di determinare una scadenza temporale per ogni \textit{issue}, così da prioritizzare alcuni compiti rispetto ad altri. Inoltre, abbiamo valutato l'introduzione di una stima delle ore produttive necessarie per svolgere ciascuna \textit{issue}. Al momento, per ragioni di tempo e per la difficoltà nel fare stime precise durante la riunione, questa novità non è stata implementata in questo \textit{sprint}, ma puntiamo a introdurla negli \textit{sprint} successivi.
+
+\subsection{\textit{Retrospettiva} dello \textit{sprint} 13}
+Lo \textit{sprint} 13 purtroppo si è concluso senza riuscire a portare a termine tutte le \textit{issue} previste. La causa principale di questo problema è stata la troppa genericità dei task assegnati e la conseguente sottostima della mole di lavoro che comportavano. 
+
+Nello specifico, a fine \textit{sprint} la progettazione del backend e dei test per l'\textbf{MVP} non è ancora conclusa. Questo ritardo pesa sulla nostra tabella di marcia, che prevedeva di chiudere la progettazione dell'\textbf{MVP} per il 19 agosto. Ad oggi, 21 agosto, questa fase è terminata solo in parte: questo riduce il tempo a disposizione per la programmazione dell'\textbf{MVP}, che dovrebbe finire il 31 agosto (ed è probabile che sforeremo di qualche giorno).
+
+Per evitare che si ripresenti il problema delle \textit{issue} troppo generiche, abbiamo deciso che ogni membro del gruppo dovrà impegnarsi individualmente a dedicare del tempo, a fine \textit{sprint}, per pianificare dei task adeguati per il ciclo successivo. Questo vale soprattutto per le \textit{issue} che seguono il lavoro appena svolto (ad esempio, un \textbf{Programmatore} di backend conosce bene lo stato del codice ed è più facilitato nel definire le giuste \textit{issue} a ridosso del cambio \textit{sprint}). Resta però il dubbio che questa pratica si riveli poco affidabile, poiché dipende solo dall'impegno extra del singolo senza una regola precisa.
+
+\subsection{Pianificazione dello \textit{sprint} 14}
+È stato pianificato lo \textit{sprint} 14, che durerà 10 giorni e si concluderà il 31 agosto, data pianificata per la chiusura della fase di programmazione. L'impegno principale di questo \textit{sprint} sarà proprio la scrittura del codice per l'\textbf{MVP}.
+
+A differenza di quanto fatto per la progettazione, questa volta le \textit{issue} di programmazione sono state rese molto più atomiche, portandoci a un approccio più professionale. Resta tuttavia il problema delle parti di progettazione rimaste incomplete: queste dovranno essere concluse il prima possibile a inizio \textit{sprint}, per poi potersi dedicare alla programmazione di quegli aspetti nel tempo residuo.
+
+\subsection{Pianificazione degli incontri}
+Essendo uno \textit{sprint} lungo 10 giorni, abbiamo deciso di fissare un incontro interno il 26 agosto per "spezzare" lo \textit{sprint} e tenerci maggiormente aggiornati sull'andamento dei lavori. 
+Inoltre, durante questo \textit{sprint} ci saranno due incontri esterni fondamentali:
+\begin{itemize}
+    \item \textbf{25 agosto, ore 10:} Incontro con il prof. Vardanega, utile per aiutarci a chiarire alcuni dubbi sull'organizzazione del progetto.
+    \item \textbf{27 agosto, ore 11:} Incontro con l'azienda \textbf{Proponente}, per esporre la progettazione fatta finora e chiarire eventuali dubbi, così da restare ben allineati con loro.
+\end{itemize}
+
+\newpage
+\section{Compiti definiti} 
+
+\subsection{Nuovi Compiti}
+% NOTA: xltabular gestisce automaticamente le interruzioni di pagina
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|l|X|l|}
+    
+    \hline
+    \textbf{Membri} & \textbf{Descrizione} & \textbf{Scadenza} \\ \hline
+    \endfirsthead
+    
+
+    % Contenuto della tabella
+    Andrea Fistarol & Predisposizione delle slide per l'incontro di monitoraggio con il prof. Tullio & 24/08/2026 \\ \hline
+    Andrea Fistarol & Aggiornamento del grafico di \textit{Burndown} & 26/08/2026 \\ \hline
+    Dario Pirrone & Redazione del verbale interno del 21 agosto 2026 & 25/08/2026 \\ \hline
+    Andrea Fistarol & \textbf{PdP}: stesura del \textit{consuntivo} dello \textit{sprint} 13 e del \textit{preventivo} dello \textit{sprint} 14 & 26/08/2026 \\ \hline
+    Samuele Bertin & Richiesta di accesso ai modelli Bedrock (Qwen3, eu-south-1) su \textit{AWS} & 22/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{VPC}, subnet, route table, \textit{IGW} e \textit{NAT Gateway} & 24/08/2026 \\ \hline
+    Samuele Bertin & Configurazione del \textit{repository} \textit{ECR} e dei ruoli \textit{IAM} per la \textit{CI/CD} & 24/08/2026 \\ \hline
+    Samuele Bertin & Configurazione del bucket \textit{S3} (front-end statico e artefatti) & 24/08/2026 \\ \hline
+    Samuele Bertin & Configurazione dei \textit{Security Group} (pattern anti-dipendenza circolare) & 26/08/2026 \\ \hline
+    Samuele Bertin & Configurazione dei \textit{VPC Endpoints} (\textit{S3}, Bedrock, \textit{Secrets Manager}, \textit{ECR}, \textit{CloudWatch}, \textit{SSM}$\times$3) & 25/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{KMS}, \textit{Secrets Manager} e \textit{Parameter Store} & 27/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{ElastiCache Redis} (cifrato, TLS in-transit) & 28/08/2026 \\ \hline
+    Samuele Bertin & \textit{MongoDB Atlas}: provisioning M10, configurazione di \textit{PrivateLink} e Network Access List & 28/08/2026 \\ \hline
+    Samuele Bertin & Configurazione del cluster \textit{ECS}, \textit{Task Definition} e ruoli \textit{IAM} Task/Execution & 29/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{Cloud Map} per il service discovery & 29/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{ALB}, target group e health check grace period & 30/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{CloudFront} (behavior /api e /socket.io, OAC e custom error response) & 30/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{Log Group} (con policy di retention), Container Insights, allarmi e \textit{SNS} & 30/08/2026 \\ \hline
+    Samuele Bertin & Configurazione di \textit{AWS} Budgets e stima dei costi (incluso Atlas con fatturazione separata) & 30/08/2026 \\ \hline
+    Samuele Bertin & Realizzazione della \textit{pipeline} di \textit{CI/CD} (build, push immagini, invalidazione \textit{CloudFront}, deploy su \textit{ECS}) & 31/08/2026 \\ \hline
+    Marco Barbiero & Setup del design system (\textit{Tailwind}, shadcn/ui e token grafici) & 26/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo dei componenti condivisi (badge di stato/severity, error state, campi con validazione, modulo di validazione) & 26/08/2026 \\ \hline
+    Marco Barbiero & Implementazione di sessionStore e delle pagine /register e /login (con supporto ai mock) & 26/08/2026 \\ \hline
+    Marco Barbiero & Implementazione di route guard e shell applicativa (header, badge di ruolo, banner credenziali) & 26/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo della pagina /credentials & 26/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo della pagina /select & 26/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo della pagina /run con filtraggio delle operazioni per ruolo & 26/08/2026 \\ \hline
+    Marco Barbiero & Implementazione di tasksStore e client \textit{WebSocket} (gestione eventi e resync via GET /tasks alla riconnessione) & 30/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo della Dashboard /tasks (lista, stato, avanzamento e annullamento) & 30/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo delle aree interattive della Dashboard (\textit{Sprint} ID, esclusione metadati, conferma business) & 30/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo della pagina /reports/:id con dispatcher a blocchi (Text, Finding, PolicyViolation, Proposal e link alla \textit{PR}) & 30/08/2026 \\ \hline
+    Marco Barbiero & Implementazione della funzionalità di esportazione \textit{PDF} (pulsante dedicato e download in streaming) & 30/08/2026 \\ \hline
+    Marco Barbiero & Sviluppo della pagina /reports per la consultazione dello storico & 30/08/2026 \\ \hline
+    Marco Barbiero & Configurazione della build con \textit{Vite} (gestione URL relativi e variabili d'ambiente) & 30/08/2026 \\ \hline
+    Dario Pirrone & Attivazione del BedrockProvider (migrazione da chiamata diretta ad \textit{API} Qwen) & 28/08/2026 \\ \hline
+    Dario Pirrone & Bake-in dei prompt all'interno dell'immagine \textit{Docker} (rimozione dei bind mount) & 27/08/2026 \\ \hline
+    Dario Pirrone & Creazione del Golden Set e validazione dell'accuratezza per la sicurezza $\ge 85\%$ (RQ.5) & 30/08/2026 \\ \hline
+    Dario Pirrone & Sviluppo di DocsReadmeProfile& 26/08/2026 \\ \hline
+    Dario Pirrone & Sviluppo di DocsApiProfile  & 26/08/2026 \\ \hline
+    Dario Pirrone & Sviluppo di SecurityPolicyProfile (lettura di POLICY.md, grafo comune e template dedicato) & 26/08/2026 \\ \hline
+    Dario Pirrone & Implementazione di ChangelogBusinessProfile solo lato agente (\textit{prompt} e parser) & 30/08/2026 \\ \hline
+    Dario Pirrone & Realizzazione del test harness (provider \textit{LLM} simulato, client \textit{GitHub} simulato, test automatico di isolamento dei prompt) & 30/08/2026 \\ \hline
+    Andrea Fistarol & Glossario: integrazione del comando di build all'interno del \textbf{PdP} e relativo collegamento & 30/08/2026 \\ \hline
+    Andrea Fistarol & Glossario: inserimento dei nuovi termini definiti nelle \textbf{NdP} e relativo collegamento & 30/08/2026 \\ \hline
+    Andrea Fistarol & Re-baselining del \textit{preventivo} orario: riallineamento delle risorse e dei ruoli & 30/08/2026 \\ \hline
+    Andrea Fistarol & \textbf{NdP}: aggiornamento e formalizzazione della struttura del \textit{repository} & 30/08/2026 \\ \hline
+    Andrea Fistarol & Ottimizzazione del foglio di calcolo dei grafici di \textit{Burndown} & 30/08/2026 \\ \hline
+    Andrea Fistarol & Setup dei \textit{workflow} (\textit{PR} check, deploy su staging, release di produzione) previa revisione critica & 30/08/2026 \\ \hline
+    Andrea Fistarol & Predisposizione della configurazione dell'ambiente di test con pnpm (Vitest, pytest) & 30/08/2026 \\ \hline
+    Andrea Fistarol & Predisposizione della configurazione di linting e formatting con pnpm (Biome, Pylint, Black) & 30/08/2026 \\ \hline
+    Andrea Fistarol & Aggiornamento del \textit{repository} secondo le \textbf{NdP} (gestione \textit{branch} e regole di protezione) & 30/08/2026 \\ \hline
+    Sara Ristovic & Scaffolding del progetto e ambiente locale & 30/08/2026 \\ \hline
+    Sara Ristovic & Livello di persistenza: schemi e indici & 30/08/2026 \\ \hline
+    Sara Ristovic & Framework di gestione errori e catalogo dei codici & 30/08/2026 \\ \hline
+    Sara Ristovic & Registrazione e login & 30/08/2026 \\ \hline
+    Sara Ristovic & Guard di autenticazione e profilo utente & 30/08/2026 \\ \hline
+    Sara Ristovic & Modulo di cifratura delle credenziali & 30/08/2026 \\ \hline
+    Sara Ristovic & CRUD delle credenziali e flusso di validazione & 30/08/2026 \\ \hline
+    Sara Ristovic & Client per le \textit{API} \textit{GitHub} & 30/08/2026 \\ \hline
+    Sara Ristovic & Facade interna di sola lettura per gli agenti & 30/08/2026 \\ \hline
+    Sara Ristovic & Percorso di scrittura su \textit{GitHub} (apertura \textit{Pull Request}) & 30/08/2026 \\ \hline
+    Sara Ristovic & Endpoint di navigazione dei \textit{repository} & 30/08/2026 \\ \hline
+    Sara Ristovic & Pipeline di creazione e validazione del contesto & 30/08/2026 \\ \hline
+    Sara Ristovic & Catalogo delle operazioni & 30/08/2026 \\ \hline
+    Sara Ristovic & Coda dei task e ciclo di vita & 30/08/2026 \\ \hline
+    Sara Ristovic & Applicazione del limite di utilizzo & 30/08/2026 \\ \hline
+    Sara Ristovic & Gateway di invocazione degli agenti & 30/08/2026 \\ \hline
+    Sara Ristovic & Gateway realtime WebSocket & 30/08/2026 \\ \hline
+    Sara Ristovic & Meccanismo di sospensione/ripresa dell'input utente & 30/08/2026 \\ \hline
+    Sara Ristovic & Assemblaggio e persistenza del report & 30/08/2026 \\ \hline
+    Sara Ristovic & Endpoint di consultazione dei report & 30/08/2026 \\ \hline
+    Sara Ristovic & Esportazione PDF & 30/08/2026 \\ \hline
+    \caption{Riepilogo dei nuovi compiti assegnati} \\
+\end{xltabular}
+
+\subsection{Compiti in corso}
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|l|X|l|}
+    
+    \hline
+    \textbf{Membri} & \textbf{Descrizione} & \textbf{Scadenza} \\ \hline
+    \endfirsthead
+
+    \endlastfoot
+
+    % Contenuto della tabella
+    Sara Ristovic & Ultimare la progettazione del back-end per soddisfare tutti i requisiti & 23/08/2026 \\ \hline
+    Edoardo Granziero & Progettare una suite di test esaustivi per l'\textbf{MVP} & 31/08/2026 \\ \hline
+    Marco Barbiero & Verificare e riprogettare l'integrazione tra back-end, front-end e \textit{AWS} & 23/08/2026 \\ \hline
+    Non assegnato & Applicare le modifiche ai documenti a valle dell'incontro con il prof. Tullio & 30/08/2026 \\ \hline
+    Non assegnato & Applicare le correzioni del prof. Cardin all'\textbf{Analisi dei Requisiti}, avanzando il documento alla versione 2.0.0 con possibili revisioni dei requisiti & 30/08/2026 \\ \hline
+
+
+
+    
+    \caption{Riepilogo dei compiti in corso} \\
+\end{xltabular}
+% ========================================== FINE SEZIONE
+\end{document}
