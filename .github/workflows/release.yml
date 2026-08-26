@@ -10,9 +10,10 @@ jobs:
       run:
         working-directory: Src/MVP
     steps:
-      - name: Checkout codice
+      - name: Checkout code
         uses: actions/checkout@v7
 
+      # === Environment setup ===
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -24,22 +25,46 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install dipendenze
+      - name: pip cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('Src/MVP/agents/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # === Node.js (backend/frontend) ===
+      - name: Install Node.js dependencies
         run: pnpm install
 
-      - name: Linting
+      - name: Node.js linting
         run: pnpm lint
 
-      - name: Test unitari
+      - name: Node.js unit tests
         run: pnpm test:unit
 
-      - name: Test di integrazione
+      # === Python (agents) ===
+      - name: Install Python dependencies
+        working-directory: Src/MVP/agents
+        run: pip install -r requirements.txt
+
+      - name: Python linting
+        working-directory: Src/MVP/agents
+        run: python -m pylint .
+
+      - name: Python unit tests
+        working-directory: Src/MVP/agents
+        run: python -m pytest
+
+      # === Integration tests (both Python and Node.js) ===
+      - name: Integration tests
         run: |
           docker-compose -f docker-compose.test.yml up -d
-          pnpm test:integration
+          pnpm test:integration:test
+          cd agents && python -m pytest tests/integration/ -v
           docker-compose -f docker-compose.test.yml down
 
-      - name: Build
+      - name: Build Node.js
         run: pnpm build
 
       - name: Configure AWS Credentials
@@ -49,12 +74,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-south-1
 
-      - name: Deploy frontend su S3
+      - name: Deploy frontend on S3
         run: |
           aws s3 sync ./dist s3://code-guardian-frontend --delete
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
-      - name: Login a Amazon ECR
+      - name: Login Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push Docker image
@@ -62,7 +87,7 @@ jobs:
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/code-guardian-backend:${{ github.ref_name }} .
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/code-guardian-backend:${{ github.ref_name }}
 
-      - name: Deploy su ECS
+      - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: task-definition.json

@@ -9,9 +9,10 @@ jobs:
       run:
         working-directory: Src/MVP
     steps:
-      - name: Checkout codice
+      - name: Checkout code
         uses: actions/checkout@v7
 
+      # === Environment setup ===
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -23,20 +24,44 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install dipendenze
+      - name: pip cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('Src/MVP/agents/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # === Node.js (backend/frontend) ===
+      - name: Install Node.js dependencies
         run: pnpm install
 
-      - name: Linting
+      - name: Node.js linting
         run: pnpm lint
 
-      - name: Test unitari
+      - name: Node.js unit tests
         run: pnpm test:unit
 
-      - name: Test di integrazione
+      # === Python (agents) ===
+      - name: Install Python dependencies
+        working-directory: Src/MVP/agents
+        run: pip install -r requirements.txt
+
+      - name: Python linting
+        working-directory: Src/MVP/agents
+        run: python -m pylint .
+
+      - name: Python unit tests
+        working-directory: Src/MVP/agents
+        run: python -m pytest
+
+      # === Integration tests (both Python and Node.js) ===
+      - name: Integration tests
         run: |
           docker-compose -f docker-compose.test.yml up -d
-          pnpm test:integration
+          pnpm test:integration:test
+          cd agents && python -m pytest tests/integration/ -v
           docker-compose -f docker-compose.test.yml down
 
-      - name: Build
+      - name: Build Node.js
         run: pnpm build
