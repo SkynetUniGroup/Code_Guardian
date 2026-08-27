@@ -1,0 +1,67 @@
+﻿name: PR Check
+on:
+  pull_request:
+    branches: [ main, develop ]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Src/MVP
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      # === Environment setup ===
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: pip cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('Src/MVP/agents/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # === Node.js (backend/frontend) ===
+      - name: Install Node.js dependencies
+        run: pnpm install
+
+      - name: Node.js linting
+        run: pnpm lint
+
+      - name: Node.js unit tests
+        run: pnpm test:unit
+
+      # === Python (agents) ===
+      - name: Install Python dependencies
+        working-directory: Src/MVP/agents
+        run: pip install -r requirements.txt
+
+      - name: Python linting
+        working-directory: Src/MVP/agents
+        run: python -m pylint .
+
+      - name: Python unit tests
+        working-directory: Src/MVP/agents
+        run: python -m pytest
+
+      # === Integration tests (both Python and Node.js) ===
+      - name: Integration tests
+        run: |
+          docker-compose -f docker-compose.test.yml up -d
+          pnpm test:integration:test
+          cd agents && python -m pytest tests/integration/ -v
+          docker-compose -f docker-compose.test.yml down
+
+      - name: Build Node.js
+        run: pnpm build

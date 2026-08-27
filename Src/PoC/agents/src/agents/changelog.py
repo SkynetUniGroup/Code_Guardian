@@ -68,10 +68,7 @@ class ChangelogProfile:
             tasks=ctx["tasks_formatted"]
         )
 
-    def parse_output(self, raw: str, loaded_context: Optional[dict] = None) -> Tuple[List[Block], Optional[Proposal]]:
-        # loaded_context non e' usato da questo profilo: presente solo per
-        # rispettare l'interfaccia comune invocata polimorficamente da graph.py
-        # (vedi SecurityProfile.parse_output per l'agente che lo sfrutta davvero).
+    def parse_output(self, raw: str) -> Tuple[List[Block], Optional[Proposal]]:
         # Per il Changelog, l'output è Markdown libero (come da nostro YAML output_contract)
         blocks: List[Block] = []
         

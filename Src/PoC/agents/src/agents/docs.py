@@ -137,10 +137,7 @@ class DocsProfile:
             readme=ctx.get("readme", "Non trovato.")
         )
 
-    def parse_output(self, raw: str, loaded_context: Optional[dict] = None) -> Tuple[List[Block], Optional[Proposal]]:
-        # loaded_context non e' usato da questo profilo: presente solo per
-        # rispettare l'interfaccia comune invocata polimorficamente da graph.py
-        # (vedi SecurityProfile.parse_output per l'agente che lo sfrutta davvero).
+    def parse_output(self, raw: str) -> Tuple[List[Block], Optional[Proposal]]:
         data = extract_json(raw)
         blocks: List[Block] = []
         order = 0

@@ -1,0 +1,20 @@
+[MASTER]
+load-plugins=pylint.extensions.bad_builtin
+persistent=no
+
+[MESSAGES CONTROL]
+disable=
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    W0613,  # unused-argument
+    R0901,  # too-many-ancestors
+    R0903,  # too-few-public-methods
+    E1101,  # no-member (falsi positivi con tipo dinamico)
+    E0611   # no-name-in-module
+
+[FORMAT]
+max-line-length=100
+
+[BASIC]
+good-names=_,i,j,k,ex,Run,_,id

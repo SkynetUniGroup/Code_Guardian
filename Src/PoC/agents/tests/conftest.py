@@ -1,16 +1,3 @@
-import os
-from pathlib import Path
-
-# NOTA MANUTENZIONE: 'PROMPTS_DIR' di default punta al path assoluto del
-# container Docker (/app/prompts, vedi .env e agents/Dockerfile). In quel
-# contesto la variabile d'ambiente reale iniettata da `env_file: .env` in
-# docker-compose ha sempre precedenza su questo default. Qui usiamo
-# setdefault SOLO per permettere alla suite di funzionare anche quando viene
-# lanciata direttamente con `pytest` fuori dal container (dev locale, CI che
-# non avvia lo stack Docker): non altera in alcun modo il comportamento a
-# runtime dell'agente reale.
-os.environ.setdefault("PROMPTS_DIR", str(Path(__file__).resolve().parent.parent / "prompts"))
-
 import pytest
 from typing import List, Any
 from langchain_core.messages import BaseMessage, AIMessage

@@ -12,10 +12,6 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Task } from '../src/domain/schemas/task.schema.js';
 import { Report } from '../src/domain/schemas/report.schema.js';
 
-// TI_05 (PdQ) — RF.40: intero ciclo di vita di una task (contesto -> creazione ->
-// instradamento deterministico via Orchestrator -> esecuzione -> persistenza del Report)
-// contro un vero MongoDB, mockando solo i confini esterni reali (JWT guard, client
-// GitHub, gateway verso l'agente Python, coda BullMQ).
 describe('Flusso End-to-End (E2E) - Code Guardian (Vincolo di Validazione § 12)', () => {
   let app: INestApplication;
   let taskProcessor: TaskProcessor;

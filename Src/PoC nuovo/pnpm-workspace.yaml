@@ -1,9 +1,0 @@
-packages:
-  - 'backend'
-  - 'frontend'
-
-allowBuilds:
-  '0': '@scarf/scarf'
-  '@scarf/scarf': true
-  msgpackr-extract: true
-  unrs-resolver: true

@@ -244,7 +244,7 @@ class AgentGraph:
     async def _node_valida_e_parsa(self, st: AgentState) -> dict:
         await self._check_interrupts(st.task_id, self._current_redis_client, "valida_e_parsa")
         try:
-            blocks, proposal = self._profile.parse_output(st.raw_output, st.loaded_context)
+            blocks, proposal = self._profile.parse_output(st.raw_output)
             # Se ha successo, azzeriamo il flag di retry
             return {"blocks": blocks, "proposal": proposal, "needs_retry": False}
         except Exception as exc:
