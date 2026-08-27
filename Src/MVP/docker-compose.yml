@@ -1,0 +1,48 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    environment:
+      # Overrides the values from .env: inside the Docker network, containers
+      # reach each other by service name, never by localhost.
+      MONGODB_URI: mongodb://mongodb:27017/codeguardian
+      REDIS_URL: redis://redis:6379
+      # File-change notifications from a Windows bind mount don't reliably
+      # reach the Linux container, so the TypeScript watcher has to poll for
+      # changes instead of waiting for them — without this, edits on the host
+      # are silently ignored until the container is restarted.
+      TSC_WATCHFILE: PriorityPollingInterval
+      TSC_WATCHDIRECTORY: DynamicPriorityPolling
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - redis
+
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  # Placeholder for the Python agents service (FastAPI, not built yet).
+  # Reserves the network position/hostname now so the real service can be
+  # dropped in later without anyone having to touch this file again.
+  # Not exposed to the host — only reachable from other containers, at
+  # http://agents:8000, matching where the real service will listen.
+  agents:
+    image: busybox
+    command: ["sleep", "infinity"]
+
+volumes:
+  mongo_data:
