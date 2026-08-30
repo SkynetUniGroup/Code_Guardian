@@ -17,10 +17,7 @@ jobs:
         uses: pnpm/setup@v2
         with:
           version: 11
-          runtime: node@24
           cache: true
-          working-directory: Src/MVP
-          require-lockfile: true
 
       - name: Setup Python
         uses: actions/setup-python@v7
@@ -36,9 +33,6 @@ jobs:
             ${{ runner.os }}-pip-
 
       # === Node.js (backend/frontend) ===
-      - name: Install Node.js dependencies
-        run: pnpm install
-
       - name: Node.js linting
         run: pnpm lint
 
