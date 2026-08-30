@@ -21,7 +21,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnp
+        run: npm install -g pnpm
 
       - name: Setup Python
         uses: actions/setup-python@v7
