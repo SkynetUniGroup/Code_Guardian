@@ -50,3 +50,7 @@ export type CompareStatus = 'ahead' | 'behind' | 'identical' | 'diverged';
 export interface CompareResult {
   status: CompareStatus;
 }
+
+export interface TokenVerification {
+  scopes: string[];
+}

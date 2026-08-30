@@ -71,6 +71,38 @@ describe('GithubClientService — cache behavior', () => {
     });
   });
 
+  describe('verifyToken', () => {
+    it('returns the scopes parsed from the X-OAuth-Scopes header', async () => {
+      mockRequest.mockResolvedValue({
+        headers: { 'x-oauth-scopes': 'repo, gist' },
+        data: {},
+      });
+
+      const result = await service.verifyToken('token');
+
+      expect(result).toEqual({ scopes: ['repo', 'gist'] });
+    });
+
+    it('returns an empty scope list when the header is absent', async () => {
+      mockRequest.mockResolvedValue({ headers: {}, data: {} });
+
+      const result = await service.verifyToken('token');
+
+      expect(result).toEqual({ scopes: [] });
+    });
+
+    it('propagates the error when GitHub rejects the token', async () => {
+      mockRequest.mockRejectedValue({
+        status: 401,
+        message: 'Bad credentials',
+      });
+
+      await expect(service.verifyToken('bad-token')).rejects.toMatchObject({
+        status: 401,
+      });
+    });
+  });
+
   describe('getFileContent', () => {
     it('returns the cached value and never calls GitHub on a cache hit', async () => {
       const cachedFile = {

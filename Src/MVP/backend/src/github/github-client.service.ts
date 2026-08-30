@@ -11,6 +11,7 @@ import {
   NodeType,
   RefSummary,
   RepositorySummary,
+  TokenVerification,
   TreeNode,
 } from './github-client.types';
 import { backoffIfRateLimited } from './rate-limit-backoff';
@@ -260,6 +261,33 @@ export class GithubClientService {
       ...this.toIssueSummary(data),
       body: data.body ?? '',
     };
+  }
+
+  // Checks that a token is accepted by GitHub and reports what it's allowed
+  // to do — used by BE-6 before a credential is ever persisted, and again
+  // whenever it's re-validated. `GET /user` is used because it works for any
+  // valid token without needing to know a specific repository up front;
+  // GitHub reports a classic token's granted scopes on the X-OAuth-Scopes
+  // response header regardless of which endpoint you call.
+  //
+  // That header is classic-PAT-only: fine-grained tokens (`github_pat_...`)
+  // don't use OAuth scopes at all, so this always comes back `scopes: []`
+  // for one, valid or not — that's expected, not a bug here. It's the
+  // caller's job to know which kind of token it's looking at before
+  // deciding what an empty scope list means (see CredentialsService).
+  //
+  // A 401 here means the token itself is bad or revoked — the caller is
+  // responsible for treating that differently from a network failure or
+  // GitHub outage (§4.2, RS.4): this method doesn't catch anything itself,
+  // it just relays what happened.
+  async verifyToken(token: string): Promise<TokenVerification> {
+    const { headers } = await this.client(token).request('GET /user');
+    const scopesHeader = headers['x-oauth-scopes'] ?? '';
+    const scopes = scopesHeader
+      .split(',')
+      .map((scope) => scope.trim())
+      .filter(Boolean);
+    return { scopes };
   }
 
   async compareCommits(
