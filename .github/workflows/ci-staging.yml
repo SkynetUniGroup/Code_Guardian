@@ -14,7 +14,7 @@ jobs:
 
       # === Environment setup ===
       - name: Setup pnpm + Node.js
-        uses: pnpm/setup@v2
+        uses: pnpm/setup@v2.1.0
         with:
           working-directory: Src/MVP
           version: 11
