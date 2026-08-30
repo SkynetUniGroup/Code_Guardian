@@ -15,6 +15,12 @@ import {
   TreeNode,
 } from './github-client.types';
 import { backoffIfRateLimited } from './rate-limit-backoff';
+import {
+  GET_TREE_ROUTE,
+  GET_FILE_CONTENT_ROUTE,
+  LIST_ISSUES_ROUTE,
+  GET_ISSUE_DETAIL_ROUTE,
+} from './github-routes';
 
 // Declared return types, not inline `as` casts: a bare ternary here would
 // infer as plain `string`, and a cast is exactly what eslint's
@@ -59,13 +65,14 @@ const CACHE_TTL_SECONDS = 24 * 60 * 60;
 
 // Every method takes the caller's decrypted token directly and builds a
 // fresh Octokit client with it — this class never looks up or decrypts a
-// credential itself, and never enforces which endpoints are reachable or
-// logs calls to an AccessLog. That's BE-8's job, scoped specifically to the
-// agent-facing internal endpoints (RS.3). The Redis cache and the rate-limit
-// backoff below apply here instead, to every caller alike — the backend's
-// own direct calls (BE-6, BE-9 through BE-12) never pass through BE-8 at
-// all, and both controls protect a resource (the GitHub quota, the cache)
-// that's shared regardless of who's asking.
+// credential itself. RS.3 constrains only autonomous agents, not the
+// backend's own calls (mvp_backend_design.tex §GitHub Integration), so the
+// whitelist and AccessLog live in BE-8's InternalGithubController instead,
+// scoped to the requests agents actually route through that facade — not
+// here, where compareCommits/verifyToken/listRepositories/getRepository are
+// backend-direct and outside that perimeter. The Redis cache and rate-limit
+// backoff below do apply here, to every caller alike, since they protect a
+// resource (the GitHub quota, the cache) shared regardless of who's asking.
 @Injectable()
 export class GithubClientService {
   private readonly logger = new Logger(GithubClientService.name);
@@ -74,6 +81,13 @@ export class GithubClientService {
 
   private client(token: string): Octokit {
     const octokit = new Octokit({ auth: token });
+    octokit.hook.before('request', (options) => {
+      if (options.method !== 'GET') {
+        throw new Error(
+          `GithubClientService: refusing a non-GET request (${options.method} ${options.url})`,
+        );
+      }
+    });
     octokit.hook.after('request', async (response) => {
       await backoffIfRateLimited(response.headers, (remaining) =>
         this.logger.warn(
@@ -161,10 +175,12 @@ export class GithubClientService {
       return JSON.parse(cached) as TreeNode[];
     }
 
-    const { data } = await this.client(token).request(
-      'GET /repos/{owner}/{repo}/git/trees/{tree_sha}',
-      { owner, repo, tree_sha: sha, recursive: '1' },
-    );
+    const { data } = await this.client(token).request(GET_TREE_ROUTE, {
+      owner,
+      repo,
+      tree_sha: sha,
+      recursive: '1',
+    });
 
     // Submodule entries (type "commit") aren't selectable per the design
     // (§ Ambito di analisi) — excluded here rather than forced into a
@@ -202,10 +218,12 @@ export class GithubClientService {
       return JSON.parse(cached) as FileContent;
     }
 
-    const { data } = await this.client(token).request(
-      'GET /repos/{owner}/{repo}/contents/{path}',
-      { owner, repo, path, ref },
-    );
+    const { data } = await this.client(token).request(GET_FILE_CONTENT_ROUTE, {
+      owner,
+      repo,
+      path,
+      ref,
+    });
 
     if (Array.isArray(data) || data.type !== 'file' || !data.content) {
       throw new Error(`${path} is not a readable file at ${ref}`);
@@ -234,10 +252,12 @@ export class GithubClientService {
     repo: string,
     state: 'open' | 'closed' | 'all' = 'all',
   ): Promise<IssueSummary[]> {
-    const { data } = await this.client(token).request(
-      'GET /repos/{owner}/{repo}/issues',
-      { owner, repo, state, per_page: 100 },
-    );
+    const { data } = await this.client(token).request(LIST_ISSUES_ROUTE, {
+      owner,
+      repo,
+      state,
+      per_page: 100,
+    });
 
     // This endpoint returns pull requests too; PRs carry a `pull_request`
     // field that plain issues don't.
@@ -252,10 +272,11 @@ export class GithubClientService {
     repo: string,
     issueNumber: number,
   ): Promise<IssueDetail> {
-    const { data } = await this.client(token).request(
-      'GET /repos/{owner}/{repo}/issues/{issue_number}',
-      { owner, repo, issue_number: issueNumber },
-    );
+    const { data } = await this.client(token).request(GET_ISSUE_DETAIL_ROUTE, {
+      owner,
+      repo,
+      issue_number: issueNumber,
+    });
 
     return {
       ...this.toIssueSummary(data),

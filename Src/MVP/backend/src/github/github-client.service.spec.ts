@@ -2,11 +2,14 @@
 // cache/rate-limit logic rather than making real network calls — Jest can
 // load the real @octokit/rest package fine now (see package.json's
 // transformIgnorePatterns), this mock is a testing choice, not a workaround.
+type HookBeforeCallback = (options: { method: string; url: string }) => void;
+
 const mockRequest = jest.fn();
+const mockHookBefore = jest.fn<void, [string, HookBeforeCallback]>();
 jest.mock('@octokit/rest', () => ({
   Octokit: jest.fn().mockImplementation(() => ({
     request: mockRequest,
-    hook: { after: jest.fn() },
+    hook: { after: jest.fn(), before: mockHookBefore },
   })),
 }));
 
@@ -20,6 +23,7 @@ describe('GithubClientService — cache behavior', () => {
 
   beforeEach(async () => {
     mockRequest.mockReset();
+    mockHookBefore.mockReset();
     redis = createMockRedis();
 
     const module: TestingModule = await Test.createTestingModule({
@@ -158,6 +162,22 @@ describe('GithubClientService — cache behavior', () => {
         'EX',
         86400,
       );
+    });
+  });
+
+  describe('read-only enforcement', () => {
+    it('registers an Octokit hook that refuses any non-GET request', async () => {
+      mockRequest.mockResolvedValue({ headers: {}, data: {} });
+      await service.verifyToken('token');
+
+      const hookCallback = mockHookBefore.mock.calls[0][1];
+
+      expect(() =>
+        hookCallback({ method: 'POST', url: '/repos/owner/repo/pulls' }),
+      ).toThrow();
+      expect(() =>
+        hookCallback({ method: 'GET', url: '/repos/owner/repo' }),
+      ).not.toThrow();
     });
   });
 });

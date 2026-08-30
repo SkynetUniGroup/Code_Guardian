@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule } from '@nestjs-modules/ioredis';
-import { MongooseModule } from '@nestjs/mongoose';
 import { GithubClientService } from './github-client.service';
-import { AccessLog, AccessLogSchema } from './schemas/access-log.schema';
 
+// AccessLog's registration moved to InternalGithubModule (BE-8): nothing in
+// here ever writes to it — GithubClientService itself doesn't know it's
+// being called on an agent's behalf versus the backend's own direct calls
+// (BE-6, BE-9 onward) — so it belongs with the one module that actually logs
+// to it, not with the client every caller shares.
 @Module({
   imports: [
     RedisModule.forRootAsync({
@@ -15,9 +18,6 @@ import { AccessLog, AccessLogSchema } from './schemas/access-log.schema';
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([
-      { name: AccessLog.name, schema: AccessLogSchema },
-    ]),
   ],
   providers: [GithubClientService],
   exports: [GithubClientService],

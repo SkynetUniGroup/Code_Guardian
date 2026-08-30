@@ -14,4 +14,9 @@ export const envValidationSchema = Joi.object({
   JWT_SECRET: Joi.string().min(16).required(),
   CREDENTIAL_MASTER_KEY: Joi.string().min(16).required(),
   INTERNAL_SHARED_SECRET: Joi.string().min(16).required(),
+
+  // Anti-replay window (seconds) for HMAC-signed /internal/* requests: a
+  // request whose X-Internal-Timestamp is further than this from "now" is
+  // rejected, signature notwithstanding (PoC §6.3).
+  HMAC_WINDOW_S: Joi.number().default(30),
 });

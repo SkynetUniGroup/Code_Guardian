@@ -6,7 +6,12 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // rawBody: true exposes request.rawBody (the exact bytes received) instead
+  // of only the parsed object. InternalAuthGuard hashes those exact bytes to
+  // verify the HMAC signature on /internal/* requests — re-serializing the
+  // already-parsed body could produce different bytes (key order, spacing)
+  // than what the caller actually signed, breaking a valid signature.
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   const config = app.get(ConfigService);
 
   app.useGlobalPipes(

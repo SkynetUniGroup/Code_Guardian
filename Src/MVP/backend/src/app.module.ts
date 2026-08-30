@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { CredentialsModule } from './credentials/credentials.module';
 import { GithubModule } from './github/github.module';
+import { InternalGithubModule } from './github/internal-github.module';
 import { ContextsModule } from './contexts/contexts.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ReportsModule } from './reports/reports.module';
@@ -26,6 +27,7 @@ import { envValidationSchema } from './config/env.validation';
     AuthModule,
     CredentialsModule,
     GithubModule,
+    InternalGithubModule,
     ContextsModule,
     TasksModule,
     ReportsModule,
