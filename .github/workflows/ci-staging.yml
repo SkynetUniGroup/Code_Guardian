@@ -19,8 +19,8 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Python
         uses: actions/setup-python@v7
