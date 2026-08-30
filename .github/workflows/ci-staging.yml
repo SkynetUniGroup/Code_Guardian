@@ -16,6 +16,7 @@ jobs:
       - name: Setup pnpm + Node.js
         uses: pnpm/setup@v2
         with:
+          working-directory: Src/MVP
           version: 11
           cache: true
 
