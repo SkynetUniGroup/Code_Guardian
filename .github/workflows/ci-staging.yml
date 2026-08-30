@@ -19,6 +19,8 @@ jobs:
           version: 11
           runtime: node@24
           cache: true
+          working-directory: Src/MVP
+          require-lockfile: true
 
       - name: Setup Python
         uses: actions/setup-python@v7
