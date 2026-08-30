@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
-import { UserRole } from '../auth/schemas/user.schema';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import type { UserRole } from '../auth/schemas/user.schema';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { AgentRegistry } from './agent-registry.service';
 import { OperationDescriptorDto } from './agent-registry.types';
 
@@ -8,12 +10,8 @@ export class OperationsController {
   constructor(private readonly agentRegistry: AgentRegistry) {}
 
   @Get()
-  findAll(): OperationDescriptorDto[] {
-    // TODO(BE-4): read the real role from the JWT once JwtAuthGuard/RolesGuard
-    // exist, e.g. via a @CurrentUser() decorator reading req.user.role.
-    // Hardcoded for now so this endpoint has its real shape and the frontend
-    // can integrate against it before auth lands — swap this one line.
-    const callerRole: UserRole = 'DEVELOPER';
-    return this.agentRegistry.getForRole(callerRole);
+  @UseGuards(JwtAuthGuard)
+  findAll(@CurrentUser('role') role: UserRole): OperationDescriptorDto[] {
+    return this.agentRegistry.getForRole(role);
   }
 }

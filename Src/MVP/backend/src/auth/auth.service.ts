@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -64,6 +65,17 @@ export class AuthService {
     });
 
     return { accessToken };
+  }
+
+  async getProfile(userId: string): Promise<UserProfileDto> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      // The token was valid (signature + expiry checked by JwtAuthGuard) but
+      // the account it names is gone — a deleted user with a still-live
+      // token, not a case the caller can retry their way out of.
+      throw new NotFoundException('User not found');
+    }
+    return this.toProfile(user);
   }
 
   private toProfile(user: UserDocument): UserProfileDto {
