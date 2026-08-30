@@ -7,6 +7,7 @@ import { GithubModule } from './github/github.module';
 import { ContextsModule } from './contexts/contexts.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ReportsModule } from './reports/reports.module';
+import { OperationsModule } from './operations/operations.module';
 import { envValidationSchema } from './config/env.validation';
 
 @Module({
@@ -28,6 +29,7 @@ import { envValidationSchema } from './config/env.validation';
     ContextsModule,
     TasksModule,
     ReportsModule,
+    OperationsModule,
   ],
 })
 export class AppModule {}
