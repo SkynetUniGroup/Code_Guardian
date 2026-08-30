@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule } from '@nestjs-modules/ioredis';
+import { MongooseModule } from '@nestjs/mongoose';
 import { GithubClientService } from './github-client.service';
+import { AccessLog, AccessLogSchema } from './schemas/access-log.schema';
 
 @Module({
   imports: [
@@ -13,6 +15,9 @@ import { GithubClientService } from './github-client.service';
       }),
       inject: [ConfigService],
     }),
+    MongooseModule.forFeature([
+      { name: AccessLog.name, schema: AccessLogSchema },
+    ]),
   ],
   providers: [GithubClientService],
   exports: [GithubClientService],

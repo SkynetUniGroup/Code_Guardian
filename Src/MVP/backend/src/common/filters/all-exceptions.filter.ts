@@ -19,7 +19,7 @@ interface ErrorResponseBody {
 // Fallback codes for NestJS's own built-in exceptions (NotFoundException,
 // UnauthorizedException, ForbiddenException, ConflictException, ...) thrown
 // directly by future code instead of through AppException. Anything with a
-// status not listed here still falls back to INTERNAL_ERROR.
+// status not listed here still falls back to UPSTREAM.
 const STATUS_FALLBACK_CODE: Partial<Record<number, string>> = {
   [HttpStatus.UNAUTHORIZED]: 'UNAUTHORIZED',
   [HttpStatus.FORBIDDEN]: 'FORBIDDEN',
@@ -57,7 +57,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const body: ErrorResponseBody = {
-        code: STATUS_FALLBACK_CODE[status] ?? 'INTERNAL_ERROR',
+        code: STATUS_FALLBACK_CODE[status] ?? 'UPSTREAM',
         message: exception.message,
       };
       response.status(status).json(body);
@@ -69,7 +69,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof Error ? exception.stack : String(exception),
     );
     const body: ErrorResponseBody = {
-      code: 'INTERNAL_ERROR',
+      code: 'UPSTREAM',
       message: 'An internal error occurred.',
     };
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(body);
