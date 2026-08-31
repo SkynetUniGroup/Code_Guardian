@@ -13,6 +13,7 @@ describe('CredentialsService', () => {
     find: jest.Mock;
     findOneAndDelete: jest.Mock;
     findOne: jest.Mock;
+    exists: jest.Mock;
   };
   let cipher: { encrypt: jest.Mock; decrypt: jest.Mock };
   let github: { verifyToken: jest.Mock };
@@ -23,6 +24,7 @@ describe('CredentialsService', () => {
       find: jest.fn(),
       findOneAndDelete: jest.fn(),
       findOne: jest.fn(),
+      exists: jest.fn(),
     };
     cipher = {
       encrypt: jest.fn().mockReturnValue({
@@ -220,6 +222,29 @@ describe('CredentialsService', () => {
 
       expect(cipher.decrypt).toHaveBeenCalledWith(stored);
       expect(token).toBe('ghp_decrypted');
+    });
+  });
+
+  describe('hasCredential', () => {
+    it('returns true when a credential exists for that provider', async () => {
+      model.exists.mockResolvedValue({ _id: 'cred1' });
+
+      await expect(service.hasCredential('user1', 'GITHUB')).resolves.toBe(
+        true,
+      );
+      expect(model.exists).toHaveBeenCalledWith({
+        userId: 'user1',
+        provider: 'GITHUB',
+      });
+    });
+
+    it('returns false when none is configured, without decrypting anything', async () => {
+      model.exists.mockResolvedValue(null);
+
+      await expect(service.hasCredential('user1', 'GITHUB')).resolves.toBe(
+        false,
+      );
+      expect(cipher.decrypt).not.toHaveBeenCalled();
     });
   });
 });

@@ -50,6 +50,16 @@ export class CredentialsService {
     return credentials.map((credential) => this.toDto(credential));
   }
 
+  // Existence-only, deliberately not getDecryptedToken(): BE-13's
+  // pre-accept check on POST /tasks only needs to know a credential is
+  // configured, not decrypt it. The scope/reachability check already ran
+  // once at save time (RS.4); repeating a decrypt on every task start would
+  // be pure waste for a question this cheap to answer.
+  async hasCredential(userId: string, provider: string): Promise<boolean> {
+    const match = await this.credentialModel.exists({ userId, provider });
+    return match !== null;
+  }
+
   // Local revocation only: this removes the ciphertext from our database but
   // does not revoke the token on GitHub's side — that stays the user's own
   // action (§4.1). Scoped to (id, userId) so one user can never delete

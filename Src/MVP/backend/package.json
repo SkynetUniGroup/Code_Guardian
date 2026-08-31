@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.2.2",
+    "@nestjs/bullmq": "^11.0.5",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
@@ -33,6 +34,7 @@
     "@nestjs/websockets": "^11.2.3",
     "@octokit/rest": "^22.0.1",
     "argon2": "^0.45.1",
+    "bullmq": "^6.3.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "diff": "^9.0.0",
