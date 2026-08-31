@@ -22,6 +22,7 @@ import {
   GET_FILE_CONTENT_ROUTE,
   LIST_ISSUES_ROUTE,
   GET_ISSUE_DETAIL_ROUTE,
+  GET_README_ROUTE,
 } from './github-routes';
 
 // Declared return types, not inline `as` casts: a bare ternary here would
@@ -233,6 +234,63 @@ export class GithubClientService {
       CACHE_TTL_SECONDS,
     );
     return file;
+  }
+
+  // GitHub's dedicated README endpoint, not a guess at a filename: it
+  // resolves whichever README GitHub itself recognizes for the repo
+  // (README.md, Readme.rst, README, ...), so this never has to enumerate
+  // naming conventions itself. Returns null when the repo has none —
+  // absence isn't an error here, just "nothing to check" for RV.8.
+  async getReadme(
+    token: string,
+    owner: string,
+    repo: string,
+    ref: string,
+  ): Promise<FileContent | null> {
+    const cacheKey = `github:readme:${owner}/${repo}@${ref}`;
+    const cached = await this.redis.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached) as FileContent | null;
+    }
+
+    let file: FileContent | null;
+    try {
+      const { data } = await this.client(token).request(GET_README_ROUTE, {
+        owner,
+        repo,
+        ref,
+      });
+      const content = Buffer.from(data.content, 'base64').toString('utf8');
+      file = {
+        path: data.path,
+        content,
+        sha: data.sha,
+        language: detectLanguage(data.path),
+      };
+    } catch (error) {
+      if (this.isNotFound(error)) {
+        file = null;
+      } else {
+        throw error;
+      }
+    }
+
+    await this.redis.set(
+      cacheKey,
+      JSON.stringify(file),
+      'EX',
+      CACHE_TTL_SECONDS,
+    );
+    return file;
+  }
+
+  private isNotFound(error: unknown): boolean {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'status' in error &&
+      error.status === 404
+    );
   }
 
   async listIssues(

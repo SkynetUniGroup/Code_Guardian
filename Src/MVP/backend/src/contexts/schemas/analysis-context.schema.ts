@@ -45,6 +45,11 @@ export class AnalysisContext {
   @Prop()
   estimatedFileCount: number;
 
+  // RV.8 — see AnalysisContextDto for why this field exists and isn't part
+  // of detectedLanguages.
+  @Prop({ default: false })
+  nonEnglishReadmeDetected: boolean;
+
   // No sprintId here — it moved to Task, since a context can be shared by
   // several operations in one batch while the Sprint ID only concerns the
   // Changelog ones.
