@@ -68,6 +68,11 @@ export class Task {
   // Task, never a reopening of the old one.
   @Prop({ type: Types.ObjectId, ref: 'Task' })
   previousTaskId?: Types.ObjectId;
+
+  // LangGraph thread id, generated once per Task at first invocation
+  // (BE-15). Maps a Task to its checkpointed execution on the agent side.
+  @Prop()
+  lgThreadId?: string;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

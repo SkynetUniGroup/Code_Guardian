@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRole } from '../auth/schemas/user.schema';
+import { OperationCode } from '../common/domain-types';
 import {
   AgentRegistryEntry,
   OperationDescriptorDto,
@@ -13,6 +14,7 @@ const ENTRIES: AgentRegistryEntry[] = [
       'Generates or updates the project README and opens a Pull Request with the proposed changes.',
     agent: 'DOCS',
     allowedRoles: ['DEVELOPER'],
+    timeoutS: 150,
   },
   {
     code: 'DOCS_INLINE',
@@ -21,6 +23,7 @@ const ENTRIES: AgentRegistryEntry[] = [
       'Adds or fixes JSDoc/docstring comments that are missing or out of sync with the code.',
     agent: 'DOCS',
     allowedRoles: ['DEVELOPER'],
+    timeoutS: 90,
   },
   {
     code: 'DOCS_API',
@@ -29,6 +32,7 @@ const ENTRIES: AgentRegistryEntry[] = [
       'Generates documentation for the endpoints exposed by the project.',
     agent: 'DOCS',
     allowedRoles: ['DEVELOPER'],
+    timeoutS: 150,
   },
   {
     code: 'SECURITY_OWASP',
@@ -37,6 +41,7 @@ const ENTRIES: AgentRegistryEntry[] = [
       'Analyzes the code for vulnerabilities matching the OWASP Top 10.',
     agent: 'SECURITY',
     allowedRoles: ['SECURITY_AUDITOR'],
+    timeoutS: 180,
   },
   {
     code: 'SECURITY_POLICY',
@@ -45,6 +50,7 @@ const ENTRIES: AgentRegistryEntry[] = [
       "Checks the code against the rules declared in the repository's POLICY.md.",
     agent: 'SECURITY',
     allowedRoles: ['SECURITY_AUDITOR'],
+    timeoutS: 120,
   },
   {
     code: 'CHANGELOG_TECHNICAL',
@@ -53,6 +59,7 @@ const ENTRIES: AgentRegistryEntry[] = [
       'Generates a technical changelog from the User Stories/Issues closed in the given Sprint.',
     agent: 'CHANGELOG',
     allowedRoles: ['PROJECT_MANAGER', 'DEVELOPER'],
+    timeoutS: 90,
   },
   {
     code: 'CHANGELOG_BUSINESS',
@@ -61,6 +68,7 @@ const ENTRIES: AgentRegistryEntry[] = [
       'Generates a business-facing changelog from the technical changelog of the same Sprint.',
     agent: 'CHANGELOG',
     allowedRoles: ['PROJECT_MANAGER'],
+    timeoutS: 120,
   },
 ];
 
@@ -75,5 +83,15 @@ export class AgentRegistry {
         agent,
       }),
     );
+  }
+
+  // Agent's own execution budget (Tabella 45), seconds. Callers add their
+  // own network margin on top — this is not the gateway's HTTP timeout.
+  getTimeoutS(code: OperationCode): number {
+    const entry = ENTRIES.find((e) => e.code === code);
+    if (!entry) {
+      throw new Error(`Unknown OperationCode: ${code}`);
+    }
+    return entry.timeoutS;
   }
 }

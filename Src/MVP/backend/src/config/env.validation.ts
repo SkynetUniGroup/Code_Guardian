@@ -24,4 +24,7 @@ export const envValidationSchema = Joi.object({
   // POST /tasks starts rejecting with 429 USAGE_LIMIT_EXCEEDED. Lives in
   // config, not the database, so raising it is a redeploy, not a migration.
   MONTHLY_TASK_LIMIT: Joi.number().default(50),
+
+  // Base URL of the Python agent service (BE-15).
+  AGENTS_SERVICE_URL: Joi.string().uri().default('http://agents:8000'),
 });

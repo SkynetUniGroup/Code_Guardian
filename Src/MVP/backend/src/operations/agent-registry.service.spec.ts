@@ -33,4 +33,14 @@ describe('AgentRegistry', () => {
       ['agent', 'code', 'description', 'displayName'].sort(),
     );
   });
+
+  it('returns the configured timeout for a known operation', () => {
+    expect(registry.getTimeoutS('DOCS_INLINE')).toBe(90);
+  });
+
+  it('throws for an unknown operation code', () => {
+    expect(() => registry.getTimeoutS('NOT_REAL' as never)).toThrow(
+      'Unknown OperationCode',
+    );
+  });
 });

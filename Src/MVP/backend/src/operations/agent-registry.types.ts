@@ -12,8 +12,9 @@ export interface OperationDescriptorDto {
   agent: AgentName;
 }
 
-// The registry's own entries carry one field the DTO doesn't: allowedRoles,
-// used to filter before the response is built.
+// The registry's own entries carry fields the DTO doesn't: allowedRoles
+// (filtering) and timeoutS (agent's own execution budget, Tabella 45).
 export interface AgentRegistryEntry extends OperationDescriptorDto {
   allowedRoles: UserRole[];
+  timeoutS: number;
 }
