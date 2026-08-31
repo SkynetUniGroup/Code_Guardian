@@ -32,6 +32,7 @@ volta:
 
 ```bash
 npm install
+aws login
 npx cdk bootstrap aws://<ACCOUNT_ID>/eu-south-1
 npx cdk bootstrap aws://<ACCOUNT_ID>/us-east-1  # solo per CodeGuardian-Budget
 npm run synth      # verifica che tutti gli stack sintetizzino correttamente
