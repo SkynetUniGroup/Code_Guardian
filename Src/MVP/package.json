@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.10",
-    "lint-staged": "^17.3.0"
+    "lint-staged": "^17.3.0",
+    "vitest": "^4.1.11"
   }
 }
