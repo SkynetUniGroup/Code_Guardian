@@ -24,5 +24,9 @@ import { User, UserSchema } from './schemas/user.schema';
   ],
   controllers: [AuthController],
   providers: [AuthService, PasswordService, JwtStrategy],
+  // JwtModule re-exported so other modules (events' WebSocket gateway
+  // verifies the handshake token) share the exact same secret/signing
+  // config instead of each registering their own JwtModule.
+  exports: [JwtModule],
 })
 export class AuthModule {}

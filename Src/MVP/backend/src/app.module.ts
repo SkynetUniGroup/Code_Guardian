@@ -9,6 +9,7 @@ import { ContextsModule } from './contexts/contexts.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ReportsModule } from './reports/reports.module';
 import { OperationsModule } from './operations/operations.module';
+import { EventsModule } from './events/events.module';
 import { envValidationSchema } from './config/env.validation';
 
 @Module({
@@ -32,6 +33,7 @@ import { envValidationSchema } from './config/env.validation';
     TasksModule,
     ReportsModule,
     OperationsModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
