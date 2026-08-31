@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment files — NEVER commit secrets
+.env
+.env.*
+!.env.example
+
+# Test & coverage output
+coverage/
+playwright-report/
+test-results/
+*.snap
+
+# Vite
+*.local
+.vite/
+
+# TypeScript incremental build
+*.tsbuildinfo
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Mock server — dev only, never ship to production
+mock-server.mjs
