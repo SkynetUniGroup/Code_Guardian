@@ -19,4 +19,9 @@ export const envValidationSchema = Joi.object({
   // request whose X-Internal-Timestamp is further than this from "now" is
   // rejected, signature notwithstanding (PoC §6.3).
   HMAC_WINDOW_S: Joi.number().default(30),
+
+  // RF.66: Tasks a single user may start per calendar month before
+  // POST /tasks starts rejecting with 429 USAGE_LIMIT_EXCEEDED. Lives in
+  // config, not the database, so raising it is a redeploy, not a migration.
+  MONTHLY_TASK_LIMIT: Joi.number().default(50),
 });

@@ -17,6 +17,7 @@ import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { TaskProcessor } from './task-processor';
 import { AgentInvocationService } from './agent-invocation.service';
+import { UsageLimitService } from './usage-limit.service';
 
 @Module({
   imports: [
@@ -37,7 +38,12 @@ import { AgentInvocationService } from './agent-invocation.service';
     EventsModule,
   ],
   controllers: [TasksController],
-  providers: [TasksService, TaskProcessor, AgentInvocationService],
+  providers: [
+    TasksService,
+    TaskProcessor,
+    AgentInvocationService,
+    UsageLimitService,
+  ],
   // Re-exports the forFeature registration so other modules (BE-8's
   // internal GitHub facade needs to look up a Task by id) can inject
   // Model<Task> without this module having to expose a service of its own

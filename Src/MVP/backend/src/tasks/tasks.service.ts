@@ -17,6 +17,7 @@ import {
 import { CredentialsService } from '../credentials/credentials.service';
 import { AgentRegistry } from '../operations/agent-registry.service';
 import { EventsGateway } from '../events/events.gateway';
+import { UsageLimitService } from './usage-limit.service';
 import { AuthenticatedUser } from '../common/authenticated-user';
 import { CreateTaskBatchDto } from './dto/create-task-batch.dto';
 import { TaskDto, toTaskDto } from './dto/task.dto';
@@ -36,14 +37,17 @@ export class TasksService {
     private readonly credentials: CredentialsService,
     private readonly agentRegistry: AgentRegistry,
     private readonly events: EventsGateway,
+    private readonly usageLimit: UsageLimitService,
     @InjectQueue('tasks') private readonly queue: Queue<RunTaskJobData>,
   ) {}
 
-  // The three pre-accept checks (§7.3): whole batch rejected on the first
-  // failure, nothing partially queued. Order matches the design doc —
-  // cheap/local checks before the ones that touch the database, database
-  // checks before the one that's really just re-checking the caller's own
-  // input against a registry.
+  // Four pre-accept checks: whole batch rejected on the first failure,
+  // nothing partially queued. Order goes cheapest/local first, database
+  // reads next, and the usage-limit check (RF.66, BE-14) last — it's the
+  // only one that writes (and might have to roll its own write back), so it
+  // only runs once everything else about the request is already known
+  // valid, rather than spending quota on a request that would've failed
+  // anyway.
   async createBatch(
     user: AuthenticatedUser,
     dto: CreateTaskBatchDto,
@@ -80,6 +84,8 @@ export class TasksService {
         `Operation(s) not permitted for role ${user.role}: ${disallowed.join(', ')}`,
       );
     }
+
+    await this.usageLimit.checkAndIncrement(user.userId, operations.length);
 
     const batchId = new Types.ObjectId().toString();
     const tasks = await this.taskModel.insertMany(

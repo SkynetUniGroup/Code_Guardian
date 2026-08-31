@@ -13,6 +13,7 @@ import { AnalysisContext } from '../contexts/schemas/analysis-context.schema';
 import { CredentialsService } from '../credentials/credentials.service';
 import { AgentRegistry } from '../operations/agent-registry.service';
 import { EventsGateway } from '../events/events.gateway';
+import { UsageLimitService } from './usage-limit.service';
 
 describe('TasksService', () => {
   let service: TasksService;
@@ -26,6 +27,7 @@ describe('TasksService', () => {
   let agentRegistry: { getForRole: jest.Mock };
   let events: { emitTaskUpdated: jest.Mock };
   let queue: { addBulk: jest.Mock };
+  let usageLimit: { checkAndIncrement: jest.Mock };
 
   const developer = { userId: 'user1', role: 'DEVELOPER' as const };
 
@@ -36,6 +38,9 @@ describe('TasksService', () => {
     agentRegistry = { getForRole: jest.fn() };
     events = { emitTaskUpdated: jest.fn() };
     queue = { addBulk: jest.fn() };
+    // Passes by default — only the dedicated usage-limit tests below need
+    // it to reject, everything else is testing the other three checks.
+    usageLimit = { checkAndIncrement: jest.fn().mockResolvedValue(undefined) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -48,6 +53,7 @@ describe('TasksService', () => {
         { provide: CredentialsService, useValue: credentials },
         { provide: AgentRegistry, useValue: agentRegistry },
         { provide: EventsGateway, useValue: events },
+        { provide: UsageLimitService, useValue: usageLimit },
         { provide: getQueueToken('tasks'), useValue: queue },
       ],
     }).compile();
@@ -158,6 +164,37 @@ describe('TasksService', () => {
         { name: 'run-task', data: { taskId: 'task1' } },
         { name: 'run-task', data: { taskId: 'task2' } },
       ]);
+      // 2, not 3: the usage check is charged against the deduplicated
+      // count — the same number of Tasks actually created — not the raw
+      // request body.
+      expect(usageLimit.checkAndIncrement).toHaveBeenCalledWith('user1', 2);
+    });
+
+    it('rejects with 429 when the monthly usage limit is exceeded, before creating anything', async () => {
+      contextModel.findOne.mockResolvedValue({ _id: 'ctx1' });
+      credentials.hasCredential.mockResolvedValue(true);
+      agentRegistry.getForRole.mockReturnValue([
+        {
+          code: 'DOCS_README',
+          displayName: '',
+          description: '',
+          agent: 'DOCS',
+        },
+      ]);
+      usageLimit.checkAndIncrement.mockRejectedValue(
+        Object.assign(new Error('limit exceeded'), {
+          code: 'USAGE_LIMIT_EXCEEDED',
+        }),
+      );
+
+      await expect(
+        service.createBatch(developer, {
+          contextId: 'ctx1',
+          operations: ['DOCS_README'],
+        }),
+      ).rejects.toMatchObject({ code: 'USAGE_LIMIT_EXCEEDED' });
+      expect(taskModel.insertMany).not.toHaveBeenCalled();
+      expect(queue.addBulk).not.toHaveBeenCalled();
     });
   });
 
