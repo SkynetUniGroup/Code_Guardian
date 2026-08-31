@@ -3,6 +3,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Octokit } from '@octokit/rest';
 import { applyPatch } from 'diff';
 import { GithubClientService } from './github-client.service';
+import { OCTOKIT_TIMEOUT_MS } from './octokit-timeout';
 import { AppException } from '../common/exceptions/app.exception';
 
 export interface ProposalChange {
@@ -25,7 +26,10 @@ export class GithubWriteService {
   constructor(private readonly githubClient: GithubClientService) {}
 
   private writeClient(token: string): Octokit {
-    return new Octokit({ auth: token });
+    return new Octokit({
+      auth: token,
+      request: { signal: AbortSignal.timeout(OCTOKIT_TIMEOUT_MS) },
+    });
   }
 
   // "<namespace>/<scope>/<id>" is the same shape Dependabot and Renovate use

@@ -25,6 +25,37 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Docker (local development)
+
+Run the whole stack (backend + MongoDB + Redis) from `Src/MVP`:
+
+```bash
+docker compose up -d
+```
+
+### ⚠️ After adding or updating an npm package, a rebuild is *not* enough
+
+`docker-compose.yml` mounts `/app/node_modules` as an anonymous volume, so the
+container never uses the `node_modules` baked into the image at build time —
+it always uses that same persisted volume instead, and Docker keeps that
+volume alive across every `docker compose up --build` and container
+recreation. Concretely: on 2026-08-30, `diff` and `@types/diff` were added to
+`package.json`, the image was rebuilt twice, and the container kept failing
+to compile (`Could not find a declaration file for module 'diff'`) because
+the *volume* still had the dependencies from days earlier — the fresh image
+was never actually being used for `node_modules`.
+
+**Whenever you add, remove, or update a dependency, run this — a rebuild
+alone will not pick it up:**
+
+```bash
+docker compose exec backend npm install
+```
+
+If the container isn't running yet (so there's nothing to `exec` into), a
+plain `docker compose up -d --build` is fine — this only bites you when the
+container was already up from before the `package.json` change.
+
 ## Project setup
 
 ```bash

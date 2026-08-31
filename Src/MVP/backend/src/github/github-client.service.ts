@@ -15,6 +15,8 @@ import {
   TreeNode,
 } from './github-client.types';
 import { backoffIfRateLimited } from './rate-limit-backoff';
+import { detectLanguage } from './language-detection';
+import { OCTOKIT_TIMEOUT_MS } from './octokit-timeout';
 import {
   GET_TREE_ROUTE,
   GET_FILE_CONTENT_ROUTE,
@@ -42,22 +44,6 @@ function toCompareStatus(githubStatus: string): CompareStatus {
   throw new Error(`Unexpected compare status from GitHub: ${githubStatus}`);
 }
 
-function detectLanguage(path: string): string {
-  const extension = path.split('.').pop();
-  switch (extension) {
-    case 'ts':
-    case 'tsx':
-      return 'typescript';
-    case 'js':
-    case 'jsx':
-      return 'javascript';
-    case 'py':
-      return 'python';
-    default:
-      return 'unknown';
-  }
-}
-
 // Content at a fixed commit SHA never changes, so caching it can never serve
 // stale data — this TTL is only about not letting Redis hold entries forever
 // for repos nobody re-reads, not a correctness concern.
@@ -80,7 +66,10 @@ export class GithubClientService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
   private client(token: string): Octokit {
-    const octokit = new Octokit({ auth: token });
+    const octokit = new Octokit({
+      auth: token,
+      request: { signal: AbortSignal.timeout(OCTOKIT_TIMEOUT_MS) },
+    });
     octokit.hook.before('request', (options) => {
       if (options.method !== 'GET') {
         throw new Error(
