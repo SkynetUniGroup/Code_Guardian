@@ -8,8 +8,10 @@ import {
 import { Task, TaskSchema } from '../tasks/schemas/task.schema';
 import { OperationsModule } from '../operations/operations.module';
 import { ReportAssemblyService } from './report-assembly.service';
+import { ReportArtifactStorageService } from './report-artifact-storage.service';
 import { ReportsController } from './reports.controller';
 import { ReportsService } from './reports.service';
+import { ReportsExportService } from './reports-export.service';
 
 @Module({
   imports: [
@@ -29,9 +31,12 @@ import { ReportsService } from './reports.service';
     OperationsModule,
   ],
   controllers: [ReportsController],
-  providers: [ReportAssemblyService, ReportsService],
-  // MongooseModule re-exported for BE-20 to inject Model<Report> directly,
-  // same pattern TasksModule already uses for Model<Task>.
+  providers: [
+    ReportAssemblyService,
+    ReportsService,
+    ReportArtifactStorageService,
+    ReportsExportService,
+  ],
   exports: [MongooseModule, ReportAssemblyService],
 })
 export class ReportsModule {}
