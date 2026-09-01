@@ -43,4 +43,16 @@ describe('AgentRegistry', () => {
       'Unknown OperationCode',
     );
   });
+
+  it('returns the agent that owns a known operation', () => {
+    expect(registry.getAgent('CHANGELOG_BUSINESS')).toBe('CHANGELOG');
+    expect(registry.getAgent('DOCS_README')).toBe('DOCS');
+    expect(registry.getAgent('SECURITY_OWASP')).toBe('SECURITY');
+  });
+
+  it('throws for an unknown operation code when looking up the owning agent', () => {
+    expect(() => registry.getAgent('NOT_REAL' as never)).toThrow(
+      'Unknown OperationCode',
+    );
+  });
 });

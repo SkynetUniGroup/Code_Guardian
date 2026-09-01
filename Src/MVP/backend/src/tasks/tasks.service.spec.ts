@@ -26,7 +26,7 @@ describe('TasksService', () => {
   let credentials: { hasCredential: jest.Mock };
   let agentRegistry: { getForRole: jest.Mock };
   let events: { emitTaskUpdated: jest.Mock };
-  let queue: { addBulk: jest.Mock };
+  let queue: { addBulk: jest.Mock; add: jest.Mock };
   let usageLimit: { checkAndIncrement: jest.Mock };
 
   const developer = { userId: 'user1', role: 'DEVELOPER' as const };
@@ -37,7 +37,7 @@ describe('TasksService', () => {
     credentials = { hasCredential: jest.fn() };
     agentRegistry = { getForRole: jest.fn() };
     events = { emitTaskUpdated: jest.fn() };
-    queue = { addBulk: jest.fn() };
+    queue = { addBulk: jest.fn(), add: jest.fn() };
     // Passes by default — only the dedicated usage-limit tests below need
     // it to reject, everything else is testing the other three checks.
     usageLimit = { checkAndIncrement: jest.fn().mockResolvedValue(undefined) };
@@ -240,6 +240,107 @@ describe('TasksService', () => {
 
       expect(task.status).toBe('CANCELLED');
       expect(task.save).toHaveBeenCalled();
+      expect(events.emitTaskUpdated).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        'CANCELLED',
+      );
+    });
+  });
+
+  describe('submitInput', () => {
+    function makeTask(overrides: Record<string, unknown> = {}) {
+      return {
+        id: 'task1',
+        status: 'RUNNING',
+        pendingInput: null,
+        sprintId: undefined,
+        canTransitionTo: jest.fn().mockReturnValue(true),
+        save: jest.fn().mockResolvedValue(undefined),
+        ...overrides,
+      };
+    }
+
+    it('throws NotFoundException when the task does not belong to the caller', async () => {
+      taskModel.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.submitInput('user1', 'task1', { kind: 'SPRINT_ID' } as never),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('rejects with 409 when the task has no pending input', async () => {
+      taskModel.findOne.mockResolvedValue(makeTask({ pendingInput: null }));
+
+      await expect(
+        service.submitInput('user1', 'task1', { kind: 'SPRINT_ID' } as never),
+      ).rejects.toThrow(ConflictException);
+    });
+
+    it('rejects with 409 when the submitted kind does not match what the task is waiting for', async () => {
+      taskModel.findOne.mockResolvedValue(
+        makeTask({ pendingInput: { kind: 'BUSINESS_CONFIRMATION' } }),
+      );
+
+      await expect(
+        service.submitInput('user1', 'task1', {
+          kind: 'SPRINT_ID',
+          sprintId: 'S-1',
+        } as never),
+      ).rejects.toThrow(ConflictException);
+    });
+
+    it('SPRINT_ID: sets sprintId, clears pendingInput and enqueues a run-task job', async () => {
+      const task = makeTask({ pendingInput: { kind: 'SPRINT_ID' } });
+      taskModel.findOne.mockResolvedValue(task);
+
+      await service.submitInput('user1', 'task1', {
+        kind: 'SPRINT_ID',
+        sprintId: 'S-42',
+      } as never);
+
+      expect(task.sprintId).toBe('S-42');
+      expect(task.pendingInput).toBeNull();
+      expect(task.save).toHaveBeenCalled();
+      expect(queue.add).toHaveBeenCalledWith('run-task', { taskId: 'task1' });
+    });
+
+    it('INCOMPLETE_TASKS + PROCEED: clears pendingInput and enqueues a resume-task job', async () => {
+      const task = makeTask({
+        pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['T-1'] },
+      });
+      taskModel.findOne.mockResolvedValue(task);
+
+      await service.submitInput('user1', 'task1', {
+        kind: 'INCOMPLETE_TASKS',
+        action: 'PROCEED',
+      } as never);
+
+      expect(task.pendingInput).toBeNull();
+      expect(queue.add).toHaveBeenCalledWith('resume-task', {
+        taskId: 'task1',
+        inputValue: { action: 'PROCEED' },
+      });
+      expect(events.emitTaskUpdated).not.toHaveBeenCalled();
+    });
+
+    it('BUSINESS_CONFIRMATION + CANCEL: cancels the task instead of resuming the agent', async () => {
+      const task = makeTask({
+        pendingInput: {
+          kind: 'BUSINESS_CONFIRMATION',
+          technicalReportId: 'r1',
+        },
+      });
+      taskModel.findOne.mockResolvedValue(task);
+
+      await service.submitInput('user1', 'task1', {
+        kind: 'BUSINESS_CONFIRMATION',
+        action: 'CANCEL',
+      } as never);
+
+      expect(task.status).toBe('CANCELLED');
+      expect(task.pendingInput).toBeNull();
+      expect(queue.add).not.toHaveBeenCalled();
       expect(events.emitTaskUpdated).toHaveBeenCalledWith(
         'user1',
         'task1',

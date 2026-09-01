@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRole } from '../auth/schemas/user.schema';
 import { OperationCode } from '../common/domain-types';
 import {
+  AgentName,
   AgentRegistryEntry,
   OperationDescriptorDto,
 } from './agent-registry.types';
@@ -88,10 +89,21 @@ export class AgentRegistry {
   // Agent's own execution budget (Tabella 45), seconds. Callers add their
   // own network margin on top — this is not the gateway's HTTP timeout.
   getTimeoutS(code: OperationCode): number {
+    return this.entry(code).timeoutS;
+  }
+
+  // BE-17: TaskProcessor needs to know whether an operation belongs to the
+  // Changelog agent, to decide whether a Task can be missing a sprintId and
+  // still be allowed to reach invoke() unpaused.
+  getAgent(code: OperationCode): AgentName {
+    return this.entry(code).agent;
+  }
+
+  private entry(code: OperationCode): AgentRegistryEntry {
     const entry = ENTRIES.find((e) => e.code === code);
     if (!entry) {
       throw new Error(`Unknown OperationCode: ${code}`);
     }
-    return entry.timeoutS;
+    return entry;
   }
 }
