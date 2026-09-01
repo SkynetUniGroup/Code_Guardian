@@ -7,8 +7,11 @@ import {
   AgentInvocationResult,
   AgentInvocationService,
 } from './agent-invocation.service';
+import { AgentRunPayload } from './agent-client.types';
+import { TaskError } from './task.types';
 import { AgentRegistry } from '../operations/agent-registry.service';
 import { EventsGateway } from '../events/events.gateway';
+import { ReportAssemblyService } from '../reports/report-assembly.service';
 
 // Two job shapes on the same 'tasks' queue: a plain {taskId} is either a
 // brand-new PENDING pickup, or (BE-17) a Changelog Task whose sprintId was
@@ -37,7 +40,8 @@ function isResumeJob(
 // one: a resume is still "run this Task's next step", it just starts from
 // RUNNING instead of PENDING and calls a different AgentInvocationService
 // method — keeping both here means the COMPLETED/FAILED/INTERRUPTED
-// handling and the batch-completed check only exist once.
+// handling and the batch-completed check only exist once. BE-18 hangs the
+// Report assembly off that same single handling point.
 @Processor('tasks')
 export class TaskProcessor extends WorkerHost {
   constructor(
@@ -45,6 +49,7 @@ export class TaskProcessor extends WorkerHost {
     private readonly events: EventsGateway,
     private readonly agentInvocation: AgentInvocationService,
     private readonly agentRegistry: AgentRegistry,
+    private readonly reportAssembly: ReportAssemblyService,
   ) {
     super();
   }
@@ -78,20 +83,26 @@ export class TaskProcessor extends WorkerHost {
       return;
     }
 
+    // BE-18: machine time for *this* call only, added to whatever earlier
+    // segments already accumulated — never reset, since a paused-then-
+    // resumed Task reaches here more than once. Wraps the SPRINT_ID
+    // pre-check too (startOrPause can return INTERRUPTED without ever
+    // calling the agent); that's still machine time, just a very small
+    // amount of it.
+    const startedAt = Date.now();
     try {
       const result = isResumeJob(job.data)
         ? await this.agentInvocation.resume(task, job.data.inputValue)
         : await this.startOrPause(task);
+      task.accumulatedMs += Date.now() - startedAt;
       await this.applyResult(task, result);
     } catch (err) {
-      task.status = 'FAILED';
-      task.error = {
+      task.accumulatedMs += Date.now() - startedAt;
+      await this.finishFailed(task, {
         code: 'UPSTREAM',
         message: err instanceof Error ? err.message : 'Unknown error',
         stage: 'EXECUTION',
-      };
-      await task.save();
-      this.events.emitTaskFailed(task.userId, task.id, task.error);
+      });
     }
 
     await this.maybeEmitBatchCompleted(task.batchId, task.userId);
@@ -135,29 +146,57 @@ export class TaskProcessor extends WorkerHost {
     }
 
     if (result.status === 'FAILED') {
-      task.status = 'FAILED';
       // The type says `error` is always populated (AgentInvocationService's
       // own failure() always builds one) — this fallback is for whatever a
       // caller passes at runtime regardless of what the type promises, same
-      // as before BE-17 touched this method.
-      task.error = result.error ?? {
+      // as before BE-18 touched this method.
+      const error = result.error ?? {
         code: 'UPSTREAM',
         message: 'Agent invocation failed with no further detail',
         stage: 'EXECUTION',
       };
-      await task.save();
-      this.events.emitTaskFailed(task.userId, task.id, task.error);
+      await this.finishFailed(task, error);
       return;
     }
 
-    task.status = result.status;
+    await this.finishCompleted(task, result.payload);
+  }
+
+  // BE-18: assembles and persists the Report, then lets the frontend reach
+  // it the same way it already reaches everything else about a Task — via
+  // TaskDto.reportId (GET /tasks/:id) and the reportId this same event now
+  // carries, instead of a bare status flip with nothing behind it.
+  private async finishCompleted(
+    task: TaskDocument,
+    payload: AgentRunPayload,
+  ): Promise<void> {
+    const report = await this.reportAssembly.assembleCompleted(task, payload);
+    task.reportId = report._id;
+    task.status = 'COMPLETED';
     await task.save();
     this.events.emitTaskUpdated(
       task.userId,
       task.id,
-      result.status,
-      task.reportId?.toString(),
+      'COMPLETED',
+      task.reportId.toString(),
     );
+  }
+
+  // Shared by applyResult's FAILED branch and process()'s catch block — a
+  // Task that never reaches the agent at all (e.g. resume() throwing on a
+  // missing lgThreadId) still needs a Report to point users at, same as one
+  // the agent itself reported failing: "con successo o meno" (BE-18) covers
+  // both.
+  private async finishFailed(
+    task: TaskDocument,
+    error: TaskError,
+  ): Promise<void> {
+    const report = await this.reportAssembly.assembleFailed(task, error);
+    task.reportId = report._id;
+    task.status = 'FAILED';
+    task.error = error;
+    await task.save();
+    this.events.emitTaskFailed(task.userId, task.id, task.error);
   }
 
   // Whether every Task in this batch has reached a terminal state — checked

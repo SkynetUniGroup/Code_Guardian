@@ -73,6 +73,18 @@ export class Task {
   // (BE-15). Maps a Task to its checkpointed execution on the agent side.
   @Prop()
   lgThreadId?: string;
+
+  // BE-1 anticipated this field for "issues successive" but never added it;
+  // BE-18 is that issue. Machine time only, summed across every
+  // invoke()/resume() call TaskProcessor makes for this Task — accumulated
+  // rather than a single start/end pair because a paused-then-resumed Task
+  // (BE-17) has one or more gaps (queue wait, pendingInput wait) that must
+  // never count, and each resume is a separate process() call with no
+  // in-memory state surviving between them. Read once, at Report assembly
+  // time, as the finished value of executionTimeMs (§11.7's field is named
+  // durationMs on Report — see that schema's own comment).
+  @Prop({ default: 0 })
+  accumulatedMs: number;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

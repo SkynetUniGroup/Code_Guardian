@@ -5,6 +5,7 @@ import { Task } from './schemas/task.schema';
 import { EventsGateway } from '../events/events.gateway';
 import { AgentInvocationService } from './agent-invocation.service';
 import { AgentRegistry } from '../operations/agent-registry.service';
+import { ReportAssemblyService } from '../reports/report-assembly.service';
 
 describe('TaskProcessor', () => {
   let processor: TaskProcessor;
@@ -17,6 +18,10 @@ describe('TaskProcessor', () => {
   };
   let agentInvocation: { invoke: jest.Mock; resume: jest.Mock };
   let agentRegistry: { getAgent: jest.Mock };
+  let reportAssembly: {
+    assembleCompleted: jest.Mock;
+    assembleFailed: jest.Mock;
+  };
 
   function makeTask(overrides: Record<string, unknown> = {}) {
     return {
@@ -29,6 +34,7 @@ describe('TaskProcessor', () => {
       reportId: null,
       pendingInput: null,
       sprintId: undefined,
+      accumulatedMs: 0,
       canTransitionTo: jest.fn().mockReturnValue(true),
       save: jest.fn().mockResolvedValue(undefined),
       ...overrides,
@@ -48,6 +54,10 @@ describe('TaskProcessor', () => {
     // pre-check, only the ones under 'BE-17 pause/resume' below do, and they
     // override this per-test.
     agentRegistry = { getAgent: jest.fn().mockReturnValue('DOCS') };
+    reportAssembly = {
+      assembleCompleted: jest.fn().mockResolvedValue({ _id: 'report1' }),
+      assembleFailed: jest.fn().mockResolvedValue({ _id: 'report1' }),
+    };
     // No other task left active in the batch, by default — most tests only
     // care about the single task's own transition, not the batch tally.
     taskModel.countDocuments.mockResolvedValue(0);
@@ -59,6 +69,7 @@ describe('TaskProcessor', () => {
         { provide: EventsGateway, useValue: events },
         { provide: AgentInvocationService, useValue: agentInvocation },
         { provide: AgentRegistry, useValue: agentRegistry },
+        { provide: ReportAssemblyService, useValue: reportAssembly },
       ],
     }).compile();
 
@@ -96,7 +107,10 @@ describe('TaskProcessor', () => {
   it('transitions PENDING to RUNNING and emits task.updated before invoking the agent', async () => {
     const task = makeTask();
     taskModel.findById.mockResolvedValue(task);
-    agentInvocation.invoke.mockResolvedValue({ status: 'COMPLETED' });
+    agentInvocation.invoke.mockResolvedValue({
+      status: 'COMPLETED',
+      payload: { body: [] },
+    });
 
     await processor.process(job());
 
@@ -107,47 +121,104 @@ describe('TaskProcessor', () => {
     );
   });
 
-  it('marks the Task FAILED and emits task.failed when the invocation result says FAILED', async () => {
-    const task = makeTask();
-    taskModel.findById.mockResolvedValue(task);
-    const error = {
-      code: 'UPSTREAM' as const,
-      message: 'boom',
-      stage: 'EXECUTION',
-    };
-    agentInvocation.invoke.mockResolvedValue({ status: 'FAILED', error });
+  describe('BE-18 report assembly', () => {
+    it('assembles and persists a Report on COMPLETED, and includes its id in task.updated', async () => {
+      const task = makeTask();
+      taskModel.findById.mockResolvedValue(task);
+      const payload = { body: [{ kind: 'TEXT', markdown: 'hi' }] };
+      agentInvocation.invoke.mockResolvedValue({
+        status: 'COMPLETED',
+        payload,
+      });
 
-    await processor.process(job());
+      await processor.process(job());
 
-    expect(task.status).toBe('FAILED');
-    expect(task.error).toEqual(error);
-    expect(events.emitTaskFailed).toHaveBeenCalledWith('user1', 'task1', error);
-  });
-
-  it('synthesizes a generic error if a FAILED result carries none', async () => {
-    const task = makeTask();
-    taskModel.findById.mockResolvedValue(task);
-    agentInvocation.invoke.mockResolvedValue({ status: 'FAILED' });
-
-    await processor.process(job());
-
-    expect(task.status).toBe('FAILED');
-    expect(task.error).toMatchObject({ code: 'UPSTREAM' });
-  });
-
-  it('marks the Task FAILED when the invocation throws, without letting the error escape', async () => {
-    const task = makeTask();
-    taskModel.findById.mockResolvedValue(task);
-    agentInvocation.invoke.mockRejectedValue(new Error('network down'));
-
-    await expect(processor.process(job())).resolves.toBeUndefined();
-
-    expect(task.status).toBe('FAILED');
-    expect(task.error).toMatchObject({
-      code: 'UPSTREAM',
-      message: 'network down',
+      expect(reportAssembly.assembleCompleted).toHaveBeenCalledWith(
+        task,
+        payload,
+      );
+      expect(task.reportId).toBe('report1');
+      expect(task.status).toBe('COMPLETED');
+      expect(events.emitTaskUpdated).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        'COMPLETED',
+        'report1',
+      );
     });
-    expect(events.emitTaskFailed).toHaveBeenCalled();
+
+    it('assembles and persists a Report on FAILED, and includes its id on the Task even though the event does not carry it', async () => {
+      const task = makeTask();
+      taskModel.findById.mockResolvedValue(task);
+      const error = {
+        code: 'UPSTREAM' as const,
+        message: 'boom',
+        stage: 'EXECUTION',
+      };
+      agentInvocation.invoke.mockResolvedValue({ status: 'FAILED', error });
+
+      await processor.process(job());
+
+      expect(reportAssembly.assembleFailed).toHaveBeenCalledWith(task, error);
+      expect(task.reportId).toBe('report1');
+      expect(task.status).toBe('FAILED');
+      expect(events.emitTaskFailed).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        error,
+      );
+    });
+
+    it('synthesizes a generic error and still assembles a Report if a FAILED result carries none', async () => {
+      const task = makeTask();
+      taskModel.findById.mockResolvedValue(task);
+      agentInvocation.invoke.mockResolvedValue({ status: 'FAILED' });
+
+      await processor.process(job());
+
+      expect(task.error).toMatchObject({ code: 'UPSTREAM' });
+      expect(reportAssembly.assembleFailed).toHaveBeenCalledWith(
+        task,
+        expect.objectContaining({ code: 'UPSTREAM' }),
+      );
+    });
+
+    it('assembles a FAILED Report even when the invocation throws, without letting the error escape', async () => {
+      const task = makeTask();
+      taskModel.findById.mockResolvedValue(task);
+      agentInvocation.invoke.mockRejectedValue(new Error('network down'));
+
+      await expect(processor.process(job())).resolves.toBeUndefined();
+
+      expect(task.status).toBe('FAILED');
+      expect(task.error).toMatchObject({
+        code: 'UPSTREAM',
+        message: 'network down',
+      });
+      expect(reportAssembly.assembleFailed).toHaveBeenCalledWith(
+        task,
+        expect.objectContaining({ message: 'network down' }),
+      );
+      expect(events.emitTaskFailed).toHaveBeenCalled();
+    });
+
+    it('accumulates machine time across the call and never resets it', async () => {
+      const task = makeTask({ accumulatedMs: 1000 });
+      taskModel.findById.mockResolvedValue(task);
+      const dateSpy = jest
+        .spyOn(Date, 'now')
+        .mockReturnValueOnce(5000) // startedAt
+        .mockReturnValueOnce(5300); // after the (mocked, instant) invoke
+      agentInvocation.invoke.mockResolvedValue({
+        status: 'COMPLETED',
+        payload: { body: [] },
+      });
+
+      await processor.process(job());
+
+      expect(task.accumulatedMs).toBe(1300); // 1000 already there + 300 this call
+      dateSpy.mockRestore();
+    });
   });
 
   it('does not emit batch.completed while sibling Tasks in the batch are still active', async () => {
@@ -164,7 +235,10 @@ describe('TaskProcessor', () => {
   it('emits batch.completed with the tally once no sibling Task is still active', async () => {
     const task = makeTask();
     taskModel.findById.mockResolvedValue(task);
-    agentInvocation.invoke.mockResolvedValue({ status: 'COMPLETED' });
+    agentInvocation.invoke.mockResolvedValue({
+      status: 'COMPLETED',
+      payload: { body: [] },
+    });
     taskModel.countDocuments
       .mockResolvedValueOnce(0) // none PENDING/RUNNING
       .mockResolvedValueOnce(3) // COMPLETED
@@ -206,14 +280,17 @@ describe('TaskProcessor', () => {
       });
       taskModel.findById.mockResolvedValue(task);
       agentRegistry.getAgent.mockReturnValue('CHANGELOG');
-      agentInvocation.invoke.mockResolvedValue({ status: 'COMPLETED' });
+      agentInvocation.invoke.mockResolvedValue({
+        status: 'COMPLETED',
+        payload: { body: [] },
+      });
 
       await processor.process(job());
 
       expect(agentInvocation.invoke).toHaveBeenCalledWith(task);
     });
 
-    it('proceeds straight to invoke() for a Changelog Task already RUNNING with sprintId just answered, without re-emitting task.updated', async () => {
+    it('proceeds straight to invoke() for a Changelog Task already RUNNING with sprintId just answered, without re-emitting task.updated RUNNING', async () => {
       // Simulates the second 'run-task' delivery, after TasksService.submitInput
       // set sprintId and cleared pendingInput but left status RUNNING.
       const task = makeTask({
@@ -223,7 +300,10 @@ describe('TaskProcessor', () => {
       });
       taskModel.findById.mockResolvedValue(task);
       agentRegistry.getAgent.mockReturnValue('CHANGELOG');
-      agentInvocation.invoke.mockResolvedValue({ status: 'COMPLETED' });
+      agentInvocation.invoke.mockResolvedValue({
+        status: 'COMPLETED',
+        payload: { body: [] },
+      });
 
       await processor.process(job());
 
@@ -233,7 +313,7 @@ describe('TaskProcessor', () => {
         'user1',
         'task1',
         'COMPLETED',
-        undefined,
+        'report1',
       );
     });
 
@@ -259,12 +339,17 @@ describe('TaskProcessor', () => {
         pendingInput,
       );
       expect(task.save).toHaveBeenCalled();
+      expect(reportAssembly.assembleCompleted).not.toHaveBeenCalled();
+      expect(reportAssembly.assembleFailed).not.toHaveBeenCalled();
     });
 
     it('routes a job carrying inputValue to agentInvocation.resume(), not invoke()', async () => {
       const task = makeTask({ status: 'RUNNING' });
       taskModel.findById.mockResolvedValue(task);
-      agentInvocation.resume.mockResolvedValue({ status: 'COMPLETED' });
+      agentInvocation.resume.mockResolvedValue({
+        status: 'COMPLETED',
+        payload: { body: [] },
+      });
 
       await processor.process(
         job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),

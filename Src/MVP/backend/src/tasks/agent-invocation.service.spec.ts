@@ -1,4 +1,5 @@
 import { AgentInvocationService } from './agent-invocation.service';
+import { AgentRunPayload } from './agent-client.types';
 
 interface MockTask {
   id: string;
@@ -38,9 +39,17 @@ describe('AgentInvocationService', () => {
     return { ok, status, json: () => Promise.resolve(body) };
   }
 
+  // BE-18: a 'completed' response always needs a `result` payload (the
+  // service treats one without it as a failure — see the dedicated test
+  // below) — this is the minimal valid one, for tests that only care about
+  // something else.
+  function completedResponse(result: AgentRunPayload = { body: [] }) {
+    return jsonResponse({ status: 'completed', result });
+  }
+
   it('generates and persists a threadId when the Task has none', async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: 'completed' }));
+    fetchMock.mockResolvedValue(completedResponse());
 
     await service.invoke(task as never);
 
@@ -50,7 +59,7 @@ describe('AgentInvocationService', () => {
 
   it('reuses an existing threadId without saving again', async () => {
     const task = makeTask({ lgThreadId: 'existing-thread' });
-    fetchMock.mockResolvedValue(jsonResponse({ status: 'completed' }));
+    fetchMock.mockResolvedValue(completedResponse());
 
     await service.invoke(task as never);
 
@@ -62,7 +71,7 @@ describe('AgentInvocationService', () => {
 
   it('posts taskId, operationCode and an empty payload to /internal/agent/start', async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: 'completed' }));
+    fetchMock.mockResolvedValue(completedResponse());
 
     await service.invoke(task as never);
 
@@ -79,14 +88,30 @@ describe('AgentInvocationService', () => {
     });
   });
 
-  it('returns COMPLETED and drops the raw result on a completed response', async () => {
+  it('returns COMPLETED carrying the agent result payload — BE-18 needs it to assemble a Report', async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(
-      jsonResponse({ status: 'completed', result: { diff: '...' } }),
-    );
+    const payload: AgentRunPayload = {
+      body: [{ kind: 'TEXT', markdown: 'hello' }],
+      summary: 'a summary',
+      tokensConsumed: 42,
+    };
+    fetchMock.mockResolvedValue(completedResponse(payload));
 
     await expect(service.invoke(task as never)).resolves.toEqual({
       status: 'COMPLETED',
+      payload,
+    });
+  });
+
+  it('fails with PARSING when the agent reports completed without a result payload', async () => {
+    const task = makeTask();
+    fetchMock.mockResolvedValue(jsonResponse({ status: 'completed' }));
+
+    const result = await service.invoke(task as never);
+
+    expect(result).toMatchObject({
+      status: 'FAILED',
+      error: { code: 'PARSING' },
     });
   });
 
@@ -189,7 +214,7 @@ describe('AgentInvocationService', () => {
         operation: 'CHANGELOG_TECHNICAL',
         lgThreadId: 'existing-thread',
       });
-      fetchMock.mockResolvedValue(jsonResponse({ status: 'completed' }));
+      fetchMock.mockResolvedValue(completedResponse());
 
       await service.resume(task as never, { action: 'PROCEED' });
 
@@ -216,13 +241,14 @@ describe('AgentInvocationService', () => {
       expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    it('maps a completed resume response the same way invoke() does', async () => {
+    it('maps a completed resume response the same way invoke() does, payload included', async () => {
       const task = makeTask({ lgThreadId: 'thread1' });
-      fetchMock.mockResolvedValue(jsonResponse({ status: 'completed' }));
+      const payload: AgentRunPayload = { body: [] };
+      fetchMock.mockResolvedValue(completedResponse(payload));
 
       await expect(
         service.resume(task as never, { action: 'PROCEED' }),
-      ).resolves.toEqual({ status: 'COMPLETED' });
+      ).resolves.toEqual({ status: 'COMPLETED', payload });
     });
 
     it('can itself return INTERRUPTED again — BUSINESS_CONFIRMATION following INCOMPLETE_TASKS', async () => {

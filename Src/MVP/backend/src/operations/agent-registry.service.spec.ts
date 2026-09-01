@@ -55,4 +55,16 @@ describe('AgentRegistry', () => {
       'Unknown OperationCode',
     );
   });
+
+  it('returns the human-readable display name for a known operation', () => {
+    expect(registry.getDisplayName('DOCS_README')).toBe(
+      'README generation/update',
+    );
+  });
+
+  it('throws for an unknown operation code when looking up the display name', () => {
+    expect(() => registry.getDisplayName('NOT_REAL' as never)).toThrow(
+      'Unknown OperationCode',
+    );
+  });
 });

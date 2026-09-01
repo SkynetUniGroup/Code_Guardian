@@ -6,6 +6,7 @@ import { TaskDocument } from './schemas/task.schema';
 import { AgentRegistry } from '../operations/agent-registry.service';
 import {
   AgentResumeRequest,
+  AgentRunPayload,
   AgentStartRequest,
   AgentStepResult,
 } from './agent-client.types';
@@ -18,7 +19,7 @@ import { mapAgentErrorKind } from './agent-error-mapping';
 // unchanged); INTERRUPTED only exists here, as the signal TaskProcessor
 // uses to set pendingInput instead of a terminal status.
 export type AgentInvocationResult =
-  | { status: Extract<TaskStatus, 'COMPLETED'> }
+  | { status: Extract<TaskStatus, 'COMPLETED'>; payload: AgentRunPayload }
   | { status: Extract<TaskStatus, 'FAILED'>; error: TaskError }
   | { status: 'INTERRUPTED'; pendingInput: Exclude<PendingInput, null> };
 
@@ -121,9 +122,16 @@ export class AgentInvocationService {
 
   private toResult(result: AgentStepResult): AgentInvocationResult {
     if (result.status === 'completed') {
-      // result.result (the agent's actual output) is intentionally dropped
-      // here — persisting it as a Report is BE-18, not built yet.
-      return { status: 'COMPLETED' };
+      if (!result.result) {
+        // Same reasoning as the interrupted-without-pendingInput case below:
+        // BE-18 needs a payload to build a Report from, so a 'completed'
+        // response with nothing in it can't actually complete the Task.
+        return this.failure(
+          'PARSING',
+          'Agent reported completed without a result payload',
+        );
+      }
+      return { status: 'COMPLETED', payload: result.result };
     }
 
     if (result.status === 'interrupted') {

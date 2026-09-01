@@ -1,5 +1,6 @@
 import type { OperationCode } from '../common/domain-types';
 import type { PendingInput } from './task.types';
+import type { Block, Proposal } from '../reports/report.types';
 
 // POST /internal/agent/start body.
 export interface AgentStartRequest {
@@ -9,11 +10,23 @@ export interface AgentStartRequest {
   payload: object;
 }
 
+// What a 'completed' AgentStepResult carries in `result` — everything about
+// the run that only the agent knows (BE-18 adds the rest: context, title,
+// status, timing, error). Docs fills mostly `proposal`; Security fills
+// `body` with FindingBlock/PolicyViolationBlock; Changelog fills `body`
+// with TextBlock/ChangelogItemBlock — see report.types.ts's Block union.
+export interface AgentRunPayload {
+  body: Block[];
+  proposal?: Proposal;
+  summary?: string;
+  tokensConsumed?: number;
+}
+
 // Response shape shared by /start and /resume.
 export interface AgentStepResult {
   status: 'interrupted' | 'completed' | 'failed';
   pendingInput?: PendingInput;
-  result?: object;
+  result?: AgentRunPayload;
   error?: string;
 }
 
