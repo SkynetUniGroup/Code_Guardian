@@ -527,11 +527,20 @@ describe('TaskProcessor', () => {
 
       expect(agentInvocation.invoke).not.toHaveBeenCalled();
       // The pause is a write on a still-RUNNING Task — no terminal status,
-      // just the pendingInput the frontend needs to raise its modal.
+      // just the pendingInput the frontend needs to raise its modal, plus
+      // the release of the claim: a paused Task is by definition not being
+      // worked on, and the answer this pause is about to ask for arrives as
+      // a job that has to be able to claim it.
       expect(taskModel.updateOne).toHaveBeenNthCalledWith(
         2,
         { _id: 'task-oid', status: 'RUNNING' },
-        { $set: { pendingInput: { kind: 'SPRINT_ID' }, accumulatedMs: 0 } },
+        {
+          $set: {
+            pendingInput: { kind: 'SPRINT_ID' },
+            accumulatedMs: 0,
+            processingClaimedAt: null,
+          },
+        },
       );
       expect(events.emitTaskInputRequired).toHaveBeenCalledWith(
         'user1',

@@ -118,6 +118,13 @@ export class TaskProcessor extends WorkerHost {
 
       await this.maybeEmitBatchCompleted(task.batchId, task.userId);
     } finally {
+      // A safety net, not the primary release. The one outcome that hands
+      // control back to the user — INTERRUPTED — releases the claim in the
+      // same write that records the pause (see applyResult), so a failure
+      // of this release can no longer cost anyone their answer: it can only
+      // leave a claim behind on a Task nobody is waiting on, which the
+      // lease takes over anyway. What still needs it is the exception path,
+      // and the early return when a cancel wins the PENDING transition.
       await this.releaseClaim(task);
     }
   }
@@ -248,9 +255,28 @@ export class TaskProcessor extends WorkerHost {
     result: AgentInvocationResult,
   ): Promise<void> {
     if (result.status === 'INTERRUPTED') {
+      // The claim is released *here*, inside the same conditional write
+      // that records the pause, rather than in process()'s finally. The
+      // pause and the release are one fact: the moment this Task is waiting
+      // on a human it is no longer being worked on, and the invocation that
+      // produced this result has already returned, so there is nothing left
+      // for the claim to protect.
+      //
+      // Doing it in the finally instead left a window between
+      // emitTaskInputRequired() below — the very event whose purpose is to
+      // make the frontend answer — and the release. An answer landing in
+      // that window enqueued a job whose claim() found the claim still held
+      // and returned null, so the job exited silently; with no `attempts`
+      // configured on the queue (tasks.module.ts) BullMQ counts that as a
+      // success and never retries, stranding the Task RUNNING with
+      // pendingInput already cleared and no way for the user to answer
+      // again. Releasing before the emit would only shrink the window;
+      // folding the release into the write removes it, because the pause is
+      // not observable by anyone until the claim is already gone.
       const persisted = await this.persistIfStillRunning(task, {
         pendingInput: result.pendingInput,
         accumulatedMs: task.accumulatedMs,
+        processingClaimedAt: null,
       });
       if (!persisted) {
         return;
