@@ -76,7 +76,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.1.1} \\ \hline
+            \textbf{Versione} & \textit{1.2.0} \\ \hline
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic, Dario Pirrone, Edoardo Granziero, Andrea Fistarol} \\ \hline
             \textbf{Verifica} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol, Edoardo Granziero} \\ \hline
@@ -102,6 +102,7 @@
     \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
         \hline
         \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+        1.2.0 & 2026/08/31 & Estensione esaustiva della copertura di test ai requisiti qualitativi & Edoardo Granziero & \textemdash \\ \hline
         1.1.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & Marco Barbiero & Dario Pirrone \\ \hline
         1.1.0 & 2026/08/21 & Aggiornamento tabelle di testing & Edoardo Granziero &  \\ \hline
         1.0.0 & 2026/08/13 & Correzione e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
@@ -466,6 +467,8 @@ Per ogni test viene riportato il codice identificativo, una descrizione, il requ
 
 Lo stato di ciascun test nelle tabelle seguenti è stato ricavato dalla suite di test reale del PoC (\texttt{TESTING.md} nel repository di codice), rieseguita dal vivo il 2026-08-20.
 
+A partire dalla versione 1.2.0, la copertura è stata estesa in modo esaustivo ai requisiti qualitativi (RQ), di vincolo (RV) e di sicurezza (RS), finora rappresentati nella matrice di tracciamento (\S~6.7) solo in modo occasionale (RQ.5, RV.1, RS.2). I nuovi casi di test riportati nelle \S~6.3--6.5 sono stati progettati a partire dall'\textbf{Analisi dei Requisiti} e dalla Progettazione \textit{MVP}, ma non sono stati ancora implementati né eseguiti: il loro stato è per costruzione \textbf{NI}, ad eccezione di TU\_17 che formalizza un test già presente nel codice del PoC. Restano invariati lo stato e la formulazione di tutti i casi di test preesistenti (TS, TA, TU\_01--TU\_11, TI\_01--TI\_05).
+
 \subsection{Test di sistema (TS)}
 I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione \textit{\glo{end-to-end}{end-to-end}} soddisfi i requisiti funzionali descritti nell'\textbf{Analisi dei Requisiti}, è stato definito un test per ciascun requisito funzionale per garantire una copertura completa dei requisiti.
 
@@ -632,6 +635,8 @@ I test di accettazione (collaudo) vengono eseguiti dal team di sviluppo in coord
 
     TA\_13 & Verificare l'intero flusso di esportazione e storicizzazione: l'utente deve poter visualizzare la lista dei report salvati nell'archivio, selezionarne uno e avviare il download in PDF. & RF.49, RF.53, RF.58, RF.73, RF.75 & NI \\ \hline
 
+    TA\_14 & Verificare, di fronte a un utente reale, il ciclo completo dell'Agente \textit{Changelog} di Business attraverso le tre sospensioni previste, dimostrando sia il percorso di completamento integrale sia l'annullamento volontario in un punto di sospensione intermedio. & RF.94, RF.99, RF.100, RF.102, RF.103, RF.104, RF.105 & NI \\ \hline
+
     \caption{Test di Accettazione}
     \label{tab:test_accettazione}
 \end{xltabular}
@@ -661,6 +666,38 @@ I test di unità isolano e verificano la correttezza logica dei singoli moduli s
     TU\_10 & Verificare che il sistema scarti le vulnerabilità segnalate dal modello \textit{LLM} su file che non appartenevano all'ambito di analisi effettivamente richiesto (percorsi allucinati o fuori \textit{scope}). & RF.30 & S \\ \hline
     TU\_11 & Verificare che i riscontri restituiti dall'Agente Security vengano correttamente riordinati dal più al meno critico in base al livello di gravità della \textit{vulnerabilità}. & RF.61 & S \\ \hline
 
+    TU\_12 & Verificare che l'\textit{hashing} della password tramite \textit{Argon2id} produca un digest che non contiene mai la password in chiaro e che la funzione di verifica restituisca esito positivo solo a fronte della password originale, esito negativo per qualsiasi altra stringa. & RS.1 & NI \\ \hline
+
+    TU\_13 & Verificare che il tentativo di decifratura di una credenziale con \textit{authTag} manomesso (integrità \textit{AEAD} compromessa) sollevi un'eccezione e non restituisca alcun \textit{token}, nemmeno parzialmente, estendendo la copertura di TU\_07 al percorso di manomissione. & RS.2 & NI \\ \hline
+
+    TU\_14 & Verificare, tramite ispezione riflessiva dei metodi pubblici della classe che implementa \texttt{GitHubClient}, che nessun metodo esposto corrisponda a un'operazione di scrittura (\texttt{POST}, \texttt{PUT}, \texttt{PATCH}, \texttt{DELETE}) verso l'\textit{API} \textit{GitHub}, a garanzia strutturale del vincolo RS.3 indipendente dal contenuto della \textit{whitelist} a runtime. & RS.3 & NI \\ \hline
+
+    TU\_15 & Verificare che l'\texttt{HmacGuard} rifiuti una richiesta che riutilizza una coppia \textit{timestamp}/firma già accettata in precedenza (\textit{replay attack}) e che rifiuti una richiesta il cui corpo sia stato alterato dopo il calcolo della firma, pur mantenendo \textit{timestamp} e firma sintatticamente validi. & RS.4 & NI \\ \hline
+
+    TU\_16 & Verificare, tramite asserzioni sul \textit{template CloudFormation} sintetizzato dallo stack \texttt{SecurityGroupsStack} (\texttt{aws-cdk-lib/assertions}), che il \textit{Security Group} del servizio agenti non contenga alcuna regola di \textit{egress} verso \texttt{0.0.0.0/0}, a garanzia infrastrutturale del vincolo RS.3 indipendente dal codice applicativo. & RS.3, RV.15 & NI \\ \hline
+
+    TU\_17 & Verificare, tramite analisi statica dell'\textit{Abstract Syntax Tree} dei moduli \textit{Python} degli agenti, che nessuna stringa letterale superi la soglia di lunghezza configurata, a garanzia che i \textit{prompt} risiedano esclusivamente nei file \textit{YAML} esterni (metrica MPD\_14). Test già implementato nel codice del PoC (\texttt{test\_prompt\_isolation.py}) e qui formalmente tracciato. & RQ.4 & I \\ \hline
+
+    TU\_18 & Verificare che l'\textbf{AgentRegistry} risolva il descrittore corretto (\texttt{agentId}, \texttt{destinationUrl}) per ciascuno dei sette \texttt{OperationCode} previsti dall'\textit{MVP} (\texttt{DOCS\_README}, \texttt{DOCS\_INLINE}, \texttt{DOCS\_API}, \texttt{SECURITY\_OWASP}, \texttt{SECURITY\_POLICY}, \texttt{CHANGELOG\_TECHNICAL}, \texttt{CHANGELOG\_BUSINESS}), estendendo la copertura di TU\_08 dall'unico caso oggi verificato all'intero catalogo. & RF.40, RV.1 & NI \\ \hline
+
+    TU\_19 & Verificare che \texttt{Task.canTransitionTo(s)} accetti tutte e sole le transizioni di stato ammesse dal ciclo di vita della \textit{task} (da \texttt{PENDING} a \texttt{RUNNING} o \texttt{CANCELLED}; da \texttt{RUNNING} a \texttt{COMPLETED}, \texttt{FAILED} o \texttt{CANCELLED}) e rifiuti ogni altra transizione, incluso qualunque tentativo di uscita da uno stato terminale. & RF.46 & NI \\ \hline
+
+    TU\_20 & Verificare che la sequenza di validazione del contesto si interrompa al primo passo fallito (\textit{fail-fast}) senza eseguire i passi successivi, ripetendo il test per ciascuno dei dieci passi definiti (sintassi dell'\textit{URL}, estrazione di \textit{owner}/nome, raggiungibilità, esistenza del \textit{branch}, appartenenza del \textit{commit}, ancoraggio dello \textit{SHA}, rilevamento dei linguaggi, ambito non vuoto, esistenza dell'ambito, persistenza). & RF.19, RF.20, RF.21, RF.22, RF.29, RF.30 & NI \\ \hline
+
+    TU\_21 & Verificare che il metodo \texttt{compareCommits} classifichi correttamente le quattro relazioni possibili tra \textit{commit} e \textit{branch} (\texttt{ahead}, \texttt{identical}, \texttt{behind}, \texttt{diverged}) e che solo \texttt{ahead} e \texttt{identical} siano trattati come esito valido ai fini di RF.22. & RF.22 & NI \\ \hline
+
+    TU\_22 & Verificare che il controllo dei linguaggi supportati accetti senza avviso i \textit{repository} il cui linguaggio predominante sia \textit{TypeScript}, \textit{JavaScript} o \textit{Python}, e generi l'avviso non bloccante previsto da RF.24 per ogni altro linguaggio rilevato. & RV.7, RF.24 & NI \\ \hline
+
+    TU\_23 & Verificare che il titolo del \textit{Report} sia generato deterministicamente nel formato ``Nome operazione --- owner/repo@branch'' per ciascuno dei sette \texttt{OperationCode}, senza alcuna invocazione al modello \textit{LLM}, e che risulti sempre presente anche sui \textit{Report} con stato \texttt{FAILED}. & RF.51 & NI \\ \hline
+
+    TU\_24 & Verificare che il sanificatore \textit{Markdown} applicato ai blocchi testuali del \textit{Report} rimuova i tag \textit{HTML} grezzi e rifiuti i collegamenti con schema \texttt{javascript:} o \texttt{data:}, prevenendo l'iniezione di script nella resa a schermo e nell'esportazione \textit{PDF} (metrica MPD\_20). & MPD\_20 & NI \\ \hline
+
+    TU\_25 & Verificare che il calcolo dell'indice \textit{Flesch Reading Ease} sul testo del \textit{Changelog} di Business restituisca un valore coerente su un campione di testi di riferimento a punteggio noto, e che un punteggio inferiore alla soglia (50) determini l'errore \texttt{READABILITY\_TOO\_LOW}. & RQ.7 & NI \\ \hline
+
+    TU\_26 & Verificare che la mappatura tra l'enumerazione \texttt{ErrorKind} lato agente e il campo \texttt{error.code} lato \textit{backend} sia biunivoca e completa per tutti gli otto valori previsti (\texttt{TIMEOUT}, \texttt{PARSING}, \texttt{UPSTREAM}, \texttt{CONTEXT\_TOO\_LARGE}, \texttt{CONTEXT\_RESOURCE\_MISSING}, \texttt{CONTEXT\_RESOURCE\_INVALID}, \texttt{READABILITY\_TOO\_LOW}, \texttt{RATE\_LIMITED}). & RF.65, RF.67, RF.68, RF.69, RF.70, RF.71, RQ.7, RQ.8 & NI \\ \hline
+
+    TU\_27 & Verificare che il documento \textit{OpenAPI} (\textit{Swagger}) generato automaticamente dal \textit{backend} sia valido secondo lo schema \textit{OpenAPI 3.0} e che ogni \textit{Endpoint} pubblico implementato risulti documentato con metodo, parametri attesi e schema di risposta. & RV.16 & NI \\ \hline
+
     \caption{Test di Unità}
     \label{tab:test_unita}
 \end{xltabular}
@@ -684,9 +721,111 @@ I test di integrazione verificano il corretto funzionamento delle interfacce, lo
     TI\_04 & Verificare che l'agente \textit{OWASP}, integrato con il sistema di caricamento \textit{repository} locale, individui con successo i riscontri previsti all'interno del Golden Set di calibrazione. & RQ.5 & S \\ \hline
     TI\_05 & Verificare, con lo stack applicativo reale (\textit{backend} \textit{NestJS} contro un vero \textit{database} \textit{MongoDB}, mockando solo i confini esterni effettivi), l'intero ciclo di vita di una \textit{task}: creazione del contesto, creazione della \textit{task}, instradamento deterministico all'agente da parte dell'\textit{Orchestratore}, esecuzione e persistenza del \textit{Report} risultante. & RF.40 & S \\ \hline
 
+    TI\_06 & Verificare l'intero flusso di validazione del contesto su \texttt{POST /contexts} contro un \textit{repository} reale messo a disposizione dal \textbf{Proponente}, includendo il percorso di successo e almeno un caso di fallimento per ciascuno dei passi che coinvolgono una chiamata all'\textit{API GitHub}. & RF.19, RF.20, RF.22, RF.25, RF.30, RV.3 & NI \\ \hline
+
+    TI\_07 & Verificare, tramite il servizio \textit{SMTP} di test (\textit{mailpit}, già presente nell'ambiente \textit{Docker Compose}), che l'invio automatico del \textit{Report} via \textit{email} recapiti l'allegato \textit{PDF} corretto e che, superata la soglia dimensionale, l'\textit{email} venga ricomposta e reinviata priva di allegato con il collegamento diretto alla piattaforma. & RF.75, RF.78 & NI \\ \hline
+
+    TI\_08 & Verificare, simulando un server \textit{SMTP} non raggiungibile, che il fallimento dell'invio non blocchi l'operazione né la visualizzazione del \textit{Report} in piattaforma, e che l'utente riceva l'avviso di mancato recapito alla successiva apertura di \textbf{Code Guardian}. & RF.77 & NI \\ \hline
+
+    TI\_09 & Verificare il meccanismo completo di sospensione e ripresa dell'esecuzione (\textit{interrupt}/\texttt{Command(resume=...)} di \textit{LangGraph} con \textit{checkpointer} \textit{MongoDB}) nel caso peggiore dell'operazione \texttt{CHANGELOG\_BUSINESS}, attraversando le tre sospensioni previste (\texttt{SPRINT\_ID}, \texttt{INCOMPLETE\_TASKS}, \texttt{BUSINESS\_CONFIRMATION}) e verificando che \texttt{Report.executionTimeMs} sommi esclusivamente i tre segmenti di tempo macchina, escludendo le attese dell'utente. & RF.94, RF.98, RF.100, RF.103, RF.104, RF.57 & NI \\ \hline
+
+    TI\_10 & Verificare che, a fronte dell'annullamento in uno qualsiasi dei tre punti di sospensione dell'Agente \textit{Changelog}, la \textit{task} transiti a \texttt{CANCELLED} senza generare alcuna ulteriore chiamata di rete verso il Modello \textit{AI} o il Sistema di \textit{Task Management}. & RF.99, RF.102, RF.105 & NI \\ \hline
+
+    TI\_11 & Verificare che due o più \textit{task} appartenenti allo stesso \textit{batch} vengano elaborate in isolamento dal \texttt{TaskProcessor}: il fallimento di una singola \textit{task} (es. errore di \textit{parsing}) non deve alterare lo stato né l'esito delle \textit{task} parallele residue. & RF.48 & NI \\ \hline
+
+    TI\_12 & Verificare, con lo stack applicativo reale e un \textit{mock} delle \textit{API GitHub} in scrittura, il ciclo completo di un'operazione dell'Agente Docs: ricezione della \textit{Proposal} dall'agente, apertura automatica della \textit{Pull Request} e persistenza del relativo collegamento nel \textit{Report}. & RF.82, RF.63 & NI \\ \hline
+
+    TI\_13 & Verificare che, a fronte del rifiuto della \textit{Piattaforma GitHub} in fase di apertura della \textit{Pull Request}, il \textit{Report} già persistito con il \textit{diff} generato dall'agente transiti a stato \texttt{FAILED} con \texttt{error.code = PR\_CREATION\_FAILED}, mantenendo il \textit{diff} nei dati ma senza offrirlo nell'interfaccia. & RF.72 & NI \\ \hline
+
+    TI\_14 & Verificare che una risposta \texttt{429} del \textit{provider LLM} venga intercettata dall'agente, mappata sul valore \texttt{RATE\_LIMITED} di \texttt{ErrorKind} e propagata dal \textit{backend} come \texttt{error.code = LLM\_RATE\_LIMITED}, senza che l'esecuzione resti bloccata in attesa indefinita. & RQ.8 & NI \\ \hline
+
+    TI\_15 & Verificare che il controllo del tetto mensile di utilizzo sia eseguito prima dell'accodamento in \texttt{POST /tasks} e che, se superato, l'intero \textit{batch} venga respinto con \texttt{429 USAGE\_LIMIT\_EXCEEDED} senza accodare parzialmente alcuna operazione. & RF.66, RV.6 & NI \\ \hline
+
+    TI\_16 & Verificare, con un \textit{repository} privato di test e un \textit{token} dotato dei permessi corretti, che l'intero flusso di selezione del contesto e di esecuzione di un'operazione completi con successo esattamente come su un \textit{repository} pubblico. & RV.4 & NI \\ \hline
+
+    TI\_17 & Verificare, tramite l'ambiente di \textit{storage} compatibile \textit{S3} di test (\textit{minio}, già presente in \textit{Docker Compose}), che l'esportazione del \textit{Report} generi il \textit{PDF}, lo archivi nel \textit{bucket} privato e lo restituisca in \textit{streaming} con gli \textit{header} corretti e un nome file deterministico. & RF.73 & NI \\ \hline
+
+    TI\_18 & Test di carico: verificare che venti richieste concorrenti di esportazione \textit{PDF} non producano file troncati né errori inattesi sul \textit{task} \textit{backend} dimensionato a 0,5 \textit{vCPU} / 1 \textit{GB}, colmando il rischio residuo segnalato nella Progettazione \textit{MVP} sull'esportazione \textit{PDF}. & RF.73, RF.74 & NI \\ \hline
+
     \caption{Test di Integrazione}
     \label{tab:test_integrazione}
 \end{xltabular}
+
+\subsection{Test non funzionali di sistema (TNF)}
+I test non funzionali di sistema verificano il rispetto dei requisiti qualitativi (RQ) e di vincolo (RV) che non sono osservabili isolando una singola unità o l'interazione tra due componenti, ma richiedono la misurazione di una proprietà del sistema completo, quale un tempo di risposta, una compatibilità o l'apprendibilità da parte di un utente. Questa sottosezione estende la \textbf{Validazione} descritta nelle \textbf{Norme di Progetto} ai requisiti RQ e RV non altrimenti coperti, mantenendo i \textbf{Test di sistema} (TS) dedicati esclusivamente ai requisiti funzionali (RF), in continuità con l'impostazione a copertura 1:1 già adottata in \S~6.1.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|C{\LargColVal}|C{\LargColVal}|}
+
+    \hline
+    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
+    \endhead
+
+    TNF\_01 & Verificare che il tempo tra un'azione dell'utente nell'interfaccia grafica e il relativo \textit{feedback} visivo non superi i 2 secondi, misurato sulle interazioni principali (selezione del \textit{repository}, avvio delle operazioni, apertura di un \textit{Report}). & RQ.10 & NI \\ \hline
+
+    TNF\_02 & Verificare che il tempo complessivo del processo di autenticazione (verifica della password con \textit{Argon2id} ed emissione del \textit{token JWT}) non superi i 2 secondi, misurato \textit{end-to-end} su \texttt{POST /auth/login}. & RQ.9 & NI \\ \hline
+
+    TNF\_03 & Verificare che il tempo di risposta di un singolo agente, dalla ricezione della richiesta all'emissione del \textit{Report}, non superi i 5 minuti, misurato per ciascuno dei sette \texttt{OperationCode} su \textit{repository} di dimensione rappresentativa. & RQ.6 & NI \\ \hline
+
+    TNF\_04 & Verificare, rieseguendo la suite dei test di accettazione sulle versioni più recenti di \textit{Google Chrome}, \textit{Mozilla Firefox} e \textit{Microsoft Edge}, l'assenza di anomalie grafiche o funzionali su ciascuno dei tre \textit{browser} target. & RV.5 & NI \\ \hline
+
+    TNF\_05 & Test di usabilità moderato: misurare, su un campione di nuovi utenti privi di formazione pregressa sul sistema, il tempo necessario a completare autonomamente uno scenario rappresentativo (selezione del \textit{repository} e avvio di un'operazione); il tempo mediano rilevato deve risultare inferiore o uguale a 30 minuti. & RQ.11 & NI \\ \hline
+
+    \caption{Test non funzionali di sistema}
+    \label{tab:test_non_funzionali}
+\end{xltabular}
+
+\subsection{Requisiti verificati per costruzione o per revisione documentale}
+Non tutti i requisiti di vincolo e di sicurezza si prestano a una verifica dinamica tramite un caso di test eseguibile: alcuni descrivono scelte tecnologiche, \textit{deliverable} documentali o garanzie contrattuali, la cui conformità è accertata per costruzione o tramite revisione documentale, coerentemente con la distinzione tra analisi statica e analisi dinamica introdotta nelle \textbf{Norme di Progetto}. La tabella seguente completa la tracciabilità di questo capitolo elencando tali requisiti e il relativo metodo di verifica, cosicché ogni requisito qualitativo, di vincolo o di sicurezza dell'\textbf{Analisi dei Requisiti} risulti riconducibile, in questo documento, a un caso di test oppure a un metodo di verifica esplicito.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|X|}
+
+    \hline
+    \textbf{Requisito} & \textbf{Descrizione sintetica} & \textbf{Metodo di verifica} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Requisito} & \textbf{Descrizione sintetica} & \textbf{Metodo di verifica} \\ \hline
+    \endhead
+
+    RV.2 & Nessun addestramento di nuovi modelli; integrazione esclusiva tramite \textit{API} esterne. & Revisione architetturale: il codice non contiene routine di \textit{training}; RV.13 ne è la conferma applicativa. \\ \hline
+
+    RV.9 & \textit{Frontend} sviluppato in \textit{TypeScript} con \textit{React}. & Ispezione del manifesto di progetto (\texttt{package.json}) e della configurazione di \textit{build} (\texttt{vite.config.ts}). \\ \hline
+
+    RV.10 & \textit{Backend} sviluppato in \textit{TypeScript} con \textit{NestJS}. & Ispezione del manifesto di progetto (\texttt{package.json}) e della struttura dei moduli \texttt{@nestjs/*}. \\ \hline
+
+    RV.11 & Agenti IA sviluppati in \textit{Python} con \textit{LangGraph}. & Ispezione del manifesto di progetto (\texttt{pyproject.toml}) e del grafo definito in \texttt{graph.py}. \\ \hline
+
+    RV.12 & Persistenza su \textit{database} non relazionale \textit{MongoDB}. & Ispezione degli schemi \textit{Mongoose} e del documento di \textit{Schema Design} (RV.21). \\ \hline
+
+    RV.13 & Integrazione con i modelli \textit{LLM} tramite \textit{AWS Bedrock}. & Revisione della configurazione \textit{IAM} e degli \textit{stack infra} (\texttt{compute-stack.ts}, \texttt{atlas-stack.ts}). \\ \hline
+
+    RV.17 & Manuale Utente a corredo del prodotto finale. & Verifica di completezza in sede di revisione della \textit{Product Baseline} (PB). \\ \hline
+
+    RV.18 & Documento di Specifiche Tecniche dell'architettura. & Verifica di completezza in sede di revisione della PB; coincide in larga parte con la Progettazione \textit{MVP}. \\ \hline
+
+    RV.19 & Sistema o formato documentale per il tracciamento dei difetti. & Verifica dell'esistenza e dell'uso effettivo del formato di \textit{Bug Report} in sede di revisione della PB. \\ \hline
+
+    RV.20 & Codice sorgente versionato su \textit{repository Git} remoto. & Verificato per costruzione: il progetto è ospitato su \textit{GitHub}. \\ \hline
+
+    RV.21 & Documento di \textit{Schema Design} della base dati non relazionale. & Verifica di completezza in sede di revisione della PB; il modello di dominio persistito (Progettazione \textit{MVP}) ne costituisce la base. \\ \hline
+
+    RS.5 & \textit{Policy} del fornitore \textit{LLM} che escluda la ritenzione o l'uso del codice analizzato per l'addestramento di terzi. & Revisione contrattuale/documentale delle condizioni di servizio di \textit{AWS Bedrock} per il modello selezionato. \\ \hline
+
+    \caption{Requisiti verificati per costruzione o per revisione documentale}
+    \label{tab:requisiti_per_costruzione}
+\end{xltabular}
+
+\begin{itemize}
+    \item \textbf{RQ.1, RQ.2, RQ.3}: non compaiono in questa tabella né tra i casi di test, perché non sono proprietà osservabili con un singolo caso di test ma \textit{metriche aggregate} calcolate a partire dall'esito dell'intera suite (percentuale di test superati, copertura del codice, complessità/duplicazione) già misurate nel \textbf{Cruscotto di valutazione} (\S~7) tramite gli strumenti indicati nelle Norme di Progetto.
+    \item \textbf{RV.14} (integrazione con \textit{GitHub} e \textit{GitHub Issues}): non riceve un caso di test dedicato perché è già esercitato trasversalmente da TI\_05 e TA\_12.
+    \item \textbf{RV.8} (contenuti esclusivamente in lingua inglese): l'\textbf{Analisi dei Requisiti} non definisce un comportamento atteso (avviso, blocco o migliore sforzo) per un \textit{repository} o \textit{Task Management} con testo in una lingua diversa dall'inglese. In assenza di un \textit{Caso d'Uso} o di un requisito che ne descriva la gestione degli errori, non è possibile progettare un caso di test univoco: si raccomanda di chiarire questo punto con il \textbf{Proponente} ed eventualmente introdurre un requisito e un \textit{Caso d'Uso} di errore dedicati prima della Product Baseline.
+\end{itemize}
 
 \subsection{Test di regressione (TR)}
 I test di regressione consistono nella riesecuzione automatizzata della suite di test (TU e TI) ad ogni modifica sostanziale del codice sorgente o all'aggiornamento delle librerie di \textit{core} dell'AI.
@@ -696,7 +835,7 @@ I test di regressione consistono nella riesecuzione automatizzata della suite di
 \end{itemize}
 
 \subsection{Tracciamento dei Test}
-Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adotta una matrice di tracciamento bidirezionale tra i test pianificati ed eseguiti e i requisiti corrispettivi.
+Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adotta una matrice di tracciamento bidirezionale tra i test pianificati ed eseguiti e i requisiti corrispettivi. I requisiti di vincolo e di sicurezza verificati per costruzione o per revisione documentale, privi quindi di un caso di test associato, sono tracciati separatamente nella Tabella~\ref{tab:requisiti_per_costruzione} (\S~6.5) e non sono ripetuti in questa matrice.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|c|c|}
@@ -827,6 +966,7 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TA\_11 & RF.38, RF.75, RF.76, RF.77, RF.78 \\\hline
     TA\_12 & RF.94, RF.96, RF.98, RF.100, RF.101, RF.103, RF.104 \\\hline
     TA\_13 & RF.49, RF.53, RF.58, RF.73, RF.75 \\\hline
+    TA\_14 & RF.94, RF.99, RF.100, RF.102, RF.103, RF.104, RF.105 \\\hline
     \hline
     TU\_01 & RF.100 \\\hline
     TU\_02 & RF.100 \\\hline
@@ -839,12 +979,47 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TU\_09 & RF.90, RF.91 \\\hline
     TU\_10 & RF.30 \\\hline
     TU\_11 & RF.61 \\\hline
+    TU\_12 & RS.1 \\\hline
+    TU\_13 & RS.2 \\\hline
+    TU\_14 & RS.3 \\\hline
+    TU\_15 & RS.4 \\\hline
+    TU\_16 & RS.3, RV.15 \\\hline
+    TU\_17 & RQ.4 \\\hline
+    TU\_18 & RF.40, RV.1 \\\hline
+    TU\_19 & RF.46 \\\hline
+    TU\_20 & RF.19, RF.20, RF.21, RF.22, RF.29, RF.30 \\\hline
+    TU\_21 & RF.22 \\\hline
+    TU\_22 & RV.7, RF.24 \\\hline
+    TU\_23 & RF.51 \\\hline
+    TU\_24 & MPD\_20 \\\hline
+    TU\_25 & RQ.7 \\\hline
+    TU\_26 & RF.65, RF.67, RF.68, RF.69, RF.70, RF.71, RQ.7, RQ.8 \\\hline
+    TU\_27 & RV.16 \\\hline
     \hline
     TI\_01 & RF.40 \\\hline
     TI\_02 & RF.67 \\\hline
     TI\_03 & RF.65 \\\hline
     TI\_04 & RQ.5 \\\hline
     TI\_05 & RF.40 \\\hline
+    TI\_06 & RF.19, RF.20, RF.22, RF.25, RF.30, RV.3 \\\hline
+    TI\_07 & RF.75, RF.78 \\\hline
+    TI\_08 & RF.77 \\\hline
+    TI\_09 & RF.94, RF.98, RF.100, RF.103, RF.104, RF.57 \\\hline
+    TI\_10 & RF.99, RF.102, RF.105 \\\hline
+    TI\_11 & RF.48 \\\hline
+    TI\_12 & RF.82, RF.63 \\\hline
+    TI\_13 & RF.72 \\\hline
+    TI\_14 & RQ.8 \\\hline
+    TI\_15 & RF.66, RV.6 \\\hline
+    TI\_16 & RV.4 \\\hline
+    TI\_17 & RF.73 \\\hline
+    TI\_18 & RF.73, RF.74 \\\hline
+    \hline
+    TNF\_01 & RQ.10 \\\hline
+    TNF\_02 & RQ.9 \\\hline
+    TNF\_03 & RQ.6 \\\hline
+    TNF\_04 & RV.5 \\\hline
+    TNF\_05 & RQ.11 \\\hline
     \caption{Tracciamento Test}
     \label{tab:tracciamento_test}
 \end{xltabular}

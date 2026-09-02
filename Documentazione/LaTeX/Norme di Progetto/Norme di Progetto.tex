@@ -20,6 +20,7 @@
 \usepackage{makecell}
 \usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
 \usepackage{hyperref}
+\usepackage{enumitem}
 \newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf} % Da aggiornare con nuove versioni
 \newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
@@ -73,7 +74,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.1.1} \\ \hline  
+            \textbf{Versione} & \textit{1.2.0} \\ \hline  
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic, Marco Barbiero} \\ \hline
@@ -104,7 +105,7 @@
 \hline
 \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
 \endhead
-1.1.1 & 2026/08/21 & Correzioni ai workflow & Andrea Fistarol & Edoardo Granziero \\ \hline
+1.2.0 & 2026/08/31 & Aggiornamento della struttura della \textit{repository} e dei \textit{workflow} & Andrea Fistarol & Edoardo Granziero \\ \hline
 1.1.0 & 2026/08/21 & Ampliate e riviste le sezioni Codifica, Struttura Repository, Test di Unità e Test di Integrazione; creata la sezione Strumenti di Build & Andrea Fistarol & Marco Barbiero \\ \hline
 1.0.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & Marco Barbiero & Dario Pirrone \\ \hline
 1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
@@ -711,14 +712,21 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
 \begin{itemize}
     \item \textbf{\texttt{Documentazione/}}: contiene tutta la documentazione del progetto, suddivisa in:
     \begin{itemize}
-        \item \textbf{\texttt{LaTeX/}}: sorgenti \LaTeX{} dei documenti, con una sotto-cartella per ciascun documento (\textbf{Analisi dei Requisiti}, \textbf{Norme di Progetto}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica}, \textbf{Glossario}) e la cartella \texttt{Template/} contenente i \textit{template} documentali;
+        \item \textbf{\texttt{LaTeX/}}: sorgenti \LaTeX{} dei documenti, con una sotto-cartella per ciascun documento (\textbf{Analisi dei Requisiti}, \textbf{Norme di Progetto}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica}, \textbf{Glossario} e, dal 21/8, i verbali) e la cartella \texttt{Template/} contenente i \textit{template} documentali;
         \item \textbf{\texttt{Candidatura/}}: documenti compilati (\texttt{.pdf}) relativi alla fase di candidatura al \textit{capitolato} (valutazione dei capitolati, preventivo dei costi, lettera di presentazione);
         \item \textbf{\texttt{RTB/}}: versioni ufficiali (\texttt{.pdf}) destinate alla revisione \textit{Requirements and Technology Baseline};
+        \item \textbf{\texttt{PB/}}: versioni ufficiali (\texttt{.pdf}) destinate alla revisione \textit{Product Baseline};
         \item \textbf{\texttt{Verbali/}}: verbali degli incontri, distinti in \texttt{Interni/} ed \texttt{Esterni/}.
     \end{itemize}
-    \item \textbf{\texttt{Src/}}: contiene il codice sorgente dell'applicativo (agenti, \textit{backend} e \textit{frontend}) e i relativi test automatici;
+    \item \textbf{\texttt{Src/}}: contiene il codice sorgente dell'applicativo (agenti, \textit{backend} e \textit{frontend}) e i relativi test automatici, organizzato in due sottocartelle:
+        \begin{itemize}
+            \item \textbf{\texttt{PoC/}}: contiene il codice sorgente del \textbf{Proof of Concept} nella sua seconda iterazione;
+            \item \textbf{\texttt{MVP/}}: ospita il codice sorgente del \textbf{Minimum Viable Product}.
+        \end{itemize}
     \item \textbf{\texttt{Website/}}: contiene i sorgenti del sito del gruppo, pubblicato tramite \textit{GitHub Pages};
-    \item \textbf{\texttt{.github/workflows/}}: contiene i \textit{workflow} di \textit{GitHub Actions} per l'automazione del \textit{deploy} dei contenuti statici;
+    \item \textbf{\texttt{Tools/}}: contiene \textit{script} e strumenti di generica utilità;
+    \item \textbf{\texttt{.github/workflows/}}: contiene i \textit{workflow} di \textit{GitHub Actions} per l'automazione del \textit{deploy} dei contenuti statici e la \textit{CI/CD};
+    \item \textbf{\texttt{.husky/}}: contiene i file di configurazione degli \textit{hook} di \textit{Git};
     \item \textbf{\texttt{README.md}} e \textbf{\texttt{LICENSE}}: rispettivamente la descrizione del \textit{repository} e la licenza (\textit{MIT}) con cui è distribuito il progetto;
     \item \textbf{\texttt{.gitignore}}: file configurato per escludere dal tracciamento i file di sistema generati automaticamente dai sistemi operativi (es. \texttt{.DS\_Store}, \texttt{desktop.ini}).
 \end{itemize}
@@ -727,7 +735,10 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
 \subsubsection{Strumenti di Build}
 \paragraph{Gestione dipendenze}
 \begin{itemize}
-    \item \textit{pnpm}: comandi \texttt{pnpm install}, \texttt{pnpm add [package]}, \texttt{pnpm remove [package]}.
+    \item \textit{pnpm}: comandi \texttt{pnpm install}, \texttt{pnpm add -d [package]}, \texttt{pnpm remove -d [package]}.
+        \begin{itemize}
+            \item Dipendenze: sono aggiunte \textbf{automaticamente} da \texttt{pnpn} a \texttt{package.json}, modificabile per configurazione e aggiunta di script. Soggetto a versionamento.
+        \end{itemize}
     \item \textit{Lockfile}: \texttt{pnpm-lock.yaml} da "committare". \textbf{Mai} modificarlo manualmente.
     \item \textit{Workspace}: struttura monorepo con \texttt{pnpm-workspace.yaml}.
 \end{itemize}
@@ -751,12 +762,16 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
         \begin{itemize}
             \item Trigger: \textit{Pull Request} su qualsiasi \textit{branch}.
             \item Fasi:
-            \begin{enumerate}
+            \begin{enumerate}[label=\arabic*.]
                 \item \textit{Checkout} codice.
-                \item Setup Node.js/Python.
-                \item Installazione dipendenze.
-                \item \textit{Linting}.
-                \item Test unitari.
+                \item Installazione di \textit{pnpm} v11, \textit{Node.js} v24 e dipendenze.
+                \item Installazione di \textit{Python}.
+                \item Installazione della \textit{cache} di \textit{Python} \textit{pip}.
+                \item \textit{Linting} \textit{Typescript}.
+                \item Test unitari \textit{Typescript}.
+                \item Installazione delle dipendenze di \textit{Python} con \textit{pip}.
+                \item \textit{Linting} \textit{Python}.
+                \item Test unitari \textit{Python}.
                 \item Test di integrazione.
                 \item \textit{Build}.
             \end{enumerate}
@@ -765,30 +780,20 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
         \item CI Staging (\texttt{ci-staging.yml})
         \begin{itemize}
             \item Trigger: \textit{push} su \texttt{develop}.
-            \item Fasi:
-            \begin{enumerate}
-                \item \textit{Checkout} codice.
-                \item Setup Node.js/Python.
-                \item Installazione dipendenze.
-                \item \textit{Linting}.
-                \item Test unitari.
-                \item Test di integrazione.
-            \end{enumerate}
+            \item Fasi: 1-10. come \textit{Pull Request Check}.
             \item Artefatti: salvati in \texttt{/dist}.
         \end{itemize}
         \item Release Production (\texttt{release.yml})
         \begin{itemize}
             \item Trigger: \textit{push tag} \texttt{v*} su \texttt{main}.
-            \item Fasi:
-            \begin{enumerate}
-                \item \textit{Checkout} codice.
-                \item Setup ambienti.
-                \item Installazione dipendenze.
-                \item \textit{Linting}.
-                \item Test unitari.
-                \item Test di integrazione.
-                \item \textit{Build}.
-                \item \textit{Deployment} su \textit{AWS}.
+            \item Fasi:\\[10pt]
+                  1-11. come \textit{Pull Request Check}.
+            \begin{enumerate}[label=\arabic*., start=12]
+                \item Configurazione delle credenziali \textit{AWS}.
+                \item \textit{Deploy} \textit{frontend} su \textit{Amazon S3}.
+                \item Login \textit{Amazon ECR}.
+                \item \textit{Build}, \textit{tag}, \textit{push} delle immagini \textit{Docker}.
+                \item \textit{Deploy} su \textit{Amazon ECS}.
             \end{enumerate}
             \item Artefatti: build e tag di rilascio.
         \end{itemize}
@@ -905,7 +910,7 @@ I test di unità servono a verificare il corretto funzionamento delle parti più
 
 \paragraph{Automazione}
 \begin{itemize}
-    \item Esecuzione con \texttt{pnpm test:unit} in \textit{CI/CD} tramite \textit{GitHub Actions} ad ogni \textit{push} (\textit{workflow} \texttt{ci-staging.yml}) o \textit{Pull Request} (\textit{workflow} \texttt{pr-check.yml}) su \texttt{develop}.
+    \item Esecuzione con \texttt{pnpm test:unit} in \textit{CI/CD} tramite \textit{GitHub Actions} ad ogni \textit{push} (\textit{workflow} \texttt{deploy-staging.yml}) o \textit{Pull Request} (\textit{workflow} \texttt{pr-check.yml}) su \texttt{develop}.
 \end{itemize}
 
 \newpage
@@ -937,7 +942,7 @@ I test di integrazione verificano che le varie componenti del software, le tecno
 \paragraph{Esecuzione}
 \begin{itemize}
     \item Locale: \texttt{pnpm test:integration}
-    \item \textit{CI}: Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} come parte dei \textit{workflow} \texttt{pr-check.yml} (\textit{Pull Request}) e \texttt{ci-staging.yml} (\textit{push} su \texttt{develop}), insieme ai test unitari.
+    \item \textit{CI}: Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} come parte dei \textit{workflow} \texttt{pr-check.yml} (\textit{Pull Request}) e \texttt{deploy-staging.yml} (\textit{push} su \texttt{develop}), insieme ai test unitari.
 \end{itemize}
 
 \newpage

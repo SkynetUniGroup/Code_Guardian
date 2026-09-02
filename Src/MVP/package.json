@@ -3,22 +3,35 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-  "lint": "biome check .",
-  "format": "biome format --write .",
-  "lint:fix": "pnpm format && pnpm lint",
-  "test:unit": "vitest run --coverage",
-  "test:integration:up": "docker-compose -f docker-compose.test.yml up -d",
-  "test:integration:test": "vitest run --config vitest.integration.config.ts",
-  "test:integration:down": "docker-compose -f docker-compose.test.yml down",
-  "test:integration": "pnpm test:integration:up && pnpm test:integration:test && pnpm test:integration:down",
-  "test": "pnpm test:unit && pnpm test:integration"
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "lint:fix": "pnpm format && pnpm lint",
+    "test:unit": "vitest run --coverage",
+    "test:integration:up": "docker-compose -f docker-compose.test.yml up -d",
+    "test:integration:test": "vitest run --config vitest.integration.config.ts",
+    "test:integration:down": "docker-compose -f docker-compose.test.yml down",
+    "test:integration": "pnpm test:integration:up && pnpm test:integration:test && pnpm test:integration:down",
+    "test": "pnpm test:unit && pnpm test:integration"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json}": ["biome format --write"],
-    "*.py": ["python -m black"]
+    "*.{ts,tsx,js,jsx,json}": [
+      "biome format --write"
+    ],
+    "*.py": [
+      "python -m black"
+    ]
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.0.0",
+      "onFail": "download"
+    }
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.10",
-    "lint-staged": "^17.3.0"
+    "@vitest/coverage-v8": "^4.1.11",
+    "lint-staged": "^17.3.0",
+    "vitest": "^4.1.11"
   }
 }

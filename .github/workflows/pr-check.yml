@@ -13,11 +13,12 @@ jobs:
         uses: actions/checkout@v7
 
       # === Environment setup ===
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
+      - name: Setup pnpm + Node.js
+        uses: pnpm/setup@v2.1.0
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          working-directory: Src/MVP
+          version: 11
+          cache: true
 
       - name: Setup Python
         uses: actions/setup-python@v7
