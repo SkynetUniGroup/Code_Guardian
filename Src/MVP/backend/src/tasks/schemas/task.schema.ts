@@ -92,11 +92,24 @@ export class Task {
   // no-op instead of a second agent invocation. Null (or absent, for Tasks
   // written before this field existed) means "free to process"; a timestamp
   // means a worker holds it. TaskProcessor claims it atomically before
-  // touching the agent and releases it in a finally block; a claim older
-  // than its lease window is taken over, so a worker killed mid-invocation
-  // doesn't strand the Task forever.
+  // touching the agent and releases it as part of whichever write settles
+  // the Task's outcome (with a finally block as the safety net for the
+  // exception path); a claim older than its lease window is taken over, so
+  // a worker killed mid-invocation doesn't strand the Task forever.
   @Prop({ type: Date, default: null })
   processingClaimedAt: Date | null;
+
+  // Fencing token: who holds the claim above, not just that someone does.
+  // Regenerated on every successful claim, and required to match before a
+  // holder may release the claim or write the Task's outcome, so a worker
+  // whose lease expired cannot act on a Task its successor has taken over.
+  //
+  // A separate value rather than reusing processingClaimedAt as the token:
+  // two claims can carry the same timestamp (millisecond resolution, or a
+  // clock stepped backwards by NTP), and a token that can collide is not a
+  // token. Null exactly when processingClaimedAt is null.
+  @Prop({ type: String, default: null })
+  processingClaimToken: string | null;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

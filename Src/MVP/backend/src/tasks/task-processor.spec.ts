@@ -73,6 +73,18 @@ describe('TaskProcessor', () => {
     taskModel.findOneAndUpdate.mockResolvedValue(task);
   }
 
+  // The fencing token this run's claim minted, read back off the claim call
+  // itself. Asserting against this rather than expect.any(String) is the
+  // point: every later write has to carry the token of the claim that is
+  // actually held, not merely some string.
+  function claimToken(call = 0): string {
+    const claims = taskModel.findOneAndUpdate.mock.calls as [
+      unknown,
+      { $set: { processingClaimToken: string } },
+    ][];
+    return claims[call][1].$set.processingClaimToken;
+  }
+
   beforeEach(async () => {
     taskModel = {
       findOneAndUpdate: jest.fn(),
@@ -148,9 +160,22 @@ describe('TaskProcessor', () => {
             { processingClaimedAt: { $lte: new Date(NOW - CLAIM_LEASE_MS) } },
           ],
         },
-        { $set: { processingClaimedAt: new Date(NOW) } },
+        {
+          $set: {
+            processingClaimedAt: new Date(NOW),
+            // Minted per claim — a takeover of a stale claim included — so
+            // that the writes below can prove which claim they belong to.
+            // The value itself is read back off this very call: what this
+            // assertion pins is that the claim writes a token *and nothing
+            // else* beside the timestamp. That the token is distinct per
+            // claim, and that later writes carry the right one, is the
+            // separate test below.
+            processingClaimToken: claimToken(),
+          },
+        },
         { new: true },
       );
+      expect(claimToken()).toEqual(expect.any(String));
     });
 
     it('does nothing at all when the claim comes back empty — gone, terminal, or held by another delivery', async () => {
@@ -172,8 +197,8 @@ describe('TaskProcessor', () => {
       await processor.process(job());
 
       expect(taskModel.updateOne).toHaveBeenLastCalledWith(
-        { _id: 'task-oid' },
-        { $set: { processingClaimedAt: null } },
+        { _id: 'task-oid', processingClaimToken: claimToken() },
+        { $set: { processingClaimedAt: null, processingClaimToken: null } },
       );
     });
 
@@ -184,9 +209,43 @@ describe('TaskProcessor', () => {
       await processor.process(job());
 
       expect(taskModel.updateOne).toHaveBeenLastCalledWith(
-        { _id: 'task-oid' },
-        { $set: { processingClaimedAt: null } },
+        { _id: 'task-oid', processingClaimToken: claimToken() },
+        { $set: { processingClaimedAt: null, processingClaimToken: null } },
       );
+    });
+
+    // The release filter is the whole point of the token: without it, the
+    // first expired lease permanently breaks exclusivity, because the
+    // worker that lost the claim still clears the one its successor holds.
+    it('releases only its own claim — a worker whose lease expired clears nothing', async () => {
+      const task = makeTask();
+      taskModel.findOneAndUpdate
+        .mockResolvedValueOnce(task) // A claims
+        .mockResolvedValueOnce(task); // B takes over after A's lease expires
+      agentInvocation.invoke.mockResolvedValue(completed());
+
+      await processor.process(job());
+      await processor.process(job());
+
+      // Two different claims, so two different tokens...
+      expect(claimToken(0)).not.toBe(claimToken(1));
+      // ...and each release names its own.
+      const writes = taskModel.updateOne.mock.calls as [
+        Record<string, unknown>,
+        { $set: Record<string, unknown> },
+      ][];
+      const releases = writes.filter(
+        ([, update]) => update.$set.processingClaimToken === null,
+      );
+      expect(releases).toHaveLength(2);
+      expect(releases[0][0]).toEqual({
+        _id: 'task-oid',
+        processingClaimToken: claimToken(0),
+      });
+      expect(releases[1][0]).toEqual({
+        _id: 'task-oid',
+        processingClaimToken: claimToken(1),
+      });
     });
 
     it('does not fail the job when releasing the claim fails — the lease covers that case instead', async () => {
@@ -221,7 +280,11 @@ describe('TaskProcessor', () => {
 
     expect(taskModel.updateOne).toHaveBeenNthCalledWith(
       1,
-      { _id: 'task-oid', status: 'PENDING' },
+      {
+        _id: 'task-oid',
+        status: 'PENDING',
+        processingClaimToken: claimToken(),
+      },
       { $set: { status: 'RUNNING' } },
     );
     expect(events.emitTaskUpdated).toHaveBeenCalledWith(
@@ -243,8 +306,8 @@ describe('TaskProcessor', () => {
     expect(events.emitTaskUpdated).not.toHaveBeenCalled();
     // Still released, even on this early exit.
     expect(taskModel.updateOne).toHaveBeenLastCalledWith(
-      { _id: 'task-oid' },
-      { $set: { processingClaimedAt: null } },
+      { _id: 'task-oid', processingClaimToken: claimToken() },
+      { $set: { processingClaimedAt: null, processingClaimToken: null } },
     );
   });
 
@@ -266,7 +329,11 @@ describe('TaskProcessor', () => {
       );
       expect(taskModel.updateOne).toHaveBeenNthCalledWith(
         2,
-        { _id: 'task-oid', status: 'RUNNING' },
+        {
+          _id: 'task-oid',
+          status: 'RUNNING',
+          processingClaimToken: claimToken(),
+        },
         {
           $set: {
             status: 'COMPLETED',
@@ -298,7 +365,11 @@ describe('TaskProcessor', () => {
       expect(reportAssembly.assembleFailed).toHaveBeenCalledWith(task, error);
       expect(taskModel.updateOne).toHaveBeenNthCalledWith(
         2,
-        { _id: 'task-oid', status: 'RUNNING' },
+        {
+          _id: 'task-oid',
+          status: 'RUNNING',
+          processingClaimToken: claimToken(),
+        },
         {
           $set: {
             status: 'FAILED',
@@ -533,12 +604,17 @@ describe('TaskProcessor', () => {
       // a job that has to be able to claim it.
       expect(taskModel.updateOne).toHaveBeenNthCalledWith(
         2,
-        { _id: 'task-oid', status: 'RUNNING' },
+        {
+          _id: 'task-oid',
+          status: 'RUNNING',
+          processingClaimToken: claimToken(),
+        },
         {
           $set: {
             pendingInput: { kind: 'SPRINT_ID' },
             accumulatedMs: 0,
             processingClaimedAt: null,
+            processingClaimToken: null,
           },
         },
       );

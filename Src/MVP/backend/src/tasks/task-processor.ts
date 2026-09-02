@@ -1,5 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Job } from 'bullmq';
@@ -79,8 +80,8 @@ export class TaskProcessor extends WorkerHost {
   }
 
   async process(job: Job<RunTaskJobData>): Promise<void> {
-    const task = await this.claim(job.data.taskId);
-    if (!task) {
+    const claimed = await this.claim(job.data.taskId);
+    if (!claimed) {
       // Gone, already claimed by a concurrent delivery, or in a terminal
       // state (a cancel that landed before the worker got here — CANCELLED,
       // COMPLETED and FAILED simply aren't in the claim filter). Nothing to
@@ -88,8 +89,16 @@ export class TaskProcessor extends WorkerHost {
       return;
     }
 
+    // The token is carried here rather than read back off `task` because
+    // every write below has to be fenced by the claim *this* call took, not
+    // by whatever the document happens to hold by the time the write runs.
+    const { task, claimToken } = claimed;
+
     try {
-      if (task.status === 'PENDING' && !(await this.markRunning(task))) {
+      if (
+        task.status === 'PENDING' &&
+        !(await this.markRunning(task, claimToken))
+      ) {
         // Cancelled in the window between the claim and the transition.
         return;
       }
@@ -106,10 +115,10 @@ export class TaskProcessor extends WorkerHost {
           ? await this.agentInvocation.resume(task, job.data.inputValue)
           : await this.startOrPause(task);
         task.accumulatedMs += Date.now() - startedAt;
-        await this.applyResult(task, result);
+        await this.applyResult(task, claimToken, result);
       } catch (err) {
         task.accumulatedMs += Date.now() - startedAt;
-        await this.finishFailed(task, {
+        await this.finishFailed(task, claimToken, {
           code: 'UPSTREAM',
           message: err instanceof Error ? err.message : 'Unknown error',
           stage: 'EXECUTION',
@@ -125,7 +134,7 @@ export class TaskProcessor extends WorkerHost {
       // leave a claim behind on a Task nobody is waiting on, which the
       // lease takes over anyway. What still needs it is the exception path,
       // and the early return when a cancel wins the PENDING transition.
-      await this.releaseClaim(task);
+      await this.releaseClaim(task, claimToken);
     }
   }
 
@@ -136,15 +145,20 @@ export class TaskProcessor extends WorkerHost {
   // agent. Reading first and checking afterwards cannot express that, which
   // is exactly how two deliveries used to both get past the RUNNING
   // fallthrough and invoke the agent twice.
-  private async claim(taskId: string): Promise<TaskDocument | null> {
+  private async claim(
+    taskId: string,
+  ): Promise<{ task: TaskDocument; claimToken: string } | null> {
     // One clock read for both ends of the comparison: the threshold below
     // and the stamp written on success have to be the same "now", or a
     // claim could be judged stale against a moment it was never measured
     // from.
     const now = Date.now();
     const staleBefore = new Date(now - CLAIM_LEASE_MS);
+    // Fresh per claim, including a takeover of a stale one — this is what
+    // later writes prove ownership with.
+    const claimToken = randomUUID();
 
-    return this.taskModel.findOneAndUpdate(
+    const task = await this.taskModel.findOneAndUpdate(
       {
         _id: taskId,
         // The three ways a Task may legitimately be picked up: a fresh
@@ -158,16 +172,39 @@ export class TaskProcessor extends WorkerHost {
           { processingClaimedAt: { $lte: staleBefore } },
         ],
       },
-      { $set: { processingClaimedAt: new Date(now) } },
+      {
+        $set: {
+          processingClaimedAt: new Date(now),
+          processingClaimToken: claimToken,
+        },
+      },
       { new: true },
     );
+
+    return task === null ? null : { task, claimToken };
   }
 
-  private async releaseClaim(task: TaskDocument): Promise<void> {
+  // Releasing is conditioned on still holding the claim, not merely on the
+  // Task's id. Without that condition the protection collapsed permanently
+  // the first time any lease expired: A claims; A's lease expires; B takes
+  // over and is the legitimate holder, still inside its invocation; A
+  // finishes and its finally clears *B's* claim; C claims and invokes the
+  // agent alongside B. Two concurrent invocations — the exact bug the claim
+  // exists to prevent — and two assembleCompleted calls behind them, so two
+  // Reports for one Task, both visible in GET /reports (which filters on
+  // userId alone).
+  //
+  // Releasing a claim that is no longer ours is a silent no-op: the holder
+  // that owns it now is mid-invocation and there is nothing here worth
+  // reporting to anyone.
+  private async releaseClaim(
+    task: TaskDocument,
+    claimToken: string,
+  ): Promise<void> {
     try {
       await this.taskModel.updateOne(
-        { _id: task._id },
-        { $set: { processingClaimedAt: null } },
+        { _id: task._id, processingClaimToken: claimToken },
+        { $set: { processingClaimedAt: null, processingClaimToken: null } },
       );
     } catch (err) {
       // Never rethrow from the finally: the work itself may well have
@@ -196,9 +233,12 @@ export class TaskProcessor extends WorkerHost {
   // memory, so assigning status here would let that unrelated save write
   // RUNNING back over a cancel that landed in between, reintroducing the
   // very lost update the conditional writes in this class exist to prevent.
-  private async markRunning(task: TaskDocument): Promise<boolean> {
+  private async markRunning(
+    task: TaskDocument,
+    claimToken: string,
+  ): Promise<boolean> {
     const { matchedCount } = await this.taskModel.updateOne(
-      { _id: task._id, status: 'PENDING' },
+      { _id: task._id, status: 'PENDING', processingClaimToken: claimToken },
       { $set: { status: 'RUNNING' } },
     );
     if (matchedCount === 0) {
@@ -214,15 +254,25 @@ export class TaskProcessor extends WorkerHost {
   // instead of task.save(). save() writes whatever paths were touched in
   // memory without looking at what the database holds now, so a cancel that
   // landed while the agent was working was silently overwritten by the
-  // completing invocation. False means someone else moved the Task — in
-  // practice, cancelled it — and this invocation's result must be neither
+  // completing invocation.
+  //
+  // The claim is part of the filter for the same reason the status is: a
+  // worker whose lease expired is no longer this Task's writer, and its
+  // successor is already working. Without it, an expired holder could still
+  // stamp a terminal status (and a Report id) over a run that is still
+  // going — the release-side hole of the same shape, reached from the write
+  // side instead.
+  //
+  // False therefore means someone else moved the Task — cancelled it, or
+  // took the claim over — and this invocation's result must be neither
   // applied nor announced.
   private async persistIfStillRunning(
     task: TaskDocument,
+    claimToken: string,
     changes: Record<string, unknown>,
   ): Promise<boolean> {
     const { matchedCount } = await this.taskModel.updateOne(
-      { _id: task._id, status: 'RUNNING' },
+      { _id: task._id, status: 'RUNNING', processingClaimToken: claimToken },
       { $set: changes },
     );
     return matchedCount === 1;
@@ -252,6 +302,7 @@ export class TaskProcessor extends WorkerHost {
 
   private async applyResult(
     task: TaskDocument,
+    claimToken: string,
     result: AgentInvocationResult,
   ): Promise<void> {
     if (result.status === 'INTERRUPTED') {
@@ -273,10 +324,11 @@ export class TaskProcessor extends WorkerHost {
       // again. Releasing before the emit would only shrink the window;
       // folding the release into the write removes it, because the pause is
       // not observable by anyone until the claim is already gone.
-      const persisted = await this.persistIfStillRunning(task, {
+      const persisted = await this.persistIfStillRunning(task, claimToken, {
         pendingInput: result.pendingInput,
         accumulatedMs: task.accumulatedMs,
         processingClaimedAt: null,
+        processingClaimToken: null,
       });
       if (!persisted) {
         return;
@@ -299,11 +351,11 @@ export class TaskProcessor extends WorkerHost {
         message: 'Agent invocation failed with no further detail',
         stage: 'EXECUTION',
       };
-      await this.finishFailed(task, error);
+      await this.finishFailed(task, claimToken, error);
       return;
     }
 
-    await this.finishCompleted(task, result.payload);
+    await this.finishCompleted(task, claimToken, result.payload);
   }
 
   // BE-18: assembles and persists the Report, then lets the frontend reach
@@ -312,10 +364,11 @@ export class TaskProcessor extends WorkerHost {
   // carries.
   private async finishCompleted(
     task: TaskDocument,
+    claimToken: string,
     payload: AgentRunPayload,
   ): Promise<void> {
     const report = await this.reportAssembly.assembleCompleted(task, payload);
-    const persisted = await this.persistIfStillRunning(task, {
+    const persisted = await this.persistIfStillRunning(task, claimToken, {
       status: 'COMPLETED',
       reportId: report._id,
       accumulatedMs: task.accumulatedMs,
@@ -347,10 +400,11 @@ export class TaskProcessor extends WorkerHost {
   // both.
   private async finishFailed(
     task: TaskDocument,
+    claimToken: string,
     error: TaskError,
   ): Promise<void> {
     const report = await this.reportAssembly.assembleFailed(task, error);
-    const persisted = await this.persistIfStillRunning(task, {
+    const persisted = await this.persistIfStillRunning(task, claimToken, {
       status: 'FAILED',
       error,
       reportId: report._id,
