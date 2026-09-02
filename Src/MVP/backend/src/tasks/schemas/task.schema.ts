@@ -114,6 +114,22 @@ export class Task {
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
 
+// BE-1 asked for "schemi e indici" and this schema declared none, so every
+// query below was a collection scan.
+//
+// TaskProcessor.maybeEmitBatchCompleted issues three countDocuments filtering
+// on batchId (+ status) at the end of *every* job — a batch of seven
+// operations pays for that twenty-one times, and it runs inside the window
+// between announcing a pause and the user answering it, where a slow query is
+// not merely wasted work.
+TaskSchema.index({ batchId: 1, status: 1 });
+
+// TasksService.findAllForUser: filter on userId, sort on createdAt — the
+// dashboard's list query, and the same (owner, recency) shape Report already
+// indexes for its own history query. Sorted descending in the index so the
+// sort is served by it rather than done in memory.
+TaskSchema.index({ userId: 1, createdAt: -1 });
+
 // The only place this logic actually lives — see the TaskMethods comment
 // above for why it isn't declared inside the Task class instead.
 TaskSchema.methods.canTransitionTo = function (
