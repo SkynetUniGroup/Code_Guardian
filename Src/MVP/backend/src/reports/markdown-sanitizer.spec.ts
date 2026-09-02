@@ -224,3 +224,74 @@ describe('sanitizeReportBody', () => {
     expect(original[0]).toEqual({ kind: 'TEXT', markdown: '<b>hi</b>' });
   });
 });
+
+// markdown-sanitizer.adversarial.spec.ts states the requirement with one
+// payload per family. These are the same families spelled differently — the
+// question a fix has to survive is not "does the recorded payload fail?" but
+// "does anything in this class still get through?". A fix that recognised
+// `&#106;` and not `&#X6A;` would pass that file and still be open.
+describe('sanitizeMarkdown — other spellings of a hidden scheme', () => {
+  const rejected = [
+    // Uppercase hex marker and uppercase digits: normalization lowercases
+    // before anything else looks at the string.
+    ['uppercase hex reference', '[x](&#X6A;avascript:alert(1))'],
+    // Leading zeros are legal in a numeric reference and change nothing
+    // about what it decodes to.
+    ['zero-padded decimal reference', '[x](&#0000106;avascript:alert(1))'],
+    ['zero-padded hex reference', '[x](&#x0006a;avascript:alert(1))'],
+    // Not the first character of the scheme — any position works, because
+    // the parser decodes the whole destination, not a prefix of it.
+    ['reference in the middle of the scheme', '[x](java&#115;cript:alert(1))'],
+    ['reference at the end of the scheme', '[x](javascrip&#116;:alert(1))'],
+    // Named references that are not &colon;. A denylist of "the dangerous
+    // entities" would need every one of these; the rule needs none.
+    ['&Tab; inside the scheme keyword', '[x](java&Tab;script:alert(1))'],
+    [
+      '&NewLine; inside the scheme keyword',
+      '[x](java&NewLine;script:alert(1))',
+    ],
+    // data:, hidden by its delimiter rather than by its keyword.
+    ['data: with a named colon', '[x](data&colon;text/html,PHN2Zz4=)'],
+    // The image form goes down the same path, leading `!` included.
+    ['an image destination', '![x](&#106;avascript:alert(1))'],
+    // vbscript: is not named in BE-18 at all — it is rejected because it is
+    // not in the allowlist, and hiding it changes nothing about that.
+    ['a scheme outside the allowlist', '[x](vb&#115;cript:msgbox(1))'],
+  ] as const;
+
+  it.each(rejected)('rejects %s', (_name, payload) => {
+    const output = sanitizeMarkdown(payload);
+
+    expect(output).toBe('x');
+  });
+
+  // The rule is "a character reference makes a destination unsafe unless an
+  // allowed scheme is already complete in the clear before it". These are
+  // the cases on the other side of that line: they must keep working, or the
+  // fix has traded a security hole for a content-destroying one.
+  it('keeps an http(s) destination whose query string contains a reference', () => {
+    expect(sanitizeMarkdown('[q](https://example.com/s?a=1&amp;b=2)')).toBe(
+      '[q](https://example.com/s?a=1&amp;b=2)',
+    );
+  });
+
+  it('keeps a bare ampersand, which is not a character reference at all', () => {
+    // No semicolon, so nothing decodes; the vast majority of real query
+    // strings look like this.
+    expect(sanitizeMarkdown('[q](https://example.com/s?a=1&b=2)')).toBe(
+      '[q](https://example.com/s?a=1&b=2)',
+    );
+  });
+
+  it('keeps a mailto: destination carrying a reference in its parameters', () => {
+    expect(
+      sanitizeMarkdown('[m](mailto:dev@example.com?subject=A&amp;B)'),
+    ).toBe('[m](mailto:dev@example.com?subject=A&amp;B)');
+  });
+
+  it('keeps a relative destination with an unterminated ampersand sequence', () => {
+    // `&#106` without the closing `;` is not a character reference, so
+    // CommonMark leaves it alone and so does this.
+    expect(sanitizeMarkdown('[r](./a&#106b.ts)')).toBe('[r](./a&#106b.ts)');
+  });
+});

@@ -25,6 +25,13 @@ const ALLOWED_SCHEMES = new Set(['http', 'https', 'mailto']);
 // nothing a browser can execute, so nothing to reject.
 const SCHEME = /^([a-z][a-z0-9+.-]*):/;
 
+// A character reference, in any of the three forms CommonMark resolves:
+// decimal, hexadecimal, and named. Matched by *shape*, not against the HTML5
+// entity list — see isSafeDestination for why that distinction is the whole
+// point of this constant.
+const CHARACTER_REFERENCE =
+  /&(#[0-9]{1,8}|#x[0-9a-f]{1,6}|[a-z][a-z0-9]{1,31});/i;
+
 // BE-18: the one place Markdown coming out of an agent gets cleaned, so that
 // screen rendering and PDF export (BE-20) always consume the same
 // already-sanitized string instead of each having to defend against this
@@ -142,6 +149,45 @@ function readLink(markdown: string, open: number): ParsedLink | null {
 // (`[x](url "title")`). A compliant parser would cut the title off at the
 // first space — but this filter exists for the renderer that doesn't, and
 // looking at more than strictly necessary costs nothing here.
+//
+// Character references are the second half of "the way a browser would read
+// it", and the harder half. CommonMark resolves them *inside* destinations
+// — `[foo](/f&ouml;&ouml;)` renders as `href="/foo"` with umlauts — so the
+// filter was judging the string as written while the renderer judged it
+// decoded. `&#106;avascript:`, `&#x6a;avascript:` and `javascript&colon;`
+// all sailed past a scheme regex that found no `:` where it expected one,
+// were declared relative, and were re-emitted verbatim for the renderer to
+// decode back into an executable href.
+//
+// Two ways to close that, and this is the second one:
+//
+//   1. decode fully, then judge the decoded string. Most precise, but the
+//      named references are hundreds of entries and there is no decoder
+//      here — `entities` exists only as a transitive dependency, and
+//      promoting it to a direct one to sanitize a handful of report strings
+//      buys precision this file does not need.
+//   2. treat a destination containing a character reference as unsafe
+//      unless an allowed scheme is already spelled in the clear *before*
+//      the first reference.
+//
+// What rules out the third option — a table of "the dangerous entities" —
+// is that it is a denylist, the exact mistake the allowlist above replaced.
+// `&colon;` alone shows why: hiding the delimiter is enough, and a
+// delimiter has many spellings.
+//
+// Rule 2 is safe because the scheme is decided by the text before the first
+// `:`, and a reference can only ever *add* to what precedes it. If `https:`,
+// `http:` or `mailto:` is already complete and in the clear, no later
+// reference can change which scheme the browser sees:
+// `https://ok.example/&#106;avascript:x` is an https URL with an odd path.
+// If it is not complete, there is no way to know what the destination
+// decodes to without decoding it, so it does not survive.
+//
+// What that costs: a relative destination carrying a legitimate reference —
+// `/f&ouml;&ouml;` — loses its link and keeps its text. An agent writing an
+// analysis report has little reason to produce one, and the trade is
+// deliberate: the failure mode is a link that isn't clickable, rather than
+// one that executes.
 function isSafeDestination(destination: string): boolean {
   const normalized = destination
     // eslint-disable-next-line no-control-regex -- the point is the control characters
@@ -149,8 +195,18 @@ function isSafeDestination(destination: string): boolean {
     .trim()
     .toLowerCase();
 
-  const scheme = SCHEME.exec(normalized);
-  return scheme === null || ALLOWED_SCHEMES.has(scheme[1]);
+  const reference = CHARACTER_REFERENCE.exec(normalized);
+  const clear =
+    reference === null ? normalized : normalized.slice(0, reference.index);
+
+  const scheme = SCHEME.exec(clear);
+  if (scheme === null) {
+    // Relative — nothing a browser can execute — but only if it is still
+    // relative once decoded, which is only knowable when there is nothing
+    // left to decode.
+    return reference === null;
+  }
+  return ALLOWED_SCHEMES.has(scheme[1]);
 }
 
 // Applies sanitizeMarkdown to every Markdown-bearing field across the Block
