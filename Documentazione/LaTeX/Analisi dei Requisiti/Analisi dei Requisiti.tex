@@ -76,7 +76,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.1.0} \\ \hline
+            \textbf{Versione} & \textit{1.2.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -110,8 +110,8 @@
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
-
-    1.1.0 & 2026/07/09 & Correzioni agli UC a seguito della valutazione TB & Dario Pirrone & - \\ \hline
+    1.2.0 & 2026/09/09 & Correzioni ai requisiti a seguito della valutazione TB & Dario Pirrone & - \\ \hline
+    1.1.0 & 2026/09/08 & Correzioni agli UC a seguito della valutazione TB & Dario Pirrone & - \\ \hline
     1.0.0 & 2026/07/09 & Correzioni minori e approvazione da parte di Marco Barbiero & Sara Ristovic & Andrea Fistarol \\ \hline
     0.18.1 & 2026/07/09 & Aggiornati requisiti funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.18.0 & 2026/07/08 & Aggiunti diagrammi UML degli UC & Dario Pirrone & Sara Ristovic \\ \hline
@@ -1299,6 +1299,7 @@ Questo caso d'uso descrive l'azione attraverso la quale l'utente definisce quali
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
     \item \textbf{Trigger:} L'utente, con l'obiettivo di comporre la coda delle operazioni da avviare, interagisce con una specifca operazione per aggiungerla o rimuoverla dalla selezione corrente.
+    \newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente si trova nella dashboard e sta configurando le operazioni da avviare (UC21).
@@ -1855,7 +1856,7 @@ Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli f
     \begin{itemize}
         \item Il sistema sta mostrando l'intestazione del report (UC25.1).
         \item L'analisi è stata eseguita su una selezione parziale di file o directory oppure sull'intero repository.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'ambito di analisi è visibile a schermo per l'utente sotto forma di percorsi file e directory nel caso di selezioni parziali o con la scritta "Intero \textit{Repository} analizzato" nel caso di una selezione totale.
@@ -1899,7 +1900,7 @@ Questo caso d'uso descrive la visualizzazione della data in cui l'analisi dell'a
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item La data di generazione è visibile a schermo per l'utente.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema formatta e mostra a schermo la data.
@@ -1968,7 +1969,7 @@ Questo caso d'uso descrive la visualizzazione di un componente dedicato al testo
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza una porzione di testo formattato (\textit{\glo{Markdown}{markdown}}) ricevuto dall'agente.
+    \item \textbf{Trigger:} Il sistema renderizza una porzione di testo formattato (\textit{\glo{Markdown}{markdown}}) ricevuto dall'agente.\newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando il corpo del report (UC25.2).
@@ -2008,7 +2009,7 @@ Questo caso d'uso descrive la visualizzazione di un contenitore a lista per most
         \item \textbf{UC25.2.2.1:} Visualizzazione di un singolo elemento nella lista.
     \end{itemize}
 \end{itemize}
-
+\newpage
 \subsubsection{UC25.2.2.1: Visualizzazione di un singolo elemento nella lista}\label{uc:25.2.2.1}
 Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a una singola voce all'interno della lista strutturata.
 
@@ -2055,7 +2056,7 @@ Questo caso d'uso descrive la visualizzazione della categoria della singola occo
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza il dato testuale relativo alla categoria dell'elemento.\newpage
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale relativo alla categoria dell'elemento.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema sta mostrando un singolo elemento nella lista (UC25.2.2.1).
@@ -2101,7 +2102,7 @@ Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di 
     \begin{itemize}
         \item Il sistema sta mostrando un singolo elemento nella lista (UC25.2.2.1).
         \item È disponibile un riferimento esplicito a una porzione di codice.
-    \end{itemize}\newpage
+    \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item I percorsi ai file e le righe di codice interessate sono visibili a schermo per l'utente.
@@ -2175,7 +2176,7 @@ Questo caso d'uso descrive la visualizzazione all'interno del report di un modul
     \end{enumerate}
 \end{itemize}
 
-\newpage
+
 \subsubsection{UC26: Errore durante l'esecuzione dell'agente}\label{uc:26}
 Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possibili anomalie, tecniche o semantiche, che possono verificarsi durante l'elaborazione interna di un agente o del modello \textit{LLM} a esso associato. Essendo un caso d'uso astratto, non viene mai istanziato direttamente, ma si manifesta all'utente esclusivamente attraverso una delle sue specializzazioni.
 
@@ -2235,7 +2236,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\newpage
+
 \subsubsection{UC26.2: Errore per timeout del modello \textit{LLM}}\label{uc:26.2}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora il modello \textit{LLM} non restituisca una risposta entro il tempo massimo consentito dal sistema.
 
@@ -2295,7 +2296,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'agente sta assemblando il \textit{\glo{prompt}{prompt}} e il contesto da inviare al modello \textit{LLM}.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'elaborazione viene interrotta prima dell'invio.
@@ -2503,7 +2504,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Un'email contenente l'avviso e un collegamento diretto alla piattaforma è stata inviata con successo all'indirizzo dell'utente.
-    \end{itemize}\newpage
+    \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} rileva che un agente è in attesa di validazione o di un input manuale.
@@ -2685,7 +2686,7 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Trigger:} L'utente seleziona l'apposito comando grafico di eliminazione o ripristino default.
+    \item \textbf{Trigger:} L'utente seleziona l'apposito comando grafico di eliminazione o ripristino default.\newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema mostra correttamente la sezione di personalizzazione del README (UC33).
@@ -2767,7 +2768,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
         \item È stato validato il contesto operativo (UC9).
         \item L'operazione è stata innescata dalla dashboard (UC21.3).
         \item Il file \texttt{README.md} \textbf{è già presente} nel \textit{repository} di destinazione.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) per aggiornare il file \texttt{README.md}.
@@ -2886,7 +2887,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e riferimento di base (UC9).
         \item È stato selezionato e validato un ambito di analisi (UC16).
         \item L'utente ha selezionato l'operazione "Generazione documentazione \textit{API}" (UC21.1).
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente il file \texttt{API.md} generato o aggiornato.
@@ -3059,7 +3060,7 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \begin{itemize}
         \item L'utente è autenticato (UC4) e ha configurato le credenziali per il Sistema di Task Management (UC6.2).
         \item L'utente ha selezionato l'operazione "Generazione changelog tecnico" o "Generazione changelog di buisiness" (UC21.1).
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato un Changelog tecnico scritto in formato \textit{Markdown} e inserito nel report (UC25.2.1).
@@ -3094,7 +3095,7 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
         \item \textbf{UC26.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
-
+\newpage
 \subsubsection{UC41.1: Inserimento identificativo dello \textit{Sprint}}\label{uc:41.1}
 Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da parte dell'utente, dato necessario per l'estrazione dei task completati dal sistema esterno.
 
@@ -3105,7 +3106,7 @@ Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \tex
     \label{fig:UC41.1}
 \end{center}
 
-\newpage
+
 \begin{itemize}
     \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
     
@@ -3151,7 +3152,7 @@ Questo caso d'uso descrive l'interruzione volontaria del processo di generazione
     \end{enumerate}
 \end{itemize}
 
-
+\newpage
 \subsubsection{UC43: Avviso e gestione task con metadati insufficienti}\label{uc:43}
 Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{Changelog} rilevi la presenza di task contrassegnati come completati ma qualitativamente poveri di informazioni, chiedendo all'utente come procedere.
 
@@ -3226,7 +3227,7 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
     \begin{itemize}
         \item Il sistema ha generato un \textit{Changelog} di Business scritto in formato \textit{Markdown} e inserito nel report (UC25.2.1).
         \item L'utente visualizza un nuovo report aggiornato (UC25) con il testo finale.
-    \end{itemize}\newpage
+    \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema riceve il comando di generazione innescato dall'interfaccia del report del \textit{Changelog} tecnico.
@@ -3505,17 +3506,30 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.105 & Obbligatorio & Il sistema deve consentire all'utente di annullare la generazione del \textit{Changelog} di \textit{business} dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & \hyperref[uc:46]{UC46} \\ \hline
 
+    RF.106 & Obbligatorio & Gli agenti devono essere evocati da un \textbf{Orchestratore} sviluppato internamente. La logica di smistamento deve essere deterministica e non basata su modelli \textit{LLM}. & Verbale esterno 2026/06/08 \\ \hline
+
+    RF.107 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 5 minuti. & \hyperref[uc:26.2]{UC26.2} \\ \hline
+
+    RF.108 & Obbligatorio & I report di Business generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità '\textbf{\glo{Flesch Reading Ease}{flesch-reading-ease}}' superiore a 50. & \hyperref[uc:45]{UC45} \\ \hline
+
+    RF.109 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare le eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting). & \hyperref[uc:26.1]{UC26.1} \\ \hline
+
+    RF.110 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi. & \hyperref[uc:4]{UC4} \\ \hline
+
+    RF.111 & Obbligatorio & Il tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema non deve superare i 2 secondi. & Verbale esterno 2026/04/24 \\ \hline
+
     \caption{Requisiti funzionali}
     \label{tab:rf}
 
 \end{xltabular}
 \endgroup
 
-
+\newpage
 \subsection{Requisiti qualitativi}
 
 \begingroup
 \renewcommand{\arraystretch}{1.3}
+
 
 \begin{xltabular}{\textwidth}{|c|c|D|F|}
 
@@ -3529,29 +3543,42 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     \endhead
 
-
 \hline
-RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. & PdQ(MP\_13) \\ 
+RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. & PdQ (MP\_13) \\ 
 \hline
-RQ.2 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\%, come stabilito dalla metrica MP\_12 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_12) \\ 
+RQ.2 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\%, come stabilito dalla metrica MP\_12 del Piano di Qualifica. & Capitolato C2, PdQ (MP\_12) \\ 
 \hline
-RQ.3 & Obbligatorio & Il codice sorgente prodotto deve garantire alti standard di manutenibilità, mantenendo una complessità ciclomatica minore o uguale a 15, non superando i 5 \textbf{\glo{Code Smell}{code-smell}} per componente e limitando la duplicazione del codice a un massimo del 10\%. La verifica seguirà le metriche MPD\_15, MPD\_16 e MPD\_17 del Piano di Qualifica. & Capitolato C2, PdQ(MPD\_15), PdQ(MPD\_16), PdQ(MPD\_17) \\ 
+RQ.3 & Obbligatorio & Il codice sorgente prodotto deve garantire alti standard di manutenibilità, mantenendo una complessità ciclomatica minore o uguale a 15, non superando i 5 \textbf{\glo{Code Smell}{code-smell}} per componente e limitando la duplicazione del codice a un massimo del 10\%. La verifica seguirà le metriche MPD\_15, MPD\_16 e MPD\_17 del Piano di Qualifica. & Capitolato C2, PdQ (MPD\_15), PdQ (MPD\_16), PdQ (MPD\_17) \\ 
 \hline
-RQ.4 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (MPD\_14) del Piano di Qualifica. & Capitolato C2, PdQ(MPD\_14) \\ 
+RQ.4 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (MPD\_14) del Piano di Qualifica. & Capitolato C2, PdQ (MPD\_14) \\ 
 \hline
-RQ.5 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore o uguale all'85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (MPD\_6) definita nel Piano di Qualifica. & PdQ(MPD\_6) \\ 
+RQ.5 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore o uguale all'85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (MPD\_6) definita nel Piano di Qualifica. & PdQ (MPD\_6) \\ 
 \hline
-RQ.6 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 5 minuti. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (MPD\_12) definita nel Piano di Qualifica. & UC26.2, PdQ(MPD\_12) \\ 
+RQ.6 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo a un nuovo utente di apprenderne le funzionalità in un tempo minore o uguale a 30 minuti, in conformità con la metrica Tempo di Apprendimento (MPD\_9). & PdQ (MPD\_9) \\ 
 \hline
-RQ.7 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità '\textbf{\glo{Flesch Reading Ease}{flesch-reading-ease}}' superiore a 50. La valutazione seguirà la metrica MPD\_7. & Verbale esterno 2026/04/24, PdQ(MPD\_7) \\ 
+RQ.7 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
 \hline
-RQ.8 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare con successo il 100\% delle eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting), conformemente alla metrica MPD\_5 del Piano di Qualifica. & Verbale interno 2026/06/02, PdQ(MPD\_5) \\ 
+RQ.8 & Obbligatorio & Il sistema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
 \hline
-RQ.9 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi, conformemente alla metrica Tempo di Autenticazione (MPD\_13). & UC4, PdQ(MPD\_13) \\ 
+RQ.9 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
 \hline
-RQ.10 & Obbligatorio & Il tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema non deve superare i 2 secondi. La misurazione deve rispettare la metrica Tempo di Risposta Interfaccia (MPD\_11). & PdQ(MPD\_11) \\ 
+RQ.10 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
 \hline
-RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo a un nuovo utente di apprenderne le funzionalità in un tempo minore o uguale a 30 minuti, in conformità con la metrica Tempo di Apprendimento (MPD\_9). & PdQ(MPD\_9) \\ 
+RQ.11 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
+\hline
+RQ.12 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
+\hline
+RQ.13 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
+\hline
+RQ.14 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
+\hline
+RQ.15 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
+\hline
+RQ.16 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
+\hline
+RQ.17 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
+\hline
+RQ.18 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
 \hline
 
     \caption{Requisiti qualitativi}
@@ -3578,47 +3605,21 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     \hline
     \endhead
 
-    RV.1 & Obbligatorio & Gli agenti devono essere evocati da un \textbf{Orchestratore} che deve essere sviluppato internamente al progetto. La sua logica di smistamento delle richieste deve essere puramente deterministica e non deve basarsi su agenti o modelli \textit{LLM}. & Verbale esterno 2026/06/08 \\
+    RV.1 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.2 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
+    RV.2 & Obbligatorio & Il prodotto deve essere sviluppato ed eseguito come un'applicazione Web che deve essere compatibile ed eseguibile senza anomalie grafiche sulle versioni più recenti dei principali browser (Google Chrome v145 o superiore, Mozilla Firefox v145 o superiore, Microsoft Edge v145 o superiore). & Capitolato C2 \\
     \hline
-    RV.3 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
+    RV.3 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript, utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.4 & Obbligatorio & Il sistema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
+    RV.4 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework \textit{\glo{NestJS}{nestjs}}. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.5 & Obbligatorio & Il prodotto deve essere sviluppato ed eseguito come un'applicazione Web che deve essere compatibile ed eseguibile senza anomalie grafiche sulle versioni più recenti dei principali browser (Google Chrome v145 o superiore, Mozilla Firefox v145 o superiore, Microsoft Edge v145 o superiore). & Capitolato C2 \\
+    RV.5 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework \textbf{\glo{LangGraph}{langgraph}}. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.6 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
+    RV.6 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su \textit{\glo{MongoDB}{mongodb}} per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.7 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
+    RV.7 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da \textit{\glo{AWS Bedrock}{aws-bedrock}}. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.8 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
-    \hline
-    RV.9 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript , utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.10 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework \textit{\glo{NestJS}{nestjs}}. &  Verbale interno 2026/06/02 \\
-    \hline
-    RV.11 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework \textbf{\glo{LangGraph}{langgraph}}. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.12 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su \textit{\glo{MongoDB}{mongodb}} per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.13 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da \textit{\glo{AWS Bedrock}{aws-bedrock}}. &  Verbale interno 2026/06/02 \\
-    \hline
-    RV.14 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.15 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
-    \hline
-    RV.16 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
-    \hline
-    RV.17 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
-    \hline
-    RV.18 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
-    \hline
-    RV.19 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
-    \hline
-    RV.20 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
-    \hline\pagebreak
-    RV.21 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
+    RV.8 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
     \hline
 
     \caption{Requisiti di vincolo}
@@ -3626,7 +3627,7 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     
 \end{xltabular}
 \endgroup
-
+\newpage
 \subsection{Requisiti di sicurezza}
 
 \begingroup
@@ -3699,7 +3700,7 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \hyperref[uc:1.5.3]{UC1.5.3} & RF.4 \\ \hline
 \hyperref[uc:2]{UC2} & RF.5 \\ \hline
 \hyperref[uc:3]{UC3} & RF.6 \\ \hline
-\hyperref[uc:4]{UC4} & RF.7, RQ.9 \\ \hline
+\hyperref[uc:4]{UC4} & RF.7, RF.110 \\ \hline
 \hyperref[uc:4.1]{UC4.1} & RF.8 \\ \hline
 \hyperref[uc:4.2]{UC4.2} & RF.8 \\ \hline
 \hyperref[uc:5]{UC5} & RF.9 \\ \hline
@@ -3767,8 +3768,8 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \hyperref[uc:25.2.4]{UC25.2.4} & RF.63 \\ \hline
 \hyperref[uc:25.2.5]{UC25.2.5} & RF.64 \\ \hline
 \hyperref[uc:26]{UC26} & RF.65 \\ \hline
-\hyperref[uc:26.1]{UC26.1} & RF.66 \\ \hline
-\hyperref[uc:26.2]{UC26.2} & RF.67, RQ.6 \\ \hline
+\hyperref[uc:26.1]{UC26.1} & RF.66, RF.109 \\ \hline
+\hyperref[uc:26.2]{UC26.2} & RF.67, RF.107 \\ \hline
 \hyperref[uc:26.3]{UC26.3} & RF.68 \\ \hline
 \hyperref[uc:26.4]{UC26.4} & RF.69 \\ \hline
 \hyperref[uc:26.5]{UC26.5} & RF.70 \\ \hline
@@ -3796,27 +3797,22 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \hyperref[uc:42]{UC42} & RF.99 \\ \hline
 \hyperref[uc:43]{UC43} & RF.100, RF.101 \\ \hline
 \hyperref[uc:44]{UC44} & RF.102 \\ \hline
-\hyperref[uc:45]{UC45} & RF.103, RF.104 \\ \hline
+\hyperref[uc:45]{UC45} & RF.103, RF.104, RF.108 \\ \hline
 \hyperref[uc:46]{UC46} & RF.105 \\ \hline
-Capitolato C2 & RQ.2, RQ.3, RQ.4, RS.5, RV.5, RV.9, RV.11, RV.12, RV.14, RV.15, RV.16, RV.17, RV.18, RV.19, RV.20, RV.21 \\ \hline
-PdQ(MP 12) & RQ.2 \\ \hline
-PdQ(MP 13) & RQ.1 \\ \hline
-PdQ(MPD 11) & RQ.10 \\ \hline
-PdQ(MPD 12) & RQ.6 \\ \hline
-PdQ(MPD 13) & RQ.9 \\ \hline
-PdQ(MPD 14) & RQ.4 \\ \hline
-PdQ(MPD 15) & RQ.3 \\ \hline
-PdQ(MPD 16) & RQ.3 \\ \hline
-PdQ(MPD 17) & RQ.3 \\ \hline
-PdQ(MPD 5) & RQ.8 \\ \hline
-PdQ(MPD 6) & RQ.5 \\ \hline
-PdQ(MPD 7) & RQ.7 \\ \hline
-PdQ(MPD 9) & RQ.11 \\ \hline
-Verbale esterno 2026/03/23 & RS.3, RV.2, RV.3 \\ \hline
-Verbale esterno 2026/04/24 & RQ.7 \\ \hline
-Verbale esterno 2026/06/03 & RV.7, RV.8 \\ \hline
-Verbale esterno 2026/06/08 & RV.1, RV.4 \\ \hline
-Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14 \\ \hline
+Capitolato C2 & RQ.2, RQ.3, RQ.4, RQ.12, RQ.13, RQ.14, RQ.15, RQ.16, RQ.17, RQ.18, RS.5, RV.2, RV.3, RV.5, RV.6, RV.8 \\ \hline
+PdQ (MP\_12) & RQ.2 \\ \hline
+PdQ (MP\_13) & RQ.1 \\ \hline
+PdQ (MPD\_14) & RQ.4 \\ \hline
+PdQ (MPD\_15) & RQ.3 \\ \hline
+PdQ (MPD\_16) & RQ.3 \\ \hline
+PdQ (MPD\_17) & RQ.3 \\ \hline
+PdQ (MPD\_6) & RQ.5 \\ \hline
+PdQ (MPD\_9) & RQ.6 \\ \hline
+Verbale esterno 2026/03/23 & RQ.7, RS.3, RV.1 \\ \hline
+Verbale esterno 2026/04/24 & RF.111 \\ \hline
+Verbale esterno 2026/06/03 & RQ.10, RQ.11 \\ \hline
+Verbale esterno 2026/06/08 & RF.106, RQ.8 \\ \hline
+Verbale interno 2026/06/02 & RQ.9, RQ.12, RV.3, RV.4, RV.5, RV.6, RV.7 \\ \hline
 
 \end{longtable}
 
@@ -3840,7 +3836,7 @@ Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14
 
 \hline
 \caption{Tracciamento Requisiti - Fonte}
-\label{tab:tracciamento_r-f} \\         
+\label{tab:tracciamento_r-f} \\          
 \endlastfoot
 
 RF.1 & \hyperref[uc:1]{UC1} \\ \hline
@@ -3948,38 +3944,38 @@ RF.102 & \hyperref[uc:44]{UC44} \\ \hline
 RF.103 & \hyperref[uc:45]{UC45} \\ \hline
 RF.104 & \hyperref[uc:45]{UC45} \\ \hline
 RF.105 & \hyperref[uc:46]{UC46} \\ \hline
-RQ.1 & PdQ(MP 13) \\ \hline
-RQ.2 & Capitolato C2, PdQ(MP 12) \\ \hline
-RQ.3 & Capitolato C2, PdQ(MPD 15), PdQ(MPD 16), PdQ(MPD 17) \\ \hline
-RQ.4 & Capitolato C2, PdQ(MPD 14) \\ \hline
-RQ.5 & PdQ(MPD 6) \\ \hline
-RQ.6 & \hyperref[uc:26.2]{UC26.2}, PdQ(MPD 12) \\ \hline
-RQ.7 & Verbale esterno 2026/04/24, PdQ(MPD 7) \\ \hline
-RQ.8 & Verbale interno 2026/06/02, PdQ(MPD 5) \\ \hline
-RQ.9 & \hyperref[uc:4]{UC4}, PdQ(MPD 13) \\ \hline
-RQ.10 & Verbale esterno 2026/04/24, PdQ(MPD 11) \\ \hline
-RQ.11 & PdQ(MPD 9) \\ \hline
-RV.1 & Verbale esterno 2026/06/08 \\ \hline
-RV.2 & Verbale esterno 2026/03/23 \\ \hline
-RV.3 & Verbale esterno 2026/03/23 \\ \hline
-RV.4 & Verbale esterno 2026/06/08 \\ \hline
-RV.5 & Capitolato C2 \\ \hline
-RV.6 & Verbale interno 2026/06/02 \\ \hline
-RV.7 & Verbale esterno 2026/06/03 \\ \hline
-RV.8 & Verbale esterno 2026/06/03 \\ \hline
-RV.9 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.10 & Verbale interno 2026/06/02 \\ \hline
-RV.11 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.12 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.13 & Verbale interno 2026/06/02 \\ \hline
-RV.14 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.15 & Capitolato C2 \\ \hline
-RV.16 & Capitolato C2 \\ \hline
-RV.17 & Capitolato C2 \\ \hline
-RV.18 & Capitolato C2 \\ \hline
-RV.19 & Capitolato C2 \\ \hline
-RV.20 & Capitolato C2 \\ \hline
-RV.21 & Capitolato C2 \\ \hline
+RF.106 & Verbale esterno 2026/06/08 \\ \hline
+RF.107 & \hyperref[uc:26.2]{UC26.2} \\ \hline
+RF.108 & \hyperref[uc:45]{UC45} \\ \hline
+RF.109 & \hyperref[uc:26.1]{UC26.1} \\ \hline
+RF.110 & \hyperref[uc:4]{UC4} \\ \hline
+RF.111 & Verbale esterno 2026/04/24 \\ \hline
+RQ.1 & PdQ (MP\_13) \\ \hline
+RQ.2 & Capitolato C2, PdQ (MP\_12) \\ \hline
+RQ.3 & Capitolato C2, PdQ (MPD\_15), PdQ (MPD\_16), PdQ (MPD\_17) \\ \hline
+RQ.4 & Capitolato C2, PdQ (MPD\_14) \\ \hline
+RQ.5 & PdQ (MPD\_6) \\ \hline
+RQ.6 & PdQ (MPD\_9) \\ \hline
+RQ.7 & Verbale esterno 2026/03/23 \\ \hline
+RQ.8 & Verbale esterno 2026/06/08 \\ \hline
+RQ.9 & Verbale interno 2026/06/02 \\ \hline
+RQ.10 & Verbale esterno 2026/06/03 \\ \hline
+RQ.11 & Verbale esterno 2026/06/03 \\ \hline
+RQ.12 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RQ.13 & Capitolato C2 \\ \hline
+RQ.14 & Capitolato C2 \\ \hline
+RQ.15 & Capitolato C2 \\ \hline
+RQ.16 & Capitolato C2 \\ \hline
+RQ.17 & Capitolato C2 \\ \hline
+RQ.18 & Capitolato C2 \\ \hline
+RV.1 & Verbale esterno 2026/03/23 \\ \hline
+RV.2 & Capitolato C2 \\ \hline
+RV.3 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.4 & Verbale interno 2026/06/02 \\ \hline
+RV.5 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.6 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.7 & Verbale interno 2026/06/02 \\ \hline
+RV.8 & Capitolato C2 \\ \hline
 RS.1 & \hyperref[uc:1]{UC1} \\ \hline
 RS.2 & \hyperref[uc:6]{UC6} \\ \hline
 RS.3 & Verbale esterno 2026/03/23 \\ \hline
