@@ -10,8 +10,12 @@ import { AgentRegistry } from '../operations/agent-registry.service';
 import { AgentRunPayload } from '../tasks/agent-client.types';
 import { TaskDocument } from '../tasks/schemas/task.schema';
 import { TaskError } from '../tasks/task.types';
-import { ReportContext } from './report.types';
-import { sanitizeReportBody } from './markdown-sanitizer';
+import { Proposal, ReportContext } from './report.types';
+import {
+  isSafeDestination,
+  sanitizeMarkdown,
+  sanitizeReportBody,
+} from './markdown-sanitizer';
 
 // BE-18: builds the persisted Report once a Task reaches a terminal state
 // (COMPLETED or FAILED — never CANCELLED, which never ran an agent and has
@@ -40,7 +44,12 @@ export class ReportAssemblyService {
       operation: task.operation,
       status: 'COMPLETED',
       title: this.buildTitle(task, context),
-      summary: payload.summary ?? null,
+      // BE-18 sanitizes at the boundary, and summary crosses it from the
+      // agent exactly like body does — it was the one free-form field the
+      // agent writes that went into the Report, and out through ReportDto,
+      // without passing anything.
+      summary:
+        payload.summary == null ? null : sanitizeMarkdown(payload.summary),
       // Machine time only — task.accumulatedMs never includes queue wait,
       // pendingInput wait, or PDF generation (BE-20 runs after this, on an
       // already-persisted Report). See Task schema's own comment.
@@ -48,7 +57,7 @@ export class ReportAssemblyService {
       tokensConsumed: payload.tokensConsumed,
       context: this.denormalizeContext(context),
       body: sanitizeReportBody(payload.body),
-      proposal: payload.proposal,
+      proposal: sanitizeProposal(payload.proposal),
     });
   }
 
@@ -125,4 +134,25 @@ export class ReportAssemblyService {
       paths: context.paths,
     };
   }
+}
+
+// diffUnified is deliberately left alone: it is a unified diff, not Markdown,
+// and rewriting it would corrupt the patch it exists to carry (BE-9 applies
+// it verbatim). targetPath and language are structured values, never prose.
+// pullRequestUrl is the one field here a frontend will render as a link, so
+// it answers to the same allowlist every Markdown destination does — an
+// agent that reports a `javascript:` URL gets no link, not a live one.
+function sanitizeProposal(proposal?: Proposal): Proposal | undefined {
+  if (!proposal) {
+    return undefined;
+  }
+
+  const { pullRequestUrl } = proposal;
+  return {
+    ...proposal,
+    pullRequestUrl:
+      pullRequestUrl !== null && isSafeDestination(pullRequestUrl)
+        ? pullRequestUrl
+        : null,
+  };
 }

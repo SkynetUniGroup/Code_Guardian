@@ -26,6 +26,26 @@ function isAutolink(candidate: string): boolean {
   return URI_AUTOLINK.test(candidate) || EMAIL_AUTOLINK.test(candidate);
 }
 
+// The rest of what CommonMark calls raw HTML, none of which HTML_TAG has
+// ever matched: it requires a letter after `<`, and every form below starts
+// with `!` or `?`. BE-18 asks for raw HTML *blocks* to be removed, and these
+// are exactly that — they were surviving only because the regex above was
+// written with tags in mind.
+//
+// Order matters. CDATA is checked before the declaration form, since both
+// open with `<!` and only CDATA ends at `]]>`; comments before declarations
+// for the same reason.
+const HTML_CDATA = /<!\[CDATA\[[\s\S]*?\]\]>/g;
+const HTML_COMMENT = /<!--[\s\S]*?-->/g;
+const HTML_PROCESSING_INSTRUCTION = /<\?[\s\S]*?\?>/g;
+const HTML_DECLARATION = /<![a-zA-Z][^>]*>/g;
+
+// A `<!--` with no `-->` after it is not a comment to CommonMark, but an HTML
+// parser swallows everything from there to the end of the document. Deleting
+// the run would cost the same content the hiding does, so only the opener
+// goes: the text stays readable and can no longer open anything.
+const UNCLOSED_COMMENT = /<!--/g;
+
 // Raw HTML out, autolinks left standing for the scanner to judge.
 //
 // Keeping them is what makes them a *new destination surface*: they used to
@@ -35,7 +55,13 @@ function isAutolink(candidate: string): boolean {
 // autolink exactly as it applies to `[x](dest)` — see rejectUnsafeLinks,
 // which is the only place either form is allowed through.
 function stripRawHtml(markdown: string): string {
-  return markdown.replace(HTML_TAG, (tag) => (isAutolink(tag) ? tag : ''));
+  return markdown
+    .replace(HTML_CDATA, '')
+    .replace(HTML_COMMENT, '')
+    .replace(HTML_PROCESSING_INSTRUCTION, '')
+    .replace(HTML_DECLARATION, '')
+    .replace(UNCLOSED_COMMENT, '')
+    .replace(HTML_TAG, (tag) => (isAutolink(tag) ? tag : ''));
 }
 
 // Schemes a link destination is allowed to keep. An allowlist, not a
@@ -511,16 +537,15 @@ function readLink(markdown: string, open: number): ParsedLink | null {
 // If it is not complete, there is no way to know what the destination
 // decodes to without decoding it, so it does not survive.
 //
-// Note what actually carries that below: the `return reference === null` on
-// the relative path, alone. Cutting the string at the reference before
-// running SCHEME reads as the mechanism, and is not: SCHEME is anchored and
-// stops at the first `:`, so if a reference comes before that `:` the `&`
-// blocks the match on the whole string exactly as it does on the prefix, and
-// if it comes after, both forms match the same scheme. Four hundred thousand
-// generated destinations produce no verdict the two spellings disagree on.
-// The slice is kept because it says what the rule means and would start
-// mattering the moment SCHEME stopped being anchored — but it is not what
-// makes the rule hold, and a reader should not have to discover that.
+// What carries that below is the `return reference === null` on the relative
+// path, alone. There used to be a line here cutting the string at the first
+// reference before running SCHEME, which read as the mechanism and was not:
+// SCHEME is anchored and stops at the first `:`, so if a reference comes
+// before that `:` the `&` blocks the match on the whole string exactly as it
+// does on the prefix, and if it comes after, both forms match the same
+// scheme. Four hundred thousand generated destinations produced no verdict
+// the two spellings disagreed on, so the cut was removed rather than left
+// standing as a step a reader would have to prove inert for themselves.
 //
 // What that costs, stated properly, because it used to be stated as just
 // `/f&ouml;&ouml;` and that is the rare half of it: *any* relative
@@ -532,7 +557,7 @@ function readLink(markdown: string, open: number): ParsedLink | null {
 // likely in a report than an umlaut entity. The trade is still the right way
 // round (the failure mode is a link that isn't clickable rather than one
 // that executes) and is worth knowing at its real size.
-function isSafeDestination(destination: string): boolean {
+export function isSafeDestination(destination: string): boolean {
   const normalized = destination
     // Angle brackets go before the scheme check, so that CommonMark's
     // pointy-bracket destination form is judged by its scheme rather than
@@ -559,10 +584,7 @@ function isSafeDestination(destination: string): boolean {
     .toLowerCase();
 
   const reference = CHARACTER_REFERENCE.exec(normalized);
-  const clear =
-    reference === null ? normalized : normalized.slice(0, reference.index);
-
-  const scheme = SCHEME.exec(clear);
+  const scheme = SCHEME.exec(normalized);
   if (scheme === null) {
     // Relative — nothing a browser can execute — but only if it is still
     // relative once decoded, which is only knowable when there is nothing

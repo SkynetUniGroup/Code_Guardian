@@ -13,6 +13,17 @@ function makeTask(overrides: Record<string, unknown> = {}) {
   };
 }
 
+// A real unified diff, newlines and all: it is not Markdown, and the
+// assertions below exist to prove the sanitizing never touches it.
+const DIFF = [
+  '--- a/README.md',
+  '+++ b/README.md',
+  '@@ -1 +1 @@',
+  '-a',
+  '+b',
+  '',
+].join('\n');
+
 function makeContext(overrides: Record<string, unknown> = {}) {
   return {
     repoOwner: 'SkynetUniGroup',
@@ -119,6 +130,96 @@ describe('ReportAssemblyService', () => {
         service.assembleCompleted(makeTask() as never, { body: [] }),
       ).rejects.toThrow('AnalysisContext');
       expect(reportModel.create).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('what the agent writes, at the boundary', () => {
+    // BE-18 puts the sanitizing at the boundary so that screen and PDF
+    // consume the same string. `body` went through it from the start; these
+    // two crossed the same boundary from the same agent and did not.
+    it('sanitizes the summary', async () => {
+      contextModel.findById.mockResolvedValue(makeContext());
+
+      await service.assembleCompleted(makeTask() as never, {
+        body: [],
+        summary: 'vedi [qui](javascript:alert(1)) e <script>alert(2)</script>',
+      });
+
+      expect(reportModel.create).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: 'vedi qui e alert(2)' }),
+      );
+    });
+
+    it('leaves a null summary null rather than sanitizing the string "null"', async () => {
+      contextModel.findById.mockResolvedValue(makeContext());
+
+      await service.assembleCompleted(makeTask() as never, { body: [] });
+
+      expect(reportModel.create).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: null }),
+      );
+    });
+
+    it('drops a pullRequestUrl the allowlist rejects, keeping the rest of the proposal', async () => {
+      // The one field of Proposal a frontend renders as a link. diffUnified
+      // is not Markdown and must survive byte for byte.
+      contextModel.findById.mockResolvedValue(makeContext());
+
+      await service.assembleCompleted(makeTask() as never, {
+        body: [],
+        proposal: {
+          targetPath: 'README.md',
+          diffUnified: DIFF,
+          language: 'markdown',
+          pullRequestUrl: 'javascript:alert(1)',
+        },
+      });
+
+      expect(reportModel.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          proposal: {
+            targetPath: 'README.md',
+            diffUnified: DIFF,
+            language: 'markdown',
+            pullRequestUrl: null,
+          },
+        }),
+      );
+    });
+
+    it('keeps an https pullRequestUrl untouched', async () => {
+      contextModel.findById.mockResolvedValue(makeContext());
+
+      await service.assembleCompleted(makeTask() as never, {
+        body: [],
+        proposal: {
+          targetPath: 'README.md',
+          diffUnified: '',
+          language: 'markdown',
+          pullRequestUrl: 'https://github.com/o/r/pull/1',
+        },
+      });
+
+      expect(reportModel.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          proposal: {
+            targetPath: 'README.md',
+            diffUnified: '',
+            language: 'markdown',
+            pullRequestUrl: 'https://github.com/o/r/pull/1',
+          },
+        }),
+      );
+    });
+
+    it('leaves an absent proposal absent', async () => {
+      contextModel.findById.mockResolvedValue(makeContext());
+
+      await service.assembleCompleted(makeTask() as never, { body: [] });
+
+      expect(reportModel.create).toHaveBeenCalledWith(
+        expect.objectContaining({ proposal: undefined }),
+      );
     });
   });
 

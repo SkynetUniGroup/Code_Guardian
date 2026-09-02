@@ -670,3 +670,50 @@ describe('sanitizeMarkdown — routes that used to skip the scheme check', () =>
     });
   });
 });
+
+// HTML_TAG requires a letter after `<`, so every form below — all of them
+// raw HTML by CommonMark's own definition — went straight through the strip
+// that exists to remove raw HTML. Nothing executable came out of them with
+// markdown-it, but "we checked one renderer" is not the property BE-18 asks
+// for, and an unclosed comment hides real content in any of them.
+describe('sanitizeMarkdown — raw HTML that is not a tag', () => {
+  it('removes an HTML comment and what it hides', () => {
+    expect(
+      sanitizeMarkdown(
+        'testo <!-- <a href="javascript:alert(1)">x</a> --> qui',
+      ),
+    ).toBe('testo  qui');
+  });
+
+  it('removes a declaration', () => {
+    expect(sanitizeMarkdown('<!DOCTYPE html>report')).toBe('report');
+  });
+
+  it('removes a processing instruction', () => {
+    expect(sanitizeMarkdown('<?php system($_GET[0]); ?>ok')).toBe('ok');
+  });
+
+  it('removes a CDATA section', () => {
+    expect(
+      sanitizeMarkdown('<![CDATA[<a href="javascript:alert(1)">x</a>]]>'),
+    ).toBe('');
+  });
+
+  it('defuses an unclosed comment without eating the text after it', () => {
+    // A parser swallows everything from `<!--` to the end of the document.
+    // Deleting the run would cost the same content the hiding does, so only
+    // the opener goes.
+    expect(sanitizeMarkdown('prima <!-- e tutto il resto')).toBe(
+      'prima  e tutto il resto',
+    );
+  });
+
+  it('leaves ordinary prose containing < and ! alone', () => {
+    expect(sanitizeMarkdown('if (a < b) then! else')).toBe(
+      'if (a < b) then! else',
+    );
+    expect(sanitizeMarkdown('vedi <https://ok.example> e basta')).toBe(
+      'vedi <https://ok.example> e basta',
+    );
+  });
+});
