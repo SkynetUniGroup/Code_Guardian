@@ -21,6 +21,7 @@ describe('TasksService', () => {
     findOne: jest.Mock;
     find: jest.Mock;
     insertMany: jest.Mock;
+    updateOne: jest.Mock;
   };
   let contextModel: { findOne: jest.Mock };
   let credentials: { hasCredential: jest.Mock };
@@ -32,7 +33,14 @@ describe('TasksService', () => {
   const developer = { userId: 'user1', role: 'DEVELOPER' as const };
 
   beforeEach(async () => {
-    taskModel = { findOne: jest.fn(), find: jest.fn(), insertMany: jest.fn() };
+    taskModel = {
+      findOne: jest.fn(),
+      find: jest.fn(),
+      insertMany: jest.fn(),
+      // Conditional writes match by default; the tests about losing a race
+      // against TaskProcessor override this.
+      updateOne: jest.fn().mockResolvedValue({ matchedCount: 1 }),
+    };
     contextModel = { findOne: jest.fn() };
     credentials = { hasCredential: jest.fn() };
     agentRegistry = { getForRole: jest.fn() };
@@ -228,7 +236,7 @@ describe('TasksService', () => {
       );
     });
 
-    it('transitions to CANCELLED and emits task.updated', async () => {
+    it('transitions to CANCELLED with a conditional write and emits task.updated', async () => {
       const task = {
         status: 'PENDING',
         canTransitionTo: jest.fn().mockReturnValue(true),
@@ -238,13 +246,41 @@ describe('TasksService', () => {
 
       await service.cancel('user1', 'task1');
 
-      expect(task.status).toBe('CANCELLED');
-      expect(task.save).toHaveBeenCalled();
+      // The status filter is the point: a document fetched moments earlier
+      // can't decide the race against a TaskProcessor invocation finishing
+      // in between, so the transition is expressed as a filter the database
+      // evaluates at write time.
+      expect(taskModel.updateOne).toHaveBeenCalledWith(
+        {
+          _id: 'task1',
+          userId: 'user1',
+          status: { $in: ['PENDING', 'RUNNING'] },
+        },
+        { $set: { status: 'CANCELLED' } },
+      );
+      expect(task.save).not.toHaveBeenCalled();
       expect(events.emitTaskUpdated).toHaveBeenCalledWith(
         'user1',
         'task1',
         'CANCELLED',
       );
+    });
+
+    it('rejects with 409, and announces nothing, when the Task reached a terminal state before the write landed', async () => {
+      // The Task was RUNNING when read, and TaskProcessor completed it
+      // before this write got there. Cancelling it now would resurrect a
+      // terminal Task, so the write matches nothing and the caller is told.
+      taskModel.findOne.mockResolvedValue({
+        status: 'RUNNING',
+        canTransitionTo: jest.fn().mockReturnValue(true),
+        save: jest.fn(),
+      });
+      taskModel.updateOne.mockResolvedValue({ matchedCount: 0 });
+
+      await expect(service.cancel('user1', 'task1')).rejects.toThrow(
+        ConflictException,
+      );
+      expect(events.emitTaskUpdated).not.toHaveBeenCalled();
     });
   });
 
@@ -338,8 +374,17 @@ describe('TasksService', () => {
         action: 'CANCEL',
       } as never);
 
-      expect(task.status).toBe('CANCELLED');
-      expect(task.pendingInput).toBeNull();
+      // Same conditional write POST /tasks/:id/cancel uses — it is the same
+      // transition — plus clearing the pendingInput this answer resolves.
+      expect(taskModel.updateOne).toHaveBeenCalledWith(
+        {
+          _id: 'task1',
+          userId: 'user1',
+          status: { $in: ['PENDING', 'RUNNING'] },
+        },
+        { $set: { status: 'CANCELLED', pendingInput: null } },
+      );
+      expect(task.save).not.toHaveBeenCalled();
       expect(queue.add).not.toHaveBeenCalled();
       expect(events.emitTaskUpdated).toHaveBeenCalledWith(
         'user1',

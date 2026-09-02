@@ -85,6 +85,18 @@ export class Task {
   // durationMs on Report — see that schema's own comment).
   @Prop({ default: 0 })
   accumulatedMs: number;
+
+  // Processing lease. BullMQ delivers at-least-once, so the same job can be
+  // handed to two workers at once (a worker restart, an expired lock,
+  // several backend replicas) — this is what makes the second delivery a
+  // no-op instead of a second agent invocation. Null (or absent, for Tasks
+  // written before this field existed) means "free to process"; a timestamp
+  // means a worker holds it. TaskProcessor claims it atomically before
+  // touching the agent and releases it in a finally block; a claim older
+  // than its lease window is taken over, so a worker killed mid-invocation
+  // doesn't strand the Task forever.
+  @Prop({ type: Date, default: null })
+  processingClaimedAt: Date | null;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
