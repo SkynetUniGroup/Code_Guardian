@@ -73,7 +73,32 @@ function rejectUnsafeLinks(markdown: string): string {
     }
 
     if (isSafeDestination(link.destination)) {
-      out += markdown.slice(open, link.end + 1);
+      // Safe, but not therefore beyond inspection. The region this scanner
+      // calls "the destination" runs to the balanced `)`, while a CommonMark
+      // destination ends at the first unescaped whitespace — so the region
+      // is a superset, the scheme check only ever looks at its *start*, and
+      // everything past the first space used to be judged by nothing at all
+      // and then re-emitted whole:
+      //
+      //   [a](x [b](javascript:alert(1)) )
+      //     region:  "x [b](javascript:alert(1)) "
+      //     scheme at its start: none -> "relative" -> passes
+      //     the parser, however: falls back on the inner link -> javascript:
+      //
+      // So the region goes back through this same scan before being emitted.
+      // Nothing declared safe is re-emitted unexamined, and an inner link is
+      // sanitized by exactly the rules an outer one is — including rules
+      // this function does not know about yet, since it is the same
+      // function.
+      //
+      // Only the destination is re-scanned, never the label: the label ends
+      // at the first `]`, so it cannot contain a complete link, and the
+      // "first `]` wins" rule already makes the scanner latch onto the inner
+      // link of `[![img](javascript:1)](x)` — the dangerous one. That bias
+      // is in the safe direction and is deliberately left alone.
+      out += markdown.slice(open, link.destinationStart);
+      out += rejectUnsafeLinks(link.destination);
+      out += ')';
     } else {
       // The text the agent wrote is kept; only the destination is dropped.
       // Deleting the whole link would silently lose content, which is worse
@@ -93,6 +118,8 @@ function rejectUnsafeLinks(markdown: string): string {
 interface ParsedLink {
   label: string;
   destination: string;
+  /** Index just past the `](`, where the destination begins. */
+  destinationStart: number;
   /** Index of the destination's closing parenthesis. */
   end: number;
 }
@@ -125,6 +152,7 @@ function readLink(markdown: string, open: number): ParsedLink | null {
         return {
           label: markdown.slice(open + 1, labelEnd),
           destination,
+          destinationStart: labelEnd + 2,
           end: cursor,
         };
       }
@@ -145,10 +173,18 @@ function readLink(markdown: string, open: number): ParsedLink | null {
 // it never turns a destination that would have been rejected into an
 // accepted one.
 //
-// The whole destination is examined, Markdown title syntax and all
-// (`[x](url "title")`). A compliant parser would cut the title off at the
-// first space — but this filter exists for the renderer that doesn't, and
-// looking at more than strictly necessary costs nothing here.
+// The whole region the scanner read is examined, Markdown title syntax and
+// all (`[x](url "title")`). A compliant parser would cut the title off at
+// the first space; this filter deliberately looks at more, so that a
+// renderer that doesn't cut it off is covered too.
+//
+// Looking at more is not free, though, and the comment here used to claim it
+// was. This function only judges the *start* of what it is given, so the
+// surplus it looks at is surplus it does not actually check. That is why the
+// caller re-scans a region it has declared safe instead of copying it
+// through — see rejectUnsafeLinks. The two halves belong together: this one
+// decides the scheme, that one makes sure nothing else is hiding in the part
+// no scheme check will ever reach.
 //
 // Character references are the second half of "the way a browser would read
 // it", and the harder half. CommonMark resolves them *inside* destinations

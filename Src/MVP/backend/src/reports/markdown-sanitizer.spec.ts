@@ -295,3 +295,69 @@ describe('sanitizeMarkdown — other spellings of a hidden scheme', () => {
     expect(sanitizeMarkdown('[r](./a&#106b.ts)')).toBe('[r](./a&#106b.ts)');
   });
 });
+
+// Same idea as the block above, for the other family: the recorded payload is
+// one link nested one level inside another link's destination region. The
+// property is "nothing declared safe is re-emitted unexamined", so the tests
+// that matter are the ones the recorded payload does not reach — deeper
+// nesting, the image form, a nested link inside a title — plus the cases that
+// must survive, since re-scanning a region is only correct if it leaves
+// ordinary content exactly as it found it.
+describe('sanitizeMarkdown — links hiding inside another destination', () => {
+  it('rejects a nested link two levels down', () => {
+    // Nothing about the fix is keyed to depth: the region is re-scanned by
+    // the same function, so each level is examined by the level above it.
+    expect(sanitizeMarkdown('[a](x [b](y [c](javascript:alert(1)) ) )')).toBe(
+      '[a](x [b](y c ) )',
+    );
+  });
+
+  it('rejects a nested image destination, dropping its ! with it', () => {
+    expect(sanitizeMarkdown('[a](ok ![i](data:text/html,PHN2Zz4=) )')).toBe(
+      '[a](ok i )',
+    );
+  });
+
+  it('rejects a link nested inside what looks like a title', () => {
+    // The outer destination has a perfectly good https scheme, so the outer
+    // link is kept — and the inner one is still sanitized, because being
+    // safe is not the same as being beyond inspection.
+    expect(
+      sanitizeMarkdown('[a](https://ok.example "t [b](javascript:1)")'),
+    ).toBe('[a](https://ok.example "t b")');
+  });
+
+  it('rejects only the unsafe one when a region holds several nested links', () => {
+    expect(
+      sanitizeMarkdown('[a](x [ok](https://e.example) [no](javascript:1) )'),
+    ).toBe('[a](x [ok](https://e.example) no )');
+  });
+
+  it('keeps a nested link whose own destination is safe', () => {
+    expect(sanitizeMarkdown('[a](x [b](https://e.example) )')).toBe(
+      '[a](x [b](https://e.example) )',
+    );
+  });
+
+  it('keeps brackets inside a title that are not a link', () => {
+    // Re-scanning must not start rewriting ordinary punctuation: `[b]` with
+    // no `(` after it is not a link and comes through untouched.
+    expect(sanitizeMarkdown('[a](https://e.example "a [b] c")')).toBe(
+      '[a](https://e.example "a [b] c")',
+    );
+  });
+
+  it('keeps an ordinary destination with nested parentheses', () => {
+    // The depth counting the scanner was built for still has to work.
+    expect(sanitizeMarkdown('[wiki](https://e.example/Foo_(bar)_(baz))')).toBe(
+      '[wiki](https://e.example/Foo_(bar)_(baz))',
+    );
+  });
+
+  it('still hides a javascript: label link behind a safe outer destination', () => {
+    // The "first `]` wins" rule makes the scanner latch onto the inner,
+    // dangerous link rather than the outer one — the pre-existing behaviour
+    // this fix had to avoid disturbing.
+    expect(sanitizeMarkdown('[![img](javascript:1)](x)')).toBe('![img](x)');
+  });
+});
