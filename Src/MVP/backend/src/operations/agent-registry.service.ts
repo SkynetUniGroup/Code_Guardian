@@ -7,6 +7,17 @@ import {
   OperationDescriptorDto,
 } from './agent-registry.types';
 
+// RQ.6, via BE-15: "300 secondi come limite superiore rigido per qualunque
+// operazione". Rigid means enforced, not documented — the table below is
+// hardcoded today and every value in it is comfortably under the ceiling, so
+// the clamp in getTimeoutS() changes nothing right now. That is the point:
+// it is there so that raising a timeoutS past the ceiling later cannot
+// silently take effect. Two things already lean on this bound and neither
+// would fail loudly without it — AgentInvocationService derives its HTTP
+// abort from it, and TaskProcessor's CLAIM_LEASE_MS is chosen to sit above
+// any invocation that can still be alive.
+export const MAX_OPERATION_TIMEOUT_S = 300;
+
 const ENTRIES: AgentRegistryEntry[] = [
   {
     code: 'DOCS_README',
@@ -88,8 +99,14 @@ export class AgentRegistry {
 
   // Agent's own execution budget (Tabella 45), seconds. Callers add their
   // own network margin on top — this is not the gateway's HTTP timeout.
+  //
+  // Clamped rather than validated at bootstrap: a throw here would turn a
+  // too-generous table entry into a dead operation, and the requirement is a
+  // ceiling on how long anything may run, not a rejection of the value. Every
+  // caller goes through this method, so there is no path that reads timeoutS
+  // unclamped.
   getTimeoutS(code: OperationCode): number {
-    return this.entry(code).timeoutS;
+    return Math.min(this.entry(code).timeoutS, MAX_OPERATION_TIMEOUT_S);
   }
 
   // BE-17: TaskProcessor needs to know whether an operation belongs to the

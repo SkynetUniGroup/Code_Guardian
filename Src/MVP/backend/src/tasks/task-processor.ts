@@ -34,12 +34,13 @@ function isResumeJob(
 
 // How long a processing claim stays valid before another delivery may take
 // it over. Deliberately far above any legitimate in-flight invocation: an
-// operation's agent budget is capped at 300s (RQ.6) and
-// AgentInvocationService aborts its own HTTP call at that ceiling plus its
-// margin, so nothing legitimate can still be running after this. A claim
-// this old means the worker holding it died — killed mid-invocation,
-// container restarted — without ever reaching the release below, and the
-// Task would otherwise be unprocessable forever.
+// operation's agent budget is capped at 300s (RQ.6) — enforced, not merely
+// tabulated, by the clamp in AgentRegistry.getTimeoutS, which is what this
+// number's safety actually rests on — and AgentInvocationService aborts its
+// own HTTP call at that ceiling plus its margin, so nothing legitimate can
+// still be running after this. A claim this old means the worker holding it
+// died — killed mid-invocation, container restarted — without ever reaching
+// the release below, and the Task would otherwise be unprocessable forever.
 const CLAIM_LEASE_MS = 10 * 60 * 1000;
 
 // The queue consumer (PoC's TaskProcessor, fig. 7/8). One job per Task,
