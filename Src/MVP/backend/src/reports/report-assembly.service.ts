@@ -71,6 +71,22 @@ export class ReportAssemblyService {
     });
   }
 
+  // Undoes an assemble*() whose Task turned out to have moved on — a cancel
+  // that landed while the agent was working, or a claim taken over by
+  // another worker. Deletes by _id and nothing else: a Task legitimately
+  // re-run has several historical Reports, and a query by taskId would take
+  // them with it.
+  //
+  // Delete rather than a CANCELLED status, because ReportStatus is
+  // 'COMPLETED' | 'FAILED' (report.types.ts) and a third value propagates
+  // into ReportDto, ReportSummaryDto, the `status === 'FAILED'` check in
+  // reports-export.service, and the PDF composer. Removing a row that the
+  // caller created moments earlier and that no other document references has
+  // no type surface at all.
+  async discard(report: ReportDocument): Promise<void> {
+    await this.reportModel.deleteOne({ _id: report._id });
+  }
+
   private async loadContext(
     task: TaskDocument,
   ): Promise<AnalysisContextDocument> {

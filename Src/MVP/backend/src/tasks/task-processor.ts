@@ -14,6 +14,7 @@ import { TaskError } from './task.types';
 import { AgentRegistry } from '../operations/agent-registry.service';
 import { EventsGateway } from '../events/events.gateway';
 import { ReportAssemblyService } from '../reports/report-assembly.service';
+import { ReportDocument } from '../reports/schemas/report.schema';
 
 // Two job shapes on the same 'tasks' queue: a plain {taskId} is either a
 // brand-new PENDING pickup, or (BE-17) a Changelog Task whose sprintId was
@@ -375,12 +376,20 @@ export class TaskProcessor extends WorkerHost {
       accumulatedMs: task.accumulatedMs,
     });
     if (!persisted) {
-      // A cancel landed while the agent was still working. The Task stays
-      // CANCELLED — no status flip back to COMPLETED, and no task.updated
-      // contradicting the task.updated CANCELLED the frontend already got.
-      // The Report is left where it is: the work really was done, and an
-      // unreferenced Report row is cheaper (and more honest) than pretending
-      // it wasn't.
+      // A cancel landed while the agent was still working (or this worker
+      // lost its claim). The Task keeps whatever it holds now — no status
+      // flip back to COMPLETED, and no task.updated contradicting the
+      // task.updated CANCELLED the frontend already got.
+      //
+      // The Report assembled two lines up has to go with it. It is not an
+      // unreferenced row: the pointer runs Report -> Task (Report.taskId,
+      // required), not Task -> Report, and GET /reports filters on userId
+      // alone — so leaving it there puts a COMPLETED report of this very
+      // execution in the user's list next to the CANCELLED Task it belongs
+      // to, openable through GET /reports/:id and exportable to PDF through
+      // BE-20. Only Task.reportId stays null. That is a visible
+      // contradiction, not a stray row.
+      await this.discardOrphanReport(report);
       return;
     }
 
@@ -412,8 +421,11 @@ export class TaskProcessor extends WorkerHost {
       accumulatedMs: task.accumulatedMs,
     });
     if (!persisted) {
-      // Same reasoning as finishCompleted: a cancel got here first and this
-      // failure is no longer the Task's outcome to announce.
+      // Same reasoning as finishCompleted: someone got here first and this
+      // failure is no longer the Task's outcome to announce — nor its
+      // Report to leave behind. A FAILED Report is just as visible in GET
+      // /reports as a COMPLETED one.
+      await this.discardOrphanReport(report);
       return;
     }
 
@@ -421,6 +433,24 @@ export class TaskProcessor extends WorkerHost {
     task.status = 'FAILED';
     task.error = error;
     this.events.emitTaskFailed(task.userId, task.id, error);
+  }
+
+  // Deleting the Report must not fail the job — same reasoning as
+  // releaseClaim, and RF.48's per-job isolation. The work either was or
+  // wasn't announced to the user by the time we get here, and that outcome
+  // is already settled; a delete that fails leaves exactly the inconsistency
+  // this method exists to remove, which is worth a log and not worth
+  // discarding a job over.
+  private async discardOrphanReport(report: ReportDocument): Promise<void> {
+    try {
+      await this.reportAssembly.discard(report);
+    } catch (err) {
+      this.logger.warn(
+        `Could not delete the orphaned Report ${String(report._id)} left by a Task that moved on: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+    }
   }
 
   // Whether every Task in this batch has reached a terminal state — checked

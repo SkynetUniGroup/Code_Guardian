@@ -37,6 +37,7 @@ describe('TaskProcessor', () => {
   let reportAssembly: {
     assembleCompleted: jest.Mock;
     assembleFailed: jest.Mock;
+    discard: jest.Mock;
   };
   let clock: jest.SpyInstance<number, []>;
 
@@ -109,6 +110,7 @@ describe('TaskProcessor', () => {
     reportAssembly = {
       assembleCompleted: jest.fn().mockResolvedValue({ _id: 'report1' }),
       assembleFailed: jest.fn().mockResolvedValue({ _id: 'report1' }),
+      discard: jest.fn().mockResolvedValue(undefined),
     };
     clock = jest.spyOn(Date, 'now').mockReturnValue(NOW);
 
@@ -494,6 +496,97 @@ describe('TaskProcessor', () => {
 
       expect(events.emitTaskUpdated).not.toHaveBeenCalled();
       expect(task.status).toBe('RUNNING'); // never mirrored to COMPLETED locally either
+    });
+
+    // The Report assembled just before the conditional write is not an
+    // unreferenced row waiting to be garbage collected: the pointer runs
+    // Report -> Task, and GET /reports filters on userId alone, so leaving
+    // it puts a COMPLETED report of this execution in the user's list right
+    // beside the CANCELLED Task it belongs to.
+    it('deletes the Report it just assembled, by id, when the write does not land', async () => {
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
+      agentInvocation.resume.mockResolvedValue(completed());
+      taskModel.updateOne
+        .mockResolvedValueOnce({ matchedCount: 0 })
+        .mockResolvedValue({ matchedCount: 1 });
+
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
+
+      expect(reportAssembly.discard).toHaveBeenCalledWith({ _id: 'report1' });
+    });
+
+    it('deletes the FAILED Report the same way', async () => {
+      // A FAILED Report is exactly as visible in GET /reports as a
+      // COMPLETED one, so this branch cannot be the tidy one.
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
+      agentInvocation.resume.mockResolvedValue({
+        status: 'FAILED',
+        error: { code: 'UPSTREAM', message: 'boom', stage: 'EXECUTION' },
+      });
+      taskModel.updateOne
+        .mockResolvedValueOnce({ matchedCount: 0 })
+        .mockResolvedValue({ matchedCount: 1 });
+
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
+
+      expect(reportAssembly.discard).toHaveBeenCalledWith({ _id: 'report1' });
+    });
+
+    it('keeps the Report when the write does land', async () => {
+      // The counterweight: the deletion is conditioned on losing the race,
+      // not on assembling a Report.
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
+      agentInvocation.resume.mockResolvedValue(completed());
+
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
+
+      expect(reportAssembly.discard).not.toHaveBeenCalled();
+    });
+
+    it('does not fail the job when deleting the orphaned Report fails', async () => {
+      // Same rule as releaseClaim, and RF.48: the job's own outcome is
+      // already settled by this point, and a failed cleanup is worth a log,
+      // not a discarded job.
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
+      agentInvocation.resume.mockResolvedValue(completed());
+      taskModel.updateOne
+        .mockResolvedValueOnce({ matchedCount: 0 })
+        .mockResolvedValue({ matchedCount: 1 });
+      reportAssembly.discard.mockRejectedValue(new Error('mongo down'));
+
+      await expect(
+        processor.process(
+          job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+        ),
+      ).resolves.toBeUndefined();
+    });
+
+    it('assembles no Report at all for a pause it could not record', async () => {
+      // An INTERRUPTED result never builds one, so there is nothing to
+      // delete on that path — asserted so the deletion above is not quietly
+      // generalized into "delete something on every lost race".
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
+      agentInvocation.resume.mockResolvedValue({
+        status: 'INTERRUPTED',
+        pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['T-1'] },
+      });
+      taskModel.updateOne
+        .mockResolvedValueOnce({ matchedCount: 0 })
+        .mockResolvedValue({ matchedCount: 1 });
+
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
+
+      expect(reportAssembly.assembleCompleted).not.toHaveBeenCalled();
+      expect(reportAssembly.assembleFailed).not.toHaveBeenCalled();
+      expect(reportAssembly.discard).not.toHaveBeenCalled();
     });
 
     it('does not announce a failure it could not record either', async () => {

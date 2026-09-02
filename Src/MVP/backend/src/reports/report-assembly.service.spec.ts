@@ -28,12 +28,15 @@ function makeContext(overrides: Record<string, unknown> = {}) {
 
 describe('ReportAssemblyService', () => {
   let service: ReportAssemblyService;
-  let reportModel: { create: jest.Mock };
+  let reportModel: { create: jest.Mock; deleteOne: jest.Mock };
   let contextModel: { findById: jest.Mock };
   let agentRegistry: { getDisplayName: jest.Mock };
 
   beforeEach(() => {
-    reportModel = { create: jest.fn().mockResolvedValue({ id: 'report1' }) };
+    reportModel = {
+      create: jest.fn().mockResolvedValue({ id: 'report1' }),
+      deleteOne: jest.fn().mockResolvedValue({ deletedCount: 1 }),
+    };
     contextModel = { findById: jest.fn() };
     agentRegistry = {
       getDisplayName: jest.fn().mockReturnValue('README generation/update'),
@@ -140,6 +143,31 @@ describe('ReportAssemblyService', () => {
           error: { kind: 'UPSTREAM', message: 'boom', stage: 'EXECUTION' },
         }),
       );
+    });
+  });
+  describe('discard', () => {
+    it('deletes exactly the Report it is given, by _id', async () => {
+      // Never a query by taskId: a Task legitimately re-run ("Riprova"
+      // creates a new Task, but a paused/resumed one does not) can have more
+      // than one Report against it, and only the row this invocation created
+      // is orphaned.
+      await service.discard({ _id: 'report-oid' } as never);
+
+      expect(reportModel.deleteOne).toHaveBeenCalledWith({
+        _id: 'report-oid',
+      });
+      expect(reportModel.deleteOne).toHaveBeenCalledTimes(1);
+    });
+
+    it('lets a delete failure surface to the caller', async () => {
+      // The swallow belongs to TaskProcessor, which knows the job must not
+      // fail over it; this method stays honest about what happened so a
+      // different caller could decide differently.
+      reportModel.deleteOne.mockRejectedValue(new Error('mongo down'));
+
+      await expect(
+        service.discard({ _id: 'report-oid' } as never),
+      ).rejects.toThrow('mongo down');
     });
   });
 });
