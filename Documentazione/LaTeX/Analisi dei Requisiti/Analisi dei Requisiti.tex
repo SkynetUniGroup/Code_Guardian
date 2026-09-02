@@ -76,7 +76,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.0.0} \\ \hline
+            \textbf{Versione} & \textit{1.2.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
@@ -110,7 +110,8 @@
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
-
+    1.2.0 & 2026/09/02 & Correzioni ai requisiti a seguito della valutazione TB & Dario Pirrone & - \\ \hline
+    1.1.0 & 2026/09/01 & Correzioni agli UC a seguito della valutazione TB & Dario Pirrone & - \\ \hline
     1.0.0 & 2026/07/09 & Correzioni minori e approvazione da parte di Marco Barbiero & Sara Ristovic & Andrea Fistarol \\ \hline
     0.18.1 & 2026/07/09 & Aggiornati requisiti funzionali & Dario Pirrone & Sara Ristovic \\ \hline
     0.18.0 & 2026/07/08 & Aggiunti diagrammi UML degli UC & Dario Pirrone & Sara Ristovic \\ \hline
@@ -345,6 +346,8 @@ Gli \textit{Attori} primari sono strutturati secondo una relazione gerarchica di
     \item \textbf{\textit{Security Auditor} / \textit{Team Lead}:} Specializzazione di Utente Generico con responsabilità di governance. Definisce le regole di sviluppo sicuro e le policy interne tramite il file di configurazione \texttt{POLICY.md}, che l'Agente Security utilizzerà per verificare la conformità del codice prodotto dal team secondo il paradigma \textit{Policy-as-code}.
     
     \item \textbf{\textit{Project Manager}:} Specializzazione di Utente Generico non necessariamente tecnica che necessita di visibilità sull'andamento del progetto. Interagisce con l'Agente \textit{Changelog} innescando la generazione dei report a conclusione di uno \textit{Sprint}, al fine di ottenere una traduzione orientata al business delle \textit{User Stories} e dei compiti completati.
+
+    \item \textbf{Sistema:} Rappresenta l'infrastruttura backend dell'applicazione \textbf{Code Guardian}. Agisce come attore primario nei casi d'uso in cui le funzionalità sono eseguite in modo automatizzato, asincrono o in background (es. elaborazione degli agenti IA dalla coda, gestione interna degli errori, invio di notifiche), senza che vi sia un'interazione diretta e sincrona con l'utente umano.
 \end{itemize}
 
 
@@ -484,15 +487,56 @@ Questo caso d'uso descrive l'inserimento della password da parte dell'utente dur
 \end{itemize}
 
 \subsubsection{UC1.5: Selezione ruolo operativo}\label{uc:1.5}
-Questo caso d'uso descrive la selezione del ruolo che l'utente assumerà all'interno del sistema (Sviluppatore, Security Auditor, Project Manager).
+Questo caso d'uso rappresenta un'entità astratta che generalizza la selezione del ruolo che l'utente assumerà all'interno del sistema (Sviluppatore, Security Auditor, Project Manager). Essendo un caso d'uso astratto, non viene mai istanziato direttamente, ma si manifesta esclusivamente attraverso le sue specializzazioni.
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente non Autenticato.
     \item \textbf{Trigger:} L'utente interagisce con il componente di selezione del ruolo.
     \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
     \item \textbf{Postcondizioni:}\begin{itemize}\item Il ruolo operativo scelto è stato selezionato e valorizzato nel form.\end{itemize}
+    \item \textbf{Specializzazioni (Casi d'uso derivati):}
+    \begin{itemize}
+        \item \textbf{UC1.5.1}: Selezione ruolo Sviluppatore.
+        \item \textbf{UC1.5.2}: Selezione ruolo \textit{Security Auditor}.
+        \item \textbf{UC1.5.3}: Selezione ruolo \textit{Project Manager}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{UC1.5.1: Selezione ruolo Sviluppatore}\label{uc:1.5.1}
+Questo caso d'uso specializza l'azione di selezione del ruolo, qualora l'utente scelga di registrarsi come Sviluppatore.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona l'opzione associata al ruolo di Sviluppatore.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il ruolo di Sviluppatore è stato valorizzato all'interno del form.\end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente seleziona uno dei ruoli operativi disponibili tra quelli proposti dal sistema.
+        \item L'utente seleziona il ruolo di Sviluppatore tra quelli proposti dal sistema.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC1.5.2: Selezione ruolo \textit{Security Auditor}}\label{uc:1.5.2}
+Questo caso d'uso specializza l'azione di selezione del ruolo, qualora l'utente scelga di registrarsi come Security Auditor.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona l'opzione associata al ruolo di Security Auditor.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il ruolo di Security Auditor è stato valorizzato all'interno del form.\end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente seleziona il ruolo di Security Auditor tra quelli proposti dal sistema.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UC1.5.3: Selezione ruolo \textit{Project Manager}}\label{uc:1.5.3}
+Questo caso d'uso specializza l'azione di selezione del ruolo, qualora l'utente scelga di registrarsi come Project Manager.
+\begin{itemize}
+    \item \textbf{Attore Primario:} Utente non Autenticato.
+    \item \textbf{Trigger:} L'utente seleziona l'opzione associata al ruolo di Project Manager.
+    \item \textbf{Precondizioni:}\begin{itemize}\item Il sistema ha caricato e mostra correttamente il modulo di registrazione.\end{itemize}
+    \item \textbf{Postcondizioni:}\begin{itemize}\item Il ruolo di Project Manager è stato valorizzato all'interno del form.\end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'utente seleziona il ruolo di Project Manager tra quelli proposti dal sistema.
     \end{enumerate}
 \end{itemize}
 
@@ -1250,11 +1294,12 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente interagisce 
 \end{center}
 
 \subsubsection{UC21.1: Selezione/Deselezione di un'operazione}\label{uc:21.1}
-Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfaccia per aggiungere o rimuovere una specifica operazione dalla coda di esecuzione.
+Questo caso d'uso descrive l'azione attraverso la quale l'utente definisce quali attività verranno elaborate dal sistema, scegliendo esplicitamente di includere (selezionare) o escludere (deselezionare) una specifica operazione dalla lista di esecuzione prima di confermarne l'avvio globale.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente interagisce con il comando grafico di selezione/deselezione associato a una specifica operazione.
+    \item \textbf{Trigger:} L'utente, con l'obiettivo di comporre la coda delle operazioni da avviare, interagisce con una specifca operazione per aggiungerla o rimuoverla dalla selezione corrente.
+    \newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente si trova nella dashboard e sta configurando le operazioni da avviare (UC21).
@@ -1262,12 +1307,12 @@ Questo caso d'uso descrive l'azione con cui l'utente interagisce con l'interfacc
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Lo stato dell'operazione viene aggiornato coerentemente con l'azione dell'utente (selezionata o deselezionata).
+        \item Lo stato dell'operazione viene aggiornato coerentemente con l'azione dell'utente, venendo inserita o rimossa dalla lista di esecuzione temporanea.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'utente attiva o disattiva il comando grafico corrispondente all'operazione.
-        \item Il sistema aggiorna dinamicamente l'interfaccia e memorizza temporaneamente la selezione effettuata dall'utente.
+        \item L'utente attiva o disattiva il comando grafico corrispondente all'operazione desiderata.
+        \item Il sistema aggiorna dinamicamente l'interfaccia e memorizza temporaneamente la scelta effettuata dall'utente nella lista di esecuzione.
     \end{enumerate}
 \end{itemize}
 
@@ -1398,7 +1443,7 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra all
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'utente visualizza lo stato complessivo delle attività in corso di esecuzione nella dashboard.
-        \item Al termine positivo di ciascuna operazione, il sistema aggiorna l'interfaccia abilitando i controlli grafici interattivi per consentire all'utente di visualizzare il report (UC26).
+        \item Al termine positivo di ciascuna operazione, il sistema aggiorna l'interfaccia abilitando i controlli grafici interattivi per consentire all'utente di visualizzare il report (UC25).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -1497,7 +1542,7 @@ Questo caso d'uso descrive la visualizzazione dell'indicatore testuale che espri
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27: Errore durante l'esecuzione dell'agente.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un nomalia interna all'agente.
+        \item \textbf{UC26: Errore durante l'esecuzione dell'agente.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un nomalia interna all'agente.
         \item \textbf{UC23: Errore di orchestrazione o routing.} Estende il passo 1 qualora lo stato assunto sia "Fallito" a causa di un problema architetturale di orchestrazione o routing.
     \end{itemize}
 \end{itemize}
@@ -1507,7 +1552,7 @@ Questo caso d'uso descrive la visualizzazione dell'indicatore testuale che espri
 Questo caso d'uso descrive il comportamento del sistema quando si verifica un problema a livello architetturale (es. impossibilità di instradare una richiesta o caduta di comunicazione interna) e la conseguente notifica all'utente. Il sistema isola il problema per permettere l'esecuzione parziale delle altre operazioni in corso.
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Trigger:} Il sistema rileva un fallimento di comunicazione o di routing verso un agente durante la fase di avvio (UC21.3) o durante l'esecuzione (UC22.1.2).
     \item \textbf{Precondizioni:}
     \begin{itemize}
@@ -1683,57 +1728,23 @@ Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui il repor
 \end{itemize}
 
 
-\subsubsection{UC25: Selezione di un report per la visualizzazione}\label{uc:25}
-Questo caso d'uso descrive l'interazione attraverso la quale l'utente seleziona un report al fine di aprirne la visualizzazione dettagliata. L'azione può essere innescata indifferentemente dalla dashboard di monitoraggio o dalla pagina dello storico.
+\subsubsection{UC25: Visualizzazione report prodotto dall'agente}\label{uc:25}
+Questo caso d'uso descrive il processo attraverso il quale l'utente seleziona e il sistema mostra a schermo il report completo generato da un agente a seguito di un'analisi, permettendo all'utente di consultare le informazioni di intestazione e i risultati specifici. L'azione può essere innescata indifferentemente dalla dashboard di monitoraggio o dalla pagina dello storico.
 
 \begin{center}
     \captionsetup{hypcap=false}
     \includegraphics[width=1\linewidth]{UC25.png}
-    \captionof{figure}{Selezione di un report per la visualizzazione}
+    \captionof{figure}{Visualizzazione report prodotto dall'agente}
     \label{fig:UC25}
 \end{center}
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente interagisce con il comando grafico associato a un report.
-    \item \textbf{Precondizioni:}
-    \begin{itemize}
-        \item Il sistema sta mostrando un'operazione completata all'interno della dashboard (UC22.1) oppure un elemento nella lista dello storico (UC24.1).
-    \end{itemize}
-    \item \textbf{Postcondizioni:}
-    \begin{itemize}
-        \item Il sistema avvia la visualizzazione del report selezionato (UC26).
-    \end{itemize}
-    \item \textbf{Scenario Principale:}
-    \begin{enumerate}
-        \item L'utente seleziona il report desiderato dall'interfaccia.
-        \item Il sistema acquisisce la richiesta legata all'identificativo univoco di quel report.
-        \item Il sistema avvia il caricamento dei dettagli e delle informazioni del report.
-    \end{enumerate}
-    \item \textbf{Inclusioni:}
-    \begin{itemize}
-        \item \textbf{UC26:} Visualizzazione report prodotto dall'agente.
-    \end{itemize}
-\end{itemize}
-
-
-\subsubsection{UC26: Visualizzazione report prodotto dall'agente}\label{uc:26}
-Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a schermo il report completo generato da un agente a seguito di un'analisi, permettendo all'utente di consultare le informazioni di intestazione e i risultati specifici.
-
-\begin{center}
-    \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC26.png}
-    \captionof{figure}{Visualizzazione report prodotto dall'agente}
-    \label{fig:UC26}
-\end{center}
-
-\begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} L'utente seleziona un report da visualizzare (UC25).
+    \item \textbf{Trigger:} L'utente seleziona un report interagendo con il comando grafico a esso associato.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato (UC4).
-        \item È stata richiesta l'apertura di un report specifico precedentemente completato (UC25).
+        \item Il sistema sta mostrando un'operazione completata all'interno della dashboard (UC22) oppure un elemento nella lista dello storico (UC24).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1741,24 +1752,25 @@ Questo caso d'uso descrive il processo attraverso il quale il sistema mostra a s
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
+        \item L'utente seleziona il report desiderato dall'interfaccia.
         \item Il sistema recupera dal database i dati completi del report selezionato.
         \item Il sistema renderizza l'intestazione con i metadati e il corpo centrale con i contenuti specifici prodotti dall'agente.
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC26.1:} Visualizzazione dellintestazione del report.
-        \item \textbf{UC26.2:} Visualizzazione del corpo del report.
+        \item \textbf{UC25.1:} Visualizzazione dell'intestazione del report.
+        \item \textbf{UC25.2:} Visualizzazione del corpo del report.
     \end{itemize}
 \end{itemize}
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC26.1-2.png}
+    \includegraphics[width=1\linewidth]{UC25.1-2.png}
     \captionof{figure}{Sottocasi di visualizzazione report prodotto dall'agente}
-    \label{fig:UC26.1-2}
+    \label{fig:UC25.1-2}
 \end{center}
 
-\subsubsection{UC26.1: Visualizzazione dell'intestazione del report}\label{uc:26.1}
+\subsubsection{UC25.1: Visualizzazione dell'intestazione del report}\label{uc:25.1}
 Questo caso d'uso descrive la visualizzazione della sezione superiore del report, contenente le informazioni generali e di contesto relative all'elaborazione effettuata dall'agente.
 
 \begin{itemize}
@@ -1766,7 +1778,7 @@ Questo caso d'uso descrive la visualizzazione della sezione superiore del report
     \item \textbf{Trigger:} Il sistema elabora e mostra l'intestazione grafica del report.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta caricando e mostrando il report specifico (UC26).
+        \item Il sistema sta caricando e mostrando il report specifico (UC25).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1778,23 +1790,23 @@ Questo caso d'uso descrive la visualizzazione della sezione superiore del report
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC26.1.1:} Visualizzazione del nome del \textit{repository}.
-        \item \textbf{UC26.1.2:} Visualizzazione del riferimento di base.
-        \item \textbf{UC26.1.3:} Visualizzazione dell'ambito di analisi.
-        \item \textbf{UC26.1.4:} Visualizzazione dei tempi di esecuzione.
-        \item \textbf{UC26.1.5:} Visualizzazione della data di generazione.
-        \item \textbf{UC26.1.6:} Visualizzazione dell'ora di generazione.
+        \item \textbf{UC25.1.1:} Visualizzazione del nome del \textit{repository}.
+        \item \textbf{UC25.1.2:} Visualizzazione del riferimento di base.
+        \item \textbf{UC25.1.3:} Visualizzazione dell'ambito di analisi.
+        \item \textbf{UC25.1.4:} Visualizzazione dei tempi di esecuzione.
+        \item \textbf{UC25.1.5:} Visualizzazione della data di generazione.
+        \item \textbf{UC25.1.6:} Visualizzazione dell'ora di generazione.
     \end{itemize}
 \end{itemize}
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC26.1.1-6.png}
+    \includegraphics[width=1\linewidth]{UC25.1.1-6.png}
     \captionof{figure}{Sottocasi di visualizzazione dell'intestazione del report}
-    \label{fig:UC26.1.1-6}
+    \label{fig:UC25.1.1-6}
 \end{center}
 
-\subsubsection{UC26.1.1: Visualizzazione del nome del \textit{repository}}\label{uc:26.1.1}
+\subsubsection{UC25.1.1: Visualizzazione del nome del \textit{repository}}\label{uc:25.1.1}
 Questo caso d'uso descrive la visualizzazione del nome del \textit{repository Git} su cui l'agente ha effettuato la sua elaborazione.
 
 \begin{itemize}
@@ -1802,7 +1814,7 @@ Questo caso d'uso descrive la visualizzazione del nome del \textit{repository Gi
     \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente al \textit{repository}.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando l'intestazione del report (UC26.1).
+        \item Il sistema sta mostrando l'intestazione del report (UC25.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1814,7 +1826,7 @@ Questo caso d'uso descrive la visualizzazione del nome del \textit{repository Gi
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.1.2: Visualizzazione del riferimento di base}\label{uc:26.1.2}
+\subsubsection{UC25.1.2: Visualizzazione del riferimento di base}\label{uc:25.1.2}
 Questo caso d'uso descrive la visualizzazione del riferimento di base su cui il sistema ha operato, che può consistere nel nome di uno specifico \textit{Branch} (accompagnato dall'identificativo hash del Commit analizzato) o nell'identificativo di una \textit{Pull Request}.
 
 \begin{itemize}
@@ -1822,7 +1834,7 @@ Questo caso d'uso descrive la visualizzazione del riferimento di base su cui il 
     \item \textbf{Trigger:} Il sistema renderizza il dato testuale corrispondente al riferimento di base (\textit{Branch} con Commit specifico oppure \textit{PR}).
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando l'intestazione del report (UC26.1).
+        \item Il sistema sta mostrando l'intestazione del report (UC25.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1834,7 +1846,7 @@ Questo caso d'uso descrive la visualizzazione del riferimento di base su cui il 
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.1.3: Visualizzazione dell'ambito di analisi}\label{uc:26.1.3}
+\subsubsection{UC25.1.3: Visualizzazione dell'ambito di analisi}\label{uc:25.1.3}
 Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli file o directory (o intero \textit{Repository}) che hanno costituito l'ambito specifico dell'analisi dell'agente.
 
 \begin{itemize}
@@ -1842,9 +1854,9 @@ Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli f
     \item \textbf{Trigger:} Il sistema renderizza i dati testuali corrispondenti all'ambito di analisi circoscritto.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando l'intestazione del report (UC26.1).
+        \item Il sistema sta mostrando l'intestazione del report (UC25.1).
         \item L'analisi è stata eseguita su una selezione parziale di file o directory oppure sull'intero repository.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'ambito di analisi è visibile a schermo per l'utente sotto forma di percorsi file e directory nel caso di selezioni parziali o con la scritta "Intero \textit{Repository} analizzato" nel caso di una selezione totale.
@@ -1855,7 +1867,7 @@ Questo caso d'uso descrive la visualizzazione dei percorsi relativi ai singoli f
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.1.4: Visualizzazione dei tempi di esecuzione}\label{uc:26.1.4}
+\subsubsection{UC25.1.4: Visualizzazione dei tempi di esecuzione}\label{uc:25.1.4}
 Questo caso d'uso descrive la visualizzazione del tempo totale impiegato dal sistema per completare l'operazione e generare il report.
 
 \begin{itemize}
@@ -1863,7 +1875,7 @@ Questo caso d'uso descrive la visualizzazione del tempo totale impiegato dal sis
     \item \textbf{Trigger:} Il sistema renderizza il dato numerico corrispondente alla durata dell'operazione.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando l'intestazione del report (UC26.1).
+        \item Il sistema sta mostrando l'intestazione del report (UC25.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1875,7 +1887,7 @@ Questo caso d'uso descrive la visualizzazione del tempo totale impiegato dal sis
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.1.5: Visualizzazione della data di generazione}\label{uc:26.1.5}
+\subsubsection{UC25.1.5: Visualizzazione della data di generazione}\label{uc:25.1.5}
 Questo caso d'uso descrive la visualizzazione della data in cui l'analisi dell'agente si è conclusa con successo.
 
 \begin{itemize}
@@ -1883,19 +1895,19 @@ Questo caso d'uso descrive la visualizzazione della data in cui l'analisi dell'a
     \item \textbf{Trigger:} Il sistema renderizza il dato temporale relativo alla data di conclusione dell'attività.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando l'intestazione del report (UC26.1).
+        \item Il sistema sta mostrando l'intestazione del report (UC25.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item La data di generazione è visibile a schermo per l'utente.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema formatta e mostra a schermo la data.
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.1.6: Visualizzazione dell'ora di generazione}\label{uc:26.1.6}
+\subsubsection{UC25.1.6: Visualizzazione dell'ora di generazione}\label{uc:25.1.6}
 Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui l'elaborazione dell'agente si è conclusa producendo il report.
 
 \begin{itemize}
@@ -1903,7 +1915,7 @@ Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui l'elabor
     \item \textbf{Trigger:} Il sistema renderizza il dato temporale relativo all'orario di conclusione dell'attività.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando l'intestazione del report (UC26.1).
+        \item Il sistema sta mostrando l'intestazione del report (UC25.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1916,7 +1928,7 @@ Questo caso d'uso descrive la visualizzazione dell'orario esatto in cui l'elabor
 \end{itemize}
 
 
-\subsubsection{UC26.2: Visualizzazione del corpo del report}\label{uc:26.2}
+\subsubsection{UC25.2: Visualizzazione del corpo del report}\label{uc:25.2}
 Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica del report. Poiché il contenuto varia a seconda dell'agente che lo ha prodotto, il sistema interpreta i dati restituiti dall'agente e renderizza a schermo i blocchi visivi pertinenti.
 
 \begin{itemize}
@@ -1924,7 +1936,7 @@ Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica 
     \item \textbf{Trigger:} Il sistema elabora i risultati specifici generati dall'agente per mostrarli a schermo.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta caricando e mostrando il report specifico (UC26).
+        \item Il sistema sta caricando e mostrando il report specifico (UC25).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -1937,30 +1949,30 @@ Questo caso d'uso descrive la visualizzazione della sezione centrale e dinamica 
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC26.2.1:} Visualizzazione blocco testuale formattato.
-        \item \textbf{UC26.2.2:} Visualizzazione lista di elementi strutturati.
-        \item \textbf{UC26.2.3:} Visualizzazione \textbf{\glo{Snippet}{snippet}} di codice.
-        \item \textbf{UC26.2.4:} Visualizzazione collegamento a una \textit{Pull Request}.
-        \item \textbf{UC26.2.5:} Visualizzazione comandi di validazione e avanzamento.
+        \item \textbf{UC25.2.1:} Visualizzazione blocco testuale formattato.
+        \item \textbf{UC25.2.2:} Visualizzazione lista di elementi strutturati.
+        \item \textbf{UC25.2.3:} Visualizzazione \textbf{\glo{Snippet}{snippet}} di codice.
+        \item \textbf{UC25.2.4:} Visualizzazione collegamento a una \textit{Pull Request}.
+        \item \textbf{UC25.2.5:} Visualizzazione comandi di validazione e avanzamento.
     \end{itemize}
 \end{itemize}
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC26.2.1-5.png}
+    \includegraphics[width=1\linewidth]{UC25.2.1-5.png}
     \captionof{figure}{Sottocasi di visualizzazione del corpo del report}
-    \label{fig:UC26.2.1-5}
+    \label{fig:UC25.2.1-5}
 \end{center}
 
-\subsubsection{UC26.2.1: Visualizzazione blocco testuale formattato}\label{uc:26.2.1}
+\subsubsection{UC25.2.1: Visualizzazione blocco testuale formattato}\label{uc:25.2.1}
 Questo caso d'uso descrive la visualizzazione di un componente dedicato al testo lungo e formattato.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza una porzione di testo formattato (\textit{\glo{Markdown}{markdown}}) ricevuto dall'agente.
+    \item \textbf{Trigger:} Il sistema renderizza una porzione di testo formattato (\textit{\glo{Markdown}{markdown}}) ricevuto dall'agente.\newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando il corpo del report (UC26.2).
+        \item Il sistema sta mostrando il corpo del report (UC25.2).
         \item I dati del report includono un blocco testuale.
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -1973,7 +1985,7 @@ Questo caso d'uso descrive la visualizzazione di un componente dedicato al testo
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.2.2: Visualizzazione lista di elementi strutturati}\label{uc:26.2.2}
+\subsubsection{UC25.2.2: Visualizzazione lista di elementi strutturati}\label{uc:25.2.2}
 Questo caso d'uso descrive la visualizzazione di un contenitore a lista per mostrare dati ripetitivi e strutturati.
 
 \begin{itemize}
@@ -1981,7 +1993,7 @@ Questo caso d'uso descrive la visualizzazione di un contenitore a lista per most
     \item \textbf{Trigger:} Il sistema elabora una collezione di dati strutturati per mostrarli sotto forma di elenco.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando il corpo del report (UC26.2).
+        \item Il sistema sta mostrando il corpo del report (UC25.2).
         \item I dati del report includono una lista di elementi.
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -1994,18 +2006,18 @@ Questo caso d'uso descrive la visualizzazione di un contenitore a lista per most
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC26.2.2.1:} Visualizzazione di un singolo elemento nella lista.
+        \item \textbf{UC25.2.2.1:} Visualizzazione di un singolo elemento nella lista.
     \end{itemize}
 \end{itemize}
-
-\subsubsection{UC26.2.2.1: Visualizzazione di un singolo elemento nella lista}\label{uc:26.2.2.1}
+\newpage
+\subsubsection{UC25.2.2.1: Visualizzazione di un singolo elemento nella lista}\label{uc:25.2.2.1}
 Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a una singola voce all'interno della lista strutturata.
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC26.2.2.1.png}
+    \includegraphics[width=1\linewidth]{UC25.2.2.1.png}
     \captionof{figure}{Visualizzazione di un singolo elemento nella lista}
-    \label{fig:UC26.2.2.1}
+    \label{fig:UC25.2.2.1}
 \end{center}
 
 \begin{itemize}
@@ -2013,7 +2025,7 @@ Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a una 
     \item \textbf{Trigger:} Il sistema renderizza il componente grafico corrispondente a una singola occorrenza.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando una lista di elementi strutturati (UC26.2.2).
+        \item Il sistema sta mostrando una lista di elementi strutturati (UC25.2.2).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2025,29 +2037,29 @@ Questo caso d'uso descrive la visualizzazione del blocco grafico relativo a una 
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC26.2.2.1.1:} Visualizzazione della categoria dell'elemento.
-        \item \textbf{UC26.2.2.1.2:} Visualizzazione dell'indicatore di gravità.
-        \item \textbf{UC26.2.2.1.3:} Visualizzazione del riferimento alla porzione di codice.
+        \item \textbf{UC25.2.2.1.1:} Visualizzazione della categoria dell'elemento.
+        \item \textbf{UC25.2.2.1.2:} Visualizzazione dell'indicatore di gravità.
+        \item \textbf{UC25.2.2.1.3:} Visualizzazione del riferimento alla porzione di codice.
     \end{itemize}
 \end{itemize}
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC26.2.2.1.1-3.png}
+    \includegraphics[width=1\linewidth]{UC25.2.2.1.1-3.png}
     \captionof{figure}{Sottocasi di visualizzazione di un singolo elemento nella lista}
-    \label{fig:UC26.2.2.1.1-3}
+    \label{fig:UC25.2.2.1.1-3}
 \end{center}
 
 
-\subsubsection{UC26.2.2.1.1: Visualizzazione della categoria dell'elemento}\label{uc:26.2.2.1.1}
+\subsubsection{UC25.2.2.1.1: Visualizzazione della categoria dell'elemento}\label{uc:25.2.2.1.1}
 Questo caso d'uso descrive la visualizzazione della categoria della singola occorrenza (es. il tipo di vulnerabilità rilevata).
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Utente Generico.
-    \item \textbf{Trigger:} Il sistema renderizza il dato testuale relativo alla categoria dell'elemento.\newpage
+    \item \textbf{Trigger:} Il sistema renderizza il dato testuale relativo alla categoria dell'elemento.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando un singolo elemento nella lista (UC26.2.2.1).
+        \item Il sistema sta mostrando un singolo elemento nella lista (UC25.2.2.1).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2059,7 +2071,7 @@ Questo caso d'uso descrive la visualizzazione della categoria della singola occo
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.2.2.1.2: Visualizzazione dell'indicatore di gravità}\label{uc:26.2.2.1.2}
+\subsubsection{UC25.2.2.1.2: Visualizzazione dell'indicatore di gravità}\label{uc:25.2.2.1.2}
 Questo caso d'uso descrive la visualizzazione dell'etichetta indicante il livello di gravità associato alla singola occorrenza (es. la gravità della vulnerabilità rilevata).
 
 \begin{itemize}
@@ -2067,7 +2079,7 @@ Questo caso d'uso descrive la visualizzazione dell'etichetta indicante il livell
     \item \textbf{Trigger:} Il sistema renderizza il dato relativo all'impatto o priorità dell'elemento.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando un singolo elemento nella lista (UC26.2.2.1).
+        \item Il sistema sta mostrando un singolo elemento nella lista (UC25.2.2.1).
         \item Il dato prevede una classificazione di gravità o priorità.
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2080,7 +2092,7 @@ Questo caso d'uso descrive la visualizzazione dell'etichetta indicante il livell
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.2.2.1.3: Visualizzazione del riferimento alla porzione di codice}\label{uc:26.2.2.1.3}
+\subsubsection{UC25.2.2.1.3: Visualizzazione del riferimento alla porzione di codice}\label{uc:25.2.2.1.3}
 Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di riga e del file in cui è stata rilevata la criticità o su cui deve intervenire la modifica.
 
 \begin{itemize}
@@ -2088,9 +2100,9 @@ Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di 
     \item \textbf{Trigger:} Il sistema renderizza i dati di localizzazione spaziale dell'elemento.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando un singolo elemento nella lista (UC26.2.2.1).
+        \item Il sistema sta mostrando un singolo elemento nella lista (UC25.2.2.1).
         \item È disponibile un riferimento esplicito a una porzione di codice.
-    \end{itemize}\newpage
+    \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item I percorsi ai file e le righe di codice interessate sono visibili a schermo per l'utente.
@@ -2101,7 +2113,7 @@ Questo caso d'uso descrive la visualizzazione del percorso esatto dei numeri di 
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.2.3: Visualizzazione Snippet di codice}\label{uc:26.2.3}
+\subsubsection{UC25.2.3: Visualizzazione Snippet di codice}\label{uc:25.2.3}
 Questo caso d'uso descrive la visualizzazione di un contenitore formattato specificamente per mostrare codice sorgente, utilizzato qualora un agente proponga un frammento correttivo diretto.
 
 \begin{itemize}
@@ -2109,7 +2121,7 @@ Questo caso d'uso descrive la visualizzazione di un contenitore formattato speci
     \item \textbf{Trigger:} Il sistema renderizza un blocco di testo identificato come codice sorgente.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando il corpo del report (UC26.2).
+        \item Il sistema sta mostrando il corpo del report (UC25.2).
         \item I dati del report includono una porzione di codice sorgente suggerita.
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2122,7 +2134,7 @@ Questo caso d'uso descrive la visualizzazione di un contenitore formattato speci
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.2.4: Visualizzazione collegamento a una \textit{Pull Request}}\label{uc:26.2.4}
+\subsubsection{UC25.2.4: Visualizzazione collegamento a una \textit{Pull Request}}\label{uc:25.2.4}
 Questo caso d'uso descrive la visualizzazione di un collegamento ipertestuale verso una \textit{Pull Request} prodotta in automatico sul \textit{repository} remoto.
 
 \begin{itemize}
@@ -2130,7 +2142,7 @@ Questo caso d'uso descrive la visualizzazione di un collegamento ipertestuale ve
     \item \textbf{Trigger:} Il sistema renderizza l'URL identificativo di una risorsa esterna interattiva.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema sta mostrando il corpo del report (UC26.2).
+        \item Il sistema sta mostrando il corpo del report (UC25.2).
         \item L'agente ha creato con successo una \textit{Pull Request}.
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2143,7 +2155,7 @@ Questo caso d'uso descrive la visualizzazione di un collegamento ipertestuale ve
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC26.2.5: Visualizzazione comandi di validazione e avanzamento}\label{uc:26.2.5}
+\subsubsection{UC25.2.5: Visualizzazione comandi di validazione e avanzamento}\label{uc:25.2.5}
 Questo caso d'uso descrive la visualizzazione all'interno del report di un modulo interattivo contenente i pulsanti di azione, mostrato qualora un'operazione preveda un'approvazione umana per innescare un processo successivo (generazione del \textit{Changelog} di business).
 
 \begin{itemize}
@@ -2151,7 +2163,7 @@ Questo caso d'uso descrive la visualizzazione all'interno del report di un modul
     \item \textbf{Trigger}: Il sistema renderizza i componenti grafici per la decisione dell'utente al termine del report.
     \item \textbf{Precondizioni}:
     \begin{itemize}
-        \item Il sistema sta mostrando il corpo del report (UC26.2).
+        \item Il sistema sta mostrando il corpo del report (UC25.2).
         \item L'utente aveva precedentemente richiesto un'operazione composta che richiede validazione intermedia (es. generazione del \textit{Changelog} di business).
     \end{itemize}
     \item \textbf{Postcondizioni}:
@@ -2164,20 +2176,20 @@ Questo caso d'uso descrive la visualizzazione all'interno del report di un modul
     \end{enumerate}
 \end{itemize}
 
-\newpage
-\subsubsection{UC27: Errore durante l'esecuzione dell'agente}\label{uc:27}
+
+\subsubsection{UC26: Errore durante l'esecuzione dell'agente}\label{uc:26}
 Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possibili anomalie, tecniche o semantiche, che possono verificarsi durante l'elaborazione interna di un agente o del modello \textit{LLM} a esso associato. Essendo un caso d'uso astratto, non viene mai istanziato direttamente, ma si manifesta all'utente esclusivamente attraverso una delle sue specializzazioni.
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC27.png}
+    \includegraphics[width=1\linewidth]{UC26.png}
     \captionof{figure}{Errore durante l'esecuzione dell'agente}
-    \label{fig:UC27}
+    \label{fig:UC26}
 \end{center}
 
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Trigger:} Il sistema rileva un errore critico durante l'elaborazione di una specifica operazione.
     \item \textbf{Precondizioni:}
     \begin{itemize}
@@ -2190,17 +2202,17 @@ Questo caso d'uso rappresenta un'entità astratta che generalizza tutte le possi
     \end{itemize}
     \item \textbf{Specializzazioni (Casi d'uso derivati):}
     \begin{itemize}
-        \item \textbf{UC27.1}: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.
-        \item \textbf{UC27.2}: Errore per \textit{\glo{timeout}{timeout}} del modello \textit{LLM}.
-        \item \textbf{UC27.3}: Errore di parsing dell'output \textit{LLM}.
-        \item \textbf{UC27.4}: Errore per superamento limiti dimensionali a runtime.
-        \item \textbf{UC27.5}: Errore per risorsa di contesto mancante.
-        \item \textbf{UC27.6}: Errore per risorsa di contesto non valida o malformata.
-        \item \textbf{UC27.7}: Errore durante la creazione della \textit{Pull Request}.
+        \item \textbf{UC26.1}: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.
+        \item \textbf{UC26.2}: Errore per \textit{\glo{timeout}{timeout}} del modello \textit{LLM}.
+        \item \textbf{UC26.3}: Errore di parsing dell'output \textit{LLM}.
+        \item \textbf{UC26.4}: Errore per superamento limiti dimensionali a runtime.
+        \item \textbf{UC26.5}: Errore per risorsa di contesto mancante.
+        \item \textbf{UC26.6}: Errore per risorsa di contesto non valida o malformata.
+        \item \textbf{UC26.7}: Errore durante la creazione della \textit{Pull Request}.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}}\label{uc:27.1}
+\subsubsection{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}}\label{uc:26.1}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione venga bloccata preventivamente dal sistema stesso per aver raggiunto il limite massimo di chiamate consentite, impostato internamente come meccanismo di salvaguardia dei costi.
 
 \begin{itemize}
@@ -2224,8 +2236,8 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\newpage
-\subsubsection{UC27.2: Errore per timeout del modello \textit{LLM}}\label{uc:27.2}
+
+\subsubsection{UC26.2: Errore per timeout del modello \textit{LLM}}\label{uc:26.2}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora il modello \textit{LLM} non restituisca una risposta entro il tempo massimo consentito dal sistema.
 
 \begin{itemize}
@@ -2250,7 +2262,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC27.3: Errore di parsing dell'output \textit{LLM}}\label{uc:27.3}
+\subsubsection{UC26.3: Errore di parsing dell'output \textit{LLM}}\label{uc:26.3}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora la risposta fornita dal modello \textit{AI} sia strutturata in un formato non interpretabile o imprevisto dal sistema.
 
 \begin{itemize}
@@ -2275,7 +2287,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC27.4: Errore per superamento limiti dimensionali a runtime}\label{uc:27.4}
+\subsubsection{UC26.4: Errore per superamento limiti dimensionali a runtime}\label{uc:26.4}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora i dati da analizzare per una specifica operazione superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{AI} durante l'esecuzione.
 
 \begin{itemize}
@@ -2284,7 +2296,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'agente sta assemblando il \textit{\glo{prompt}{prompt}} e il contesto da inviare al modello \textit{LLM}.
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item L'elaborazione viene interrotta prima dell'invio.
@@ -2299,7 +2311,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC27.5: Errore per risorsa di contesto mancante}\label{uc:27.5}
+\subsubsection{UC26.5: Errore per risorsa di contesto mancante}\label{uc:26.5}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione di un agente fallisca a causa dell'assenza fisica di una risorsa esterna necessaria per l'analisi.
 
 \begin{itemize}
@@ -2323,7 +2335,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC27.6: Errore per risorsa di contesto non valida o malformata}\label{uc:27.6}
+\subsubsection{UC26.6: Errore per risorsa di contesto non valida o malformata}\label{uc:26.6}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione di un agente fallisca perché una risorsa di contesto, pur essendo fisicamente presente, risulta illeggibile, formattata in modo scorretto o contenente direttive contraddittorie.
 
 \begin{itemize}
@@ -2347,7 +2359,7 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC27.7: Errore durante la creazione della \textit{Pull Request}}\label{uc:27.7}
+\subsubsection{UC26.7: Errore durante la creazione della \textit{Pull Request}}\label{uc:26.7}
 Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'utente qualora l'esecuzione di un agente fallisca a causa dell'impossibilità di creare una \textit{Pull Request} sul repository remoto (es. per permessi in scrittura insufficienti o token scaduto).
 
 \begin{itemize}
@@ -2372,14 +2384,14 @@ Questo caso d'uso specializza l'errore astratto descrivendo la notifica all'uten
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC28: Esportazione del report}\label{uc:28}
+\subsubsection{UC27: Esportazione del report}\label{uc:27}
 Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esportazione del report in formato PDF.
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC28.png}
+    \includegraphics[width=1\linewidth]{UC27.png}
     \captionof{figure}{Esportazione del report}
-    \label{fig:UC28}
+    \label{fig:UC27}
 \end{center}
 
 \begin{itemize}
@@ -2387,7 +2399,7 @@ Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esp
     \item \textbf{Trigger:} L'utente interagisce con il comando di esportazione presente all'interno dell'interfaccia di visualizzazione del report, oppure attiva le notifiche mail per ricevere il PDF del report (UC21.2).
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'utente ha aperto e sta visualizzando i dettagli di un report (UC26).
+        \item L'utente ha aperto e sta visualizzando i dettagli di un report (UC25).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2402,19 +2414,19 @@ Questo caso d'uso descrive il processo mediante il quale l'utente richiede l'esp
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC29: Errore durante la generazione del file.} Estende il passo 3 qualora il sistema incontri un'anomalia o un errore interno durante il processo di conversione dei dati nel formato PDF.
+        \item \textbf{UC28: Errore durante la generazione del file.} Estende il passo 3 qualora il sistema incontri un'anomalia o un errore interno durante il processo di conversione dei dati nel formato PDF.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC29: Errore durante la generazione del file}\label{uc:29}
+\subsubsection{UC28: Errore durante la generazione del file}\label{uc:28}
 Questo caso d'uso descrive il comportamento del sistema nel caso in cui la procedura di impaginazione e conversione dei dati del report nel formato di esportazione fallisca.
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Trigger:} Il modulo interno incaricato della generazione del PDF rileva un'eccezione e interrompe la creazione del file.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item L'utente ha richiesto l'esportazione del report (UC28).
+        \item L'utente ha richiesto l'esportazione del report (UC27).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2429,18 +2441,18 @@ Questo caso d'uso descrive il comportamento del sistema nel caso in cui la proce
 \end{itemize}
 
 \newpage
-\subsubsection{UC30: Invio automatico del report via email}\label{uc:30}
+\subsubsection{UC29: Invio automatico del report via email}\label{uc:29}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema, al completamento positivo di un'operazione che produce un report, genera l'allegato del report e lo invia all'indirizzo email associato all'account dell'utente.
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC30.png}
+    \includegraphics[width=1\linewidth]{UC29.png}
     \captionof{figure}{Invio automatico del report via email}
-    \label{fig:UC30}
+    \label{fig:UC29}
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} Server SMTP.
     \item \textbf{Trigger:} Lo stato dell'operazione passa a "Completato" e il sistema rileva che la preferenza di notifica email era stata attivata.
     \item \textbf{Precondizioni:}
@@ -2455,33 +2467,33 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} verifica che l'utente abbia abilitato l'opzione di notifica.
-        \item Il sistema genera il report e lo formatta in formato PDF (UC28).
+        \item Il sistema genera il report e lo formatta in formato PDF (UC27).
         \item Il sistema compone il messaggio di posta elettronica allegando il file generato.
         \item Il sistema contatta il Server SMTP e inoltra l'email all'indirizzo registrato dall'utente.
     \end{enumerate}
     \item \textbf{Inclusioni:}
     \begin{itemize}
-        \item \textbf{UC28}: Esportazione del report.
+        \item \textbf{UC27}: Esportazione del report.
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC32: Errore invio email.} Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
-        \item \textbf{UC33: Errore allegato troppo grande.} Estende il passo 4 qualora il file generato superi i limiti dimensionali imposti dal provider di posta.
+        \item \textbf{UC31: Errore invio email.} Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
+        \item \textbf{UC32: Errore allegato troppo grande.} Estende il passo 4 qualora il file generato superi i limiti dimensionali imposti dal provider di posta.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC31: Notifica email per richiesta validazione umana}\label{uc:31}
+\subsubsection{UC30: Notifica email per richiesta validazione umana}\label{uc:30}
 Questo caso d'uso descrive il processo automatizzato attraverso il quale il sistema invia un'email all'utente per notificare la necessità di un intervento manuale o di una validazione affinché un'operazione sospesa o composta possa proseguire (es. validazione del Changelog Tecnico).
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC31.png}
+    \includegraphics[width=1\linewidth]{UC30.png}
     \captionof{figure}{Notifica email per richiesta validazione umana}
-    \label{fig:UC31}
+    \label{fig:UC30}
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} Server SMTP.
     \item \textbf{Trigger:} Un agente entra in stato di sospensione o attesa di input da parte dell'utente (approvazione \textit{Human-in-the-loop} o gestione anomalie).
     \item \textbf{Precondizioni:}
@@ -2492,7 +2504,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Un'email contenente l'avviso e un collegamento diretto alla piattaforma è stata inviata con successo all'indirizzo dell'utente.
-    \end{itemize}\newpage
+    \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item L'\textbf{Orchestratore} rileva che un agente è in attesa di validazione o di un input manuale.
@@ -2502,17 +2514,17 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC32: Errore invio email.} Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
+        \item \textbf{UC31: Errore invio email.} Estende il passo 4 qualora il Server SMTP non sia raggiungibile o rifiuti la connessione.
     \end{itemize}
 \end{itemize}
 
-\subsubsection{UC32: Errore invio email}\label{uc:32}
+\subsubsection{UC31: Errore invio email}\label{uc:31}
 Questo caso d'uso descrive la gestione del fallimento durante la trasmissione dell'email, causato da un'anomalia del server esterno di posta.
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} Server SMTP.
-    \item \textbf{Trigger:} Il Servizio mail esterno restituisce un errore di rete o di autorizzazione durante il tentativo di invio (UC30).
+    \item \textbf{Trigger:} Il Servizio mail esterno restituisce un errore di rete o di autorizzazione durante il tentativo di invio (UC29).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Il sistema ha preparato l'email con allegato il report.
@@ -2529,16 +2541,16 @@ Questo caso d'uso descrive la gestione del fallimento durante la trasmissione de
     \end{enumerate}
 \end{itemize}
 
-\subsubsection{UC33: Errore allegato troppo grande}\label{uc:33}
+\subsubsection{UC32: Errore allegato troppo grande}\label{uc:32}
 Questo caso d'uso descrive il comportamento del sistema nel caso in cui il server di posta esterno rifiuti l'invio dell'email a causa delle dimensioni eccessive del PDF allegato.
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Utente Generico.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} Server SMTP.
     \item \textbf{Trigger:} Il Server SMTP restituisce un errore indicante che il limite di dimensione massima per i messaggi o gli allegati è stato superato.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema ha tentato di inviare al server esterno un'email contenente il report PDF come allegato (UC30).
+        \item Il sistema ha tentato di inviare al server esterno un'email contenente il report PDF come allegato (UC29).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2578,14 +2590,14 @@ L'agente si focalizza su tre aree critiche:
 Di seguito i \textit{Casi d'uso} dell'Agente Docs.
 
 
-\subsubsection{UC34: Gestione del template personalizzato per il \textit{README}}\label{uc:34}
+\subsubsection{UC33: Gestione del template personalizzato per il \textit{README}}\label{uc:33}
 Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la struttura e lo stile personalizzato per la generazione e l'aggiornamento del file \texttt{\textit{README.md}}, sovrascrivendo o ripristinando il template di default dell'Agente Docs.
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC34.png}
+    \includegraphics[width=1\linewidth]{UC33.png}
     \captionof{figure}{Gestione del template personalizzato per il \textit{README}}
-    \label{fig:UC34}
+    \label{fig:UC33}
 \end{center}
 
 \begin{itemize}
@@ -2605,22 +2617,22 @@ Questo caso d'uso descrive il processo attraverso il quale l'utente gestisce la 
     \begin{enumerate}
         \item L'utente accede alla sezione dedicata alla personalizzazione del \texttt{\textit{README.md}} tramite l'interfaccia grafica.
         \item L'utente seleziona l'operazione desiderata sul template.
-    \end{enumerate}\newpage
+    \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
-        \item \textbf{UC34.1}: Caricamento del file template.
-        \item \textbf{UC34.3}: Rimozione del template personalizzato.
+        \item \textbf{UC33.1}: Caricamento del file template.
+        \item \textbf{UC33.3}: Rimozione del template personalizzato.
     \end{itemize}
 \end{itemize}
 
 \begin{center}
     \captionsetup{hypcap=false}
-    \includegraphics[width=1\linewidth]{UC34.1-3.png}
+    \includegraphics[width=1\linewidth]{UC33.1-3.png}
     \captionof{figure}{Sottocasi di gestione del template personalizzato per il \textit{README}}
-    \label{fig:UC34.1-3}
+    \label{fig:UC33.1-3}
 \end{center}
 
-\subsubsection{UC34.1: Caricamento del file template}\label{uc:34.1}
+\subsubsection{UC33.1: Caricamento del file template}\label{uc:33.1}
 Questo caso d'uso descrive l'azione con cui l'utente fornisce al sistema il file contenente il template personalizzato. Se era già presente un template personalizzato precedente, questo viene sovrascritto.
 
 \begin{itemize}
@@ -2628,7 +2640,7 @@ Questo caso d'uso descrive l'azione con cui l'utente fornisce al sistema il file
     \item \textbf{Trigger:} L'utente seleziona l'opzione per caricare un nuovo template.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema mostra correttamente la sezione di personalizzazione del \textit{README} (UC34).
+        \item Il sistema mostra correttamente la sezione di personalizzazione del \textit{README} (UC33).
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
@@ -2642,17 +2654,16 @@ Questo caso d'uso descrive l'azione con cui l'utente fornisce al sistema il file
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC34.2: Errore formato file non valido}  Estende il passo 2 qualora il file fornito dal utente non abbia formato valido o sia strutturalmente malformato.
+        \item \textbf{UC33.2: Errore formato file non valido.} Estende il passo 2 qualora il file fornito dall'utente non abbia formato valido o sia strutturalmente malformato.
     \end{itemize}
 \end{itemize}
 
-
-\subsubsection{UC34.2: Errore formato file non valido}\label{uc:34.2}
+\subsubsection{UC33.2: Errore formato file non valido}\label{uc:33.2}
 Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti di caricare un file per il template non supportato.
 
 \begin{itemize}
     \item \textbf{Attore Primario:} Sviluppatore.
-    \item \textbf{Trigger:} Il modulo di validazione interno fallisce nell'interpretare il file fornito durante il caricamento (UC34.1).
+    \item \textbf{Trigger:} Il modulo di validazione interno fallisce nell'interpretare il file fornito durante il caricamento (UC33.1).
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente ha inserito un file privo di estensione \texttt{.md}.
@@ -2670,8 +2681,7 @@ Questo caso d'uso descrive il comportamento del sistema qualora l'utente tenti d
     \end{enumerate}
 \end{itemize}
 
-
-\subsubsection{UC34.3: Rimozione del template personalizzato}\label{uc:34.3}
+\subsubsection{UC33.3: Rimozione del template personalizzato}\label{uc:33.3}
 Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un template personalizzato precedentemente caricato, ripristinando così il comportamento e il template di default dell'Agente Docs.
 
 \begin{itemize}
@@ -2679,7 +2689,7 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
     \item \textbf{Trigger:} L'utente seleziona l'apposito comando grafico di eliminazione o ripristino default.\newpage
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Il sistema mostra correttamente la sezione di personalizzazione del README (UC34).
+        \item Il sistema mostra correttamente la sezione di personalizzazione del README (UC33).
         \item \`E attualmente impostato un template personalizzato per il \textit{repository} selezionato.
     \end{itemize}
     \item \textbf{Postcondizioni:}
@@ -2694,48 +2704,93 @@ Questo caso d'uso descrive l'azione tramite la quale l'utente rimuove un templat
 \end{itemize}
 
 
-\subsubsection{UC35: Generazione o aggiornamento del \textit{README} di Progetto}\label{uc:35}
-Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per generare o aggiornare il file \texttt{README.md}, interfacciandosi con i servizi esterni necessari, a seguito dell'esplicita richiesta di avvio da parte dell'utente.
+\subsubsection{UC34: Generazione ex novo del \textit{README} di Progetto}\label{uc:34}
+Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per generare da zero il file \texttt{README.md}, qualora questo non sia presente nel repository, basandosi sulla struttura del progetto.
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=1\linewidth]{UC34.png}
+    \captionof{figure}{Generazione ex novo del \textit{README} di Progetto}
+    \label{fig:UC34}
+\end{center}
+
+\begin{itemize}
+    \item \textbf{Attore Primario:} Sistema.
+    \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} estrae l'operazione di generazione del README dalla coda di esecuzione, rilevando l'assenza del file nel \textit{repository}.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}
+        \item È stato validato il contesto operativo (UC9).
+        \item L'operazione è stata innescata dalla dashboard (UC21.3).
+        \item Il file \texttt{README.md} \textbf{non esiste} attualmente nel \textit{repository} di destinazione.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}
+        \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente il nuovo file \texttt{README.md}.
+        \item L'utente visualizza il report dell'operazione (UC25) con il collegamento alla \textit{Pull Request} creata.
+    \end{itemize}
+    \item \textbf{Scenario Principale:}
+    \begin{enumerate}
+        \item L'\textbf{Orchestratore} attiva l'Agente Docs.
+        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} constatando l'assenza del file \texttt{README.md} e scaricando la struttura (albero dei file) del progetto.
+        \item Il sistema recupera l'eventuale template personalizzato (UC33); in sua assenza, carica in memoria il template di default.
+        \item Il sistema compone il prompt contestuale chiedendo all'LLM di creare il documento da zero in base alla struttura del progetto.
+        \item Il modello \textit{LLM} restituisce al sistema il contenuto generato.
+        \item Il sistema apre una \textit{Pull Request} su \textit{GitHub} per proporre la creazione del nuovo file.
+        \item Il sistema aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile il report (UC25).
+    \end{enumerate}
+    \item \textbf{Estensioni:}
+    \begin{itemize}
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
+        \item \textbf{UC26.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+    \end{itemize}
+\end{itemize}
+
+
+\subsubsection{UC35: Aggiornamento del \textit{README} di Progetto esistente}\label{uc:35}
+Questo caso d'uso descrive il processo automatizzato mediante il quale il sistema orchestra l'Agente Docs per aggiornare e arricchire un file \texttt{README.md} già preesistente, allineandolo all'evoluzione del codice sorgente.
 
 \begin{center}
     \captionsetup{hypcap=false}
     \includegraphics[width=1\linewidth]{UC35.png}
-    \captionof{figure}{Generazione o aggiornamento del \textit{README} di Progetto}
+    \captionof{figure}{Aggiornamento del \textit{README} di Progetto esistente}
     \label{fig:UC35}
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
-    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di generazione del README dalla lista delle operazioni disponibili nella dashboard (UC21.3).\newpage
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} estrae l'operazione dalla coda di esecuzione, rilevando la presenza del file nel \textit{repository}.
     \item \textbf{Precondizioni:}
     \begin{itemize}
-        \item Lo Sviluppatore è autenticato (UC4).
-        \item L'utente ha configurato le credenziali per la \textit{Piattaforma GitHub} (UC6.1).
-        \item È stato configurato con successo il contesto operativo:\textit{ Repository Git} e riferimento di base (UC9).
-        \item L'utente ha selezionato l'operazione "Generazione del \textit{README}" (UC21.1) e ha confermato l'avvio (UC21.3).
-    \end{itemize}
+        \item È stato validato il contesto operativo (UC9).
+        \item L'operazione è stata innescata dalla dashboard (UC21.3).
+        \item Il file \texttt{README.md} \textbf{è già presente} nel \textit{repository} di destinazione.
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) per il \texttt{README.md}.
-        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC26.2.4).
+        \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) per aggiornare il file \texttt{README.md}.
+        \item L'utente visualizza il report dell'operazione (UC25) con il collegamento alla \textit{Pull Request}.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
-        \item L'\textbf{Orchestratore} riceve il comando di avvio per l'operazione corrente (UC21.3) e attiva l'Agente Docs.
-        \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per scaricare la struttura del progetto e l'attuale file \texttt{README.md}.
-        \item Il sistema recupera l'eventuale template personalizzato del \textit{README} fornito dallo Sviluppatore (UC34); in sua assenza, carica in memoria il template di default.
-        \item Il sistema compone il prompt contestuale e lo invia alle \textit{API} del Modello \textit{LLM} richiedendo la stesura del nuovo documento.
-        \item Il modello \textit{LLM} elabora le direttive e restituisce al sistema il contenuto aggiornato.
-        \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento aggiornato.
-        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
+        \item L'\textbf{Orchestratore} attiva l'Agente Docs.
+        \item Il sistema interroga le \textit{API} di \textit{GitHub} scaricando l'attuale file \texttt{README.md} e le porzioni di codice rilevanti.
+        \item Il sistema analizza le differenze per capire quali sezioni del README risultano obsolete.
+        \item Il sistema recupera il template (UC33) e lo passa all'LLM insieme al README attuale e al codice.
+        \item Il modello \textit{LLM} elabora i dati e restituisce il documento aggiornato.
+        \item Il sistema apre una \textit{Pull Request} su \textit{GitHub} per proporre la modifica del file.
+        \item Il sistema aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile il report (UC25).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 5 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
-        \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
+        \item \textbf{UC26.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC26.4: Errore per superamento limiti dimensionali a runtime.} Estende il passo 4 qualora il volume dei dati del progetto da analizzare superi la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM}.
     \end{itemize}
 \end{itemize}
 
@@ -2752,9 +2807,9 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
-    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di gestione della documentazione inline dalla lista delle operazioni disponibili nella dashboard (UC21.3).
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} estrae l'operazione di gestione della documentazione inline dalla coda di esecuzione e ne innesca l'elaborazione asincrona.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC4).
@@ -2766,7 +2821,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente i commenti di documentazione inline aggiornati per il codice selezionato.
-        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC26.2.4).
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC25) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC25.2.4).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2776,16 +2831,16 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item Il sistema compone il prompt contestuale, includendo le porzioni di codice rilevate, e lo invia alle \textit{API} del Modello \textit{LLM} richiedendo la generazione della documentazione inline appropriata.
         \item Il modello \textit{LLM} elabora il codice e restituisce al sistema le proposte di commento standardizzato (\textit{JSDoc}) per gli elementi analizzati.
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente le proposte di documentazione inline integrate nel codice.
-        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC25).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal modello \textit{LLM} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
-        \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dal modello \textit{LLM} presenti una struttura non formattata correttamente o non interpretabile dal sistema.
+        \item \textbf{UC26.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 6 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
         \item \textbf{UC37: Gestione complessità del codice eccessiva.} Estende il passo 5 qualora il sistema o il modello \textit{LLM} non riescano a interpretare la logica di una specifica classe o funzione a causa di un'eccessiva complessità ciclomatica o strutturale.
-        \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
+        \item \textbf{UC26.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
 
@@ -2793,7 +2848,7 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di generare una documentazione affidabile per una specifica porzione di codice a causa della sua intrinseca complessità.
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Trigger:} Il Modello \textit{LLM} o il modulo di analisi interno rilevano un livello di complessità che impedisce l'estrazione logica o la sintesi del comportamento della classe/funzione corrente.
     \item \textbf{Precondizioni:} L'Agente sta ciclando sulle funzioni e classi estratte per richiederne la documentazione al Modello \textit{LLM}.
     \item \textbf{Postcondizioni:} 
@@ -2805,8 +2860,8 @@ Questo caso d'uso gestisce lo scenario in cui l'Agente Docs non è in grado di g
     \begin{enumerate}
         \item Il sistema rileva l'incapacità di interpretare in modo affidabile l'elemento analizzato.
         \item Il sistema esclude la funzione o la classe corrente dalla stesura della \textit{Pull Request}.
-        \item Il sistema compila i dati per un nuovo avviso, predisponendolo per essere mostrato nella lista di elementi strutturati del report (UC26.2.2).
-        \item Il sistema valorizza i campi dell'elemento impostando la categoria come "Avviso" (UC26.2.2.1.1), la gravità come informativa (UC26.2.2.1.2), registrando le righe di codice esatte e il file in cui risiede la classe complessa (UC26.2.2.1.3).
+        \item Il sistema compila i dati per un nuovo avviso, predisponendolo per essere mostrato nella lista di elementi strutturati del report (UC25.2.2).
+        \item Il sistema valorizza i campi dell'elemento impostando la categoria come "Avviso" (UC25.2.2.1.1), la gravità come informativa (UC25.2.2.1.2), registrando le righe di codice esatte e il file in cui risiede la classe complessa (UC25.2.2.1.3).
         \item Il sistema riprende l'analisi a partire dall'eventuale elemento successivo disponibile (ritorno al passo 3 di UC36).
     \end{enumerate}
 \end{itemize}
@@ -2822,9 +2877,9 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} Sviluppatore.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
-    \item \textbf{Trigger:} Lo Sviluppatore conferma l'avvio dell'operazione di gestione della documentazione \textit{API} dalla lista delle operazioni disponibili nella dashboard (UC21.3).
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} estrae l'operazione di generazione documentazione API dalla coda di esecuzione e ne innesca l'elaborazione asincrona.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item Lo Sviluppatore è autenticato (UC4).
@@ -2832,11 +2887,11 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item È stato configurato con successo il contesto operativo: \textit{Repository Git} e riferimento di base (UC9).
         \item È stato selezionato e validato un ambito di analisi (UC16).
         \item L'utente ha selezionato l'operazione "Generazione documentazione \textit{API}" (UC21.1).
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato una proposta di modifica (\textit{Pull Request}) contenente il file \texttt{API.md} generato o aggiornato.
-        \item Lo Sviluppatore visualizza il report dell'operazione (UC26) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC26.2.4).
+        \item Lo Sviluppatore visualizza il report dell'operazione (UC25) con l'esito dell'operazione e il collegamento alla \textit{Pull Request} (UC25.2.4).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2845,14 +2900,14 @@ Questo caso d'uso descrive il processo automatizzato attraverso il quale il sist
         \item Il sistema compone il prompt contestuale con il codice estratto e lo invia alle \textit{API} del Modello \textit{LLM}, richiedendo l'identificazione degli \textit{Endpoint} e l'estrazione di metodo HTTP, URL, \textit{\glo{header}{header}}, \textit{Payload} richiesti e formati di risposta.
         \item Il modello \textit{LLM} elabora il codice e restituisce al sistema le informazioni tecniche formattate strutturalmente con la sintassi \textit{Markdown}.
         \item Il sistema effettua una chiamata alle \textit{API} della \textit{Piattaforma GitHub} per aprire una \textit{Pull Request} contenente il documento \texttt{API.md} finale.
-        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC26).
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile allo Sviluppatore il report dell'operazione (UC25).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} non rispetti la formattazione \textit{Markdown} richiesta o non sia parsabile dal sistema.
-        \item \textbf{UC27.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 5 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{LLM} impieghi troppo tempo per restituire l'output, superando il limite di timeout prefissato per la risposta.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} non rispetti la formattazione \textit{Markdown} richiesta o non sia parsabile dal sistema.
+        \item \textbf{UC26.7: Errore durante la creazione della \textit{Pull Request}.} Estende il passo 5 qualora la \textit{Piattaforma GitHub} rifiuti la richiesta di apertura della \textit{Pull Request} a causa di permessi insufficienti o problemi di rete.
     \end{itemize}
 \end{itemize}
 
@@ -2888,9 +2943,9 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
-    \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di scansione vulnerabilità dalla lista delle operazioni disponibili nella dashboard (UC21.3).
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} estrae l'operazione di scansione vulnerabilità dalla coda di esecuzione e ne innesca l'elaborazione asincrona.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC4).
@@ -2901,7 +2956,7 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato un report tecnico contenente le vulnerabilità rilevate.
-        \item L'utente visualizza il report dell'operazione (UC26) con i dettagli strutturati (categoria, gravità, riferimento al codice).
+        \item L'utente visualizza il report dell'operazione (UC25) con i dettagli strutturati (categoria, gravità, riferimento al codice).
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2909,15 +2964,15 @@ Questo caso d'uso descrive il processo automatizzato mediante il quale il sistem
         \item Il sistema interroga le \textit{API} della \textit{Piattaforma GitHub} per estrarre il codice sorgente corrispondente all'ambito di analisi selezionato.
         \item Il sistema compone il prompt di analisi, istruendo il modello alla ricerca di criticità (es. \textit{SQL Injection}, \textit{\glo{XSS}{xss}}, \textit{Hardcoded secrets}), e lo invia alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} elabora il codice e restituisce al sistema l'elenco delle vulnerabilità individuate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
-        \item Il sistema formatta le criticità ottenute per la visualizzazione strutturata, associando a ciascuna la categoria \textit{OWASP} (UC26.2.2.1.1), il livello di gravità (UC26.2.2.1.2), la porzione di codice interessata (UC26.2.2.1.3) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC26.2.3) o di testo formattato (UC26.2.1).
-        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile all'utente il report dell'operazione (UC26).
+        \item Il sistema formatta le criticità ottenute per la visualizzazione strutturata, associando a ciascuna la categoria \textit{OWASP} (UC25.2.2.1.1), il livello di gravità (UC25.2.2.1.2), la porzione di codice interessata (UC25.2.2.1.3) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC25.2.3) o di testo formattato (UC25.2.1).
+        \item Il sistema registra il successo dell'attività, ne aggiorna lo stato a "Completato" nella dashboard di monitoraggio (UC22.1.2) e rende disponibile all'utente il report dell'operazione (UC25).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output della scansione, superando il limite di timeout.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile per la classificazione delle vulnerabilità.
-        \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{AI} impieghi troppo tempo per restituire l'output della scansione, superando il limite di timeout.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita dal Modello \textit{AI} presenti una struttura non formattata correttamente o non interpretabile per la classificazione delle vulnerabilità.
+        \item \textbf{UC26.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
 
@@ -2932,9 +2987,9 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security ve
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} \textit{Security Auditor} / \textit{Team Lead}.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} \textit{Piattaforma GitHub}, Modello \textit{AI} (\textit{LLM}).
-    \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di verifica di conformità dalla lista delle operazioni disponibili nella dashboard (UC21.3).
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} estrae l'operazione di verifica di conformità dalla coda di esecuzione e ne innesca l'elaborazione asincrona.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato con il ruolo di \textit{Security Auditor} o \textit{Team Lead} (UC4).
@@ -2945,7 +3000,7 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security ve
     \item \textbf{Postcondizioni:}
     \begin{itemize}
         \item Il sistema ha generato un elenco delle deviazioni (non-conformità) rilevate rispetto alle regole di progetto.
-        \item L'utente visualizza il report dell'operazione (UC26) contenente le violazioni strutturate.
+        \item L'utente visualizza il report dell'operazione (UC25) contenente le violazioni strutturate.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -2954,17 +3009,17 @@ Questo caso d'uso descrive il processo automatizzato in cui l'Agente Security ve
         \item Il sistema estrae il codice sorgente dell'ambito selezionato tramite le \textit{API} di Git.
         \item Il sistema compone il prompt contestuale unendo il codice estratto con le regole di \textit{policy} lette, per poi inviarlo alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} confronta il codice con le direttive di sviluppo sicuro e restituisce al sistema l'elenco delle violazioni normative riscontrate, corredate dai relativi suggerimenti di \textit{remediation} (sotto forma di \textit{snippet} di codice correttivo o descrizioni testuali).
-        \item Il sistema formatta le non conformità ottenute per la visualizzazione strutturata nel report, associandole alla categoria di regola infranta, al file/riga in cui si verifica l'anomalia (UC26.2.2) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC26.2.3) o di testo formattato (UC26.2.1).
-        \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile all'utente il report (UC26).
+        \item Il sistema formatta le non conformità ottenute per la visualizzazione strutturata nel report, associandole alla categoria di regola infranta, al file/riga in cui si verifica l'anomalia (UC25.2.2) e integrando le soluzioni proposte nei moduli per gli \textit{snippet} di codice (UC25.2.3) o di testo formattato (UC25.2.1).
+        \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile all'utente il report (UC25).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
-        \item \textbf{UC27.5: Errore per risorsa di contesto mancante.} Estende il passo 2 qualora il file \texttt{POLICY.md} non esista o non venga trovato all'interno del \textit{Repository Git}.
-        \item \textbf{UC27.6: Errore per risorsa di contesto non valida o malformata.} Estende il passo 2 qualora il file \texttt{POLICY.md} sia illeggibile, contenga errori di sintassi o regole in palese contraddizione logica.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} superi il tempo limite per l'elaborazione.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile dal sistema.
-        \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC26.5: Errore per risorsa di contesto mancante.} Estende il passo 2 qualora il file \texttt{POLICY.md} non esista o non venga trovato all'interno del \textit{Repository Git}.
+        \item \textbf{UC26.6: Errore per risorsa di contesto non valida o malformata.} Estende il passo 2 qualora il file \texttt{POLICY.md} sia illeggibile, contenga errori di sintassi o regole in palese contraddizione logica.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 4 qualora il Modello \textit{LLM} superi il tempo limite per l'elaborazione.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 5 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile dal sistema.
+        \item \textbf{UC26.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
 
@@ -2998,18 +3053,18 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Attori Secondari:} Sistema di Task Management, Modello \textit{AI} (\textit{LLM}).
-    \item \textbf{Trigger:} L'utente conferma l'avvio dell'operazione di generazione Changelog dalla dashboard (UC21.3).
+    \item \textbf{Trigger:} L'\textbf{Orchestratore} estrae l'operazione di generazione Changelog dalla coda di esecuzione e ne innesca l'elaborazione asincrona.
     \item \textbf{Precondizioni:}
     \begin{itemize}
         \item L'utente è autenticato (UC4) e ha configurato le credenziali per il Sistema di Task Management (UC6.2).
         \item L'utente ha selezionato l'operazione "Generazione changelog tecnico" o "Generazione changelog di buisiness" (UC21.1).
-    \end{itemize}
+    \end{itemize}\newpage
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato un Changelog tecnico scritto in formato \textit{Markdown} e inserito nel report (UC26.2.1).
-        \item L'utente visualizza il report dell'operazione (UC26), all'interno del quale è presente, se richiesta inizialmente, l'opzione per proseguire con la generazione del Changelog di Business.
+        \item Il sistema ha generato un Changelog tecnico scritto in formato \textit{Markdown} e inserito nel report (UC25.2.1).
+        \item L'utente visualizza il report dell'operazione (UC25), all'interno del quale è presente, se richiesta inizialmente, l'opzione per proseguire con la generazione del Changelog di Business.
     \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
@@ -3021,7 +3076,7 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
         \item Il sistema compone il prompt contestuale con i dati estratti e lo invia alle \textit{API} del Modello \textit{AI} richiedendo la sintesi in linguaggio ingegneristico standardizzato.
         \item Il Modello \textit{AI} restituisce al sistema il testo del Changelog formattato in \textit{Markdown}.
         \item Il sistema arricchisce il documento inserendo i collegamenti ipertestuali automatici verso i ticket originali sul sistema esterno.
-        \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile all'utente il report contenente il testo generato (UC26).
+        \item Il sistema registra il successo dell'attività, aggiorna lo stato a "Completato" (UC22.1.2) e rende disponibile all'utente il report contenente il testo generato (UC25).
     \end{enumerate}
     \item \textbf{Sottocasi d'uso:}
     \begin{itemize}
@@ -3029,18 +3084,18 @@ Questo caso d'uso descrive il processo mediante il quale il sistema recupera i d
     \end{itemize}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC31: Notifica email per richiesta validazione umana.} Estende il passo 2 qualora l'utente non sia attivamente sulla piattaforma, inviando un'email per richiedere l'inserimento dello \textit{Sprint ID}.
-        \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC30: Notifica email per richiesta validazione umana.} Estende il passo 2 qualora l'utente non sia attivamente sulla piattaforma, inviando un'email per richiedere l'inserimento dello \textit{Sprint ID}.
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
         \item \textbf{UC42: Annullamento dell'inserimento dello \textit{Sprint} ID.} Estende il passo 3 qualora l'utente decida di interrompere l'operazione interagendo con il comando di annullamento.
-        \item \textbf{UC27.5: Errore per risorsa di contesto mancante.} Estende il passo 4 qualora lo \textit{Sprint ID} inserito dall'utente non esista o la risposta del server restituisca un insieme vuoto.
+        \item \textbf{UC26.5: Errore per risorsa di contesto mancante.} Estende il passo 4 qualora lo \textit{Sprint ID} inserito dall'utente non esista o la risposta del server restituisca un insieme vuoto.
         \item \textbf{UC43: Avviso e gestione task con metadati insufficienti.} Estende il passo 5 qualora il sistema rilevi all'interno dei task completati l'assenza di descrizioni o di criteri di accettazione minimi.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 6 qualora il Modello \textit{LLM} superi il tempo limite per l'elaborazione.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 7 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile.
-        \item \textbf{UC31: Notifica email per richiesta validazione umana.} Estende il passo 9 qualora l'utente abbia selezionato originariamente il \textit{Changelog} di Business, inviando un'email per richiedere la validazione del report tecnico e l'innesco del processo di generazione.
-        \item \textbf{UC27.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 6 qualora il Modello \textit{LLM} superi il tempo limite per l'elaborazione.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 7 qualora la risposta restituita dall'\textit{AI} non sia strutturalmente parsabile.
+        \item \textbf{UC30: Notifica email per richiesta validazione umana.} Estende il passo 9 qualora l'utente abbia selezionato originariamente il \textit{Changelog} di Business, inviando un'email per richiedere la validazione del report tecnico e l'innesco del processo di generazione.
+        \item \textbf{UC26.4: Errore per superamento limiti dimensionali a runtime.} Qualora i dati da analizzare superino la finestra di contesto massima o i limiti fisici supportati dal modello \textit{LLM} durante l'esecuzione.
     \end{itemize}
 \end{itemize}
-
+\newpage
 \subsubsection{UC41.1: Inserimento identificativo dello \textit{Sprint}}\label{uc:41.1}
 Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \textit{Sprint} (\textit{Sprint} ID) da parte dell'utente, dato necessario per l'estrazione dei task completati dal sistema esterno.
 
@@ -3051,7 +3106,7 @@ Questo caso d'uso descrive l'inserimento testuale dell'identificativo dello \tex
     \label{fig:UC41.1}
 \end{center}
 
-\newpage
+
 \begin{itemize}
     \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
     
@@ -3097,7 +3152,7 @@ Questo caso d'uso descrive l'interruzione volontaria del processo di generazione
     \end{enumerate}
 \end{itemize}
 
-
+\newpage
 \subsubsection{UC43: Avviso e gestione task con metadati insufficienti}\label{uc:43}
 Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{Changelog} rilevi la presenza di task contrassegnati come completati ma qualitativamente poveri di informazioni, chiedendo all'utente come procedere.
 
@@ -3109,7 +3164,7 @@ Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{C
 \end{center}
 
 \begin{itemize}
-    \item \textbf{Attore Primario:} \textit{Project Manager} / Sviluppatore.
+    \item \textbf{Attore Primario:} Sistema.
     \item \textbf{Trigger:} Il modulo di analisi dati rileva che una o più \textit{User Stories} estratte presentano campi testuali vuoti o sotto la soglia minima di caratteri stabilita.
     \item \textbf{Precondizioni:} Il sistema ha completato il filtraggio dei task dello Sprint (Passo 4 di UC41).
     \item \textbf{Postcondizioni:} 
@@ -3126,7 +3181,7 @@ Questo caso d'uso gestisce l'interazione con l'utente qualora l'Agente \textbf{C
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC31: Notifica email per richiesta validazione umana}. Estende il passo 2 qualora l'utente non sia attivamente sulla piattaforma, inviando un'email per notificare la sospensione e richiedere un intervento manuale.
+        \item \textbf{UC30: Notifica email per richiesta validazione umana}. Estende il passo 2 qualora l'utente non sia attivamente sulla piattaforma, inviando un'email per notificare la sospensione e richiedere un intervento manuale.
         \item \textbf{UC44: Annullamento generazione per metadati mancanti.} Estende il passo 3 qualora l'utente scelga l'opzione "Annulla operazione", bloccando il processo per recarsi sul Sistema di Task Management a integrare manualmente i testi mancanti.
     \end{itemize}
 \end{itemize}
@@ -3170,23 +3225,23 @@ Questo caso d'uso descrive il processo successivo e dipendente dal \textit{Chang
     \end{itemize}
     \item \textbf{Postcondizioni:}
     \begin{itemize}
-        \item Il sistema ha generato un \textit{Changelog} di Business scritto in formato \textit{Markdown} e inserito nel report (UC26.2.1).
-        \item L'utente visualizza un nuovo report aggiornato (UC26) con il testo finale.
-    \end{itemize}\newpage
+        \item Il sistema ha generato un \textit{Changelog} di Business scritto in formato \textit{Markdown} e inserito nel report (UC25.2.1).
+        \item L'utente visualizza un nuovo report aggiornato (UC25) con il testo finale.
+    \end{itemize}
     \item \textbf{Scenario Principale:}
     \begin{enumerate}
         \item Il sistema riceve il comando di generazione innescato dall'interfaccia del report del \textit{Changelog} tecnico.
         \item Il sistema acquisisce il testo del \textit{Changelog} tecnico appena approvato.
         \item Il sistema compone un nuovo prompt unendo il testo tecnico con le direttive preimpostate sul tono di voce \textit{business-oriented} e lo invia alle \textit{API} del Modello \textit{AI}.
         \item Il Modello \textit{AI} elabora il contenuto, rimuove i dettagli implementativi e restituisce il testo tradotto formattato in \textit{Markdown}.
-        \item Il sistema registra il successo dell'attività e sostituisce o affianca il contenuto nel report di visualizzazione, rendendolo disponibile all'utente (UC26).
+        \item Il sistema registra il successo dell'attività e sostituisce o affianca il contenuto nel report di visualizzazione, rendendolo disponibile all'utente (UC25).
     \end{enumerate}
     \item \textbf{Estensioni:}
     \begin{itemize}
-        \item \textbf{UC27.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
+        \item \textbf{UC26.1: Errore per superamento soglia massima di utilizzo del modello \textit{LLM}.} Estende il passo 1 qualora sia superato il limite di chiamate massime consentite al modello \textit{LLM}.
         \item \textbf{UC46: Annullamento della generazione del \textit{Changelog} di business.} Estende il passo 1 qualora l'utente interagisca con il comando grafico di annullamento presente nel report tecnico.
-        \item \textbf{UC27.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{LLM} impieghi troppo tempo per rispondere.
-        \item \textbf{UC27.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita non sia formattata correttamente in \textit{Markdown}.
+        \item \textbf{UC26.2: Errore per timeout del modello \textit{LLM}.} Estende il passo 3 qualora il Modello \textit{LLM} impieghi troppo tempo per rispondere.
+        \item \textbf{UC26.3: Errore di parsing dell'output \textit{LLM}.} Estende il passo 4 qualora la risposta restituita non sia formattata correttamente in \textit{Markdown}.
     \end{itemize}
 \end{itemize}
 
@@ -3196,7 +3251,7 @@ Questo caso d'uso descrive l'interruzione del processo di generazione del \texti
 \begin{itemize}
     \item \textbf{Attore Primario}: \textit{Project Manager} / Sviluppatore.
     
-    \item \textbf{Trigger}: L'utente interagisce con il comando grafico di annullamento presente nel report tecnico (UC26.2.5).
+    \item \textbf{Trigger}: L'utente interagisce con il comando grafico di annullamento presente nel report tecnico (UC25.2.5).
     
     \item \textbf{Precondizioni}:
     \begin{itemize}
@@ -3214,7 +3269,7 @@ Questo caso d'uso descrive l'interruzione del processo di generazione del \texti
     \begin{enumerate}
         \item L'utente clicca sul comando di annullamento all'interno del report.
         \item Il sistema acquisisce la direttiva e rimuove la \textit{task} di business dalla coda di elaborazione.
-        \item Il sistema notifica l'annullamento all'utente e disabilita il modulo di validazione (UC26.2.5) per impedire ulteriori inneschi.
+        \item Il sistema notifica l'annullamento all'utente e disabilita il modulo di validazione (UC25.2.5) per impedire ulteriori inneschi.
     \end{enumerate}
 \end{itemize}
 
@@ -3247,7 +3302,7 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.3 & Obbligatorio & Il sistema deve consentire all'utente di inserire il proprio indirizzo email e la password in fase di registrazione. & \hyperref[uc:1.3]{UC1.3}, \hyperref[uc:1.4]{UC1.4} \\ \hline
     
-    RF.4 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & \hyperref[uc:1.5]{UC1.5} \\ \hline
+    RF.4 & Obbligatorio & Il sistema deve permettere all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textit{Security Auditor}, \textit{Project Manager}). & \hyperref[uc:1.5]{UC1.5}, \hyperref[uc:1.5.1]{UC1.5.1}, \hyperref[uc:1.5.2]{UC1.5.2}, \hyperref[uc:1.5.3]{UC1.5.3} \\ \hline
     
     RF.5 & Obbligatorio & Il sistema deve impedire la registrazione e mostrare un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & \hyperref[uc:2]{UC2} \\ \hline
     
@@ -3345,65 +3400,65 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.52 & Opzionale & Il sistema deve visualizzare all'interno del blocco grafico del singolo report le informazioni temporali di completamento, nello specifico la data e l'orario esatto di generazione. & \hyperref[uc:24.1.3]{UC24.1.3}, \hyperref[uc:24.1.4]{UC24.1.4} \\ \hline
 
-    RF.53 & Obbligatorio & Il sistema deve consentire all'utente la selezione e la visualizzazione del report desiderato. & \hyperref[uc:25]{UC25}, \hyperref[uc:26]{UC26} \\ \hline
+    RF.53 & Obbligatorio & Il sistema deve consentire all'utente la selezione e la visualizzazione del report desiderato. & \hyperref[uc:25]{UC25} \\ \hline
     
-    RF.54 & Obbligatorio & Il sistema deve strutturare il report dividendolo in una sezione di intestazione e una di corpo del report con il contenuto effettivo. & \hyperref[uc:26.1]{UC26.1}, \hyperref[uc:26.2]{UC26.2} \\ \hline
+    RF.54 & Obbligatorio & Il sistema deve strutturare il report dividendolo in una sezione di intestazione e una di corpo del report con il contenuto effettivo. & \hyperref[uc:25.1]{UC25.1}, \hyperref[uc:25.2]{UC25.2} \\ \hline
     
-    RF.55 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del \textit{Repository Git} analizzato. & \hyperref[uc:26.1.1]{UC26.1.1} \\ \hline
+    RF.55 & Obbligatorio & Il sistema deve visualizzare, all'interno dell'intestazione del report, il nome identificativo del \textit{Repository Git} analizzato. & \hyperref[uc:25.1.1]{UC25.1.1} \\ \hline
     
-    RF.56 & Obbligatorio & Il sistema deve visualizzare nell'intestazione del report il riferimento base e l'ambito di analisi selezionato. & \hyperref[uc:26.1.2]{UC26.1.2}, \hyperref[uc:26.1.3]{UC26.1.3} \\ \hline
+    RF.56 & Obbligatorio & Il sistema deve visualizzare nell'intestazione del report il riferimento base e l'ambito di analisi selezionato. & \hyperref[uc:25.1.2]{UC25.1.2}, \hyperref[uc:25.1.3]{UC25.1.3} \\ \hline
     
-    RF.57 & Obbligatorio & Il sistema deve includere nell'intestazione del report il tempo di esecuzione impiegato dall'agente. & \hyperref[uc:26.1.4]{UC26.1.4} \\ \hline
+    RF.57 & Obbligatorio & Il sistema deve includere nell'intestazione del report il tempo di esecuzione impiegato dall'agente. & \hyperref[uc:25.1.4]{UC25.1.4} \\ \hline
     
-    RF.58 & Obbligatorio & Il sistema deve riportare nell'intestazione del report la data e l'ora di completamento dell'operazione. & \hyperref[uc:26.1.5]{UC26.1.5}, \hyperref[uc:26.1.6]{UC26.1.6} \\ \hline
+    RF.58 & Obbligatorio & Il sistema deve riportare nell'intestazione del report la data e l'ora di completamento dell'operazione. & \hyperref[uc:25.1.5]{UC25.1.5}, \hyperref[uc:25.1.6]{UC25.1.6} \\ \hline
 
-    RF.59 & Obbligatorio & Il sistema deve visualizzare all'interno del corpo del report blocchi di testo formattato (\textit{Markdown}), convertendo correttamente i tag testuali in elementi grafici leggibili a schermo. & \hyperref[uc:26.2.1]{UC26.2.1} \\ \hline
+    RF.59 & Obbligatorio & Il sistema deve visualizzare all'interno del corpo del report blocchi di testo formattato (\textit{Markdown}), convertendo correttamente i tag testuali in elementi grafici leggibili a schermo. & \hyperref[uc:25.2.1]{UC25.2.1} \\ \hline
     
-    RF.60 & Obbligatorio & Il sistema deve renderizzare nel corpo del report una lista contenitore strutturata, mostrando gli spazi grafici e popolando i dettagli attributivi di ciascun singolo elemento in essa iterato. & \hyperref[uc:26.2.2]{UC26.2.2}, \hyperref[uc:26.2.2.1]{UC26.2.2.1} \\ \hline
+    RF.60 & Obbligatorio & Il sistema deve renderizzare nel corpo del report una lista contenitore strutturata, mostrando gli spazi grafici e popolando i dettagli attributivi di ciascun singolo elemento in essa iterato. & \hyperref[uc:25.2.2]{UC25.2.2}, \hyperref[uc:25.2.2.1]{UC25.2.2.1} \\ \hline
     
-    RF.61 & Obbligatorio & Il sistema deve esporre per ogni singolo elemento strutturato l'indicatore testuale relativo alla sua categoria (es. tipo di vulnerabilità) e l'etichetta classificatoria della sua gravità o priorità. & \hyperref[uc:26.2.2.1.1]{UC26.2.2.1.1}, \hyperref[uc:26.2.2.1.2]{UC26.2.2.1.2} \\ \hline
+    RF.61 & Obbligatorio & Il sistema deve esporre per ogni singolo elemento strutturato l'indicatore testuale relativo alla sua categoria (es. tipo di vulnerabilità) e l'etichetta classificatoria della sua gravità o priorità. & \hyperref[uc:25.2.2.1.1]{UC25.2.2.1.1}, \hyperref[uc:25.2.2.1.2]{UC25.2.2.1.2} \\ \hline
     
-    RF.62 & Obbligatorio & Il sistema deve riportare, per gli elementi che lo richiedono, i riferimenti puntuali alla porzione di codice interessata (percorso del file e numeri di riga) ed esporre eventuali \textit{Snippet} di codice sorgente suggerito all'interno di un contenitore dedicato. & \hyperref[uc:26.2.2.1.3]{UC26.2.2.1.3}, \hyperref[uc:26.2.3]{UC26.2.3} \\ \hline
+    RF.62 & Obbligatorio & Il sistema deve riportare, per gli elementi che lo richiedono, i riferimenti puntuali alla porzione di codice interessata (percorso del file e numeri di riga) ed esporre eventuali \textit{Snippet} di codice sorgente suggerito all'interno di un contenitore dedicato. & \hyperref[uc:25.2.2.1.3]{UC25.2.2.1.3}, \hyperref[uc:25.2.3]{UC25.2.3} \\ \hline
     
-    RF.63 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{Repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & \hyperref[uc:26.2.4]{UC26.2.4} \\ \hline
+    RF.63 & Obbligatorio & Qualora l'agente abbia generato una proposta di modifica sul \textit{Repository} remoto, il sistema deve renderizzare nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & \hyperref[uc:25.2.4]{UC25.2.4} \\ \hline
     
-    RF.64 & Obbligatorio & Il sistema deve visualizzare all'interno del report un modulo interattivo con comandi di validazione e avanzamento per le operazioni che richiedono un'approvazione umana o un feedback esplicito. & \hyperref[uc:26.2.5]{UC26.2.5} \\ \hline
+    RF.64 & Obbligatorio & Il sistema deve visualizzare all'interno del report un modulo interattivo con comandi di validazione e avanzamento per le operazioni che richiedono un'approvazione umana o un feedback esplicito. & \hyperref[uc:25.2.5]{UC25.2.5} \\ \hline
     
-    RF.65 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo e bloccare l'esecuzione in caso di fallimento o anomalia generale durante l'elaborazione interna di un agente. & \hyperref[uc:27]{UC27} \\ \hline
+    RF.65 & Obbligatorio & Il sistema deve mostrare un messaggio di errore esplicativo e bloccare l'esecuzione in caso di fallimento o anomalia generale durante l'elaborazione interna di un agente. & \hyperref[uc:26]{UC26} \\ \hline
     
-    RF.66 & Desiderabile & Il sistema deve bloccare preventivamente l'esecuzione di un agente e mostrare un messaggio d'errore qualora venga superato il limite massimo di utilizzo (chiamate) configurato. & \hyperref[uc:27.1]{UC27.1} \\ \hline
+    RF.66 & Desiderabile & Il sistema deve bloccare preventivamente l'esecuzione di un agente e mostrare un messaggio d'errore qualora venga superato il limite massimo di utilizzo (chiamate) configurato. & \hyperref[uc:26.1]{UC26.1} \\ \hline
     
-    RF.67 & Desiderabile & Il sistema deve interrompere l'attesa, chiudere la connessione e notificare l'utente con un errore qualora il modello \textit{LLM} non restituisca una risposta entro il tempo limite prefissato (Timeout di risposta). & \hyperref[uc:27.2]{UC27.2} \\ \hline
+    RF.67 & Desiderabile & Il sistema deve interrompere l'attesa, chiudere la connessione e notificare l'utente con un errore qualora il modello \textit{LLM} non restituisca una risposta entro il tempo limite prefissato (Timeout di risposta). & \hyperref[uc:26.2]{UC26.2} \\ \hline
     
-    RF.68 & Obbligatorio & Il sistema deve bloccare l'elaborazione e mostrare un errore qualora l'output fornito dal modello \textit{LLM} non sia parsabile, interpretabile o conforme alle strutture dati attese. & \hyperref[uc:27.3]{UC27.3} \\ \hline
+    RF.68 & Obbligatorio & Il sistema deve bloccare l'elaborazione e mostrare un errore qualora l'output fornito dal modello \textit{LLM} non sia parsabile, interpretabile o conforme alle strutture dati attese. & \hyperref[uc:26.3]{UC26.3} \\ \hline
     
-    RF.69 & Obbligatorio & Il sistema deve interrompere l'esecuzione prima dell'invio e notificare l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello \textit{LLM} a runtime. & \hyperref[uc:27.4]{UC27.4} \\ \hline
+    RF.69 & Obbligatorio & Il sistema deve interrompere l'esecuzione prima dell'invio e notificare l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello \textit{LLM} a runtime. & \hyperref[uc:26.4]{UC26.4} \\ \hline
     
-    RF.70 & Obbligatorio & Il sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file \texttt{POLICY.md}, Sprint ID) risulti assente o non trovata. & \hyperref[uc:27.5]{UC27.5} \\ \hline
+    RF.70 & Obbligatorio & Il sistema deve inibire l'elaborazione di un agente e notificare l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file \texttt{POLICY.md}, Sprint ID) risulti assente o non trovata. & \hyperref[uc:26.5]{UC26.5} \\ \hline
     
-    RF.71 & Obbligatorio & Il sistema deve bloccare l'elaborazione di un agente e notificare l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & \hyperref[uc:27.6]{UC27.6} \\ \hline
+    RF.71 & Obbligatorio & Il sistema deve bloccare l'elaborazione di un agente e notificare l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & \hyperref[uc:26.6]{UC26.6} \\ \hline
     
-    RF.72 & Obbligatorio & Il sistema deve interrompere l'operazione e mostrare un messaggio d'errore qualora la \textit{Piattaforma GitHub} rifiuti la creazione di una \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & \hyperref[uc:27.7]{UC27.7} \\ \hline
+    RF.72 & Obbligatorio & Il sistema deve interrompere l'operazione e mostrare un messaggio d'errore qualora la \textit{Piattaforma GitHub} rifiuti la creazione di una \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & \hyperref[uc:26.7]{UC26.7} \\ \hline
     
-    RF.73 & Obbligatorio & Il sistema deve consentire all'utente di esportare il report attualmente visualizzato, raccogliendo e formattando i dati per innescare il download locale in formato PDF. & \hyperref[uc:28]{UC28} \\ \hline
+    RF.73 & Obbligatorio & Il sistema deve consentire all'utente di esportare il report attualmente visualizzato, raccogliendo e formattando i dati per innescare il download locale in formato PDF. & \hyperref[uc:27]{UC27} \\ \hline
     
-    RF.74 & Obbligatorio & Il sistema deve annullare il processo di esportazione e notificare l'utente con un messaggio d'errore qualora si verifichi un'anomalia interna durante la conversione e impaginazione del report in PDF. & \hyperref[uc:29]{UC29} \\ \hline
+    RF.74 & Obbligatorio & Il sistema deve annullare il processo di esportazione e notificare l'utente con un messaggio d'errore qualora si verifichi un'anomalia interna durante la conversione e impaginazione del report in PDF. & \hyperref[uc:28]{UC28} \\ \hline
     
-    RF.75 & Opzionale & Il sistema deve inviare automaticamente un'email all'indirizzo dell'utente contenente il report PDF in allegato, qualora l'operazione sia completata e la relativa preferenza sia attiva. & \hyperref[uc:30]{UC30} \\ \hline
+    RF.75 & Opzionale & Il sistema deve inviare automaticamente un'email all'indirizzo dell'utente contenente il report PDF in allegato, qualora l'operazione sia completata e la relativa preferenza sia attiva. & \hyperref[uc:29]{UC29} \\ \hline
     
-    RF.76 & Opzionale & Il sistema deve inviare automaticamente un'email di notifica contenente un collegamento diretto alla piattaforma, qualora un'operazione richieda un intervento manuale o una validazione umana per proseguire. & \hyperref[uc:31]{UC31} \\ \hline
+    RF.76 & Opzionale & Il sistema deve inviare automaticamente un'email di notifica contenente un collegamento diretto alla piattaforma, qualora un'operazione richieda un intervento manuale o una validazione umana per proseguire. & \hyperref[uc:30]{UC30} \\ \hline
     
-    RF.77 & Opzionale & Il sistema deve gestire il fallimento dell'invio dell'email (es. server \textit{SMTP} irraggiungibile) interrompendo la notifica ma predisponendo un avviso e mantenendo la visualizzazione in piattaforma. & \hyperref[uc:32]{UC32} \\ \hline
+    RF.77 & Opzionale & Il sistema deve gestire il fallimento dell'invio dell'email (es. server \textit{SMTP} irraggiungibile) interrompendo la notifica ma predisponendo un avviso e mantenendo la visualizzazione in piattaforma. & \hyperref[uc:31]{UC31} \\ \hline
     
-    RF.78 & Opzionale & Il sistema deve inviare l'email priva di allegato, includendo nel corpo del messaggio il collegamento diretto al report in piattaforma, qualora il file generato superi i limiti dimensionali imposti dal server \textit{SMTP}. & \hyperref[uc:33]{UC33} \\ \hline
+    RF.78 & Opzionale & Il sistema deve inviare l'email priva di allegato, includendo nel corpo del messaggio il collegamento diretto al report in piattaforma, qualora il file generato superi i limiti dimensionali imposti dal server \textit{SMTP}. & \hyperref[uc:32]{UC32} \\ \hline
 
-    RF.79 & Opzionale & Il sistema deve permettere all'utente di gestire la struttura del file \texttt{README.md}, consentendo il caricamento e il salvataggio di un file \textit{template} personalizzato. & \hyperref[uc:34]{UC34}, \hyperref[uc:34.1]{UC34.1} \\ \hline
+    RF.79 & Opzionale & Il sistema deve permettere all'utente di gestire la struttura del file \texttt{README.md}, consentendo il caricamento e il salvataggio di un file \textit{template} personalizzato. & \hyperref[uc:33]{UC33}, \hyperref[uc:33.1]{UC33.1} \\ \hline
     
-    RF.80 & Opzionale & Il sistema deve validare il file \textit{template} caricato e bloccare l'operazione mostrando un messaggio di errore qualora il formato non sia valido o non abbia estensione \texttt{.md}. & \hyperref[uc:34.2]{UC34.2} \\ \hline
+    RF.80 & Opzionale & Il sistema deve validare il file \textit{template} caricato e bloccare l'operazione mostrando un messaggio di errore qualora il formato non sia valido o non abbia estensione \texttt{.md}. & \hyperref[uc:33.2]{UC33.2} \\ \hline
     
-    RF.81 & Opzionale & Il sistema deve consentire all'utente di rimuovere un \textit{template} personalizzato precedentemente caricato, ripristinando il modello di default dell'Agente Docs. & \hyperref[uc:34.3]{UC34.3} \\ \hline
+    RF.81 & Opzionale & Il sistema deve consentire all'utente di rimuovere un \textit{template} personalizzato precedentemente caricato, ripristinando il modello di default dell'Agente Docs. & \hyperref[uc:33.3]{UC33.3} \\ \hline
     
-    RF.82 & Obbligatorio & Il sistema deve orchestrare l'Agente Docs per generare e proporre l'aggiornamento del file \texttt{README.md} di progetto tramite l'apertura automatica di una \textit{Pull Request}. & \hyperref[uc:35]{UC35} \\ \hline
+    RF.82 & Obbligatorio & Il sistema deve orchestrare l'Agente Docs per generare ex novo o proporre l'aggiornamento del file \texttt{README.md} di progetto tramite l'apertura automatica di una \textit{Pull Request}. & \hyperref[uc:34]{UC34}, \hyperref[uc:35]{UC35} \\ \hline
     
     RF.83 & Obbligatorio & Il sistema deve orchestrare l'Agente Docs per analizzare il codice e proporre l'aggiornamento della documentazione \textit{Inline} (\textit{JSDoc}) tramite l'apertura automatica di una \textit{Pull Request}. & \hyperref[uc:36]{UC36} \\ \hline
 
@@ -3451,17 +3506,30 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     
     RF.105 & Obbligatorio & Il sistema deve consentire all'utente di annullare la generazione del \textit{Changelog} di \textit{business} dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & \hyperref[uc:46]{UC46} \\ \hline
 
+    RF.106 & Obbligatorio & Gli agenti devono essere evocati da un \textbf{Orchestratore} sviluppato internamente. La logica di smistamento deve essere deterministica e non basata su modelli \textit{LLM}. & Verbale esterno 2026/06/08 \\ \hline
+
+    RF.107 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 5 minuti. & \hyperref[uc:26.2]{UC26.2} \\ \hline
+
+    RF.108 & Obbligatorio & I report di Business generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità '\textbf{\glo{Flesch Reading Ease}{flesch-reading-ease}}' superiore a 50. & \hyperref[uc:45]{UC45} \\ \hline
+
+    RF.109 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare le eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting). & \hyperref[uc:26.1]{UC26.1} \\ \hline
+
+    RF.110 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi. & \hyperref[uc:4]{UC4} \\ \hline
+
+    RF.111 & Obbligatorio & Il tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema non deve superare i 2 secondi. & Verbale esterno 2026/04/24 \\ \hline
+
     \caption{Requisiti funzionali}
     \label{tab:rf}
 
 \end{xltabular}
 \endgroup
 
-
+\newpage
 \subsection{Requisiti qualitativi}
 
 \begingroup
 \renewcommand{\arraystretch}{1.3}
+
 
 \begin{xltabular}{\textwidth}{|c|c|D|F|}
 
@@ -3475,29 +3543,42 @@ I requisiti riportati in questa sezione sono stati derivati dai \textit{Casi d'U
     \hline
     \endhead
 
+\hline
+RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. & PdQ (MP\_13) \\ 
+\hline
+RQ.2 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\%, come stabilito dalla metrica MP\_12 del Piano di Qualifica. & Capitolato C2, PdQ (MP\_12) \\ 
+\hline
+RQ.3 & Obbligatorio & Il codice sorgente prodotto deve garantire alti standard di manutenibilità, mantenendo una complessità ciclomatica minore o uguale a 15, non superando i 5 \textbf{\glo{Code Smell}{code-smell}} per componente e limitando la duplicazione del codice a un massimo del 10\%. La verifica seguirà le metriche MPD\_14, MPD\_15 e MPD\_16 del Piano di Qualifica. & Capitolato C2, PdQ (MPD\_14), PdQ (MPD\_15), PdQ (MPD\_16) \\ 
+\hline
+RQ.4 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (MPD\_13) del Piano di Qualifica. & Capitolato C2, PdQ (MPD\_13) \\ 
+\hline
+RQ.5 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore o uguale all'85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (MPD\_6) definita nel Piano di Qualifica. & PdQ (MPD\_6) \\ 
+\hline
 
 \hline
-RQ.1 & Obbligatorio & Il prodotto software deve superare il 100\% dei test pianificati (unità, integrazione e sistema), come stabilito dalla metrica Superamento dei Test (MP\_13) del \textbf{\glo{Piano di Qualifica}{piano-di-qualifica}}. & PdQ(MP\_13) \\ 
+RQ.6 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
 \hline
-RQ.2 & Obbligatorio & Il codice sorgente prodotto deve essere accompagnato da una suite di test unitari in grado di garantire una Copertura del Codice (Code Coverage) minima del 75\%, come stabilito dalla metrica MP\_12 del Piano di Qualifica. & Capitolato C2, PdQ(MP\_12) \\ 
+RQ.7 & Obbligatorio & Il sistema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
 \hline
-RQ.3 & Obbligatorio & Il codice sorgente prodotto deve garantire alti standard di manutenibilità, mantenendo una complessità ciclomatica minore o uguale a 15, non superando i 5 \textbf{\glo{Code Smell}{code-smell}} per componente e limitando la duplicazione del codice a un massimo del 10\%. La verifica seguirà le metriche MPD\_15, MPD\_16 e MPD\_17 del Piano di Qualifica. & Capitolato C2, PdQ(MPD\_15), PdQ(MPD\_16), PdQ(MPD\_17) \\ 
+RQ.8 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
 \hline
-RQ.4 & Obbligatorio & L'architettura del software deve garantire il disaccoppiamento totale (100\%) dei prompt destinati ai modelli linguistici dalla logica di backend. La verifica di tale requisito è associata alla metrica Prompt Isolation (MPD\_14) del Piano di Qualifica. & Capitolato C2, PdQ(MPD\_14) \\ 
+RQ.9 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
 \hline
-RQ.5 & Obbligatorio & Il sistema deve garantire un'accuratezza delle risposte fornite dagli agenti AI (report generati, individuazione vulnerabilità) maggiore o uguale all'85\%. Tale parametro deve essere valutato secondo la metrica di Accuratezza delle Risposte AI (MPD\_6) definita nel Piano di Qualifica. & PdQ(MPD\_6) \\ 
+RQ.10 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
 \hline
-RQ.6 & Obbligatorio & Il tempo di risposta per l'esecuzione e l'emissione dell'output da parte di un singolo agente AI non deve superare i 5 minuti. La misurazione deve rispettare la metrica Tempo di Risposta dell'Agente (MPD\_12) definita nel Piano di Qualifica. & UC27.2, PdQ(MPD\_12) \\ 
+RQ.11 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
 \hline
-RQ.7 & Obbligatorio & I report di Business (Dev-to-Client) generati dall'Agente Changelog in lingua inglese devono possedere un indice di leggibilità '\textbf{\glo{Flesch Reading Ease}{flesch-reading-ease}}' superiore a 50. La valutazione seguirà la metrica MPD\_7. & Verbale esterno 2026/04/24, PdQ(MPD\_7) \\ 
+RQ.12 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
 \hline
-RQ.8 & Desiderabile & Il sistema deve essere in grado di gestire e mitigare con successo il 100\% delle eccezioni derivanti dal superamento della soglia dei Token API (Rate Limiting), conformemente alla metrica MPD\_5 del Piano di Qualifica. & Verbale interno 2026/06/02, PdQ(MPD\_5) \\ 
+RQ.13 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
 \hline
-RQ.9 & Desiderabile & Il processo di verifica delle credenziali e autenticazione non deve superare i 2 secondi, conformemente alla metrica Tempo di Autenticazione (MPD\_13). & UC4, PdQ(MPD\_13) \\ 
+RQ.14 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
 \hline
-RQ.10 & Obbligatorio & Il tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema non deve superare i 2 secondi. La misurazione deve rispettare la metrica Tempo di Risposta Interfaccia (MPD\_11). & PdQ(MPD\_11) \\ 
+RQ.15 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
 \hline
-RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo a un nuovo utente di apprenderne le funzionalità in un tempo minore o uguale a 30 minuti, in conformità con la metrica Tempo di Apprendimento (MPD\_9). & PdQ(MPD\_9) \\ 
+RQ.16 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
+\hline
+RQ.17 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
 \hline
 
     \caption{Requisiti qualitativi}
@@ -3524,47 +3605,21 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     \hline
     \endhead
 
-    RV.1 & Obbligatorio & Gli agenti devono essere evocati da un \textbf{Orchestratore} che deve essere sviluppato internamente al progetto. La sua logica di smistamento delle richieste deve essere puramente deterministica e non deve basarsi su agenti o modelli \textit{LLM}. & Verbale esterno 2026/06/08 \\
+    RV.1 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
     \hline
-    RV.2 & Obbligatorio & Il progetto non deve prevedere l’addestramento di nuovi modelli, ma l’integrazione di modelli o servizi tramite API. & Verbale esterno 2026/03/23 \\
+    RV.2 & Obbligatorio & Il prodotto deve essere sviluppato ed eseguito come un'applicazione Web che deve essere compatibile ed eseguibile senza anomalie grafiche sulle versioni più recenti dei principali browser (Google Chrome v145 o superiore, Mozilla Firefox v145 o superiore, Microsoft Edge v145 o superiore). & Capitolato C2 \\
     \hline
-    RV.3 & Obbligatorio & Il sistema deve poter operare sui Repository di esempio e sul codice reso disponibile dal Proponente per i test. & Verbale esterno 2026/03/23 \\
+    RV.3 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript, utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.4 & Obbligatorio & Il sistema deve poter operare a pieno anche su Repository privati, oltre a quelli pubblici. & Verbale esterno 2026/06/08 \\
+    RV.4 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework \textit{\glo{NestJS}{nestjs}}. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.5 & Obbligatorio & Il prodotto deve essere sviluppato ed eseguito come un'applicazione Web che deve essere compatibile ed eseguibile senza anomalie grafiche sulle versioni più recenti dei principali browser (Google Chrome v145 o superiore, Mozilla Firefox v145 o superiore, Microsoft Edge v145 o superiore). & Capitolato C2 \\
+    RV.5 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework \textbf{\glo{LangGraph}{langgraph}}. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.6 & Desiderabile & Il sistema dovrebbe prevedere un meccanismo di limitazione di utilizzo a livello di configurazione per tutelare il budget API. &  Verbale interno 2026/06/02 \\
+    RV.6 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su \textit{\glo{MongoDB}{mongodb}} per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
     \hline
-    RV.7 & Obbligatorio & Il sistema deve supportare e garantire l'analisi per Repository contenenti codice sorgente scritto nei linguaggi TypeScript, JavaScript e Python. &  Verbale esterno 2026/06/03 \\
+    RV.7 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da \textit{\glo{AWS Bedrock}{aws-bedrock}}. &  Verbale interno 2026/06/02 \\
     \hline
-    RV.8 & Obbligatorio & Il sistema supporta e garantisce la corretta elaborazione esclusivamente per Repository e sistemi di Task Management in cui il testo in linguaggio naturale è redatto in lingua inglese. &  Verbale esterno 2026/06/03 \\
-    \hline
-    RV.9 & Obbligatorio & L'interfaccia utente (frontend) del sistema deve essere sviluppata in linguaggio TypeScript , utilizzando la libreria React. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.10 & Obbligatorio & L'architettura backend del sistema deve essere sviluppata in linguaggio TypeScript avvalendosi del framework \textit{\glo{NestJS}{nestjs}}. &  Verbale interno 2026/06/02 \\
-    \hline
-    RV.11 & Obbligatorio & Il sistema ad agenti IA deve essere sviluppato utilizzando il linguaggio Python e supportato dal framework \textbf{\glo{LangGraph}{langgraph}}. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.12 & Obbligatorio & Il sistema deve utilizzare un database non relazionale basato su \textit{\glo{MongoDB}{mongodb}} per la persistenza dei dati. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.13 & Obbligatorio & Il sistema deve interfacciarsi con i Large Language Model (LLM) tramite i servizi cloud messi a disposizione da \textit{\glo{AWS Bedrock}{aws-bedrock}}. &  Verbale interno 2026/06/02 \\
-    \hline
-    RV.14 & Obbligatorio & Il sistema deve supportare nativamente l'integrazione con la piattaforma di versionamento GitHub e il suo strumento di tracciamento, GitHub Issues. &  Capitolato C2, Verbale interno 2026/06/02 \\
-    \hline
-    RV.15 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
-    \hline
-    RV.16 & Obbligatorio & Il team deve redigere le specifiche di tutte le API sviluppate nel progetto seguendo lo standard Swagger API. &  Capitolato C2 \\
-    \hline
-    RV.17 & Obbligatorio & Il prodotto finale deve essere accompagnato da un Manuale Utente per l'utilizzo del sistema. &  Capitolato C2 \\
-    \hline
-    RV.18 & Obbligatorio & Il team deve redigere un documento di Specifiche Tecniche che descriva l'architettura e le scelte progettuali interne. &  Capitolato C2 \\
-    \hline
-    RV.19 & Obbligatorio & Il team deve fornire un sistema, o in alternativa un formato documentale, per il tracciamento formale dei difetti (Bug Reporting). &  Capitolato C2 \\
-    \hline
-    RV.20 & Obbligatorio & L'intero codice sorgente del prodotto deve essere consegnato, versionato e mantenuto utilizzando un repository remoto basato su tecnologia Git. &  Capitolato C2 \\
-    \hline\pagebreak
-    RV.21 & Obbligatorio & Il team di progetto deve redigere il documento di Schema Design relativo alla base dati non relazionale (MongoDB). &  Capitolato C2 \\
+    RV.8 & Obbligatorio & L'architettura infrastrutturale e l'hosting del sistema devono essere basati sui servizi cloud distribuiti dalla piattaforma Amazon Web Services (AWS). &  Capitolato C2 \\
     \hline
 
     \caption{Requisiti di vincolo}
@@ -3572,7 +3627,7 @@ RQ.11 & Desiderabile & Il sistema deve garantire un'alta usabilità, permettendo
     
 \end{xltabular}
 \endgroup
-
+\newpage
 \subsection{Requisiti di sicurezza}
 
 \begingroup
@@ -3640,9 +3695,12 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \hyperref[uc:1.3]{UC1.3} & RF.3 \\ \hline
 \hyperref[uc:1.4]{UC1.4} & RF.3 \\ \hline
 \hyperref[uc:1.5]{UC1.5} & RF.4 \\ \hline
+\hyperref[uc:1.5.1]{UC1.5.1} & RF.4 \\ \hline
+\hyperref[uc:1.5.2]{UC1.5.2} & RF.4 \\ \hline
+\hyperref[uc:1.5.3]{UC1.5.3} & RF.4 \\ \hline
 \hyperref[uc:2]{UC2} & RF.5 \\ \hline
 \hyperref[uc:3]{UC3} & RF.6 \\ \hline
-\hyperref[uc:4]{UC4} & RF.7, RQ.9 \\ \hline
+\hyperref[uc:4]{UC4} & RF.7, RF.110 \\ \hline
 \hyperref[uc:4.1]{UC4.1} & RF.8 \\ \hline
 \hyperref[uc:4.2]{UC4.2} & RF.8 \\ \hline
 \hyperref[uc:5]{UC5} & RF.9 \\ \hline
@@ -3692,42 +3750,42 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \hyperref[uc:24.1.3]{UC24.1.3} & RF.52 \\ \hline
 \hyperref[uc:24.1.4]{UC24.1.4} & RF.52 \\ \hline
 \hyperref[uc:25]{UC25} & RF.53 \\ \hline
-\hyperref[uc:26]{UC26} & RF.53 \\ \hline
-\hyperref[uc:26.1]{UC26.1} & RF.54 \\ \hline
-\hyperref[uc:26.1.1]{UC26.1.1} & RF.55 \\ \hline
-\hyperref[uc:26.1.2]{UC26.1.2} & RF.56 \\ \hline
-\hyperref[uc:26.1.3]{UC26.1.3} & RF.56 \\ \hline
-\hyperref[uc:26.1.4]{UC26.1.4} & RF.57 \\ \hline
-\hyperref[uc:26.1.5]{UC26.1.5} & RF.58 \\ \hline
-\hyperref[uc:26.1.6]{UC26.1.6} & RF.58 \\ \hline
-\hyperref[uc:26.2]{UC26.2} & RF.54 \\ \hline
-\hyperref[uc:26.2.1]{UC26.2.1} & RF.59 \\ \hline
-\hyperref[uc:26.2.2]{UC26.2.2} & RF.60 \\ \hline
-\hyperref[uc:26.2.2.1]{UC26.2.2.1} & RF.60 \\ \hline
-\hyperref[uc:26.2.2.1.1]{UC26.2.2.1.1} & RF.61 \\ \hline
-\hyperref[uc:26.2.2.1.2]{UC26.2.2.1.2} & RF.61 \\ \hline
-\hyperref[uc:26.2.2.1.3]{UC26.2.2.1.3} & RF.62 \\ \hline
-\hyperref[uc:26.2.3]{UC26.2.3} & RF.62 \\ \hline
-\hyperref[uc:26.2.4]{UC26.2.4} & RF.63 \\ \hline
-\hyperref[uc:26.2.5]{UC26.2.5} & RF.64 \\ \hline
-\hyperref[uc:27]{UC27} & RF.65 \\ \hline
-\hyperref[uc:27.1]{UC27.1} & RF.66 \\ \hline
-\hyperref[uc:27.2]{UC27.2} & RF.67, RQ.6 \\ \hline
-\hyperref[uc:27.3]{UC27.3} & RF.68 \\ \hline
-\hyperref[uc:27.4]{UC27.4} & RF.69 \\ \hline
-\hyperref[uc:27.5]{UC27.5} & RF.70 \\ \hline
-\hyperref[uc:27.6]{UC27.6} & RF.71 \\ \hline
-\hyperref[uc:27.7]{UC27.7} & RF.72 \\ \hline
-\hyperref[uc:28]{UC28} & RF.73 \\ \hline
-\hyperref[uc:29]{UC29} & RF.74 \\ \hline
-\hyperref[uc:30]{UC30} & RF.75 \\ \hline
-\hyperref[uc:31]{UC31} & RF.76 \\ \hline
-\hyperref[uc:32]{UC32} & RF.77 \\ \hline
-\hyperref[uc:33]{UC33} & RF.78 \\ \hline
-\hyperref[uc:34]{UC34} & RF.79 \\ \hline
-\hyperref[uc:34.1]{UC34.1} & RF.79 \\ \hline
-\hyperref[uc:34.2]{UC34.2} & RF.80 \\ \hline
-\hyperref[uc:34.3]{UC34.3} & RF.81 \\ \hline
+\hyperref[uc:25.1]{UC25.1} & RF.54 \\ \hline
+\hyperref[uc:25.1.1]{UC25.1.1} & RF.55 \\ \hline
+\hyperref[uc:25.1.2]{UC25.1.2} & RF.56 \\ \hline
+\hyperref[uc:25.1.3]{UC25.1.3} & RF.56 \\ \hline
+\hyperref[uc:25.1.4]{UC25.1.4} & RF.57 \\ \hline
+\hyperref[uc:25.1.5]{UC25.1.5} & RF.58 \\ \hline
+\hyperref[uc:25.1.6]{UC25.1.6} & RF.58 \\ \hline
+\hyperref[uc:25.2]{UC25.2} & RF.54 \\ \hline
+\hyperref[uc:25.2.1]{UC25.2.1} & RF.59 \\ \hline
+\hyperref[uc:25.2.2]{UC25.2.2} & RF.60 \\ \hline
+\hyperref[uc:25.2.2.1]{UC25.2.2.1} & RF.60 \\ \hline
+\hyperref[uc:25.2.2.1.1]{UC25.2.2.1.1} & RF.61 \\ \hline
+\hyperref[uc:25.2.2.1.2]{UC25.2.2.1.2} & RF.61 \\ \hline
+\hyperref[uc:25.2.2.1.3]{UC25.2.2.1.3} & RF.62 \\ \hline
+\hyperref[uc:25.2.3]{UC25.2.3} & RF.62 \\ \hline
+\hyperref[uc:25.2.4]{UC25.2.4} & RF.63 \\ \hline
+\hyperref[uc:25.2.5]{UC25.2.5} & RF.64 \\ \hline
+\hyperref[uc:26]{UC26} & RF.65 \\ \hline
+\hyperref[uc:26.1]{UC26.1} & RF.66, RF.109 \\ \hline
+\hyperref[uc:26.2]{UC26.2} & RF.67, RF.107 \\ \hline
+\hyperref[uc:26.3]{UC26.3} & RF.68 \\ \hline
+\hyperref[uc:26.4]{UC26.4} & RF.69 \\ \hline
+\hyperref[uc:26.5]{UC26.5} & RF.70 \\ \hline
+\hyperref[uc:26.6]{UC26.6} & RF.71 \\ \hline
+\hyperref[uc:26.7]{UC26.7} & RF.72 \\ \hline
+\hyperref[uc:27]{UC27} & RF.73 \\ \hline
+\hyperref[uc:28]{UC28} & RF.74 \\ \hline
+\hyperref[uc:29]{UC29} & RF.75 \\ \hline
+\hyperref[uc:30]{UC30} & RF.76 \\ \hline
+\hyperref[uc:31]{UC31} & RF.77 \\ \hline
+\hyperref[uc:32]{UC32} & RF.78 \\ \hline
+\hyperref[uc:33]{UC33} & RF.79 \\ \hline
+\hyperref[uc:33.1]{UC33.1} & RF.79 \\ \hline
+\hyperref[uc:33.2]{UC33.2} & RF.80 \\ \hline
+\hyperref[uc:33.3]{UC33.3} & RF.81 \\ \hline
+\hyperref[uc:34]{UC34} & RF.82 \\ \hline
 \hyperref[uc:35]{UC35} & RF.82 \\ \hline
 \hyperref[uc:36]{UC36} & RF.83, RF.84 \\ \hline
 \hyperref[uc:37]{UC37} & RF.85 \\ \hline
@@ -3739,27 +3797,22 @@ Questa sezione illustra il tracciamento bidirezionale tra le fonti originali (Ca
 \hyperref[uc:42]{UC42} & RF.99 \\ \hline
 \hyperref[uc:43]{UC43} & RF.100, RF.101 \\ \hline
 \hyperref[uc:44]{UC44} & RF.102 \\ \hline
-\hyperref[uc:45]{UC45} & RF.103, RF.104 \\ \hline
+\hyperref[uc:45]{UC45} & RF.103, RF.104, RF.108 \\ \hline
 \hyperref[uc:46]{UC46} & RF.105 \\ \hline
-Capitolato C2 & RQ.2, RQ.3, RQ.4, RS.5, RV.5, RV.9, RV.11, RV.12, RV.14, RV.15, RV.16, RV.17, RV.18, RV.19, RV.20, RV.21 \\ \hline
-PdQ(MP 12) & RQ.2 \\ \hline
-PdQ(MP 13) & RQ.1 \\ \hline
-PdQ(MPD 11) & RQ.10 \\ \hline
-PdQ(MPD 12) & RQ.6 \\ \hline
-PdQ(MPD 13) & RQ.9 \\ \hline
-PdQ(MPD 14) & RQ.4 \\ \hline
-PdQ(MPD 15) & RQ.3 \\ \hline
-PdQ(MPD 16) & RQ.3 \\ \hline
-PdQ(MPD 17) & RQ.3 \\ \hline
-PdQ(MPD 5) & RQ.8 \\ \hline
-PdQ(MPD 6) & RQ.5 \\ \hline
-PdQ(MPD 7) & RQ.7 \\ \hline
-PdQ(MPD 9) & RQ.11 \\ \hline
-Verbale esterno 2026/03/23 & RS.3, RV.2, RV.3 \\ \hline
-Verbale esterno 2026/04/24 & RQ.7 \\ \hline
-Verbale esterno 2026/06/03 & RV.7, RV.8 \\ \hline
-Verbale esterno 2026/06/08 & RV.1, RV.4 \\ \hline
-Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14 \\ \hline
+Capitolato C2 & RQ.2, RQ.3, RQ.4, RQ.11, RQ.12, RQ.13, RQ.14, RQ.15, RQ.16, RQ.17, RS.5, RV.2, RV.3, RV.5, RV.6, RV.8 \\ \hline
+PdQ (MP\_12) & RQ.2 \\ \hline
+PdQ (MP\_13) & RQ.1 \\ \hline
+PdQ (MPD\_13) & RQ.4 \\ \hline
+PdQ (MPD\_14) & RQ.3 \\ \hline
+PdQ (MPD\_15) & RQ.3 \\ \hline
+PdQ (MPD\_16) & RQ.3 \\ \hline
+PdQ (MPD\_6) & RQ.5 \\ \hline
+
+Verbale esterno 2026/03/23 & RQ.6, RS.3, RV.1 \\ \hline
+Verbale esterno 2026/04/24 & RF.111 \\ \hline
+Verbale esterno 2026/06/03 & RQ.9, RQ.10 \\ \hline
+Verbale esterno 2026/06/08 & RF.106, RQ.7 \\ \hline
+Verbale interno 2026/06/02 & RQ.8, RQ.11, RV.3, RV.4, RV.5, RV.6, RV.7 \\ \hline
 
 \end{longtable}
 
@@ -3783,13 +3836,13 @@ Verbale interno 2026/06/02 & RQ.8, RV.6, RV.9, RV.10, RV.11, RV.12, RV.13, RV.14
 
 \hline
 \caption{Tracciamento Requisiti - Fonte}
-\label{tab:tracciamento_r-f} \\         
+\label{tab:tracciamento_r-f} \\          
 \endlastfoot
 
 RF.1 & \hyperref[uc:1]{UC1} \\ \hline
 RF.2 & \hyperref[uc:1.1]{UC1.1}, \hyperref[uc:1.2]{UC1.2} \\ \hline
 RF.3 & \hyperref[uc:1.3]{UC1.3}, \hyperref[uc:1.4]{UC1.4} \\ \hline
-RF.4 & \hyperref[uc:1.5]{UC1.5} \\ \hline
+RF.4 & \hyperref[uc:1.5]{UC1.5}, \hyperref[uc:1.5.1]{UC1.5.1}, \hyperref[uc:1.5.2]{UC1.5.2}, \hyperref[uc:1.5.3]{UC1.5.3} \\ \hline
 RF.5 & \hyperref[uc:2]{UC2} \\ \hline
 RF.6 & \hyperref[uc:3]{UC3} \\ \hline
 RF.7 & \hyperref[uc:4]{UC4} \\ \hline
@@ -3838,36 +3891,36 @@ RF.49 & \hyperref[uc:24]{UC24}, \hyperref[uc:24.1]{UC24.1} \\ \hline
 RF.50 & \hyperref[uc:24.1]{UC24.1}, \hyperref[uc:24.1.1]{UC24.1.1} \\ \hline
 RF.51 & \hyperref[uc:24.1.2]{UC24.1.2} \\ \hline
 RF.52 & \hyperref[uc:24.1.3]{UC24.1.3}, \hyperref[uc:24.1.4]{UC24.1.4} \\ \hline
-RF.53 & \hyperref[uc:25]{UC25}, \hyperref[uc:26]{UC26} \\ \hline
-RF.54 & \hyperref[uc:26.1]{UC26.1}, \hyperref[uc:26.2]{UC26.2} \\ \hline
-RF.55 & \hyperref[uc:26.1.1]{UC26.1.1} \\ \hline
-RF.56 & \hyperref[uc:26.1.2]{UC26.1.2}, \hyperref[uc:26.1.3]{UC26.1.3} \\ \hline
-RF.57 & \hyperref[uc:26.1.4]{UC26.1.4} \\ \hline
-RF.58 & \hyperref[uc:26.1.5]{UC26.1.5}, \hyperref[uc:26.1.6]{UC26.1.6} \\ \hline
-RF.59 & \hyperref[uc:26.2.1]{UC26.2.1} \\ \hline
-RF.60 & \hyperref[uc:26.2.2]{UC26.2.2}, \hyperref[uc:26.2.2.1]{UC26.2.2.1} \\ \hline
-RF.61 & \hyperref[uc:26.2.2.1.1]{UC26.2.2.1.1}, \hyperref[uc:26.2.2.1.2]{UC26.2.2.1.2} \\ \hline
-RF.62 & \hyperref[uc:26.2.2.1.3]{UC26.2.2.1.3}, \hyperref[uc:26.2.3]{UC26.2.3} \\ \hline
-RF.63 & \hyperref[uc:26.2.4]{UC26.2.4} \\ \hline
-RF.64 & \hyperref[uc:26.2.5]{UC26.2.5} \\ \hline
-RF.65 & \hyperref[uc:27]{UC27} \\ \hline
-RF.66 & \hyperref[uc:27.1]{UC27.1} \\ \hline
-RF.67 & \hyperref[uc:27.2]{UC27.2} \\ \hline
-RF.68 & \hyperref[uc:27.3]{UC27.3} \\ \hline
-RF.69 & \hyperref[uc:27.4]{UC27.4} \\ \hline
-RF.70 & \hyperref[uc:27.5]{UC27.5} \\ \hline
-RF.71 & \hyperref[uc:27.6]{UC27.6} \\ \hline
-RF.72 & \hyperref[uc:27.7]{UC27.7} \\ \hline
-RF.73 & \hyperref[uc:28]{UC28} \\ \hline
-RF.74 & \hyperref[uc:29]{UC29} \\ \hline
-RF.75 & \hyperref[uc:30]{UC30} \\ \hline
-RF.76 & \hyperref[uc:31]{UC31} \\ \hline
-RF.77 & \hyperref[uc:32]{UC32} \\ \hline
-RF.78 & \hyperref[uc:33]{UC33} \\ \hline
-RF.79 & \hyperref[uc:34]{UC34}, \hyperref[uc:34.1]{UC34.1} \\ \hline
-RF.80 & \hyperref[uc:34.2]{UC34.2} \\ \hline
-RF.81 & \hyperref[uc:34.3]{UC34.3} \\ \hline
-RF.82 & \hyperref[uc:35]{UC35} \\ \hline
+RF.53 & \hyperref[uc:25]{UC25} \\ \hline
+RF.54 & \hyperref[uc:25.1]{UC25.1}, \hyperref[uc:25.2]{UC25.2} \\ \hline
+RF.55 & \hyperref[uc:25.1.1]{UC25.1.1} \\ \hline
+RF.56 & \hyperref[uc:25.1.2]{UC25.1.2}, \hyperref[uc:25.1.3]{UC25.1.3} \\ \hline
+RF.57 & \hyperref[uc:25.1.4]{UC25.1.4} \\ \hline
+RF.58 & \hyperref[uc:25.1.5]{UC25.1.5}, \hyperref[uc:25.1.6]{UC25.1.6} \\ \hline
+RF.59 & \hyperref[uc:25.2.1]{UC25.2.1} \\ \hline
+RF.60 & \hyperref[uc:25.2.2]{UC25.2.2}, \hyperref[uc:25.2.2.1]{UC25.2.2.1} \\ \hline
+RF.61 & \hyperref[uc:25.2.2.1.1]{UC25.2.2.1.1}, \hyperref[uc:25.2.2.1.2]{UC25.2.2.1.2} \\ \hline
+RF.62 & \hyperref[uc:25.2.2.1.3]{UC25.2.2.1.3}, \hyperref[uc:25.2.3]{UC25.2.3} \\ \hline
+RF.63 & \hyperref[uc:25.2.4]{UC25.2.4} \\ \hline
+RF.64 & \hyperref[uc:25.2.5]{UC25.2.5} \\ \hline
+RF.65 & \hyperref[uc:26]{UC26} \\ \hline
+RF.66 & \hyperref[uc:26.1]{UC26.1} \\ \hline
+RF.67 & \hyperref[uc:26.2]{UC26.2} \\ \hline
+RF.68 & \hyperref[uc:26.3]{UC26.3} \\ \hline
+RF.69 & \hyperref[uc:26.4]{UC26.4} \\ \hline
+RF.70 & \hyperref[uc:26.5]{UC26.5} \\ \hline
+RF.71 & \hyperref[uc:26.6]{UC26.6} \\ \hline
+RF.72 & \hyperref[uc:26.7]{UC26.7} \\ \hline
+RF.73 & \hyperref[uc:27]{UC27} \\ \hline
+RF.74 & \hyperref[uc:28]{UC28} \\ \hline
+RF.75 & \hyperref[uc:29]{UC29} \\ \hline
+RF.76 & \hyperref[uc:30]{UC30} \\ \hline
+RF.77 & \hyperref[uc:31]{UC31} \\ \hline
+RF.78 & \hyperref[uc:32]{UC32} \\ \hline
+RF.79 & \hyperref[uc:33]{UC33}, \hyperref[uc:33.1]{UC33.1} \\ \hline
+RF.80 & \hyperref[uc:33.2]{UC33.2} \\ \hline
+RF.81 & \hyperref[uc:33.3]{UC33.3} \\ \hline
+RF.82 & \hyperref[uc:34]{UC34}, \hyperref[uc:35]{UC35} \\ \hline
 RF.83 & \hyperref[uc:36]{UC36} \\ \hline
 RF.84 & \hyperref[uc:36]{UC36} \\ \hline
 RF.85 & \hyperref[uc:37]{UC37} \\ \hline
@@ -3891,38 +3944,38 @@ RF.102 & \hyperref[uc:44]{UC44} \\ \hline
 RF.103 & \hyperref[uc:45]{UC45} \\ \hline
 RF.104 & \hyperref[uc:45]{UC45} \\ \hline
 RF.105 & \hyperref[uc:46]{UC46} \\ \hline
-RQ.1 & PdQ(MP 13) \\ \hline
-RQ.2 & Capitolato C2, PdQ(MP 12) \\ \hline
-RQ.3 & Capitolato C2, PdQ(MPD 15), PdQ(MPD 16), PdQ(MPD 17) \\ \hline
-RQ.4 & Capitolato C2, PdQ(MPD 14) \\ \hline
-RQ.5 & PdQ(MPD 6) \\ \hline
-RQ.6 & \hyperref[uc:27.2]{UC27.2}, PdQ(MPD 12) \\ \hline
-RQ.7 & Verbale esterno 2026/04/24, PdQ(MPD 7) \\ \hline
-RQ.8 & Verbale interno 2026/06/02, PdQ(MPD 5) \\ \hline
-RQ.9 & \hyperref[uc:4]{UC4}, PdQ(MPD 13) \\ \hline
-RQ.10 & Verbale esterno 2026/04/24, PdQ(MPD 11) \\ \hline
-RQ.11 & PdQ(MPD 9) \\ \hline
-RV.1 & Verbale esterno 2026/06/08 \\ \hline
-RV.2 & Verbale esterno 2026/03/23 \\ \hline
-RV.3 & Verbale esterno 2026/03/23 \\ \hline
-RV.4 & Verbale esterno 2026/06/08 \\ \hline
-RV.5 & Capitolato C2 \\ \hline
-RV.6 & Verbale interno 2026/06/02 \\ \hline
-RV.7 & Verbale esterno 2026/06/03 \\ \hline
-RV.8 & Verbale esterno 2026/06/03 \\ \hline
-RV.9 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.10 & Verbale interno 2026/06/02 \\ \hline
-RV.11 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.12 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.13 & Verbale interno 2026/06/02 \\ \hline
-RV.14 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
-RV.15 & Capitolato C2 \\ \hline
-RV.16 & Capitolato C2 \\ \hline
-RV.17 & Capitolato C2 \\ \hline
-RV.18 & Capitolato C2 \\ \hline
-RV.19 & Capitolato C2 \\ \hline
-RV.20 & Capitolato C2 \\ \hline
-RV.21 & Capitolato C2 \\ \hline
+RF.106 & Verbale esterno 2026/06/08 \\ \hline
+RF.107 & \hyperref[uc:26.2]{UC26.2} \\ \hline
+RF.108 & \hyperref[uc:45]{UC45} \\ \hline
+RF.109 & \hyperref[uc:26.1]{UC26.1} \\ \hline
+RF.110 & \hyperref[uc:4]{UC4} \\ \hline
+RF.111 & Verbale esterno 2026/04/24 \\ \hline
+RQ.1 & PdQ (MP\_13) \\ \hline
+RQ.2 & Capitolato C2, PdQ (MP\_12) \\ \hline
+RQ.3 & Capitolato C2, PdQ (MPD\_14), PdQ (MPD\_15), PdQ (MPD\_16) \\ \hline
+RQ.4 & Capitolato C2, PdQ (MPD\_13) \\ \hline
+RQ.5 & PdQ (MPD\_6) \\ \hline
+
+RQ.6 & Verbale esterno 2026/03/23 \\ \hline
+RQ.7 & Verbale esterno 2026/06/08 \\ \hline
+RQ.8 & Verbale interno 2026/06/02 \\ \hline
+RQ.9 & Verbale esterno 2026/06/03 \\ \hline
+RQ.10 & Verbale esterno 2026/06/03 \\ \hline
+RQ.11 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RQ.12 & Capitolato C2 \\ \hline
+RQ.13 & Capitolato C2 \\ \hline
+RQ.14 & Capitolato C2 \\ \hline
+RQ.15 & Capitolato C2 \\ \hline
+RQ.16 & Capitolato C2 \\ \hline
+RQ.17 & Capitolato C2 \\ \hline
+RV.1 & Verbale esterno 2026/03/23 \\ \hline
+RV.2 & Capitolato C2 \\ \hline
+RV.3 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.4 & Verbale interno 2026/06/02 \\ \hline
+RV.5 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.6 & Capitolato C2, Verbale interno 2026/06/02 \\ \hline
+RV.7 & Verbale interno 2026/06/02 \\ \hline
+RV.8 & Capitolato C2 \\ \hline
 RS.1 & \hyperref[uc:1]{UC1} \\ \hline
 RS.2 & \hyperref[uc:6]{UC6} \\ \hline
 RS.3 & Verbale esterno 2026/03/23 \\ \hline
