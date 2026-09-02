@@ -268,6 +268,23 @@ export class TaskProcessor extends WorkerHost {
   // False therefore means someone else moved the Task — cancelled it, or
   // took the claim over — and this invocation's result must be neither
   // applied nor announced.
+  //
+  // The cost of that second meaning, which is real and was not written down
+  // when the token went in: a worker whose lease expired used to be able to
+  // stamp the terminal status anyway, and in doing so it closed out Tasks
+  // whose successor then died. It cannot now. So a Task can end up RUNNING
+  // with nobody left to finish it — A takes the claim, A's lease expires, B
+  // takes over, A completes and is refused here, B is then killed and BullMQ
+  // has already spent its one stalled redelivery. Nothing re-enqueues it, and
+  // maybeEmitBatchCompleted counts a RUNNING Task as active, so batch.completed
+  // never fires for the whole batch either.
+  //
+  // That is the right trade — the write this refuses is exactly the one that
+  // produced two Reports for one Task — and it is not a dead end for the
+  // user, because TasksService.markCancelled does not filter on the token, so
+  // cancelling still works. It is a gap in coverage, not in correctness: what
+  // is missing is a sweep for Tasks left RUNNING past any plausible lease,
+  // which nothing in this codebase does yet.
   private async persistIfStillRunning(
     task: TaskDocument,
     claimToken: string,

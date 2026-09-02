@@ -511,21 +511,47 @@ function readLink(markdown: string, open: number): ParsedLink | null {
 // If it is not complete, there is no way to know what the destination
 // decodes to without decoding it, so it does not survive.
 //
-// What that costs: a relative destination carrying a legitimate reference —
-// `/f&ouml;&ouml;` — loses its link and keeps its text. An agent writing an
-// analysis report has little reason to produce one, and the trade is
-// deliberate: the failure mode is a link that isn't clickable, rather than
-// one that executes.
+// Note what actually carries that below: the `return reference === null` on
+// the relative path, alone. Cutting the string at the reference before
+// running SCHEME reads as the mechanism, and is not: SCHEME is anchored and
+// stops at the first `:`, so if a reference comes before that `:` the `&`
+// blocks the match on the whole string exactly as it does on the prefix, and
+// if it comes after, both forms match the same scheme. Four hundred thousand
+// generated destinations produce no verdict the two spellings disagree on.
+// The slice is kept because it says what the rule means and would start
+// mattering the moment SCHEME stopped being anchored — but it is not what
+// makes the rule hold, and a reader should not have to discover that.
+//
+// What that costs, stated properly, because it used to be stated as just
+// `/f&ouml;&ouml;` and that is the rare half of it: *any* relative
+// destination containing `&amp;` loses its link and keeps its text — a query
+// string (`/search?a=1&amp;b=2`), an anchor (`#a&amp;b`), a filename
+// (`./R&amp;D.md`). Absolute http(s) destinations are unaffected, since the
+// scheme is complete in the clear before the reference, so the damage is
+// confined to relative links — but `&amp;` in a relative link is far more
+// likely in a report than an umlaut entity. The trade is still the right way
+// round (the failure mode is a link that isn't clickable rather than one
+// that executes) and is worth knowing at its real size.
 function isSafeDestination(destination: string): boolean {
   const normalized = destination
     // Angle brackets go before the scheme check, so that CommonMark's
     // pointy-bracket destination form is judged by its scheme rather than
     // mistaken for a relative path: `[x](<javascript:alert(1)>)` starts with
     // `<`, which no scheme regex matches, and used to be waved through as
-    // "relative" for that reason alone. Dropping them can only tighten the
-    // verdict — it shortens what precedes the first `:`, so a destination
-    // that was accepted as relative may become a rejected scheme, and one
-    // already carrying an allowed scheme keeps it.
+    // "relative" for that reason alone.
+    //
+    // This used to claim the removal "can only tighten the verdict, because
+    // it shortens what precedes the first `:`". It does not only shorten: it
+    // also *joins* what sits on either side. `htt<p://ok&amp;x` is rejected
+    // without the removal (no scheme, and a reference present) and accepted
+    // with it, because the fragments weld into `http://ok&amp;x`. That is
+    // harmless today only because the renderer does not drop angle brackets
+    // — it percent-encodes them, so `htt%3Cp:` is a scheme no browser will
+    // execute — which is a different reason from the one written here
+    // before, and a weaker one. Anything that later makes the two views
+    // agree (percent-decoding, a renderer that normalizes) would turn this
+    // into a hole, so the removal earns its place from the pointy-bracket
+    // form it exists for, not from a monotonicity it does not have.
     .replace(/[<>]/g, '')
     // eslint-disable-next-line no-control-regex -- the point is the control characters
     .replace(/[\u0000-\u001F\u007F]/g, '')
