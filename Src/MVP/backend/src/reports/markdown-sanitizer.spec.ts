@@ -354,11 +354,20 @@ describe('sanitizeMarkdown — links hiding inside another destination', () => {
     );
   });
 
-  it('still hides a javascript: label link behind a safe outer destination', () => {
-    // The "first `]` wins" rule makes the scanner latch onto the inner,
-    // dangerous link rather than the outer one — the pre-existing behaviour
-    // this fix had to avoid disturbing.
-    expect(sanitizeMarkdown('[![img](javascript:1)](x)')).toBe('![img](x)');
+  it('strips a javascript: image inside a label without taking the outer link with it', () => {
+    // This used to assert `![img](x)`, which was the "first `]` wins" reading:
+    // the scanner took `[![img]` for the label and `javascript:1` for the
+    // destination, dropped it, and left the outer `](x)` to recombine with the
+    // `!` in front. Now that the label's brackets are matched, the string is
+    // read the way a parser reads it — an outer link to `x` whose label holds
+    // an image — and each half is judged on its own: the outer destination is
+    // relative and stays, the image's destination is not and goes, its alt
+    // text surviving as the same plain text every other rejected link leaves
+    // behind.
+    expect(sanitizeMarkdown('[![img](javascript:1)](x)')).toBe('[img](x)');
+    expect(
+      sanitizeMarkdown('[![img](javascript:alert(1))](https://ok.com)'),
+    ).toBe('[img](https://ok.com)');
   });
 });
 
@@ -474,5 +483,190 @@ describe('sanitizeMarkdown — autolinks are destinations too', () => {
     expect(sanitizeMarkdown('[a](./ok <https://e.example> )')).toBe(
       '[a](./ok <https://e.example> )',
     );
+  });
+});
+
+// A destination is only sanitized if the scanner ever reads it as one. Every
+// test below is a string where it did not, found by running the sanitized
+// output back through a real CommonMark parser instead of by inspecting it.
+// They are grouped by how the string got past, because the payloads are
+// examples of those routes and not the definition of them.
+describe('sanitizeMarkdown — routes that used to skip the scheme check', () => {
+  describe('the label is examined too', () => {
+    // An autolink is a complete link that contains no `]`, so "the label ends
+    // at the first `]`, therefore it cannot hold a link" was true of
+    // `[x](y)` and false of `<javascript:...>`. Once the HTML strip stopped
+    // deleting autolinks, the label became a place to park one.
+    it('removes a javascript: autolink sitting in a label', () => {
+      expect(sanitizeMarkdown('[<javascript:alert(1)>](https://ok.com)')).toBe(
+        '[](https://ok.com)',
+      );
+    });
+
+    it('removes a data: autolink from a label, keeping the words around it', () => {
+      expect(
+        sanitizeMarkdown(
+          '[see <data:text/html,PHN2Zz4=> here](https://ok.com)',
+        ),
+      ).toBe('[see  here](https://ok.com)');
+    });
+
+    it('removes an autolink from the label of a link that is itself rejected', () => {
+      // Both halves are unsafe here: the outer destination goes, and the
+      // label it leaves behind must not still carry the autolink.
+      expect(sanitizeMarkdown('[<javascript:alert(1)>](javascript:evil)')).toBe(
+        '',
+      );
+    });
+
+    it('keeps a safe autolink in a label untouched', () => {
+      expect(
+        sanitizeMarkdown('[see <https://ok.com> here](https://ok.com)'),
+      ).toBe('[see <https://ok.com> here](https://ok.com)');
+    });
+  });
+
+  describe("the label's brackets are matched, not scanned to the first `]`", () => {
+    // These need no encoding at all. A footnote marker or an array index in
+    // the label was enough: the first `]` was not followed by `(`, readLink
+    // gave up, and the whole string — destination included — was copied out
+    // without any part of it being judged.
+    it('rejects a data: destination behind a bracketed label', () => {
+      expect(sanitizeMarkdown('[nota [2]](data:text/html,x)')).toBe('nota [2]');
+    });
+
+    it('rejects a javascript: destination behind a footnote-style label', () => {
+      expect(sanitizeMarkdown('[see [1] here](javascript:alert(1))')).toBe(
+        'see [1] here',
+      );
+    });
+
+    it('rejects the outer destination while keeping a safe inner link', () => {
+      expect(
+        sanitizeMarkdown('[a [b](https://ok.com) c](javascript:alert(1))'),
+      ).toBe('a [b](https://ok.com) c');
+    });
+
+    it('keeps a bracketed label whose destination is safe', () => {
+      // The counterweight: matching brackets must not cost a legitimate link.
+      expect(sanitizeMarkdown('[nota [2]](https://ok.com)')).toBe(
+        '[nota [2]](https://ok.com)',
+      );
+      // The citation form keeps its link and its text; the bracket that
+      // opens nothing is escaped rather than left able to pair with whatever
+      // follows, so the string changes by one backslash and renders the same.
+      expect(sanitizeMarkdown('[[1](https://ref.example)]')).toBe(
+        '[\\[1](https://ref.example)]',
+      );
+    });
+  });
+
+  describe('nothing recombines in the output', () => {
+    // Rejecting a link can leave a stray `[` in front of a `](destination)`
+    // that the scan had already walked past, and the two halves then read as
+    // a link nobody judged. The scan runs until its own output stops
+    // changing, and a label's unmatched brackets are escaped so they cannot
+    // open anything.
+    it('does not leave a live link behind after rejecting an inner one', () => {
+      expect(
+        sanitizeMarkdown('[[lbl](javascript&#106;x)](javascript:alert(1))'),
+      ).toBe('lbl');
+    });
+
+    it('does not leave one behind when the stray bracket comes from a destination', () => {
+      expect(
+        sanitizeMarkdown('[a](https://ok.example [[)](data:alert(1)) )'),
+      ).toBe('a](data:alert(1)) )');
+    });
+
+    it('escapes a label bracket that nothing closes', () => {
+      // `\[` is a literal bracket, so the text survives and the opener does
+      // not.
+      expect(
+        sanitizeMarkdown('[[![alt](<data:alert(1))](x)](javascript:alert(1))'),
+      ).not.toMatch(/\]\(javascript:/);
+    });
+
+    it('leaves balanced brackets in a destination alone', () => {
+      expect(sanitizeMarkdown('[x](https://ex.com/arr[0][1])')).toBe(
+        '[x](https://ex.com/arr[0][1])',
+      );
+    });
+  });
+
+  describe('character references of any length', () => {
+    // The regex used to stop at 8 decimal and 6 hexadecimal digits. A parser
+    // does not: markdown-it falls through to an HTML5 decoder that accepts
+    // any number of leading zeros, so padding walked straight past the check.
+    it('rejects a decimal reference longer than the old bound', () => {
+      expect(sanitizeMarkdown('[x](&#000000106;avascript:alert(1))')).toBe('x');
+    });
+
+    it('rejects a hexadecimal reference longer than the old bound', () => {
+      expect(sanitizeMarkdown('[x](&#x000006a;avascript:alert(1))')).toBe('x');
+    });
+
+    it('rejects a padded data: reference the same way', () => {
+      expect(sanitizeMarkdown('[x](&#000000100;ata:text/html,PHN2Zz4=)')).toBe(
+        'x',
+      );
+    });
+
+    it('rejects a padded reference reached through the pointy-bracket form', () => {
+      expect(sanitizeMarkdown('[x](<&#000000106;avascript:alert(1)>)')).toBe(
+        'x',
+      );
+    });
+
+    it('still keeps a query string, however long its ampersands', () => {
+      // The counterweight to an unbounded quantifier: `&amp;` after a scheme
+      // in the clear is still a legitimate URL.
+      expect(
+        sanitizeMarkdown('[q](https://ok.com/s?a=1&amp;b=2&amp;c=3)'),
+      ).toBe('[q](https://ok.com/s?a=1&amp;b=2&amp;c=3)');
+    });
+  });
+
+  describe('deeply nested input is bounded', () => {
+    // The re-scan spends a stack frame per level, and an agent can emit any
+    // shape at all. This used to throw RangeError out of sanitizeMarkdown at
+    // roughly 30 KB, which reached TaskProcessor as an UPSTREAM failure and
+    // cost the whole report.
+    function nest(levels: number): string {
+      let text = 'x';
+      for (let i = 0; i < levels; i += 1) {
+        text = `[a](${text})`;
+      }
+      return text;
+    }
+
+    it('does not throw on nesting far past any real report', () => {
+      expect(() => sanitizeMarkdown(nest(20000))).not.toThrow();
+    });
+
+    it('still rejects an unsafe destination buried under deep nesting', () => {
+      // Well inside the ceiling, so this is the ordinary path: the innermost
+      // destination is judged like any other and dropped, taking the scheme
+      // with it.
+      expect(
+        sanitizeMarkdown(nest(40).replace('x', 'javascript:alert(1)')),
+      ).not.toMatch(/javascript:/);
+    });
+
+    it('leaves nothing linkable behind once past the ceiling', () => {
+      // Past MAX_NESTING_DEPTH the region is rewritten flat instead of walked,
+      // which keeps the text but removes every `[`. Nothing is left that can
+      // open a destination, which is the property that has to survive — not
+      // the shape of the text, which at this depth is already nonsense.
+      const output = sanitizeMarkdown(
+        nest(200).replace('x', 'javascript:alert(1)'),
+      );
+
+      expect(output).not.toMatch(/\[[^[\]]*\]\(javascript:/);
+    });
+
+    it('leaves ordinary shallow nesting exactly as it was', () => {
+      expect(sanitizeMarkdown(nest(3))).toBe(nest(3));
+    });
   });
 });

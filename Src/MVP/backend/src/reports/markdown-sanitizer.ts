@@ -61,8 +61,24 @@ const SCHEME = /^([a-z][a-z0-9+.-]*):/;
 // decimal, hexadecimal, and named. Matched by *shape*, not against the HTML5
 // entity list — see isSafeDestination for why that distinction is the whole
 // point of this constant.
-const CHARACTER_REFERENCE =
-  /&(#[0-9]{1,8}|#x[0-9a-f]{1,6}|[a-z][a-z0-9]{1,31});/i;
+//
+// The numeric forms are deliberately unbounded in length. They used to be
+// capped at 8 decimal and 6 hexadecimal digits, which looked like the
+// CommonMark grammar (1-7 and 1-6) with a digit of slack — but a parser does
+// not stop there. markdown-it tries its own `#x?[0-9a-f]{1,8}` test first and,
+// when that fails, falls through to the `entities` package's HTML5 decoder,
+// which accepts any number of leading zeros. So `&#000000106;` (nine digits)
+// and `&#x000006a;` (seven) decoded to `j` while this regex saw no reference
+// at all, the destination was declared relative, and `&#000000106;avascript:`
+// was re-emitted verbatim for the renderer to turn back into an executable
+// href. Padding is free for an attacker; a length limit here is a denylist
+// wearing a quantifier. Matching any digit count can only reject more, which
+// is the direction this whole file fails in.
+const CHARACTER_REFERENCE = /&(#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]{1,31});/i;
+
+// How many times the scan may run before the result is forced closed. Real
+// content settles on the first or second pass; see below for what needs more.
+const MAX_SCAN_PASSES = 16;
 
 // BE-18: the one place Markdown coming out of an agent gets cleaned, so that
 // screen rendering and PDF export (BE-20) always consume the same
@@ -72,8 +88,51 @@ export function sanitizeMarkdown(markdown: string): string {
   // Strip first, scan second, deliberately: the scanner then sees the same
   // text the renderer will, and a strip that happens to *create* a link is
   // still caught by the scanner downstream of it.
-  return rejectUnsafeLinks(stripRawHtml(markdown));
+  //
+  // Then scan until the text stops changing, because removing a link can
+  // leave one behind. The scanner reads `[[lbl](INNER)](OUTER)` as a single
+  // link whose label is `[lbl` — the "first `]` wins" rule — so when INNER is
+  // rejected it emits that label, odd bracket and all, and resumes past the
+  // inner `)`. What is left, `](OUTER)`, has no `[` in front of it any more,
+  // so readLink never visits it and it goes out with the tail. The two halves
+  // then recombine in the output into `[lbl](OUTER)`: a syntactically perfect
+  // link that nothing ever judged, with its scheme in the clear.
+  //
+  // The property this file owes its callers is about the string it returns,
+  // not the string it was given, so the check belongs on the output. Every
+  // pass that changes anything strictly shortens the text — destinations and
+  // autolinks are only ever dropped, never added — so this settles, and one
+  // extra pass over already-clean text is the normal cost.
+  let text = stripRawHtml(markdown);
+  for (let pass = 0; pass < MAX_SCAN_PASSES; pass += 1) {
+    const scanned = rejectUnsafeAutolinks(rejectUnsafeLinks(text));
+    if (scanned === text) {
+      return text;
+    }
+    text = scanned;
+  }
+
+  // Sixteen passes and still peeling: that is a label nested inside a label
+  // sixteen deep, which no report writes by accident. Escaping every `[`
+  // leaves a string in which no `[label](destination)` can form at all, and
+  // the last pass already judged every autolink in it — so this is closed,
+  // not merely tired.
+  return text.replace(/\[/g, '\\[');
 }
+
+// How deep the re-scan below may nest before it stops recursing and falls
+// back to a flat, link-free rewrite of whatever is left.
+//
+// The re-scan spends one stack frame per nesting level, and the text it walks
+// is an agent's output — the one input this file exists because it cannot
+// trust. `[a](` repeated ~5 900 times, under 30 KB, was enough to throw
+// RangeError out of sanitizeMarkdown on a default Node stack; the throw
+// surfaced as an UPSTREAM failure on the Task and cost the whole report. The
+// depth that matters for real content is single digits, so a ceiling this far
+// above it never fires on anything an analysis report contains, and the
+// fallback drops out of the recursion in one pass instead of unwinding into
+// the caller's error handler.
+const MAX_NESTING_DEPTH = 64;
 
 // Walks the text looking for `[label](destination)` and its `![alt](...)`
 // image form, keeping each one only if its destination survives
@@ -85,7 +144,16 @@ export function sanitizeMarkdown(markdown: string): string {
 // `)` and leaves half the link behind. Counting depth is the only version
 // of this that doesn't have a "one level deeper" bypass already waiting in
 // it.
-function rejectUnsafeLinks(markdown: string): string {
+function rejectUnsafeLinks(markdown: string, depth = 0): string {
+  if (depth > MAX_NESTING_DEPTH) {
+    // Too deep to keep walking, so stop walking rather than stop safely-ish:
+    // dropping every `[` and `<` leaves text that no parser can read as a
+    // link or an autolink, which is the one thing this function has to
+    // guarantee about anything it emits. Content past this depth is already
+    // not something an agent wrote by accident.
+    return markdown.replace(/[[<]/g, '');
+  }
+
   let out = '';
   let index = 0;
 
@@ -120,7 +188,10 @@ function rejectUnsafeLinks(markdown: string): string {
       continue;
     }
 
-    if (isSafeDestination(link.destination)) {
+    if (
+      isSafeDestination(link.destination) &&
+      !hasUnmatchedOpenBracket(link.destination)
+    ) {
       // Safe, but not therefore beyond inspection. The region this scanner
       // calls "the destination" runs to the balanced `)`, while a CommonMark
       // destination ends at the first unescaped whitespace — so the region
@@ -139,25 +210,125 @@ function rejectUnsafeLinks(markdown: string): string {
       // this function does not know about yet, since it is the same
       // function.
       //
-      // Only the destination is re-scanned, never the label: the label ends
-      // at the first `]`, so it cannot contain a complete link, and the
-      // "first `]` wins" rule already makes the scanner latch onto the inner
-      // link of `[![img](javascript:1)](x)` — the dangerous one. That bias
-      // is in the safe direction and is deliberately left alone.
-      out += markdown.slice(open, link.destinationStart);
-      out += rejectUnsafeLinks(link.destination);
+      // The label goes back through it too. It used to be copied verbatim on
+      // the reasoning that "the label ends at the first `]`, so it cannot
+      // contain a complete link" — true of `[x](y)`, false of an autolink,
+      // which is a complete link and carries no `]` at all. Once the strip
+      // stopped deleting autolinks, `[<javascript:alert(1)>](https://ok.com)`
+      // sailed through here untouched and rendered as a live javascript:
+      // href nested inside a harmless-looking one. The "first `]` wins" bias
+      // that makes the scanner latch onto the inner link of
+      // `[![img](javascript:1)](x)` is still there and still in the safe
+      // direction — re-scanning the label does not disturb it, because a
+      // label with no link in it comes back out of this function unchanged.
+      out += '[';
+      out += escapeUnmatchedBrackets(rejectUnsafeLinks(link.label, depth + 1));
+      out += '](';
+      out += rejectUnsafeLinks(link.destination, depth + 1);
       out += ')';
     } else {
       // The text the agent wrote is kept; only the destination is dropped.
       // Deleting the whole link would silently lose content, which is worse
       // than showing it without making it clickable. An image's leading `!`
       // goes with it, or it would be left dangling in front of the alt text.
+      // The label is examined here for the same reason it is above: this is
+      // the other place it reaches the output.
       if (out.endsWith('!')) {
         out = out.slice(0, -1);
       }
-      out += link.label;
+      out += escapeUnmatchedBrackets(rejectUnsafeLinks(link.label, depth + 1));
     }
     index = link.end + 1;
+  }
+
+  return out;
+}
+
+// Whether a region carries a `[` that nothing in it closes.
+//
+// Such a region cannot be emitted between `](` and `)` and left alone: the
+// scanner stops a destination at the first unbalanced `)`, which can fall
+// earlier than where a parser would end it, and then the text after that `)`
+// goes out through the tail unexamined. In `[a](https://ok.example [[)](data:
+// alert(1)) )` the region the scanner accepts is `https://ok.example [[` — an
+// https URL, safe by every rule this file has — and the `](data:alert(1))`
+// left behind pairs with one of those stray brackets in the *output*. Neither
+// half was ever wrong on its own; together they are a link nobody judged.
+//
+// Balanced brackets are ordinary in a URL (`/arr[0][1]`, a footnote target)
+// and stay allowed. An unmatched one is malformed, and malformed is where
+// this whole class lives.
+function hasUnmatchedOpenBracket(region: string): boolean {
+  return unmatchedOpenBrackets(region).length > 0;
+}
+
+function unmatchedOpenBrackets(region: string): number[] {
+  const open: number[] = [];
+  for (let i = 0; i < region.length; i += 1) {
+    const char = region[i];
+    if (char === '\\') {
+      i += 1;
+    } else if (char === '[') {
+      open.push(i);
+    } else if (char === ']' && open.length > 0) {
+      open.pop();
+    }
+  }
+  return open;
+}
+
+// Backslash-escapes the `[` characters a label leaves open, which is the same
+// hazard as the one above reached from the other side: a label emitted as
+// text carries its brackets into the output, and one that nothing closes can
+// pair with a `](destination)` further along — text this function emitted
+// through the tail, never having read it as a link, because by then the `[`
+// that would have made it one was already behind the cursor. `[[![alt]()]`
+// followed by `(javascript:alert(1))` is two harmless fragments that a parser
+// reads as one live link.
+//
+// `\[` is a literal bracket in CommonMark, so the label still reads the way
+// the agent wrote it; it just stops being able to open something. A label
+// whose brackets balance — every ordinary one — comes back untouched.
+function escapeUnmatchedBrackets(label: string): string {
+  const positions = unmatchedOpenBrackets(label);
+  if (positions.length === 0) {
+    return label;
+  }
+
+  let out = '';
+  let cursor = 0;
+  for (const position of positions) {
+    out += label.slice(cursor, position) + '\\[';
+    cursor = position + 1;
+  }
+  return out + label.slice(cursor);
+}
+
+// Autolinks only, with the link structure ignored entirely.
+//
+// rejectUnsafeLinks judges a label and a destination by scanning each one on
+// its own, which loses whatever spans the boundary between them: in
+// `[<javascript:x](>)` the `<` sits in the label and the `>` that closes it
+// sits in the destination, so neither sub-scan sees an autolink and both
+// hand their piece back unchanged — while the parser, reading the emitted
+// string straight through, sees one and links it. This sweep reads straight
+// through as well, so a `<...>` run is judged wherever it happens to start
+// and end. On text the main scan already handled it is a no-op.
+function rejectUnsafeAutolinks(markdown: string): string {
+  let out = '';
+  let index = 0;
+
+  while (index < markdown.length) {
+    const angle = markdown.indexOf('<', index);
+    if (angle === -1) {
+      out += markdown.slice(index);
+      break;
+    }
+
+    out += markdown.slice(index, angle);
+    index = readAutolink(markdown, angle, (kept) => {
+      out += kept;
+    });
   }
 
   return out;
@@ -198,8 +369,55 @@ interface ParsedLink {
   end: number;
 }
 
+// Where the label closes. CommonMark matches the label's brackets rather than
+// stopping at the first `]`, and the difference is not cosmetic: this used to
+// take `markdown.indexOf(']')`, so `[nota [2]](data:text/html,x)` was read as
+// the label `nota [2` plus the destination... nothing, because the `]` it
+// found is not followed by `(`. readLink then returned null, the `[` went out
+// as an ordinary character, and the whole string — destination included —
+// was copied to the output without any part of it ever being judged. A
+// footnote marker, an array index or an image in the label was enough; no
+// encoding required.
+//
+// So: count depth, and honour backslash escapes the way the destination scan
+// already does. `firstCandidate` keeps the old reading as a fallback for when
+// the balanced close is not followed by `(` at all (an unbalanced label, which
+// a parser resolves by looking for a shorter match) — falling back to finding
+// *a* link is the fail-closed direction, since every link this function finds
+// is a link it judges.
+function readLabelEnd(markdown: string, open: number): number {
+  let depth = 1;
+  let cursor = open + 1;
+  let firstCandidate = -1;
+
+  while (cursor < markdown.length) {
+    const char = markdown[cursor];
+
+    if (char === '\\' && cursor + 1 < markdown.length) {
+      cursor += 2;
+      continue;
+    }
+
+    if (char === '[') {
+      depth += 1;
+    } else if (char === ']') {
+      depth -= 1;
+      if (firstCandidate === -1 && markdown[cursor + 1] === '(') {
+        firstCandidate = cursor;
+      }
+      if (depth === 0) {
+        return markdown[cursor + 1] === '(' ? cursor : firstCandidate;
+      }
+    }
+
+    cursor += 1;
+  }
+
+  return firstCandidate;
+}
+
 function readLink(markdown: string, open: number): ParsedLink | null {
-  const labelEnd = markdown.indexOf(']', open + 1);
+  const labelEnd = readLabelEnd(markdown, open);
   if (labelEnd === -1 || markdown[labelEnd + 1] !== '(') {
     return null;
   }
