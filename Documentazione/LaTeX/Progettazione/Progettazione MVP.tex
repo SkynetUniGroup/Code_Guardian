@@ -16,13 +16,50 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{tikz}
-\usetikzlibrary{fit, positioning}
+\usetikzlibrary{fit, positioning, arrows.meta, shapes.geometric, calc, backgrounds, shadows.blur}
 
 % Definizione dei colori usati nello schema
 \definecolor{blue1}{RGB}{200, 220, 255}
 \definecolor{green1}{RGB}{200, 240, 200}
 \definecolor{teal1}{RGB}{180, 230, 230}
 \definecolor{graybox}{RGB}{235, 235, 235}
+
+% Colori e stili per i diagrammi di analisi statica
+\definecolor{cg-navy}{RGB}{30,58,95}
+\definecolor{cg-amber}{RGB}{180,83,9}
+\definecolor{cg-green}{RGB}{20,120,80}
+\definecolor{cg-blue}{RGB}{37,99,235}
+\definecolor{cg-light}{RGB}{241,245,249}
+
+\tikzset{
+  as@component/.style={
+    draw=cg-navy, fill=cg-light, rounded corners=5pt,
+    minimum width=2.8cm, minimum height=0.85cm,
+    align=center, font=\small\strut,
+    blur shadow={shadow blur steps=4, shadow xshift=0.5pt,
+                 shadow yshift=-0.5pt, shadow opacity=12}
+  },
+  as@external/.style={
+    draw=cg-amber, fill=orange!6, rounded corners=5pt,
+    minimum width=2.8cm, minimum height=0.85cm,
+    align=center, font=\small\strut,
+    blur shadow={shadow blur steps=4, shadow xshift=0.5pt,
+                 shadow yshift=-0.5pt, shadow opacity=12}
+  },
+  as@store/.style={
+    draw=cg-green!70!black, fill=green!6, rounded corners=5pt,
+    minimum width=2.8cm, minimum height=0.85cm,
+    align=center, font=\small\strut
+  },
+  as@output/.style={
+    draw=cg-blue, fill=blue!4, rounded corners=5pt,
+    minimum width=2.8cm, minimum height=0.85cm,
+    align=center, font=\small\strut
+  },
+  as@arr/.style={-Stealth, thick, cg-navy},
+  as@opt/.style={-Stealth, thick, dashed, cg-amber!80},
+  as@lbl/.style={font=\scriptsize, midway, fill=white, inner sep=1.5pt},
+}
 
 \hypersetup{
     colorlinks=true,
@@ -119,6 +156,7 @@
         \endfoot
         \hline
         \endlastfoot
+        \textit{1.2} & \textit{2026/09/02} & \textit{Integrazione servizi di analisi statica nella Parte~V (Backend MVP): SonarQube per \texttt{DOCS\_INLINE} (DA-AS-1--2: lettura API pre-esistente, fallback \texttt{lizard}, cache Redis per commit SHA, 3 endpoint \texttt{/credentials/sonarqube}); SAST Semgrep per \texttt{SECURITY\_OWASP} (DA-AS-3: subprocess locale, timeout 120\,s, graceful degradation, due fasi statica+LLM, \texttt{SASTFindingBlock} e \texttt{sastSummary}). Aggiunta sezione \texttt{Servizi di Analisi Statica} (feature flags, dipendenze, budget temporale).} & \makecell[l]{Marco\\Barbiero} & \makecell[l]{---} \\ \hline
         \textit{1.1} & \textit{2026/08/21} & \textit{Aggiunta Parte~V (Progettazione Backend MVP): autenticazione reale Argon2id + JWT HS256, cifratura credenziali AES-256-GCM + HKDF, evoluzione \texttt{CreateContextDto} (URL-first), sequenza di validazione in 8 passi su \texttt{POST /contexts}, meccanismo pause/ripresa LangGraph per l'agente Changelog, endpoint \texttt{POST /tasks/:id/input}, quinto evento WebSocket \texttt{task.inputRequired}, ADR BE-1--5. Allineamento DTO Frontend (\texttt{pendingInput} kind e \texttt{AuthTokenDto}) con contratto Backend MVP.} & \makecell[l]{Sara\\Ristovic} & \makecell[l]{Marco\\Barbiero} \\ \hline
         \textit{1.0} & \textit{2026/08/19} & \textit{Fusione in un documento unico e coerente: integrata la Progettazione Frontend (MVP) come Parte III--IV e la Progettazione Infrastruttura AWS (MVP) come Parte V--VI. Sostituita la progettazione dati basata su DocumentDB con MongoDB Atlas via AWS PrivateLink (\S~\ref{sec:tecnologie}, \S~\ref{sec:aws-dati}). Rimossa la tabella dei sostituti locali AWS del PoC (superata dalla mappatura reale in \S~\ref{sec:aws-perimetro}). Aggiornati i rimandi in \S~\ref{sec:perimetro}, \S~\ref{sec:api}, \S~\ref{sec:orchestratore} e \S~\ref{sec:sintesi} per riflettere l'evoluzione PoC $\to$ MVP. Aggiunti altri design pattern} & \makecell[l]{Samuele\\Bertin} & \makecell[l]{Marco\\Barbiero} \\ \hline
         \textit{0.6} & \textit{2026/08/13} & \textit{Aggiunta la progettazione dell'orchestratore di produzione (\S~\ref{sec:orchestratore-produzione}); aggiornati di conseguenza \S~\ref{sec:perimetro}, \S~\ref{sec:adr} e \S~\ref{sec:sintesi}.} & \makecell[l]{Samuele\\Bertin} & \makecell[l]{Nome\\Cognome} \\ \hline
@@ -3098,6 +3136,26 @@ interface ServiceCredentialDto {
 }
 \end{lstlisting}
 
+\subsection{Credenziali SonarQube (opzionale)}
+\label{ssec:be-credenziali-sonarqube}
+
+Le credenziali SonarQube vengono memorizzate nella collection \texttt{servicecredentials} già esistente, con il campo \texttt{sonarqube} opzionale. Il token è cifrato con lo stesso schema AES-256-GCM + HKDF descritto in \S~\ref{sec:be-credenziali}; il provider corrispondente è \texttt{'SONARQUBE'}. I tre endpoint seguono la stessa convenzione delle credenziali esistenti.
+
+\noindent\textbf{Schema del payload (\texttt{POST /credentials/sonarqube}).}
+
+\begin{lstlisting}[caption={DTO per la configurazione delle credenziali SonarQube.}]
+interface SonarQubeCredentialDto {
+  instanceUrl: string       // URL istanza: 'https://sonarcloud.io'
+                            //   o URL self-hosted 'https://sonar.azienda.com'
+  projectKey: string        // chiave progetto SonarQube, es. 'myorg_myrepo'
+  organizationKey?: string  // solo SonarCloud; ignorato su istanze self-hosted
+  token: string             // token utente o di progetto SonarQube
+                            //   cifrato AES-256-GCM+HKDF al salvataggio
+}
+\end{lstlisting}
+
+\texttt{GET /credentials/sonarqube} restituisce \texttt{instanceUrl}, \texttt{projectKey} e (se presente) \texttt{organizationKey}; il \texttt{token} non viene mai restituito in chiaro. Il \texttt{projectKey} è fornito dall'utente copiandolo dall'interfaccia SonarQube/SonarCloud: non viene derivato automaticamente dall'URL del repository GitHub.
+
 \section{GitHub Client --- Estensioni MVP}
 \label{sec:be-github-mvp}
 
@@ -3206,6 +3264,10 @@ Rispetto al PoC, le modifiche principali sono: autenticazione reale (endpoint \t
 \texttt{GET /auth/me} & Profilo dell'utente autenticato; risponde \texttt{UserProfileDto} & Invariato \\ \hline
 \multicolumn{3}{|l|}{\textit{Avvio ed Esecuzione}} \\ \hline
 \texttt{POST /tasks/:id/input} & Risposta dell'utente a un \texttt{pendingInput} sospeso; body: \texttt{SubmitInputDto}; risponde 200 o 409 se nessun input atteso & \textbf{Nuovo MVP} \\ \hline
+\multicolumn{3}{|l|}{\textit{Credenziali SonarQube (opzionale, \S~\ref{ssec:be-credenziali-sonarqube})}} \\ \hline
+\texttt{POST /credentials/sonarqube} & Salva o aggiorna host, token e project key; cifra il token AES-256-GCM & \textbf{Nuovo MVP} \\ \hline
+\texttt{GET /credentials/sonarqube} & Verifica la presenza delle credenziali; token non restituito in chiaro & \textbf{Nuovo MVP} \\ \hline
+\texttt{DELETE /credentials/sonarqube} & Rimozione delle credenziali SonarQube & \textbf{Nuovo MVP} \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -3480,8 +3542,82 @@ L'Agente Docs è l'unico dei tre che produce una \texttt{Proposal} (diff): il ba
 \subsubsection{DOCS\_README (RF.82)}
 Instradamento: \texttt{AgentRegistry} → Agente Docs. Il backend invoca l'agente con il contesto e attende la Proposal. Ricevuta, persiste il Report, apre la PR (BE-ADR-6, RF.63) e ne salva l'URL. Un README non ancora esistente è gestito nativamente: il \texttt{diffUnified} rappresenta un file nuovo come diff contro il vuoto.
 
-\subsubsection{DOCS\_INLINE (RF.83, RF.84)}
+\subsubsection{DOCS\_INLINE (RF.83, RF.84, RF.85)}
+\label{sec:be-docs-inline}
+
 Stesso meccanismo di DOCS\_README, con la Proposal contenente diff di commenti JSDoc/docstring. RF.84 (commenti disallineati) e RF.83 (commenti assenti) condividono lo stesso OperationCode, la stessa voce di \texttt{AgentRegistry} e lo stesso ciclo invoca→ricevi→apri PR. L'agente emette un \texttt{ComplexityWarningBlock} (RF.85, RF.61) quando il codice è troppo intricato: il backend lo persiste nel corpo del Report senza ulteriori elaborazioni.
+
+\paragraph{Integrazione SonarQube per la misurazione della complessità ciclomatica.}
+
+RF.85 è soddisfatto in modo base dalla libreria Python \texttt{lizard}, che calcola la complessità ciclomatica (CC) senza dipendenze esterne. Quando il cliente ha configurato le credenziali SonarQube (\S~\ref{ssec:be-credenziali-sonarqube}), l'agente \texttt{DOCS\_INLINE} può arricchire le proprie decisioni leggendo metriche pre-calcolate dall'istanza SonarQube/SonarCloud tramite API REST. \texttt{lizard} rimane il meccanismo base e obbligatorio; SonarQube è uno strato di arricchimento opzionale.
+
+\subsubsection*{DA-AS-1 \textemdash{} SonarQube in sola lettura, analisi pre-esistente}
+Il servizio agenti non esegue mai \texttt{sonar-scanner} on-demand. Legge i risultati di un'analisi già presente sull'istanza del cliente tramite \texttt{GET /api/measures/component\_tree}. Il budget temporale di \texttt{DOCS\_INLINE} è 90\,s (ADR-3): incompatibile con un'analisi full-project che richiede tipicamente 2--5 minuti. I risultati vengono memorizzati in Redis per 24\,h con chiave composta da project key e commit SHA; chiamate successive sullo stesso commit non ripetono la richiesta HTTP.
+
+\medskip
+\noindent\textbf{Parametri della chiamata API.} Il servizio invoca l'endpoint con i seguenti query parameter:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Parametro & Valore \\
+\midrule
+\texttt{component}   & \texttt{projectKey} dalle credenziali \\
+\texttt{metricKeys}  & \texttt{complexity,cognitive\_complexity,} \\
+                     & \texttt{code\_smells,duplicated\_lines\_density,} \\
+                     & \texttt{security\_hotspots} \\
+\texttt{qualifiers}  & \texttt{FIL} (solo file, escluse directory e moduli) \\
+\texttt{ps}          & \texttt{500} (massimo consentito dall'API) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent La risposta viene recuperata in un'unica chiamata paginata (la maggior parte dei repository rientra nel limite di 500 file). Il campo \texttt{key} di ogni componente SonarQube ha la forma \texttt{\{projectKey\}:src/utils.ts}; il prefisso \texttt{\{projectKey\}:} viene rimosso per ottenere il path relativo con cui confrontare i file del repository clonato.
+
+\medskip
+\noindent\textbf{Formato chiave Redis.} La chiave ha la struttura:
+\begin{center}
+\texttt{sonarqube:\{projectKey\}:\{commitSha\}}
+\end{center}
+Esempio: \texttt{sonarqube:myorg\_myrepo:a3f8c21d}. Il TTL è letto da \texttt{SONAR\_CACHE\_TTL\_S} (default 86400\,s). Il \texttt{commitSha} è quello del contesto richiesto all'agente, non il commit dell'ultima analisi SonarQube disponibile: poiché SonarQube è un'analisi pre-esistente e potenzialmente in ritardo di qualche commit, questo è intenzionale --- la chiave garantisce che nella stessa sessione di lavoro non vengano effettuate chiamate ridondanti.
+
+\subsubsection*{DA-AS-2 \textemdash{} Fallback obbligatorio su \texttt{lizard}}
+In assenza di credenziali SonarQube, o quando l'API non restituisce metriche per un file specifico (file nuovo, analisi non ancora eseguita, timeout 15\,s), il servizio ricade su \texttt{lizard} in modo trasparente. Nessun errore è esposto all'utente; la documentazione viene generata in ogni caso.
+
+\medskip
+\noindent\textbf{Metriche lette da SonarQube.} Per ogni file nell'ambito di analisi il servizio estrae cinque metriche: \texttt{complexity} (CC classica), \texttt{cognitive\_complexity}, \texttt{code\_smells}, \texttt{duplicated\_lines\_density} e \texttt{security\_hotspots}. Queste vengono iniettate nel prompt dell'agente, che può così includere nella docstring avvisi specifici su duplicazione elevata o hotspot noti dall'analisi statica preesistente, senza doverli riscoprire.
+
+\noindent\textbf{Sorgente preferita per il \texttt{ComplexityWarningBlock}.} La soglia e la mappatura CC → severity rimangono invariate. SonarQube è preferito a \texttt{lizard} su TypeScript/TSX con decoratori, perché il parser di \texttt{lizard} non conteggia i branch impliciti generati dai decorator. Quando SonarQube non è disponibile, \texttt{lizard} resta la fonte e nessuna degradazione visibile si verifica.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[node distance=1.5cm and 2.2cm]
+  \node[as@component] (agent)  {DOCS\_INLINE\\Agent};
+  \node[as@component, right=of agent]  (sqsvc) {SonarQube\\Service};
+  \node[as@external,  right=of sqsvc]  (sqapi) {SonarQube /\\SonarCloud API};
+  \node[as@store,     below=1.5cm of sqsvc] (redis) {Redis\\Cache};
+  \node[as@component, below=1.5cm of agent] (lizard) {\texttt{lizard}\\(fallback)};
+  \node[as@component, right=3.2cm of lizard] (llm) {LLM\\(DOCS\_INLINE)};
+
+  \draw[as@arr] (agent)  -- node[as@lbl,above]{1. richiedi metriche}  (sqsvc);
+  \draw[as@arr] (sqsvc)  -- node[as@lbl,above]{2. GET metrics}        (sqapi);
+  \draw[as@arr] (sqapi)  -- node[as@lbl,below]{3. JSON response}      (sqsvc);
+  \draw[as@arr] (sqsvc.south) -- node[as@lbl,right]{4. cache 24h}    (redis.north);
+  \draw[as@opt] (sqsvc.south west) -- node[as@lbl,left]{se assenti} (lizard.north east);
+  \draw[as@arr] (agent.south)  -- (lizard.north);
+  \draw[as@arr] (lizard.east)     -- node[as@lbl,above]{5. metriche + codice} (llm.west);
+  \draw[as@arr] (sqsvc.south east) -- (llm.north west);
+
+  \begin{scope}[on background layer]
+    \node[draw=cg-amber, dashed, fill=orange!4, rounded corners=7pt,
+          fit=(sqsvc)(sqapi)(redis), inner sep=9pt,
+          label={[font=\tiny\color{cg-amber},anchor=north east]
+                 north east:{opzionale}}] {};
+  \end{scope}
+\end{tikzpicture}
+\caption{Flusso SonarQube nel DOCS\_INLINE agent. Il blocco tratteggiato è il percorso opzionale; in assenza di credenziali il flusso scende direttamente a \texttt{lizard}.}
+\label{fig:be-sonarqube-flusso}
+\end{figure}
 
 \subsubsection{DOCS\_API (RF.86)}
 Nuovo OperationCode, nuova voce in \texttt{AgentRegistry}, stessa sequenza Proposal→PR→URL. Cosa costituisca ``documentazione degli endpoint'' è una decisione del servizio agenti.
@@ -3492,7 +3628,92 @@ Nuovo OperationCode, nuova voce in \texttt{AgentRegistry}, stessa sequenza Propo
 L'Agente Security è \emph{flag-only}: individua e documenta, non propone modifiche al repository. Il backend non apre mai Pull Request per queste operazioni.
 
 \subsubsection{SECURITY\_OWASP (RF.87--RF.91)}
-Instradamento: \texttt{AgentRegistry} → Agente Security. Il backend invoca l'agente e persiste il Report ricevuto (elenco di \texttt{FindingBlock}) senza ulteriori passi. Ogni \texttt{FindingBlock} porta \texttt{category} (OWASP), \texttt{severity}, \texttt{filePath}, \texttt{lineStart}/\texttt{lineEnd?} e \texttt{remediation} (discriminante \texttt{SNIPPET | TEXT}). Il backend riceve e persiste questi valori così come arrivano.
+\label{sec:be-security-owasp}
+
+Instradamento: \texttt{AgentRegistry} → Agente Security. Il backend invoca l'agente e persiste il Report ricevuto senza ulteriori passi. A partire dall'MVP, l'operazione articola l'esecuzione in due fasi sequenziali che affiancano l'analisi LLM con uno strumento SAST deterministico.
+
+\paragraph{Integrazione SAST con Semgrep.}
+
+Il SECURITY agent integra \textbf{Semgrep} (open source, \texttt{semgrep $\geq$ 1.80}) come primo stadio dell'analisi. Semgrep viene invocato come subprocess nell'ambiente container dell'agente: non richiede server esterni né credenziali aggiuntive. Le regole vengono scaricate una volta durante la build dell'immagine Docker e memorizzate localmente, rendendo ogni esecuzione offline e riproducibile.
+
+\subsubsection*{DA-AS-3 \textemdash{} Esecuzione locale come subprocess, timeout 120\,s}
+Semgrep è limitato a 120\,s (\texttt{-{}-timeout}). Il budget ADR-3 del SECURITY agent è 180\,s: i restanti 60\,s sono riservati alla chiamata LLM. Se Semgrep supera il limite, l'agente degrada a sola analisi LLM, segnalando il timeout nel report senza esporre errori all'utente. File superiori a 1\,MB sono esclusi dalla scansione statica e affidati interamente all'LLM (\texttt{-{}-max-target-bytes 1000000}).
+
+\medskip
+\noindent\textbf{Comando subprocess e mapping dell'output.} Il subprocess Semgrep viene invocato con:
+
+\begin{lstlisting}[language=bash, caption={Comando Semgrep invocato dal SECURITY agent come subprocess.}]
+semgrep \
+  --config p/owasp-top-ten \
+  [--config p/python]           # aggiunto se Python rilevato
+  [--config p/typescript]       # aggiunto se TypeScript/JavaScript rilevato
+  [--config p/nodejs-scan]      # aggiunto se TypeScript/JavaScript rilevato
+  --json --quiet \
+  --timeout $SEMGREP_TIMEOUT_S \
+  --max-target-bytes 1000000 \
+  /path/to/cloned/repo
+\end{lstlisting}
+
+\noindent Il mapping dai campi JSON dell'output Semgrep ai campi di \texttt{SASTFindingBlock} è:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{ll}
+\toprule
+\texttt{SASTFindingBlock} & Campo JSON Semgrep \\
+\midrule
+\texttt{ruleId}           & \texttt{check\_id} \\
+\texttt{owaspCategory}    & \texttt{extra.metadata.owasp[0]}; \texttt{'UNCLASSIFIED'} se assente \\
+\texttt{severity}         & \texttt{extra.severity} (\texttt{ERROR}/\texttt{WARNING}/\texttt{INFO}) \\
+\texttt{filePath}         & \texttt{path} (relativo alla root del repo) \\
+\texttt{line}             & \texttt{start.line} \\
+\texttt{message}          & \texttt{extra.message} (troncato a 500 caratteri) \\
+\texttt{codeSnippet}      & \texttt{extra.lines} (troncato a 300 caratteri) \\
+\texttt{cwe}              & \texttt{extra.metadata.cwe[0]}; omesso se assente \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent \texttt{owaspCategory} è un campo stringa libera: le etichette OWASP nei metadati Semgrep non sono normalizzate e vengono passate direttamente all'LLM, che le usa per raggruppare i finding nel prompt.
+
+\medskip
+\noindent\textbf{Flusso in due fasi.}
+
+\emph{Fase 1 --- Analisi statica.} Il rilevamento dei linguaggi avviene ispezionando le estensioni dei file nel repository clonato. In base ai linguaggi, viene selezionato il sottoinsieme di ruleset: il set \texttt{p/owasp-top-ten} è sempre incluso; per Python si aggiunge \texttt{p/python}, per TypeScript/JavaScript si aggiungono \texttt{p/typescript} e \texttt{p/nodejs-scan}. Semgrep produce un output JSON strutturato con i finding normalizzati nella struttura \texttt{SASTFinding} (definita in \S~\ref{ssec:be-sast-schema}).
+
+\emph{Fase 2 --- Analisi LLM.} Prima dell'iniezione nel prompt, i finding vengono filtrati e ordinati in base a una soglia configurabile \texttt{SAST\_MAX\_FINDINGS\_LLM} (default \texttt{40}). L'ordinamento avviene per priorità decrescente: \texttt{ERROR} $>$ \texttt{WARNING} $>$ \texttt{INFO}; a parità di severity, si privilegia la varietà di categoria OWASP. I finding con la stessa coppia \texttt{(ruleId, filePath)} vengono deduplicati (mantenuta la prima occorrenza per numero di riga). I finding oltre il cap non transitano per l'LLM e ricevono automaticamente \texttt{llmVerdict: 'NEEDS\_REVIEW'}; il loro conteggio è riportato in \texttt{SASTSummary.cappedFindings}. I finding selezionati vengono iniettati nel prompt di sistema dell'agente, raggruppati per categoria OWASP. L'LLM determina per ogni finding se si tratta di un vero positivo nel contesto specifico, assegna un verdetto (\texttt{CONFIRMED}, \texttt{FALSE\_POSITIVE} o \texttt{NEEDS\_REVIEW}), propone remediation contestualizzate per i finding confermati e identifica vulnerabilità che l'analisi statica non rileva (logica applicativa, race condition, business logic flaw).
+
+\medskip
+\noindent Il Report persiste sia i \texttt{FindingBlock} classici prodotti dall'LLM sia i \texttt{SASTFindingBlock} arricchiti con il verdetto LLM (cfr.~\S~\ref{ssec:be-sast-schema}).
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[node distance=1.4cm and 1.9cm]
+  \node[as@component] (agent)  {SECURITY\\Agent};
+  \node[as@component, right=of agent]  (detect)  {Language\\Detector};
+  \node[as@component, right=of detect] (semgrep) {Semgrep\\Analyzer};
+  \node[as@store, below=1.4cm of semgrep] (rules) {OWASP Rules\\(locale)};
+  \node[as@component, below=2.7cm of agent] (fmt)    {Finding\\Formatter};
+  \node[as@component, right=of fmt]          (llm)    {LLM\\(SECURITY)};
+  \node[as@output,    right=of llm]          (report) {\texttt{Security}\\Section};
+  \node[font=\scriptsize\bfseries\color{cg-navy}, above=0.12cm of agent]   {Fase 1 --- Analisi statica};
+  \node[font=\scriptsize\bfseries\color{cg-navy}, above=0.12cm of fmt]     {Fase 2 --- Analisi LLM};
+  \draw[as@arr] (agent)   -- node[as@lbl,above]{1. linguaggi}   (detect);
+  \draw[as@arr] (detect)  -- node[as@lbl,above]{2. esegui}      (semgrep);
+  \draw[as@arr] (semgrep) -- node[as@lbl,right]{regole}         (rules);
+  \draw[as@arr] (semgrep.south) -- ++(0,-0.45) -| node[as@lbl,above right, pos=0.3]{3. findings JSON} (fmt.north);
+  \draw[as@arr] (agent.south)   -- (fmt.north west);
+  \draw[as@arr] (fmt)    -- node[as@lbl,above]{4. prompt arricchito} (llm);
+  \draw[as@arr] (llm)    -- node[as@lbl,above]{5. output}            (report);
+  \draw[as@opt] (semgrep.west) -- node[as@lbl, above, pos=0.4]{timeout} (fmt.north east);
+  \begin{scope}[on background layer]
+    \node[fill=cg-light!60, rounded corners=6pt, fit=(agent)(detect)(semgrep)(rules), inner sep=8pt] {};
+    \node[fill=blue!3, rounded corners=6pt, fit=(fmt)(llm)(report), inner sep=8pt] {};
+  \end{scope}
+\end{tikzpicture}
+\caption{Flusso SAST nel SECURITY agent. La freccia tratteggiata indica il percorso di graceful degradation in caso di timeout Semgrep: i finding vengono omessi e il prompt LLM segnala l'assenza dell'analisi statica.}
+\label{fig:be-sast-flusso}
+\end{figure}
 
 \subsubsection{SECURITY\_POLICY (RF.92, RF.93)}
 Stessa meccanica di SECURITY\_OWASP, instradato su \texttt{SECURITY\_POLICY}. L'assenza di \texttt{POLICY.md} emerge come \texttt{CONTEXT\_RESOURCE\_MISSING} (RF.70) dall'agente, propagata dal backend come qualsiasi altro fallimento.
@@ -3708,6 +3929,46 @@ interface PolicyViolationBlock {
 
 Il Markdown nei \texttt{TextBlock} è normalizzato dal backend al momento dell'assemblaggio: blocchi HTML grezzi rimossi, destinazioni \texttt{javascript:} e \texttt{data:} rifiutate. La normalizzazione avviene una volta sola, al confine, così resa a schermo ed esportazione PDF consumano la stessa stringa.
 
+\subsection{Struttura \texttt{SASTFinding} e estensione \texttt{SecuritySection}}
+\label{ssec:be-sast-schema}
+
+L'integrazione SAST per \texttt{SECURITY\_OWASP} (\S~\ref{sec:be-security-owasp}) aggiunge un nuovo tipo di blocco al corpo del Report e due nuovi campi di primo livello alla sezione di sicurezza.
+
+\noindent\textbf{Blocco \texttt{SASTFindingBlock}.} Ogni finding Semgrep arricchito con il verdetto LLM produce un blocco del tipo:
+
+\begin{lstlisting}[caption={Tipo \texttt{SASTFindingBlock}: finding SAST con verdetto LLM (SECURITY\_OWASP).}]
+interface SASTFindingBlock {
+  kind: 'SAST_FINDING'
+  ruleId: string           // identificatore della regola Semgrep
+  owaspCategory: string    // es. 'A03:2021 - Injection'
+  severity: 'ERROR' | 'WARNING' | 'INFO'  // severity Semgrep
+  filePath: string
+  line: number
+  message: string
+  codeSnippet: string      // estratto di codice (max 300 caratteri)
+  cwe?: string             // CWE associato, se presente nei metadati regola
+  llmVerdict: 'CONFIRMED' | 'FALSE_POSITIVE' | 'NEEDS_REVIEW'
+  llmRemediation?: string  // proposta LLM; presente solo se CONFIRMED
+}
+\end{lstlisting}
+
+\noindent\textbf{Campo \texttt{sastSummary}.} Il \texttt{ReportDto} di un'operazione \texttt{SECURITY\_OWASP} è esteso con un campo opzionale \texttt{sastSummary} che riporta l'esito aggregato della scansione:
+
+\begin{lstlisting}[caption={Campo \texttt{sastSummary} nel \texttt{ReportDto} per SECURITY\_OWASP.}]
+// Presente solo quando Semgrep ha eseguito (ENABLE_SAST_SEMGREP=true)
+interface SASTSummary {
+  totalFindings: number      // finding totali Semgrep
+  confirmedFindings: number  // confermati dall'LLM
+  falsePositives: number     // rigettati come falsi positivi
+  needsReview: number        // non determinati (inclusi i finding oltre il cap)
+  cappedFindings: number     // finding oltre SAST_MAX_FINDINGS_LLM, non
+                             //   valutati dall'LLM (llmVerdict: NEEDS_REVIEW)
+  scannedFiles: number       // file analizzati da Semgrep
+  durationMs: number         // durata scansione
+  timedOut: boolean          // true se Semgrep ha raggiunto il timeout
+}
+\end{lstlisting}
+
 \subsection{Esportazione PDF (RF.73--RF.74)}
 \label{sec:be-report-export}
 
@@ -3718,6 +3979,63 @@ Il Markdown nei \texttt{TextBlock} è normalizzato dal backend al momento dell'a
 \textbf{Fallimento dell'esportazione} (RF.74): 500 con \texttt{\{code: 'EXPORT\_FAILED', message\}}. Nessun evento WebSocket; né \texttt{Task.status} né \texttt{Report.status} vengono modificati. \texttt{EXPORT\_FAILED} non compare nell'enumerazione di §~\ref{sec:be-codici-errore} perché non è un fallimento di esecuzione Task (UC27).
 
 \textbf{Nota di rischio}: la Progettazione AWS (Tabella~20) annota che il task backend da 0,5~vCPU e 1~GB è dimensionato per un servizio REST leggero e la generazione PDF non è stata validata con un test di carico su esportazioni concorrenti. Tale test è da eseguire prima del rilascio.
+
+%% ============================================================
+\section{Servizi di Analisi Statica: Configurazione e Dipendenze}
+\label{sec:be-analisi-statica}
+%% ============================================================
+
+Questa sezione raccoglie le informazioni trasversali ai due servizi di analisi statica introdotti nell'MVP: l'integrazione SonarQube per \texttt{DOCS\_INLINE} (\S~\ref{sec:be-docs-inline}) e l'integrazione SAST/Semgrep per \texttt{SECURITY\_OWASP} (\S~\ref{sec:be-security-owasp}).
+
+\subsection{Feature flags}
+\label{ssec:be-as-flags}
+
+Entrambe le integrazioni sono controllate da variabili d'ambiente nel \texttt{docker-compose.yml} e nella task definition AWS ECS, senza richiedere modifiche all'interfaccia utente:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Variabile & Default & Comportamento \\
+\midrule
+\texttt{ENABLE\_SONARQUBE} & \texttt{false} & Abilita il fetch metriche SonarQube per \texttt{DOCS\_INLINE} \\
+\texttt{ENABLE\_SAST\_SEMGREP} & \texttt{true} & Abilita la scansione Semgrep per \texttt{SECURITY\_OWASP} \\
+\texttt{SEMGREP\_TIMEOUT\_S} & \texttt{120} & Timeout subprocess Semgrep \\
+\texttt{SONAR\_CACHE\_TTL\_S} & \texttt{86400} & TTL cache Redis per metriche SonarQube (24\,h) \\
+\texttt{SAST\_MAX\_FINDINGS\_LLM} & \texttt{40} & Cap finding Semgrep iniettati nel prompt LLM; quelli oltre il limite ricevono \texttt{NEEDS\_REVIEW} automaticamente \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Dipendenze aggiuntive}
+\label{ssec:be-as-deps}
+
+Le due integrazioni richiedono le seguenti aggiunte al file \texttt{requirements.txt} del servizio agenti Python:
+
+\begin{itemize}
+  \item \textbf{\texttt{semgrep $\geq$ 1.80}}: SAST engine e CLI. Include il proprio parser Python e non richiede binari aggiuntivi nel container. Le regole vengono scaricate durante la build dell'immagine Docker e memorizzate localmente.
+  \item \textbf{\texttt{httpx $\geq$ 0.27}}: già presente come dipendenza esistente; usato per le chiamate HTTP alle API SonarQube.
+  \item \textbf{\texttt{lizard}}: già presente; rimane il meccanismo base per la CC in \texttt{DOCS\_INLINE}.
+\end{itemize}
+
+\subsection{Budget temporale di \texttt{SECURITY\_OWASP} con SAST}
+\label{ssec:be-as-budget}
+
+\begin{center}
+\begin{tabular}{clcc}
+\toprule
+\# & Azione & Durata tipica & Limite \\
+\midrule
+1 & Clone repository (già effettuato) & 5--20\,s & --- \\
+2 & Rilevamento linguaggi & $<1$\,s & --- \\
+3 & Scansione Semgrep & 15--100\,s & 120\,s (hard) \\
+4 & Formattazione finding & $<1$\,s & --- \\
+5 & Chiamata LLM con finding iniettati & 20--50\,s & --- \\
+6 & Parsing e build \texttt{SecuritySection} & $<1$\,s & --- \\
+\midrule
+ & \textbf{Totale} & \textbf{41--172\,s} & \textbf{180\,s (ADR-3)} \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \end{document}
 
