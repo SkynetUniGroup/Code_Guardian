@@ -361,3 +361,118 @@ describe('sanitizeMarkdown — links hiding inside another destination', () => {
     expect(sanitizeMarkdown('[![img](javascript:1)](x)')).toBe('![img](x)');
   });
 });
+
+// The condition attached to keeping autolinks. Before, `<javascript:alert(1)>`
+// was deleted by accident — HTML_TAG ate every `<...>` run, dangerous or not.
+// Preserving autolinks removes that accident, which makes them a destination
+// surface that has to be defended on purpose. These tests are the defence:
+// without them, closing the content bug would open a security one.
+describe('sanitizeMarkdown — autolinks are destinations too', () => {
+  const removed = [
+    ['javascript:', '<javascript:alert(1)>'],
+    ['JavaScript: in mixed case', '<JavaScript:alert(1)>'],
+    ['data:', '<data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMSk+>'],
+    // Not named by BE-18 — rejected for being outside the allowlist, which
+    // is the only reason anything is rejected here.
+    ['a scheme outside the allowlist', '<vbscript:msgbox(1)>'],
+    ['file:', '<file:///etc/passwd>'],
+    // A stray `)` inside the URI is still no whitespace and no angle
+    // bracket, so this is a well-formed autolink and has to be judged, not
+    // waved through for being malformed.
+    ['javascript: with an unbalanced paren', '<javascript:alert(1))>'],
+  ] as const;
+
+  it.each(removed)('removes an autolink with %s', (_name, payload) => {
+    const output = sanitizeMarkdown(`see ${payload} here`);
+
+    expect(output).toBe('see  here');
+  });
+
+  it('removes a scheme split by a control character inside the keyword', () => {
+    // Not a well-formed autolink (a tab is not allowed in a scheme), so it
+    // never reaches the allowlist — the raw-HTML strip still deletes it.
+    // Asserted so that a later loosening of the autolink grammar cannot
+    // quietly promote this into a preserved destination.
+    const payload = `<java${String.fromCharCode(9)}script:alert(1)>`;
+
+    expect(sanitizeMarkdown(`see ${payload} here`)).not.toMatch(/script:/i);
+  });
+
+  const kept = [
+    ['https', '<https://cve.example/CVE-2024-1234>'],
+    ['http', '<http://example.com/a?b=1>'],
+    ['mailto', '<mailto:security@example.com>'],
+    // The email form carries no scheme at all, so there is nothing in it an
+    // allowlist could object to.
+    ['a bare email address', '<security@example.com>'],
+  ] as const;
+
+  it.each(kept)('keeps a %s autolink whole', (_name, payload) => {
+    expect(sanitizeMarkdown(`see ${payload} here`)).toBe(`see ${payload} here`);
+  });
+
+  // CommonMark also allows a destination to be wrapped in angle brackets.
+  // That form goes through the same door, and it is the one that would have
+  // been quietly opened by keeping autolinks without extending the scheme
+  // check: `<` is not a scheme character, so an unextended check reads
+  // `<javascript:...>` as a relative path.
+  describe('the pointy-bracket destination form', () => {
+    it('keeps a safe one, brackets included', () => {
+      expect(sanitizeMarkdown('[x](<https://example.com/a>)')).toBe(
+        '[x](<https://example.com/a>)',
+      );
+    });
+
+    it('still drops one whose URL contains a space', () => {
+      // Recorded as a known limit, not as an endorsement. The pointy-bracket
+      // form is the one CommonMark destination that may contain spaces, but
+      // an autolink may not — so this run is not an autolink, and the raw
+      // HTML strip removes it exactly as it always did. Widening the
+      // autolink grammar to cover it would mean guessing which `<... ...>`
+      // runs are destinations and which are tags, which is where the next
+      // bypass would come from. The loss is a link, never an execution.
+      expect(sanitizeMarkdown('[x](<https://example.com/a b>)')).toBe('[x]()');
+    });
+
+    it('rejects a javascript: one', () => {
+      expect(sanitizeMarkdown('[x](<javascript:alert(1)>)')).toBe('x');
+    });
+
+    it('rejects a data: one', () => {
+      expect(sanitizeMarkdown('[x](<data:text/html,PHN2Zz4=>)')).toBe('x');
+    });
+
+    it('rejects one hiding its scheme behind a character reference', () => {
+      // Both families at once: angle brackets to dodge the scheme regex, a
+      // character reference to dodge the keyword.
+      expect(sanitizeMarkdown('[x](<&#106;avascript:alert(1)>)')).toBe('x');
+    });
+  });
+
+  it('still strips raw HTML that merely resembles an autolink', () => {
+    // An attribute means whitespace, and whitespace means it is not an
+    // autolink — it is a tag, and tags still go.
+    expect(sanitizeMarkdown('a <a href="https://e.example">b</a> c')).toBe(
+      'a b c',
+    );
+    expect(sanitizeMarkdown('<img src="x" onerror="alert(1)">t')).toBe('t');
+  });
+
+  it('leaves a lone angle bracket in prose alone', () => {
+    expect(sanitizeMarkdown('use a < b and c > d here')).toBe(
+      'use a < b and c > d here',
+    );
+    expect(sanitizeMarkdown('if (n < 3) fail')).toBe('if (n < 3) fail');
+  });
+
+  it('judges an autolink nested inside another link’s destination', () => {
+    // The region is declared relative and re-scanned (see the nesting tests
+    // above); the autolink inside it is judged by the same allowlist.
+    expect(sanitizeMarkdown('[a](./ok <javascript:alert(1)> )')).toBe(
+      '[a](./ok  )',
+    );
+    expect(sanitizeMarkdown('[a](./ok <https://e.example> )')).toBe(
+      '[a](./ok <https://e.example> )',
+    );
+  });
+});

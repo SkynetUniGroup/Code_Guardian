@@ -6,6 +6,38 @@ import { Block } from './report.types';
 // through, it's that this content was never supposed to contain HTML at all.
 const HTML_TAG = /<\/?[a-zA-Z][^>]*>/g;
 
+// ...except that HTML_TAG also matches things that are not HTML at all. A
+// Markdown autolink is `<` followed by a scheme, so `<https://example.com>`
+// starts with an ALPHA exactly like a tag does, and the strip deleted the URL
+// along with the angle brackets: `see <https://example.com> ok` became
+// `see  ok`. Not merely un-clickable — gone. An agent writing a security
+// report produces `<https://cve.example/CVE-2024-1234>` as a matter of
+// course, and `[x](<dest>)` lost its destination the same way.
+//
+// The two forms CommonMark defines, matched against a whole `<...>` run:
+// absolute URI (a scheme of 2-32 characters, then anything without
+// whitespace or angle brackets) and email (no scheme at all, so nothing it
+// can carry).
+const URI_AUTOLINK = /^<[a-zA-Z][a-zA-Z0-9+.-]{1,31}:[^\s<>]*>$/;
+const EMAIL_AUTOLINK =
+  /^<[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*>$/;
+
+function isAutolink(candidate: string): boolean {
+  return URI_AUTOLINK.test(candidate) || EMAIL_AUTOLINK.test(candidate);
+}
+
+// Raw HTML out, autolinks left standing for the scanner to judge.
+//
+// Keeping them is what makes them a *new destination surface*: they used to
+// be deleted by accident, `<javascript:alert(1)>` included, so preserving
+// them without extending the scheme check to this form would close a content
+// bug by opening a security one. The allowlist therefore applies to an
+// autolink exactly as it applies to `[x](dest)` — see rejectUnsafeLinks,
+// which is the only place either form is allowed through.
+function stripRawHtml(markdown: string): string {
+  return markdown.replace(HTML_TAG, (tag) => (isAutolink(tag) ? tag : ''));
+}
+
 // Schemes a link destination is allowed to keep. An allowlist, not a
 // javascript:/data: denylist: BE-18 words the requirement as "reject
 // javascript:/data:" and this satisfies it, but a denylist only ever knows
@@ -37,7 +69,10 @@ const CHARACTER_REFERENCE =
 // already-sanitized string instead of each having to defend against this
 // separately.
 export function sanitizeMarkdown(markdown: string): string {
-  return rejectUnsafeLinks(markdown.replace(HTML_TAG, ''));
+  // Strip first, scan second, deliberately: the scanner then sees the same
+  // text the renderer will, and a strip that happens to *create* a link is
+  // still caught by the scanner downstream of it.
+  return rejectUnsafeLinks(stripRawHtml(markdown));
 }
 
 // Walks the text looking for `[label](destination)` and its `![alt](...)`
@@ -56,9 +91,22 @@ function rejectUnsafeLinks(markdown: string): string {
 
   while (index < markdown.length) {
     const open = markdown.indexOf('[', index);
-    if (open === -1) {
+    const angle = markdown.indexOf('<', index);
+
+    if (open === -1 && angle === -1) {
       out += markdown.slice(index);
       break;
+    }
+
+    // Autolinks are destinations too, and stripRawHtml no longer deletes
+    // them, so this is where they get the same allowlist treatment
+    // `[x](dest)` gets. Whichever form comes first is handled first.
+    if (angle !== -1 && (open === -1 || angle < open)) {
+      out += markdown.slice(index, angle);
+      index = readAutolink(markdown, angle, (kept) => {
+        out += kept;
+      });
+      continue;
     }
 
     out += markdown.slice(index, open);
@@ -113,6 +161,32 @@ function rejectUnsafeLinks(markdown: string): string {
   }
 
   return out;
+}
+
+// Handles one `<...>` run and returns where scanning resumes. An autolink
+// that survives is written through `keep`; one that doesn't is written
+// nowhere — unlike `[label](dest)` there is no text to preserve separately,
+// since an autolink *is* its destination, and emitting the bare URI back as
+// plain text would just hand a linkifying renderer the same string again.
+// Anything that isn't an autolink is not this function's business: the `<`
+// goes through as the ordinary character it is.
+function readAutolink(
+  markdown: string,
+  angle: number,
+  keep: (kept: string) => void,
+): number {
+  const close = markdown.indexOf('>', angle + 1);
+  const candidate = close === -1 ? null : markdown.slice(angle, close + 1);
+
+  if (candidate === null || !isAutolink(candidate)) {
+    keep('<');
+    return angle + 1;
+  }
+
+  if (isSafeDestination(candidate)) {
+    keep(candidate);
+  }
+  return close + 1;
 }
 
 interface ParsedLink {
@@ -226,6 +300,15 @@ function readLink(markdown: string, open: number): ParsedLink | null {
 // one that executes.
 function isSafeDestination(destination: string): boolean {
   const normalized = destination
+    // Angle brackets go before the scheme check, so that CommonMark's
+    // pointy-bracket destination form is judged by its scheme rather than
+    // mistaken for a relative path: `[x](<javascript:alert(1)>)` starts with
+    // `<`, which no scheme regex matches, and used to be waved through as
+    // "relative" for that reason alone. Dropping them can only tighten the
+    // verdict — it shortens what precedes the first `:`, so a destination
+    // that was accepted as relative may become a rejected scheme, and one
+    // already carrying an allowed scheme keeps it.
+    .replace(/[<>]/g, '')
     // eslint-disable-next-line no-control-regex -- the point is the control characters
     .replace(/[\u0000-\u001F\u007F]/g, '')
     .trim()
