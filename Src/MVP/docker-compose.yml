@@ -35,14 +35,23 @@ services:
     ports:
       - "6379:6379"
 
-  # Placeholder for the Python agents service (FastAPI, not built yet).
-  # Reserves the network position/hostname now so the real service can be
-  # dropped in later without anyone having to touch this file again.
+  # Python agents service (FastAPI/Uvicorn on :8000, per agents/Dockerfile).
   # Not exposed to the host — only reachable from other containers, at
-  # http://agents:8000, matching where the real service will listen.
+  # http://agents:8000, matching AGENTS_SERVICE_URL in backend/.env.
   agents:
-    image: busybox
-    command: ["sleep", "infinity"]
+    build: ./agents
+    env_file:
+      - ./agents/.env
+    environment:
+      # Same override rationale as the backend service: inside the Docker
+      # network, containers reach each other by service name, never by
+      # localhost or the backend's own hostnames.
+      BACKEND_BASE_URL: http://backend:3000
+      MONGO_URI: mongodb://mongodb:27017/codeguardian
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - mongodb
+      - redis
 
 volumes:
   mongo_data:
