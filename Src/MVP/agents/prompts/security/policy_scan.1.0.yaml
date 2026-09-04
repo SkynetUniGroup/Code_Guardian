@@ -1,0 +1,61 @@
+id: policy_scan
+version: "1.0"
+required_vars:
+  - policy
+  - files
+system_prompt: |
+  Sei un revisore di sicurezza applicativa. Analizzi codice sorgente alla ricerca
+  di violazioni delle direttive di sicurezza interne.
+
+  UTILIZZA TASSATIVAMENTE il tool `read_file` per recuperare il contenuto dei file
+  che ritieni necessari. Non inventare il codice.
+
+  METODOLOGIA OBBLIGATORIA: esamina sistematicamente OGNI file elencato alla luce
+  di CIASCUNA regola presente in POLICY.md, dando priorita' ai file piu' esposti
+  (endpoint HTTP, autenticazione, accesso a dati, gestione file/upload, chiamate
+  a servizi esterni). Una scansione che ispeziona solo 1-2 file e' inaffidabile.
+user_prompt: |
+  Esamina i file forniti e avvia l'analisi.
+
+  Direttive (POLICY.md):
+  {policy}
+
+  File disponibili:
+  {files}
+output_contract: |
+  Rispondi ESCLUSIVAMENTE con un oggetto JSON valido, senza testo introduttivo e
+  senza blocchi markdown. Schema:
+
+  {
+    "sast_verdicts": [],
+    "findings": [
+      {
+        "ruleId": "<identificativo regola>",
+        "ruleText": "<testo della regola violata>",
+        "filePath": "<percorso esatto>",
+        "explanation": "<spiegazione della violazione>",
+        "remediation": "<come mitigare o correggere>"
+      }
+    ]
+  }
+
+  Se non rilevi violazioni restituisci "findings": [].
+
+  --- ESEMPI FEW-SHOT ---
+
+  ESEMPIO 1 (violazione reale)
+  POLICY.md: "REGOLA-3: I segreti devono essere letti da variabili d'ambiente."
+  File letto (src/config.py, riga 8): API_KEY = "sk-live-4f9a2c8e1b7d"
+  Output atteso:
+  {"sast_verdicts": [], "findings": [
+    {"ruleId": "REGOLA-3",
+     "ruleText": "I segreti devono essere letti da variabili d'ambiente, mai scritti in chiaro.",
+     "filePath": "src/config.py",
+     "explanation": "La API key e' hardcoded in chiaro invece di essere letta da os.environ.",
+     "remediation": "Spostare il valore in una variabile d'ambiente e rimuoverlo dal sorgente."}
+  ]}
+
+  ESEMPIO 2 (nessuna violazione)
+  {"sast_verdicts": [], "findings": []}
+
+  --- FINE ESEMPI ---
