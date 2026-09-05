@@ -1,0 +1,274 @@
+\documentclass[12pt, a4paper]{article}
+
+% Pacchetti fondamentali
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[figure,table]{totalcount}
+\usepackage{fancyhdr}
+\usepackage{adjustbox}
+\usepackage{extramarks}
+\usepackage{makecell}
+\usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{35pt}
+
+% Setup dei link interattivi (indice)
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\newcommand{\doctitle}{Verbale interno 31 agosto 2026} % Sostituisci con il titolo reale
+
+% --- INTESTAZIONE (HEADER) ---
+\lhead{\nouppercase{\firstleftmark}}
+\rhead{\adjustbox{valign=m}{\includegraphics[height=1cm]{logo_skynet_dark.png}}}
+
+% --- PIÈ DI PAGINA (FOOTER) ---
+\lfoot{\doctitle} 
+\rfoot{\thepage} 
+
+% Linee di separazione
+\renewcommand{\headrulewidth}{0.4pt} % Linea sotto l'intestazione
+\renewcommand{\footrulewidth}{0.4pt} % Linea sopra il piè di pagina
+
+\begin{document}
+
+% ==========================================
+% FRONTESPIZIO
+% ==========================================
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.5\linewidth]{logo_skynet_dark.png}
+    
+    {\Large Gruppo SkyNet}\\
+    {\normalsize \href{mailto:skynetunigroup@gmail.com}{skynetunigroup@gmail.com}}
+    \vspace*{1.5cm}
+    
+    {\Huge \textbf{\doctitle}} \\
+    
+    \vspace{3cm}
+    
+    % Tabella Informazioni Documento, sostituire con il contenuto reale
+    \begin{table}[h]
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Uso} & \textit{Interno} \\ \hline
+            \textbf{Redattori} & \textit{Sara Ristovic} \\ \hline
+            \textbf{Verifica} & \textit{Dario Pirrone} \\ \hline
+            \textbf{Approvazione} & \textit{Dario Pirrone} \\ \hline
+        \end{tabularx}
+    \end{table}
+    
+    \vfill
+\end{titlepage}
+\stepcounter{page}
+
+\newpage
+
+% ==========================================
+% INDICI
+% ==========================================
+\tableofcontents
+\iftotaltables  % Se sono presenti tabelle o figure appare l'indice
+    \vspace{1cm}
+    \listoftables
+\fi
+
+\iftotalfigures
+    \vspace{1cm}
+    \listoffigures
+\fi
+\newpage
+
+% ==========================================
+% CONTENUTO DEL DOCUMENTO
+% ==========================================
+
+\section{Informazioni generali} % Inserire i dati specifici
+\subsection{Svolgimento dell'incontro}
+\begin{itemize}
+    \item \textbf{Luogo dell'incontro:} Chiamata \textit{Discord}
+    \item \textbf{Data:} 31 agosto 2026
+    \item \textbf{Orario di inizio:} 14:05
+    \item \textbf{Orario di fine:} 17:50
+\end{itemize}
+
+\subsection{Registro delle presenze}
+\begin{itemize}
+\item \textbf{Presenti:} % Modificare in caso di assenti
+\begin{itemize}
+    \item Marco Barbiero
+    \item Samuele Bertin
+    \item Andrea Fistarol
+    \item Edoardo Granziero
+    \item Dario Pirrone
+    \item Sara Ristovic
+\end{itemize}
+\item \textbf{Presenze totali:} 6
+\end{itemize}
+
+% ========================================== FINE SEZIONE
+
+% ==========================================
+% AGENDA - dopo l'appello, prima della discussione
+% Il professore richiede che l'agenda sia il primo punto della discussione
+% ==========================================
+\section{Agenda}
+\begin{itemize}
+    \item \textit{Consuntivo} orario
+    \item Stato delle attività
+    \item Discussione sul \textit{Way of Working}
+    \item Pianificazione delle macro-attività fino alla fine del progetto
+    \item Discussione sullo stato dei test
+    \item Definizione e discussione delle nuove attività
+    \item Incontro con il Prof. Vardanega
+    \item Varie ed eventuali
+\end{itemize}
+
+\newpage
+% =========== SEZIONE DA RIMUOVERE SE NON VENGONO ASSEGNATI RUOLI ===========
+\section{Ruoli assegnati}
+Sono stati assegnati i ruoli per ogni membro del gruppo, validi fino al termine del corrente \textit{sprint}. Tali ruoli sono esposti nella seguente tabella:
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Ruolo} & \textbf{Membro} \\ \hline
+        % Sostituire con i ruoli assegnati effettivi
+        \textbf{Responsabile} & Dario Pirrone \\ \hline
+        \textbf{Amministratore} & Samuele Bertin  \\ \hline
+        \textbf{Analista} & Non assegnato   \\ \hline
+        \textbf{Progettista} & Marco Barbiero \\ \hline
+        \textbf{Programmatore} & Sara Ristovic, Andrea Fistarol, Edoardo Granziero, Samuele Bertin, Marco Barbiero  \\ \hline
+        \textbf{Verificatore} & Dario Pirrone, Edoardo Granziero, Marco Barbiero \\ \hline
+    \end{tabularx}
+    \caption{Riepilogo ruoli assegnati}
+\end{table}
+
+% ========================================== FINE SEZIONE
+
+\section{Temi affrontati}
+
+\subsection{\textit{Consuntivo} orario}
+Il gruppo ha visualizzato e discusso il nuovo foglio Excel per la gestione delle risorse orarie e finanziarie rimanenti fino alla fine del progetto. La nuova struttura evidenzia meglio le ore ancora a disposizione, il budget residuo e le ore di lavoro individuali ancora da svolgere.
+
+È stato redatto un nuovo \textit{preventivo} per ruolo relativo alle ore rimanenti, poiché il \textit{preventivo} realizzato all'inizio del progetto non rifletteva più adeguatamente gli obblighi residui.
+
+\subsection{Stato delle attività}
+Sono state spostate alcune \textit{issue} dello \textit{sprint} chiuso nelle colonne corrette, così da riflettere correttamente lo stato di tali compiti. Ogni membro ha esposto la situazione corrente della parte del progetto di cui si è occupato. È emerso che due \textit{issue} relative allo sviluppo degli agenti e quattro \textit{issue} relative allo sviluppo backend non sono state completate.
+
+\subsection{Discussione sul \textit{WoW}}
+Lo \textit{sprint} chiuso è stato il primo con un numero di compiti abbastanza alto per persona. L'obbligo di gestirli e completarli entro la fine dello \textit{sprint} ha evidenziato, per alcuni membri, un'applicazione non ancora sufficientemente accurata di alcune regole definite nelle \textbf{Norme di Progetto}. Per questo motivo, il grafico \textit{burndown} di questo \textit{sprint} non è stato prodotto e alcuni \textit{branch} di progetto non risultano pienamente conformi alle norme. I membri sono stati invitati a rileggere le norme pertinenti e ad applicarle con maggiore attenzione nello \textit{sprint} successivo.
+
+\subsection{Pianificazione macro-attività a fine progetto}
+Dario ha preparato un diagramma di \textit{Gantt} relativo alle attività rimanenti da completare entro la fine del progetto, con tempistiche coerenti con le sotto-\textit{milestone} definite all'inizio della \textit{milestone} \textbf{PB}. Il documento è stato adottato come risorsa interna per la gestione del tempo residuo e mette in evidenza circa dieci attività principali. È stato pubblicato nel canale "gestione-risorse" su \textit{Discord}.
+
+\subsection{Discussione stato dei Test}
+I \textit{test di unità} sono stati scritti parzialmente solo per la parte backend del progetto. I test progettati in precedenza corrispondono a quelli definiti nel \textbf{Piano di Qualifica}, ma alla chiusura dello sviluppo non risultano sufficienti. È emerso che nessun membro conosce in modo abbastanza chiaro lo stato attuale dei test e l'obiettivo da raggiungere. Per questo motivo, i membri che durante il prossimo \textit{sprint} si occuperanno dello sviluppo dei test dovranno anche definire e implementare i test mancanti.
+
+\subsection{Incontro con Prof. Vardanega}
+Il gruppo ha discusso i dubbi e le difficoltà riscontrate e ha individuato gli argomenti da affrontare durante l'incontro di monitoraggio con il Prof. Vardanega previsto per il giorno successivo. La discussione proseguirà in modo asincrono su \textit{WhatsApp}, così da non prolungare l'incontro interno e permettere ai membri di riflettere meglio sui temi da presentare.
+
+\newpage
+% =========== ELIMINARE DA QUI SE NON SONO STATE DEFINITE ATTIVITÀ ===========
+\section{Compiti definiti} 
+
+\subsection{Nuovi Compiti}
+% NOTA: ogni compito deve avere una data di scadenza - richiesta dal professore per monitorabilità
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|l|X|l|}
+    \hline
+    \textbf{Membro} & \textbf{Descrizione} & \textbf{Scadenza} \\ \hline
+    \endfirsthead
+        \makecell[l]{Sara Ristovic} & Scrivere il verbale del 31 agosto & 01/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Scrivere il \textit{preventivo} \textit{sprint} 15 e il \textit{consuntivo} \textit{sprint} 14 & 01/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & Scrivere lo schema DB finale per la documentazione & 07/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Fare il grafico \textit{burndown} & 07/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Rendere le \textbf{NdP} più procedurali e meno narrativo-descrittive & 07/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Registro delle modifiche: separare approvazione e controllo in tutti i documenti & 07/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Sistemare retroattivamente altre sezioni del \textbf{PdP} & 07/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & \textbf{PdQ}: sistemare la sezione sulle valutazioni per il miglioramento & 07/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura introduzione & 01/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura capitolo sulle tecnologie & 02/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura sottocapitoli panoramica architetturale e architettura di deployment & 03/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura sottocapitolo architettura frontend & 04/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura sottocapitolo architettura backend & 04/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura sottocapitolo architettura design pattern & 05/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura capitolo flusso dei dati & 05/09/2026 \\ \hline
+        \makecell[l]{Sara Ristovic} & \textbf{Specifiche tecniche}: stesura capitolo stato dei requisiti & 06/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Sistemare gli \textit{Use Case} secondo il feedback del Prof. Cardin & 02/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Sistemare i requisiti secondo il feedback del Prof. Cardin & 02/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Riportare le modifiche ai requisiti nei documenti esterni connessi (progettazione e \textbf{PdQ}) & 02/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Manuale Utente: stesura Introduzione & 03/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Manuale Utente: stesura sezione di installazione e avvio & 06/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Manuale Utente: stesura sezione di guida all'interfaccia & 06/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Manuale Utente: stesura sezione di funzionalità AI & 06/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Manuale Utente: stesura sezione di risoluzione problemi ed errori & 06/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Manuale Utente: stesura Glossario del documento & 06/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Glossario: aggiungere il termine \textit{build}, presente nel \textbf{PdP}, e collegarlo & 03/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Glossario: inserire i nuovi termini delle \textbf{NdP} e collegarli & 07/09/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Fare le slide per l'incontro di monitoraggio con il Prof. Vardanega & 31/08/2026 \\ \hline
+        \makecell[l]{Dario Pirrone} & Preparare il DdB del 4/9 & 03/09/2026 \\ \hline
+        %%%%%%%%
+        \makecell[l]{Andrea Fistarol} & Assemblaggio del \textit{repository} dell'\textbf{MVP}: integrazione di frontend, backend, agenti e infrastruttura \textit{AWS} & 01/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Riallineamento sviluppo backend con il \textit{branch} develop & 02/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Controllare l'integrazione backend - frontend & 02/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Controllare l'integrazione backend - agenti & 02/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Controllare l'integrazione backend - \textit{AWS} & 02/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & \textit{Testing di sistema} per l'incontro con \textbf{VarGroup} & 07/09/2026 \\ \hline
+        \makecell[l]{Edoardo Granziero} & Aggiornare \textit{README} e .env.example per allinearli all'\textbf{MVP} & 02/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug di registrazione e login & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug della configurazione e validazione dei token & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug della selezione del \textit{repository} e dell'ambito di analisi & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug della dashboard dell'\textbf{Orchestratore} (selezione e avvio multiplo delle operazioni) & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug della generazione e visualizzazione dei report & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug end-to-end Agente Docs (\textit{README}, inline, \textit{API docs} via \textit{PR}) & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug end-to-end Agente Security (\textit{OWASP} + policy) & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug end-to-end Agente \textit{Changelog} (tecnico + business, pausa/ripresa) & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & Debug della connessione all'infrastruttura reale/staging (ECS, ALB, Mongo Atlas, Bedrock) & 07/09/2026 \\ \hline
+        \makecell[l]{Edoardo Granziero} & Implementazione ed esecuzione dei \textit{Test di Sistema} & 07/09/2026 \\ \hline
+        \makecell[l]{Samuele Bertin} & Testare e perfezionare il workflow CI/CD & 07/09/2026 \\ \hline
+        \makecell[l]{Edoardo Granziero} & Implementare ed eseguire \textit{test di unità} & 07/09/2026 \\ \hline
+        \makecell[l]{Edoardo Granziero} & Implementare ed eseguire \textit{test di integrazione} & 07/09/2026 \\ \hline
+        \makecell[l]{Andrea Fistarol} & \textbf{PdQ}: aggiornamento della sezione "Strategie di testing" in base ai test eseguiti & 07/09/2026 \\ \hline
+        \makecell[l]{Marco Barbiero} & Progettazione dell'integrazione di SonarQube per l'Agente Docs & 02/09/2026 \\ \hline
+        \makecell[l]{Marco Barbiero} & Progettazione dell'integrazione SAST per la scansione \textit{OWASP} & 02/09/2026 \\ \hline
+        \makecell[l]{Marco Barbiero} & Implementazione di SonarQube per l'Agente Docs & 03/09/2026 \\ \hline
+        \makecell[l]{Marco Barbiero} & Implementazione SAST per la scansione \textit{OWASP} & 03/09/2026 \\ \hline
+        \caption{Riepilogo dei nuovi compiti assegnati}\label{tab:nuovi-compiti} \\
+\end{xltabular}
+
+\subsection{Compiti in corso}
+% NOTA: ogni compito deve avere una data di scadenza - richiesta dal professore per monitorabilità
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|l|X|l|}
+    \hline
+    \textbf{Membro} & \textbf{Descrizione} & \textbf{Scadenza} \\ \hline
+    \endfirsthead
+        \makecell[l]{Edoardo Granziero} & Sviluppo backend: Meccanismo di sospensione/ripresa dell'input utente & 02/09/2026 \\ \hline
+        \makecell[l]{Edoardo Granziero} & Sviluppo backend: Assemblaggio e persistenza del report & 02/09/2026 \\ \hline
+        \makecell[l]{Edoardo Granziero} & Sviluppo backend: \textit{Endpoint} di consultazione dei report & 02/09/2026 \\ \hline
+        \makecell[l]{Edoardo Granziero} & Sviluppo backend: Esportazione PDF & 02/09/2026 \\ \hline
+        \caption{Riepilogo dei compiti in corso}\label{tab:compiti-in-corso} \\
+\end{xltabular}
+
+% ========================================== FINE SEZIONE
+\end{document}
