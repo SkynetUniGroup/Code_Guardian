@@ -90,14 +90,15 @@
 \begin{table}[h]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
+    \begin{tabularx}{\textwidth}{|c|c|X|p{2.2cm}|p{2.2cm}|p{2.2cm}|}
         \hline
-        \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        1.0.1 & 2026/08/21 & Rimossa la numerazione dall'indice, come suggerito dal Prof. Vardanega & Marco Barbiero & Dario Pirrone \\ \hline
-        1.0.0 & 2026/08/13 & Aggiunta di altri termini e allineamento per RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
-        0.2.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash \\ \hline
-        0.2.0 & 2026/05/22 & Inseriti primi termini & Dario Pirrone &   Samuele Bertin \\ \hline
-        0.1.0 & 2026/04/03 & Stesura della sezione "Introduzione" & Sara Ristovic &  Marco Barbiero \\ \hline
+        \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} & \textbf{Approvatore} \\ \hline
+        1.0.2 & 2026/09/05 & Aggiunta di altri termini da NdP e PdP & Samuele Bertin & Dario Pirrone & Dario Pirrone \\ \hline
+        1.0.1 & 2026/08/21 & Rimossa la numerazione dall'indice, come suggerito dal Prof. Vardanega & Marco Barbiero & Dario Pirrone & \textemdash \\ \hline
+        1.0.0 & 2026/08/13 & Aggiunta di altri termini e allineamento per RTB & Andrea Fistarol & Edoardo Granziero & \textemdash \\ \hline
+        0.2.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash & \textemdash \\ \hline
+        0.2.0 & 2026/05/22 & Inseriti primi termini & Dario Pirrone & Samuele Bertin & \textemdash \\ \hline
+        0.1.0 & 2026/04/03 & Stesura della sezione "Introduzione" & Sara Ristovic & Marco Barbiero & \textemdash \\ \hline
         \end{tabularx}
 \end{table}
 
@@ -156,6 +157,10 @@ scopi prefissati.
 \phantomsection
 \addcontentsline{toc}{subsection}{A}
 \vspace{0.2cm}
+
+\noindent\hypertarget{aaa-pattern}{\textbf{AAA Pattern (Arrange-Act-Assert)}} \\[0.1em]
+Convenzione utilizzata per strutturare la scrittura dei \textit{Test di Unità}, suddividendone il contenuto in tre fasi distinte: \textit{Arrange} (preparazione dei dati e delle condizioni iniziali), \textit{Act} (esecuzione dell'operazione da testare) e \textit{Assert} (verifica del risultato ottenuto rispetto a quello atteso).
+\vspace{0.5cm}
 
 \noindent\hypertarget{actual-cost}{\textbf{Actual Cost (AC)}} \\[0.1em]
 Costo effettivo e documentato sostenuto dal gruppo per il lavoro completato in un dato periodo di tempo. Rappresenta la spesa reale affrontata per portare a termine i task pianificati.
@@ -228,6 +233,10 @@ La componente "dietro le quinte" di un'applicazione, non direttamente accessibil
 Modalità di comunicazione o di lavoro iterativa, caratterizzata da un continuo e rapido scambio di informazioni, \textit{feedback} o revisioni tra due o più interlocutori. In ambito progettuale, indica un processo collaborativo fortemente dinamico e bidirezionale, in cui le fasi operative (come, ad esempio, la stesura di un documento e la sua verifica) si alternano ripetutamente per affinare in tempi brevi il risultato finale.
 \vspace{0.5cm}
 
+\noindent\hypertarget{backlog}{\textbf{Backlog}} \\[0.1em]
+Elenco ordinato e dinamico di tutte le attività, funzionalità o correzioni ancora da svolgere all’interno di un progetto. Nel contesto del progetto, raccoglie le \textit{issue} non ancora prese in carico o rimaste in sospeso al termine di uno \textit{sprint}, in attesa di essere pianificate in quelli successivi.
+\vspace{0.5cm}
+
 \noindent\hypertarget{baseline}{\textbf{Baseline}} \\[0.1em]
 Versione approvata, stabile e congelata di un insieme di elementi o artefatti di progetto, utilizzata come riferimento fondamentale per la misurazione dell'avanzamento.
 \vspace{0.5cm}
@@ -254,6 +263,10 @@ Indicatore economico utilizzato nell'Ingegneria del Software (e più in generale
 
 \noindent\hypertarget{bug}{\textbf{Bug}} \\[0.1em]
 Errore, difetto o malfunzionamento all'interno del codice sorgente di un programma software. Un bug causa un comportamento inatteso, producendo risultati errati, anomalie visive o arresti anomali del sistema, e richiede un intervento mirato di analisi e correzione (debugging) da parte degli sviluppatori.
+\vspace{0.5cm}
+
+\noindent\hypertarget{build}{\textbf{Build}} \\[0.1em]
+Processo automatizzato di compilazione, assemblaggio e verifica sintattica (tramite linter) del codice sorgente di un progetto, finalizzato a produrre una versione eseguibile o distribuibile del software. Nel progetto viene eseguito nell’ambito degli strumenti di \textit{Continuous Integration} (CI) per validare che le modifiche apportate al codice non introducano errori.
 \vspace{0.5cm}
 
 \noindent\hypertarget{build-success-rate}{\textbf{Build Success Rate}} \\[0.1em]
@@ -326,6 +339,10 @@ Pratica di sviluppo software in cui ogni modifica al codice che supera con succe
 Pratica di ingegneria del software che consiste nell'integrazione frequente e automatizzata del codice sviluppato dai vari membri di un team all'interno del ramo principale del repository. Prevede l'esecuzione automatica di suite di test e di analisi statica ad ogni aggiornamento per intercettare tempestivamente problemi di integrazione, regressioni o errori introdotti dalle modifiche.
 \vspace{0.5cm}
 
+\noindent\hypertarget{conventional-commits}{\textbf{Conventional Commits}} \\[0.1em]
+Convenzione standardizzata per la scrittura dei messaggi di \textit{Commit}, che ne struttura il contenuto nella forma \texttt{tipo(ambito): descrizione} (ad esempio \texttt{feat}, \texttt{fix}, \texttt{docs}). Facilita la leggibilità della cronologia del \textit{repository} e la generazione automatica dei \textit{Changelog}. Adottata dal gruppo come standard per la scrittura di tutti i commit del progetto.
+\vspace{0.5cm}
+
 \noindent\hypertarget{copertura-del-codice}{\textbf{Copertura del Codice (Code Coverage)}} \\[0.1em]
 Metrica espressa in percentuale che indica la quantità di linee di codice sorgente che vengono effettivamente eseguite ed esaminate durante l'esecuzione di una suite di test automatici (test di unità). Un code coverage alto aumenta la confidenza che il software sia stato ampiamente verificato prima del rilascio.
 \vspace{0.1cm}
@@ -360,8 +377,16 @@ Presentazione pratica e dal vivo ("live") di un prodotto o di una sua funzionali
 Fase del ciclo di vita del software che consiste nel rilascio, nella pubblicazione e nella messa in opera dell'applicazione o dei servizi ad essa connessi. Nel documento è citato anche in ambito documentale in riferimento al flusso di \textit{Continuous Deployment} automatizzato per l'aggiornamento del sito web.
 \vspace{0.5cm}  
 
+\noindent\hypertarget{design-pattern}{\textbf{Design-Pattern}} \\[0.1em]
+Soluzione progettuale generale, riutilizzabile e collaudata, adottata per risolvere un problema ricorrente nella progettazione del software. Non rappresenta codice pronto all’uso, ma uno schema concettuale di riferimento che guida le scelte architetturali del Progettista durante il system design.
+\vspace{0.5cm}
+
 \noindent\hypertarget{discord}{\textbf{Discord}} \\[0.1em]
 Applicazione di comunicazione organizzata in comunità o canali tematici, utilizzata primariamente per il coordinamento interno, i messaggi estesi e i ritrovi virtuali del gruppo.
+\vspace{0.5cm}
+
+\noindent\hypertarget{docker-compose}{\textbf{Docker Compose}} \\[0.1em]
+Strumento che permette di definire e gestire applicazioni composte da più container tramite un file di configurazione dichiarativo. Nel progetto viene utilizzato durante i \textit{Test di Integrazione} per avviare rapidamente servizi esterni (come un'istanza di MongoDB) in un ambiente isolato e riproducibile.
 \vspace{0.5cm}
 
 \noindent\hypertarget{downtime}{\textbf{Downtime}} \\[0.1em]
@@ -402,11 +427,16 @@ Stima aggiornata del costo totale e finale del progetto, ricalcolata al momento 
 \noindent\hypertarget{estimate-to-complete}{\textbf{Estimate To Complete (ETC)}} \\[0.1em]
 Stima del costo aggiuntivo necessario per completare la parte rimanente del progetto, ricalcolata al momento della misurazione.
 \vspace{0.5cm}
+\newpage
 
 \subsection*{F}
 \phantomsection
 \addcontentsline{toc}{subsection}{F}
 \vspace{0.2cm}
+
+\noindent\hypertarget{fixture}{\textbf{Fixture}} \\[0.1em]
+Insieme di dati o configurazioni predefinite utilizzate per preparare un ambiente di test controllato e riproducibile, garantendo che ogni test parta da uno stato noto e consistente.
+\vspace{0.5cm}
 
 \noindent\hypertarget{flesch-reading-ease}{\textbf{Flesch Reading Ease}} \\[0.1em]
 Metrica e indice standardizzato utilizzato per misurare il grado di leggibilità di un testo. Nel sistema è impiegato per garantire che i report di business generati in lingua inglese dall'Agente Changelog risultino facilmente comprensibili.
@@ -432,6 +462,10 @@ Pagina iniziale e di copertina dei documenti ufficiali di progetto, contenente m
 
 \noindent\hypertarget{git}{\textbf{Git}} \\[0.1em]
 Sistema open-source e distribuito di controllo della versione che consente di monitorare ed organizzare parallelamente la cronologia di avanzamento del codice sorgente.
+\vspace{0.5cm}
+
+\noindent\hypertarget{git-flow}{\textbf{Git Flow}} \\[0.1em]
+Modello di \textit{Branching} per \textit{Git} che definisce una struttura standardizzata di rami (tipicamente \texttt{main}, \texttt{develop}, \texttt{feature}, \texttt{release} e \texttt{hotfix}) per organizzare lo sviluppo parallelo e il rilascio del software.
 \vspace{0.5cm}
 
 \noindent\hypertarget{github}{\textbf{GitHub}} \\[0.1em]
@@ -557,8 +591,16 @@ Framework di supporto per il linguaggio Python che viene utilizzato dal team per
 Linguaggio di tipo mark-up specializzato e compilato, ampiamente utilizzato per la redazione di documenti professionali, tecnici e scientifici. Permette all'utente di concentrarsi sul contenuto testuale, gestendo con estrema precisione e uniformità l'impaginazione, la struttura e la veste grafica del documento finale.
 \vspace{0.5cm}
 
+\noindent\hypertarget{linter}{\textbf{Linter}} \\[0.1em]
+Strumento di \textit{Analisi statica} che esamina il codice sorgente per individuare errori di sintassi, violazioni delle convenzioni di stile o pattern potenzialmente problematici, senza eseguire il codice. Nel progetto viene impiegato tramite Biome per la componente TypeScript e Pylint per la componente Python.
+\vspace{0.5cm}
+
 \noindent\hypertarget{llm}{\textbf{LLM (Large Language Model)}} \\[0.1em]
 Acronimo che indica un Modello Linguistico di Grandi Dimensioni. Si tratta di un avanzato sistema di intelligenza artificiale basato su reti neurali ampie, addestrato su enormi quantità di dati testuali per analizzare e generare il linguaggio naturale in modo sofisticato e molto simile all'essere umano.
+\vspace{0.5cm}
+
+\noindent\hypertarget{lockfile}{\textbf{Lockfile}} \\[0.1em]
+File generato automaticamente da un package manager (nel progetto, pnpm) che registra le versioni esatte di tutte le dipendenze installate, garantendo installazioni identiche e riproducibili su ambienti diversi. Nel progetto corrisponde al file \texttt{pnpm-lock.yaml}, che non deve mai essere modificato manualmente.
 \vspace{0.1cm}
 \newpage
 
@@ -743,6 +785,10 @@ L'azienda, l'ente o la persona fisica che presenta l'idea iniziale, redige il ca
 
 \noindent\hypertarget{pull-request}{\textbf{Pull Request (PR)}} \\[0.1em]
 Funzionalità fondamentale dei moderni sistemi di controllo di versione e hosting del codice (come GitHub), attraverso cui si richiede formalmente che un pacchetto di modifiche appena sviluppato venga esaminato. Prima che il nuovo codice venga unito in via definitiva al ramo principale del software, la Pull Request funge da spazio di discussione, revisione e validazione.
+\vspace{0.5cm}
+
+\noindent\hypertarget{pytest}{\textbf{Pytest}} \\[0.1em]
+Framework di test per il linguaggio Python, diffuso per la sua sintassi concisa e l'ampio ecosistema di plugin. Nel progetto viene utilizzato per l'esecuzione dei \textit{Test di Unità} e dei \textit{Test di Integrazione} della componente Python, con configurazione definita nel file \texttt{pytest.ini}.
 \vspace{0.5cm}
 
 \noindent\hypertarget{python}{\textbf{Python}} \\[0.1em]
@@ -940,6 +986,14 @@ Il termine assume diversi significati a seconda del contesto di utilizzo:
 Strumento software, applicazione o piattaforma di supporto utilizzata dai membri del team per facilitare e automatizzare le attività di sviluppo, comunicazione, coordinamento o gestione del codice sorgente (es. \textit{GitHub}, \textit{editor collaborativi}).
 \vspace{0.5cm}
 
+\noindent\hypertarget{trigger}{\textbf{Trigger}} \\[0.1em]
+Evento che avvia automaticamente l'esecuzione di un processo. Nel contesto dei \textit{Use Case}, identifica l'evento che dà inizio allo scenario descritto; nel contesto della \textit{Continuous Integration}, identifica l'evento (ad esempio una \textit{Pull Request}) che avvia automaticamente una pipeline di \textit{GitHub Actions}.
+\vspace{0.5cm}
+
+\noindent\hypertarget{typescript}{\textbf{TypeScript}} \\[0.1em]
+Linguaggio di programmazione open-source sviluppato da Microsoft come superset di JavaScript, che ne estende la sintassi introducendo un sistema di tipizzazione statica opzionale. Il codice TypeScript viene convertito (transpiled) in JavaScript standard prima dell'esecuzione. Nel progetto è il linguaggio adottato per la componente Backend (tramite NestJS) e per la relativa suite di test.
+\vspace{0.5cm}
+
 \newpage
 \subsection*{U}
 \phantomsection
@@ -970,6 +1024,14 @@ Descrizione concisa di una funzionalità software, scritta solitamente dal punto
 
 \noindent\hypertarget{verificatore}{\textbf{Verificatore}} \\[0.1em]
 Ruolo di progetto assegnato a un membro del team con il compito di controllare che i prodotti (sia intermedi che finali, codice o documenti) portino al soddisfacimento dei requisiti e che rispettino gli standard di qualità stabiliti lungo tutto il ciclo di vita del progetto. Fornisce riscontri oggettivi per individuare incongruenze, ed è previsto che non svolga la verifica sul proprio stesso lavoro.
+\vspace{0.5cm}
+
+\noindent\hypertarget{vite}{\textbf{Vite}} \\[0.1em]
+Strumento di build e ambiente di sviluppo per applicazioni JavaScript/TypeScript. Fornisce un server di sviluppo con ricaricamento rapido durante lo sviluppo e orchestra il processo di build per la produzione. Nel progetto è configurato tramite il file \texttt{vite.config.ts} e si appoggia a Oxc per il transpiling e a Rolldown per il bundling.
+\vspace{0.5cm}
+
+\noindent\hypertarget{vitest}{\textbf{Vitest}} \\[0.1em]
+Framework di test per applicativi JavaScript/TypeScript, integrato nativamente con l'ecosistema \textit{Vite}. Nel progetto viene utilizzato per i \textit{Test di Unità} e i \textit{Test di Integrazione} della componente TypeScript, con copertura del codice misurata tramite il motore V8.
 \vspace{0.5cm}
 
 \noindent\hypertarget{vulnerabilita}{\textbf{Vulnerabilità}} \\[0.1em]
