@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -30,7 +30,7 @@ Severity = Literal["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
 SEVERITY_ORDER: tuple[str, ...] = ("INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL")
 
 
-class ErrorKind(str, Enum):
+class ErrorKind(StrEnum):
     """Enumeration of possible error kinds."""
 
     TIMEOUT = "TIMEOUT"

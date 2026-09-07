@@ -138,6 +138,8 @@ async def start_agent(request: StartAgentRequest):
     except Exception as e:
         return AgentStepResult(status="failed", error=f"Malformed ContextRef: {e!s}")
 
+    toolset = GitHubToolset(user_id=user_id, task_id=request.taskId)
+
     initial_state = AgentState(
         user_id=user_id,
         task_id=request.taskId,

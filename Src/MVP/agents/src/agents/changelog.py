@@ -4,14 +4,14 @@ Reads issues from GitHub, discards invalid ones, and generates a technical chang
 """
 
 import re
-from typing import Any, List, Optional, Tuple
+from typing import Any
 
 from langgraph.types import interrupt
 
+from ..config import settings
 from ..github_toolset import GitHubToolset
 from ..graph import AgentCancelled
 from ..models import Block, ChangelogItemBlock, Proposal, TextBlock
-from ..config import settings
 from ._base import load_prompt_template, render_prompt
 
 
@@ -40,7 +40,10 @@ class ChangelogLoader:
         self.operation = operation
 
     async def load(
-        self, context_ref: Any, toolset: GitHubToolset, agent_payload: dict = None
+        self,
+        context_ref: Any,
+        toolset: GitHubToolset,
+        agent_payload: dict | None = None,
     ) -> dict:
         """Loads the context for the changelog agent.
 
@@ -114,7 +117,7 @@ class ChangelogTechnicalProfile:
     operation = "CHANGELOG_TECHNICAL"
     uses_tools = False
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the prompt using the context data.
 
         Args:
@@ -128,9 +131,7 @@ class ChangelogTechnicalProfile:
             template_data, sprint_id=ctx["sprint_id"], tasks=ctx["tasks_formatted"]
         )
 
-    def parse_output(
-        self, raw: str, ctx: dict
-    ) -> Tuple[List[Block], Optional[Proposal]]:
+    def parse_output(self, raw: str, ctx: dict) -> tuple[list[Block], Proposal | None]:
         """Parses the raw output from the model into structured blocks.
 
         Args:
@@ -141,7 +142,7 @@ class ChangelogTechnicalProfile:
             Tuple[List[Block], Optional[Proposal]]: A tuple containing the list of blocks
                 and an optional proposal.
         """
-        blocks: List[Block] = [TextBlock(order=0, markdown=raw.strip())]
+        blocks: list[Block] = [TextBlock(order=0, markdown=raw.strip())]
         excluded = ctx.get("excluded_tasks", [])
 
         if excluded:
@@ -165,7 +166,7 @@ class ChangelogBusinessProfile:
     operation = "CHANGELOG_BUSINESS"
     uses_tools = False
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the prompt depending on the current phase (TECHNICAL or BUSINESS).
 
         Args:
@@ -192,7 +193,7 @@ class ChangelogBusinessProfile:
 
     def parse_output(
         self, raw: str, ctx: dict
-    ) -> Tuple[List[Block], Optional[Proposal], bool]:
+    ) -> tuple[list[Block], Proposal | None, bool]:
         """Parses the output and handles the multi-phase business changelog generation.
 
         Args:
@@ -209,7 +210,7 @@ class ChangelogBusinessProfile:
         """
         if ctx.get("phase", "TECHNICAL") == "TECHNICAL":
             # Phase 1: Parse the technical output
-            blocks: List[Block] = [TextBlock(order=0, markdown=raw.strip())]
+            blocks: list[Block] = [TextBlock(order=0, markdown=raw.strip())]
 
             excluded = ctx.get("excluded_tasks", [])
             if excluded:

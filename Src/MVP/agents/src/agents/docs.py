@@ -6,7 +6,7 @@ Finds undocumented code, queries the LLM, and produces a diff Proposal.
 import difflib
 import re
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
+from typing import Any
 
 from ..config import settings
 from ..github_toolset import GitHubToolset
@@ -25,7 +25,7 @@ class DocsLoader:
         """
         self.operation = operation
 
-    def _find_target_units(self, content: str, filepath: str) -> List[str]:
+    def _find_target_units(self, content: str, filepath: str) -> list[str]:
         """Local pre-analysis to identify functions/classes for documentation or alignment check.
 
         Args:
@@ -41,14 +41,12 @@ class DocsLoader:
         if filepath.endswith(".py"):
             for i, line in enumerate(lines):
                 stripped = line.strip()
-                if stripped.startswith("def ") or stripped.startswith("class "):
+                if stripped.startswith(("def ", "class ")):
                     has_doc = False
                     for j in range(i + 1, min(i + 4, len(lines))):
                         next_line = lines[j].strip()
                         if next_line:
-                            if next_line.startswith('"""') or next_line.startswith(
-                                "'''"
-                            ):
+                            if next_line.startswith(('"""', "'''")):
                                 has_doc = True
                             break
 
@@ -88,7 +86,7 @@ class DocsLoader:
 
         return targets
 
-    def _find_undocumented_endpoints(self, content: str, filepath: str) -> List[str]:
+    def _find_undocumented_endpoints(self, content: str, filepath: str) -> list[str]:
         """Local pre-analysis to identify EXCLUSIVELY undocumented API routes/endpoints.
 
         Args:
@@ -119,11 +117,7 @@ class DocsLoader:
 
                 for j in range(max(0, i - 3), min(len(lines), i + 4)):
                     line_check = lines[j].strip()
-                    if (
-                        line_check.startswith("/**")
-                        or line_check.startswith('"""')
-                        or line_check.startswith("'''")
-                    ):
+                    if line_check.startswith(("/**", '"""', "'''")):
                         has_doc = True
                         break
 
@@ -142,7 +136,10 @@ class DocsLoader:
         return undocumented
 
     async def load(
-        self, context_ref: Any, toolset: GitHubToolset, agent_payload: dict = None
+        self,
+        context_ref: Any,
+        toolset: GitHubToolset,
+        agent_payload: dict | None = None,
     ) -> dict:
         """Loads the context based on the current operation type.
 
@@ -239,8 +236,8 @@ class BaseDocsDiffProfile:
         self._ctx = {}
 
     def parse_output(
-        self, raw: str, ctx: dict = None
-    ) -> Tuple[List[Block], Optional[Proposal]]:
+        self, raw: str, ctx: dict | None = None
+    ) -> tuple[list[Block], Proposal | None]:
         """Parses the raw model output.
 
         Args:
@@ -251,7 +248,7 @@ class BaseDocsDiffProfile:
         """
         return self._shared_docs_parser(raw)
 
-    def _shared_docs_parser(self, raw: str) -> Tuple[List[Block], Optional[Proposal]]:
+    def _shared_docs_parser(self, raw: str) -> tuple[list[Block], Proposal | None]:
         """Shared parser for Proposal (unified diff) and Warning generation.
 
         Args:
@@ -261,7 +258,7 @@ class BaseDocsDiffProfile:
             Tuple[List[Block], Optional[Proposal]]: The parsed blocks and diff proposal.
         """
         data = extract_json(raw)
-        blocks: List[Block] = []
+        blocks: list[Block] = []
         order = 0
 
         for w in data.get("warnings", []):
@@ -322,7 +319,7 @@ class DocsInlineProfile(BaseDocsDiffProfile):
 
     operation = "DOCS_INLINE"
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the system and user prompts.
 
         Args:
@@ -347,7 +344,7 @@ class DocsApiProfile(BaseDocsDiffProfile):
 
     operation = "DOCS_API"
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the system and user prompts using the API-specific template.
 
         Args:
@@ -378,7 +375,7 @@ class DocsReadmeProfile:
         """Initializes the profile."""
         self._ctx = {}
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the system and user prompts incorporating the existing README.
 
         Args:
@@ -395,7 +392,7 @@ class DocsReadmeProfile:
         )
         readme_template = ""
         if template_path.exists():
-            with open(template_path, "r", encoding="utf-8") as f:
+            with open(template_path, encoding="utf-8") as f:
                 readme_template = f.read()
         else:
             readme_template = "# README\n\nNo default template found."
@@ -409,8 +406,8 @@ class DocsReadmeProfile:
         )
 
     def parse_output(
-        self, raw: str, ctx: dict = None
-    ) -> Tuple[List[Block], Optional[Proposal]]:
+        self, raw: str, ctx: dict | None = None
+    ) -> tuple[list[Block], Proposal | None]:
         """Parses the raw output and calculates the unified diff against the original README.
 
         Args:

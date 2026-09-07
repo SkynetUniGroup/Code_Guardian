@@ -186,7 +186,7 @@ class SecurityProfile:
 Analyzes the source code looking for OWASP Top 10 vulnerabilities.
 """
 
-from typing import Any, List, Optional, Tuple
+from typing import Any
 
 from ..config import settings
 from ..github_toolset import GitHubToolset
@@ -232,7 +232,10 @@ class SecurityLoader:
         self.operation = operation
 
     async def load(
-        self, context_ref: Any, toolset: GitHubToolset, agent_payload: dict = None
+        self,
+        context_ref: Any,
+        toolset: GitHubToolset,
+        agent_payload: dict | None = None,
     ) -> dict:
         """Loads the security context by resolving the file tree and policy.
 
@@ -305,7 +308,7 @@ class OwaspScanProfile:
     max_tool_rounds = settings.max_tool_rounds
     uses_tools = True
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the system and user prompts.
 
         Args:
@@ -318,8 +321,8 @@ class OwaspScanProfile:
         return render_prompt(template_data, policy=ctx["policy"], files=ctx["files"])
 
     def parse_output(
-        self, raw: str, ctx: dict = None
-    ) -> Tuple[List[Block], Optional[Proposal]]:
+        self, raw: str, ctx: dict | None = None
+    ) -> tuple[list[Block], Proposal | None]:
         """Parses the raw output into FindingBlocks.
 
         Args:
@@ -330,7 +333,7 @@ class OwaspScanProfile:
             Tuple[List[Block], Optional[Proposal]]: The parsed blocks and an optional proposal.
         """
         data = extract_json(raw)
-        blocks: List[Block] = []
+        blocks: list[Block] = []
 
         for order, item in enumerate(data.get("findings", [])):
             rem_data = item.get("remediation", {})
@@ -381,7 +384,7 @@ class SecurityPolicyProfile:
     max_tool_rounds = settings.max_tool_rounds
     uses_tools = True
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the system and user prompts.
 
         Args:
@@ -394,8 +397,8 @@ class SecurityPolicyProfile:
         return render_prompt(template_data, policy=ctx["policy"], files=ctx["files"])
 
     def parse_output(
-        self, raw: str, ctx: dict = None
-    ) -> Tuple[List[Block], Optional[Proposal]]:
+        self, raw: str, ctx: dict | None = None
+    ) -> tuple[list[Block], Proposal | None]:
         """Parses the raw output into PolicyViolationBlocks.
 
         Args:
@@ -406,7 +409,7 @@ class SecurityPolicyProfile:
             Tuple[List[Block], Optional[Proposal]]: The parsed blocks and an optional proposal.
         """
         data = extract_json(raw)
-        blocks: List[Block] = []
+        blocks: list[Block] = []
 
         for order, item in enumerate(data.get("findings", [])):
             rem_data = item.get("remediation", {})
