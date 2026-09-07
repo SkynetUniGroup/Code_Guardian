@@ -308,4 +308,107 @@ describe('ContextsService', () => {
       await expect(service.create('user1', baseDto)).resolves.toBeDefined();
     });
   });
+
+  /**
+   * TU_22 (RV.7, RF.24) — linguaggi supportati e avviso non bloccante.
+   *
+   * Corrispondenza PARZIALE, e il motivo è un difetto aperto documentato qui
+   * sotto con due `it.failing`: RV.7 (i tre linguaggi supportati passano
+   * senza avviso) è verificabile e regge; RF.24 (per ogni altro linguaggio
+   * un avviso non bloccante) non è implementato da nessuna parte —
+   * `detectLanguage` mappa qualunque estensione fuori da ts/tsx/js/jsx/py su
+   * 'unknown' e `detectLanguages` filtra via proprio quel valore, quindi
+   * l'informazione da cui l'avviso dovrebbe nascere viene scartata prima di
+   * arrivare al contesto. Da non confondere con RV.8, la lingua *naturale*
+   * del README, che invece esiste e ha il suo campo dedicato.
+   */
+  describe('TU_22 (RV.7, RF.24) — linguaggi supportati e avviso non bloccante', () => {
+    /** Repository interamente nei tre linguaggi supportati da RV.7. */
+    const alberoSupportato = [
+      { path: 'src/index.ts', type: 'file' as const, sizeBytes: 10 },
+      { path: 'src/App.jsx', type: 'file' as const, sizeBytes: 10 },
+      { path: 'scripts/deploy.py', type: 'file' as const, sizeBytes: 10 },
+    ];
+
+    /** Repository in un linguaggio fuori dai tre supportati. */
+    const alberoNonSupportato = [
+      { path: 'cmd', type: 'dir' as const, sizeBytes: 0 },
+      { path: 'cmd/main.go', type: 'file' as const, sizeBytes: 10 },
+      { path: 'internal/store.go', type: 'file' as const, sizeBytes: 10 },
+    ];
+
+    /** Il documento che il servizio ha chiesto di persistere. */
+    function persistito(): Record<string, unknown> {
+      return model.create.mock.calls[0][0];
+    }
+
+    /**
+     * I campi booleani accesi nel documento persistito. È il modo in cui
+     * questo test guarda "c'è un avviso?" senza fissare il nome di un campo
+     * che oggi non esiste: sceglierlo spetta a chi implementerà RF.24.
+     */
+    function avvisiAccesi(oggetto: Record<string, unknown>): string[] {
+      return Object.entries(oggetto)
+        .filter(([, valore]) => valore === true)
+        .map(([chiave]) => chiave);
+    }
+
+    it('RV.7 — TypeScript, JavaScript e Python sono riconosciuti e passano senza avviso', async () => {
+      github.getTree.mockResolvedValue(alberoSupportato);
+
+      await service.create('user1', baseDto);
+
+      const documento = persistito();
+      expect((documento.detectedLanguages as string[]).sort()).toEqual([
+        'javascript',
+        'python',
+        'typescript',
+      ]);
+      // Nessun avviso: né quello di RF.24, né quello di RV.8 sul README.
+      expect(avvisiAccesi(documento)).toEqual([]);
+    });
+
+    it('RF.24 — un linguaggio non supportato non blocca la creazione del contesto', async () => {
+      // La metà di RF.24 che il codice rispetta davvero: l'avviso è "non
+      // bloccante", e infatti il contesto viene creato e persistito.
+      github.getTree.mockResolvedValue(alberoNonSupportato);
+
+      await expect(service.create('user1', baseDto)).resolves.toBeDefined();
+      expect(model.create).toHaveBeenCalledTimes(1);
+    });
+
+    it.failing(
+      'DIFETTO APERTO — il linguaggio di un repository non supportato non arriva nemmeno al contesto',
+      async () => {
+        // detectLanguage restituisce 'unknown' per .go, e detectLanguages lo
+        // filtra: il contesto di un repository interamente scritto in Go
+        // risulta con detectedLanguages vuoto, cioè indistinguibile da quello
+        // di un repository vuoto. Finché l'informazione viene scartata qui,
+        // nessuno strato a valle — backend, API o interfaccia — può ricavare
+        // l'avviso di RF.24, perché non c'è più niente da cui ricavarlo.
+        github.getTree.mockResolvedValue(alberoNonSupportato);
+
+        await service.create('user1', baseDto);
+
+        expect(persistito().detectedLanguages).not.toEqual([]);
+      },
+    );
+
+    it.failing(
+      "DIFETTO APERTO — la creazione del contesto non emette l'avviso non bloccante di RF.24",
+      async () => {
+        // L'altra metà di RF.24: l'avviso. AnalysisContext non ha un campo
+        // per portarlo (ha solo nonEnglishReadmeDetected, che è RV.8), e
+        // ContextsService non ne calcola alcuno.
+        github.getTree.mockResolvedValue(alberoNonSupportato);
+
+        const risultato = await service.create('user1', baseDto);
+
+        expect(avvisiAccesi(persistito())).not.toEqual([]);
+        expect(
+          avvisiAccesi(risultato as unknown as Record<string, unknown>),
+        ).not.toEqual([]);
+      },
+    );
+  });
 });
