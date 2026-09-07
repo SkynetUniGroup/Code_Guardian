@@ -103,7 +103,7 @@ export function doppioAgente(): DoppioAgente {
 }
 
 export interface DoppioScritturaGithub {
-  createPullRequestFromProposal: jest.Mock;
+  openPullRequestForProposal: jest.Mock;
 }
 
 export interface AmbienteE2E {
@@ -144,7 +144,7 @@ export async function avviaAmbiente(
   const github = doppioGithub();
   const agente = doppioAgente();
   const scritturaGithub: DoppioScritturaGithub = {
-    createPullRequestFromProposal: jest.fn(),
+    openPullRequestForProposal: jest.fn(),
   };
 
   let costruttore = Test.createTestingModule({ imports: [AppModule] })
