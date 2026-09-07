@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import {
+  ArgumentMetadata,
   BadRequestException,
   NotFoundException,
   UnprocessableEntityException,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ContextsService } from './contexts.service';
 import { AnalysisContext } from './schemas/analysis-context.schema';
@@ -410,5 +412,342 @@ describe('ContextsService', () => {
         ).not.toEqual([]);
       },
     );
+  });
+});
+
+/**
+ * TU_20 (RF.19, RF.20, RF.21, RF.22, RF.29, RF.30) — la sequenza di
+ * validazione del contesto si interrompe al primo passo fallito.
+ *
+ * La proprietà da dimostrare non è "solleva l'eccezione giusta" — quello lo
+ * verificano già i blocchi "step 4/5/8/9" qui sopra — ma che i passi a valle
+ * *non vengano eseguiti*. Servono quindi spie sui collaboratori: ogni
+ * scenario dichiara l'elenco esatto dei collaboratori toccati, così un
+ * fallimento dice sia "si è fermato troppo presto" sia "ha continuato dopo
+ * l'errore", e non solo che qualcosa è andato storto.
+ *
+ * Perché un modulo proprio invece del beforeEach del file: qui
+ * RepoResolverService è quello vero, non un doppio. I passi 2 (estrazione di
+ * owner/nome) e 3 (raggiungibilità) vivono dentro quel servizio, e con un
+ * doppio si potrebbe solo far fallire "i passi 1-3" in blocco, senza
+ * distinguerli né mostrare che il passo 3 non parte quando il 2 fallisce.
+ */
+describe('TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito', () => {
+  let servizio: ContextsService;
+  let credenziali: { getDecryptedToken: jest.Mock };
+  let modello: { create: jest.Mock };
+  let github: {
+    getRepository: jest.Mock;
+    listRefs: jest.Mock;
+    compareCommits: jest.Mock;
+    getTree: jest.Mock;
+    getReadme: jest.Mock;
+  };
+
+  const URL_REPO = 'https://github.com/owner/repo';
+  const SHA_HEAD = 'branch-head-sha';
+
+  const albero = [
+    { path: 'src', type: 'dir' as const, sizeBytes: 0 },
+    { path: 'src/index.ts', type: 'file' as const, sizeBytes: 10 },
+  ];
+
+  const dtoBase: CreateContextDto = {
+    repoUrl: URL_REPO,
+    branch: 'main',
+    scopeType: 'FULL_REPOSITORY',
+  };
+
+  /**
+   * I collaboratori nell'ordine in cui la sequenza li interpella, ciascuno
+   * con il passo che rappresenta. I passi 1, 6 e 8 non compaiono perché non
+   * chiamano nessuno: il primo sta nel DTO, il sesto è derivato, l'ottavo è
+   * dichiarativo — hanno un test dedicato ciascuno più sotto.
+   */
+  function tracciato(): string[] {
+    const spie: [string, jest.Mock][] = [
+      ['credenziale', credenziali.getDecryptedToken],
+      ['passo 3: getRepository', github.getRepository],
+      ['passo 4: listRefs', github.listRefs],
+      ['passo 5: compareCommits', github.compareCommits],
+      ['passo 7: getTree', github.getTree],
+      ['RV.8: getReadme', github.getReadme],
+      ['passo 10: create', modello.create],
+    ];
+    return spie
+      .filter(([, spia]) => spia.mock.calls.length > 0)
+      .map(([nome]) => nome);
+  }
+
+  beforeEach(async () => {
+    credenziali = { getDecryptedToken: jest.fn().mockResolvedValue('token') };
+    github = {
+      getRepository: jest.fn().mockResolvedValue({
+        owner: 'owner',
+        name: 'repo',
+        isPrivate: false,
+        defaultBranch: 'main',
+        primaryLanguage: 'TypeScript',
+      }),
+      listRefs: jest.fn().mockResolvedValue({
+        branches: [{ name: 'main', sha: SHA_HEAD }],
+        tags: [],
+      }),
+      compareCommits: jest.fn().mockResolvedValue({ status: 'identical' }),
+      getTree: jest.fn().mockResolvedValue(albero),
+      getReadme: jest.fn().mockResolvedValue(null),
+    };
+    modello = {
+      create: jest.fn().mockImplementation((doc: Record<string, unknown>) =>
+        Promise.resolve({ _id: { toString: () => 'ctx1' }, ...doc }),
+      ),
+    };
+
+    const modulo: TestingModule = await Test.createTestingModule({
+      providers: [
+        ContextsService,
+        RepoResolverService,
+        { provide: getModelToken(AnalysisContext.name), useValue: modello },
+        { provide: CredentialsService, useValue: credenziali },
+        { provide: GithubClientService, useValue: github },
+        { provide: FRANC, useValue: jest.fn().mockReturnValue('eng') },
+      ],
+    }).compile();
+
+    servizio = modulo.get(ContextsService);
+  });
+
+  it('il percorso completo tocca i collaboratori una volta ciascuno, nell’ordine previsto', async () => {
+    // Il metro di paragone di tutti gli scenari sotto: senza, "non ha
+    // chiamato getTree" sarebbe vero anche per un servizio che non chiama mai
+    // niente.
+    await servizio.create('user1', { ...dtoBase, commitSha: 'sha-fissato' });
+
+    expect(tracciato()).toEqual([
+      'credenziale',
+      'passo 3: getRepository',
+      'passo 4: listRefs',
+      'passo 5: compareCommits',
+      'passo 7: getTree',
+      'RV.8: getReadme',
+      'passo 10: create',
+    ]);
+    expect(github.getTree).toHaveBeenCalledTimes(1);
+  });
+
+  describe('passo 1 — sintassi dell’URL (RF.19)', () => {
+    // Il passo 1 non è nel servizio: sta sul DTO, come @Matches. Fermarsi qui
+    // significa che il servizio non viene proprio invocato, quindi la spia da
+    // guardare è la pipe, non i collaboratori.
+    const pipe = new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    });
+
+    const metadati: ArgumentMetadata = {
+      type: 'body',
+      metatype: CreateContextDto,
+      data: '',
+    };
+
+    it.each([
+      'https://gitlab.com/owner/repo',
+      'http://github.com/owner/repo',
+      'https://github.com/owner',
+      'https://github.com/owner/repo/tree/main',
+      'non-un-url',
+    ])('respinge %s prima che la sequenza cominci', async (repoUrl) => {
+      await expect(
+        pipe.transform({ ...dtoBase, repoUrl }, metadati),
+      ).rejects.toBeDefined();
+      expect(tracciato()).toEqual([]);
+    });
+
+    it('lascia passare l’URL nella forma ammessa', async () => {
+      await expect(pipe.transform({ ...dtoBase }, metadati)).resolves.toEqual(
+        dtoBase,
+      );
+    });
+  });
+
+  describe('passo 2 — estrazione di owner e nome (RF.19)', () => {
+    it('un URL non estraibile ferma la sequenza prima di qualunque chiamata a GitHub', async () => {
+      // Il servizio invocato direttamente, cioè senza la pipe davanti: è il
+      // percorso difensivo che parseGithubUrl documenta, ed è quello che deve
+      // reggere se un domani un DTO dimenticasse il @Matches.
+      await expect(
+        servizio.create('user1', {
+          ...dtoBase,
+          repoUrl: 'https://github.com/solo-owner',
+        }),
+      ).rejects.toThrow('Not a valid GitHub repository URL');
+
+      expect(tracciato()).toEqual(['credenziale']);
+    });
+  });
+
+  describe('passo 3 — raggiungibilità del repository (RF.20)', () => {
+    it('un repository irraggiungibile ferma la sequenza prima del branch', async () => {
+      github.getRepository.mockRejectedValue({ status: 404 });
+
+      await expect(servizio.create('user1', dtoBase)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+
+      expect(tracciato()).toEqual(['credenziale', 'passo 3: getRepository']);
+    });
+  });
+
+  describe('passo 4 — esistenza del branch (RF.21)', () => {
+    it('un branch inesistente ferma la sequenza prima dell’albero', async () => {
+      github.listRefs.mockResolvedValue({ branches: [], tags: [] });
+
+      await expect(servizio.create('user1', dtoBase)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+
+      expect(tracciato()).toEqual([
+        'credenziale',
+        'passo 3: getRepository',
+        'passo 4: listRefs',
+      ]);
+    });
+  });
+
+  describe('passo 5 — appartenenza del commit (RF.22)', () => {
+    it('un commit fuori dal branch ferma la sequenza prima dell’albero', async () => {
+      github.compareCommits.mockResolvedValue({ status: 'diverged' });
+
+      await expect(
+        servizio.create('user1', { ...dtoBase, commitSha: 'sha-estraneo' }),
+      ).rejects.toBeInstanceOf(UnprocessableEntityException);
+
+      expect(tracciato()).toEqual([
+        'credenziale',
+        'passo 3: getRepository',
+        'passo 4: listRefs',
+        'passo 5: compareCommits',
+      ]);
+    });
+
+    it('senza commitSha il passo 5 viene saltato, non eseguito a vuoto', async () => {
+      await servizio.create('user1', dtoBase);
+
+      expect(github.compareCommits).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('passo 6 — ancoraggio dello SHA (RF.17)', () => {
+    it('è derivato: nessuna chiamata in più, e l’albero viene chiesto sullo SHA ancorato', async () => {
+      await servizio.create('user1', { ...dtoBase, commitSha: 'sha-fissato' });
+
+      expect(github.getTree).toHaveBeenCalledWith(
+        'token',
+        'owner',
+        'repo',
+        'sha-fissato',
+      );
+    });
+
+    it('senza commitSha si ancora alla testa del branch', async () => {
+      await servizio.create('user1', dtoBase);
+
+      expect(github.getTree).toHaveBeenCalledWith(
+        'token',
+        'owner',
+        'repo',
+        SHA_HEAD,
+      );
+    });
+  });
+
+  describe('passo 7 — rilevamento dei linguaggi (RF.24)', () => {
+    it('un albero illeggibile ferma la sequenza prima della persistenza', async () => {
+      github.getTree.mockRejectedValue(new Error('albero non leggibile'));
+
+      await expect(servizio.create('user1', dtoBase)).rejects.toThrow(
+        'albero non leggibile',
+      );
+
+      expect(tracciato()).toEqual([
+        'credenziale',
+        'passo 3: getRepository',
+        'passo 4: listRefs',
+        'passo 7: getTree',
+      ]);
+    });
+  });
+
+  describe('passo 8 — ambito non vuoto (RF.29)', () => {
+    it.each([
+      ['FILES senza percorsi', { scopeType: 'FILES' as const, paths: [] }],
+      [
+        'percorsi che si normalizzano a nulla',
+        { scopeType: 'DIRECTORIES' as const, paths: ['.', '/', '..'] },
+      ],
+      [
+        'FULL_REPOSITORY con percorsi',
+        { scopeType: 'FULL_REPOSITORY' as const, paths: ['src'] },
+      ],
+    ])('%s ferma la sequenza prima della persistenza', async (_caso, ambito) => {
+      await expect(
+        servizio.create('user1', { ...dtoBase, ...ambito }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+
+      expect(modello.create).not.toHaveBeenCalled();
+      expect(tracciato()).toEqual([
+        'credenziale',
+        'passo 3: getRepository',
+        'passo 4: listRefs',
+        'passo 7: getTree',
+        'RV.8: getReadme',
+      ]);
+    });
+  });
+
+  describe('passo 9 — esistenza dell’ambito (RF.30)', () => {
+    it.each([
+      [
+        'un percorso assente dall’albero',
+        { scopeType: 'FILES' as const, paths: ['assente.ts'] },
+      ],
+      [
+        'un FILES che punta a una cartella',
+        { scopeType: 'FILES' as const, paths: ['src'] },
+      ],
+      [
+        'un DIRECTORIES che punta a un file',
+        { scopeType: 'DIRECTORIES' as const, paths: ['src/index.ts'] },
+      ],
+    ])('%s ferma la sequenza prima della persistenza', async (_caso, ambito) => {
+      await expect(
+        servizio.create('user1', { ...dtoBase, ...ambito }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+
+      expect(modello.create).not.toHaveBeenCalled();
+      // L'albero del passo 7 è riusato: il passo 9 non ne chiede un secondo.
+      expect(github.getTree).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('passo 10 — persistenza (RF.15)', () => {
+    it('nulla viene persistito finché i nove passi precedenti non sono passati', async () => {
+      // Il complemento di tutti gli scenari sopra, detto una volta sola: in
+      // nessuno dei fallimenti il contesto arriva su Mongo.
+      github.listRefs.mockResolvedValue({ branches: [], tags: [] });
+
+      await expect(servizio.create('user1', dtoBase)).rejects.toBeDefined();
+
+      expect(modello.create).not.toHaveBeenCalled();
+    });
+
+    it('un fallimento della persistenza risale al chiamante invece di restituire un contesto finto', async () => {
+      modello.create.mockRejectedValue(new Error('mongo non raggiungibile'));
+
+      await expect(servizio.create('user1', dtoBase)).rejects.toThrow(
+        'mongo non raggiungibile',
+      );
+    });
   });
 });

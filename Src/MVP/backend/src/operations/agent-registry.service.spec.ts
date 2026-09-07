@@ -2,8 +2,9 @@ import {
   AgentRegistry,
   MAX_OPERATION_TIMEOUT_S,
 } from './agent-registry.service';
-import { OperationCode } from '../common/domain-types';
-import { AgentRegistryEntry } from './agent-registry.types';
+import { OperationCode, OPERATION_CODES } from '../common/domain-types';
+import { AgentName, AgentRegistryEntry } from './agent-registry.types';
+import { UserRole } from '../auth/schemas/user.schema';
 
 function codesOf(descriptors: { code: OperationCode }[]): OperationCode[] {
   return descriptors.map((d) => d.code).sort();
@@ -133,6 +134,141 @@ describe('AgentRegistry', () => {
 
   it('throws for an unknown operation code when looking up the display name', () => {
     expect(() => registry.getDisplayName('NOT_REAL' as never)).toThrow(
+      'Unknown OperationCode',
+    );
+  });
+});
+
+/**
+ * TU_18 (RF.40, RV.1) — il registro risolve il descrittore per ciascuno dei
+ * sette OperationCode.
+ *
+ * Estende TU_08, che si ferma al fatto che l'instradamento passi dal registro
+ * statico: qui la copertura passa dai tre codici verificati oggi a tutti e
+ * sette, e la lista dei sette non è riscritta a mano ma è OPERATION_CODES,
+ * cioè la stessa costante che valida CreateTaskBatchDto. Aggiungere
+ * un'ottava operazione al dominio senza darle una voce nel registro rende
+ * rosso questo blocco invece di produrre un "Unknown OperationCode" al primo
+ * avvio in produzione.
+ *
+ * Corrispondenza PARZIALE rispetto alla formulazione del Piano di Qualifica,
+ * che chiede il descrittore come coppia (agentId, destinationUrl): nell'MVP
+ * `destinationUrl` non esiste. Il registro porta `agent` (DOCS, SECURITY,
+ * CHANGELOG) — l'equivalente di agentId — mentre la destinazione è una sola
+ * per tutte e sette le operazioni, l'AGENTS_SERVICE_URL letto da
+ * AgentInvocationService, perché il servizio agenti è un unico processo
+ * FastAPI che smista internamente su operationCode
+ * (agents/src/main.py, get_agent_components). La parte di destinazione è
+ * verificata dov'è: agent-invocation.service.spec.ts, stesso codice TU_18.
+ */
+describe('TU_18 (RF.40, RV.1) — descrittore risolto per tutti e sette gli OperationCode', () => {
+  const registry = new AgentRegistry();
+
+  // L'agente che possiede ciascuna operazione, e il budget di esecuzione
+  // della Tabella 45. Restati qui perché il test confronti il registro con la
+  // progettazione, non con se stesso.
+  const ATTESI: Record<OperationCode, { agent: AgentName; timeoutS: number }> = {
+    DOCS_README: { agent: 'DOCS', timeoutS: 150 },
+    DOCS_INLINE: { agent: 'DOCS', timeoutS: 90 },
+    DOCS_API: { agent: 'DOCS', timeoutS: 150 },
+    SECURITY_OWASP: { agent: 'SECURITY', timeoutS: 180 },
+    SECURITY_POLICY: { agent: 'SECURITY', timeoutS: 120 },
+    CHANGELOG_TECHNICAL: { agent: 'CHANGELOG', timeoutS: 90 },
+    CHANGELOG_BUSINESS: { agent: 'CHANGELOG', timeoutS: 120 },
+  };
+
+  const RUOLI: UserRole[] = ['DEVELOPER', 'SECURITY_AUDITOR', 'PROJECT_MANAGER'];
+
+  it('il dominio conta esattamente sette operazioni', () => {
+    // Il presupposto di tutto il blocco: se OPERATION_CODES ne contenesse sei,
+    // le asserzioni "per ciascuno dei sette" gireranno su sei senza dirlo.
+    expect(OPERATION_CODES).toHaveLength(7);
+    expect([...OPERATION_CODES].sort()).toEqual(Object.keys(ATTESI).sort());
+  });
+
+  it.each(OPERATION_CODES)(
+    '%s risolve sull\'agente e sul budget previsti',
+    (code) => {
+      expect({
+        agent: registry.getAgent(code),
+        timeoutS: registry.getTimeoutS(code),
+      }).toEqual(ATTESI[code]);
+    },
+  );
+
+  it.each(OPERATION_CODES)('%s ha un nome visualizzabile non vuoto', (code) => {
+    expect(registry.getDisplayName(code).trim().length).toBeGreaterThan(0);
+  });
+
+  it('i sette nomi visualizzabili sono distinti', () => {
+    // Il titolo del Report è "<displayName> — owner/repo@branch" (RF.51): due
+    // operazioni con lo stesso nome darebbero due Report indistinguibili
+    // nello storico.
+    const nomi = OPERATION_CODES.map((code) => registry.getDisplayName(code));
+    expect(new Set(nomi).size).toBe(OPERATION_CODES.length);
+  });
+
+  it('ogni operazione è avviabile da almeno un ruolo, e i tre ruoli insieme le coprono tutte', () => {
+    // Una voce nel registro che nessun ruolo può selezionare sarebbe
+    // un'operazione esistente e irraggiungibile.
+    const raggiungibili = new Set(
+      RUOLI.flatMap((ruolo) =>
+        registry.getForRole(ruolo).map((descrittore) => descrittore.code),
+      ),
+    );
+    expect([...raggiungibili].sort()).toEqual([...OPERATION_CODES].sort());
+  });
+
+  it.each(OPERATION_CODES)(
+    '%s compare nel catalogo del ruolo con lo stesso agente che il registro le assegna',
+    (code) => {
+      // getForRole e getAgent non devono poter divergere: il descrittore che
+      // l'utente vede e quello su cui l'Orchestratore instrada sono lo stesso.
+      const descrittori = RUOLI.flatMap((ruolo) => registry.getForRole(ruolo))
+        .filter((descrittore) => descrittore.code === code);
+      expect(descrittori.length).toBeGreaterThan(0);
+      for (const descrittore of descrittori) {
+        expect(descrittore.agent).toBe(registry.getAgent(code));
+        expect(descrittore.displayName).toBe(registry.getDisplayName(code));
+      }
+    },
+  );
+
+  it('RV.1 — la risoluzione non consulta nulla fuori dalla tabella statica', () => {
+    // Due prove strutturali, non un mock di comodo: la classe non ha
+    // dipendenze iniettate (quindi non ha un provider LLM da chiamare) e la
+    // risoluzione dei sette codici non tocca la rete.
+    expect(AgentRegistry.length).toBe(0);
+
+    const rete = jest.fn();
+    const originale = global.fetch;
+    global.fetch = rete as never;
+    try {
+      for (const code of OPERATION_CODES) {
+        registry.getAgent(code);
+        registry.getTimeoutS(code);
+        registry.getDisplayName(code);
+      }
+      for (const ruolo of RUOLI) {
+        registry.getForRole(ruolo);
+      }
+    } finally {
+      global.fetch = originale;
+    }
+    expect(rete).not.toHaveBeenCalled();
+  });
+
+  it('RF.40 — la risoluzione è deterministica: due richieste uguali, stessa risposta', () => {
+    for (const code of OPERATION_CODES) {
+      expect(registry.getAgent(code)).toBe(registry.getAgent(code));
+      expect(registry.getTimeoutS(code)).toBe(registry.getTimeoutS(code));
+    }
+  });
+
+  it('un codice fuori catalogo non risolve su un agente di ripiego', () => {
+    // L'alternativa silenziosa sarebbe instradare su un agente qualsiasi:
+    // l'errore deve restare tale fino al chiamante.
+    expect(() => registry.getAgent('DOCS_CHANGELOG' as never)).toThrow(
       'Unknown OperationCode',
     );
   });

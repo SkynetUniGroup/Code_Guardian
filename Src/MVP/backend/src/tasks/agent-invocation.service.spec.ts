@@ -1,5 +1,6 @@
 import { AgentInvocationService } from './agent-invocation.service';
 import { AgentRunPayload } from './agent-client.types';
+import { OPERATION_CODES } from '../common/domain-types';
 
 interface MockTask {
   id: string;
@@ -321,6 +322,69 @@ describe('AgentInvocationService', () => {
           technicalReportId: 'report1',
         },
       });
+    });
+  });
+
+  /**
+   * TU_18 (RF.40, RV.1) — la metà "destinazione" del descrittore.
+   *
+   * Il Piano di Qualifica descrive il descrittore come (agentId,
+   * destinationUrl). Nell'MVP il secondo campo non esiste: il servizio agenti
+   * è un unico processo FastAPI che smista internamente su operationCode
+   * (agents/src/main.py, get_agent_components), quindi tutte e sette le
+   * operazioni hanno la stessa destinazione, letta dalla configurazione. È
+   * quella proprietà che si verifica qui — insieme al fatto che l'operazione
+   * viaggia comunque nel corpo, altrimenti l'agente non saprebbe cosa fare.
+   * La metà "agentId" sta in agent-registry.service.spec.ts.
+   */
+  describe('TU_18 (RF.40, RV.1) — destinazione dell\'invocazione per i sette OperationCode', () => {
+    it.each(OPERATION_CODES)(
+      '%s viene inviata in POST a <AGENTS_SERVICE_URL>/internal/agent/start col proprio codice nel corpo',
+      async (code) => {
+        const task = makeTask({ operation: code });
+        fetchMock.mockResolvedValue(completedResponse());
+
+        await service.invoke(task as never);
+
+        const [url, options] = fetchMock.mock.calls[0] as [
+          string,
+          { method: string; body: string },
+        ];
+        expect(url).toBe('http://agents:8000/internal/agent/start');
+        expect(options.method).toBe('POST');
+        expect(
+          (JSON.parse(options.body) as { operationCode: string }).operationCode,
+        ).toBe(code);
+      },
+    );
+
+    it('la destinazione è una sola per tutte e sette le operazioni', async () => {
+      fetchMock.mockResolvedValue(completedResponse());
+
+      for (const code of OPERATION_CODES) {
+        await service.invoke(makeTask({ operation: code }) as never);
+      }
+
+      const destinazioni = new Set(
+        fetchMock.mock.calls.map(([url]) => url as string),
+      );
+      expect(fetchMock).toHaveBeenCalledTimes(OPERATION_CODES.length);
+      expect([...destinazioni]).toEqual([
+        'http://agents:8000/internal/agent/start',
+      ]);
+    });
+
+    it('la destinazione viene dalla configurazione, non da una costante nel codice', async () => {
+      // Se fosse cablata, l'MVP non sarebbe schierabile fuori da
+      // docker-compose: AGENTS_SERVICE_URL cambia fra locale, container e AWS.
+      config.get.mockReturnValue('http://agenti-di-collaudo:9100');
+      fetchMock.mockResolvedValue(completedResponse());
+
+      await service.invoke(makeTask({ operation: 'SECURITY_OWASP' }) as never);
+
+      const [url] = fetchMock.mock.calls[0] as [string];
+      expect(url).toBe('http://agenti-di-collaudo:9100/internal/agent/start');
+      expect(config.get).toHaveBeenCalledWith('AGENTS_SERVICE_URL');
     });
   });
 });
