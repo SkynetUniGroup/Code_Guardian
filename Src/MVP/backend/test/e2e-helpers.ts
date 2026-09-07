@@ -129,6 +129,12 @@ export interface OpzioniAmbiente {
    * task — sostituire il servizio la salterebbe insieme al resto.
    */
   conAgenteReale?: boolean;
+  /**
+   * Lascia in piedi GithubClientService vero, cioe' chiamate reali all'API
+   * di GitHub. Solo per i test che verificano proprio quel confine, e solo
+   * con un token valido a disposizione.
+   */
+  conGithubReale?: boolean;
 }
 
 /**
@@ -148,14 +154,18 @@ export async function avviaAmbiente(
   };
 
   let costruttore = Test.createTestingModule({ imports: [AppModule] })
-    .overrideProvider(GithubClientService)
-    .useValue(github)
     // franc-min e' ESM-only e viene risolto con un import() dinamico, che
     // Jest non sa eseguire senza --experimental-vm-modules (lo dichiara il
     // commento in franc.provider.ts). E' una libreria di terze parti per il
     // riconoscimento della lingua: sostituirla non tocca la logica in esame.
     .overrideProvider(FRANC)
     .useValue(() => 'eng');
+
+  if (!opzioni.conGithubReale) {
+    costruttore = costruttore
+      .overrideProvider(GithubClientService)
+      .useValue(github);
+  }
 
   if (!opzioni.conAgenteReale) {
     costruttore = costruttore
