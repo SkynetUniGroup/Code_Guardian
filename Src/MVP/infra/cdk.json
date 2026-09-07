@@ -33,7 +33,7 @@
     "atlasProjectName": "code-guardian-mvp",
     "alertEmail": "samuele.bertin@studenti.unipd.it",
     "monthlyBudgetUsd": "320",
-    "githubOrg": "REPLACE_WITH_GITHUB_ORG",
-    "githubRepo": "code-guardian"
+    "githubOrg": "SkynetUniGroup",
+    "githubRepo": "Code-Guardian"
   }
 }
