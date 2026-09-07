@@ -1,10 +1,12 @@
 import { IsArray, IsIn, IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
 import { GITHUB_REPO_URL_REGEX } from "../github-url";
-import type { ScopeType } from "../../common/domain-types";
+import {
+  SCOPE_TYPES,
+  type CreateContextDto as CreateContextDtoInterface,
+  type ScopeType,
+} from "@codeguardian/shared";
 
-const SCOPE_TYPES: ScopeType[] = ["FULL_REPOSITORY", "FILES", "DIRECTORIES"];
-
-export class CreateContextDto {
+export class CreateContextDto implements CreateContextDtoInterface {
   @Matches(GITHUB_REPO_URL_REGEX, {
     message: "repoUrl must be a GitHub repository URL (https://github.com/:owner/:repo)",
   })

@@ -16,6 +16,11 @@
       }
     }
   },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  },
   "files": {
     "includes": ["**/*.{ts,tsx,js,jsx,json}"]
   }

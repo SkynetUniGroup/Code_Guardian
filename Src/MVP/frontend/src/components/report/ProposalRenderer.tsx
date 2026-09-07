@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { Proposal } from '../../types';
+import { useState } from "react";
+import type { Proposal } from "../../types";
 
 interface ProposalRendererProps {
   proposal: Proposal;
@@ -45,9 +45,9 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
         </div>
 
         {/* PR link — primary action when available */}
-        {proposal.prUrl && (
+        {proposal.pullRequestUrl && (
           <a
-            href={proposal.prUrl}
+            href={proposal.pullRequestUrl}
             target="_blank"
             rel="noreferrer"
             className="shrink-0 flex items-center gap-1.5 rounded bg-[#2a8a2a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1e6b1e] transition"
@@ -67,7 +67,7 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
         onClick={() => setDiffVisible((v) => !v)}
       >
         <svg
-          className={`h-3.5 w-3.5 transition-transform ${diff_visible ? 'rotate-180' : ''}`}
+          className={`h-3.5 w-3.5 transition-transform ${diff_visible ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -76,7 +76,7 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
-        {diff_visible ? 'Nascondi' : 'Mostra'} diff
+        {diff_visible ? "Nascondi" : "Mostra"} diff
       </button>
 
       {/* Unified diff */}

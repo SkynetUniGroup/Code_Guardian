@@ -1,23 +1,23 @@
-import { useNavigate } from '@tanstack/react-router';
-import { useState, useEffect } from 'react';
-import { createContext, createTask, getOperations } from '../utils/api';
-import { useAppStore } from '../stores/useAppStore';
-import type { OperationCode } from '../types';
+import { useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { createContext, createTask, getOperations } from "../utils/api";
+import { useAppStore } from "../stores/useAppStore";
+import type { OperationCode } from "../types";
 
 export default function RepositorySelection() {
   const navigate = useNavigate();
   const { addContext, addTask, setCurrentTask } = useAppStore();
   const [operations, setOperations] = useState<{ code: OperationCode; name: string }[]>([]);
-  const [selectedOperation, setSelectedOperation] = useState<OperationCode | ''>('');
+  const [selectedOperation, setSelectedOperation] = useState<OperationCode | "">("");
   const [loading, setLoading] = useState(false);
   const { formData: storedFormData, setFormData } = useAppStore();
 
   // Stato locale inizializzato con valori di default o dati salvati
   const [localForm, setLocalForm] = useState({
-    repoOwner: '',
-    repoName: '',
-    ref: 'main',
-    scope: '',
+    repoOwner: "",
+    repoName: "",
+    ref: "main",
+    scope: "",
   });
 
   // Sincronizza con lo store all'avvio
@@ -32,7 +32,7 @@ export default function RepositorySelection() {
       const ops = await getOperations();
       setOperations(ops);
     } catch (error) {
-      console.error('Failed to load operations:', error);
+      console.error("Failed to load operations:", error);
     }
   };
 
@@ -43,7 +43,7 @@ export default function RepositorySelection() {
     setLoading(true);
     try {
       // 1. Mappiamo lo scope del form sui campi attesi dal Backend
-      const scopeType = localForm.scope ? 'DIRECTORIES' : 'FULL_REPOSITORY';
+      const scopeType = localForm.scope ? "DIRECTORIES" : "FULL_REPOSITORY";
       const paths = localForm.scope ? [localForm.scope] : undefined;
 
       // Crea contesto
@@ -52,36 +52,42 @@ export default function RepositorySelection() {
         localForm.repoName,
         localForm.ref,
         scopeType,
-        paths
+        paths,
       );
-      
+
       // Il backend ritorna { contextId: '...' }
       addContext({
         id: contextData.contextId,
         repoOwner: localForm.repoOwner,
         repoName: localForm.repoName,
         ref: localForm.ref,
-        scope: localForm.scope
+        scope: localForm.scope,
       });
 
       // 2. Avvia task
       const taskResponse = await createTask(contextData.contextId, selectedOperation);
-      
+
       // Il backend ritorna { taskIds: ['...'], batchId: '...' }
       const newTaskId = taskResponse.taskIds[0];
 
       addTask({
         id: newTaskId,
+        batchId: null,
         contextId: contextData.contextId,
         operation: selectedOperation,
-        status: 'PENDING'
+        status: "PENDING",
+        progressPercent: 0,
+        currentStage: null,
+        reportId: null,
+        error: null,
+        pendingInput: null,
       });
       setCurrentTask(newTaskId);
 
       // Naviga alla pagina della task usando il nuovo ID
-      navigate({ to: '/tasks/$taskId', params: { taskId: newTaskId } });
+      navigate({ to: "/tasks/$taskId", params: { taskId: newTaskId } });
     } catch (error: any) {
-      console.error('Failed to start task:', error);
+      console.error("Failed to start task:", error);
       alert(`Errore nell'avvio dell'analisi: ${error.response?.data?.message || error.message}`);
     } finally {
       setLoading(false);
@@ -98,7 +104,8 @@ export default function RepositorySelection() {
             <label className="block text-sm font-medium text-gray-700">Repository Owner</label>
             <input
               type="text"
-              value={localForm.repoOwner}onChange={(e) => {
+              value={localForm.repoOwner}
+              onChange={(e) => {
                 const newForm = { ...localForm, repoOwner: e.target.value };
                 setLocalForm(newForm);
                 setFormData(newForm);
@@ -190,7 +197,7 @@ export default function RepositorySelection() {
           disabled={loading || !selectedOperation}
           className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
         >
-          {loading ? 'Avvio in corso...' : 'Avvia Analisi'}
+          {loading ? "Avvio in corso..." : "Avvia Analisi"}
         </button>
       </form>
     </div>

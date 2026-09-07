@@ -1,4 +1,7 @@
-export type OperationCode =
+export { OPERATION_CODES } from "@codeguardian/shared";
+export type { OperationCode, ScopeType } from "@codeguardian/shared";
+
+/*export type OperationCode =
   | 'DOCS_README'
   | 'DOCS_INLINE'
   | 'DOCS_API'
@@ -21,4 +24,4 @@ export const OPERATION_CODES: OperationCode[] = [
   'CHANGELOG_BUSINESS',
 ];
 
-export type ScopeType = 'FULL_REPOSITORY' | 'FILES' | 'DIRECTORIES';
+export type ScopeType = 'FULL_REPOSITORY' | 'FILES' | 'DIRECTORIES';*/

@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Link } from '@tanstack/react-router';
-import { useTasksStore } from '../stores/tasksStore';
-import { apiClient } from '../api/client';
-import { StatusBadge } from '../components/shared/StatusBadge';
-import { ProgressBar } from '../components/shared/ProgressBar';
-import { Spinner } from '../components/shared/Spinner';
-import { SprintIdModal } from '../components/modals/SprintIdModal';
-import { IncompleteTasksModal } from '../components/modals/IncompleteTasksModal';
-import { BusinessConfirmationModal } from '../components/modals/BusinessConfirmationModal';
-import { OPERATION_LABELS } from '../types';
-import type { TaskEntry } from '../types';
+import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { useTasksStore } from "../stores/tasksStore";
+import { apiClient } from "../api/client";
+import { StatusBadge } from "../components/shared/StatusBadge";
+import { ProgressBar } from "../components/shared/ProgressBar";
+import { Spinner } from "../components/shared/Spinner";
+import { SprintIdModal } from "../components/modals/SprintIdModal";
+import { IncompleteTasksModal } from "../components/modals/IncompleteTasksModal";
+import { BusinessConfirmationModal } from "../components/modals/BusinessConfirmationModal";
+import { OPERATION_LABELS } from "../types";
+import type { TaskEntry } from "../types";
 
 /**
  * TasksPage — /tasks
@@ -38,7 +38,7 @@ export function TasksPage() {
   // Modal state — tracks which task's modal is open and its kind.
   const [active_modal, setActiveModal] = useState<{
     taskId: string;
-    kind: 'SPRINT_ID' | 'INCOMPLETE_TASKS' | 'BUSINESS_CONFIRMATION';
+    kind: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION";
     payload?: any;
   } | null>(null);
 
@@ -46,9 +46,10 @@ export function TasksPage() {
   useEffect(() => {
     async function fetch_initial() {
       try {
-        const response = await apiClient.get<{ tasks: any[] }>('/tasks');
+        const response = await apiClient.get<{ tasks: any[] }>("/tasks");
         const mapped: TaskEntry[] = response.data.tasks.map((t: any) => ({
           id: t.id,
+          batchId: t.batchId ?? null,
           operation: t.operation,
           status: t.status,
           progressPercent: t.progressPercent ?? 0,
@@ -60,7 +61,7 @@ export function TasksPage() {
         load_tasks(mapped);
       } catch {
         // Non-fatal: the WS will keep the list updated in real time.
-        console.warn('[TasksPage] Failed to fetch initial task list');
+        console.warn("[TasksPage] Failed to fetch initial task list");
       } finally {
         setInitialLoading(false);
       }
@@ -113,10 +114,10 @@ export function TasksPage() {
 
       {task_list.length === 0 ? (
         <div className="rounded-lg border border-dashed border-[#cccccc] p-10 text-center text-sm text-gray-400">
-          Nessun task trovato.{' '}
+          Nessun task trovato.{" "}
           <Link to="/run" className="text-[#2277cc] hover:underline">
             Avvia un'operazione
-          </Link>{' '}
+          </Link>{" "}
           per cominciare.
         </div>
       ) : (
@@ -127,9 +128,7 @@ export function TasksPage() {
               task={task}
               cancelling={cancelling === task.id}
               on_cancel={() => handle_cancel(task.id)}
-              on_open_modal={(kind, payload) =>
-                setActiveModal({ taskId: task.id, kind, payload })
-              }
+              on_open_modal={(kind, payload) => setActiveModal({ taskId: task.id, kind, payload })}
             />
           ))}
         </ul>
@@ -137,14 +136,11 @@ export function TasksPage() {
 
       {/* ---- Modals ---- */}
 
-      {active_modal?.kind === 'SPRINT_ID' && (
-        <SprintIdModal
-          taskId={active_modal.taskId}
-          onClose={() => setActiveModal(null)}
-        />
+      {active_modal?.kind === "SPRINT_ID" && (
+        <SprintIdModal taskId={active_modal.taskId} onClose={() => setActiveModal(null)} />
       )}
 
-      {active_modal?.kind === 'INCOMPLETE_TASKS' && (
+      {active_modal?.kind === "INCOMPLETE_TASKS" && (
         <IncompleteTasksModal
           taskId={active_modal.taskId}
           taskIds={active_modal.payload?.taskIds ?? []}
@@ -152,10 +148,10 @@ export function TasksPage() {
         />
       )}
 
-      {active_modal?.kind === 'BUSINESS_CONFIRMATION' && (
+      {active_modal?.kind === "BUSINESS_CONFIRMATION" && (
         <BusinessConfirmationModal
           taskId={active_modal.taskId}
-          technicalReportId={active_modal.payload?.technicalReportId ?? ''}
+          technicalReportId={active_modal.payload?.technicalReportId ?? ""}
           onClose={() => setActiveModal(null)}
         />
       )}
@@ -172,7 +168,7 @@ interface TaskCardProps {
   cancelling: boolean;
   on_cancel: () => void;
   on_open_modal: (
-    kind: 'SPRINT_ID' | 'INCOMPLETE_TASKS' | 'BUSINESS_CONFIRMATION',
+    kind: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION",
     payload?: any,
   ) => void;
 }
@@ -182,7 +178,7 @@ interface TaskCardProps {
  * Shows status badge, operation label, progress bar, and contextual actions.
  */
 function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps) {
-  const can_cancel = task.status === 'PENDING' || task.status === 'RUNNING';
+  const can_cancel = task.status === "PENDING" || task.status === "RUNNING";
 
   return (
     <li className="rounded-lg border border-[#cccccc] bg-gray-50 p-4">
@@ -192,24 +188,18 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
           <span className="block text-sm font-semibold text-[#2a2a2a] truncate">
             {OPERATION_LABELS[task.operation] ?? task.operation}
           </span>
-          <span className="block text-xs text-gray-400 font-mono mt-0.5 truncate">
-            {task.id}
-          </span>
+          <span className="block text-xs text-gray-400 font-mono mt-0.5 truncate">{task.id}</span>
         </div>
         <StatusBadge status={task.status} className="shrink-0" />
       </div>
 
       {/* Progress bar (only for running tasks) */}
-      {task.status === 'RUNNING' && (
-        <ProgressBar
-          value={task.progressPercent}
-          stage={task.currentStage}
-          className="mb-3"
-        />
+      {task.status === "RUNNING" && (
+        <ProgressBar value={task.progressPercent} stage={task.currentStage} className="mb-3" />
       )}
 
       {/* Error detail for failed tasks */}
-      {task.status === 'FAILED' && task.error && (
+      {task.status === "FAILED" && task.error && (
         <div className="mb-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-[#cc2222]">
           <span className="font-semibold">{task.error.code}:</span> {task.error.message}
           {task.error.stage && (
@@ -221,19 +211,19 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
       {/* Actions row */}
       <div className="flex items-center gap-2 flex-wrap">
         {/* Pending input action buttons */}
-        {task.pendingInput?.kind === 'SPRINT_ID' && (
+        {task.pendingInput?.kind === "SPRINT_ID" && (
           <button
-            onClick={() => on_open_modal('SPRINT_ID')}
+            onClick={() => on_open_modal("SPRINT_ID")}
             className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#c98f00] transition"
           >
             Inserisci Sprint ID
           </button>
         )}
 
-        {task.pendingInput?.kind === 'INCOMPLETE_TASKS' && (
+        {task.pendingInput?.kind === "INCOMPLETE_TASKS" && (
           <button
             onClick={() =>
-              on_open_modal('INCOMPLETE_TASKS', {
+              on_open_modal("INCOMPLETE_TASKS", {
                 taskIds: (task.pendingInput as any).taskIds,
               })
             }
@@ -243,10 +233,10 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
           </button>
         )}
 
-        {task.pendingInput?.kind === 'BUSINESS_CONFIRMATION' && (
+        {task.pendingInput?.kind === "BUSINESS_CONFIRMATION" && (
           <button
             onClick={() =>
-              on_open_modal('BUSINESS_CONFIRMATION', {
+              on_open_modal("BUSINESS_CONFIRMATION", {
                 technicalReportId: (task.pendingInput as any).technicalReportId,
               })
             }
@@ -257,7 +247,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
         )}
 
         {/* Report link */}
-        {task.status === 'COMPLETED' && task.reportId && (
+        {task.status === "COMPLETED" && task.reportId && (
           <Link
             to="/reports/$id"
             params={{ id: task.reportId }}

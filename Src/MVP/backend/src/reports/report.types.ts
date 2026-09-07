@@ -1,19 +1,32 @@
-import { ErrorKind } from '../common/exceptions/error-kind';
+import { ErrorKind } from "../common/exceptions/error-kind";
+import { ReportError } from "@codeguardian/shared";
+export type {
+  ReportStatus,
+  Severity,
+  Proposal,
+  TextBlock,
+  FindingBlock,
+  PolicyViolationBlock,
+  ComplexityWarningBlock,
+  ChangelogItemBlock,
+  Block,
+  ReportContext,
+} from "@codeguardian/shared";
 
-export type ReportStatus = 'COMPLETED' | 'FAILED';
+//export type ReportStatus = 'COMPLETED' | 'FAILED';
 
-export type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical';
+//export type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical';
 
 // Report's equivalent of Task's TaskError, deliberately named differently
 // (`kind` here, `code` on Task) — same value domain, two field names kept
 // as-is from the PoC (§11.2).
-export interface ReportError {
+export interface ReportErrorB extends ReportError {
   kind: ErrorKind;
   message: string;
   stage: string;
 }
 
-export interface Proposal {
+/*export interface Proposal {
   targetPath: string;
   diffUnified: string;
   language: string;
@@ -82,4 +95,4 @@ export interface ReportContext {
   resolvedSha: string;
   scopeType: 'FULL_REPOSITORY' | 'FILES' | 'DIRECTORIES';
   paths: string[];
-}
+}*/

@@ -32,6 +32,8 @@ export class AgentInvocationService {
   constructor(
     private readonly config: ConfigService,
     private readonly agentRegistry: AgentRegistry,
+    @InjectModel(AnalysisContext.name)
+    private readonly contextModel: Model<AnalysisContextDocument>,
   ) {}
 
   async invoke(task: TaskDocument): Promise<AgentInvocationResult> {
@@ -41,11 +43,28 @@ export class AgentInvocationService {
       await task.save();
     }
 
+    // Fetch the context to populate the payload
+    const context = await this.contextModel.findById(task.contextId);
+    if (!context) {
+      return this.failure("UPSTREAM", "Context not found for task");
+    }
+
     const body: AgentStartRequest = {
       taskId: task.id,
       threadId,
       operationCode: task.operation,
-      payload: {},
+      payload: {
+        userId: task.userId,
+        context_ref: {
+          repoOwner: context.repoOwner,
+          repoName: context.repoName,
+          repoUrl: context.repoUrl,
+          branch: context.branch,
+          resolvedSha: context.resolvedSha,
+          scopeType: context.scopeType,
+          paths: context.paths || [],
+        },
+      },
     };
 
     return this.call(task, '/internal/agent/start', body);
@@ -84,9 +103,8 @@ export class AgentInvocationService {
     body: AgentStartRequest | AgentResumeRequest,
   ): Promise<AgentInvocationResult> {
     const timeoutMs =
-      (this.agentRegistry.getTimeoutS(task.operation) + HTTP_TIMEOUT_MARGIN_S) *
-      1000;
-    const baseUrl = this.config.get<string>('AGENTS_SERVICE_URL');
+      (this.agentRegistry.getTimeoutS(task.operation) + HTTP_TIMEOUT_MARGIN_S) * 1000;
+    const baseUrl = this.config.get<string>("AGENTS_SERVICE_URL");
 
     let result: AgentStepResult;
     try {
@@ -97,10 +115,7 @@ export class AgentInvocationService {
         signal: AbortSignal.timeout(timeoutMs),
       });
       if (!res.ok) {
-        return this.failure(
-          'UPSTREAM',
-          `Agent service responded ${res.status}`,
-        );
+        return this.failure("UPSTREAM", `Agent service responded ${res.status}`);
       }
       result = (await res.json()) as AgentStepResult;
     } catch (err) {
@@ -108,12 +123,12 @@ export class AgentInvocationService {
       // why, so this is UPSTREAM, not TIMEOUT. TIMEOUT is reserved for the
       // agent itself reporting that its own model call timed out (handled
       // below via mapAgentErrorKind).
-      if (err instanceof Error && err.name === 'TimeoutError') {
-        return this.failure('UPSTREAM', 'Agent invocation timed out');
+      if (err instanceof Error && err.name === "TimeoutError") {
+        return this.failure("UPSTREAM", "Agent invocation timed out");
       }
       return this.failure(
-        'UPSTREAM',
-        err instanceof Error ? err.message : 'Agent invocation failed',
+        "UPSTREAM",
+        err instanceof Error ? err.message : "Agent invocation failed",
       );
     }
 
@@ -149,16 +164,10 @@ export class AgentInvocationService {
       return { status: 'INTERRUPTED', pendingInput: result.pendingInput };
     }
 
-    return this.failure(
-      mapAgentErrorKind(result.error),
-      result.error ?? 'Agent execution failed',
-    );
+    return this.failure(mapAgentErrorKind(result.error), result.error ?? "Agent execution failed");
   }
 
-  private failure(
-    code: TaskError['code'],
-    message: string,
-  ): AgentInvocationResult {
-    return { status: 'FAILED', error: { code, message, stage: 'EXECUTION' } };
+  private failure(code: TaskError["code"], message: string): AgentInvocationResult {
+    return { status: "FAILED", error: { code, message, stage: "EXECUTION" } };
   }
 }

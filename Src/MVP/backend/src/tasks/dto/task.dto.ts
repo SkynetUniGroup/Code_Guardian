@@ -1,11 +1,13 @@
-import type { OperationCode } from '../../common/domain-types';
-import type { PendingInput, TaskError, TaskStatus } from '../task.types';
-import type { TaskDocument } from '../schemas/task.schema';
+import type { OperationCode } from "../../common/domain-types";
+import type { PendingInput, TaskErrorB, TaskStatus } from "../task.types";
+import type { TaskDocument } from "../schemas/task.schema";
+import type { TaskDto } from "@codeguardian/shared";
+export type { TaskDto };
 
 // What GET /tasks and GET /tasks/:id return — the wire shape, not the
 // Mongoose document (no contextId, no _id/__v, batchId and operation as
 // plain strings).
-export interface TaskDto {
+/*export interface TaskDto {
   id: string;
   batchId: string;
   operation: OperationCode;
@@ -15,7 +17,7 @@ export interface TaskDto {
   reportId: string | null;
   error: TaskError | null;
   pendingInput: PendingInput;
-}
+}*/
 
 export function toTaskDto(task: TaskDocument): TaskDto {
   return {

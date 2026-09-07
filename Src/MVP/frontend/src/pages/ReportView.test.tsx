@@ -20,12 +20,24 @@ const initialState = useAppStore.getState();
 const makeReport = (overrides: Partial<Report> = {}): Report => ({
   id: "report-1",
   taskId: "task-1",
-  agentId: "security",
   operation: "SECURITY_OWASP",
   status: "COMPLETED",
   body: [],
   generatedAt: "2026-08-18T10:00:00Z",
+  executionTimeMs: null,
+  context: {
+    repoOwner: "owner",
+    repoName: "repo",
+    repoUrl: "https://github.com/owner/repo",
+    branch: "main",
+    resolvedSha: "abc123",
+    scopeType: "FULL_REPOSITORY",
+    paths: [],
+  },
   title: "title",
+  summary: null,
+  proposal: undefined,
+  pendingAction: null,
   ...overrides,
 });
 
@@ -74,7 +86,7 @@ describe("ReportView", () => {
     useAppStore.getState().addReport(
       makeReport({
         status: "FAILED",
-        error: { kind: "TIMEOUT", message: "Timeout del modello LLM", stage: "invoca_llm" },
+        error: { code: "TIMEOUT", message: "Timeout del modello LLM", stage: "invoca_llm" },
       }),
     );
 
@@ -88,7 +100,7 @@ describe("ReportView", () => {
   it("renderizza i blocchi del corpo tramite ReportRenderer quando body non e' vuoto", async () => {
     useAppStore.getState().addReport(
       makeReport({
-        body: [{ kind: "text", order: 0, markdown: "Contenuto del report" }],
+        body: [{ kind: "TEXT", markdown: "Contenuto del report" }],
       }),
     );
 
@@ -133,7 +145,12 @@ describe("ReportView", () => {
     it("non renderizza nulla se la proposal e' presente ma priva di diffUnified", async () => {
       useAppStore.getState().addReport(
         makeReport({
-          proposal: { targetPath: "src/main.ts", diffUnified: "", language: "typescript" },
+          proposal: {
+            targetPath: "src/main.ts",
+            diffUnified: "",
+            language: "typescript",
+            pullRequestUrl: null,
+          },
         }),
       );
       render(<ReportView />);
@@ -149,6 +166,7 @@ describe("ReportView", () => {
             targetPath: "src/main.ts",
             diffUnified: "+riga aggiunta\n\n-riga rimossa",
             language: "typescript",
+            pullRequestUrl: null,
           },
         }),
       );
@@ -173,7 +191,12 @@ describe("ReportView", () => {
 
       useAppStore.getState().addReport(
         makeReport({
-          proposal: { targetPath: "src/main.ts", diffUnified, language: "typescript" },
+          proposal: {
+            targetPath: "src/main.ts",
+            diffUnified,
+            language: "typescript",
+            pullRequestUrl: null,
+          },
         }),
       );
 
@@ -193,7 +216,12 @@ describe("ReportView", () => {
     it('non mostra il badge del linguaggio quando e\' "auto"', async () => {
       useAppStore.getState().addReport(
         makeReport({
-          proposal: { targetPath: "src/main.ts", diffUnified: "+riga", language: "auto" },
+          proposal: {
+            targetPath: "src/main.ts",
+            diffUnified: "+riga",
+            language: "auto",
+            pullRequestUrl: null,
+          },
         }),
       );
 

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Schema as MongooseSchema, Types } from "mongoose";
 import type { OperationCode } from "../../common/domain-types";
-import type { Block, Proposal, ReportContext, ReportError, ReportStatus } from "../report.types";
+import type { Block, Proposal, ReportContext, ReportErrorB, ReportStatus } from "../report.types";
 
 export type ReportDocument = HydratedDocument<Report>;
 
@@ -54,14 +54,14 @@ export class Report {
   proposal?: Proposal;
 
   @Prop({ type: MongooseSchema.Types.Mixed })
-  error?: ReportError;
+  error?: ReportErrorB;
 
   // Injected by the `timestamps: { createdAt: 'generatedAt' }` option above
   // at the schema level, not by a @Prop() — declaring it again here would
   // register the same path twice. This plain field exists only so
   // TypeScript (ReportDocument = HydratedDocument<Report>) knows it's
   // there; BE-19 is the first code that actually reads it.
-  generatedAt: Date;
+  generatedAt!: Date;
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

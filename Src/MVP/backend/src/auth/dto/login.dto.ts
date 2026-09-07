@@ -1,6 +1,7 @@
 import { IsEmail, IsString, MinLength } from "class-validator";
+import type { LoginDto as LoginDtoInterface } from "@codeguardian/shared";
 
-export class LoginDto {
+export class LoginDto implements LoginDtoInterface {
   @IsEmail()
   email!: string;
 

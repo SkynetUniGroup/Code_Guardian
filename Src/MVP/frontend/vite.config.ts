@@ -1,5 +1,6 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 /**
  * Vite build configuration — Code Guardian frontend.
@@ -14,10 +15,15 @@ import react from '@vitejs/plugin-react';
  */
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@codeguardian/shared": path.resolve(__dirname, "../shared/src"),
+    },
+  },
 
   // ---- Development server ----
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 5173,
     watch: {
       // Required when running inside Docker (inotify is unavailable in most
@@ -29,13 +35,13 @@ export default defineConfig(({ mode }) => ({
        * Forward all REST API requests to the backend.
        * Adjust the target URL to match the backend service in docker-compose.
        */
-      '/api': {
+      "/api": {
         /**
          * In production (Docker Compose) this resolves to the `backend`
          * service hostname. For local development with the mock server set:
          *   BACKEND_URL=http://localhost:3001 pnpm dev
          */
-        target: process.env.BACKEND_URL ?? 'http://backend:3000',
+        target: process.env.BACKEND_URL ?? "http://backend:3000",
         changeOrigin: true,
         secure: false,
       },
@@ -43,8 +49,8 @@ export default defineConfig(({ mode }) => ({
        * Forward Socket.IO handshake and upgrade to the backend.
        * The ws: true flag enables WebSocket proxying.
        */
-      '/socket.io': {
-        target: process.env.BACKEND_URL ?? 'http://backend:3000',
+      "/socket.io": {
+        target: process.env.BACKEND_URL ?? "http://backend:3000",
         changeOrigin: true,
         ws: true,
         secure: false,
@@ -58,13 +64,13 @@ export default defineConfig(({ mode }) => ({
      * Output directory — relative path so the Dockerfile COPY step works
      * regardless of where the build runs.
      */
-    outDir: 'dist',
+    outDir: "dist",
 
     /**
      * Generate source maps for production to assist with post-deployment
      * debugging. Set to false if bundle size is a concern.
      */
-    sourcemap: mode !== 'production',
+    sourcemap: mode !== "production",
 
     rollupOptions: {
       output: {
@@ -73,9 +79,9 @@ export default defineConfig(({ mode }) => ({
          * React, TanStack Router, etc. independently from application code.
          */
         manualChunks: {
-          vendor: ['react', 'react-dom', '@tanstack/react-router'],
-          state: ['zustand'],
-          network: ['axios', 'socket.io-client'],
+          vendor: ["react", "react-dom", "@tanstack/react-router"],
+          state: ["zustand"],
+          network: ["axios", "socket.io-client"],
         },
       },
     },

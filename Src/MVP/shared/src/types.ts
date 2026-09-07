@@ -48,6 +48,7 @@ export const OPERATION_CODES: OperationCode[] = [
 ];
 
 export type ScopeType = "FULL_REPOSITORY" | "FILES" | "DIRECTORIES";
+export const SCOPE_TYPES: ScopeType[] = ["FULL_REPOSITORY", "FILES", "DIRECTORIES"];
 
 // TASKS
 export type TaskStatus = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "CANCELLED";
@@ -68,6 +69,11 @@ export type SubmitInputDto =
   | { kind: "SPRINT_ID"; sprintId: string }
   | { kind: "INCOMPLETE_TASKS"; action: "PROCEED" | "CANCEL" }
   | { kind: "BUSINESS_CONFIRMATION"; action: "PROCEED" | "CANCEL" };
+
+export interface CreateTaskBatchDto {
+  contextId: string;
+  operations: OperationCode[];
+}
 
 export interface TaskDto {
   id: string;
@@ -223,4 +229,44 @@ export interface ServiceCredentialDto {
   id: string;
   provider: string;
   connectedAt: string; // ISO 8601
+}
+
+// WEB SOCKET EVENTS
+export interface TaskUpdatedEvent {
+  taskId: string;
+  status: TaskStatus;
+  reportId?: string;
+}
+
+export interface TaskProgressEvent {
+  taskId: string;
+  stage: string;
+  percent: number;
+}
+
+export interface TaskFailedEvent {
+  taskId: string;
+  error: { code: string; message: string; stage: string };
+}
+
+export interface TaskInputRequiredEvent {
+  taskId: string;
+  kind: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION";
+  taskIds?: string[];
+  reportId?: string;
+}
+
+export interface BatchCompletedEvent {
+  batchId: string;
+  completed: string[];
+  failed: string[];
+}
+
+// REPOSITORY
+export interface RepositorySummary {
+  owner: string;
+  name: string;
+  isPrivate: boolean;
+  defaultBranch: string;
+  primaryLanguage: string | null;
 }

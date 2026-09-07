@@ -20,7 +20,7 @@ export const HEALTH_CHECK_GRACE_PERIOD_SECONDS = 60; // evita restart-loop in av
 export const ALB_IDLE_TIMEOUT_SECONDS = 3600; // necessario per WebSocket
 export const ALB_STICKINESS_DURATION_SECONDS = 3600;
 export const ALB_DEREGISTRATION_DELAY_SECONDS = 30;
-export const HEALTH_CHECK_PATH = "/health";
+export const HEALTH_CHECK_PATH = "api/v1/auth/health";
 
 export const CLOUD_MAP_NAMESPACE = "codeguardian.local";
 export const CLOUD_MAP_DNS_TTL_SECONDS = 10;

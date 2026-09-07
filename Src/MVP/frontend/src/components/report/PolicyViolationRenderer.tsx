@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import type { PolicyViolationBlock } from '../../types';
+import { useState } from "react";
+import { SeverityBadge } from "../shared/SeverityBadge";
+import type { PolicyViolationBlock } from "../../types";
 
 interface PolicyViolationRendererProps {
   block: PolicyViolationBlock;
@@ -29,6 +30,7 @@ export function PolicyViolationRenderer({ block }: PolicyViolationRendererProps)
         </span>
 
         <div className="flex-1 min-w-0">
+          <SeverityBadge severity={block.severity} className="mb-1" />
           <span className="block text-sm font-semibold text-[#2a2a2a] truncate">
             {block.ruleText}
           </span>
@@ -37,7 +39,7 @@ export function PolicyViolationRenderer({ block }: PolicyViolationRendererProps)
 
         {/* Chevron */}
         <svg
-          className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${expanded ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -57,7 +59,11 @@ export function PolicyViolationRenderer({ block }: PolicyViolationRendererProps)
           </div>
           <div className="pt-3">
             <span className="text-xs font-semibold uppercase text-gray-500">Rimedio</span>
-            <p className="mt-1 text-sm text-[#2a2a2a] leading-relaxed">{block.remediation}</p>
+            <p className="mt-1 text-sm text-[#2a2a2a] leading-relaxed">
+              {block.remediation.kind === "SNIPPET"
+                ? block.remediation.code
+                : block.remediation.text}
+            </p>
           </div>
         </div>
       )}

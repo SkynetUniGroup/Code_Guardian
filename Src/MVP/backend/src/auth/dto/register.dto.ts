@@ -1,7 +1,11 @@
 import { IsEmail, IsIn, IsString, Matches, MaxLength, MinLength } from "class-validator";
-import { USER_ROLES, type UserRole } from "../schemas/user.schema";
+import {
+  USER_ROLES,
+  type RegisterDto as RegisterDtoInterface,
+  type UserRole,
+} from "@codeguardian/shared";
 
-export class RegisterDto {
+export class RegisterDto implements RegisterDtoInterface {
   @IsString()
   @MinLength(1)
   @MaxLength(40)

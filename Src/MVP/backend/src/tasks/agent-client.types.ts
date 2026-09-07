@@ -3,11 +3,24 @@ import type { PendingInput } from './task.types';
 import type { Block, Proposal } from '../reports/report.types';
 
 // POST /internal/agent/start body.
+export interface ContextRef {
+  repoOwner: string;
+  repoName: string;
+  repoUrl: string;
+  branch: string;
+  resolvedSha: string;
+  scopeType: string;
+  paths?: string[];
+}
+
 export interface AgentStartRequest {
   taskId: string;
   threadId: string;
   operationCode: OperationCode;
-  payload: object;
+  payload: {
+    userId: string;
+    context_ref: ContextRef;
+  };
 }
 
 // What a 'completed' AgentStepResult carries in `result` — everything about
@@ -24,7 +37,7 @@ export interface AgentRunPayload {
 
 // Response shape shared by /start and /resume.
 export interface AgentStepResult {
-  status: 'interrupted' | 'completed' | 'failed';
+  status: "interrupted" | "completed" | "failed";
   pendingInput?: PendingInput;
   result?: AgentRunPayload;
   error?: string;
