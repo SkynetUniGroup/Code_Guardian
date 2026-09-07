@@ -1,17 +1,31 @@
-[tool.black]
-line-length = 100
-target-version = ['py313']
-include = '\\.pyi?$'
-exclude = '''
-/(
-    \\.git
-  | \\.hg
-  | \\.mypy_cache
-  | \\.tox
-  | \\.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code_guardian_agents"
+version = "1.0.0"
+description = "Python agent service for Code Guardian (FastAPI + LangGraph)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.1",
+    "langgraph>=0.2.20",
+    "langgraph-checkpoint-mongodb>=0.2.0",
+    "motor>=3.3.2",
+    "langchain-openai>=0.1.1",
+    "langchain-aws>=0.1.6", 
+    "boto3>=1.34.0",        
+    "httpx>=0.27.0",
+    "pyyaml>=6.0.1",
+    "redis>=5.0.0",  
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio",
+    "ruff>=0.3.0",
+]

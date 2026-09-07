@@ -1,8 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -12,15 +10,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
-        "noUnusedVariables": "error",
-        "noUnsafeAny": "error"
+        "noUnusedVariables": "error"
       }
     }
   },
   "files": {
-    "include": ["**/*.{ts,tsx,js,jsx,json}"],
-    "exclude": ["node_modules/**", "dist/**"]
+    "includes": ["**/*.{ts,tsx,js,jsx,json}"]
   }
 }

@@ -20,6 +20,7 @@
 \usepackage{makecell}
 \usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
 \usepackage{hyperref}
+\usepackage{enumitem}
 \newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf} % Da aggiornare con nuove versioni
 \newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
@@ -73,7 +74,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.1.1} \\ \hline  
+            \textbf{Versione} & \textit{1.2.0} \\ \hline  
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Dario Pirrone, Andrea Fistarol, Edoardo Granziero, Sara Ristovic, Marco Barbiero} \\ \hline
@@ -96,30 +97,30 @@
 \section*{Versioni del documento}
 \markboth{Versioni del documento}{}
 {\renewcommand{\arraystretch}{1.3}
-\begin{xltabular}{\textwidth}{|c|c|X|l|l|}
+\begin{xltabular}{\textwidth}{|c|c|X|p{2.2cm}|p{2.2cm}|p{2.2cm}|}
 \hline
-\textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+\textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} & \textbf{Approvatore} \\ \hline
 \endfirsthead
 
 \hline
-\textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+\textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} & \textbf{Approvatore} \\ \hline
 \endhead
-1.1.1 & 2026/08/21 & Correzioni ai workflow & Andrea Fistarol & Edoardo Granziero \\ \hline
-1.1.0 & 2026/08/21 & Ampliate e riviste le sezioni Codifica, Struttura Repository, Test di Unità e Test di Integrazione; creata la sezione Strumenti di Build & Andrea Fistarol & Marco Barbiero \\ \hline
-1.0.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & Marco Barbiero & Dario Pirrone \\ \hline
-1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
-0.10.0 & 2026/08/07 & Riscrittura della sezione 3.2 & Marco Barbiero & Edoardo Granziero \\ \hline
-0.9.0 & 2026/07/20 & Riscrittura delle sottosezioni Verifica e Validazione & Sara Ristovic & Andrea Fistarol \\ \hline
-0.8.0 & 2026/07/15 & Riscrittura della sottosezione Documentazione & Sara Ristovic & Andrea Fistarol \\ \hline
-0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic & Edoardo Granziero \\ \hline
-0.7.0 & 2026/07/14 & Scrittura della sezione ``Metriche per la Qualità'' (5) & Dario Pirrone & Samuele Bertin \\ \hline
-0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash{} \\ \hline
-0.6.0 & 2026/05/23 & Scrittura della sottosezione ``Sviluppo'' (2.2) & Dario Pirrone & Samuele Bertin \\ \hline
-0.5.0 & 2026/05/13 & Scrittura della sezione ``Processi di Supporto'' & Edoardo Granziero & Dario Pirrone \\ \hline
-0.4.0 & 2026/05/12 & Scrittura della sottosezione ``Fornitura'' & Andrea Fistarol & Dario Pirrone \\ \hline
-0.3.0 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic & Marco Barbiero \\ \hline
-0.2.0 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' & Sara Ristovic & Marco Barbiero \\ \hline
-0.1.0 & 2026/04/10 & Strutturazione iniziale del documento; scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero \\ \hline
+1.2.0 & 2026/08/31 & Aggiornamento della struttura della \textit{repository} e dei \textit{workflow} & Andrea Fistarol & Edoardo Granziero & \textemdash{} \\ \hline
+1.1.0 & 2026/08/21 & Ampliate e riviste le sezioni Codifica, Struttura Repository, Test di Unità e Test di Integrazione; creata la sezione Strumenti di Build & Andrea Fistarol & Marco Barbiero & \textemdash{} \\ \hline
+1.0.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & Marco Barbiero & Dario Pirrone & \textemdash{} \\ \hline
+1.0.0 & 2026/08/13 & Correzioni e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero & \textemdash{} \\ \hline
+0.10.0 & 2026/08/07 & Riscrittura della sezione 3.2 & Marco Barbiero & Edoardo Granziero & \textemdash{} \\ \hline
+0.9.0 & 2026/07/20 & Riscrittura delle sottosezioni Verifica e Validazione & Sara Ristovic & Andrea Fistarol & \textemdash{} \\ \hline
+0.8.0 & 2026/07/15 & Riscrittura della sottosezione Documentazione & Sara Ristovic & Andrea Fistarol & \textemdash{} \\ \hline
+0.7.1 & 2026/07/15 & Implementazione delle correzioni della verifica dettagliata & Sara Ristovic & Edoardo Granziero & \textemdash{} \\ \hline
+0.7.0 & 2026/07/14 & Scrittura della sezione ``Metriche per la Qualità'' (5) & Dario Pirrone & Samuele Bertin & \textemdash{} \\ \hline
+0.6.0 & 2026/07/07 & Verifica dettagliata del documento intero & Sara Ristovic & \textemdash{} & \textemdash{} \\ \hline
+0.6.0 & 2026/05/23 & Scrittura della sottosezione ``Sviluppo'' (2.2) & Dario Pirrone & Samuele Bertin & \textemdash{} \\ \hline
+0.5.0 & 2026/05/13 & Scrittura della sezione ``Processi di Supporto'' & Edoardo Granziero & Dario Pirrone & \textemdash{} \\ \hline
+0.4.0 & 2026/05/12 & Scrittura della sottosezione ``Fornitura'' & Andrea Fistarol & Dario Pirrone & \textemdash{} \\ \hline
+0.3.0 & 2026/04/27 & Finita la scrittura della sezione ``Processi Organizzativi'' & Sara Ristovic & Marco Barbiero & \textemdash{} \\ \hline
+0.2.0 & 2026/04/20 & Scrittura delle sezioni ``Gestione di Processi'' e ``Infrastruttura di Supporto'' & Sara Ristovic & Marco Barbiero & \textemdash{} \\ \hline
+0.1.0 & 2026/04/10 & Strutturazione iniziale del documento; scrittura di ``Introduzione'' & Sara Ristovic & Marco Barbiero & \textemdash{} \\ \hline
 \end{xltabular}
 }
 
@@ -337,7 +338,7 @@ Breve descrizione.
 \begin{itemize}
     \item \textbf{\textit{Attore} Primario}:
     \item \textbf{(\textit{Attori} Secondari)}:
-    \item \textbf{Trigger}: 
+    \item \textbf{\glo{Trigger}{trigger}}: 
     \item \textbf{Precondizioni}: 
         \begin{itemize}
             \item Condizione 1.
@@ -405,7 +406,7 @@ La codifica è la fase in cui i \textbf{\glo{Programmatori}{programmatore}} impl
 
 \paragraph{Convenzioni di Nomenclatura} Tutti i nomi devono essere \textbf{descrittivi} dell'oggetto che rappresentano e \textbf{univoci} nel loro contesto.
 
-\subparagraph{\textit{TypeScript}}
+\subparagraph{\textit{\glo{TypeScript}{typescript}}}
 \begin{itemize}
     \item File: \texttt{kebab-case}
     \item Variabili e Funzioni: \texttt{camelCase}
@@ -456,7 +457,7 @@ La codifica è la fase in cui i \textbf{\glo{Programmatori}{programmatore}} impl
 \paragraph{Strumenti}
 \begin{itemize}
     \item \textit{IDE}: \textit{VS Code}, consigliato.
-    \item \textit{Linter}: \textit{Biome} (\textit{TS}), \textit{Pylint} (\textit{Python}).
+    \item \textit{\glo{Linter}{linter}}: \textit{Biome} (\textit{TS}), \textit{Pylint} (\textit{Python}).
     \item \textit{Formatter}: \textit{Biome} (\textit{TS}), \textit{Black} (\textit{Python}).
     \item Analisi Statica: \textit{SonarQube}.
 \end{itemize}
@@ -633,7 +634,7 @@ Il \textit{repository} ufficiale del gruppo è pubblico ed è raggiungibile al s
 \end{center}
 
 \paragraph{Organizzazione dei rami}~\\
-L'organizzazione del \textit{repository} si ispira al modello \textit{Git Flow} ed è così articolata:
+L'organizzazione del \textit{repository} si ispira al modello \textit{\glo{Git Flow}{git-flow}} ed è così articolata:
 \subparagraph{Rami Principali}
 \begin{itemize}
     \item \textbf{\texttt{main}}: ramo contenente esclusivamente artefatti (codice e documentazione) approvati da almeno un \textbf{Verificatore} e dal \textbf{Responsabile}. Ogni stato del ramo \texttt{main} rappresenta una configurazione stabile del progetto.
@@ -669,7 +670,7 @@ L'organizzazione del \textit{repository} si ispira al modello \textit{Git Flow} 
 \end{itemize}
 
 \paragraph{Regole di \textit{Commit}}~\\
-Viene adottato lo standard \textit{Conventional Commits}, che prescrive la seguente forma per i \textit{commit}:
+Viene adottato lo standard \textit{\glo{Conventional Commits}{conventional-commits}}, che prescrive la seguente forma per i \textit{commit}:
 \begin{center}
     [tipo](obbiettivo): descrizione della modifica
 \end{center}
@@ -711,14 +712,21 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
 \begin{itemize}
     \item \textbf{\texttt{Documentazione/}}: contiene tutta la documentazione del progetto, suddivisa in:
     \begin{itemize}
-        \item \textbf{\texttt{LaTeX/}}: sorgenti \LaTeX{} dei documenti, con una sotto-cartella per ciascun documento (\textbf{Analisi dei Requisiti}, \textbf{Norme di Progetto}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica}, \textbf{Glossario}) e la cartella \texttt{Template/} contenente i \textit{template} documentali;
+        \item \textbf{\texttt{LaTeX/}}: sorgenti \LaTeX{} dei documenti, con una sotto-cartella per ciascun documento (\textbf{Analisi dei Requisiti}, \textbf{Norme di Progetto}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica}, \textbf{Glossario} e, dal 21/8, i verbali) e la cartella \texttt{Template/} contenente i \textit{template} documentali;
         \item \textbf{\texttt{Candidatura/}}: documenti compilati (\texttt{.pdf}) relativi alla fase di candidatura al \textit{capitolato} (valutazione dei capitolati, preventivo dei costi, lettera di presentazione);
         \item \textbf{\texttt{RTB/}}: versioni ufficiali (\texttt{.pdf}) destinate alla revisione \textit{Requirements and Technology Baseline};
+        \item \textbf{\texttt{PB/}}: versioni ufficiali (\texttt{.pdf}) destinate alla revisione \textit{Product Baseline};
         \item \textbf{\texttt{Verbali/}}: verbali degli incontri, distinti in \texttt{Interni/} ed \texttt{Esterni/}.
     \end{itemize}
-    \item \textbf{\texttt{Src/}}: contiene il codice sorgente dell'applicativo (agenti, \textit{backend} e \textit{frontend}) e i relativi test automatici;
+    \item \textbf{\texttt{Src/}}: contiene il codice sorgente dell'applicativo (agenti, \textit{backend} e \textit{frontend}) e i relativi test automatici, organizzato in due sottocartelle:
+        \begin{itemize}
+            \item \textbf{\texttt{PoC/}}: contiene il codice sorgente del \textbf{Proof of Concept} nella sua seconda iterazione;
+            \item \textbf{\texttt{MVP/}}: ospita il codice sorgente del \textbf{Minimum Viable Product}.
+        \end{itemize}
     \item \textbf{\texttt{Website/}}: contiene i sorgenti del sito del gruppo, pubblicato tramite \textit{GitHub Pages};
-    \item \textbf{\texttt{.github/workflows/}}: contiene i \textit{workflow} di \textit{GitHub Actions} per l'automazione del \textit{deploy} dei contenuti statici;
+    \item \textbf{\texttt{Tools/}}: contiene \textit{script} e strumenti di generica utilità;
+    \item \textbf{\texttt{.github/workflows/}}: contiene i \textit{workflow} di \textit{GitHub Actions} per l'automazione del \textit{deploy} dei contenuti statici e la \textit{CI/CD};
+    \item \textbf{\texttt{.husky/}}: contiene i file di configurazione degli \textit{hook} di \textit{Git};
     \item \textbf{\texttt{README.md}} e \textbf{\texttt{LICENSE}}: rispettivamente la descrizione del \textit{repository} e la licenza (\textit{MIT}) con cui è distribuito il progetto;
     \item \textbf{\texttt{.gitignore}}: file configurato per escludere dal tracciamento i file di sistema generati automaticamente dai sistemi operativi (es. \texttt{.DS\_Store}, \texttt{desktop.ini}).
 \end{itemize}
@@ -727,14 +735,17 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
 \subsubsection{Strumenti di Build}
 \paragraph{Gestione dipendenze}
 \begin{itemize}
-    \item \textit{pnpm}: comandi \texttt{pnpm install}, \texttt{pnpm add [package]}, \texttt{pnpm remove [package]}.
-    \item \textit{Lockfile}: \texttt{pnpm-lock.yaml} da "committare". \textbf{Mai} modificarlo manualmente.
+    \item \textit{pnpm}: comandi \texttt{pnpm install}, \texttt{pnpm add -d [package]}, \texttt{pnpm remove -d [package]}.
+        \begin{itemize}
+            \item Dipendenze: sono aggiunte \textbf{automaticamente} da \texttt{pnpn} a \texttt{package.json}, modificabile per configurazione e aggiunta di script. Soggetto a versionamento.
+        \end{itemize}
+    \item \textit{\glo{Lockfile}{lockfile}}: \texttt{pnpm-lock.yaml} da "committare". \textbf{Mai} modificarlo manualmente.
     \item \textit{Workspace}: struttura monorepo con \texttt{pnpm-workspace.yaml}.
 \end{itemize}
 
 \paragraph{\textit{Bundling} e \textit{Dev Server}}
 \begin{itemize}
-    \item \textit{Vite}: configurazione in \texttt{vite.config.ts}.
+    \item \textit{\glo{Vite}{vite}}: configurazione in \texttt{vite.config.ts}.
     \begin{itemize}
         \item Motori: \textit{Oxc} (\textit{transpiling}), \textit{Rolldown} (\textit{bundling}).
     \end{itemize}
@@ -751,12 +762,16 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
         \begin{itemize}
             \item Trigger: \textit{Pull Request} su qualsiasi \textit{branch}.
             \item Fasi:
-            \begin{enumerate}
+            \begin{enumerate}[label=\arabic*.]
                 \item \textit{Checkout} codice.
-                \item Setup Node.js/Python.
-                \item Installazione dipendenze.
-                \item \textit{Linting}.
-                \item Test unitari.
+                \item Installazione di \textit{pnpm} v11, \textit{Node.js} v24 e dipendenze.
+                \item Installazione di \textit{Python}.
+                \item Installazione della \textit{cache} di \textit{Python} \textit{pip}.
+                \item \textit{Linting} \textit{Typescript}.
+                \item Test unitari \textit{Typescript}.
+                \item Installazione delle dipendenze di \textit{Python} con \textit{pip}.
+                \item \textit{\glo{Linting}{linter}} \textit{Python}.
+                \item Test unitari \textit{Python}.
                 \item Test di integrazione.
                 \item \textit{Build}.
             \end{enumerate}
@@ -765,30 +780,20 @@ Nel ramo \texttt{main} gli artefatti sono organizzati nelle seguenti cartelle e 
         \item CI Staging (\texttt{ci-staging.yml})
         \begin{itemize}
             \item Trigger: \textit{push} su \texttt{develop}.
-            \item Fasi:
-            \begin{enumerate}
-                \item \textit{Checkout} codice.
-                \item Setup Node.js/Python.
-                \item Installazione dipendenze.
-                \item \textit{Linting}.
-                \item Test unitari.
-                \item Test di integrazione.
-            \end{enumerate}
+            \item Fasi: 1-10. come \textit{Pull Request Check}.
             \item Artefatti: salvati in \texttt{/dist}.
         \end{itemize}
         \item Release Production (\texttt{release.yml})
         \begin{itemize}
             \item Trigger: \textit{push tag} \texttt{v*} su \texttt{main}.
-            \item Fasi:
-            \begin{enumerate}
-                \item \textit{Checkout} codice.
-                \item Setup ambienti.
-                \item Installazione dipendenze.
-                \item \textit{Linting}.
-                \item Test unitari.
-                \item Test di integrazione.
-                \item \textit{Build}.
-                \item \textit{Deployment} su \textit{AWS}.
+            \item Fasi:\\[10pt]
+                  1-11. come \textit{Pull Request Check}.
+            \begin{enumerate}[label=\arabic*., start=12]
+                \item Configurazione delle credenziali \textit{AWS}.
+                \item \textit{Deploy} \textit{frontend} su \textit{Amazon S3}.
+                \item Login \textit{Amazon ECR}.
+                \item \textit{Build}, \textit{tag}, \textit{push} delle immagini \textit{Docker}.
+                \item \textit{Deploy} su \textit{Amazon ECS}.
             \end{enumerate}
             \item Artefatti: build e tag di rilascio.
         \end{itemize}
@@ -864,8 +869,8 @@ I test di unità servono a verificare il corretto funzionamento delle parti più
 
 \paragraph{Framework}
 \begin{itemize}
-    \item \textit{TypeScript}: \textit{Vitest}. Configurazione in \texttt{vite.config.ts}.
-    \item \textit{Python}: \textit{pytest}. Configurazione in \texttt{pytest.ini}.
+    \item \textit{TypeScript}: \textit{\glo{Vitest}{vitest}}. Configurazione in \texttt{vite.config.ts}.
+    \item \textit{Python}: \textit{\glo{pytest}{pytest}}. Configurazione in \texttt{pytest.ini}.
 \end{itemize}
 
 \paragraph{Copertura Minima}
@@ -886,7 +891,7 @@ I test di unità servono a verificare il corretto funzionamento delle parti più
         \item \textit{TypeScript}: \texttt{describe("[modulo]", ()=>\{it("[scenario]", ()=>\{...\})}
         \item \textit{Python}: \texttt{test\_[funzione]\_[scenario]}.
     \end{itemize}
-    \item Struttura: \textit{AAA pattern} (Arrange-Act-Assert).
+    \item Struttura: \textit{\glo{AAA pattern}{aaa-pattern}} (Arrange-Act-Assert).
 \end{itemize}
 
 \paragraph{Casi di test obbligatori}
@@ -905,7 +910,7 @@ I test di unità servono a verificare il corretto funzionamento delle parti più
 
 \paragraph{Automazione}
 \begin{itemize}
-    \item Esecuzione con \texttt{pnpm test:unit} in \textit{CI/CD} tramite \textit{GitHub Actions} ad ogni \textit{push} (\textit{workflow} \texttt{ci-staging.yml}) o \textit{Pull Request} (\textit{workflow} \texttt{pr-check.yml}) su \texttt{develop}.
+    \item Esecuzione con \texttt{pnpm test:unit} in \textit{CI/CD} tramite \textit{GitHub Actions} ad ogni \textit{push} (\textit{workflow} \texttt{deploy-staging.yml}) o \textit{Pull Request} (\textit{workflow} \texttt{pr-check.yml}) su \texttt{develop}.
 \end{itemize}
 
 \newpage
@@ -917,7 +922,7 @@ I test di integrazione verificano che le varie componenti del software, le tecno
 
 \paragraph{Ambiente}
 \begin{itemize}
-    \item \textit{Docker Compose} per servizi esterni (\textit{MongoDB}, \textit{API mock}).
+    \item \textit{\glo{Docker Compose}{docker-compose}} per servizi esterni (\textit{MongoDB}, \textit{API mock}).
     \item Variabili d'ambiente: prefisso \texttt{TEST\_}.
 \end{itemize}
 
@@ -930,14 +935,14 @@ I test di integrazione verificano che le varie componenti del software, le tecno
 
 \paragraph{Dati di Test}
 \begin{itemize}
-    \item \textit{Fixture}: file in \texttt{tests/fixtures/}.
+    \item \textit{\glo{Fixture}{fixture}}: file in \texttt{tests/fixtures/}.
     \item Pulizia: reset DB tra test (es. \texttt{pytest-mongodb} \textit{fixture}).
 \end{itemize}
 
 \paragraph{Esecuzione}
 \begin{itemize}
     \item Locale: \texttt{pnpm test:integration}
-    \item \textit{CI}: Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} come parte dei \textit{workflow} \texttt{pr-check.yml} (\textit{Pull Request}) e \texttt{ci-staging.yml} (\textit{push} su \texttt{develop}), insieme ai test unitari.
+    \item \textit{CI}: Esecuzione in \textit{CI/CD} con \textit{GitHub Actions} come parte dei \textit{workflow} \texttt{pr-check.yml} (\textit{Pull Request}) e \texttt{deploy-staging.yml} (\textit{push} su \texttt{develop}), insieme ai test unitari.
 \end{itemize}
 
 \newpage
@@ -1607,27 +1612,14 @@ L'affidabilità misura la capacità del sistema di mantenere costanti le proprie
 \subsubsection{Usabilità}
 L'usabilità rappresenta la capacità del prodotto software di essere compreso, appreso e utilizzato con facilità dall'utente finale. Essa misura l'immediatezza dell'interazione con il sistema, minimizzando il rischio di errori operativi e lo sforzo cognitivo richiesto per sfruttare appieno le funzionalità offerte.
 
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|l|p{12cm}|}
-\hline
-\textbf{Metrica} & MPD\_9 - Tempo di Apprendimento (Learning Time) \\ \hline
-\textbf{Formula} & $LT = \frac{\sum_{i=1}^{n} T_{apprendimento\_i}}{n}$
-\begin{itemize}
-    \item $n$: Numero di utenti coinvolti nella sessione di test
-    \item $T_{apprendimento\_i}$: Tempo impiegato dall'utente $i$-esimo per completare le funzionalità senza assistenza
-\end{itemize} \\ \hline
-\textbf{Utilità} & Tempo massimo necessario affinché un nuovo utente riesca a comprendere e utilizzare autonomamente le funzionalità principali del sistema, senza ricorrere a manuali o supporto esterno. \\ \hline
-\end{tabular}
-\end{table}
+
 
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_10 - Tasso di Errore (Error Rate) \\ \hline
+\textbf{Metrica} & MPD\_9 - Tasso di Errore (Error Rate) \\ \hline
 \textbf{Formula} & $ER = \frac{N_{E}}{N_{AT}} \times 100$
 \begin{itemize}
     \item $N_{E}$: Numero di errori (azioni errate o non valide) commessi
@@ -1646,7 +1638,7 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_11 - Tempo di Risposta Interfaccia \\ \hline
+\textbf{Metrica} & MPD\_10 - Tempo di Risposta Interfaccia \\ \hline
 \textbf{Formula} & $TRI = \frac{\sum_{i=1}^{n} (T_{risposta\_i} - T_{richiesta\_i})}{n}$
 \begin{itemize}
     \item $n$: Numero di misurazioni effettuate
@@ -1662,7 +1654,7 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_12 - Tempo di Risposta dell'Agente \\ \hline
+\textbf{Metrica} & MPD\_11 - Tempo di Risposta dell'Agente \\ \hline
 \textbf{Formula} & $TRA = \frac{\sum_{i=1}^{n} (T_{completamento\_analisi\_i} - T_{avvio\_agente\_i})}{n}$
 \begin{itemize}
     \item $n$: Numero di esecuzioni dell'agente misurate
@@ -1678,7 +1670,7 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_13 - Tempo di Autenticazione \\ \hline
+\textbf{Metrica} & MPD\_12 - Tempo di Autenticazione \\ \hline
 \textbf{Formula} & $TA = \frac{\sum_{i=1}^{n} (T_{successo\_i} - T_{invio\_credenziali\_i})}{n}$
 \begin{itemize}
     \item $n$: Numero di tentativi di autenticazione misurati
@@ -1697,7 +1689,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_14 - \textit{\glo{Prompt}{prompt}} Isolation (Disaccoppiamento dei \textit{Prompt}) \\ \hline
+\textbf{Metrica} & MPD\_13 - \textit{\glo{Prompt}{prompt}} Isolation (Disaccoppiamento dei \textit{Prompt}) \\ \hline
 \textbf{Formula} & $PI = \frac{N_{PI}}{N_{PT}} \times 100$
 \begin{itemize}
     \item $N_{PI}$: Numero di \textit{prompt} archiviati in file di configurazione isolati
@@ -1712,7 +1704,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_15 - \textit{\glo{Complessità Ciclomatica}{complessità-ciclomatica}} \\ \hline
+\textbf{Metrica} & MPD\_14 - \textit{\glo{Complessità Ciclomatica}{complessità-ciclomatica}} \\ \hline
 \textbf{Formula} & $CC = E - N + 2P$
 \begin{itemize}
     \item $E$: Numero di archi nel grafo di controllo del flusso
@@ -1728,7 +1720,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_16 - \textit{Code Smell} \\ \hline
+\textbf{Metrica} & MPD\_15 - \textit{Code Smell} \\ \hline
 \textbf{Formula} & $CS = N_{CS}$
 \begin{itemize}
     \item $N_{CS}$: Numero totale di \textit{\glo{code smell}{code-smell}} rilevati tramite \textit{analisi statica}
@@ -1742,7 +1734,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_17 - Duplicazione del Codice \\ \hline
+\textbf{Metrica} & MPD\_16 - Duplicazione del Codice \\ \hline
 \textbf{Formula} & $DC = \frac{L_{CD}}{L_{CT}} \times 100$
 \begin{itemize}
     \item $L_{CD}$: Linee di codice sorgente duplicate
@@ -1761,7 +1753,7 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_18 - Esposizione di Credenziali \\ \hline
+\textbf{Metrica} & MPD\_17 - Esposizione di Credenziali \\ \hline
 \textbf{Formula} & $EC = N_{CE}$
 \begin{itemize}
     \item $N_{CE}$: Numero totale di chiavi, password o \textit{token API} trovati esposti in chiaro
@@ -1775,7 +1767,7 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_19 - Cifratura dei Dati Sensibili \\ \hline
+\textbf{Metrica} & MPD\_18 - Cifratura dei Dati Sensibili \\ \hline
 \textbf{Formula} & $CDS = \frac{N_{DSC}}{N_{DST}} \times 100$
 \begin{itemize}
     \item $N_{DSC}$: Numero di record di dati sensibili archiviati in formato cifrato o sottoposti ad \textit{hashing}
@@ -1790,7 +1782,7 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_20 - Input Validation \\ \hline
+\textbf{Metrica} & MPD\_19 - Input Validation \\ \hline
 \textbf{Formula} & $IV = \frac{N_{IV}}{N_{IT}} \times 100$
 \begin{itemize}
     \item $N_{IV}$: Numero di input sanificati e validati con successo

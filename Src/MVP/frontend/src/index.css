@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --status-pending:   #f0ad00;
+  --status-running:   #2277cc;
+  --status-completed: #2a8a2a;
+  --status-failed:    #cc2222;
+  --status-cancelled: #888888;
+
+  --severity-critical: #cc2222;
+  --severity-high:     #e05800;
+  --severity-medium:   #f0ad00;
+  --severity-low:      #2277cc;
+  --severity-info:     #888888;
+
+  --color-sidebar:  #1e1e1e;
+  --color-surface:  #ffffff;
+  --color-border:   #cccccc;
+  --color-accent:   #2a2a2a;
+  --color-bg:       #f5f5f5;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-accent);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #aaaaaa; }
