@@ -1,0 +1,27 @@
+{
+  "name": "codeguardian-agents",
+  "version": "1.0.0",
+  "description": "Python agent service for Code Guardian (FastAPI + LangGraph)",
+  "scripts": {
+    "lint": "python -m black --check src/ && python -m ruff check src/",
+    "lint:black": "python -m black --check src/",
+    "lint:ruff": "python -m ruff check src/",
+    "format": "python -m black src/ && python -m ruff check --fix src/",
+    "format:black": "python -m black src/",
+    "format:ruff": "python -m ruff check --fix src/",
+    "clean": "rm -rf dist/ __pycache__/ *.pyc",
+    "install-dev": "pip install -e \".[dev]\""
+  },
+  "engines": {
+    "python": ">=3.12"
+  },
+  "keywords": [
+    "fastapi",
+    "langgraph",
+    "ai",
+    "agents",
+    "code-analysis"
+  ],
+  "author": "",
+  "license": "UNLICENSED"
+}
