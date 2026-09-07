@@ -1,8 +1,8 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { getModelToken } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
-import { UsageLimitService } from "./usage-limit.service";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { UsageCounter } from "./schemas/usage-counter.schema";
+import { UsageLimitService } from "./usage-limit.service";
 
 describe("UsageLimitService", () => {
   let service: UsageLimitService;

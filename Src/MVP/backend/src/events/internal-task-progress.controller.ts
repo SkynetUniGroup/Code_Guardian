@@ -7,14 +7,14 @@ import {
   Param,
   Post,
   UseGuards,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { ApiExcludeController } from '@nestjs/swagger';
-import { InternalAuthGuard } from '../common/guards/internal-auth.guard';
-import { Task, TaskDocument } from '../tasks/schemas/task.schema';
-import { TaskProgressCallbackDto } from './dto/task-progress-callback.dto';
-import { EventsGateway } from './events.gateway';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { ApiExcludeController } from "@nestjs/swagger";
+import type { Model } from "mongoose";
+import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
+import { Task, type TaskDocument } from "../tasks/schemas/task.schema";
+import type { TaskProgressCallbackDto } from "./dto/task-progress-callback.dto";
+import type { EventsGateway } from "./events.gateway";
 
 // Called by the agent service mid-execution. This is the only one of the
 // five realtime signals that crosses the network from outside this
@@ -23,7 +23,7 @@ import { EventsGateway } from './events.gateway';
 // by whatever backend code (future BE-13/BE-15/BE-17) changes a Task's
 // state, with no HTTP hop needed.
 @ApiExcludeController()
-@Controller('internal/tasks')
+@Controller("internal/tasks")
 @UseGuards(InternalAuthGuard)
 export class InternalTaskProgressController {
   constructor(
@@ -31,12 +31,9 @@ export class InternalTaskProgressController {
     private readonly events: EventsGateway,
   ) {}
 
-  @Post(':id/progress')
+  @Post(":id/progress")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async progress(
-    @Param('id') id: string,
-    @Body() dto: TaskProgressCallbackDto,
-  ): Promise<void> {
+  async progress(@Param("id") id: string, @Body() dto: TaskProgressCallbackDto): Promise<void> {
     // The pre-update document is enough: userId never changes, and we only
     // need it to know which room to emit to.
     const task = await this.taskModel.findByIdAndUpdate(id, {

@@ -1,10 +1,10 @@
-import { randomBytes } from 'node:crypto';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { Octokit } from '@octokit/rest';
-import { applyPatch } from 'diff';
-import { GithubClientService } from './github-client.service';
-import { OCTOKIT_TIMEOUT_MS } from './octokit-timeout';
-import { AppException } from '../common/exceptions/app.exception';
+import { randomBytes } from "node:crypto";
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { Octokit } from "@octokit/rest";
+import { applyPatch } from "diff";
+import { AppException } from "../common/exceptions/app.exception";
+import type { GithubClientService } from "./github-client.service";
+import { OCTOKIT_TIMEOUT_MS } from "./octokit-timeout";
 
 export interface ProposalChange {
   operationCode: string;
@@ -38,27 +38,22 @@ export class GithubWriteService {
   // this service doesn't know about Report/Task at all) so re-running the
   // same operation twice never collides with itself either.
   private generateBranchName(operationCode: string): string {
-    const scope = operationCode.toLowerCase().replace(/_/g, '-');
-    const shortId = randomBytes(4).toString('hex');
+    const scope = operationCode.toLowerCase().replace(/_/g, "-");
+    const shortId = randomBytes(4).toString("hex");
     return `codeguardian/${scope}/${shortId}`;
   }
 
   private isUnauthorized(error: unknown): boolean {
     return (
-      typeof error === 'object' &&
+      typeof error === "object" &&
       error !== null &&
-      'status' in error &&
+      "status" in error &&
       (error.status === 401 || error.status === 403)
     );
   }
 
   private isNotFound(error: unknown): boolean {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'status' in error &&
-      error.status === 404
-    );
+    return typeof error === "object" && error !== null && "status" in error && error.status === 404;
   }
 
   // Returns the existing file's content and blob sha, or null if the file
@@ -72,13 +67,7 @@ export class GithubWriteService {
     baseSha: string,
   ): Promise<{ content: string; sha: string } | null> {
     try {
-      const file = await this.githubClient.getFileContent(
-        token,
-        owner,
-        repo,
-        path,
-        baseSha,
-      );
+      const file = await this.githubClient.getFileContent(token, owner, repo, path, baseSha);
       return { content: file.content, sha: file.sha };
     } catch (error) {
       if (this.isNotFound(error)) {
@@ -106,22 +95,11 @@ export class GithubWriteService {
     baseBranch: string,
     change: ProposalChange,
   ): Promise<string> {
-    const baseSha = await this.githubClient.resolveRefToSha(
-      token,
-      owner,
-      repo,
-      baseBranch,
-    );
+    const baseSha = await this.githubClient.resolveRefToSha(token, owner, repo, baseBranch);
 
-    const existing = await this.readExistingFile(
-      token,
-      owner,
-      repo,
-      change.targetPath,
-      baseSha,
-    );
+    const existing = await this.readExistingFile(token, owner, repo, change.targetPath, baseSha);
 
-    const newContent = applyPatch(existing?.content ?? '', change.diffUnified);
+    const newContent = applyPatch(existing?.content ?? "", change.diffUnified);
     if (newContent === false) {
       // Not GitHub's fault and not an authorization problem — see the
       // method-level comment above. Left uncaught on purpose.
@@ -134,41 +112,38 @@ export class GithubWriteService {
     const client = this.writeClient(token);
 
     try {
-      await client.request('POST /repos/{owner}/{repo}/git/refs', {
+      await client.request("POST /repos/{owner}/{repo}/git/refs", {
         owner,
         repo,
         ref: `refs/heads/${branchName}`,
         sha: baseSha,
       });
 
-      await client.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+      await client.request("PUT /repos/{owner}/{repo}/contents/{path}", {
         owner,
         repo,
         path: change.targetPath,
         message: `Code Guardian: ${change.title}`,
-        content: Buffer.from(newContent, 'utf8').toString('base64'),
+        content: Buffer.from(newContent, "utf8").toString("base64"),
         branch: branchName,
         sha: existing?.sha,
       });
 
-      const { data } = await client.request(
-        'POST /repos/{owner}/{repo}/pulls',
-        {
-          owner,
-          repo,
-          title: change.title,
-          head: branchName,
-          base: baseBranch,
-          body: 'Opened automatically by Code Guardian. Review the diff before merging.',
-        },
-      );
+      const { data } = await client.request("POST /repos/{owner}/{repo}/pulls", {
+        owner,
+        repo,
+        title: change.title,
+        head: branchName,
+        base: baseBranch,
+        body: "Opened automatically by Code Guardian. Review the diff before merging.",
+      });
 
       return data.html_url;
     } catch (error) {
       if (this.isUnauthorized(error)) {
         throw new AppException(
-          'PR_CREATION_FAILED',
-          'GitHub refused to open the Pull Request (missing permission or invalid token).',
+          "PR_CREATION_FAILED",
+          "GitHub refused to open the Pull Request (missing permission or invalid token).",
           HttpStatus.BAD_GATEWAY,
         );
       }

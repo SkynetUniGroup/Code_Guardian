@@ -9,37 +9,37 @@ function codesOf(descriptors: { code: OperationCode }[]): OperationCode[] {
   return descriptors.map((d) => d.code).sort();
 }
 
-describe('AgentRegistry', () => {
+describe("AgentRegistry", () => {
   const registry = new AgentRegistry();
 
-  it('gives DEVELOPER exactly the Docs operations plus the shared changelog one', () => {
-    expect(codesOf(registry.getForRole('DEVELOPER'))).toEqual(
-      ['CHANGELOG_TECHNICAL', 'DOCS_API', 'DOCS_INLINE', 'DOCS_README'].sort(),
+  it("gives DEVELOPER exactly the Docs operations plus the shared changelog one", () => {
+    expect(codesOf(registry.getForRole("DEVELOPER"))).toEqual(
+      ["CHANGELOG_TECHNICAL", "DOCS_API", "DOCS_INLINE", "DOCS_README"].sort(),
     );
   });
 
-  it('gives SECURITY_AUDITOR exactly the two Security operations', () => {
-    expect(codesOf(registry.getForRole('SECURITY_AUDITOR'))).toEqual(
-      ['SECURITY_OWASP', 'SECURITY_POLICY'].sort(),
+  it("gives SECURITY_AUDITOR exactly the two Security operations", () => {
+    expect(codesOf(registry.getForRole("SECURITY_AUDITOR"))).toEqual(
+      ["SECURITY_OWASP", "SECURITY_POLICY"].sort(),
     );
   });
 
-  it('gives PROJECT_MANAGER both changelog operations and nothing else', () => {
-    expect(codesOf(registry.getForRole('PROJECT_MANAGER'))).toEqual(
-      ['CHANGELOG_BUSINESS', 'CHANGELOG_TECHNICAL'].sort(),
+  it("gives PROJECT_MANAGER both changelog operations and nothing else", () => {
+    expect(codesOf(registry.getForRole("PROJECT_MANAGER"))).toEqual(
+      ["CHANGELOG_BUSINESS", "CHANGELOG_TECHNICAL"].sort(),
     );
   });
 
-  it('never leaks allowedRoles into the returned descriptors', () => {
-    const [first] = registry.getForRole('DEVELOPER');
-    expect(first).not.toHaveProperty('allowedRoles');
+  it("never leaks allowedRoles into the returned descriptors", () => {
+    const [first] = registry.getForRole("DEVELOPER");
+    expect(first).not.toHaveProperty("allowedRoles");
     expect(Object.keys(first).sort()).toEqual(
-      ['agent', 'code', 'description', 'displayName'].sort(),
+      ["agent", "code", "description", "displayName"].sort(),
     );
   });
 
-  it('returns the configured timeout for a known operation', () => {
-    expect(registry.getTimeoutS('DOCS_INLINE')).toBe(90);
+  it("returns the configured timeout for a known operation", () => {
+    expect(registry.getTimeoutS("DOCS_INLINE")).toBe(90);
   });
 
   describe('the 300s hard ceiling (RQ.6, BE-15)', () => {

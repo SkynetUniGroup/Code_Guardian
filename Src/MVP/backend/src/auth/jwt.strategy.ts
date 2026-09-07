@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthenticatedUser } from '../common/authenticated-user';
-import { UserRole } from './schemas/user.schema';
+import { Injectable } from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import type { AuthenticatedUser } from "../common/authenticated-user";
+import type { UserRole } from "./schemas/user.schema";
 
 interface JwtPayload {
   sub: string;
@@ -13,6 +13,10 @@ interface JwtPayload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
+    const secret = config.get<string>("JWT_SECRET");
+    if (!secret) {
+      throw new Error("JWT_SECRET is required");
+    }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -20,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // the app refuses to boot at all without it, so it's never actually
       // undefined here despite ConfigService's generic (string | undefined)
       // return type.
-      secretOrKey: config.get<string>('JWT_SECRET')!,
+      secretOrKey: secret,
     });
   }
 

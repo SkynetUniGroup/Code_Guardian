@@ -1,12 +1,9 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { ConfigService } from '@nestjs/config';
-import { Model } from 'mongoose';
-import {
-  UsageCounter,
-  UsageCounterDocument,
-} from './schemas/usage-counter.schema';
-import { AppException } from '../common/exceptions/app.exception';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Model } from "mongoose";
+import { AppException } from "../common/exceptions/app.exception";
+import { UsageCounter, type UsageCounterDocument } from "./schemas/usage-counter.schema";
 
 // RF.66 — one Task started counts as one, per user, per calendar month,
 // checked inside POST /tasks before anything is persisted. Deliberately
@@ -29,7 +26,10 @@ export class UsageLimitService {
 
   async checkAndIncrement(userId: string, taskCount: number): Promise<void> {
     const yearMonth = this.currentYearMonth();
-    const limit = this.config.get<number>('MONTHLY_TASK_LIMIT')!;
+    const limit = this.config.get<number>("MONTHLY_TASK_LIMIT");
+    if (limit === undefined) {
+      throw new Error("MONTHLY_TASK_LIMIT is required");
+    }
 
     const updated = await this.usageCounterModel.findOneAndUpdate(
       { userId, yearMonth },
@@ -46,7 +46,7 @@ export class UsageLimitService {
         { $inc: { count: -taskCount } },
       );
       throw new AppException(
-        'USAGE_LIMIT_EXCEEDED',
+        "USAGE_LIMIT_EXCEEDED",
         `Monthly task limit of ${limit} exceeded`,
         HttpStatus.TOO_MANY_REQUESTS,
       );

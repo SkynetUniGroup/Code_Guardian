@@ -13,7 +13,7 @@ vi.fn("@octokit/rest", () => ({
   })),
 }));
 
-import { Test, TestingModule } from "@nestjs/testing";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { createMockRedis, RedisTestModule } from "@nestjs-modules/ioredis";
 import { GithubClientService } from "./github-client.service";
 

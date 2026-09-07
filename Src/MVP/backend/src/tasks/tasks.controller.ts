@@ -16,7 +16,7 @@ import { CreateTaskBatchDto } from './dto/create-task-batch.dto';
 import { SubmitInputDto } from './dto/submit-input.dto';
 import { TaskDto } from './dto/task.dto';
 
-@Controller('tasks')
+@Controller("tasks")
 @UseGuards(JwtAuthGuard)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
@@ -34,24 +34,18 @@ export class TasksController {
   }
 
   @Get()
-  findAll(@CurrentUser('userId') userId: string): Promise<TaskDto[]> {
+  findAll(@CurrentUser("userId") userId: string): Promise<TaskDto[]> {
     return this.tasksService.findAllForUser(userId);
   }
 
-  @Get(':id')
-  findOne(
-    @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
-  ): Promise<TaskDto> {
+  @Get(":id")
+  findOne(@CurrentUser("userId") userId: string, @Param("id") id: string): Promise<TaskDto> {
     return this.tasksService.findOneForUser(userId, id);
   }
 
-  @Post(':id/cancel')
+  @Post(":id/cancel")
   @HttpCode(HttpStatus.NO_CONTENT)
-  cancel(
-    @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
-  ): Promise<void> {
+  cancel(@CurrentUser("userId") userId: string, @Param("id") id: string): Promise<void> {
     return this.tasksService.cancel(userId, id);
   }
 

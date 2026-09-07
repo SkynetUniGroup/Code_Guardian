@@ -1,8 +1,8 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { RepositoriesService } from "./repositories.service";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { CredentialsService } from "../credentials/credentials.service";
 import { GithubClientService } from "../github/github-client.service";
 import { RepoResolverService } from "./repo-resolver.service";
+import { RepositoriesService } from "./repositories.service";
 
 describe("RepositoriesService", () => {
   let service: RepositoriesService;

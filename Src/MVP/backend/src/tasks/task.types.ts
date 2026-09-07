@@ -1,6 +1,7 @@
-import { ErrorKind } from "../common/exceptions/error-kind";
-import { TaskError } from "@codeguardian/shared";
-export type { TaskStatus, PendingInput, TaskError } from "@codeguardian/shared";
+import type { TaskError } from "@codeguardian/shared";
+import type { ErrorKind } from "../common/exceptions/error-kind";
+
+export type { PendingInput, TaskError, TaskStatus } from "@codeguardian/shared";
 
 /*export type TaskStatus =
   'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';*/

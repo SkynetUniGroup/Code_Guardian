@@ -1,4 +1,4 @@
-import { FrancFn } from './franc.provider';
+import type { FrancFn } from "./franc.provider";
 
 // RV.8: "un controllo leggero (una libreria di rilevamento lingua, non il
 // modello)" on an excerpt of the README — this is that check.
@@ -10,10 +10,7 @@ const EXCERPT_LENGTH = 1000;
 // judge.
 const MIN_LENGTH_FOR_DETECTION = 20;
 
-export function isReadmeNonEnglish(
-  readmeContent: string,
-  franc: FrancFn,
-): boolean {
+export function isReadmeNonEnglish(readmeContent: string, franc: FrancFn): boolean {
   const excerpt = readmeContent.trim().slice(0, EXCERPT_LENGTH);
   if (excerpt.length < MIN_LENGTH_FOR_DETECTION) {
     return false;
@@ -23,5 +20,5 @@ export function isReadmeNonEnglish(
 
   // 'und' = undetermined (franc itself isn't confident) — not a positive
   // non-English signal, so it doesn't warn either.
-  return detected !== 'und' && detected !== 'eng';
+  return detected !== "und" && detected !== "eng";
 }

@@ -1,19 +1,14 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { GithubModule } from '../github/github.module';
-import { CredentialCipherService } from './credential-cipher.service';
-import { CredentialsController } from './credentials.controller';
-import { CredentialsService } from './credentials.service';
-import {
-  ServiceCredential,
-  ServiceCredentialSchema,
-} from './schemas/service-credential.schema';
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { GithubModule } from "../github/github.module";
+import { CredentialCipherService } from "./credential-cipher.service";
+import { CredentialsController } from "./credentials.controller";
+import { CredentialsService } from "./credentials.service";
+import { ServiceCredential, ServiceCredentialSchema } from "./schemas/service-credential.schema";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: ServiceCredential.name, schema: ServiceCredentialSchema },
-    ]),
+    MongooseModule.forFeature([{ name: ServiceCredential.name, schema: ServiceCredentialSchema }]),
     GithubModule,
   ],
   controllers: [CredentialsController],

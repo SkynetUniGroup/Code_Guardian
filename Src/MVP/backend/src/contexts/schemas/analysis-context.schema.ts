@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import type { HydratedDocument } from "mongoose";
 import type { ScopeType } from "../../common/domain-types";
 
 export type AnalysisContextDocument = HydratedDocument<AnalysisContext>;

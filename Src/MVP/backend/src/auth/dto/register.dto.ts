@@ -1,9 +1,9 @@
-import { IsEmail, IsIn, IsString, Matches, MaxLength, MinLength } from "class-validator";
 import {
-  USER_ROLES,
   type RegisterDto as RegisterDtoInterface,
+  USER_ROLES,
   type UserRole,
 } from "@codeguardian/shared";
+import { IsEmail, IsIn, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class RegisterDto implements RegisterDtoInterface {
   @IsString()

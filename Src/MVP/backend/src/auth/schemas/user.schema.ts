@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import type { HydratedDocument } from "mongoose";
 
 export type UserRole = import("@codeguardian/shared").UserRole;
 export type { USER_ROLES } from "@codeguardian/shared";

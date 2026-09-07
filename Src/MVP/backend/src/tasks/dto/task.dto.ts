@@ -1,7 +1,6 @@
-import type { OperationCode } from "../../common/domain-types";
-import type { PendingInput, TaskErrorB, TaskStatus } from "../task.types";
-import type { TaskDocument } from "../schemas/task.schema";
 import type { TaskDto } from "@codeguardian/shared";
+import type { TaskDocument } from "../schemas/task.schema";
+
 export type { TaskDto };
 
 // What GET /tasks and GET /tasks/:id return — the wire shape, not the

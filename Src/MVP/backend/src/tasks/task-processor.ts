@@ -485,17 +485,17 @@ export class TaskProcessor extends WorkerHost {
   ): Promise<void> {
     const stillActive = await this.taskModel.countDocuments({
       batchId,
-      status: { $in: ['PENDING', 'RUNNING'] },
+      status: { $in: ["PENDING", "RUNNING"] },
     });
     if (stillActive > 0) {
       return;
     }
 
     const [completed, failed] = await Promise.all([
-      this.taskModel.countDocuments({ batchId, status: 'COMPLETED' }),
+      this.taskModel.countDocuments({ batchId, status: "COMPLETED" }),
       this.taskModel.countDocuments({
         batchId,
-        status: { $in: ['FAILED', 'CANCELLED'] },
+        status: { $in: ["FAILED", "CANCELLED"] },
       }),
     ]);
     this.events.emitBatchCompleted(userId, batchId, completed, failed);

@@ -1,9 +1,9 @@
-import { ArrayNotEmpty, IsArray, IsIn, IsMongoId } from "class-validator";
 import {
+  type CreateTaskBatchDto as CreateTaskBatchDtoInterface,
   OPERATION_CODES,
-  OperationCode,
-  CreateTaskBatchDto as CreateTaskBatchDtoInterface,
+  type OperationCode,
 } from "@codeguardian/shared";
+import { ArrayNotEmpty, IsArray, IsIn, IsMongoId } from "class-validator";
 
 // Body of POST /tasks. Deduplication of `operations` happens in
 // TasksService, not here — class-validator flags invalid codes, but "the

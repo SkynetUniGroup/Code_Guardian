@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { CredentialsService } from '../credentials/credentials.service';
-import { GithubClientService } from '../github/github-client.service';
-import { detectLanguage } from '../github/language-detection';
-import { RefSummary, RepositorySummary } from '../github/github-client.types';
-import { RepoResolverService } from './repo-resolver.service';
-import { RepositoryTreeDto } from './dto/repository-tree.dto';
+import { Injectable } from "@nestjs/common";
+import type { CredentialsService } from "../credentials/credentials.service";
+import type { GithubClientService } from "../github/github-client.service";
+import type { RefSummary, RepositorySummary } from "../github/github-client.types";
+import { detectLanguage } from "../github/language-detection";
+import type { RepositoryTreeDto } from "./dto/repository-tree.dto";
+import type { RepoResolverService } from "./repo-resolver.service";
 
-const GITHUB_PROVIDER = 'GITHUB';
+const GITHUB_PROVIDER = "GITHUB";
 
 @Injectable()
 export class RepositoriesService {
@@ -17,18 +17,12 @@ export class RepositoriesService {
   ) {}
 
   async list(userId: string): Promise<RepositorySummary[]> {
-    const token = await this.credentials.getDecryptedToken(
-      userId,
-      GITHUB_PROVIDER,
-    );
+    const token = await this.credentials.getDecryptedToken(userId, GITHUB_PROVIDER);
     return this.githubClient.listRepositories(token);
   }
 
   async refs(userId: string, repoUrl: string): Promise<RefSummary> {
-    const token = await this.credentials.getDecryptedToken(
-      userId,
-      GITHUB_PROVIDER,
-    );
+    const token = await this.credentials.getDecryptedToken(userId, GITHUB_PROVIDER);
     const { owner, repo } = await this.repoResolver.resolve(token, repoUrl);
     return this.githubClient.listRefs(token, owner, repo);
   }
@@ -39,14 +33,9 @@ export class RepositoriesService {
     branch: string,
     commitSha?: string,
   ): Promise<RepositoryTreeDto> {
-    const token = await this.credentials.getDecryptedToken(
-      userId,
-      GITHUB_PROVIDER,
-    );
+    const token = await this.credentials.getDecryptedToken(userId, GITHUB_PROVIDER);
     const { owner, repo } = await this.repoResolver.resolve(token, repoUrl);
-    const sha =
-      commitSha ??
-      (await this.githubClient.resolveRefToSha(token, owner, repo, branch));
+    const sha = commitSha ?? (await this.githubClient.resolveRefToSha(token, owner, repo, branch));
     const entries = await this.githubClient.getTree(token, owner, repo, sha);
 
     // Unfiltered on purpose: this is every language found, not just the
@@ -59,9 +48,9 @@ export class RepositoriesService {
     const detectedLanguages = [
       ...new Set(
         entries
-          .filter((entry) => entry.type === 'file')
+          .filter((entry) => entry.type === "file")
           .map((entry) => detectLanguage(entry.path))
-          .filter((language) => language !== 'unknown'),
+          .filter((language) => language !== "unknown"),
       ),
     ];
 

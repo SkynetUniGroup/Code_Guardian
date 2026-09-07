@@ -1,12 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Task, TaskDocument } from '../tasks/schemas/task.schema';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Model } from "mongoose";
 import {
   AnalysisContext,
-  AnalysisContextDocument,
-} from '../contexts/schemas/analysis-context.schema';
-import { CredentialsService } from '../credentials/credentials.service';
+  type AnalysisContextDocument,
+} from "../contexts/schemas/analysis-context.schema";
+import type { CredentialsService } from "../credentials/credentials.service";
+import { Task, type TaskDocument } from "../tasks/schemas/task.schema";
 
 export interface ResolvedTaskContext {
   taskId: string;
@@ -43,10 +43,7 @@ export class InternalTaskContextResolver {
       );
     }
 
-    const token = await this.credentials.getDecryptedToken(
-      task.userId,
-      'GITHUB',
-    );
+    const token = await this.credentials.getDecryptedToken(task.userId, "GITHUB");
 
     return {
       taskId,

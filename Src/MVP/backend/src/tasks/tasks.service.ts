@@ -1,15 +1,15 @@
+import { InjectQueue } from "@nestjs/bullmq";
 import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Model, Types } from 'mongoose';
-import { Queue } from 'bullmq';
-import { Task, TaskDocument } from './schemas/task.schema';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Queue } from "bullmq";
+import { type Model, Types } from "mongoose";
+import type { AuthenticatedUser } from "../common/authenticated-user";
 import {
   AnalysisContext,
   AnalysisContextDocument,
@@ -39,7 +39,7 @@ export class TasksService {
     private readonly agentRegistry: AgentRegistry,
     private readonly events: EventsGateway,
     private readonly usageLimit: UsageLimitService,
-    @InjectQueue('tasks') private readonly queue: Queue<RunTaskJobData>,
+    @InjectQueue("tasks") private readonly queue: Queue<RunTaskJobData>,
   ) {}
 
   // Four pre-accept checks: whole batch rejected on the first failure,
@@ -55,9 +55,7 @@ export class TasksService {
   ): Promise<CreateTaskBatchResult> {
     const operations = [...new Set(dto.operations)];
     if (operations.length === 0) {
-      throw new BadRequestException(
-        'operations must contain at least one operation code',
-      );
+      throw new BadRequestException("operations must contain at least one operation code");
     }
 
     const context = await this.contextModel.findOne({
@@ -68,21 +66,16 @@ export class TasksService {
       throw new NotFoundException(`Context ${dto.contextId} not found`);
     }
 
-    const hasCredential = await this.credentials.hasCredential(
-      user.userId,
-      'GITHUB',
-    );
+    const hasCredential = await this.credentials.hasCredential(user.userId, "GITHUB");
     if (!hasCredential) {
-      throw new NotFoundException('No GITHUB credential configured');
+      throw new NotFoundException("No GITHUB credential configured");
     }
 
-    const allowed = new Set(
-      this.agentRegistry.getForRole(user.role).map((entry) => entry.code),
-    );
+    const allowed = new Set(this.agentRegistry.getForRole(user.role).map((entry) => entry.code));
     const disallowed = operations.filter((op) => !allowed.has(op));
     if (disallowed.length > 0) {
       throw new ForbiddenException(
-        `Operation(s) not permitted for role ${user.role}: ${disallowed.join(', ')}`,
+        `Operation(s) not permitted for role ${user.role}: ${disallowed.join(", ")}`,
       );
     }
 
@@ -95,13 +88,13 @@ export class TasksService {
         batchId,
         contextId: context._id,
         operation,
-        status: 'PENDING',
+        status: "PENDING",
       })),
     );
 
     await this.queue.addBulk(
       tasks.map((task) => ({
-        name: 'run-task',
+        name: "run-task",
         data: { taskId: task.id },
       })),
     );
@@ -132,10 +125,8 @@ export class TasksService {
     if (!task) {
       throw new NotFoundException(`Task ${id} not found`);
     }
-    if (!task.canTransitionTo('CANCELLED')) {
-      throw new ConflictException(
-        `Task ${id} cannot be cancelled from status ${task.status}`,
-      );
+    if (!task.canTransitionTo("CANCELLED")) {
+      throw new ConflictException(`Task ${id} cannot be cancelled from status ${task.status}`);
     }
 
     if (!(await this.markCancelled(id, userId))) {

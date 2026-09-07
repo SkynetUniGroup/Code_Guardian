@@ -1,9 +1,9 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { getModelToken } from "@nestjs/mongoose";
 import { NotFoundException } from "@nestjs/common";
-import { CredentialsService } from "./credentials.service";
-import { CredentialCipherService } from "./credential-cipher.service";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { GithubClientService } from "../github/github-client.service";
+import { CredentialCipherService } from "./credential-cipher.service";
+import { CredentialsService } from "./credentials.service";
 import { ServiceCredential } from "./schemas/service-credential.schema";
 
 describe("CredentialsService", () => {

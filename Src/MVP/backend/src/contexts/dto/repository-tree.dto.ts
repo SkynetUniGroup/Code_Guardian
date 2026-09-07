@@ -1,4 +1,4 @@
-import { TreeNode } from "../../github/github-client.types";
+import type { TreeNode } from "../../github/github-client.types";
 
 export class RepositoryTreeDto {
   entries!: TreeNode[];

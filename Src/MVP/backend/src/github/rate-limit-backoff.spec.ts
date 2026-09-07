@@ -1,5 +1,5 @@
-import { backoffIfRateLimited } from "./rate-limit-backoff";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { backoffIfRateLimited } from "./rate-limit-backoff";
 
 describe("backoffIfRateLimited", () => {
   afterEach(() => {

@@ -1,17 +1,17 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { getModelToken } from "@nestjs/mongoose";
 import {
   BadRequestException,
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import { ContextsService } from "./contexts.service";
-import { AnalysisContext } from "./schemas/analysis-context.schema";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { CredentialsService } from "../credentials/credentials.service";
 import { GithubClientService } from "../github/github-client.service";
-import { RepoResolverService } from "./repo-resolver.service";
+import { ContextsService } from "./contexts.service";
+import type { CreateContextDto } from "./dto/create-context.dto";
 import { FRANC } from "./franc.provider";
-import { CreateContextDto } from "./dto/create-context.dto";
+import { RepoResolverService } from "./repo-resolver.service";
+import { AnalysisContext } from "./schemas/analysis-context.schema";
 
 describe("ContextsService", () => {
   let service: ContextsService;

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Schema as MongooseSchema, Types } from "mongoose";
+import { type HydratedDocument, Schema as MongooseSchema, Types } from "mongoose";
 import type { OperationCode } from "../../common/domain-types";
 import type { Block, Proposal, ReportContext, ReportErrorB, ReportStatus } from "../report.types";
 

@@ -1,11 +1,11 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { getModelToken } from "@nestjs/mongoose";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
+import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
+import { GithubClientService } from "./github-client.service";
 import { InternalGithubController } from "./internal-github.controller";
 import { InternalTaskContextResolver } from "./internal-task-context.resolver";
-import { GithubClientService } from "./github-client.service";
 import { AccessLog } from "./schemas/access-log.schema";
-import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
 
 describe("InternalGithubController", () => {
   let controller: InternalGithubController;

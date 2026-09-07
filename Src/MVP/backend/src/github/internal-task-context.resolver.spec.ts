@@ -1,11 +1,11 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { getModelToken } from "@nestjs/mongoose";
 import { NotFoundException } from "@nestjs/common";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
-import { InternalTaskContextResolver } from "./internal-task-context.resolver";
-import { Task } from "../tasks/schemas/task.schema";
 import { AnalysisContext } from "../contexts/schemas/analysis-context.schema";
 import { CredentialsService } from "../credentials/credentials.service";
+import { Task } from "../tasks/schemas/task.schema";
+import { InternalTaskContextResolver } from "./internal-task-context.resolver";
 
 describe("InternalTaskContextResolver", () => {
   let resolver: InternalTaskContextResolver;

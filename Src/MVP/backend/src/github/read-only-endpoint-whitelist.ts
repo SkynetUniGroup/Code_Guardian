@@ -1,9 +1,9 @@
 import {
-  GET_TREE_ROUTE,
   GET_FILE_CONTENT_ROUTE,
-  LIST_ISSUES_ROUTE,
   GET_ISSUE_DETAIL_ROUTE,
-} from './github-routes';
+  GET_TREE_ROUTE,
+  LIST_ISSUES_ROUTE,
+} from "./github-routes";
 
 // The closed list of GitHub routes reachable through BE-8's internal
 // facade. compareCommits, verifyToken, listRepositories, and getRepository

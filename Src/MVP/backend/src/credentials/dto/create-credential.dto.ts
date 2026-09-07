@@ -1,6 +1,6 @@
+import type { CreateCredentialDto as CreateCredentialDtoInterface } from "@codeguardian/shared";
 import { IsIn, IsNotEmpty, IsString } from "class-validator";
 import { SUPPORTED_PROVIDERS } from "../supported-providers";
-import type { CreateCredentialDto as CreateCredentialDtoInterface } from "@codeguardian/shared";
 
 export class CreateCredentialDto implements CreateCredentialDtoInterface {
   @IsIn(SUPPORTED_PROVIDERS)

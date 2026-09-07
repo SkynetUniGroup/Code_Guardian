@@ -1,16 +1,17 @@
-import { ErrorKind } from "../common/exceptions/error-kind";
-import { ReportError } from "@codeguardian/shared";
+import type { ReportError } from "@codeguardian/shared";
+import type { ErrorKind } from "../common/exceptions/error-kind";
+
 export type {
-  ReportStatus,
-  Severity,
-  Proposal,
-  TextBlock,
+  Block,
+  ChangelogItemBlock,
+  ComplexityWarningBlock,
   FindingBlock,
   PolicyViolationBlock,
-  ComplexityWarningBlock,
-  ChangelogItemBlock,
-  Block,
+  Proposal,
   ReportContext,
+  ReportStatus,
+  Severity,
+  TextBlock,
 } from "@codeguardian/shared";
 
 //export type ReportStatus = 'COMPLETED' | 'FAILED';

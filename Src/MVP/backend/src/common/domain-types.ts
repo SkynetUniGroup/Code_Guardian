@@ -1,5 +1,5 @@
-export { OPERATION_CODES } from "@codeguardian/shared";
 export type { OperationCode, ScopeType } from "@codeguardian/shared";
+export { OPERATION_CODES } from "@codeguardian/shared";
 
 /*export type OperationCode =
   | 'DOCS_README'

@@ -1,5 +1,5 @@
+import type { FrancFn } from "./franc.provider";
 import { isReadmeNonEnglish } from "./readme-language";
-import { FrancFn } from "./franc.provider";
 
 describe("isReadmeNonEnglish", () => {
   let franc: vi.fn<string, [string]>;

@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { GithubClientService } from '../github/github-client.service';
-import { parseGithubUrl } from './github-url';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import type { GithubClientService } from "../github/github-client.service";
+import { parseGithubUrl } from "./github-url";
 
 export interface ResolvedRepo {
   owner: string;
@@ -40,11 +40,6 @@ export class RepoResolverService {
   }
 
   private isNotFound(error: unknown): boolean {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'status' in error &&
-      error.status === 404
-    );
+    return typeof error === "object" && error !== null && "status" in error && error.status === 404;
   }
 }

@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from '../auth/auth.module';
-import { Task, TaskSchema } from '../tasks/schemas/task.schema';
-import { EventsGateway } from './events.gateway';
-import { InternalTaskProgressController } from './internal-task-progress.controller';
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { AuthModule } from "../auth/auth.module";
+import { Task, TaskSchema } from "../tasks/schemas/task.schema";
+import { EventsGateway } from "./events.gateway";
+import { InternalTaskProgressController } from "./internal-task-progress.controller";
 
 // AuthModule: re-exported JwtModule, so the gateway verifies handshake
 // tokens with the exact same secret/config as the REST side.
@@ -20,10 +20,7 @@ import { InternalTaskProgressController } from './internal-task-progress.control
 // invocation gateway, and BE-17's pause/resume can all inject it directly
 // and call its emit* methods in-process once they land.
 @Module({
-  imports: [
-    AuthModule,
-    MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
-  ],
+  imports: [AuthModule, MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }])],
   controllers: [InternalTaskProgressController],
   providers: [EventsGateway],
   exports: [EventsGateway],

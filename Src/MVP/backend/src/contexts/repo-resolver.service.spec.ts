@@ -1,7 +1,7 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException } from "@nestjs/common";
-import { RepoResolverService } from "./repo-resolver.service";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { GithubClientService } from "../github/github-client.service";
+import { RepoResolverService } from "./repo-resolver.service";
 
 describe("RepoResolverService", () => {
   let service: RepoResolverService;

@@ -1,10 +1,10 @@
-import { IsArray, IsIn, IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
-import { GITHUB_REPO_URL_REGEX } from "../github-url";
 import {
-  SCOPE_TYPES,
   type CreateContextDto as CreateContextDtoInterface,
+  SCOPE_TYPES,
   type ScopeType,
 } from "@codeguardian/shared";
+import { IsArray, IsIn, IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
+import { GITHUB_REPO_URL_REGEX } from "../github-url";
 
 export class CreateContextDto implements CreateContextDtoInterface {
   @Matches(GITHUB_REPO_URL_REGEX, {

@@ -8,10 +8,10 @@ vi.fn("@octokit/rest", () => ({
   })),
 }));
 
-import { Test, TestingModule } from "@nestjs/testing";
-import { GithubWriteService } from "./github-write.service";
-import { GithubClientService } from "./github-client.service";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { AppException } from "../common/exceptions/app.exception";
+import { GithubClientService } from "./github-client.service";
+import { GithubWriteService } from "./github-write.service";
 
 describe("GithubWriteService", () => {
   let service: GithubWriteService;

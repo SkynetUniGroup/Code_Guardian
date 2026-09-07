@@ -1,11 +1,6 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { BullModule } from '@nestjs/bullmq';
-import { Task, TaskSchema } from './schemas/task.schema';
-import {
-  UsageCounter,
-  UsageCounterSchema,
-} from './schemas/usage-counter.schema';
+import { BullModule } from "@nestjs/bullmq";
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
 import {
   AnalysisContext,
   AnalysisContextSchema,
@@ -33,7 +28,7 @@ import { UsageLimitService } from './usage-limit.service';
       // EventsModule's Task registration for why this pattern is safe.
       { name: AnalysisContext.name, schema: AnalysisContextSchema },
     ]),
-    BullModule.registerQueue({ name: 'tasks' }),
+    BullModule.registerQueue({ name: "tasks" }),
     CredentialsModule,
     OperationsModule,
     EventsModule,
@@ -42,12 +37,7 @@ import { UsageLimitService } from './usage-limit.service';
     ReportsModule,
   ],
   controllers: [TasksController],
-  providers: [
-    TasksService,
-    TaskProcessor,
-    AgentInvocationService,
-    UsageLimitService,
-  ],
+  providers: [TasksService, TaskProcessor, AgentInvocationService, UsageLimitService],
   // Re-exports the forFeature registration so other modules (BE-8's
   // internal GitHub facade needs to look up a Task by id) can inject
   // Model<Task> without this module having to expose a service of its own

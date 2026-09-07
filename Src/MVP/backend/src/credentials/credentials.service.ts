@@ -1,17 +1,17 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Model } from "mongoose";
+import { AppException } from "../common/exceptions/app.exception";
+import type { GithubClientService } from "../github/github-client.service";
+import type { CredentialCipherService } from "./credential-cipher.service";
+import type { CreateCredentialDto } from "./dto/create-credential.dto";
+import type { ServiceCredentialDto } from "./dto/service-credential.dto";
 import {
   ServiceCredential,
-  ServiceCredentialDocument,
-} from './schemas/service-credential.schema';
-import { CredentialCipherService } from './credential-cipher.service';
-import { GithubClientService } from '../github/github-client.service';
-import { CreateCredentialDto } from './dto/create-credential.dto';
-import { ServiceCredentialDto } from './dto/service-credential.dto';
-import { AppException } from '../common/exceptions/app.exception';
+  type ServiceCredentialDocument,
+} from "./schemas/service-credential.schema";
 
-const REQUIRED_GITHUB_SCOPE = 'repo';
+const REQUIRED_GITHUB_SCOPE = "repo";
 
 @Injectable()
 export class CredentialsService {
@@ -27,10 +27,7 @@ export class CredentialsService {
   // already-configured provider replaces it instead of creating a second row
   // — the unique index on the schema would reject a plain insert here, and
   // that's the point: this is the one path allowed to satisfy it.
-  async create(
-    userId: string,
-    dto: CreateCredentialDto,
-  ): Promise<ServiceCredentialDto> {
+  async create(userId: string, dto: CreateCredentialDto): Promise<ServiceCredentialDto> {
     await this.verifyGithubToken(dto.token);
 
     const encrypted = this.cipher.encrypt(dto.token);
@@ -70,7 +67,7 @@ export class CredentialsService {
       userId,
     });
     if (!result) {
-      throw new NotFoundException('Credential not found');
+      throw new NotFoundException("Credential not found");
     }
   }
 
@@ -85,7 +82,7 @@ export class CredentialsService {
       userId,
     });
     if (!credential) {
-      throw new NotFoundException('Credential not found');
+      throw new NotFoundException("Credential not found");
     }
 
     const token = this.cipher.decrypt(credential);
@@ -108,9 +105,7 @@ export class CredentialsService {
       provider,
     });
     if (!credential) {
-      throw new NotFoundException(
-        `No ${provider} credential configured for this user`,
-      );
+      throw new NotFoundException(`No ${provider} credential configured for this user`);
     }
     return this.cipher.decrypt(credential);
   }
@@ -130,8 +125,8 @@ export class CredentialsService {
     } catch (error) {
       if (this.isUnauthorized(error)) {
         throw new AppException(
-          'CREDENTIAL_INVALID',
-          'GitHub rejected this token.',
+          "CREDENTIAL_INVALID",
+          "GitHub rejected this token.",
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -154,7 +149,7 @@ export class CredentialsService {
 
     if (!scopes.includes(REQUIRED_GITHUB_SCOPE)) {
       throw new AppException(
-        'CREDENTIAL_INVALID',
+        "CREDENTIAL_INVALID",
         `This token is missing the required "${REQUIRED_GITHUB_SCOPE}" scope.`,
         HttpStatus.BAD_REQUEST,
       );
@@ -162,16 +157,11 @@ export class CredentialsService {
   }
 
   private isFineGrainedToken(token: string): boolean {
-    return token.startsWith('github_pat_');
+    return token.startsWith("github_pat_");
   }
 
   private isUnauthorized(error: unknown): boolean {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'status' in error &&
-      error.status === 401
-    );
+    return typeof error === "object" && error !== null && "status" in error && error.status === 401;
   }
 
   private toDto(credential: ServiceCredentialDocument): ServiceCredentialDto {

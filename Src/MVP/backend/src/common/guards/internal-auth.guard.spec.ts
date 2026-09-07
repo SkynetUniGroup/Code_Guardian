@@ -1,6 +1,6 @@
-import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { createHash, createHmac } from "crypto";
+import { createHash, createHmac } from "node:crypto";
+import { type ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
 import { InternalAuthGuard } from "./internal-auth.guard";
 
 const SECRET = "test-only-internal-shared-secret";
