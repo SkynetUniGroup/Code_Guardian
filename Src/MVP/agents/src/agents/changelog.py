@@ -24,14 +24,14 @@ class ReadabilityTooLowError(Exception):
         Args:
             message (str): The error message.
         """
-        self.error_type = 'READABILITY_TOO_LOW'
+        self.error_type = "READABILITY_TOO_LOW"
         super().__init__(message)
 
 
 class ChangelogLoader:
     """Loads issues from GitHub, filters invalid ones, and prepares the changelog context."""
 
-    def __init__(self, operation: str = 'CHANGELOG_TECHNICAL'):
+    def __init__(self, operation: str = "CHANGELOG_TECHNICAL"):
         """Initializes the loader.
 
         Args:
@@ -58,28 +58,28 @@ class ChangelogLoader:
         """
         if agent_payload is None:
             agent_payload = {}
-        sprint_id = agent_payload.get('sprintId', 'Current Sprint')
+        sprint_id = agent_payload.get("sprintId", "Current Sprint")
 
         issues_response = await toolset.read_issues(
-            context_ref.repoOwner, context_ref.repoName, {'state': 'closed'}
+            context_ref.repoOwner, context_ref.repoName, {"state": "closed"}
         )
-        issues = issues_response.get('issues', [])
+        issues = issues_response.get("issues", [])
 
         kept_tasks, excluded_tasks, insufficient_ids = [], [], []
 
         for issue in issues:
-            if sprint_id != 'Current Sprint' and issue.get('milestone') != sprint_id:
+            if sprint_id != "Current Sprint" and issue.get("milestone") != sprint_id:
                 continue
 
-            issue_num = str(issue.get('number'))
-            if not issue.get('hasSufficientMetadata', True):
+            issue_num = str(issue.get("number"))
+            if not issue.get("hasSufficientMetadata", True):
                 excluded_tasks.append(f'#{issue_num} {issue.get("title")}')
                 insufficient_ids.append(issue_num)
             else:
-                labels = issue.get('labels', '')
+                labels = issue.get("labels", "")
                 url = (
-                    f'https://github.com/{context_ref.repoOwner}/'
-                    f'{context_ref.repoName}/issues/{issue_num}'
+                    f"https://github.com/{context_ref.repoOwner}/"
+                    f"{context_ref.repoName}/issues/{issue_num}"
                 )
                 kept_tasks.append(
                     f'- [#{issue_num}]({url}) {issue.get("title")} (Labels: {labels})'
@@ -87,30 +87,31 @@ class ChangelogLoader:
 
         # Interactive suspension
         if insufficient_ids:
-            action = interrupt({
-                'kind': 'INCOMPLETE_TASKS',
-                'taskIds': insufficient_ids
-            })
-            
-            if action == 'CANCEL':
-                # NOTE: According to MVP specs, NestJS handles user cancellation 
-                # by terminating the task without resuming the graph. This branch is defensive 
+            action = interrupt(
+                {"kind": "INCOMPLETE_TASKS", "taskIds": insufficient_ids}
+            )
+
+            if action == "CANCEL":
+                # NOTE: According to MVP specs, NestJS handles user cancellation
+                # by terminating the task without resuming the graph. This branch is defensive
                 # and guarantees graceful abortion during tests, debug, or manual API usage.
-                raise AgentCancelled(stage='INCOMPLETE_TASKS')
+                raise AgentCancelled(stage="INCOMPLETE_TASKS")
 
         return {
-            'sprint_id': sprint_id,
-            'tasks_formatted': '\n'.join(kept_tasks) if kept_tasks else 'No valid issues.',
-            'excluded_tasks': excluded_tasks,
-            'phase': 'TECHNICAL'
+            "sprint_id": sprint_id,
+            "tasks_formatted": (
+                "\n".join(kept_tasks) if kept_tasks else "No valid issues."
+            ),
+            "excluded_tasks": excluded_tasks,
+            "phase": "TECHNICAL",
         }
 
 
 class ChangelogTechnicalProfile:
     """Handles the prompt generation and parsing for the Technical Changelog."""
 
-    agent = 'changelog'
-    operation = 'CHANGELOG_TECHNICAL'
+    agent = "changelog"
+    operation = "CHANGELOG_TECHNICAL"
     uses_tools = False
 
     def build_prompt(self, ctx: dict) -> Tuple[str, str]:
@@ -122,14 +123,14 @@ class ChangelogTechnicalProfile:
         Returns:
             Tuple[str, str]: The system and user prompts.
         """
-        template_data = load_prompt_template('changelog', 'changelog_tech')
+        template_data = load_prompt_template("changelog", "changelog_tech")
         return render_prompt(
-            template_data,
-            sprint_id=ctx['sprint_id'],
-            tasks=ctx['tasks_formatted']
+            template_data, sprint_id=ctx["sprint_id"], tasks=ctx["tasks_formatted"]
         )
 
-    def parse_output(self, raw: str, ctx: dict) -> Tuple[List[Block], Optional[Proposal]]:
+    def parse_output(
+        self, raw: str, ctx: dict
+    ) -> Tuple[List[Block], Optional[Proposal]]:
         """Parses the raw output from the model into structured blocks.
 
         Args:
@@ -141,17 +142,17 @@ class ChangelogTechnicalProfile:
                 and an optional proposal.
         """
         blocks: List[Block] = [TextBlock(order=0, markdown=raw.strip())]
-        excluded = ctx.get('excluded_tasks', [])
-        
+        excluded = ctx.get("excluded_tasks", [])
+
         if excluded:
             for idx, exc in enumerate(excluded):
-                issue_ref = exc.split()[0] if exc.startswith('#') else f'Task {idx}'
+                issue_ref = exc.split()[0] if exc.startswith("#") else f"Task {idx}"
                 blocks.append(
                     ChangelogItemBlock(
                         order=idx + 1,
                         issueRef=issue_ref,
                         title=exc,
-                        detail='Excluded from changelog due to insufficient metadata.'
+                        detail="Excluded from changelog due to insufficient metadata.",
                     )
                 )
         return blocks, None
@@ -160,8 +161,8 @@ class ChangelogTechnicalProfile:
 class ChangelogBusinessProfile:
     """Handles the prompt generation and parsing for the Business Changelog."""
 
-    agent = 'changelog'
-    operation = 'CHANGELOG_BUSINESS'
+    agent = "changelog"
+    operation = "CHANGELOG_BUSINESS"
     uses_tools = False
 
     def build_prompt(self, ctx: dict) -> Tuple[str, str]:
@@ -173,20 +174,20 @@ class ChangelogBusinessProfile:
         Returns:
             Tuple[str, str]: The system and user prompts.
         """
-        phase = ctx.get('phase', 'TECHNICAL')
+        phase = ctx.get("phase", "TECHNICAL")
 
-        if phase == 'TECHNICAL':
-            template_data = load_prompt_template('changelog', 'changelog_tech')
+        if phase == "TECHNICAL":
+            template_data = load_prompt_template("changelog", "changelog_tech")
             return render_prompt(
                 template_data,
-                sprint_id=ctx.get('sprint_id', 'Current Sprint'),
-                tasks=ctx.get('tasks_formatted', 'No valid issues.')
+                sprint_id=ctx.get("sprint_id", "Current Sprint"),
+                tasks=ctx.get("tasks_formatted", "No valid issues."),
             )
         else:
-            template_data = load_prompt_template('changelog', 'changelog_biz')
+            template_data = load_prompt_template("changelog", "changelog_biz")
             return render_prompt(
                 template_data,
-                technical_changelog=ctx.get('technical_text', ''),
+                technical_changelog=ctx.get("technical_text", ""),
             )
 
     def parse_output(
@@ -206,25 +207,25 @@ class ChangelogBusinessProfile:
             AgentCancelled: If the user cancels the confirmation phase.
             ValueError: If the readability score is too low, triggering a retry.
         """
-        if ctx.get('phase', 'TECHNICAL') == 'TECHNICAL':
+        if ctx.get("phase", "TECHNICAL") == "TECHNICAL":
             # Phase 1: Parse the technical output
             blocks: List[Block] = [TextBlock(order=0, markdown=raw.strip())]
 
-            excluded = ctx.get('excluded_tasks', [])
+            excluded = ctx.get("excluded_tasks", [])
             if excluded:
                 for idx, exc in enumerate(excluded):
-                    issue_ref = exc.split()[0] if exc.startswith('#') else f'Task {idx}'
+                    issue_ref = exc.split()[0] if exc.startswith("#") else f"Task {idx}"
                     blocks.append(
                         ChangelogItemBlock(
                             order=idx + 1,
                             issueRef=issue_ref,
                             title=exc,
-                            detail='Excluded from changelog due to insufficient metadata.'
+                            detail="Excluded from changelog due to insufficient metadata.",
                         )
                     )
 
-            ctx['technical_text'] = raw.strip()
-            ctx['phase'] = 'BUSINESS'
+            ctx["technical_text"] = raw.strip()
+            ctx["phase"] = "BUSINESS"
 
             # Phase 2: Return True to indicate the need for the next phase
             return blocks, None, True
@@ -236,7 +237,7 @@ class ChangelogBusinessProfile:
 
             if score < TARGET_SCORE:
                 raise ValueError(
-                    f'READABILITY_RETRY: Score {score:.1f} is too low (Target: {TARGET_SCORE}).'
+                    f"READABILITY_RETRY: Score {score:.1f} is too low (Target: {TARGET_SCORE})."
                 )
 
             blocks = [TextBlock(order=1, markdown=raw.strip())]
@@ -258,10 +259,10 @@ def calculate_flesch_reading_ease(text: str) -> float:
         return 0.0
 
     # Clean Markdown to avoid altering the count
-    clean_text = re.sub(r'[*_#`>\-\[\]()]+', ' ', text)
+    clean_text = re.sub(r"[*_#`>\-\[\]()]+", " ", text)
 
     # Sentence count (approximated by strong punctuation)
-    sentences = len(re.split(r'[.!?]+', clean_text)) - 1
+    sentences = len(re.split(r"[.!?]+", clean_text)) - 1
     sentences = max(1, sentences)
 
     # Word count
@@ -269,11 +270,11 @@ def calculate_flesch_reading_ease(text: str) -> float:
     num_words = max(1, len(words))
 
     # Heuristic syllable count (based on vowel groups, flexible for ITA/ENG)
-    vowels = 'aeiouyàèéìíòóùú'
+    vowels = "aeiouyàèéìíòóùú"
     syllables = 0
     for word in words:
         word = word.lower()
-        word_syllables = len(re.findall(f'[{vowels}]+', word))
+        word_syllables = len(re.findall(f"[{vowels}]+", word))
         syllables += max(1, word_syllables)
 
     # Standard Flesch formula

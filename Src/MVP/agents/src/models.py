@@ -1,91 +1,3 @@
-<<<<<<< HEAD
-from __future__ import annotations
-
-from typing import Annotated, Literal, Optional, Union
-from pydantic import BaseModel, Field
-
-
-# ---------------------------------------------------------------------------
-# Base blocks
-# ---------------------------------------------------------------------------
-
-class TextBlock(BaseModel):
-    kind: Literal["TEXT"] = "TEXT"
-    content: str
-
-
-class FindingBlock(BaseModel):
-    kind: Literal["FINDING"] = "FINDING"
-    severity: Literal["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]
-    title: str
-    description: str
-    file_path: Optional[str] = None
-    line: Optional[int] = None
-    rule_id: Optional[str] = None
-    remediation: Optional[str] = None
-
-
-class PolicyViolationBlock(BaseModel):
-    kind: Literal["POLICY_VIOLATION"] = "POLICY_VIOLATION"
-    policy: str
-    description: str
-    file_path: Optional[str] = None
-    remediation: Optional[str] = None
-
-
-class ChangelogItemBlock(BaseModel):
-    kind: Literal["CHANGELOG_ITEM"] = "CHANGELOG_ITEM"
-    entry_type: Literal["Added", "Changed", "Fixed", "Removed", "Security", "Deprecated"]
-    description: str
-
-
-# ---------------------------------------------------------------------------
-# SAST blocks
-# ---------------------------------------------------------------------------
-
-class SASTFindingBlock(BaseModel):
-    kind: Literal["SAST_FINDING"] = "SAST_FINDING"
-    rule_id: str
-    owasp_category: str
-    severity: Literal["ERROR", "WARNING", "INFO"]
-    file_path: str
-    line: int
-    message: str
-    code_snippet: Optional[str] = None
-    cwe: Optional[str] = None
-    llm_verdict: Literal["CONFIRMED", "FALSE_POSITIVE", "NEEDS_REVIEW"] = "NEEDS_REVIEW"
-    llm_remediation: Optional[str] = None
-
-
-class SASTSummary(BaseModel):
-    kind: Literal["SAST_SUMMARY"] = "SAST_SUMMARY"
-    total_findings: int
-    confirmed_findings: int
-    false_positives: int
-    needs_review: int
-    capped_findings: int
-    scanned_files: int
-    duration_ms: int
-    timed_out: bool
-
-
-# ---------------------------------------------------------------------------
-# Complexity block
-# ---------------------------------------------------------------------------
-
-class ComplexityWarningBlock(BaseModel):
-    kind: Literal["COMPLEXITY_WARNING"] = "COMPLEXITY_WARNING"
-    file_path: str
-    function_name: str
-    cyclomatic_complexity: int
-    threshold: int
-    suggestion: str
-
-
-# ---------------------------------------------------------------------------
-# Discriminated union
-# ---------------------------------------------------------------------------
-=======
 """Shared data contract (Report Envelope).
 
 Exactly reflects the class diagram (Figure 4) of the specifications.
@@ -94,9 +6,9 @@ Exactly reflects the class diagram (Figure 4) of the specifications.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
-from typing import Annotated, Any, List, Literal, Optional, Union
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -154,7 +66,7 @@ class Proposal(_Immutable):
     targetPath: str
     diffUnified: str
     language: str
-    pullRequestUrl: Optional[str] = None
+    pullRequestUrl: str | None = None
 
 
 # --- Report Body Blocks (Polymorphism) ---
@@ -184,7 +96,7 @@ class RemediationText(_Immutable):
 
 
 Remediation = Annotated[
-    Union[RemediationSnippet, RemediationText], Field(discriminator="kind")
+    RemediationSnippet | RemediationText, Field(discriminator="kind")
 ]
 
 
@@ -197,7 +109,7 @@ class FindingBlock(_Immutable):
     severity: Severity
     filePath: str
     lineStart: int
-    lineEnd: Optional[int] = None
+    lineEnd: int | None = None
     description: str
     remediation: Remediation
 
@@ -210,8 +122,8 @@ class PolicyViolationBlock(_Immutable):
     ruleId: str
     ruleText: str
     filePath: str
-    lineStart: Optional[int] = None
-    lineEnd: Optional[int] = None
+    lineStart: int | None = None
+    lineEnd: int | None = None
     severity: Severity
     explanation: str
     remediation: Remediation
@@ -239,72 +151,13 @@ class ChangelogItemBlock(_Immutable):
     title: str
     detail: str
 
->>>>>>> origin/develop
 
 Block = Annotated[
-    Union[
-        TextBlock,
-        FindingBlock,
-        PolicyViolationBlock,
-<<<<<<< HEAD
-        ChangelogItemBlock,
-        SASTFindingBlock,
-        SASTSummary,
-        ComplexityWarningBlock,
-    ],
-    Field(discriminator="kind"),
-]
-
-
-# ---------------------------------------------------------------------------
-# Proposal (docs unified diff)
-# ---------------------------------------------------------------------------
-
-class Proposal(BaseModel):
-    task_id: str
-    agent_type: str
-    unified_diff: str
-    model: str
-    usage: dict = Field(default_factory=dict)
-
-
-# ---------------------------------------------------------------------------
-# Report
-# ---------------------------------------------------------------------------
-
-class Report(BaseModel):
-    task_id: str
-    agent_type: str
-    blocks: list[Block]
-    model: str
-    usage: dict = Field(default_factory=dict)
-    proposal: Optional[Proposal] = None
-
-
-class ReportError(BaseModel):
-    task_id: str
-    agent_type: str
-    error_kind: Literal["TIMEOUT", "PARSING", "UPSTREAM"]
-    message: str
-
-
-# ---------------------------------------------------------------------------
-# Agent run request
-# ---------------------------------------------------------------------------
-
-class AgentRunRequest(BaseModel):
-    task_id: str
-    repo_owner: str
-    repo_name: str
-    commit_sha: str
-    pr_number: Optional[int] = None
-    changed_files: list[str] = Field(default_factory=list)
-    # Optional integration credentials (encrypted by backend, decrypted here)
-    sonarqube_credentials: Optional[dict] = None
-=======
-        ComplexityWarningBlock,
-        ChangelogItemBlock,
-    ],
+    TextBlock
+    | FindingBlock
+    | PolicyViolationBlock
+    | ComplexityWarningBlock
+    | ChangelogItemBlock,
     Field(discriminator="kind"),
 ]
 
@@ -318,7 +171,7 @@ class ReportContext(BaseModel):
     branch: str
     resolvedSha: str
     scopeType: str
-    paths: List[str] = Field(default_factory=list)
+    paths: list[str] = Field(default_factory=list)
 
 
 class PendingAction(BaseModel):
@@ -326,7 +179,7 @@ class PendingAction(BaseModel):
 
     kind: Literal["BUSINESS_CONFIRMATION"]
     taskId: str
-    actions: List[Literal["PROCEED", "CANCEL"]]
+    actions: list[Literal["PROCEED", "CANCEL"]]
 
 
 # --- Main Envelope ---
@@ -335,7 +188,7 @@ class PendingAction(BaseModel):
 class Report(BaseModel):
     """The main envelope representing the output report."""
 
-    id: Optional[str] = None
+    id: str | None = None
     taskId: str
     agentId: str
     operation: OperationCode
@@ -343,15 +196,15 @@ class Report(BaseModel):
     # NOTE: According to MVP specs, the title is composed deterministically
     # by the NestJS backend. The agent defaults this to an empty string.
     title: str = ""
-    summary: Optional[str] = None
-    generatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    executionTimeMs: Optional[int] = None
+    summary: str | None = None
+    generatedAt: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    executionTimeMs: int | None = None
     tokensConsumed: int = 0
     context: ReportContext
-    error: Optional[ReportError] = None
-    body: List[Block] = Field(default_factory=list)
-    proposal: Optional[Proposal] = None
-    pendingAction: Optional[PendingAction] = None
+    error: ReportError | None = None
+    body: list[Block] = Field(default_factory=list)
+    proposal: Proposal | None = None
+    pendingAction: PendingAction | None = None
 
     def to_dict(self) -> dict:
         """Serializes the report to a dictionary.
@@ -386,7 +239,7 @@ class PendingInputIncompleteTasks(BaseModel):
     """Pending input for excluding tasks with insufficient metadata."""
 
     kind: Literal["INCOMPLETE_TASKS"]
-    taskIds: List[str]
+    taskIds: list[str]
 
 
 class PendingInputBusinessConfirmation(BaseModel):
@@ -395,15 +248,13 @@ class PendingInputBusinessConfirmation(BaseModel):
     kind: Literal["BUSINESS_CONFIRMATION"]
     # Left intentionally Optional: Python does not generate it,
     # NestJS will populate it after persisting the report to MongoDB.
-    technicalReportId: Optional[str] = None
+    technicalReportId: str | None = None
 
 
 PendingInput = Annotated[
-    Union[
-        PendingInputSprintId,
-        PendingInputIncompleteTasks,
-        PendingInputBusinessConfirmation,
-    ],
+    PendingInputSprintId
+    | PendingInputIncompleteTasks
+    | PendingInputBusinessConfirmation,
     Field(discriminator="kind"),
 ]
 
@@ -412,9 +263,9 @@ class AgentStepResult(BaseModel):
     """Represents the result of an agent step execution."""
 
     status: Literal["interrupted", "completed", "failed"]
-    pendingInput: Optional[PendingInput] = None
-    result: Optional[dict] = None
-    error: Optional[str] = None
+    pendingInput: PendingInput | None = None
+    result: dict | None = None
+    error: str | None = None
 
 
 class StartAgentRequest(BaseModel):
@@ -434,4 +285,3 @@ class ResumeAgentRequest(BaseModel):
     threadId: str
     operationCode: str
     inputValue: Any
->>>>>>> origin/develop
