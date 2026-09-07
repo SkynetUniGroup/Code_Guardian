@@ -1612,27 +1612,14 @@ L'affidabilità misura la capacità del sistema di mantenere costanti le proprie
 \subsubsection{Usabilità}
 L'usabilità rappresenta la capacità del prodotto software di essere compreso, appreso e utilizzato con facilità dall'utente finale. Essa misura l'immediatezza dell'interazione con il sistema, minimizzando il rischio di errori operativi e lo sforzo cognitivo richiesto per sfruttare appieno le funzionalità offerte.
 
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|l|p{12cm}|}
-\hline
-\textbf{Metrica} & MPD\_9 - Tempo di Apprendimento (Learning Time) \\ \hline
-\textbf{Formula} & $LT = \frac{\sum_{i=1}^{n} T_{apprendimento\_i}}{n}$
-\begin{itemize}
-    \item $n$: Numero di utenti coinvolti nella sessione di test
-    \item $T_{apprendimento\_i}$: Tempo impiegato dall'utente $i$-esimo per completare le funzionalità senza assistenza
-\end{itemize} \\ \hline
-\textbf{Utilità} & Tempo massimo necessario affinché un nuovo utente riesca a comprendere e utilizzare autonomamente le funzionalità principali del sistema, senza ricorrere a manuali o supporto esterno. \\ \hline
-\end{tabular}
-\end{table}
+
 
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_10 - Tasso di Errore (Error Rate) \\ \hline
+\textbf{Metrica} & MPD\_9 - Tasso di Errore (Error Rate) \\ \hline
 \textbf{Formula} & $ER = \frac{N_{E}}{N_{AT}} \times 100$
 \begin{itemize}
     \item $N_{E}$: Numero di errori (azioni errate o non valide) commessi
@@ -1651,7 +1638,7 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_11 - Tempo di Risposta Interfaccia \\ \hline
+\textbf{Metrica} & MPD\_10 - Tempo di Risposta Interfaccia \\ \hline
 \textbf{Formula} & $TRI = \frac{\sum_{i=1}^{n} (T_{risposta\_i} - T_{richiesta\_i})}{n}$
 \begin{itemize}
     \item $n$: Numero di misurazioni effettuate
@@ -1667,7 +1654,7 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_12 - Tempo di Risposta dell'Agente \\ \hline
+\textbf{Metrica} & MPD\_11 - Tempo di Risposta dell'Agente \\ \hline
 \textbf{Formula} & $TRA = \frac{\sum_{i=1}^{n} (T_{completamento\_analisi\_i} - T_{avvio\_agente\_i})}{n}$
 \begin{itemize}
     \item $n$: Numero di esecuzioni dell'agente misurate
@@ -1683,7 +1670,7 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_13 - Tempo di Autenticazione \\ \hline
+\textbf{Metrica} & MPD\_12 - Tempo di Autenticazione \\ \hline
 \textbf{Formula} & $TA = \frac{\sum_{i=1}^{n} (T_{successo\_i} - T_{invio\_credenziali\_i})}{n}$
 \begin{itemize}
     \item $n$: Numero di tentativi di autenticazione misurati
@@ -1702,7 +1689,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_14 - \textit{\glo{Prompt}{prompt}} Isolation (Disaccoppiamento dei \textit{Prompt}) \\ \hline
+\textbf{Metrica} & MPD\_13 - \textit{\glo{Prompt}{prompt}} Isolation (Disaccoppiamento dei \textit{Prompt}) \\ \hline
 \textbf{Formula} & $PI = \frac{N_{PI}}{N_{PT}} \times 100$
 \begin{itemize}
     \item $N_{PI}$: Numero di \textit{prompt} archiviati in file di configurazione isolati
@@ -1717,7 +1704,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_15 - \textit{\glo{Complessità Ciclomatica}{complessità-ciclomatica}} \\ \hline
+\textbf{Metrica} & MPD\_14 - \textit{\glo{Complessità Ciclomatica}{complessità-ciclomatica}} \\ \hline
 \textbf{Formula} & $CC = E - N + 2P$
 \begin{itemize}
     \item $E$: Numero di archi nel grafo di controllo del flusso
@@ -1733,7 +1720,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_16 - \textit{Code Smell} \\ \hline
+\textbf{Metrica} & MPD\_15 - \textit{Code Smell} \\ \hline
 \textbf{Formula} & $CS = N_{CS}$
 \begin{itemize}
     \item $N_{CS}$: Numero totale di \textit{\glo{code smell}{code-smell}} rilevati tramite \textit{analisi statica}
@@ -1747,7 +1734,7 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_17 - Duplicazione del Codice \\ \hline
+\textbf{Metrica} & MPD\_16 - Duplicazione del Codice \\ \hline
 \textbf{Formula} & $DC = \frac{L_{CD}}{L_{CT}} \times 100$
 \begin{itemize}
     \item $L_{CD}$: Linee di codice sorgente duplicate
@@ -1766,7 +1753,7 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_18 - Esposizione di Credenziali \\ \hline
+\textbf{Metrica} & MPD\_17 - Esposizione di Credenziali \\ \hline
 \textbf{Formula} & $EC = N_{CE}$
 \begin{itemize}
     \item $N_{CE}$: Numero totale di chiavi, password o \textit{token API} trovati esposti in chiaro
@@ -1780,7 +1767,7 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_19 - Cifratura dei Dati Sensibili \\ \hline
+\textbf{Metrica} & MPD\_18 - Cifratura dei Dati Sensibili \\ \hline
 \textbf{Formula} & $CDS = \frac{N_{DSC}}{N_{DST}} \times 100$
 \begin{itemize}
     \item $N_{DSC}$: Numero di record di dati sensibili archiviati in formato cifrato o sottoposti ad \textit{hashing}
@@ -1795,7 +1782,7 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|p{12cm}|}
 \hline
-\textbf{Metrica} & MPD\_20 - Input Validation \\ \hline
+\textbf{Metrica} & MPD\_19 - Input Validation \\ \hline
 \textbf{Formula} & $IV = \frac{N_{IV}}{N_{IT}} \times 100$
 \begin{itemize}
     \item $N_{IV}$: Numero di input sanificati e validati con successo
