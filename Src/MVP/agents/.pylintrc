@@ -18,3 +18,6 @@ max-line-length=100
 
 [BASIC]
 good-names=_,i,j,k,ex,Run,_,id
+
+[REPORTS]
+fail-under=9.0
