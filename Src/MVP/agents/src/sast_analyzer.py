@@ -49,7 +49,7 @@ class SASTAnalyzer:
         raw_findings: list[dict[str, Any]] = []
 
         with tempfile.TemporaryDirectory(prefix="cg_sast_") as tmpdir:
-            file_paths = self._write_files(tmpdir, files)
+            self._write_files(tmpdir, files)
             extensions = {Path(p).suffix.lstrip(".") for p in files}
             rulesets = self._build_rulesets(extensions)
 

@@ -4,10 +4,11 @@ import logging
 import operator
 import time
 from dataclasses import dataclass, field
+from json import JSONDecodeError
 from typing import Annotated, Any, Optional, Union
 
 import redis.asyncio as aioredis
-from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
@@ -200,9 +201,6 @@ class AgentGraph:
             blocks, proposal = self._profile.parse_output(st.raw_output)
             return {"blocks": blocks, "proposal": proposal, "needs_retry": False}
         except Exception as exc:
-            from json import JSONDecodeError
-            from langchain_core.messages import AIMessage
-
             is_parse = isinstance(exc, (JSONDecodeError, ValueError)) or "json" in str(exc).lower()
             if is_parse and st.parse_retries < 2:
                 retry_msg = (
