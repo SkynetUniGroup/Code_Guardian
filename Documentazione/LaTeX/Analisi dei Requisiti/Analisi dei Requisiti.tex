@@ -102,43 +102,47 @@
 \markboth{Versioni del documento}{}
 \renewcommand{\arraystretch}{1.3}
 
-\begin{xltabular}{\textwidth}{|c|c|>{\raggedright\arraybackslash}X|p{2cm}|p{2cm}|p{2cm}|}
+{\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|c|X|p{2.2cm}|p{2.2cm}|}
     \hline
-    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} & \textbf{Approvatore} \\ \hline
+    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endfirsthead 
     
     \hline
-    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} & \textbf{Approvatore} \\ \hline
+    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead 
-    1.2.0 & 2026/09/02 & Correzioni ai requisiti a seguito della valutazione TB & Dario Pirrone & - & Nome Cognome \\ \hline
-    1.1.0 & 2026/09/01 & Correzioni agli UC a seguito della valutazione TB & Dario Pirrone & - & Nome Cognome \\ \hline
-    1.0.0 & 2026/07/09 & Correzioni minori & Sara Ristovic & Andrea Fistarol & Marco Barbiero \\ \hline
-    0.18.1 & 2026/07/09 & Aggiornati requisiti funzionali & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.18.0 & 2026/07/08 & Aggiunti diagrammi UML degli UC & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.17.2 & 2026/07/07 & Verifica dettagliata del documento fino alla sezione 4 Agente Docs & Sara Ristovic & \textemdash & \textemdash \\ \hline
-    0.17.1 & 2026/07/06 & Correzioni minori agli UC & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.17.0 & 2026/07/03 & Aggiornati UC specifici per agenti Docs, Security e Changelog & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.16.0 & 2026/06/30 & Aggiunti sottocasi a diversi UC trasversali & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.15.2 & 2026/06/28 & Modifiche varie sui requisiti non funzionali & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazione e login & Dario Pirrone & Sara Ristovic & \textemdash \\ \hline
-    0.13.0 & 2026/06/08 & Aggiunti diagrammi UML per Agente Security e Agente Changelog & Dario Pirrone & Edoardo Granziero & \textemdash \\ \hline 
-    0.12.1 & 2026/06/06 & Modificata numerazione UC e requisiti & Dario Pirrone & Edoardo Granziero & \textemdash \\ \hline 
-    0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito del incontro esterno con VarGroup & Dario Pirrone & Edoardo Granziero & \textemdash \\ \hline 
-    0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. Ex UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & Andrea Fistarol & Edoardo Granziero & \textemdash \\ \hline   
-    0.10.0 & 2026/05/30 & Aggiunti requisiti RF.20 e RQ.4 e modificata sezione 8 & Dario Pirrone & Edoardo Granziero & \textemdash \\ \hline        
-    0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & Dario Pirrone & Edoardo Granziero & \textemdash \\ \hline
-    0.8.1 & 2026/05/26 & Raffinati casi dell'agente Docs e adeguati gli UC al modello & Andrea Fistarol & Samuele Bertin & \textemdash \\ \hline
-    0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti; piccoli raffinamenti nell'intero file & Sara Ristovic & Samuele Bertin & \textemdash \\ \hline
-    0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'Agente Security & Sara Ristovic & Samuele Bertin & \textemdash \\ \hline
-    0.6.0 & 2026/05/19 & Aggiunte estensioni dell'UC 40; aggiornata la sezione "Requisiti" & Marco Barbiero & Dario Pirrone & \textemdash \\ \hline
-    0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 2 UC all'Agente Security, la sua introduzione e gli obiettivi e funzionalità & Sara Ristovic & Dario Pirrone & \textemdash \\ \hline
-    0.4.0 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Sara Ristovic \\ Marco Barbiero}  & Dario Pirrone & \textemdash \\ \hline
-    0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & Sara Ristovic & Marco Barbiero & \textemdash \\ \hline
-    0.2.0 & 2026/04/12 & Scrittura della sezione 2 & Dario Pirrone & Marco Barbiero & \textemdash \\ \hline
-    0.1.0 & 2026/04/08 & Creazione documento e scrittura della sezione 1 & Dario Pirrone & Marco Barbiero & \textemdash \\ \hline
+    
+    1.2.0 & 2026/09/02 & Correzioni ai requisiti a seguito della valutazione TB & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
+    1.1.0 & 2026/09/01 & Correzioni agli UC a seguito della valutazione TB & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
+    1.0.0 & 2026/07/09 & Approvazione del documento per revisione RTB & \makecell[l]{Sara \\Ristovic} & --\\ \hline
+    0.18.1 & 2026/07/09 & Aggiornati requisiti funzionali & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.18.0 & 2026/07/08 & Aggiunti diagrammi UML degli UC & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.17.2 & 2026/07/07 & Verifica dettagliata e correzione del documento fino alla sezione 4 Agente Docs & \makecell[l]{Sara \\Ristovic} & \makecell[l]{Dario \\Pirrone} \\ \hline
+    0.17.1 & 2026/07/06 & Correzioni minori agli UC & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.17.0 & 2026/07/03 & Aggiornati UC specifici per agenti Docs, Security e Changelog & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.16.0 & 2026/06/30 & Aggiunti sottocasi a diversi UC trasversali & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.15.2 & 2026/06/28 & Modifiche varie sui requisiti non funzionali & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.15.1 & 2026/06/25 & Correzioni minori sugli UC trasversali & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.15.0 & 2026/06/23 & Aggiunti UC e requisiti relativi al orchestratore centrale & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.14.0 & 2026/06/18 & Aggiunti UC e requisiti relativi alla registrazione e login & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.13.0 & 2026/06/08 & Aggiunti diagrammi UML per Agente Security e Agente Changelog & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Edoardo \\Granziero} \\ \hline 
+    0.12.1 & 2026/06/06 & Modificata numerazione UC e requisiti & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Edoardo \\Granziero} \\ \hline 
+    0.12.0 & 2026/06/05 & Modifiche varie a UC e ai requisiti a seguito del incontro esterno con VarGroup & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Edoardo \\Granziero} \\ \hline 
+    0.11.0 & 2026/05/30 & Uniti UC 7, 7.1, 7.2; 8, 8.1, 8.2, 8.3; 9, 9.1, 9.2. Ex UC 10 integrato in UC 7, 8, 9. Modifiche al tracciamento. & \makecell[l]{Andrea \\Fistarol} & \makecell[l]{Edoardo \\Granziero} \\ \hline   
+    0.10.0 & 2026/05/30 & Aggiunti requisiti RF.20 e RQ.4 e modificata sezione 8 & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Edoardo \\Granziero} \\ \hline       
+    0.9.0 & 2026/05/28 & Scrittura della sottosezione ``Attori'' (3.2) & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Edoardo \\Granziero} \\ \hline
+    0.8.1 & 2026/05/26 & Raffinati casi dell'agente Docs e adeguati gli UC al modello & \makecell[l]{Andrea \\Fistarol} & \makecell[l]{Samuele \\Bertin} \\ \hline
+    0.8.0 & 2026/05/24 & Redatta per la prima volta l'intera tabella dei Requisiti; piccoli raffinamenti nell'intero file & \makecell[l]{Sara \\Ristovic} & \makecell[l]{Samuele \\Bertin} \\ \hline
+    0.7.0 & 2026/05/21 & Aggiunti 2 UC trasversali; raffinati gli UC dell'Agente Security & \makecell[l]{Sara \\Ristovic} & \makecell[l]{Samuele \\Bertin} \\ \hline
+    0.6.0 & 2026/05/19 & Aggiunte estensioni dell'UC 40; aggiornata la sezione "Requisiti" & \makecell[l]{Marco \\Barbiero} & \makecell[l]{Dario \\Pirrone} \\ \hline
+    0.5.0 & 2026/05/09 & Scrittura della sottosezione "Casi d'uso trasversali"; Aggiunti 2 UC all'Agente Security, la sua introduzione e gli obiettivi e funzionalità & \makecell[l]{Sara \\Ristovic} & \makecell[l]{Dario \\Pirrone} \\ \hline
+    0.4.1 & 2026/04/30 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Marco \\Barbiero}  & \makecell[l]{Dario \\Pirrone} \\ \hline
+    0.4.0 & 2026/04/29 & Sviluppo sezioni ``Casi d'uso'' e Agenti & \makecell[l]{Sara \\Ristovic }  & \makecell[l]{Dario \\Pirrone} \\ \hline
+    0.3.0 & 2026/04/15 & Inizio scrittura della sezione ``Requisiti'' & \makecell[l]{Sara \\Ristovic} & \makecell[l]{Marco \\Barbiero} \\ \hline
+    0.2.0 & 2026/04/12 & Scrittura della sezione 2 & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco \\Barbiero} \\ \hline
+    0.1.0 & 2026/04/08 & Creazione documento e scrittura della sezione 1 & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco \\Barbiero} \\ \hline
 \end{xltabular}
+}
 \addtocounter{table}{-1}
 \newpage
 
