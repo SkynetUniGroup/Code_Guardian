@@ -1,0 +1,170 @@
+# Presuppone il monorepo Code Guardian: Src/MVP/{frontend,backend,agents,infra}
+# (questa cartella). Adattare i `working-directory` se il layout cambia.
+#
+# Il trust OIDC di codeguardian-ci-role accetta qualunque branch/ref; sono le
+# condizioni `if` sui singoli step qui sotto a restringere l'uso delle
+# credenziali AWS al solo push su main. Sulle PR girano solo typecheck e
+# build Docker locale.
+name: Deploy Code Guardian
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  id-token: write # richiesto per l'autenticazione OIDC verso AWS
+  contents: read
+
+env:
+  AWS_REGION: eu-south-1
+  ECR_BACKEND_REPO: codeguardian/backend
+  ECR_AGENTS_REPO: codeguardian/agents
+
+jobs:
+  # Gira su ogni PR e push, senza credenziali AWS: intercetta errori banali
+  # (import sbagliati, prop CDK inesistenti) prima ancora di autenticarsi.
+  typecheck-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - working-directory: Src/MVP/infra
+        run: |
+          npm ci
+          npx tsc --noEmit
+
+  # Build delle immagini come smoke test su ogni PR/push. Il push su ECR e
+  # tutto ciò che richiede AWS è ristretto al branch main (vedi condizioni
+  # sui singoli step).
+  build-images:
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.vars.outputs.image-tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: vars
+        run: echo "image-tag=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Build immagine backend (no push)
+        working-directory: Src/MVP/backend
+        run: docker build -t codeguardian-backend:local .
+
+      - name: Build immagine agents (no push)
+        working-directory: Src/MVP/agents
+        run: docker build -t codeguardian-agents:local .
+
+      - name: Configura credenziali AWS (OIDC, solo su main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/codeguardian-ci-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login su Amazon ECR
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push immagine backend
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          IMAGE="${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_BACKEND_REPO }}:${{ steps.vars.outputs.image-tag }}"
+          docker tag codeguardian-backend:local "$IMAGE"
+          docker push "$IMAGE"
+
+      - name: Push immagine agents
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          IMAGE="${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_AGENTS_REPO }}:${{ steps.vars.outputs.image-tag }}"
+          docker tag codeguardian-agents:local "$IMAGE"
+          docker push "$IMAGE"
+
+  # Gate pre-deploy: `cdk synth` con le credenziali reali, prima di toccare
+  # qualunque risorsa. Se lo stack non sintetizza, il deploy non parte.
+  synth-infra:
+    needs: build-images
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Configura credenziali AWS (OIDC, codeguardian-ci-role)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/codeguardian-ci-role
+          aws-region: ${{ env.AWS_REGION }}
+      - working-directory: Src/MVP/infra
+        run: |
+          npm ci
+          npx cdk synth --context imageTag=${{ needs.build-images.outputs.image-tag }}
+
+  # Nuova revisione della Task Definition + update dei servizi ECS. Riusa
+  # `cdk deploy` (non `aws ecs update-service --force-new-deployment` da
+  # solo) perché il tag immagine fa parte della definizione dello stack
+  # (context imageTag): serve una nuova sintesi per generarla.
+  deploy-compute:
+    needs: [build-images, synth-infra]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Configura credenziali AWS (OIDC, codeguardian-ci-role)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/codeguardian-ci-role
+          aws-region: ${{ env.AWS_REGION }}
+      - working-directory: Src/MVP/infra
+        run: npm ci
+      - working-directory: Src/MVP/infra
+        run: |
+          npx cdk deploy CodeGuardian-Compute \
+            --context imageTag=${{ needs.build-images.outputs.image-tag }} \
+            --require-approval never \
+            --exclusively
+
+  # Build Vite, sync su S3, invalidazione CloudFront.
+  deploy-frontend:
+    needs: [build-images, synth-infra]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Configura credenziali AWS (OIDC, codeguardian-ci-role)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/codeguardian-ci-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build frontend (Vite, URL API relativo)
+        working-directory: Src/MVP/frontend
+        env:
+          # Path relativo -- Same-Origin dietro CloudFront, niente CORS.
+          VITE_API_BASE_URL: /api/v1
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Sync build su S3 (bucket frontend statico)
+        run: aws s3 sync Src/MVP/frontend/dist "s3://${{ secrets.FRONTEND_BUCKET_NAME }}" --delete
+
+      - name: Invalidazione cache CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"
