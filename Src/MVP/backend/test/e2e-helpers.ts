@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
@@ -314,4 +316,26 @@ export async function attendiChe(
     await new Promise((r) => setTimeout(r, 200));
   }
   throw new Error(`Condizione non verificata in ${timeoutMs}ms: ${descrizione}`);
+}
+
+/**
+ * Legge una variabile da `Src/MVP/.env`, che Jest non carica da solo.
+ *
+ * Quel file raccoglie le variabili dei test contro servizi reali
+ * (`E2E_GITHUB_PAT` e simili) ed e' gia' usato dalla suite Playwright; i
+ * test di integrazione che toccano GitHub lo leggono da qui invece di
+ * pretendere che l'operatore le esporti a mano prima di ogni esecuzione.
+ * Una variabile gia' presente nell'ambiente ha comunque la precedenza.
+ */
+export function daEnvDelMonorepo(chiave: string): string | undefined {
+  if (process.env[chiave]) return process.env[chiave];
+  try {
+    const contenuto = readFileSync(resolve(__dirname, '..', '..', '.env'), 'utf8');
+    const riga = contenuto
+      .split('\n')
+      .find((r) => r.trim().startsWith(`${chiave}=`));
+    return riga?.slice(riga.indexOf('=') + 1).trim() || undefined;
+  } catch {
+    return undefined;
+  }
 }

@@ -38,7 +38,25 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
+  // TNF_04 (RV.5) chiede di rieseguire la suite di accettazione sulle
+  // versioni piu' recenti dei tre browser target e di accertare l'assenza di
+  // anomalie su ciascuno. Non e' un caso di test a se': e' questa matrice.
+  // Con un solo project dichiarato il requisito non era verificabile per
+  // costruzione, qualunque test si fosse scritto.
+  //
+  // I tre non sono intercambiabili: Firefox ha un motore diverso (Gecko),
+  // mentre Edge condivide Blink con Chromium ma e' un binario di sistema —
+  // `channel: 'msedge'` usa l'Edge installato sulla macchina invece di
+  // scaricarne una copia, che e' anche il modo in cui lo usa l'utente
+  // finale. Firefox va scaricato una volta con
+  // `npx playwright install firefox`; Edge dev'essere gia' presente nel
+  // sistema. Se mancano, Playwright lo dice all'avvio del project e non a
+  // meta' esecuzione.
+  //
+  // Per eseguirne uno solo: `npx playwright test --project=firefox`.
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'edge', use: { ...devices['Desktop Edge'], channel: 'msedge' } },
   ],
 });
