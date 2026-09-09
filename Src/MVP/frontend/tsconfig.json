@@ -22,7 +22,11 @@
 
     "types": ["vite/client"],
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@codeguardian/shared": ["../shared/src"],
+      "@codeguardian/shared/*": ["../shared/src/*"]
+    }
   },
   "include": ["src"]
 }

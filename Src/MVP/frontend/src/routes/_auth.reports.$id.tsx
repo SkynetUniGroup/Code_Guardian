@@ -1,6 +1,6 @@
-import { createRoute } from '@tanstack/react-router';
-import { authRoute } from './_auth';
-import { ReportDetailPage } from '../pages/ReportDetailPage';
+import { createRoute } from "@tanstack/react-router";
+import { ReportDetailPage } from "../pages/ReportDetailPage";
+import { authRoute } from "./_auth";
 
 /**
  * Report detail route — /reports/:id (authenticated, no credentials guard)
@@ -11,6 +11,6 @@ import { ReportDetailPage } from '../pages/ReportDetailPage';
  */
 export const reportDetailRoute = createRoute({
   getParentRoute: () => authRoute,
-  path: '/reports/$id',
+  path: "/reports/$id",
   component: ReportDetailPage,
 });

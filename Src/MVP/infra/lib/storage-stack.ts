@@ -1,7 +1,7 @@
 import * as cdk from "aws-cdk-lib";
-import * as kms from "aws-cdk-lib/aws-kms";
+import type * as kms from "aws-cdk-lib/aws-kms";
 import * as s3 from "aws-cdk-lib/aws-s3";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 import { ARTIFACTS_LIFECYCLE_EXPIRATION_DAYS } from "./config";
 
 export interface StorageStackProps extends cdk.StackProps {

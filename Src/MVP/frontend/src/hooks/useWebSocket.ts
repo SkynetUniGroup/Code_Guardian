@@ -1,15 +1,16 @@
-import { useEffect, useRef } from 'react';
-import { io, type Socket } from 'socket.io-client';
-import { useSessionStore } from '../stores/sessionStore';
-import { useTasksStore } from '../stores/tasksStore';
+import { useEffect, useRef } from "react";
+import { io, type Socket } from "socket.io-client";
+import { apiClient } from "../api/client";
+import { useSessionStore } from "../stores/sessionStore";
+import { useTasksStore } from "../stores/tasksStore";
 import type {
-  TaskUpdatedEvent,
-  TaskProgressEvent,
-  TaskFailedEvent,
   BatchCompletedEvent,
+  TaskDto,
+  TaskFailedEvent,
   TaskInputRequiredEvent,
-} from '../types';
-import { apiClient } from '../api/client';
+  TaskProgressEvent,
+  TaskUpdatedEvent,
+} from "../types";
 
 /**
  * WebSocket connection URL.
@@ -17,7 +18,7 @@ import { apiClient } from '../api/client';
  * the current origin, which means CloudFront routes the upgrade request to the
  * correct backend. Never hardcode a domain here.
  */
-const WS_URL = '/';
+const WS_URL = "/";
 
 /**
  * useWebSocket — singleton Socket.IO connection hook.
@@ -53,22 +54,27 @@ export function useWebSocket(): void {
      */
     async function resync_tasks(): Promise<void> {
       try {
-        const response = await apiClient.get<{ tasks: any[] }>('/tasks');
+        // GET /tasks risponde con un array nudo (TaskDto[]).
+        const response = await apiClient.get<TaskDto[]>("/tasks");
         // Map the raw backend DTO to the local TaskEntry shape.
-        const tasks = response.data.tasks.map((t: any) => ({
+        const tasks = response.data.map((t) => ({
           id: t.id,
+          batchId: t.batchId ?? null,
           operation: t.operation,
           status: t.status,
           progressPercent: t.progressPercent ?? 0,
           currentStage: t.currentStage ?? null,
           reportId: t.reportId ?? null,
           error: t.error ?? null,
-          pendingInput: null, // pendingInput is ephemeral; re-emitted via WS if still active
+          // pendingInput e' persistito sul Task: dopo una disconnessione e'
+          // proprio questa GET a recuperarlo, perche' l'evento WS che lo
+          // annunciava e' gia' passato e non viene ritrasmesso.
+          pendingInput: t.pendingInput ?? null,
         }));
         loadTasks(tasks);
       } catch {
         // Non-critical; the user will still see stale state rather than crashing.
-        console.warn('[WS] Resync failed — task list may be out of date');
+        console.warn("[WS] Resync failed — task list may be out of date");
       }
     }
 
@@ -78,7 +84,7 @@ export function useWebSocket(): void {
       // the 'auth' namespace middleware instead of HTTP headers (Socket.IO
       // does not support custom headers during the upgrade handshake).
       auth: { token },
-      transports: ['websocket'],
+      transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
@@ -89,19 +95,19 @@ export function useWebSocket(): void {
 
     // ---- Event handlers ----
 
-    socket.on('connect', () => {
-      console.info('[WS] Connected:', socket.id);
+    socket.on("connect", () => {
+      console.info("[WS] Connected:", socket.id);
     });
 
-    socket.on('disconnect', (reason) => {
-      console.info('[WS] Disconnected:', reason);
+    socket.on("disconnect", (reason) => {
+      console.info("[WS] Disconnected:", reason);
     });
 
     /**
      * task.updated — top-level status change.
      * Fired when a task moves between PENDING / RUNNING / COMPLETED / CANCELLED.
      */
-    socket.on('task.updated', (event: TaskUpdatedEvent) => {
+    socket.on("task.updated", (event: TaskUpdatedEvent) => {
       upsertFromUpdated(event);
     });
 
@@ -109,7 +115,7 @@ export function useWebSocket(): void {
      * task.progress — execution progress update.
      * Fired periodically by the agent with the current stage name and %.
      */
-    socket.on('task.progress', (event: TaskProgressEvent) => {
+    socket.on("task.progress", (event: TaskProgressEvent) => {
       upsertFromProgress(event);
     });
 
@@ -118,9 +124,9 @@ export function useWebSocket(): void {
      * When the error code is CREDENTIAL_INVALID we also mark the global
      * credentials status so the banner and route guards activate immediately.
      */
-    socket.on('task.failed', (event: TaskFailedEvent) => {
+    socket.on("task.failed", (event: TaskFailedEvent) => {
       applyFailed(event);
-      if (event.error?.code === 'CREDENTIAL_INVALID') {
+      if (event.error?.code === "CREDENTIAL_INVALID") {
         markCredentialsInvalid();
       }
     });
@@ -130,8 +136,8 @@ export function useWebSocket(): void {
      * Currently used only for logging; individual task.updated events carry
      * the authoritative final status.
      */
-    socket.on('batch.completed', (event: BatchCompletedEvent) => {
-      console.info('[WS] Batch completed:', event.batchId);
+    socket.on("batch.completed", (event: BatchCompletedEvent) => {
+      console.info("[WS] Batch completed:", event.batchId);
     });
 
     /**
@@ -139,7 +145,7 @@ export function useWebSocket(): void {
      * The tasksStore attaches the pendingInput payload to the relevant task,
      * and the Tasks dashboard renders the appropriate modal.
      */
-    socket.on('task.inputRequired', (event: TaskInputRequiredEvent) => {
+    socket.on("task.inputRequired", (event: TaskInputRequiredEvent) => {
       applyInputRequired(event);
     });
 
@@ -148,8 +154,8 @@ export function useWebSocket(): void {
      * Socket.IO does not replay events that were missed while disconnected,
      * so a manual resync is necessary to restore correct UI state.
      */
-    socket.io.on('reconnect', () => {
-      console.info('[WS] Reconnected — resyncing tasks');
+    socket.io.on("reconnect", () => {
+      console.info("[WS] Reconnected — resyncing tasks");
       resync_tasks();
     });
 
@@ -158,5 +164,13 @@ export function useWebSocket(): void {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [token]); // Re-run when the token changes (login / logout).
+  }, [
+    token,
+    upsertFromProgress,
+    applyInputRequired,
+    upsertFromUpdated,
+    markCredentialsInvalid,
+    loadTasks,
+    applyFailed,
+  ]); // Re-run when the token changes (login / logout).
 }

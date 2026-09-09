@@ -1,4 +1,4 @@
-import { cn } from '../../lib/utils';
+import { cn } from "../../lib/utils";
 
 interface ProgressBarProps {
   /** Current progress value, 0–100. */
@@ -19,7 +19,7 @@ export function ProgressBar({ value, stage, className }: ProgressBarProps) {
   const clamped = Math.min(100, Math.max(0, value));
 
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
+    <div className={cn("flex flex-col gap-1", className)}>
       {/* Track */}
       <div
         className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200"
@@ -35,9 +35,7 @@ export function ProgressBar({ value, stage, className }: ProgressBarProps) {
         />
       </div>
 
-      {stage && (
-        <span className="text-xs text-gray-500 truncate">{stage}</span>
-      )}
+      {stage && <span className="text-xs text-gray-500 truncate">{stage}</span>}
     </div>
   );
 }

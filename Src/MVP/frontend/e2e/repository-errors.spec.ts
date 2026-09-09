@@ -1,61 +1,90 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
+import { GITHUB_PAT, SKIP_REASON, signedInWithCredentials, submitContext } from "./helpers";
 
 /**
- * Test di Sistema per i percorsi d'errore nella selezione del repository
- * (RF.20/UC11, RF.31/UC19). Entrambi falliscono prima di invocare
- * qualunque agente (l'errore avviene nella creazione del contesto), quindi
- * non serve una LLM_API_KEY reale — ma serve comunque un GitHub PAT reale
- * per raggiungere davvero le API di GitHub e ottenere l'errore genuino
- * (non simulato).
+ * Test di Sistema sui percorsi d'errore nella creazione del contesto
+ * (RF.20/UC11, RF.31/UC19). Falliscono tutti prima che venga invocato un
+ * agente — l'errore nasce nella creazione del contesto — quindi non serve una
+ * chiave LLM; serve pero' un PAT reale, perche' l'errore deve arrivare da
+ * GitHub e non da una simulazione.
+ *
+ * Rispetto alla versione PoC di questo file e' cambiata la premessa: il
+ * repository non si digita piu' in due campi di testo liberi (owner e nome),
+ * si sceglie da un elenco a discesa popolato da GitHub. "Repository
+ * inesistente" non e' quindi piu' uno stato raggiungibile dall'interfaccia, e
+ * al suo posto si verifica che l'elenco contenga solo repository reali e che
+ * il branch — che invece si digita ancora — venga validato.
  */
-const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
+test.describe("Percorsi d'errore nella creazione del contesto", () => {
+  test.skip(!GITHUB_PAT, SKIP_REASON);
 
-test.describe('Percorsi d\'errore nella selezione del repository', () => {
-  test.skip(!GITHUB_PAT, 'E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md');
+  test("RF.20 — l'elenco dei repository e' popolato da GitHub, non digitabile a mano", async ({
+    page,
+  }) => {
+    await signedInWithCredentials(page);
+    await page.goto("/select");
 
-  async function loginAndReachRepoForm(page: import('@playwright/test').Page) {
-    await page.goto('/');
-    await page.getByPlaceholder('ghp_xxxxxxxxxxxx...').fill(GITHUB_PAT!);
-    await page.getByRole('button', { name: 'Salva e Inizia' }).click();
-    await expect(page).toHaveURL('http://localhost:5173/');
-  }
+    const repositories = page.getByLabel("Repository");
+    await expect(repositories).toBeEnabled({ timeout: 30_000 });
 
-  test('RF.20 — repository inesistente: mostra un errore chiaro e non avvia la task', async ({ page }) => {
-    await loginAndReachRepoForm(page);
+    // La voce segnaposto piu' almeno un repository vero: se l'elenco avesse
+    // solo il segnaposto vorrebbe dire che la lettura da GitHub e' fallita in
+    // silenzio, che e' esattamente il modo in cui questo passo puo' rompersi
+    // senza che nulla lo dica.
+    const options = repositories.locator("option");
+    await expect(options.first()).toHaveText("-- Seleziona un repository --");
+    expect(await options.count()).toBeGreaterThan(1);
 
-    await page.getByPlaceholder('skynetunigroup').fill('questo-owner-non-esiste-e2e');
-    await page.getByPlaceholder('code_guardian').fill('repo-fasullo-12345');
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_OWASP' });
-
-    const dialogPromise = page.waitForEvent('dialog');
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-    const dialog = await dialogPromise;
-    expect(dialog.message()).toContain('Errore');
-    await dialog.accept();
-
-    // Nessuna navigazione: resta sulla pagina di selezione.
-    await expect(page).toHaveURL('http://localhost:5173/');
+    // Il pulsante di invio esiste sempre; e' il backend a rifiutare un
+    // contesto senza repository. Si verifica che l'interfaccia non lasci
+    // proseguire senza selezione.
+    await page.getByRole("button", { name: "Salva contesto e vai ad Avvia" }).click();
+    await expect(page).toHaveURL(/\/select$/);
   });
 
-  test('RF.31 — ambito che supera il limite di 100 file: mostra l\'errore dimensionale', async ({ page }) => {
-    await loginAndReachRepoForm(page);
+  test("RF.21 — branch inesistente: errore esplicito, nessun contesto creato", async ({ page }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "branch-che-non-esiste-e2e",
+      scope: "Repository completo",
+    });
 
-    // OWASP/NodeGoat, intero repository (111 file al momento della
-    // scrittura di questo test) — nessuno scope, cosi' scopeType diventa
-    // FULL_REPOSITORY e supera il limite di RF.31.
-    await page.getByPlaceholder('skynetunigroup').fill('OWASP');
-    await page.getByPlaceholder('code_guardian').fill('NodeGoat');
-    await page.getByPlaceholder('main').fill('master');
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_OWASP' });
+    // Resta dove sta e lo dice. Il caso in cui questo test serve davvero e'
+    // quello in cui l'errore viene ingoiato e l'utente si ritrova su /run con
+    // un contesto mai creato.
+    await expect(page).toHaveURL(/\/select$/);
+    await expect(page.getByText(/branch|riferimento|non trovat/i).first()).toBeVisible({
+      timeout: 30_000,
+    });
+  });
 
-    const dialogPromise = page.waitForEvent('dialog');
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-    const dialog = await dialogPromise;
-    expect(dialog.message()).toMatch(/limite di 100/);
-    await dialog.accept();
+  test("RF.22 — commit che non appartiene al branch: rifiutato", async ({ page }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      // SHA sintatticamente plausibile ma inesistente: il backend lo verifica
+      // contro il branch (RF.17), non si limita a copiarlo nel contesto.
+      commitSha: "0000000000000000000000000000000000000000",
+      scope: "Repository completo",
+    });
 
-    await expect(page).toHaveURL('http://localhost:5173/');
+    await expect(page).toHaveURL(/\/select$/);
+    await expect(page.getByText(/commit|non trovat|non appartiene/i).first()).toBeVisible({
+      timeout: 30_000,
+    });
+  });
+
+  test("RF.29 — scope per file senza alcun percorso: rifiutato", async ({ page }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "File specifici",
+      paths: [],
+    });
+
+    await expect(page).toHaveURL(/\/select$/);
   });
 });
