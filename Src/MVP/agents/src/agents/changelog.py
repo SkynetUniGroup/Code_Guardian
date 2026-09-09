@@ -10,22 +10,9 @@ from langgraph.types import interrupt
 
 from ..config import settings
 from ..github_toolset import GitHubToolset
-from ..graph import AgentCancelled
+from ..graph import AgentCancelled, resume_action
 from ..models import Block, ChangelogItemBlock, Proposal, TextBlock
 from ._base import load_prompt_template, render_prompt
-
-
-class ReadabilityTooLowError(Exception):
-    """Specific exception mapped to ErrorKind.READABILITY_TOO_LOW."""
-
-    def __init__(self, message: str):
-        """Initializes the exception.
-
-        Args:
-            message (str): The error message.
-        """
-        self.error_type = "READABILITY_TOO_LOW"
-        super().__init__(message)
 
 
 class ChangelogLoader:
@@ -90,8 +77,8 @@ class ChangelogLoader:
 
         # Interactive suspension
         if insufficient_ids:
-            action = interrupt(
-                {"kind": "INCOMPLETE_TASKS", "taskIds": insufficient_ids}
+            action = resume_action(
+                interrupt({"kind": "INCOMPLETE_TASKS", "taskIds": insufficient_ids})
             )
 
             if action == "CANCEL":

@@ -17,12 +17,33 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Command, interrupt
 
-from .agents.changelog import ReadabilityTooLowError
 from .config import settings
+from .exceptions import ReadabilityTooLowError
 from .github_toolset import GitHubToolset
 from .models import Block, ErrorKind, Proposal, Report, ReportError
 
 logger = logging.getLogger(__name__)
+
+
+def resume_action(value: Any) -> str:
+    """Normalizza il valore con cui il grafo viene ripreso.
+
+    Il backend riprende un Task passando `inputValue = {"action": "PROCEED"}`
+    (TasksService.submitInput), mentre i nodi confrontavano il valore con la
+    stringa "CANCEL": un dict non e' mai uguale a una stringa, quindi un CANCEL
+    esplicito dell'utente veniva letto come "procedi". Accetta entrambe le
+    forme, cosi' che una chiamata manuale all'API con la sola stringa continui
+    a funzionare.
+
+    Args:
+        value (Any): Il valore passato a Command(resume=...).
+
+    Returns:
+        str: "PROCEED" o "CANCEL" (default "PROCEED" se non riconosciuto).
+    """
+    if isinstance(value, dict):
+        value = value.get("action")
+    return str(value).upper() if value is not None else "PROCEED"
 
 
 class AgentCancelled(Exception):
@@ -75,12 +96,19 @@ def reduce_messages(
 
 @dataclass
 class AgentState:
-    """Represents the shared state moving through the LangGraph execution nodes."""
+    """Represents the shared state moving through the LangGraph execution nodes.
+
+    Nota: qui NON c'e' il toolset. Lo stato viene serializzato e scritto su
+    MongoDB dal checkpointer a ogni step, e GitHubToolset porta con se'
+    INTERNAL_SHARED_SECRET: tenercelo dentro significava riversare il segreto
+    condiviso backend-agenti nel database a ogni nodo attraversato, in chiaro e
+    per ogni task. Il toolset e' ricostruibile da user_id + task_id, che sono
+    due identificatori: lo si ricrea al volo con _toolset() quando serve.
+    """
 
     user_id: str
     task_id: str
     context_ref: Any
-    toolset: GitHubToolset
     tool_rounds: int = 0
 
     loaded_context: Any = None
@@ -129,6 +157,18 @@ class AgentGraph:
         self._start_time = time.monotonic()
         self._compiled = self._build_graph(checkpointer)
 
+    @staticmethod
+    def _toolset(st: AgentState) -> GitHubToolset:
+        """Ricostruisce il toolset dallo stato.
+
+        Args:
+            st (AgentState): Lo stato corrente del grafo.
+
+        Returns:
+            GitHubToolset: Un toolset per l'utente e il task correnti.
+        """
+        return GitHubToolset(user_id=st.user_id, task_id=st.task_id)
+
     async def execute_step(
         self,
         initial_state: AgentState | None = None,
@@ -154,13 +194,38 @@ class AgentGraph:
             else:
                 result = await self._compiled.ainvoke(initial_state, config=config)
 
+            # Da LangGraph 0.2 un interrupt non risale piu' come eccezione: il
+            # grafo ritorna normalmente e mette gli interrupt pendenti sotto la
+            # chiave __interrupt__. Il ramo except GraphInterrupt piu' sotto
+            # resta per le versioni che invece la sollevano.
+            pending = self._pending_interrupt(result)
+            if pending is not None:
+                return {"status": "interrupted", "pendingInput": pending}
+
             report = result.get("report")
-            if report:
-                return {"status": "completed", "result": {"report": report.to_dict()}}
-            return {
-                "status": "failed",
-                "error": "Execution completed but report is missing",
-            }
+            if report is None:
+                return {
+                    "status": "failed",
+                    "error": "Execution completed but report is missing",
+                    "errorKind": ErrorKind.UPSTREAM.value,
+                }
+
+            # gestisci_errore produce comunque un Report, ma con status FAILED:
+            # senza questo controllo un run fallito veniva annunciato al backend
+            # come "completed", e l'ErrorKind calcolato la' non arrivava a
+            # nessuno.
+            if report.status == "FAILED":
+                return {
+                    "status": "failed",
+                    "error": report.error.message if report.error else "Agent execution failed",
+                    "errorKind": (
+                        report.error.kind.value
+                        if report.error
+                        else ErrorKind.UPSTREAM.value
+                    ),
+                }
+
+            return {"status": "completed", "result": self._run_payload(report)}
 
         except GraphInterrupt as e:
             interrupt_value = e.interrupts[0].value
@@ -169,6 +234,51 @@ class AgentGraph:
             return {"status": "failed", "error": str(e)}
         finally:
             await self._current_redis_client.aclose()
+
+    @staticmethod
+    def _pending_interrupt(result: Any) -> Any | None:
+        """Estrae il valore dell'interrupt dallo stato ritornato, se presente.
+
+        Args:
+            result (Any): Lo stato ritornato da ainvoke().
+
+        Returns:
+            Any | None: Il payload del primo interrupt pendente, o None.
+        """
+        if not isinstance(result, dict):
+            return None
+        interrupts = result.get("__interrupt__")
+        if not interrupts:
+            return None
+        first = interrupts[0] if isinstance(interrupts, (list, tuple)) else interrupts
+        return getattr(first, "value", first)
+
+    @staticmethod
+    def _run_payload(report: Report) -> dict:
+        """Costruisce l'AgentRunPayload atteso dal backend.
+
+        Solo cio' che l'agente e' l'unico a sapere: i blocchi, l'eventuale
+        proposta di modifica, il riassunto e i token consumati. Titolo, stato,
+        contesto denormalizzato e tempi li compone il backend in
+        ReportAssemblyService, che ha i dati di partenza.
+
+        Args:
+            report (Report): Il report prodotto dal nodo assembla_report.
+
+        Returns:
+            dict: Il payload serializzato in JSON.
+        """
+        payload = report.model_dump(mode="json")
+        run_payload = {
+            "body": payload.get("body", []),
+            "summary": payload.get("summary"),
+            "tokensConsumed": payload.get("tokensConsumed", 0),
+        }
+        # `proposal` e' opzionale lato backend (AgentRunPayload.proposal?), non
+        # nullable: si omette invece di mandare null.
+        if payload.get("proposal") is not None:
+            run_payload["proposal"] = payload["proposal"]
+        return run_payload
 
     def _build_graph(self, checkpointer=None):
         """Builds and compiles the underlying LangGraph.
@@ -274,7 +384,7 @@ class AgentGraph:
             elapsed = time.monotonic() - self._start_time
             remaining_timeout = max(1, int(self._timeout_s - elapsed))
 
-            tools = self._get_langchain_tools(st.toolset, st.context_ref)
+            tools = self._get_langchain_tools(self._toolset(st), st.context_ref)
             response = await self._provider.invoke_agent(
                 st.messages, tools, remaining_timeout
             )
@@ -314,7 +424,7 @@ class AgentGraph:
             await self._check_interrupts(
                 st.task_id, self._current_redis_client, "esegui_tools"
             )
-            tools = self._get_langchain_tools(st.toolset, st.context_ref)
+            tools = self._get_langchain_tools(self._toolset(st), st.context_ref)
             tool_node = ToolNode(tools)
             result = await tool_node.ainvoke({"messages": st.messages})
             return {"messages": result["messages"], "tool_rounds": st.tool_rounds + 1}
@@ -413,7 +523,9 @@ class AgentGraph:
             await self._check_interrupts(
                 st.task_id, self._current_redis_client, "carica_contesto"
             )
-            ctx = await self._loader.load(st.context_ref, st.toolset, st.agent_payload)
+            ctx = await self._loader.load(
+                st.context_ref, self._toolset(st), st.agent_payload
+            )
             return {"loaded_context": ctx}
         except AgentCancelled:
             raise
@@ -553,7 +665,9 @@ class AgentGraph:
         Raises:
             AgentCancelled: If the user cancels the confirmation phase.
         """
-        action = interrupt({"kind": "BUSINESS_CONFIRMATION", "technicalReportId": None})
+        action = resume_action(
+            interrupt({"kind": "BUSINESS_CONFIRMATION", "technicalReportId": None})
+        )
 
         if action == "CANCEL":
             raise AgentCancelled(stage="BUSINESS_CONFIRMATION")

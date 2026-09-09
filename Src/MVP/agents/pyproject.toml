@@ -1,26 +1,5 @@
 [build-system]
-<<<<<<< HEAD
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "codeguardian-agents"
-version = "1.0.0"
-requires-python = ">=3.12"
-dependencies = [
-    "fastapi>=0.111.0",
-    "uvicorn[standard]>=0.30.0",
-    "pydantic>=2.7.0",
-    "pydantic-settings>=2.3.0",
-    "httpx>=0.27.0",
-    "redis[hiredis]>=5.0.4",
-    "langgraph>=0.1.9",
-    "langchain-openai>=0.1.8",
-    "langchain-core>=0.2.0",
-    "lizard>=1.17.10",
-    "semgrep>=1.80.0",
-=======
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -29,50 +8,53 @@ version = "1.0.0"
 description = "Python agent service for Code Guardian (FastAPI + LangGraph)"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.110.0",
-    "uvicorn[standard]>=0.29.0",
-    "pydantic>=2.6.0",
-    "pydantic-settings>=2.2.1",
-    "langgraph>=0.2.20",
-    "langgraph-checkpoint-mongodb>=0.2.0",
-    "motor>=3.3.2",
-    "langchain-openai>=0.1.1",
-    "langchain-aws>=0.1.6", 
-    "boto3>=1.34.0",        
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
     "httpx>=0.27.0",
     "pyyaml>=6.0.1",
-    "redis>=5.0.0",  
->>>>>>> origin/develop
+    # LangGraph + checkpointer MongoDB (main.py: AsyncMongoDBSaver)
+    "langgraph>=0.2.20",
+    # Tetto a <0.3 voluto: AsyncMongoDBSaver, che main.py costruisce da un
+    # client async di pymongo, vive in `langgraph.checkpoint.mongodb.aio` fino
+    # alla 0.2.2 ed e' stato rimosso nella 0.3.0. Senza il tetto pip prende
+    # l'ultima (0.5.0) e il servizio muore all'import con ModuleNotFoundError.
+    #
+    # Debito con scadenza dichiarata, non una svista: la 0.5.0 offre i metodi
+    # async su MongoDBSaver, ma sono la versione sincrona eseguita in un thread
+    # pool e vogliono un client sincrono al posto di quello async. Migrare
+    # significa cambiare anche quello, e va fatto con il servizio in piedi per
+    # poterlo verificare.
+    "langgraph-checkpoint-mongodb>=0.2.2,<0.3",
+    # pymongo arriva con langgraph-checkpoint-mongodb; motor non c'e' piu'
+    # perche' non lo usa piu' nessuno (vedi il commento in main.py) ed e'
+    # deprecato da MongoDB in favore dell'API async di pymongo.
+    # Provider LLM: OpenAI-compatible (Qwen/DashScope) e AWS Bedrock
+    "langchain-core>=0.2.0",
+    "langchain-openai>=0.1.8",
+    "langchain-aws>=0.1.6",
+    "boto3>=1.34.0",
+    # Redis: flag di cancellazione cooperativa letto da graph._check_interrupts
+    # e cache delle metriche SonarQube
+    "redis[hiredis]>=5.0.4",
+    # Analisi statica per l'agente Security. Invocato come sottoprocesso, non
+    # come libreria: la dipendenza serve perche' il binario finisca nell'immagine.
+    "semgrep>=1.80.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-<<<<<<< HEAD
     "pytest>=8.2.0",
     "pytest-asyncio>=0.23.7",
     "pytest-mock>=3.14.0",
     "respx>=0.21.1",
-    "pylint",
-    "black",
+    "ruff>=0.3.0",
 ]
 
-[tool.black]
+[tool.ruff]
 line-length = 100
-target-version = ["py312"]
-include = '\\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+target-version = "py312"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -81,9 +63,3 @@ testpaths = ["tests"]
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]
-=======
-    "pytest>=8.0.0",
-    "pytest-asyncio",
-    "ruff>=0.3.0",
-]
->>>>>>> origin/develop
