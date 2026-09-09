@@ -12,7 +12,12 @@ COPY shared/package.json ./shared/
 COPY backend/package.json ./backend/
 
 # Install all workspace dependencies (including shared)
-RUN pnpm install --frozen-lockfile --ignore-scripts
+# Niente --ignore-scripts: pnpm-workspace.yaml elenca esplicitamente in
+# `allowBuilds` i pacchetti che DEVONO poter eseguire il proprio script di
+# install (argon2 scarica il binario precompilato la', esbuild idem).
+# Saltandoli, l'immagine si costruiva senza errori e poi falliva a runtime
+# al primo require.
+RUN pnpm install --frozen-lockfile
 
 # Copy source files
 COPY shared/ ./shared/

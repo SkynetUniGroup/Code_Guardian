@@ -1,15 +1,16 @@
 import { useEffect, useRef } from "react";
 import { io, type Socket } from "socket.io-client";
+import { apiClient } from "../api/client";
 import { useSessionStore } from "../stores/sessionStore";
 import { useTasksStore } from "../stores/tasksStore";
 import type {
-  TaskUpdatedEvent,
-  TaskProgressEvent,
-  TaskFailedEvent,
   BatchCompletedEvent,
+  TaskDto,
+  TaskFailedEvent,
   TaskInputRequiredEvent,
+  TaskProgressEvent,
+  TaskUpdatedEvent,
 } from "../types";
-import { apiClient } from "../api/client";
 
 /**
  * WebSocket connection URL.
@@ -53,9 +54,10 @@ export function useWebSocket(): void {
      */
     async function resync_tasks(): Promise<void> {
       try {
-        const response = await apiClient.get<{ tasks: any[] }>("/tasks");
+        // GET /tasks risponde con un array nudo (TaskDto[]).
+        const response = await apiClient.get<TaskDto[]>("/tasks");
         // Map the raw backend DTO to the local TaskEntry shape.
-        const tasks = response.data.tasks.map((t: any) => ({
+        const tasks = response.data.map((t) => ({
           id: t.id,
           batchId: t.batchId ?? null,
           operation: t.operation,
@@ -64,7 +66,10 @@ export function useWebSocket(): void {
           currentStage: t.currentStage ?? null,
           reportId: t.reportId ?? null,
           error: t.error ?? null,
-          pendingInput: null, // pendingInput is ephemeral; re-emitted via WS if still active
+          // pendingInput e' persistito sul Task: dopo una disconnessione e'
+          // proprio questa GET a recuperarlo, perche' l'evento WS che lo
+          // annunciava e' gia' passato e non viene ritrasmesso.
+          pendingInput: t.pendingInput ?? null,
         }));
         loadTasks(tasks);
       } catch {
@@ -159,5 +164,13 @@ export function useWebSocket(): void {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [token]); // Re-run when the token changes (login / logout).
+  }, [
+    token,
+    upsertFromProgress,
+    applyInputRequired,
+    upsertFromUpdated,
+    markCredentialsInvalid,
+    loadTasks,
+    applyFailed,
+  ]); // Re-run when the token changes (login / logout).
 }

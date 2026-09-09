@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { ModalOverlay } from './ModalOverlay';
-import { ValidatedField } from '../shared/ValidatedField';
-import { Spinner } from '../shared/Spinner';
-import { apiClient } from '../../api/client';
-import { useTasksStore } from '../../stores/tasksStore';
-import type { SubmitInputDto } from '../../types';
+import { useState } from "react";
+import { apiClient } from "../../api/client";
+import { useTasksStore } from "../../stores/tasksStore";
+import type { SubmitInputDto } from "../../types";
+import { Spinner } from "../shared/Spinner";
+import { ValidatedField } from "../shared/ValidatedField";
+import { ModalOverlay } from "./ModalOverlay";
 
 interface SprintIdModalProps {
   /** ID of the task that is waiting for the Sprint ID. */
@@ -22,8 +22,8 @@ interface SprintIdModalProps {
  * and the value is sent to POST /tasks/:id/input.
  */
 export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
-  const [sprint_id, setSprintId] = useState('');
-  const [error, setError] = useState('');
+  const [sprint_id, setSprintId] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const clear_pending = useTasksStore((s) => s.clearPendingInput);
 
@@ -32,14 +32,14 @@ export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
 
     const trimmed = sprint_id.trim();
     if (!trimmed) {
-      setError('Inserisci un ID Sprint valido');
+      setError("Inserisci un ID Sprint valido");
       return;
     }
 
-    const dto: SubmitInputDto = { kind: 'SPRINT_ID', sprintId: trimmed };
+    const dto: SubmitInputDto = { kind: "SPRINT_ID", sprintId: trimmed };
 
     setLoading(true);
-    setError('');
+    setError("");
     try {
       await apiClient.post(`/tasks/${taskId}/input`, dto);
       clear_pending(taskId);
@@ -55,7 +55,8 @@ export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
     <ModalOverlay open title="Inserisci ID Sprint" onClose={onClose}>
       <p className="mb-4 text-sm text-gray-500">
         L'agente richiede l'identificatore dello Sprint per associare le modifiche al ciclo
-        corretto. Inserisci il numero o codice Sprint (es: <code className="font-mono">SPRINT-42</code>).
+        corretto. Inserisci il numero o codice Sprint (es:{" "}
+        <code className="font-mono">SPRINT-42</code>).
       </p>
 
       <form onSubmit={handle_submit} className="flex flex-col gap-4">
@@ -65,7 +66,7 @@ export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
           value={sprint_id}
           onChange={(e) => {
             setSprintId(e.target.value);
-            setError('');
+            setError("");
           }}
           error={error}
           autoFocus

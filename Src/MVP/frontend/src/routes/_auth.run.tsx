@@ -1,6 +1,6 @@
 import { createRoute, redirect } from "@tanstack/react-router";
-import { authRoute } from "./_auth";
 import { RunPage } from "../pages/RunPage";
+import { authRoute } from "./_auth";
 
 /**
  * Run route — /run (authenticated + credentials required)

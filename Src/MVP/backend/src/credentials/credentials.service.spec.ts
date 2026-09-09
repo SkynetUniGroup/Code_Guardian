@@ -1,6 +1,7 @@
 import { NotFoundException } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, type TestingModule } from "@nestjs/testing";
+import type { Mock } from "vitest";
 import { GithubClientService } from "../github/github-client.service";
 import { CredentialCipherService } from "./credential-cipher.service";
 import { CredentialsService } from "./credentials.service";
@@ -9,14 +10,14 @@ import { ServiceCredential } from "./schemas/service-credential.schema";
 describe("CredentialsService", () => {
   let service: CredentialsService;
   let model: {
-    findOneAndUpdate: vi.fn;
-    find: vi.fn;
-    findOneAndDelete: vi.fn;
-    findOne: vi.fn;
-    exists: vi.fn;
+    findOneAndUpdate: Mock;
+    find: Mock;
+    findOneAndDelete: Mock;
+    findOne: Mock;
+    exists: Mock;
   };
-  let cipher: { encrypt: vi.fn; decrypt: vi.fn };
-  let github: { verifyToken: vi.fn };
+  let cipher: { encrypt: Mock; decrypt: Mock };
+  let github: { verifyToken: Mock };
 
   beforeEach(async () => {
     model = {

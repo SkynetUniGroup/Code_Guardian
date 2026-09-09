@@ -1,5 +1,5 @@
-import type { Severity } from "../../types";
 import { cn } from "../../lib/utils";
+import type { Severity } from "../../types";
 
 interface SeverityBadgeProps {
   severity: Severity;

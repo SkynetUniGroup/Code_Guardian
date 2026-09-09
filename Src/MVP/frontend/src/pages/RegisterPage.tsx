@@ -1,10 +1,11 @@
-import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useSessionStore } from "../stores/sessionStore";
+import { type FormEvent, useState } from "react";
 import { apiClient } from "../api/client";
-import { ValidatedField } from "../components/shared/ValidatedField";
+import { toApiError } from "../api/errors";
 import { Spinner } from "../components/shared/Spinner";
-import type { RegisterDto, UserProfileDto, AuthTokenDto, UserRole, LoginDto } from "../types";
+import { ValidatedField } from "../components/shared/ValidatedField";
+import { useSessionStore } from "../stores/sessionStore";
+import type { AuthTokenDto, LoginDto, RegisterDto, UserProfileDto, UserRole } from "../types";
 
 /** Role options shown in the register form selector. */
 const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
@@ -70,8 +71,8 @@ export function RegisterPage() {
       login(userResponse.data, tokenResponse.data.accessToken);
       // Redirect to /credentials so the user sets up their secrets immediately.
       navigate({ to: "/credentials" });
-    } catch (err: any) {
-      const status = err?.response?.status;
+    } catch (err: unknown) {
+      const { status } = toApiError(err);
       if (status === 409) {
         setErrors({ global: "Esiste già un account con questa email." });
       } else {

@@ -1,6 +1,7 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, type TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
+import type { Mock } from "vitest";
 import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
 import { GithubClientService } from "./github-client.service";
 import { InternalGithubController } from "./internal-github.controller";
@@ -9,14 +10,14 @@ import { AccessLog } from "./schemas/access-log.schema";
 
 describe("InternalGithubController", () => {
   let controller: InternalGithubController;
-  let resolver: { resolve: vi.fn };
+  let resolver: { resolve: Mock };
   let github: {
-    getTree: vi.fn;
-    getFileContent: vi.fn;
-    listIssues: vi.fn;
-    getIssueDetail: vi.fn;
+    getTree: Mock;
+    getFileContent: Mock;
+    listIssues: Mock;
+    getIssueDetail: Mock;
   };
-  let accessLogModel: { create: vi.fn };
+  let accessLogModel: { create: Mock };
 
   // A real 24-hex-char id: logAccess constructs a genuine Types.ObjectId
   // from this (not mocked), unlike the resolver's `taskId` param elsewhere,

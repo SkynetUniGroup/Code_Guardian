@@ -2,6 +2,7 @@ import { NotFoundException } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, type TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
+import type { Mock } from "vitest";
 import { AnalysisContext } from "../contexts/schemas/analysis-context.schema";
 import { CredentialsService } from "../credentials/credentials.service";
 import { Task } from "../tasks/schemas/task.schema";
@@ -9,9 +10,9 @@ import { InternalTaskContextResolver } from "./internal-task-context.resolver";
 
 describe("InternalTaskContextResolver", () => {
   let resolver: InternalTaskContextResolver;
-  let taskModel: { findById: vi.fn };
-  let contextModel: { findById: vi.fn };
-  let credentials: { getDecryptedToken: vi.fn };
+  let taskModel: { findById: Mock };
+  let contextModel: { findById: Mock };
+  let credentials: { getDecryptedToken: Mock };
 
   const contextId = new Types.ObjectId();
 

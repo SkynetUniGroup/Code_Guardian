@@ -1,4 +1,4 @@
-﻿name: CI Staging
+name: CI Staging
 on:
   push:
     branches: [ develop ]
@@ -13,32 +13,49 @@ jobs:
         uses: actions/checkout@v7
 
       # === Environment setup ===
-      - name: Setup pnpm + Node.js
-        uses: pnpm/setup@v2.1.0
+      # `pnpm/setup` non esiste: l'action ufficiale si chiama
+      # `pnpm/action-setup`, e non accetta né `working-directory` né `cache`.
+      # La cache dello store pnpm la fa actions/setup-node, che va eseguito
+      # DOPO l'installazione di pnpm (gli serve per trovare lo store).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          working-directory: Src/MVP
-          version: 11
-          cache: true
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: pnpm
+          cache-dependency-path: Src/MVP/pnpm-lock.yaml
 
       - name: Setup Python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.13'
+          python-version: '3.12'
 
       - name: pip cache
         uses: actions/cache@v6
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('Src/MVP/agents/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('Src/MVP/agents/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       # === Node.js (backend/frontend) ===
+      # Mancava del tutto: `pnpm lint` partiva senza node_modules e falliva
+      # sempre, con un errore che non c'entrava nulla col codice.
+      - name: Install Node.js dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Node.js linting
         run: pnpm lint
 
       - name: Node.js unit tests
         run: pnpm test:unit
+
+      - name: Build
+        run: pnpm build
 
       # === Python (agents) ===
       - name: Install Python dependencies
@@ -53,10 +70,21 @@ jobs:
         working-directory: Src/MVP/agents
         run: python -m pytest
 
-      # === Integration tests (both Python and Node.js) ===
-      - name: Integration tests
-        run: |
-          docker-compose -f docker-compose.test.yml up -d
-          pnpm test:integration:test
-          cd agents && python -m pytest tests/integration/ -v
-          docker-compose -f docker-compose.test.yml down
+      # === Integration tests ===
+      # `docker-compose` (col trattino) non è installato sui runner recenti: si
+      # usa il sottocomando `docker compose`. Il teardown va in un passo con
+      # `if: always()`, altrimenti un test rosso lascia i container su e i passi
+      # successivi ereditano lo stato sporco.
+      - name: Start integration services
+        run: pnpm test:integration:up
+
+      - name: Node.js integration tests
+        run: pnpm test:integration:test
+
+      - name: Python integration tests
+        working-directory: Src/MVP/agents
+        run: python -m pytest tests/integration/ -v
+
+      - name: Stop integration services
+        if: always()
+        run: pnpm test:integration:down

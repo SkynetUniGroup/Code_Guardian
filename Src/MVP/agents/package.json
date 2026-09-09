@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "Python agent service for Code Guardian (FastAPI + LangGraph)",
   "scripts": {
-    "lint": "python -m black --check src/ && python -m ruff check src/",
-    "lint:black": "python -m black --check src/",
+    "lint": "python -m ruff format --check src/ && python -m ruff check src/",
+    "lint:format": "python -m ruff format --check src/",
     "lint:ruff": "python -m ruff check src/",
-    "format": "python -m black src/ && python -m ruff check --fix src/",
-    "format:black": "python -m black src/",
-    "format:ruff": "python -m ruff check --fix src/",
+    "format": "python -m ruff format src/ && python -m ruff check --fix src/",
     "clean": "rm -rf dist/ __pycache__/ *.pyc",
     "install-dev": "pip install -e \".[dev]\""
   },

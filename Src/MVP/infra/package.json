@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "cdk": "cdk",
     "synth": "cdk synth",
     "diff": "cdk diff",

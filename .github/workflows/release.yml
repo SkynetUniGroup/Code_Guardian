@@ -1,4 +1,4 @@
-﻿name: Release Production
+name: Release Production
 on:
   push:
     tags:
@@ -14,35 +14,49 @@ jobs:
         uses: actions/checkout@v7
 
       # === Environment setup ===
-      - name: Setup pnpm + Node.js
-        uses: pnpm/setup@v2.1.0
+      # `pnpm/setup` non esiste: l'action ufficiale si chiama
+      # `pnpm/action-setup`, e non accetta né `working-directory` né `cache`.
+      # La cache dello store pnpm la fa actions/setup-node, che va eseguito
+      # DOPO l'installazione di pnpm (gli serve per trovare lo store).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          working-directory: Src/MVP
-          version: 11
-          cache: true
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: pnpm
+          cache-dependency-path: Src/MVP/pnpm-lock.yaml
 
       - name: Setup Python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.13'
+          python-version: '3.12'
 
       - name: pip cache
         uses: actions/cache@v6
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('Src/MVP/agents/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('Src/MVP/agents/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       # === Node.js (backend/frontend) ===
+      # Mancava del tutto: `pnpm lint` partiva senza node_modules e falliva
+      # sempre, con un errore che non c'entrava nulla col codice.
       - name: Install Node.js dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Node.js linting
         run: pnpm lint
 
       - name: Node.js unit tests
         run: pnpm test:unit
+
+      - name: Build
+        run: pnpm build
 
       # === Python (agents) ===
       - name: Install Python dependencies
@@ -57,17 +71,26 @@ jobs:
         working-directory: Src/MVP/agents
         run: python -m pytest
 
-      # === Integration tests (both Python and Node.js) ===
-      - name: Integration tests
-        run: |
-          docker-compose -f docker-compose.test.yml up -d
-          pnpm test:integration:test
-          cd agents && python -m pytest tests/integration/ -v
-          docker-compose -f docker-compose.test.yml down
+      # === Integration tests ===
+      # `docker-compose` (col trattino) non è installato sui runner recenti: si
+      # usa il sottocomando `docker compose`. Il teardown va in un passo con
+      # `if: always()`, altrimenti un test rosso lascia i container su e i passi
+      # successivi ereditano lo stato sporco.
+      - name: Start integration services
+        run: pnpm test:integration:up
 
-      - name: Build Node.js
-        run: pnpm build
+      - name: Node.js integration tests
+        run: pnpm test:integration:test
 
+      - name: Python integration tests
+        working-directory: Src/MVP/agents
+        run: python -m pytest tests/integration/ -v
+
+      - name: Stop integration services
+        if: always()
+        run: pnpm test:integration:down
+
+      # === Deploy ===
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -75,19 +98,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-south-1
 
+      # Il bundle sta in frontend/dist, non in ./dist: `pnpm build` gira alla
+      # radice del workspace e ogni package scrive nel proprio outDir.
       - name: Deploy frontend on S3
         run: |
-          aws s3 sync ./dist s3://code-guardian-frontend --delete
+          aws s3 sync ./frontend/dist s3://code-guardian-frontend --delete
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
       - name: Login Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push Docker image
+      # Alla radice di Src/MVP non c'e' nessun Dockerfile: quelli di backend e
+      # agents vanno indicati con -f, e il contesto del backend e' la radice del
+      # monorepo perche' la sua build ha bisogno anche di shared/.
+      - name: Build, tag, and push backend image
         run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/code-guardian-backend:${{ github.ref_name }} .
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/code-guardian-backend:${{ github.ref_name }}
+          IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/backend:${{ github.ref_name }}
+          docker build -f backend/Dockerfile -t "$IMAGE" .
+          docker push "$IMAGE"
 
+      - name: Build, tag, and push agents image
+        run: |
+          IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/agents:${{ github.ref_name }}
+          docker build -f agents/Dockerfile -t "$IMAGE" ./agents
+          docker push "$IMAGE"
+
+      # NOTA: questo passo richiede un file task-definition.json che al momento
+      # non esiste nel repository. Va generato (o esportato da ECS) prima che il
+      # workflow di release possa arrivare in fondo.
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:

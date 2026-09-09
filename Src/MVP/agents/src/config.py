@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     backend_base_url: str = Field(
         default="http://backend:3000", alias="BACKEND_BASE_URL"
     )
+    # Il backend monta tutte le rotte sotto un prefisso globale
+    # (main.ts: app.setGlobalPrefix("api/v1")), /internal/* incluse. Il valore
+    # entra sia nell'URL chiamato sia nel messaggio firmato in HMAC, perche'
+    # InternalAuthGuard firma request.path, che il prefisso ce l'ha dentro.
+    backend_api_prefix: str = Field(default="/api/v1", alias="BACKEND_API_PREFIX")
     prompts_dir: str = Field(default="/app/prompts", alias="PROMPTS_DIR")
 
     # LangGraph Checkpointer (MVP)
@@ -77,6 +82,31 @@ class Settings(BaseSettings):
 
     # Queues and Storage
     redis_url: str = Field(default="redis://redis:6379", alias="REDIS_URL")
+
+    # ─────────────────── Analisi statica (Semgrep) ───────────────────
+    # Fase deterministica che precede l'LLM in SECURITY_OWASP: Semgrep trova i
+    # candidati, il modello li giudica uno per uno.
+    enable_sast_semgrep: bool = Field(default=True, alias="ENABLE_SAST_SEMGREP")
+    # Tetto al tempo della sola scansione. Deve stare comodamente sotto il
+    # budget dell'operazione (SECURITY_OWASP: 180s), perché dopo la scansione
+    # resta ancora da fare la parte piu' lenta, cioe' l'invocazione del modello.
+    semgrep_timeout_s: int = Field(default=120, alias="SEMGREP_TIMEOUT_S")
+    # Quanti finding vengono sottoposti al modello. I finding oltre questa
+    # soglia restano contati nel riepilogo ma senza verdetto: e' un limite di
+    # costo e di finestra di contesto, non di analisi.
+    sast_max_findings_llm: int = Field(default=40, alias="SAST_MAX_FINDINGS_LLM")
+    # Quanti file al massimo vengono scaricati per la scansione. Ogni file e'
+    # una chiamata HTTP alla facade del backend (e una riga di AccessLog, e una
+    # chiamata a GitHub): su un repository grande, senza un tetto, la sola
+    # raccolta sfonderebbe il budget dell'operazione prima ancora di iniziare.
+    sast_max_files: int = Field(default=200, alias="SAST_MAX_FILES")
+
+    # ─────────────────────────── SonarQube ───────────────────────────
+    # Disattivato di default: richiede un'istanza SonarQube/SonarCloud e delle
+    # credenziali per progetto, che nell'MVP non hanno ancora un posto dove
+    # essere salvate (il backend accetta solo il provider GITHUB).
+    enable_sonarqube: bool = Field(default=False, alias="ENABLE_SONARQUBE")
+    sonar_cache_ttl_s: int = Field(default=86400, alias="SONAR_CACHE_TTL_S")
 
     def require_llm_key(self) -> str:
         """Returns the API key or raises a clear exception if missing, ignoring Bedrock.

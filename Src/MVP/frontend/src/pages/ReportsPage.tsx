@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { apiClient } from "../api/client";
-import { StatusBadge } from "../components/shared/StatusBadge";
 import { Spinner } from "../components/shared/Spinner";
-import { OPERATION_LABELS } from "../types";
+import { StatusBadge } from "../components/shared/StatusBadge";
 import type { ReportSummaryDto as ReportSummary } from "../types";
+import { OPERATION_LABELS } from "../types";
 
 /**
  * ReportsPage — /reports
@@ -23,9 +23,10 @@ export function ReportsPage() {
   useEffect(() => {
     async function fetch_reports() {
       try {
-        const response = await apiClient.get<{ reports: ReportSummary[] }>("/reports");
+        // GET /reports risponde con un array nudo (ReportSummaryDto[]).
+        const response = await apiClient.get<ReportSummary[]>("/reports");
         // Sort newest first.
-        const sorted = response.data.reports.sort(
+        const sorted = [...response.data].sort(
           (a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime(),
         );
         setReports(sorted);

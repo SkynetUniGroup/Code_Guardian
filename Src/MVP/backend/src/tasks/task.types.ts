@@ -1,20 +1,21 @@
-import type { TaskError } from "@codeguardian/shared";
 import type { ErrorKind } from "../common/exceptions/error-kind";
 
-export type { PendingInput, TaskError, TaskStatus } from "@codeguardian/shared";
+export type { PendingInput, TaskStatus } from "@codeguardian/shared";
 
-/*export type TaskStatus =
-  'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';*/
-
-// Task uses `code`; Report's equivalent structure uses `kind` for the same
-// value domain — two different field names for the same thing, kept as-is
-// deliberately (see §11.2): the frontend already reads Task's error.code by
-// name (tasksStore, task.failed handling), so renaming it isn't free.
-export interface TaskErrorB extends TaskError {
+// Versione ristretta di TaskError (shared) usata *dentro* il backend: `code` è
+// un ErrorKind, non una stringa qualsiasi. Sul filo resta assegnabile al tipo
+// condiviso — ErrorKind è un sottoinsieme di string — ma qui dentro impedisce
+// di scrivere un codice che il catalogo di BE-2 non prevede, ed è ciò che
+// permette a ReportAssemblyService di travasarlo in ReportError.kind senza
+// cast.
+export interface TaskError {
   code: ErrorKind;
   message: string;
   stage: string;
 }
+
+/*export type TaskStatus =
+  'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';*/
 
 /*export type PendingInput =
   | { kind: 'SPRINT_ID' }

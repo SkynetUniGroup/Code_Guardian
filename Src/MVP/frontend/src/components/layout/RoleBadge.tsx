@@ -1,5 +1,5 @@
-import type { UserRole } from '../../types';
-import { cn } from '../../lib/utils';
+import { cn } from "../../lib/utils";
+import type { UserRole } from "../../types";
 
 interface RoleBadgeProps {
   role: UserRole;
@@ -8,16 +8,16 @@ interface RoleBadgeProps {
 
 /** Maps each role to a colour that makes it visually distinct in the header. */
 const ROLE_STYLES: Record<UserRole, string> = {
-  DEVELOPER: 'bg-blue-100 text-blue-800',
-  SECURITY_AUDITOR: 'bg-red-100 text-red-800',
-  PROJECT_MANAGER: 'bg-purple-100 text-purple-800',
+  DEVELOPER: "bg-blue-100 text-blue-800",
+  SECURITY_AUDITOR: "bg-red-100 text-red-800",
+  PROJECT_MANAGER: "bg-purple-100 text-purple-800",
 };
 
 /** Shortened display labels so the badge fits in the header without overflow. */
 const ROLE_LABELS: Record<UserRole, string> = {
-  DEVELOPER: 'Dev',
-  SECURITY_AUDITOR: 'Auditor',
-  PROJECT_MANAGER: 'PM',
+  DEVELOPER: "Dev",
+  SECURITY_AUDITOR: "Auditor",
+  PROJECT_MANAGER: "PM",
 };
 
 /**
@@ -28,7 +28,7 @@ export function RoleBadge({ role, className }: RoleBadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold',
+        "inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold",
         ROLE_STYLES[role],
         className,
       )}

@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   Injectable,
 } from "@nestjs/common";
-import type { Reflector } from "@nestjs/core";
+import { Reflector } from "@nestjs/core";
 import type { UserRole } from "../../auth/schemas/user.schema";
 import type { AuthenticatedUser } from "../authenticated-user";
 import { ROLES_KEY } from "../decorators/roles.decorator";

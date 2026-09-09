@@ -1,4 +1,5 @@
 import { Test, type TestingModule } from "@nestjs/testing";
+import type { Mock } from "vitest";
 import { CredentialsService } from "../credentials/credentials.service";
 import { GithubClientService } from "../github/github-client.service";
 import { RepoResolverService } from "./repo-resolver.service";
@@ -6,14 +7,14 @@ import { RepositoriesService } from "./repositories.service";
 
 describe("RepositoriesService", () => {
   let service: RepositoriesService;
-  let credentials: { getDecryptedToken: vi.fn };
+  let credentials: { getDecryptedToken: Mock };
   let github: {
-    listRepositories: vi.fn;
-    listRefs: vi.fn;
-    resolveRefToSha: vi.fn;
-    getTree: vi.fn;
+    listRepositories: Mock;
+    listRefs: Mock;
+    resolveRefToSha: Mock;
+    getTree: Mock;
   };
-  let repoResolver: { resolve: vi.fn };
+  let repoResolver: { resolve: Mock };
 
   beforeEach(async () => {
     credentials = { getDecryptedToken: vi.fn().mockResolvedValue("token") };

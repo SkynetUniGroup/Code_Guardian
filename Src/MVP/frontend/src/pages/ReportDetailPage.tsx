@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "@tanstack/react-router";
-import { useSessionStore } from "../stores/sessionStore";
+import { Link, useParams } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { apiClient, streamDownload } from "../api/client";
-import { StatusBadge } from "../components/shared/StatusBadge";
-import { Spinner } from "../components/shared/Spinner";
-import { ErrorState } from "../components/shared/ErrorState";
-import { TextBlockRenderer } from "../components/report/TextBlockRenderer";
+import { ComplexityWarningRenderer } from "../components/report/ComplexityWarningRenderer";
 import { FindingBlockRenderer } from "../components/report/FindingBlockRenderer";
 import { PolicyViolationRenderer } from "../components/report/PolicyViolationRenderer";
 import { ProposalRenderer } from "../components/report/ProposalRenderer";
+import { SastFindingRenderer } from "../components/report/SastFindingRenderer";
+import { SastSummaryRenderer } from "../components/report/SastSummaryRenderer";
+import { TextBlockRenderer } from "../components/report/TextBlockRenderer";
+import { ErrorState } from "../components/shared/ErrorState";
+import { Spinner } from "../components/shared/Spinner";
+import { StatusBadge } from "../components/shared/StatusBadge";
+import { useSessionStore } from "../stores/sessionStore";
+import type { Block, Report, Severity } from "../types";
 import { OPERATION_LABELS } from "../types";
-import type { Report, Block, Severity } from "../types";
 
 /**
  * ReportDetailPage — /reports/:id
@@ -113,16 +116,36 @@ export function ReportDetailPage() {
    * FINDING and POLICY_VIOLATION blocks respect the severity filter.
    * All blocks are sorted by their `order` field (ascending).
    */
-  const filtered_blocks: Block[] = report.body.filter((block) => {
-    if (severity_filter === "all") return true;
-    if (block.kind === "FINDING") return block.severity === severity_filter;
-    if (block.kind === "POLICY_VIOLATION") return true; // no severity on policy violations
-    return true;
-  });
+  const filtered_blocks: Block[] = [...report.body]
+    // Ordinamento per `order`, il campo che gli agent Python valorizzano per
+    // fissare la sequenza dei blocchi. Il commento qui sopra lo prometteva già,
+    // l'ordinamento non c'era: i blocchi uscivano nell'ordine di array.
+    // I blocchi senza `order` restano in coda, nel loro ordine originale.
+    .sort((a, b) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER))
+    .filter((block) => {
+      if (severity_filter === "all") return true;
+      // Finding e violazioni di policy hanno entrambi una severità: il filtro
+      // vale per entrambi (prima le violazioni passavano sempre).
+      if (
+        block.kind === "FINDING" ||
+        block.kind === "POLICY_VIOLATION" ||
+        block.kind === "SAST_FINDING"
+      ) {
+        return block.severity === severity_filter;
+      }
+      // Il riepilogo SAST descrive l'intera scansione, non un singolo finding:
+      // filtrarlo via lascerebbe una lista ristretta senza il contesto che dice
+      // se è completa.
+      if (block.kind === "SAST_SUMMARY") return true;
+      if (block.kind === "COMPLEXITY_WARNING") return severity_filter === "INFO";
+      // TEXT e CHANGELOG_ITEM non hanno severità: restano sempre visibili,
+      // altrimenti filtrare svuoterebbe un changelog invece di restringerlo.
+      return true;
+    });
 
   // Check whether this report contains severity-filterable blocks.
   const has_findings = report.body.some(
-    (b) => b.kind === "FINDING" || b.kind === "POLICY_VIOLATION",
+    (b) => b.kind === "FINDING" || b.kind === "POLICY_VIOLATION" || b.kind === "COMPLEXITY_WARNING",
   );
 
   const severity_options: Array<{ value: Severity | "all"; label: string }> = [
@@ -148,12 +171,13 @@ export function ReportDetailPage() {
           <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
             <StatusBadge status={report.status} />
             <span>{new Date(report.generatedAt).toLocaleString("it-IT")}</span>
-            {report.executionTimeMs && <span>{(report.executionTimeMs / 1000).toFixed(1)}s</span>}
+            {report.durationMs !== null && <span>{(report.durationMs / 1000).toFixed(1)}s</span>}
           </div>
         </div>
 
         {/* PDF export button */}
         <button
+          type="button"
           onClick={handle_pdf_export}
           disabled={pdf_loading}
           title="Esporta in PDF"
@@ -187,6 +211,18 @@ export function ReportDetailPage() {
         </div>
       )}
 
+      {/* Errore di un report FAILED: c'era nel DTO ma non veniva mostrato,
+          quindi un'operazione fallita apriva una pagina vuota senza spiegazioni. */}
+      {report.status === "FAILED" && report.error && (
+        <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-[#cc2222]">
+          <p className="font-semibold">{report.error.kind}</p>
+          <p className="mt-1">{report.error.message}</p>
+          {report.error.stage && (
+            <p className="mt-1 text-xs text-red-400">Fase: {report.error.stage}</p>
+          )}
+        </div>
+      )}
+
       {/* Summary */}
       {report.summary && (
         <div className="mb-6 rounded border border-[#cccccc] p-4 text-sm text-[#2a2a2a]">
@@ -200,6 +236,7 @@ export function ReportDetailPage() {
           <span className="text-xs font-medium text-gray-500 mr-1">Filtra per severità:</span>
           {severity_options.map(({ value, label }) => (
             <button
+              type="button"
               key={value}
               onClick={() => setSeverityFilter(value)}
               className={[
@@ -228,6 +265,15 @@ export function ReportDetailPage() {
 
             case "POLICY_VIOLATION":
               return <PolicyViolationRenderer key={key} block={block} />;
+
+            case "COMPLEXITY_WARNING":
+              return <ComplexityWarningRenderer key={key} block={block} />;
+
+            case "SAST_FINDING":
+              return <SastFindingRenderer key={key} block={block} />;
+
+            case "SAST_SUMMARY":
+              return <SastSummaryRenderer key={key} block={block} />;
 
             case "CHANGELOG_ITEM":
               return (

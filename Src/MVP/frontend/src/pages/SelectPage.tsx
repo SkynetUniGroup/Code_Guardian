@@ -1,11 +1,11 @@
-import { useState, useEffect, type FormEvent } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { type FormEvent, useEffect, useState } from "react";
 import { apiClient } from "../api/client";
-import { useSelectionStore } from "../stores/selectionStore";
-import { ValidatedField } from "../components/shared/ValidatedField";
-import { Spinner } from "../components/shared/Spinner";
 import { ErrorState } from "../components/shared/ErrorState";
-import type { RepositorySummary, CreateContextDto, AnalysisContextDto } from "../types";
+import { Spinner } from "../components/shared/Spinner";
+import { ValidatedField } from "../components/shared/ValidatedField";
+import { useSelectionStore } from "../stores/selectionStore";
+import type { AnalysisContextDto, CreateContextDto, RepositorySummary } from "../types";
 
 /**
  * SelectPage — /select
@@ -33,6 +33,7 @@ export function SelectPage() {
   // Form state
   const [selected_repo, setSelectedRepo] = useState<RepositorySummary | null>(null);
   const [ref, setRef] = useState("");
+  const [commit_sha, setCommitSha] = useState("");
   const [scope_type, setScopeType] = useState<CreateContextDto["scopeType"]>("FULL_REPOSITORY");
   const [paths_text, setPathsText] = useState("");
   const [form_errors, setFormErrors] = useState<Record<string, string>>({});
@@ -43,10 +44,11 @@ export function SelectPage() {
   useEffect(() => {
     async function fetch_repos() {
       try {
-        const response = await apiClient.get<{ repositories: RepositorySummary[] }>(
-          "/repositories",
-        );
-        setRepos(response.data.repositories);
+        // GET /repositories risponde con un array nudo (RepositorySummary[]),
+        // non con un oggetto {repositories: [...]}: leggere .repositories dava
+        // undefined e la pagina finiva sempre nello stato d'errore.
+        const response = await apiClient.get<RepositorySummary[]>("/repositories");
+        setRepos(response.data);
       } catch {
         setReposError(
           "Impossibile caricare i repository. Verifica che le credenziali GitHub siano valide.",
@@ -69,7 +71,10 @@ export function SelectPage() {
   function validate(): boolean {
     const next: Record<string, string> = {};
     if (!selected_repo) next.repo = "Seleziona un repository";
-    if (!ref.trim()) next.ref = "Inserisci il branch o il commit SHA";
+    if (!ref.trim()) next.ref = "Inserisci il branch";
+    if (commit_sha.trim() && !/^[0-9a-f]{7,40}$/i.test(commit_sha.trim())) {
+      next.commit_sha = "Il commit SHA deve essere esadecimale (7-40 caratteri)";
+    }
     if (scope_type !== "FULL_REPOSITORY" && !paths_text.trim()) {
       next.paths = "Inserisci almeno un percorso";
     }
@@ -93,6 +98,10 @@ export function SelectPage() {
     const dto: CreateContextDto = {
       repoUrl: `https://github.com/${selected_repo.owner}/${selected_repo.name}`,
       branch: ref.trim(),
+      // Se assente, il backend ancora il contesto alla HEAD del branch (RF.17).
+      // Il campo esisteva nel DTO ma nessuno lo compilava: il pinning su un
+      // commit specifico (RF.22) era irraggiungibile dall'interfaccia.
+      ...(commit_sha.trim() ? { commitSha: commit_sha.trim() } : {}),
       scopeType: scope_type,
       ...(paths_array.length > 0 ? { paths: paths_array } : {}),
     };
@@ -127,6 +136,7 @@ export function SelectPage() {
         message={repos_error}
         action={
           <button
+            type="button"
             onClick={() => window.location.reload()}
             className="rounded border border-[#cccccc] px-3 py-1.5 text-sm text-[#2a2a2a] hover:bg-gray-50"
           >
@@ -178,9 +188,9 @@ export function SelectPage() {
           {form_errors.repo && <span className="text-xs text-[#cc2222]">{form_errors.repo}</span>}
         </div>
 
-        {/* Branch / ref */}
+        {/* Branch */}
         <ValidatedField
-          label="Branch o Commit SHA"
+          label="Branch"
           placeholder="main"
           value={ref}
           onChange={(e) => {
@@ -189,6 +199,24 @@ export function SelectPage() {
           }}
           error={form_errors.ref}
         />
+
+        {/* Commit SHA (opzionale) */}
+        <div className="flex flex-col gap-1">
+          <ValidatedField
+            label="Commit SHA (opzionale)"
+            placeholder="lascia vuoto per l'ultimo commit del branch"
+            value={commit_sha}
+            onChange={(e) => {
+              setCommitSha(e.target.value);
+              setFormErrors((p) => ({ ...p, commit_sha: "" }));
+            }}
+            error={form_errors.commit_sha}
+          />
+          <p className="text-xs text-gray-400">
+            Ancora l'analisi a un commit preciso, così il report resta riproducibile anche dopo
+            nuovi commit sul branch.
+          </p>
+        </div>
 
         {/* Scope type selector */}
         <div className="flex flex-col gap-1">

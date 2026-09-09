@@ -4,6 +4,7 @@ Finds undocumented code, queries the LLM, and produces a diff Proposal.
 """
 
 import difflib
+import logging
 import re
 from pathlib import Path
 from typing import Any
@@ -11,19 +12,90 @@ from typing import Any
 from ..config import settings
 from ..github_toolset import GitHubToolset
 from ..models import Block, ComplexityWarningBlock, Proposal, TextBlock
+from ..sonarqube_service import SonarQubeCredentials, SonarQubeService
 from ._base import extract_json, load_prompt_template, render_prompt
+
+logger = logging.getLogger(__name__)
+
+
+def _with_sonarqube(ctx: dict, code_section: str) -> str:
+    """Antepone al codice la sezione con le metriche SonarQube, se ci sono.
+
+    Le metriche entrano nella variabile che gia' porta il codice invece che in
+    una variabile propria del template: la sezione si intitola da sola
+    ("### Metriche SonarQube ..."), quindi il modello capisce cos'e' senza che
+    i tre template debbano dichiarare una `required_vars` in piu' — e senza che
+    un'operazione senza SonarQube configurato smetta di renderizzare.
+
+    Args:
+        ctx (dict): Contesto caricato da DocsLoader.
+        code_section (str): Il blocco di codice o l'albero dei file.
+
+    Returns:
+        str: La sezione da passare al template.
+    """
+    metrics = ctx.get("sonarqube_metrics")
+    if not metrics:
+        return code_section
+
+    section = SonarQubeService.format_for_prompt(
+        metrics, ctx.get("sonarqube_scope_files", [])
+    )
+    return f"{section}\n\n{code_section}" if section else code_section
 
 
 class DocsLoader:
     """Loads the initial context from GitHub via NestJS asynchronously."""
 
-    def __init__(self, operation: str = "DOCS_INLINE"):
+    def __init__(
+        self,
+        operation: str = "DOCS_INLINE",
+        sonarqube_service: SonarQubeService | None = None,
+    ):
         """Initializes the loader.
 
         Args:
             operation (str): The operation code. Defaults to 'DOCS_INLINE'.
+            sonarqube_service (SonarQubeService | None): Servizio per le metriche
+                di qualita'. Iniettato invece che costruito qui: e' main.py a
+                sapere se la funzionalita' e' attiva, e passarlo come dipendenza
+                lascia il loader verificabile senza un'istanza SonarQube.
         """
         self.operation = operation
+        self._sonarqube = sonarqube_service
+
+    async def _load_sonarqube_metrics(
+        self, agent_payload: dict | None, sha: str
+    ) -> dict[str, Any] | None:
+        """Legge le metriche di qualita' del progetto, se disponibili.
+
+        Degrado silenzioso per scelta: le metriche arricchiscono il prompt, non
+        lo reggono. Un'istanza SonarQube irraggiungibile, un token scaduto o
+        credenziali malformate non devono far fallire la generazione della
+        documentazione, che senza di esse funziona esattamente come prima.
+
+        Args:
+            agent_payload (dict | None): Payload dell'operazione, da cui si
+                leggono le credenziali sotto la chiave 'sonarqube_credentials'.
+            sha (str): Commit a cui e' ancorato il contesto; entra nella chiave
+                di cache, perche' le metriche di un commit non cambiano piu'.
+
+        Returns:
+            dict[str, Any] | None: Metriche per file, o None se non disponibili.
+        """
+        if not (self._sonarqube and settings.enable_sonarqube):
+            return None
+
+        raw_credentials = (agent_payload or {}).get("sonarqube_credentials")
+        if not raw_credentials:
+            return None
+
+        try:
+            credentials = SonarQubeCredentials.from_dict(raw_credentials)
+            return await self._sonarqube.get_metrics(credentials, sha)
+        except Exception as exc:  # noqa: BLE001 - vedi la nota sul degrado
+            logger.warning("Metriche SonarQube non disponibili: %s", exc)
+            return None
 
     def _find_target_units(self, content: str, filepath: str) -> list[str]:
         """Local pre-analysis to identify functions/classes for documentation or alignment check.
@@ -176,6 +248,7 @@ class DocsLoader:
         # Optimized path for DOCS_README
         if self.operation == "DOCS_README":
             tree_str = "Repository file tree:\n" + "\n".join([n["path"] for n in nodes])
+            sonarqube_metrics = await self._load_sonarqube_metrics(agent_payload, sha)
             await toolset.report_progress(stage="docs_context_loaded", percent=30)
             return {
                 "language": "markdown",
@@ -184,6 +257,8 @@ class DocsLoader:
                 "readme": readme,
                 "original_readme": readme,
                 "readme_path": readme_path,
+                "sonarqube_metrics": sonarqube_metrics,
+                "sonarqube_scope_files": [n["path"] for n in nodes if n["type"] == "file"],
             }
 
         # Original path for DOCS_INLINE and DOCS_API
@@ -220,9 +295,17 @@ class DocsLoader:
                 undocumented_summary
             )
 
+        sonarqube_metrics = await self._load_sonarqube_metrics(agent_payload, sha)
+
         await toolset.report_progress(stage="docs_context_loaded", percent=30)
 
-        return {"code_units": tree_str, "package_json": package_json, "readme": readme}
+        return {
+            "code_units": tree_str,
+            "package_json": package_json,
+            "readme": readme,
+            "sonarqube_metrics": sonarqube_metrics,
+            "sonarqube_scope_files": files_to_doc,
+        }
 
 
 class BaseDocsDiffProfile:
@@ -272,7 +355,7 @@ class BaseDocsDiffProfile:
                     filePath=file_path,
                     lineStart=line_num,
                     lineEnd=line_num,
-                    reason=message,
+                    explanation=message,
                 )
             )
             order += 1
@@ -333,7 +416,7 @@ class DocsInlineProfile(BaseDocsDiffProfile):
 
         return render_prompt(
             template_data,
-            code_units=ctx["code_units"],
+            code_units=_with_sonarqube(ctx, ctx["code_units"]),
             package_json=ctx.get("package_json", "Not found."),
             readme=ctx.get("readme", "Not found."),
         )
@@ -358,7 +441,7 @@ class DocsApiProfile(BaseDocsDiffProfile):
 
         return render_prompt(
             template_data,
-            code_units=ctx["code_units"],
+            code_units=_with_sonarqube(ctx, ctx["code_units"]),
             package_json=ctx.get("package_json", "Not found."),
             readme=ctx.get("readme", "Not found."),
         )
@@ -399,7 +482,7 @@ class DocsReadmeProfile:
 
         return render_prompt(
             template_data,
-            tree=ctx["code_units"],
+            tree=_with_sonarqube(ctx, ctx["code_units"]),
             package_json=ctx.get("package_json", "Not found."),
             readme=ctx.get("readme", "Not found."),
             template=readme_template,

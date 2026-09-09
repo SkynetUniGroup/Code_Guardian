@@ -1,11 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { UserRole } from '../auth/schemas/user.schema';
-import { OperationCode } from '../common/domain-types';
-import {
-  AgentName,
-  AgentRegistryEntry,
-  OperationDescriptorDto,
-} from './agent-registry.types';
+import { Injectable } from "@nestjs/common";
+import { UserRole } from "../auth/schemas/user.schema";
+import { OperationCode } from "../common/domain-types";
+import { AgentName, AgentRegistryEntry, OperationDescriptorDto } from "./agent-registry.types";
 
 // RQ.6, via BE-15: "300 secondi come limite superiore rigido per qualunque
 // operazione". Rigid means enforced, not documented — the table below is

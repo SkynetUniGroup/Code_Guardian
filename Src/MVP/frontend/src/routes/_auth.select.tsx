@@ -1,6 +1,6 @@
 import { createRoute, redirect } from "@tanstack/react-router";
-import { authRoute } from "./_auth";
 import { SelectPage } from "../pages/SelectPage";
+import { authRoute } from "./_auth";
 
 /**
  * Select route — /select (authenticated + credentials required)

@@ -1,6 +1,6 @@
-import { createRoute, redirect } from '@tanstack/react-router';
-import { rootRoute } from './root';
-import { LoginPage } from '../pages/LoginPage';
+import { createRoute, redirect } from "@tanstack/react-router";
+import { LoginPage } from "../pages/LoginPage";
+import { rootRoute } from "./root";
 
 /**
  * Login route — /login (public)
@@ -10,10 +10,10 @@ import { LoginPage } from '../pages/LoginPage';
  */
 export const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/login',
+  path: "/login",
   beforeLoad: ({ context }) => {
     if (context.session.isAuthenticated()) {
-      throw redirect({ to: '/run' });
+      throw redirect({ to: "/run" });
     }
   },
   component: LoginPage,

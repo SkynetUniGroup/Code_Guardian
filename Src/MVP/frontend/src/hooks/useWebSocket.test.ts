@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, waitFor, act } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useSessionStore } from "../stores/sessionStore";
 import { useTasksStore } from "../stores/tasksStore";
-import { useAppStore } from "../stores/useAppStore";
 import type { TaskEntry } from "../types";
 
 // --- Mock di socket.io-client -----------------------------------------
@@ -16,17 +15,19 @@ class FakeSocket {
 
   on(event: string, handler: (...args: any[]) => void) {
     if (!this.handlers.has(event)) this.handlers.set(event, new Set());
-    this.handlers.get(event)!.add(handler);
+    this.handlers.get(event)?.add(handler);
   }
 
   off(event: string, handler?: (...args: any[]) => void) {
     if (!this.handlers.has(event)) return;
-    if (handler) this.handlers.get(event)!.delete(handler);
+    if (handler) this.handlers.get(event)?.delete(handler);
     else this.handlers.delete(event);
   }
 
-  emit(event: string, payload?: any) {
-    this.handlers.get(event)?.forEach((h) => h(payload));
+  emit(event: string, payload?: unknown) {
+    this.handlers.get(event)?.forEach((h) => {
+      h(payload);
+    });
   }
 
   listenerCount(event: string) {
@@ -55,7 +56,6 @@ vi.mock("../api/client", () => ({
 const { useWebSocket } = await import("./useWebSocket");
 
 const initialSessionState = useSessionStore.getState();
-const initialAppState = useAppStore.getState();
 const initialTasksState = useTasksStore.getState();
 
 const makeTask = (overrides: Partial<TaskEntry> = {}): TaskEntry => ({
@@ -74,7 +74,6 @@ const makeTask = (overrides: Partial<TaskEntry> = {}): TaskEntry => ({
 
 beforeEach(() => {
   useSessionStore.setState(initialSessionState, true);
-  useAppStore.setState(initialAppState, true);
   useTasksStore.setState(initialTasksState, true);
   lastSocket = null;
   ioMock.mockClear();
@@ -111,8 +110,8 @@ describe("useWebSocket", () => {
     renderHook(() => useWebSocket());
     await waitFor(() => expect(lastSocket).not.toBeNull());
 
-    expect(lastSocket!.listenerCount("connect")).toBeGreaterThan(0);
-    expect(lastSocket!.listenerCount("disconnect")).toBeGreaterThan(0);
+    expect(lastSocket?.listenerCount("connect")).toBeGreaterThan(0);
+    expect(lastSocket?.listenerCount("disconnect")).toBeGreaterThan(0);
   });
 
   it("task.progress aggiorna progressPercent e currentStage della task", async () => {
@@ -125,7 +124,7 @@ describe("useWebSocket", () => {
     await waitFor(() => expect(lastSocket).not.toBeNull());
 
     act(() =>
-      lastSocket!.emit("task.progress", { taskId: "task-1", stage: "analyzing", percent: 40 }),
+      lastSocket?.emit("task.progress", { taskId: "task-1", stage: "analyzing", percent: 40 }),
     );
 
     const task = useTasksStore.getState().tasks["task-1"];
@@ -143,7 +142,7 @@ describe("useWebSocket", () => {
     await waitFor(() => expect(lastSocket).not.toBeNull());
 
     act(() =>
-      lastSocket!.emit("task.updated", {
+      lastSocket?.emit("task.updated", {
         taskId: "task-1",
         status: "COMPLETED",
         reportId: "report-1",
@@ -165,7 +164,7 @@ describe("useWebSocket", () => {
     await waitFor(() => expect(lastSocket).not.toBeNull());
 
     act(() =>
-      lastSocket!.emit("task.failed", {
+      lastSocket?.emit("task.failed", {
         taskId: "task-1",
         error: { code: "TIMEOUT", message: "timeout LLM", stage: "invoca_llm" },
       }),
@@ -186,7 +185,7 @@ describe("useWebSocket", () => {
     await waitFor(() => expect(lastSocket).not.toBeNull());
 
     act(() =>
-      lastSocket!.emit("task.failed", {
+      lastSocket?.emit("task.failed", {
         taskId: "task-1",
         error: { code: "CREDENTIAL_INVALID", message: "invalid creds", stage: "auth" },
       }),
@@ -203,7 +202,7 @@ describe("useWebSocket", () => {
     await waitFor(() => expect(lastSocket).not.toBeNull());
 
     act(() =>
-      lastSocket!.emit("batch.completed", {
+      lastSocket?.emit("batch.completed", {
         batchId: "batch-1",
         completed: ["task-1"],
         failed: [],
@@ -245,7 +244,7 @@ describe("useWebSocket", () => {
     rerender();
 
     await waitFor(() => expect(ioMock).toHaveBeenCalledTimes(2));
-    expect(firstSocket!.disconnect).toHaveBeenCalledTimes(1);
+    expect(firstSocket?.disconnect).toHaveBeenCalledTimes(1);
     expect(lastSocket).not.toBe(firstSocket);
   });
 });

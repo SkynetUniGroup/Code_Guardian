@@ -1,4 +1,4 @@
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import { type OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import type { Server, Socket } from "socket.io";
 import type { PendingInput, TaskError, TaskStatus } from "../tasks/task.types";

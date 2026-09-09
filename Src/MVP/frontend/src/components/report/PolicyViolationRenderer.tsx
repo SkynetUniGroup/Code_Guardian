@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { SeverityBadge } from "../shared/SeverityBadge";
 import type { PolicyViolationBlock } from "../../types";
+import { SeverityBadge } from "../shared/SeverityBadge";
 
 interface PolicyViolationRendererProps {
   block: PolicyViolationBlock;
@@ -20,6 +20,7 @@ export function PolicyViolationRenderer({ block }: PolicyViolationRendererProps)
     <div className="rounded border border-[#e05800]/40 bg-white overflow-hidden">
       {/* Header row */}
       <button
+        type="button"
         className="flex w-full items-start gap-3 p-4 text-left hover:bg-orange-50/50 transition"
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}

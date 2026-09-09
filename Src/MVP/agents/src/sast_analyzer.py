@@ -1,3 +1,12 @@
+"""Analisi statica (SAST) con Semgrep.
+
+Prima fase dell'operazione SECURITY_OWASP: uno strumento deterministico trova i
+candidati, l'LLM li giudica uno per uno (OwaspScanProfile.parse_output). Il
+punto della combinazione e' che nessuno dei due basta da solo — Semgrep ha
+richiamo alto e molti falsi positivi, il modello sa scartarli ma non sa cercare
+in modo esaustivo.
+"""
+
 from __future__ import annotations
 
 import asyncio
@@ -7,13 +16,15 @@ import os
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from .config import settings
-from .models import SASTFindingBlock, SASTSummary
+from .models import SEMGREP_SEVERITY_MAP, SastFindingBlock, SastSummaryBlock
 
 logger = logging.getLogger(__name__)
 
+# Ordine di priorita' con cui si tagliano i finding quando superano il tetto:
+# gli ERROR arrivano al modello prima dei WARNING, i WARNING prima degli INFO.
 _SEVERITY_RANK = {"ERROR": 0, "WARNING": 1, "INFO": 2}
 
 _OWASP_RULESETS: list[str] = [
@@ -31,16 +42,43 @@ _LANGUAGE_RULESETS: dict[str, list[str]] = {
     "rb": ["p/ruby"],
 }
 
+_MAX_SNIPPET_CHARS = 300
+
 
 class SASTAnalyzer:
-    def __init__(self, timeout_s: Optional[int] = None, max_findings: Optional[int] = None):
+    """Esegue Semgrep su un insieme di file e ne normalizza i risultati."""
+
+    def __init__(
+        self, timeout_s: int | None = None, max_findings: int | None = None
+    ) -> None:
+        """Inizializza l'analizzatore.
+
+        Args:
+            timeout_s (int | None): Tetto al tempo della scansione. Default:
+                settings.semgrep_timeout_s.
+            max_findings (int | None): Quanti finding sottoporre al modello.
+                Default: settings.sast_max_findings_llm.
+        """
         self._timeout_s = timeout_s or settings.semgrep_timeout_s
         self._max_findings = max_findings or settings.sast_max_findings_llm
 
     async def analyze(
-        self,
-        files: dict[str, str],
-    ) -> tuple[list[SASTFindingBlock], SASTSummary]:
+        self, files: dict[str, str]
+    ) -> tuple[list[SastFindingBlock], SastSummaryBlock | None]:
+        """Analizza i file e restituisce i finding con il relativo riepilogo.
+
+        Args:
+            files (dict[str, str]): Contenuto dei file, indicizzato per percorso
+                relativo alla radice del repository.
+
+        Returns:
+            tuple[list[SastFindingBlock], SastSummaryBlock | None]: I finding
+            (gia' deduplicati, ordinati per severita' e limitati al tetto) e il
+            riepilogo. Il riepilogo e' **None** quando il motore non e' stato
+            eseguibile: in quel caso il report non deve contenere alcuna sezione
+            SAST, perche' un riepilogo con zero finding si leggerebbe come
+            "nessuna vulnerabilita' trovata" invece che "analisi non eseguita".
+        """
         if not files:
             return [], self._empty_summary()
 
@@ -49,8 +87,12 @@ class SASTAnalyzer:
         raw_findings: list[dict[str, Any]] = []
 
         with tempfile.TemporaryDirectory(prefix="cg_sast_") as tmpdir:
-            self._write_files(tmpdir, files)
-            extensions = {Path(p).suffix.lstrip(".") for p in files}
+            written = self._write_files(tmpdir, files)
+            if not written:
+                logger.warning("Nessun file scrivibile per la scansione SAST")
+                return [], self._empty_summary()
+
+            extensions = {Path(p).suffix.lstrip(".") for p in written}
             rulesets = self._build_rulesets(extensions)
 
             try:
@@ -59,71 +101,139 @@ class SASTAnalyzer:
                     timeout=self._timeout_s,
                 )
             except asyncio.TimeoutError:
-                logger.warning("Semgrep timed out after %ds — continuing without SAST results", self._timeout_s)
+                logger.warning(
+                    "Semgrep ha superato %ds — si prosegue con risultati parziali",
+                    self._timeout_s,
+                )
                 timed_out = True
+            except FileNotFoundError:
+                # Il binario non e' installato nell'immagine. Non e' un errore
+                # del task: l'operazione prosegue con il solo LLM, che e' il
+                # comportamento che si aveva prima che il SAST esistesse.
+                logger.error(
+                    "Binario 'semgrep' non trovato: analisi statica saltata. "
+                    "Installalo (pip install semgrep) o imposta ENABLE_SAST_SEMGREP=false."
+                )
+                return [], None
+            except OSError as exc:
+                logger.error("Impossibile eseguire Semgrep: %s — analisi statica saltata", exc)
+                return [], None
+
+            # Il parsing sta dentro il `with`: i percorsi dei risultati sono
+            # assoluti dentro tmpdir e vanno resi relativi finche' la directory
+            # esiste ancora.
+            findings = self._parse_findings(raw_findings, tmpdir)
 
         duration_ms = int(time.time() * 1000) - start_ms
 
-        findings = self._parse_findings(raw_findings, tmpdir if not timed_out else "")
-        findings = self._dedup(findings)
-        findings = self._sort_by_severity(findings)
+        findings = self._sort_by_severity(self._dedup(findings))
 
         capped = max(0, len(findings) - self._max_findings)
         capped_findings = findings[: self._max_findings]
-        for f in capped_findings:
-            if f.llm_verdict == "NEEDS_REVIEW":
-                pass
+        for order, finding in enumerate(capped_findings):
+            finding.order = order
 
-        summary = SASTSummary(
-            total_findings=len(findings),
-            confirmed_findings=sum(1 for f in capped_findings if f.llm_verdict == "CONFIRMED"),
-            false_positives=sum(1 for f in capped_findings if f.llm_verdict == "FALSE_POSITIVE"),
-            needs_review=sum(1 for f in capped_findings if f.llm_verdict == "NEEDS_REVIEW"),
-            capped_findings=capped,
-            scanned_files=len(files),
-            duration_ms=duration_ms,
-            timed_out=timed_out,
+        summary = SastSummaryBlock(
+            totalFindings=len(findings),
+            # I verdetti si conoscono solo dopo il passaggio dell'LLM: qui sono
+            # tutti NEEDS_REVIEW, e il riepilogo viene ricalcolato in
+            # OwaspScanProfile.parse_output.
+            needsReview=len(capped_findings),
+            cappedFindings=capped,
+            scannedFiles=len(files),
+            durationMs=duration_ms,
+            timedOut=timed_out,
         )
 
         return capped_findings, summary
 
     def _write_files(self, tmpdir: str, files: dict[str, str]) -> list[str]:
-        paths: list[str] = []
+        """Materializza i file in una directory temporanea.
+
+        I percorsi arrivano dall'albero di un repository che non controlliamo:
+        prima di scrivere si verifica che ciascuno resti dentro tmpdir, cosi'
+        che un percorso costruito ad arte (`../../etc/...`, un percorso
+        assoluto) non possa far scrivere l'analizzatore fuori dalla propria
+        sandbox. E' l'unico punto in cui questo servizio scrive su disco
+        contenuti presi da un repository di terzi.
+
+        Args:
+            tmpdir (str): Directory temporanea di destinazione.
+            files (dict[str, str]): Contenuto per percorso relativo.
+
+        Returns:
+            list[str]: I percorsi relativi effettivamente scritti.
+        """
+        root = Path(tmpdir).resolve()
+        written: list[str] = []
+
         for rel_path, content in files.items():
-            full_path = os.path.join(tmpdir, rel_path)
-            os.makedirs(os.path.dirname(full_path), exist_ok=True)
-            with open(full_path, "w", encoding="utf-8") as fh:
-                fh.write(content)
-            paths.append(full_path)
-        return paths
+            candidate = (root / rel_path).resolve()
+            if not candidate.is_relative_to(root):
+                logger.warning("Percorso fuori dalla sandbox SAST, ignorato: %s", rel_path)
+                continue
+            candidate.parent.mkdir(parents=True, exist_ok=True)
+            candidate.write_text(content, encoding="utf-8")
+            written.append(rel_path)
+
+        return written
 
     def _build_rulesets(self, extensions: set[str]) -> list[str]:
+        """Compone i ruleset: OWASP sempre, piu' quelli dei linguaggi presenti.
+
+        Args:
+            extensions (set[str]): Estensioni dei file da analizzare.
+
+        Returns:
+            list[str]: Ruleset senza duplicati, nell'ordine di inserimento.
+        """
         rulesets = list(_OWASP_RULESETS)
         for ext in extensions:
             rulesets.extend(_LANGUAGE_RULESETS.get(ext, []))
         return list(dict.fromkeys(rulesets))
 
     async def _run_semgrep(self, target_dir: str, rulesets: list[str]) -> list[dict[str, Any]]:
+        """Lancia Semgrep come sottoprocesso e ne raccoglie l'output JSON.
+
+        Args:
+            target_dir (str): Directory da analizzare.
+            rulesets (list[str]): Ruleset da applicare.
+
+        Returns:
+            list[dict[str, Any]]: I risultati grezzi, o lista vuota.
+
+        Raises:
+            FileNotFoundError: Se il binario semgrep non e' installato.
+        """
         config_args: list[str] = []
-        for rs in rulesets:
-            config_args += ["--config", rs]
+        for ruleset in rulesets:
+            config_args += ["--config", ruleset]
 
         cmd = [
             "semgrep",
             *config_args,
             "--json",
             "--no-rewrite-rule-ids",
-            "--max-target-bytes", "1000000",
+            "--max-target-bytes",
+            "1000000",
             target_dir,
         ]
 
-        logger.debug("Running semgrep: %s", " ".join(cmd))
+        logger.debug("Esecuzione semgrep: %s", " ".join(cmd))
         proc = await asyncio.create_subprocess_exec(
             *cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
-        stdout, stderr = await proc.communicate()
+        try:
+            stdout, stderr = await proc.communicate()
+        except asyncio.CancelledError:
+            # Il timeout di wait_for cancella questa coroutine: senza terminare
+            # il processo, semgrep resterebbe orfano a consumare CPU per tutta
+            # la vita del container.
+            proc.kill()
+            await proc.wait()
+            raise
 
         if stderr:
             logger.debug("semgrep stderr: %s", stderr.decode("utf-8", errors="replace")[:500])
@@ -135,27 +245,47 @@ class SASTAnalyzer:
             data = json.loads(stdout.decode("utf-8"))
             return data.get("results", [])
         except json.JSONDecodeError:
-            logger.warning("Failed to parse semgrep JSON output")
+            logger.warning("Output JSON di semgrep non interpretabile")
             return []
 
-    def _parse_findings(self, raw: list[dict[str, Any]], tmpdir: str) -> list[SASTFindingBlock]:
-        findings: list[SASTFindingBlock] = []
+    def _parse_findings(
+        self, raw: list[dict[str, Any]], tmpdir: str
+    ) -> list[SastFindingBlock]:
+        """Converte i risultati grezzi in blocchi del contratto condiviso.
+
+        Args:
+            raw (list[dict[str, Any]]): Risultati grezzi di Semgrep.
+            tmpdir (str): Directory della scansione, per rendere relativi i percorsi.
+
+        Returns:
+            list[SastFindingBlock]: I finding interpretabili; gli altri vengono
+            scartati con un log, senza far fallire l'intera scansione.
+        """
+        findings: list[SastFindingBlock] = []
         for item in raw:
             try:
                 finding = self._map_result(item, tmpdir)
                 if finding:
                     findings.append(finding)
-            except Exception as exc:
-                logger.debug("Skipping semgrep result due to error: %s", exc)
+            except (KeyError, TypeError, ValueError) as exc:
+                logger.debug("Risultato semgrep scartato: %s", exc)
         return findings
 
-    def _map_result(self, item: dict[str, Any], tmpdir: str) -> Optional[SASTFindingBlock]:
-        rule_id: str = item.get("check_id", "unknown")
+    def _map_result(self, item: dict[str, Any], tmpdir: str) -> SastFindingBlock | None:
+        """Mappa un singolo risultato di Semgrep sul blocco del report.
+
+        Args:
+            item (dict[str, Any]): Il risultato grezzo.
+            tmpdir (str): Directory della scansione.
+
+        Returns:
+            SastFindingBlock | None: Il blocco corrispondente.
+        """
         extra: dict = item.get("extra", {})
         metadata: dict = extra.get("metadata", {})
 
-        raw_severity = (extra.get("severity") or "WARNING").upper()
-        severity: str = raw_severity if raw_severity in _SEVERITY_RANK else "WARNING"
+        raw_severity = str(extra.get("severity") or "WARNING").upper()
+        rule_severity = raw_severity if raw_severity in _SEVERITY_RANK else "WARNING"
 
         owasp_refs = metadata.get("owasp", [])
         if isinstance(owasp_refs, str):
@@ -167,77 +297,128 @@ class SASTAnalyzer:
             cwe_refs = [cwe_refs]
         cwe = cwe_refs[0] if cwe_refs else None
 
-        path_raw: str = item.get("path", "")
-        if tmpdir and path_raw.startswith(tmpdir):
-            path_raw = path_raw[len(tmpdir):].lstrip("/\\")
+        message: str = str(extra.get("message", "No message")).strip()
+        snippet: str = str(extra.get("lines", "")).strip()
+        if len(snippet) > _MAX_SNIPPET_CHARS:
+            snippet = snippet[: _MAX_SNIPPET_CHARS - 3] + "..."
 
-        start: dict = item.get("start", {})
-        line: int = start.get("line", 0)
-
-        message: str = extra.get("message", "No message").strip()
-        code_snippet: Optional[str] = extra.get("lines", "").strip()
-        if code_snippet and len(code_snippet) > 300:
-            code_snippet = code_snippet[:297] + "..."
-
-        return SASTFindingBlock(
-            rule_id=rule_id,
-            owasp_category=owasp_category,
-            severity=severity,  # type: ignore[arg-type]
-            file_path=path_raw,
-            line=line,
+        return SastFindingBlock(
+            ruleId=str(item.get("check_id", "unknown")),
+            owaspCategory=str(owasp_category),
+            cwe=str(cwe) if cwe else None,
+            severity=SEMGREP_SEVERITY_MAP.get(rule_severity, "MEDIUM"),
+            ruleSeverity=rule_severity,  # type: ignore[arg-type]
+            filePath=self._relative_path(str(item.get("path", "")), tmpdir),
+            lineStart=int(item.get("start", {}).get("line", 0)),
             message=message,
-            code_snippet=code_snippet or None,
-            cwe=cwe,
-            llm_verdict="NEEDS_REVIEW",
+            codeSnippet=snippet or None,
         )
 
-    def _dedup(self, findings: list[SASTFindingBlock]) -> list[SASTFindingBlock]:
-        seen: set[tuple[str, str]] = set()
-        unique: list[SASTFindingBlock] = []
-        for f in findings:
-            key = (f.rule_id, f.file_path)
+    @staticmethod
+    def _relative_path(path_raw: str, tmpdir: str) -> str:
+        """Riporta il percorso alla radice del repository.
+
+        Semgrep restituisce percorsi dentro la directory temporanea: lasciarli
+        cosi' significherebbe mostrare all'utente `/tmp/cg_sast_xyz/src/app.py`
+        e, peggio, scrivere un percorso di sistema dentro un report persistito.
+
+        Args:
+            path_raw (str): Il percorso emesso da Semgrep.
+            tmpdir (str): La directory della scansione.
+
+        Returns:
+            str: Il percorso relativo al repository.
+        """
+        if not path_raw:
+            return "unknown"
+        try:
+            return os.path.relpath(path_raw, tmpdir).replace(os.sep, "/")
+        except ValueError:
+            # Volumi diversi su Windows: non c'e' un percorso relativo possibile.
+            return path_raw
+
+    @staticmethod
+    def _dedup(findings: list[SastFindingBlock]) -> list[SastFindingBlock]:
+        """Tiene una sola occorrenza per (regola, file, riga).
+
+        La chiave include la riga di proposito: la stessa regola violata in due
+        punti diversi dello stesso file sono due problemi da sistemare, non uno.
+        Restano fuori solo i duplicati veri, che Semgrep puo' emettere quando
+        piu' ruleset contengono la stessa regola.
+
+        Args:
+            findings (list[SastFindingBlock]): I finding da deduplicare.
+
+        Returns:
+            list[SastFindingBlock]: I finding unici, nell'ordine originale.
+        """
+        seen: set[tuple[str, str, int]] = set()
+        unique: list[SastFindingBlock] = []
+        for finding in findings:
+            key = (finding.ruleId, finding.filePath, finding.lineStart)
             if key not in seen:
                 seen.add(key)
-                unique.append(f)
+                unique.append(finding)
         return unique
 
-    def _sort_by_severity(self, findings: list[SASTFindingBlock]) -> list[SASTFindingBlock]:
-        return sorted(findings, key=lambda f: _SEVERITY_RANK.get(f.severity, 99))
+    @staticmethod
+    def _sort_by_severity(findings: list[SastFindingBlock]) -> list[SastFindingBlock]:
+        """Ordina per severita' nativa di Semgrep, decrescente.
 
-    def _empty_summary(self) -> SASTSummary:
-        return SASTSummary(
-            total_findings=0,
-            confirmed_findings=0,
-            false_positives=0,
-            needs_review=0,
-            capped_findings=0,
-            scanned_files=0,
-            duration_ms=0,
-            timed_out=False,
-        )
+        Args:
+            findings (list[SastFindingBlock]): I finding da ordinare.
 
-    def format_for_prompt(self, findings: list[SASTFindingBlock], summary: SASTSummary) -> str:
-        lines: list[str] = []
+        Returns:
+            list[SastFindingBlock]: I finding ordinati.
+        """
+        return sorted(findings, key=lambda f: _SEVERITY_RANK.get(f.ruleSeverity, 99))
 
-        lines.append("### Analisi SAST (Semgrep / OWASP Top Ten)\n")
+    @staticmethod
+    def _empty_summary() -> SastSummaryBlock:
+        """Riepilogo di una scansione eseguita che non ha trovato nulla.
+
+        Returns:
+            SastSummaryBlock: Riepilogo a zero.
+        """
+        return SastSummaryBlock(totalFindings=0)
+
+    def format_for_prompt(
+        self, findings: list[SastFindingBlock], summary: SastSummaryBlock
+    ) -> str:
+        """Rende i finding nella sezione di prompt che l'LLM deve giudicare.
+
+        Args:
+            findings (list[SastFindingBlock]): I finding da sottoporre.
+            summary (SastSummaryBlock): Il riepilogo della scansione.
+
+        Returns:
+            str: La sezione Markdown da anteporre all'elenco dei file.
+        """
+        if not findings:
+            return ""
+
+        lines: list[str] = ["### Analisi SAST (Semgrep / OWASP Top Ten)\n"]
         lines.append(
-            f"File analizzati: {summary.scanned_files} | "
-            f"Findings totali: {summary.total_findings} | "
-            f"Mostrati all'LLM: {min(summary.total_findings, self._max_findings)}"
+            f"File analizzati: {summary.scannedFiles} | "
+            f"Finding totali: {summary.totalFindings} | "
+            f"Sottoposti a giudizio: {len(findings)}"
         )
-        if summary.timed_out:
-            lines.append("⚠️ Semgrep ha superato il timeout — risultati parziali.\n")
-        if summary.capped_findings:
-            lines.append(f"⚠️ {summary.capped_findings} finding(s) esclusi dal limite (priorità ERROR>WARNING>INFO).\n")
-
-        for f in findings:
+        if summary.timedOut:
+            lines.append("Attenzione: Semgrep ha superato il timeout, risultati parziali.\n")
+        if summary.cappedFindings:
             lines.append(
-                f"\n**[{f.severity}] {f.rule_id}** — {f.owasp_category}"
-                + (f" ({f.cwe})" if f.cwe else "")
+                f"Attenzione: {summary.cappedFindings} finding esclusi dal limite "
+                "(priorita' ERROR > WARNING > INFO).\n"
             )
-            lines.append(f"  File: `{f.file_path}` riga {f.line}")
-            lines.append(f"  {f.message}")
-            if f.code_snippet:
-                lines.append(f"  ```\n  {f.code_snippet}\n  ```")
+
+        for finding in findings:
+            lines.append(
+                f"\n**[{finding.ruleSeverity}] {finding.ruleId}** — {finding.owaspCategory}"
+                + (f" ({finding.cwe})" if finding.cwe else "")
+            )
+            lines.append(f"  File: `{finding.filePath}` riga {finding.lineStart}")
+            lines.append(f"  {finding.message}")
+            if finding.codeSnippet:
+                lines.append(f"  ```\n  {finding.codeSnippet}\n  ```")
 
         return "\n".join(lines)

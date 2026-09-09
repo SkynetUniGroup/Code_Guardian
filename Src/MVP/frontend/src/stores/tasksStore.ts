@@ -1,12 +1,11 @@
 import { create } from "zustand";
 import type {
+  PendingInput,
   TaskEntry,
-  TaskStatus,
-  TaskUpdatedEvent,
-  TaskProgressEvent,
   TaskFailedEvent,
   TaskInputRequiredEvent,
-  PendingInput,
+  TaskProgressEvent,
+  TaskUpdatedEvent,
 } from "../types";
 
 /**
@@ -94,7 +93,7 @@ function makeDefaultEntry(id: string): TaskEntry {
  * Global tasks store.
  * Maintained by WebSocket events; resynced via GET /tasks on reconnect.
  */
-export const useTasksStore = create<TasksStore>((set, get) => ({
+export const useTasksStore = create<TasksStore>((set, _get) => ({
   // ---- Initial state ----
   tasks: {},
 
@@ -159,7 +158,10 @@ export const useTasksStore = create<TasksStore>((set, get) => ({
       } else if (event.kind === "INCOMPLETE_TASKS") {
         pending = { kind: "INCOMPLETE_TASKS", taskIds: event.taskIds ?? [] };
       } else {
-        pending = { kind: "BUSINESS_CONFIRMATION", technicalReportId: event.reportId ?? "" };
+        pending = {
+          kind: "BUSINESS_CONFIRMATION",
+          technicalReportId: event.technicalReportId ?? "",
+        };
       }
 
       return {

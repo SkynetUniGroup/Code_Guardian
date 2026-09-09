@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import { EventsGateway } from "./events.gateway";
 
 function makeClient(token?: string) {
@@ -66,7 +67,7 @@ describe("EventsGateway", () => {
     });
 
     describe("emitTaskInputRequired", () => {
-      function emit(server: { to: vi.fn; emit: vi.fn }) {
+      function emit(server: { to: Mock; emit: Mock }) {
         const gateway = new EventsGateway({} as never);
         (gateway as unknown as { server: typeof server }).server = server;
         return gateway;

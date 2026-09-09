@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import type { CredentialsService } from "../credentials/credentials.service";
-import type { GithubClientService } from "../github/github-client.service";
+import { CredentialsService } from "../credentials/credentials.service";
+import { GithubClientService } from "../github/github-client.service";
 import type { RefSummary, RepositorySummary } from "../github/github-client.types";
 import { detectLanguage } from "../github/language-detection";
 import type { RepositoryTreeDto } from "./dto/repository-tree.dto";
-import type { RepoResolverService } from "./repo-resolver.service";
+import { RepoResolverService } from "./repo-resolver.service";
 
 const GITHUB_PROVIDER = "GITHUB";
 

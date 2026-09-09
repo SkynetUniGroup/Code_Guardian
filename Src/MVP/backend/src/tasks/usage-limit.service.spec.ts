@@ -1,13 +1,14 @@
 import { ConfigService } from "@nestjs/config";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, type TestingModule } from "@nestjs/testing";
+import type { Mock } from "vitest";
 import { UsageCounter } from "./schemas/usage-counter.schema";
 import { UsageLimitService } from "./usage-limit.service";
 
 describe("UsageLimitService", () => {
   let service: UsageLimitService;
-  let model: { findOneAndUpdate: vi.fn; updateOne: vi.fn };
-  let config: { get: vi.fn };
+  let model: { findOneAndUpdate: Mock; updateOne: Mock };
+  let config: { get: Mock };
 
   beforeEach(async () => {
     model = { findOneAndUpdate: vi.fn(), updateOne: vi.fn() };

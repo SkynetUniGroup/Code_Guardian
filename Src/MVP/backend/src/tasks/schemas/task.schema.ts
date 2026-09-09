@@ -84,7 +84,7 @@ export class Task {
   // time, as the finished value of executionTimeMs (§11.7's field is named
   // durationMs on Report — see that schema's own comment).
   @Prop({ default: 0 })
-  accumulatedMs: number;
+  accumulatedMs!: number;
 
   // Processing lease. BullMQ delivers at-least-once, so the same job can be
   // handed to two workers at once (a worker restart, an expired lock,
@@ -97,7 +97,7 @@ export class Task {
   // exception path); a claim older than its lease window is taken over, so
   // a worker killed mid-invocation doesn't strand the Task forever.
   @Prop({ type: Date, default: null })
-  processingClaimedAt: Date | null;
+  processingClaimedAt!: Date | null;
 
   // Fencing token: who holds the claim above, not just that someone does.
   // Regenerated on every successful claim, and required to match before a
@@ -109,7 +109,7 @@ export class Task {
   // clock stepped backwards by NTP), and a token that can collide is not a
   // token. Null exactly when processingClaimedAt is null.
   @Prop({ type: String, default: null })
-  processingClaimToken: string | null;
+  processingClaimToken!: string | null;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

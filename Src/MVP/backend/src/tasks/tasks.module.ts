@@ -4,16 +4,21 @@ import { MongooseModule } from "@nestjs/mongoose";
 import {
   AnalysisContext,
   AnalysisContextSchema,
-} from '../contexts/schemas/analysis-context.schema';
-import { CredentialsModule } from '../credentials/credentials.module';
-import { OperationsModule } from '../operations/operations.module';
-import { EventsModule } from '../events/events.module';
-import { ReportsModule } from '../reports/reports.module';
-import { TasksController } from './tasks.controller';
-import { TasksService } from './tasks.service';
-import { TaskProcessor } from './task-processor';
-import { AgentInvocationService } from './agent-invocation.service';
-import { UsageLimitService } from './usage-limit.service';
+} from "../contexts/schemas/analysis-context.schema";
+import { CredentialsModule } from "../credentials/credentials.module";
+import { EventsModule } from "../events/events.module";
+import { GithubModule } from "../github/github.module";
+import { OperationsModule } from "../operations/operations.module";
+import { ReportsModule } from "../reports/reports.module";
+import { AgentInvocationService } from "./agent-invocation.service";
+import { ProposalPublisherService } from "./proposal-publisher.service";
+import { Task, TaskSchema } from "./schemas/task.schema";
+import { UsageCounter, UsageCounterSchema } from "./schemas/usage-counter.schema";
+import { TaskCancellationService } from "./task-cancellation.service";
+import { TaskProcessor } from "./task-processor";
+import { TasksController } from "./tasks.controller";
+import { TasksService } from "./tasks.service";
+import { UsageLimitService } from "./usage-limit.service";
 
 @Module({
   imports: [
@@ -31,13 +36,24 @@ import { UsageLimitService } from './usage-limit.service';
     BullModule.registerQueue({ name: "tasks" }),
     CredentialsModule,
     OperationsModule,
+    // BE-9: GithubWriteService, per aprire la PR che porta la Proposal
+    // dell'agente Docs. GithubModule non dipende da nulla a livello
+    // applicativo, quindi importarlo qui non crea cicli.
+    GithubModule,
     EventsModule,
     // BE-18: TaskProcessor assembles and persists a Report via
     // ReportAssemblyService once a Task reaches COMPLETED or FAILED.
     ReportsModule,
   ],
   controllers: [TasksController],
-  providers: [TasksService, TaskProcessor, AgentInvocationService, UsageLimitService],
+  providers: [
+    TasksService,
+    TaskProcessor,
+    AgentInvocationService,
+    UsageLimitService,
+    TaskCancellationService,
+    ProposalPublisherService,
+  ],
   // Re-exports the forFeature registration so other modules (BE-8's
   // internal GitHub facade needs to look up a Task by id) can inject
   // Model<Task> without this module having to expose a service of its own

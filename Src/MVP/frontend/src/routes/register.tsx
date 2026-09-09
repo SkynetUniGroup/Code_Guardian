@@ -1,6 +1,6 @@
-import { createRoute, redirect } from '@tanstack/react-router';
-import { rootRoute } from './root';
-import { RegisterPage } from '../pages/RegisterPage';
+import { createRoute, redirect } from "@tanstack/react-router";
+import { RegisterPage } from "../pages/RegisterPage";
+import { rootRoute } from "./root";
 
 /**
  * Register route — /register (public)
@@ -10,10 +10,10 @@ import { RegisterPage } from '../pages/RegisterPage';
  */
 export const registerRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/register',
+  path: "/register",
   beforeLoad: ({ context }) => {
     if (context.session.isAuthenticated()) {
-      throw redirect({ to: '/run' });
+      throw redirect({ to: "/run" });
     }
   },
   component: RegisterPage,

@@ -1,11 +1,18 @@
+import { type Mock, vi } from "vitest";
+
 // Same mocking approach as github-client.service.spec.ts: a fake Octokit so
 // these stay fast, deterministic unit tests of our own branch/commit/PR
 // sequencing rather than real network calls.
 const mockRequest = vi.fn();
-vi.fn("@octokit/rest", () => ({
-  Octokit: vi.fn().mockImplementation(() => ({
-    request: mockRequest,
-  })),
+// `vi.mock`, non `vi.fn`: con vi.fn il modulo non veniva sostituito affatto e i
+// test chiamavano GitHub davvero, prendendosi un 401 che il servizio traduce
+// (correttamente) in PR_CREATION_FAILED — quindi i test fallivano su un errore
+// che non c'entrava nulla con cio' che volevano verificare.
+// Function classica e non arrow: il servizio fa `new Octokit(...)`.
+vi.mock("@octokit/rest", () => ({
+  Octokit: vi.fn(function Octokit() {
+    return { request: mockRequest };
+  }),
 }));
 
 import { Test, type TestingModule } from "@nestjs/testing";
@@ -16,8 +23,8 @@ import { GithubWriteService } from "./github-write.service";
 describe("GithubWriteService", () => {
   let service: GithubWriteService;
   let githubClient: {
-    resolveRefToSha: vi.fn;
-    getFileContent: vi.fn;
+    resolveRefToSha: Mock;
+    getFileContent: Mock;
   };
 
   const change = {
@@ -116,7 +123,9 @@ describe("GithubWriteService", () => {
 
     try {
       await service.openPullRequestForProposal("token", "owner", "repo", "main", change);
-      fail("expected rejection");
+      // `fail()` e' di Jasmine/Jest e in Vitest non esiste: qui basta
+      // un'asserzione che non puo' passare se si arriva a questa riga.
+      expect.unreachable("la chiamata avrebbe dovuto fallire");
     } catch (error) {
       expect((error as AppException).code).toBe("PR_CREATION_FAILED");
     }

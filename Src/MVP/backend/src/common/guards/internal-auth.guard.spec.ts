@@ -1,6 +1,7 @@
 import { createHash, createHmac } from "node:crypto";
 import { type ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
+import type { Mock } from "vitest";
 import { InternalAuthGuard } from "./internal-auth.guard";
 
 const SECRET = "test-only-internal-shared-secret";
@@ -26,7 +27,7 @@ function makeContext(request: {
 
 describe("InternalAuthGuard", () => {
   let guard: InternalAuthGuard;
-  let config: { get: vi.fn };
+  let config: { get: Mock };
 
   beforeEach(() => {
     config = {

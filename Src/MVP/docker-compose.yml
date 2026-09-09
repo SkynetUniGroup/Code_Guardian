@@ -8,6 +8,11 @@ services:
   # http://agents:8000, matching AGENTS_SERVICE_URL in backend/.env.
   agents:
     build: ./agents
+    # Senza questa riga il container finiva sulla rete di default mentre tutti
+    # gli altri stanno su codeguardian-net: "backend", "mongodb" e "redis" non
+    # si risolvevano affatto, e ogni chiamata dell'agente moriva in DNS.
+    networks:
+      - codeguardian-net
     env_file:
       - .env
     environment:
@@ -15,9 +20,17 @@ services:
       # network, containers reach each other by service name, never by
       # localhost or the backend's own hostnames.
       BACKEND_BASE_URL: http://backend:3000
+      # Deve combaciare con app.setGlobalPrefix() in backend/src/main.ts: entra
+      # sia nell'URL chiamato sia nel messaggio firmato in HMAC.
+      BACKEND_API_PREFIX: /api/v1
       MONGO_URI: mongodb://mongodb:27017/codeguardian
       REDIS_URL: redis://redis:6379
       INTERNAL_SHARED_SECRET: ${INTERNAL_SHARED_SECRET}
+      PROMPTS_DIR: /app/prompts
+      # Analisi statica: i default stanno in config.py, qui si rendono
+      # esplicite le due leve che si toccano piu' spesso in sviluppo.
+      ENABLE_SAST_SEMGREP: ${ENABLE_SAST_SEMGREP:-true}
+      ENABLE_SONARQUBE: ${ENABLE_SONARQUBE:-false}
     depends_on:
       backend:
         condition: service_healthy
@@ -36,10 +49,10 @@ services:
       - codeguardian-net
     depends_on:
       - backend
-    env_file:
-      - .env
-    environment:
-      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://backend:3000/api/v1}
+    # Nessun VITE_* qui: Vite inlinea le variabili al momento della build, una
+    # env di runtime su un'immagine nginx gia' compilata non ha alcun effetto.
+    # Il bundle usa percorsi relativi (/api/v1) e nginx.conf li inoltra al
+    # backend — vedi frontend/nginx.conf.
 
   backend:
     build:
@@ -56,8 +69,10 @@ services:
       # reach each other by service name, never by localhost.
       MONGODB_URI: mongodb://mongodb:27017/codeguardian
       REDIS_URL: redis://redis:6379
+      AGENTS_SERVICE_URL: http://agents:8000
       # BE-20: same reasoning — the container reaches MinIO by service name.
       S3_ENDPOINT: http://minio:9000
+      S3_FORCE_PATH_STYLE: "true"
       # File-change notifications from a Windows bind mount don't reliably
       # reach the Linux container, so the TypeScript watcher has to poll for
       # changes instead of waiting for them — without this, edits on the host
@@ -65,19 +80,28 @@ services:
       TSC_WATCHFILE: PriorityPollingInterval
       TSC_WATCHDIRECTORY: DynamicPriorityPolling
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      # Solo i sorgenti, e montati al loro posto dentro il workspace.
+      # Montare ./backend su /app (com'era) sostituiva la RADICE del monorepo
+      # costruita nell'immagine: sparivano pnpm-workspace.yaml, shared/ e
+      # backend/node_modules, e `pnpm --filter backend` non trovava piu' nessun
+      # workspace da avviare.
+      - ./backend/src:/app/backend/src
+      - ./backend/test:/app/backend/test
     depends_on:
       mongodb:
         condition: service_healthy
       redis:
         condition: service_healthy
-      - minio
+      # Era un elemento di lista in mezzo a una mappa: YAML non valido, e
+      # `docker compose up` rifiutava l'intero file.
+      minio:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:3000/api/v1/auth/health || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 40s
 
   mongodb:
     image: mongo:7
@@ -112,9 +136,19 @@ services:
       - "9001:9001"
     networks:
       - codeguardian-net
+    environment:
+      # Devono combaciare con S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY del
+      # backend, altrimenti la creazione del bucket all'avvio fallisce con 403.
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-minioadmin}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongo_data:

@@ -6,7 +6,7 @@ import {
   type RawBodyRequest,
   UnauthorizedException,
 } from "@nestjs/common";
-import type { ConfigService } from "@nestjs/config";
+import { ConfigService } from "@nestjs/config";
 import type { Request } from "express";
 
 // Authenticates every /internal/* request from the agent service — a

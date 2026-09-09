@@ -1,6 +1,6 @@
-import type { OperationCode } from '../common/domain-types';
-import type { PendingInput } from './task.types';
-import type { Block, Proposal } from '../reports/report.types';
+import type { OperationCode } from "../common/domain-types";
+import type { Block, Proposal } from "../reports/report.types";
+import type { PendingInput } from "./task.types";
 
 // POST /internal/agent/start body.
 export interface ContextRef {
@@ -20,6 +20,13 @@ export interface AgentStartRequest {
   payload: {
     userId: string;
     context_ref: ContextRef;
+    // Solo per le operazioni Changelog, e solo dopo che
+    // POST /tasks/:id/input l'ha raccolto (BE-17). Viaggia qui e non in
+    // context_ref perche' e' del Task, non del contesto: un contesto puo'
+    // essere condiviso da piu' operazioni dello stesso batch, lo Sprint ID
+    // riguarda solo quelle di changelog. ChangelogLoader lo legge da
+    // agent_payload, che e' esattamente questo oggetto.
+    sprintId?: string;
   };
 }
 
@@ -40,7 +47,13 @@ export interface AgentStepResult {
   status: "interrupted" | "completed" | "failed";
   pendingInput?: PendingInput;
   result?: AgentRunPayload;
+  // Messaggio leggibile del fallimento.
   error?: string;
+  // Categoria del fallimento (ErrorKind lato Python), separata dal messaggio.
+  // Prima esisteva solo `error` e veniva passato a mapAgentErrorKind sia come
+  // categoria sia come messaggio: nessun messaggio corrisponde mai a una voce
+  // della tabella, quindi ogni fallimento dell'agente finiva su UPSTREAM.
+  errorKind?: string;
 }
 
 // POST /internal/agent/resume body. Mirrors AgentStartRequest's three

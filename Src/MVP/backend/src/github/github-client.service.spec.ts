@@ -5,17 +5,39 @@
 type HookBeforeCallback = (options: { method: string; url: string }) => void;
 
 const mockRequest = vi.fn();
-const mockHookBefore = vi.fn<void, [string, HookBeforeCallback]>();
-vi.fn("@octokit/rest", () => ({
-  Octokit: vi.fn().mockImplementation(() => ({
-    request: mockRequest,
-    hook: { after: vi.fn(), before: mockHookBefore },
-  })),
+const mockHookBefore = vi.fn<(name: string, cb: HookBeforeCallback) => void>();
+vi.mock("@octokit/rest", () => ({
+  // Function classica e non arrow: il servizio fa `new Octokit(...)`, e una
+  // arrow function non e' costruibile.
+  Octokit: vi.fn(function Octokit() {
+    return {
+      request: mockRequest,
+      hook: { after: vi.fn(), before: mockHookBefore },
+    };
+  }),
 }));
 
 import { Test, type TestingModule } from "@nestjs/testing";
-import { createMockRedis, RedisTestModule } from "@nestjs-modules/ioredis";
+import { getRedisConnectionToken } from "@nestjs-modules/ioredis";
 import { GithubClientService } from "./github-client.service";
+
+// Redis finto scritto a mano invece di createMockRedis() di
+// @nestjs-modules/ioredis: quell'helper usa `jest` al proprio interno e sotto
+// Vitest esplode con "jest is not defined". Qui servono solo i tre comandi che
+// GithubClientService usa davvero.
+function createMockRedis() {
+  const store = new Map<string, string>();
+  return {
+    get: vi.fn(async (key: string) => store.get(key) ?? null),
+    set: vi.fn(async (key: string, value: string) => {
+      store.set(key, value);
+      return "OK";
+    }),
+    // GithubClientService scrive con TTL: set(key, value, "EX", seconds)
+    del: vi.fn(async (key: string) => (store.delete(key) ? 1 : 0)),
+    __store: store,
+  };
+}
 
 describe("GithubClientService — cache behavior", () => {
   let service: GithubClientService;
@@ -27,8 +49,7 @@ describe("GithubClientService — cache behavior", () => {
     redis = createMockRedis();
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [RedisTestModule.forTest(undefined, redis)],
-      providers: [GithubClientService],
+      providers: [GithubClientService, { provide: getRedisConnectionToken(), useValue: redis }],
     }).compile();
 
     service = module.get(GithubClientService);

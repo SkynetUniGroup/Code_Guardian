@@ -1,6 +1,6 @@
-import { createRoute, redirect } from '@tanstack/react-router';
-import { rootRoute } from './root';
-import { AppShell } from '../components/layout/AppShell';
+import { createRoute, redirect } from "@tanstack/react-router";
+import { AppShell } from "../components/layout/AppShell";
+import { rootRoute } from "./root";
 
 /**
  * Authenticated layout route — pathless, id="_auth"
@@ -14,11 +14,11 @@ import { AppShell } from '../components/layout/AppShell';
  */
 export const authRoute = createRoute({
   getParentRoute: () => rootRoute,
-  id: '_auth',
+  id: "_auth",
   beforeLoad: ({ context, location }) => {
     if (!context.session.isAuthenticated()) {
       throw redirect({
-        to: '/login',
+        to: "/login",
         search: { redirect: location.href },
       });
     }
