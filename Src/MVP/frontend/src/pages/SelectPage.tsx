@@ -7,6 +7,8 @@ import { ValidatedField } from "../components/shared/ValidatedField";
 import { useSelectionStore } from "../stores/selectionStore";
 import type { AnalysisContextDto, CreateContextDto, RepositorySummary } from "../types";
 
+const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
+
 /**
  * SelectPage — /select
  *
@@ -32,6 +34,7 @@ export function SelectPage() {
 
   // Form state
   const [selected_repo, setSelectedRepo] = useState<RepositorySummary | null>(null);
+  const [manual_repo_url, setManualRepoUrl] = useState("");
   const [ref, setRef] = useState("");
   const [commit_sha, setCommitSha] = useState("");
   const [scope_type, setScopeType] = useState<CreateContextDto["scopeType"]>("FULL_REPOSITORY");
@@ -64,13 +67,24 @@ export function SelectPage() {
   function handle_repo_change(owner_name: string) {
     const repo = repos.find((r) => `${r.owner}/${r.name}` === owner_name) ?? null;
     setSelectedRepo(repo);
+    setManualRepoUrl("");
     setRef(repo?.defaultBranch ?? "");
+  }
+
+  function handle_manual_repo_url_change(value: string) {
+    setManualRepoUrl(value);
+    if (value.trim()) setSelectedRepo(null);
   }
 
   /** Client-side validation. */
   function validate(): boolean {
     const next: Record<string, string> = {};
-    if (!selected_repo) next.repo = "Seleziona un repository";
+    const manual_url = manual_repo_url.trim();
+    if (!selected_repo && !manual_url) {
+      next.repo = "Seleziona un repository o incolla l'URL di un repository pubblico";
+    } else if (manual_url && !GITHUB_REPO_URL_REGEX.test(manual_url)) {
+      next.repo = "URL non valido (https://github.com/owner/repo)";
+    }
     if (!ref.trim()) next.ref = "Inserisci il branch";
     if (commit_sha.trim() && !/^[0-9a-f]{7,40}$/i.test(commit_sha.trim())) {
       next.commit_sha = "Il commit SHA deve essere esadecimale (7-40 caratteri)";
@@ -84,7 +98,7 @@ export function SelectPage() {
 
   async function handle_submit(e: FormEvent) {
     e.preventDefault();
-    if (!validate() || !selected_repo) return;
+    if (!validate()) return;
 
     setSubmitting(true);
     setSubmitError("");
@@ -95,8 +109,10 @@ export function SelectPage() {
       .map((s) => s.trim())
       .filter(Boolean);
 
+    const repo_url = manual_repo_url.trim() || `https://github.com/${selected_repo?.owner}/${selected_repo?.name}`;
+
     const dto: CreateContextDto = {
-      repoUrl: `https://github.com/${selected_repo.owner}/${selected_repo.name}`,
+      repoUrl: repo_url,
       branch: ref.trim(),
       // Se assente, il backend ancora il contesto alla HEAD del branch (RF.17).
       // Il campo esisteva nel DTO ma nessuno lo compilava: il pinning su un
@@ -176,7 +192,8 @@ export function SelectPage() {
               handle_repo_change(e.target.value);
               setFormErrors((p) => ({ ...p, repo: "" }));
             }}
-            className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20"
+            disabled={!!manual_repo_url.trim()}
+            className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
           >
             <option value="">-- Seleziona un repository --</option>
             {repos.map((r) => (
@@ -187,6 +204,19 @@ export function SelectPage() {
           </select>
           {form_errors.repo && <span className="text-xs text-[#cc2222]">{form_errors.repo}</span>}
         </div>
+
+        {/* Manual repository URL — for public repos not owned/collaborated by the connected GitHub account */}
+        <ValidatedField
+          label="...oppure incolla l'URL di un repository pubblico"
+          placeholder="https://github.com/owner/repo"
+          value={manual_repo_url}
+          onChange={(e) => {
+            handle_manual_repo_url_change(e.target.value);
+            setFormErrors((p) => ({ ...p, repo: "" }));
+          }}
+          disabled={!!selected_repo}
+          className="disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+        />
 
         {/* Branch */}
         <ValidatedField
