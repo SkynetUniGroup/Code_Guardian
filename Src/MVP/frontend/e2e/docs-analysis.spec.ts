@@ -1,46 +1,59 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
+import {
+  GITHUB_PAT,
+  launchOperations,
+  SKIP_REASON,
+  signedInWithCredentials,
+  submitContext,
+  waitForTerminalState,
+} from "./helpers";
 
 /**
  * TS/TA per l'Agente Docs, operazione DOCS_INLINE (RF.83, RF.84, RF.85).
- * End-to-end reale: GitHub e LLM veri, stesso repository/ambito del test
- * Security (OWASP/NodeGoat, app/routes/) per riuso e velocita' — vedi
- * security-analysis.spec.ts per i dettagli della scelta.
  *
- * A differenza di Security (che produce una lista di finding), Docs
- * produce una singola Proposta di modifica (diff unificato, RF.63):
- * verifichiamo che il diff venga generato e mostrato, non una lista.
+ * End-to-end reale: GitHub e LLM veri, nessun mock. Stesso repository e ambito
+ * del test Security (OWASP/NodeGoat, app/routes/) per riuso e velocita'.
+ *
+ * A differenza di Security, che produce una lista di finding, Docs produce una
+ * singola Proposta di modifica: un diff unificato (RF.63). E' quella che si
+ * verifica, insieme al suo esito di pubblicazione — la Pull Request aperta dal
+ * backend, o l'avviso che spiega perche' non lo e' stata (RF.72).
+ *
+ * L'operazione e' riservata al ruolo Developer: registrarsi con un altro ruolo
+ * la farebbe semplicemente non comparire fra le schede di /run.
  */
-const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
+test.describe("Agente Docs — documentazione inline su repository reale", () => {
+  test.skip(!GITHUB_PAT, SKIP_REASON);
+  test.setTimeout(8 * 60_000);
 
-test.describe('Flusso completo: Agente Docs — documentazione inline su repository reale', () => {
-  test.skip(!GITHUB_PAT, 'E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md');
-  test.setTimeout(6 * 60_000);
+  test("@agent avvia DOCS_INLINE e mostra la proposta di diff", async ({ page }) => {
+    await signedInWithCredentials(page, "Developer");
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "File specifici",
+      paths: ["app/routes/index.js"],
+    });
 
-  test('avvia DOCS_INLINE su OWASP/NodeGoat e visualizza la proposta di diff', async ({ page }) => {
-    await page.goto('/');
-    await page.getByPlaceholder('ghp_xxxxxxxxxxxx...').fill(GITHUB_PAT!);
-    await page.getByRole('button', { name: 'Salva e Inizia' }).click();
-    await expect(page).toHaveURL('http://localhost:5173/');
+    await launchOperations(page, ["Inline documentation"]);
+    const outcome = await waitForTerminalState(page);
+    expect(outcome).toBe("Completato");
 
-    await page.getByPlaceholder('skynetunigroup').fill('OWASP');
-    await page.getByPlaceholder('code_guardian').fill('NodeGoat');
-    await page.getByPlaceholder('main').fill('master');
-    await page.getByPlaceholder('es. Src/').fill('app/routes');
+    await page.getByRole("link", { name: "Vedi report" }).click();
+    await expect(page).toHaveURL(/\/reports\/[a-f0-9]{24}$/);
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'DOCS_INLINE' });
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
+    // Il cuore di RF.63: una proposta, non un elenco di problemi.
+    await expect(page.getByRole("heading", { name: "Proposta di modifica" })).toBeVisible();
+    await page.getByRole("button", { name: /Mostra diff/ }).click();
+    // Un diff unificato vero comincia con le righe di intestazione: cercare la
+    // sola parola "diff" passerebbe anche su un testo qualsiasi.
+    await expect(page.getByText(/^(---|\+\+\+|@@)/m).first()).toBeVisible();
 
-    await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
-    await expect(page.getByText('Analisi completata!')).toBeVisible({ timeout: 5 * 60_000 });
-    await expect(page.getByText('Analisi fallita')).not.toBeVisible();
-
-    await page.getByRole('link', { name: 'Visualizza Report →' }).click();
-    await expect(page.getByRole('heading', { name: 'Analisi: DOCS_INLINE' })).toBeVisible();
-
-    // RF.63: la proposta di modifica generata dall'agente deve comparire
-    // come diff unificato leggibile, con il percorso del file target.
-    await expect(page.getByText('Proposta di modifica (Diff)')).toBeVisible();
-    await expect(page.getByText(/^File: /)).toBeVisible();
+    // RF.82/RF.63 sul lato pubblicazione: o c'e' il collegamento alla Pull
+    // Request, o c'e' l'avviso che dice perche' non c'e'. Il silenzio — nessun
+    // pulsante e nessuna spiegazione — e' il caso che questo test esclude.
+    const pull_request_link = page.getByRole("link", { name: "Vedi PR" });
+    const publish_warning = page.getByText(/Non è stato possibile aprire la Pull Request/);
+    await expect(pull_request_link.or(publish_warning).first()).toBeVisible();
   });
 });

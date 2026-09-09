@@ -1,78 +1,73 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
+import {
+  GITHUB_PAT,
+  launchOperations,
+  SKIP_REASON,
+  signedInWithCredentials,
+  submitContext,
+  waitForTerminalState,
+} from "./helpers";
 
 /**
- * TS/TA per la terza operazione implementata nel PoC, SECURITY_POLICY
- * (RF.92, RF.93, RF.70). End-to-end reale: nessun mock.
+ * TS/TA per SECURITY_POLICY (RF.92, RF.93, RF.70). End-to-end reale.
  *
- * Caso positivo: `IlGranz/codeguardian-e2e-fixture`, un repository di
- * prova pubblico creato apposta (con conferma esplicita dell'utente —
- * vedi TESTING.md) con un POLICY.md e un file JS con violazioni
- * intenzionali (segreto hardcoded, `eval()`, SQL injection).
+ * Caso positivo: `IlGranz/codeguardian-e2e-fixture`, repository di prova
+ * pubblico creato apposta, con un POLICY.md e un file JS con violazioni
+ * intenzionali (segreto in chiaro, `eval()`, SQL injection).
  *
- * Due tentativi precedenti prima di arrivare qui, entrambi documentati
- * come scoperte reali in TESTING.md:
+ * Due tentativi precedenti prima di arrivare a quella scelta, entrambi
+ * scoperte reali e conservate qui perche' spiegano il vincolo:
  * 1. `sigstore/sigstore` (Go) — bocciato dalla validazione del linguaggio
- *    (RV.7 richiede TS/JS/Python).
- * 2. `keldaanCommunity/pokemonAutoChess` (TypeScript, ma repository enorme)
- *    — ha rivelato un bug reale: l'albero file di GitHub viene troncato
- *    dall'API (>64205 nodi) e il backend non se ne accorge, causando un
- *    falso "POLICY.md non trovato" per un file che esiste per davvero.
+ *    (RV.7 vuole TypeScript, JavaScript o Python).
+ * 2. `keldaanCommunity/pokemonAutoChess` (TypeScript, ma enorme) — ha
+ *    rivelato che l'albero file di GitHub viene troncato dall'API oltre i
+ *    ~64000 nodi e il backend non se ne accorge, producendo un falso
+ *    "POLICY.md non trovato" per un file che esiste.
  *
- * Caso negativo (RF.70/UC27.5): `OWASP/NodeGoat` non ha alcun POLICY.md —
- * verifica che l'assenza della risorsa venga gestita come errore
- * esplicito e non come crash silenzioso.
+ * Caso negativo (RF.70/UC27.5): OWASP/NodeGoat non ha alcun POLICY.md, e
+ * l'assenza della risorsa deve diventare un errore esplicito, non un crash
+ * silenzioso ne' un report vuoto dichiarato riuscito.
  */
-const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
+test.describe("Agente Security — verifica POLICY.md", () => {
+  test.skip(!GITHUB_PAT, SKIP_REASON);
+  test.setTimeout(8 * 60_000);
 
-test.describe('Flusso completo: Agente Security — verifica POLICY.md', () => {
-  test.skip(!GITHUB_PAT, 'E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md');
-  test.setTimeout(6 * 60_000);
+  test("@agent RF.92/93 — POLICY.md presente: la scansione completa e produce un report", async ({
+    page,
+  }) => {
+    await signedInWithCredentials(page, "Security Auditor");
+    await submitContext(page, {
+      repo: "IlGranz/codeguardian-e2e-fixture",
+      branch: "main",
+      scope: "Repository completo",
+    });
 
-  async function login(page: import('@playwright/test').Page) {
-    await page.goto('/');
-    await page.getByPlaceholder('ghp_xxxxxxxxxxxx...').fill(GITHUB_PAT!);
-    await page.getByRole('button', { name: 'Salva e Inizia' }).click();
-    await expect(page).toHaveURL('http://localhost:5173/');
-  }
+    await launchOperations(page, ["Policy-as-code"]);
+    const outcome = await waitForTerminalState(page);
+    expect(outcome).toBe("Completato");
 
-  test('RF.92/93 — POLICY.md presente: la scansione completa e produce un report', async ({ page }) => {
-    await login(page);
-
-    await page.getByPlaceholder('skynetunigroup').fill('IlGranz');
-    await page.getByPlaceholder('code_guardian').fill('codeguardian-e2e-fixture');
-    await page.getByPlaceholder('main').fill('develop');
-    await page.getByPlaceholder('es. Src/').fill('src');
-
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_POLICY' });
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-
-    await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
-    await expect(page.getByText('Analisi completata!')).toBeVisible({ timeout: 5 * 60_000 });
-    await expect(page.getByText('Analisi fallita')).not.toBeVisible();
-
-    await page.getByRole('link', { name: 'Visualizza Report →' }).click();
-    await expect(page.getByRole('heading', { name: 'Analisi: SECURITY_POLICY' })).toBeVisible();
-    // Il file di fixture ha violazioni intenzionali (segreto hardcoded,
-    // eval, SQL injection): ci aspettiamo che l'agente ne trovi almeno una,
-    // non solo che l'analisi "non sia fallita".
-    await expect(page.getByText('Dettagli')).toBeVisible();
+    await page.getByRole("link", { name: "Vedi report" }).click();
+    await expect(page.getByRole("heading", { name: "Verifica Policy" })).toBeVisible();
+    await expect(page.getByText(/Nessun elemento per il filtro selezionato/)).toHaveCount(0);
   });
 
-  test('RF.70/UC27.5 — POLICY.md assente: fallisce con un errore esplicito, non un crash', async ({ page }) => {
-    await login(page);
+  test("@agent RF.70/UC27.5 — POLICY.md assente: fallisce con un errore esplicito", async ({
+    page,
+  }) => {
+    await signedInWithCredentials(page, "Security Auditor");
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "Directory specifiche",
+      paths: ["app/routes"],
+    });
 
-    await page.getByPlaceholder('skynetunigroup').fill('OWASP');
-    await page.getByPlaceholder('code_guardian').fill('NodeGoat');
-    await page.getByPlaceholder('main').fill('master');
-    await page.getByPlaceholder('es. Src/').fill('app/routes');
+    await launchOperations(page, ["Policy-as-code"]);
+    const outcome = await waitForTerminalState(page);
+    expect(outcome).toBe("Fallito");
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_POLICY' });
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-
-    await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
-    await expect(page.getByText('Analisi fallita')).toBeVisible({ timeout: 5 * 60_000 });
-    await expect(page.getByText('Analisi completata!')).not.toBeVisible();
+    // Il punto del caso: il fallimento e' *classificato*, non generico. La
+    // scheda del Task mostra il codice dell'errore accanto al messaggio.
+    await expect(page.getByText(/CONTEXT_RESOURCE_MISSING|POLICY/i).first()).toBeVisible();
   });
 });

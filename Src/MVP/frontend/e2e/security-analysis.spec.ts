@@ -1,73 +1,73 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
+import {
+  GITHUB_PAT,
+  launchOperations,
+  SKIP_REASON,
+  signedInWithCredentials,
+  submitContext,
+  waitForTerminalState,
+} from "./helpers";
 
 /**
  * TA_09 (PdQ) — "Verificare che l'Agente Security esegua con successo la
- * scansione del codice sorgente alla ricerca di vulnerabilita' (OWASP Top
- * 10) e generi un report contenente le criticita' classificate per
- * gravita'." Copre anche i relativi Test di Sistema (RF.15, RF.25, RF.87,
- * RF.88, RF.89, RF.90/91, RF.53, RF.54, RF.60/61).
+ * scansione del codice sorgente alla ricerca di vulnerabilita' (OWASP Top 10)
+ * e generi un report contenente le criticita' classificate per gravita'."
+ * Copre anche i Test di Sistema collegati (RF.15, RF.25, RF.87, RF.88, RF.89,
+ * RF.90/91, RF.53, RF.54, RF.60/61).
  *
- * E' un test end-to-end REALE: nessuna parte e' mockata. Il backend
- * chiama davvero le API di GitHub (repository pubblico, sola lettura) e
- * l'agente Python chiama davvero l'LLM configurato in LLM_API_KEY.
- * Repository scelto: OWASP/NodeGoat — applicazione Node.js scritta
- * apposta dall'OWASP con vulnerabilita' didattiche reali, cosi' il test
- * verifica non solo che il flusso "funzioni", ma che l'agente trovi
- * davvero qualcosa (branch 'master', ambito ristretto a app/routes/ per
- * restare ben sotto il limite di 100 file di RF.31 e velocizzare la
- * chiamata LLM).
+ * End-to-end REALE: nessuna parte e' mockata. Il backend chiama davvero le API
+ * di GitHub e l'agente Python chiama davvero l'LLM configurato. Repository
+ * scelto: OWASP/NodeGoat, applicazione Node.js scritta dall'OWASP con
+ * vulnerabilita' didattiche reali — cosi' il test verifica non solo che il
+ * flusso funzioni, ma che l'agente trovi davvero qualcosa. Ambito ristretto ad
+ * app/routes/ per restare sotto il limite di file e accorciare la chiamata
+ * all'LLM.
  *
- * Richiede E2E_GITHUB_PAT nel .env alla radice del repo (un PAT read-only
- * su repository pubblici basta) — vedi TESTING.md. Se manca, il test si
- * skippa da solo invece di fallire, per non rompere una run che non ha
- * quella variabile configurata (es. CI).
+ * L'operazione e' riservata al ruolo Security Auditor.
  */
-const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
+test.describe("Agente Security — scansione OWASP su repository reale", () => {
+  test.skip(!GITHUB_PAT, SKIP_REASON);
+  test.setTimeout(8 * 60_000);
 
-test.describe('Flusso completo: Agente Security — scansione OWASP su repository reale', () => {
-  test.skip(!GITHUB_PAT, 'E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md');
+  test("@agent avvia SECURITY_OWASP e visualizza il report con i finding", async ({ page }) => {
+    await signedInWithCredentials(page, "Security Auditor");
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "Directory specifiche",
+      paths: ["app/routes"],
+    });
 
-  // Chiamata LLM reale: puo' impiegare fino a qualche minuto (RQ.6 accetta
-  // fino a 5 min per singolo agente). Diamo margine oltre il default.
-  test.setTimeout(6 * 60_000);
+    await launchOperations(page, ["OWASP Top 10"]);
+    const outcome = await waitForTerminalState(page);
+    expect(outcome).toBe("Completato");
 
-  test('registra il token, avvia la scansione su OWASP/NodeGoat e visualizza il report con i findings', async ({ page }) => {
-    // --- Setup: registrazione del PAT reale ---
-    await page.goto('/');
-    await expect(page).toHaveURL(/\/setup$/);
-    await page.getByPlaceholder('ghp_xxxxxxxxxxxx...').fill(GITHUB_PAT!);
-    await page.getByRole('button', { name: 'Salva e Inizia' }).click();
-    await expect(page).toHaveURL('http://localhost:5173/');
+    await page.getByRole("link", { name: "Vedi report" }).click();
+    await expect(page).toHaveURL(/\/reports\/[a-f0-9]{24}$/);
+    await expect(page.getByRole("heading", { name: "Analisi Sicurezza OWASP" })).toBeVisible();
 
-    // --- Selezione repository e ambito (RF.15, RF.16, RF.17, RF.25) ---
-    await page.getByPlaceholder('skynetunigroup').fill('OWASP');
-    await page.getByPlaceholder('code_guardian').fill('NodeGoat');
-    const refInput = page.getByPlaceholder('main');
-    await refInput.fill('master');
-    await page.getByPlaceholder('es. Src/').fill('app/routes');
+    // RF.53/RF.54: i finding sono classificati per gravita', e il filtro opera
+    // su quella classificazione. La riga di filtri compare solo se il report
+    // contiene blocchi con severita': la sua presenza e' quindi essa stessa
+    // l'asserzione che su NodeGoat qualcosa e' stato trovato. Un report vuoto
+    // qui e' un fallimento, non un repository pulito.
+    await expect(page.getByText("Filtra per severità:")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Alto", exact: true })).toBeVisible();
+    await expect(page.getByText(/Nessun elemento per il filtro selezionato/)).toHaveCount(0);
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    const operationSelect = page.getByRole('combobox');
-    await expect(operationSelect).toBeVisible();
-    await operationSelect.selectOption({ value: 'SECURITY_OWASP' });
+    // RF.87/RF.88: quando l'analisi statica e' attiva, il riepilogo Semgrep
+    // precede i finding e dice se la lista e' completa. Se la fase e'
+    // disattivata la sezione non c'e' affatto, ed e' corretto: si asserisce
+    // solo la coerenza fra le due cose.
+    const sast_summary = page.getByText("Analisi statica");
+    if ((await sast_summary.count()) > 0) {
+      await expect(sast_summary).toBeVisible();
+      await expect(page.getByText("Finding totali")).toBeVisible();
+    }
 
-    // --- Avvio (RF.35, RF.40): crea il contesto (chiamata reale a GitHub) e la task ---
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-    await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
-
-    // --- Monitoraggio (RF.44, RF.46): attende COMPLETED via WebSocket, non poll ---
-    await expect(page.getByText('Analisi completata!')).toBeVisible({ timeout: 5 * 60_000 });
-    await expect(page.getByText('Analisi fallita')).not.toBeVisible();
-
-    // --- Visualizzazione report (RF.53, RF.54, RF.60, RF.61) ---
-    await page.getByRole('link', { name: 'Visualizza Report →' }).click();
-    await expect(page).toHaveURL(/\/reports\/.+/);
-    await expect(page.getByRole('heading', { name: 'Analisi: SECURITY_OWASP' })).toBeVisible();
-    await expect(page.getByText('COMPLETED')).toBeVisible();
-
-    // NodeGoat contiene vulnerabilita' didattiche reali in app/routes/: ci
-    // aspettiamo che l'agente ne trovi almeno una, non solo che l'analisi
-    // "non sia fallita".
-    await expect(page.getByText('Dettagli')).toBeVisible();
+    // RF.60/61: il report e' esportabile. Il nome accessibile del pulsante e'
+    // il suo testo ("Esporta PDF"), non l'attributo title ("Esporta in PDF"):
+    // il title conta solo per un elemento che non ha contenuto testuale.
+    await expect(page.getByRole("button", { name: "Esporta PDF" })).toBeEnabled();
   });
 });
