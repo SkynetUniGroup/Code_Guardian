@@ -3,10 +3,10 @@ import { InjectModel } from "@nestjs/mongoose";
 import { ApiExcludeController } from "@nestjs/swagger";
 import { type Model, Types } from "mongoose";
 import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
-import type { InternalFileRequestDto } from "./dto/internal-file-request.dto";
-import type { InternalIssuesRequestDto } from "./dto/internal-issues-request.dto";
-import type { InternalTreeRequestDto } from "./dto/internal-tree-request.dto";
-import type { GithubClientService } from "./github-client.service";
+import { InternalFileRequestDto } from "./dto/internal-file-request.dto";
+import { InternalIssuesRequestDto } from "./dto/internal-issues-request.dto";
+import { InternalTreeRequestDto } from "./dto/internal-tree-request.dto";
+import { GithubClientService } from "./github-client.service";
 import type { FileContent, IssueDetail, IssueSummary, TreeNode } from "./github-client.types";
 import {
   GET_FILE_CONTENT_ROUTE,
@@ -14,7 +14,7 @@ import {
   GET_TREE_ROUTE,
   LIST_ISSUES_ROUTE,
 } from "./github-routes";
-import type { InternalTaskContextResolver } from "./internal-task-context.resolver";
+import { InternalTaskContextResolver } from "./internal-task-context.resolver";
 import { isReadOnlyEndpointAllowed } from "./read-only-endpoint-whitelist";
 import { AccessLog, type AccessLogDocument } from "./schemas/access-log.schema";
 

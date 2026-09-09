@@ -1,6 +1,6 @@
-import type { OperationCode } from '../../common/domain-types';
-import type { ReportDocument } from '../schemas/report.schema';
-import type { ReportStatus } from '../report.types';
+import type { OperationCode } from "../../common/domain-types";
+import type { ReportStatus } from "../report.types";
+import type { ReportDocument } from "../schemas/report.schema";
 
 // What GET /reports returns — deliberately thin (BE-19): no body, no
 // proposal, no error, so listing a page of reports never pulls a
