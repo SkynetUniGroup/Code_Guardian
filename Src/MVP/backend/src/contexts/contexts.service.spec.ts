@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, type TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
 import { CredentialsService } from "../credentials/credentials.service";
 import { GithubClientService } from "../github/github-client.service";
 import { ContextsService } from "./contexts.service";
@@ -16,16 +17,16 @@ import { AnalysisContext } from "./schemas/analysis-context.schema";
 describe("ContextsService", () => {
   let service: ContextsService;
   let model: {
-    create: vi.fn<Promise<unknown>, [Record<string, unknown>]>;
+    create: Mock<(doc: Record<string, unknown>) => Promise<unknown>>;
   };
-  let credentials: { getDecryptedToken: vi.fn };
-  let repoResolver: { resolve: vi.fn };
-  let franc: vi.fn<string, [string]>;
+  let credentials: { getDecryptedToken: Mock };
+  let repoResolver: { resolve: Mock };
+  let franc: Mock<(text: string) => string>;
   let github: {
-    listRefs: vi.fn;
-    compareCommits: vi.fn;
-    getTree: vi.fn;
-    getReadme: vi.fn;
+    listRefs: Mock;
+    compareCommits: Mock;
+    getTree: Mock;
+    getReadme: Mock;
   };
 
   const baseDto: CreateContextDto = {
@@ -53,6 +54,8 @@ describe("ContextsService", () => {
       scopeType: "FULL_REPOSITORY",
       paths: [],
       detectedLanguages: ["typescript", "python"],
+      unsupportedLanguages: [],
+      predominantLanguage: "typescript",
       estimatedFileCount: 3,
       nonEnglishReadmeDetected: false,
       ...overrides,
@@ -61,11 +64,11 @@ describe("ContextsService", () => {
 
   beforeEach(async () => {
     model = {
-      create: vi.fn<Promise<unknown>, [Record<string, unknown>]>(),
+      create: vi.fn(),
     };
     credentials = { getDecryptedToken: vi.fn().mockResolvedValue("token") };
     repoResolver = {
-      resolve: jest.fn().mockResolvedValue({ owner: "owner", repo: "repo", isPrivate: false }),
+      resolve: vi.fn().mockResolvedValue({ owner: "owner", repo: "repo", isPrivate: false }),
     };
     github = {
       listRefs: vi.fn().mockResolvedValue({
@@ -78,7 +81,7 @@ describe("ContextsService", () => {
     };
     // Defaults to 'eng' so every test that doesn't care about RV.8 gets a
     // non-warning result without having to set this up itself.
-    franc = vi.fn<string, [string]>().mockReturnValue("eng");
+    franc = vi.fn<(text: string) => string>().mockReturnValue("eng");
     model.create.mockImplementation((doc: Record<string, unknown>) =>
       Promise.resolve(createdDocument(doc)),
     );
@@ -264,6 +267,97 @@ describe("ContextsService", () => {
           paths: ["src/index.ts"],
         }),
       ).rejects.toBeInstanceOf(BadRequestException);
+    });
+  });
+
+  // RF.24/RV.7 — l'avviso sui linguaggi non supportati.
+  //
+  // Il difetto era a monte di ogni possibile avviso: detectLanguages()
+  // scartava con `.filter(l => l !== 'unknown')` tutto cio' che non fosse fra i
+  // tre linguaggi supportati, quindi un repository interamente in Go usciva con
+  // `detectedLanguages: []` — indistinguibile da un repository vuoto — e
+  // nessuno strato a valle poteva piu' ricavare l'informazione, perche' non
+  // c'era piu'.
+  describe("RF.24 — linguaggi non supportati", () => {
+    it("non segnala nulla su un repository interamente TypeScript, JavaScript e Python", async () => {
+      github.getTree.mockResolvedValue([
+        { path: "src/index.ts", type: "file", sizeBytes: 10 },
+        { path: "src/app.jsx", type: "file", sizeBytes: 10 },
+        { path: "scripts/build.py", type: "file", sizeBytes: 10 },
+      ]);
+
+      const result = await service.create("user1", baseDto);
+
+      expect(result.unsupportedLanguages).toEqual([]);
+      expect(result.unsupportedLanguageWarning).toBe(false);
+    });
+
+    it("conserva i linguaggi non supportati invece di scartarli", async () => {
+      github.getTree.mockResolvedValue([
+        { path: "main.go", type: "file", sizeBytes: 10 },
+        { path: "server.go", type: "file", sizeBytes: 10 },
+        { path: "Main.java", type: "file", sizeBytes: 10 },
+      ]);
+
+      await service.create("user1", baseDto);
+
+      const persisted = model.create.mock.calls[0][0] as Record<string, unknown>;
+      expect(persisted.detectedLanguages).toEqual([]);
+      // Ordinati per numero di file decrescente: Go ha due file, Java uno.
+      expect(persisted.unsupportedLanguages).toEqual(["go", "java"]);
+      expect(persisted.predominantLanguage).toBe("go");
+    });
+
+    it("avvisa quando il linguaggio predominante non e' analizzabile", async () => {
+      github.getTree.mockResolvedValue([
+        { path: "main.go", type: "file", sizeBytes: 10 },
+        { path: "server.go", type: "file", sizeBytes: 10 },
+        { path: "tools/gen.ts", type: "file", sizeBytes: 10 },
+      ]);
+      model.create.mockImplementation((doc: Record<string, unknown>) =>
+        Promise.resolve(createdDocument(doc)),
+      );
+
+      const result = await service.create("user1", baseDto);
+
+      expect(result.predominantLanguage).toBe("go");
+      expect(result.detectedLanguages).toEqual(["typescript"]);
+      expect(result.unsupportedLanguageWarning).toBe(true);
+    });
+
+    it("non avvisa quando il codice non supportato e' marginale", async () => {
+      // La soglia e' il linguaggio predominante e non la semplice presenza:
+      // quasi ogni repository ha uno script di shell, e un avviso che compare
+      // sempre non lo legge piu' nessuno.
+      github.getTree.mockResolvedValue([
+        { path: "src/a.ts", type: "file", sizeBytes: 10 },
+        { path: "src/b.ts", type: "file", sizeBytes: 10 },
+        { path: "scripts/deploy.sh", type: "file", sizeBytes: 10 },
+      ]);
+
+      const result = await service.create("user1", baseDto);
+
+      expect(result.predominantLanguage).toBe("typescript");
+      expect(result.unsupportedLanguages).toEqual(["shell"]);
+      expect(result.unsupportedLanguageWarning).toBe(false);
+    });
+
+    it("non scambia per codice i file che non lo sono", async () => {
+      // Markdown, JSON e i file senza estensione non sono "codice in un
+      // linguaggio non supportato": contarli renderebbe l'avviso rumore su
+      // ogni repository esistente.
+      github.getTree.mockResolvedValue([
+        { path: "README.md", type: "file", sizeBytes: 10 },
+        { path: "package.json", type: "file", sizeBytes: 10 },
+        { path: "Dockerfile", type: "file", sizeBytes: 10 },
+        { path: "go", type: "file", sizeBytes: 10 },
+      ]);
+
+      const result = await service.create("user1", baseDto);
+
+      expect(result.unsupportedLanguages).toEqual([]);
+      expect(result.predominantLanguage).toBeNull();
+      expect(result.unsupportedLanguageWarning).toBe(false);
     });
   });
 

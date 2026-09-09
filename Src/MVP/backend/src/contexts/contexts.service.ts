@@ -7,17 +7,17 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
-import type { CredentialsService } from "../credentials/credentials.service";
-import type { GithubClientService } from "../github/github-client.service";
+import { CredentialsService } from "../credentials/credentials.service";
+import { GithubClientService } from "../github/github-client.service";
 import type { TreeNode } from "../github/github-client.types";
-import { detectLanguage } from "../github/language-detection";
+import { detectAnyLanguage, isSupportedLanguage } from "../github/language-detection";
 import type { AnalysisContextDto } from "./dto/analysis-context.dto";
 import type { CreateContextDto } from "./dto/create-context.dto";
 import type { FrancFn } from "./franc.provider";
 import { FRANC } from "./franc.provider";
 import { normalizePaths } from "./path-normalization";
 import { isReadmeNonEnglish } from "./readme-language";
-import type { RepoResolverService } from "./repo-resolver.service";
+import { RepoResolverService } from "./repo-resolver.service";
 import { AnalysisContext, type AnalysisContextDocument } from "./schemas/analysis-context.schema";
 
 const GITHUB_PROVIDER = "GITHUB";
@@ -73,7 +73,8 @@ export class ContextsService {
     // Step 7: language detection (RF.24, RV.7). The tree read here is
     // reused by step 9 below — fetched once, per the design doc.
     const tree = await this.githubClient.getTree(token, owner, repo, resolvedSha);
-    const detectedLanguages = this.detectLanguages(tree);
+    const { detectedLanguages, unsupportedLanguages, predominantLanguage } =
+      this.detectLanguages(tree);
 
     // RV.8: non-blocking, best-effort — a missing README or a detection
     // hiccup must never fail context creation over what is, at most, a
@@ -130,6 +131,8 @@ export class ContextsService {
       scopeType: dto.scopeType,
       paths: normalizedPaths,
       detectedLanguages,
+      unsupportedLanguages,
+      predominantLanguage,
       estimatedFileCount: this.estimateFileCount(dto.scopeType, normalizedPaths, tree),
       nonEnglishReadmeDetected,
     });
@@ -158,15 +161,51 @@ export class ContextsService {
     ).length;
   }
 
-  private detectLanguages(tree: TreeNode[]): string[] {
-    return [
-      ...new Set(
-        tree
-          .filter((entry) => entry.type === "file")
-          .map((entry) => detectLanguage(entry.path))
-          .filter((language) => language !== "unknown"),
-      ),
-    ];
+  // RF.24/RV.7: quali linguaggi ci sono nel repository, divisi fra quelli che
+  // gli agenti sanno analizzare e quelli che no, piu' il predominante.
+  //
+  // La versione precedente scartava i file non riconosciuti *prima* di
+  // arrivare al contesto (`.filter(l => l !== 'unknown')`), e con essi
+  // l'informazione necessaria all'avviso: un repository interamente in Go
+  // usciva con `detectedLanguages: []`, identico a un repository vuoto, e
+  // nessuno strato a valle poteva piu' distinguerli.
+  //
+  // Il predominante si calcola per numero di file e non per byte: e' una
+  // stima piu' grossolana ma non richiede di leggere gli oggetti dell'albero,
+  // e qui serve solo a scegliere il tono dell'avviso.
+  private detectLanguages(tree: TreeNode[]): {
+    detectedLanguages: string[];
+    unsupportedLanguages: string[];
+    predominantLanguage: string | null;
+  } {
+    const counts = new Map<string, number>();
+    for (const entry of tree) {
+      if (entry.type !== "file") {
+        continue;
+      }
+      const language = detectAnyLanguage(entry.path);
+      if (language === null) {
+        continue;
+      }
+      counts.set(language, (counts.get(language) ?? 0) + 1);
+    }
+
+    // Ordinamento per numero di file decrescente, con il nome come criterio
+    // di parita': senza, due linguaggi con lo stesso conteggio si scambiano
+    // di posto fra una creazione di contesto e l'altra e l'avviso cambia
+    // testo senza che sia cambiato nulla.
+    const byFrequency = [...counts.entries()].sort(
+      ([leftName, leftCount], [rightName, rightCount]) =>
+        rightCount - leftCount || leftName.localeCompare(rightName),
+    );
+
+    return {
+      detectedLanguages: byFrequency.map(([name]) => name).filter(isSupportedLanguage),
+      unsupportedLanguages: byFrequency
+        .map(([name]) => name)
+        .filter((name) => !isSupportedLanguage(name)),
+      predominantLanguage: byFrequency[0]?.[0] ?? null,
+    };
   }
 
   private async checkReadmeLanguage(
@@ -198,6 +237,20 @@ export class ContextsService {
       resolvedSha: context.resolvedSha,
       scopeType: context.scopeType,
       detectedLanguages: context.detectedLanguages,
+      unsupportedLanguages: context.unsupportedLanguages ?? [],
+      predominantLanguage: context.predominantLanguage ?? null,
+      // Ricavato e non memorizzato: e' una funzione dei due campi qui sopra,
+      // e un booleano persistito accanto ai dati da cui dipende e' solo un
+      // modo in piu' per farli divergere.
+      //
+      // La soglia e' il linguaggio *predominante*, non la semplice presenza di
+      // codice non supportato: quasi ogni repository contiene almeno uno
+      // script di shell, e un avviso che compare sempre non lo legge piu'
+      // nessuno. L'elenco completo resta comunque in `unsupportedLanguages`,
+      // per chi lo vuole mostrare in ogni caso.
+      unsupportedLanguageWarning:
+        (context.unsupportedLanguages ?? []).length > 0 &&
+        !isSupportedLanguage(context.predominantLanguage ?? ""),
       estimatedFileCount: context.estimatedFileCount,
       nonEnglishReadmeDetected: context.nonEnglishReadmeDetected,
     };

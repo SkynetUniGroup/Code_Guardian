@@ -42,6 +42,20 @@ export class AnalysisContext {
   @Prop({ type: [String], default: [] })
   detectedLanguages!: string[];
 
+  // RF.24 — i linguaggi di programmazione presenti nel repository che gli
+  // agenti non sanno analizzare, ordinati per numero di file decrescente.
+  // Prima venivano scartati durante la rilevazione, e con essi la possibilita'
+  // stessa di emettere l'avviso.
+  @Prop({ type: [String], default: [] })
+  unsupportedLanguages!: string[];
+
+  // Il linguaggio con piu' file, supportato o meno; null su un repository
+  // senza codice. Serve a decidere se l'avviso di RF.24 vale la pena di essere
+  // mostrato: un repository *principalmente* in Go e' un caso diverso da uno
+  // in TypeScript con due script di shell.
+  @Prop({ type: String, default: null })
+  predominantLanguage!: string | null;
+
   @Prop()
   estimatedFileCount!: number;
 
