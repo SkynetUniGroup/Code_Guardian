@@ -49,7 +49,21 @@ dev = [
     "pytest-asyncio>=0.23.7",
     "pytest-mock>=3.14.0",
     "respx>=0.21.1",
-    "ruff>=0.3.0",
+    # Tetto a <0.16 voluto, non una svista.
+    #
+    # `ruff check` non ha `select` configurato, quindi usa l'insieme di regole
+    # attivo per default in quella versione — e quell'insieme cambia fra una
+    # versione e l'altra. Il codice qui passa pulito fino alla 0.15.x; dalla
+    # 0.16.0 ruff attiva per default anche BLE001, SIM102/113, UP041 e RUF100,
+    # e la CI (`python -m ruff check src/`) trova 17 segnalazioni senza che
+    # nessuno abbia toccato una riga.
+    #
+    # Il vincolo era `>=0.3.0` senza limite superiore: la CI installava sempre
+    # l'ultima, quindi le regole si allargavano da sole. Il tetto le congela a
+    # quelle per cui il codice e' gia' conforme. Per alzarlo basta sistemare
+    # quelle 17 — due sono automatiche con `--fix`, le altre toccano la
+    # gestione delle eccezioni e vanno lette una per una.
+    "ruff>=0.3.0,<0.16",
 ]
 
 [tool.ruff]
