@@ -188,7 +188,7 @@ export class GithubClientService {
       ref,
     });
 
-    if (Array.isArray(data) || data.type !== "file" || !data.content) {
+    if (Array.isArray(data) || data.type !== "file" || data.content === undefined) {
       throw new Error(`${path} is not a readable file at ${ref}`);
     }
 

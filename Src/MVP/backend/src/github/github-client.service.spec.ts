@@ -178,6 +178,38 @@ describe("GithubClientService — cache behavior", () => {
         86400,
       );
     });
+
+    it("returns an empty-but-valid file instead of rejecting it as unreadable", async () => {
+      redis.get.mockResolvedValue(null);
+      mockRequest.mockResolvedValue({
+        headers: {},
+        data: {
+          type: "file",
+          path: "empty.py",
+          sha: "filesha",
+          content: "",
+        },
+      });
+
+      const result = await service.getFileContent(
+        "token",
+        "owner",
+        "repo",
+        "empty.py",
+        "sha123",
+      );
+
+      expect(result.content).toBe("");
+    });
+
+    it("still rejects a path that is not a file, e.g. a directory", async () => {
+      redis.get.mockResolvedValue(null);
+      mockRequest.mockResolvedValue({ headers: {}, data: [] });
+
+      await expect(
+        service.getFileContent("token", "owner", "repo", "src", "sha123"),
+      ).rejects.toThrow("is not a readable file");
+    });
   });
 
   describe("read-only enforcement", () => {
