@@ -15,6 +15,9 @@ import { useSessionStore } from "./stores/sessionStore";
  */
 const router = createRouter({
   routeTree,
+  // biome-ignore lint/style/noNonNullAssertion: convenzione di TanStack Router
+  // per inizializzare il contesto con un segnaposto sostituito a runtime
+  // da RouterProvider (vedi il componente Router qui sotto).
   context: { session: null! },
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,

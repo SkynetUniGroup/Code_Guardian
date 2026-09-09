@@ -1,9 +1,57 @@
-﻿version: "3.8"
+# Servizi di appoggio per i test di integrazione (pnpm test:integration).
+#
+# Porte diverse da quelle di docker-compose.yml di proposito: cosi' la suite si
+# puo' lanciare mentre lo stack di sviluppo e' su, senza contendersi le porte e
+# soprattutto senza scrivere nel database di sviluppo.
+#
+# Rispetto a prima: c'erano solo Mongo (con credenziali root che nessuna
+# connection string usava) e nessun Redis, mentre AppModule apre una
+# connessione BullMQ/Redis all'avvio e senza non parte nemmeno.
+networks:
+  codeguardian-test-net:
+    driver: bridge
+
 services:
-  mongodb:
-    image: mongo:latest
+  mongodb-test:
+    image: mongo:7
     ports:
-      - "27017:27017"
+      - "27018:27017"
+    networks:
+      - codeguardian-test-net
+    # Niente volume: il database dei test e' usa-e-getta, e ripartire puliti a
+    # ogni run e' esattamente quello che si vuole.
+    tmpfs:
+      - /data/db
+    healthcheck:
+      test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis-test:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    networks:
+      - codeguardian-test-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio-test:
+    image: minio/minio
+    ports:
+      - "9002:9000"
+    networks:
+      - codeguardian-test-net
     environment:
-      MONGO_INITDB_ROOT_USERNAME: test
-      MONGO_INITDB_ROOT_PASSWORD: test
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
