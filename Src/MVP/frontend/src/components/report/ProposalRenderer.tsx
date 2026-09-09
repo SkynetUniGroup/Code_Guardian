@@ -5,16 +5,32 @@ interface ProposalRendererProps {
   proposal: Proposal;
 }
 
+// Gli ErrorKind che possono arrivare da ProposalPublisherService, resi in
+// italiano. Una mappa e non uno switch perche' l'unico caso non previsto —
+// un kind nuovo aggiunto lato backend — deve poter passare cosi' com'e'
+// invece di far comparire una stringa vuota.
+const PUBLISH_ERROR_LABELS: Record<string, string> = {
+  PR_CREATION_FAILED: "GitHub ha rifiutato la richiesta",
+  CREDENTIAL_INVALID: "credenziale GitHub non valida o senza permessi",
+  UPSTREAM: "servizio non raggiungibile",
+};
+
 /**
  * Renders the Proposal section of a Docs agent report.
  *
  * A Proposal contains:
  *  - The target file path
  *  - A unified diff of the proposed code changes
- *  - An optional PR URL (populated after the PR is opened by the agent)
+ *  - An optional PR URL (populated by the backend after the PR is opened)
+ *  - An optional publish error, when opening the PR failed
  *
  * The diff is displayed in a collapsible code block. The PR link is the
  * primary call-to-action element when present.
+ *
+ * Quando la PR non e' stata aperta, l'assenza del pulsante non basta: senza
+ * dirlo sembra che l'operazione non prevedesse una PR, mentre invece ci ha
+ * provato ed e' andata storta. La banda di avviso spiega il perche' e indirizza
+ * l'utente al diff qui sotto, che resta applicabile a mano.
  */
 export function ProposalRenderer({ proposal }: ProposalRendererProps) {
   const [diff_visible, setDiffVisible] = useState(false);
@@ -61,8 +77,25 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
         )}
       </div>
 
+      {/* Apertura della PR fallita: il diff resta, il collegamento no. */}
+      {proposal.pullRequestError && (
+        <div className="border-b border-[#cccccc] bg-amber-50 px-4 py-2.5 text-xs text-[#8a5a00]">
+          <p className="font-medium">
+            Non è stato possibile aprire la Pull Request (
+            {PUBLISH_ERROR_LABELS[proposal.pullRequestError.kind] ?? proposal.pullRequestError.kind}
+            )
+          </p>
+          <p className="mt-0.5 text-[#8a5a00]/80">{proposal.pullRequestError.message}</p>
+          <p className="mt-1">
+            La modifica proposta è comunque qui sotto: puoi applicarla a mano al file{" "}
+            <span className="font-mono">{proposal.targetPath}</span>.
+          </p>
+        </div>
+      )}
+
       {/* Toggle diff preview */}
       <button
+        type="button"
         className="flex w-full items-center gap-2 px-4 py-2 text-left text-xs text-gray-500 hover:bg-gray-50 transition border-b border-[#cccccc]"
         onClick={() => setDiffVisible((v) => !v)}
       >

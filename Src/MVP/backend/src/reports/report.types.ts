@@ -1,4 +1,3 @@
-import type { ReportError } from "@codeguardian/shared";
 import type { ErrorKind } from "../common/exceptions/error-kind";
 
 export type {
@@ -8,7 +7,10 @@ export type {
   FindingBlock,
   PolicyViolationBlock,
   Proposal,
+  ProposalPublishError,
+  Remediation,
   ReportContext,
+  ReportError,
   ReportStatus,
   Severity,
   TextBlock,
@@ -18,10 +20,13 @@ export type {
 
 //export type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical';
 
-// Report's equivalent of Task's TaskError, deliberately named differently
-// (`kind` here, `code` on Task) — same value domain, two field names kept
-// as-is from the PoC (§11.2).
-export interface ReportErrorB extends ReportError {
+// Equivalente su Report di TaskError, con il nome di campo diverso per scelta
+// (`kind` qui, `code` su Task) — stesso dominio di valori, due nomi mantenuti
+// come nel PoC (§11.2). Dichiarato per esteso e non come `extends ReportError`:
+// estenderlo avrebbe portato dentro anche il vecchio campo `code`, che
+// assembleFailed non ha mai valorizzato — un campo obbligatorio secondo il tipo
+// e `undefined` in ogni documento realmente scritto.
+export interface ReportErrorB {
   kind: ErrorKind;
   message: string;
   stage: string;
