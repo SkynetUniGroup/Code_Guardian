@@ -27,7 +27,19 @@ describe("AgentInvocationService", () => {
   let config: { get: Mock };
   let agentRegistry: { getTimeoutS: Mock };
   let templates: { contentForUser: Mock };
+  let contextModel: { findById: Mock };
+  let credentials: { getDecrypted: Mock };
   let fetchMock: Mock;
+
+  const CONTESTO = {
+    repoOwner: "OWASP",
+    repoName: "NodeGoat",
+    repoUrl: "https://github.com/OWASP/NodeGoat",
+    branch: "master",
+    resolvedSha: "abc1234",
+    scopeType: "FULL_REPOSITORY",
+    paths: [],
+  };
 
   beforeEach(() => {
     config = { get: vi.fn().mockReturnValue("http://agents:8000") };
@@ -35,9 +47,16 @@ describe("AgentInvocationService", () => {
     // RF.79: per difetto l'utente non ha un template personalizzato, che è
     // il caso di gran lunga più comune; i test dedicati lo valorizzano.
     templates = { contentForUser: vi.fn().mockResolvedValue(null) };
+    // Il contesto non e' piu' nel Task: il servizio lo rilegge dal database
+    // prima di comporre il payload, cosi' il payload non dipende da una copia
+    // che potrebbe essere invecchiata.
+    contextModel = { findById: vi.fn().mockResolvedValue(CONTESTO) };
+    credentials = { getDecrypted: vi.fn().mockResolvedValue(null) };
     service = new AgentInvocationService(
       config as never,
       agentRegistry as never,
+      contextModel as never,
+      credentials as never,
       templates as never,
     );
     fetchMock = vi.fn();
@@ -110,7 +129,7 @@ describe("AgentInvocationService", () => {
 
       // Chiesto per l'utente proprietario della task, non per un altro.
       expect(templates.contentForUser).toHaveBeenCalledWith("user1");
-      expect(payloadInviato()).toEqual({ readmeTemplate: "# Il mio template" });
+      expect(payloadInviato()).toMatchObject({ readmeTemplate: "# Il mio template" });
     });
 
     it("sends no template at all when the user has none, so the agent falls back to its default", async () => {
@@ -119,7 +138,7 @@ describe("AgentInvocationService", () => {
 
       await service.invoke(makeTask() as never);
 
-      expect(payloadInviato()).toEqual({});
+      expect(payloadInviato()).not.toHaveProperty("readmeTemplate");
     });
 
     it("does not even look for a template for operations other than DOCS_README", async () => {
@@ -129,7 +148,7 @@ describe("AgentInvocationService", () => {
       await service.invoke(makeTask({ operation: "SECURITY_OWASP" }) as never);
 
       expect(templates.contentForUser).not.toHaveBeenCalled();
-      expect(payloadInviato()).toEqual({});
+      expect(payloadInviato()).not.toHaveProperty("readmeTemplate");
     });
   });
 
@@ -162,7 +181,13 @@ describe("AgentInvocationService", () => {
 
   it("maps a failed response error through the agent error mapper", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: "failed", error: "RATE_LIMITED" }));
+    fetchMock.mockResolvedValue(
+      jsonResponse({
+        status: "failed",
+        errorKind: "RATE_LIMITED",
+        error: "Il modello ha rifiutato la richiesta.",
+      }),
+    );
 
     const result = await service.invoke(task as never);
 
@@ -170,7 +195,7 @@ describe("AgentInvocationService", () => {
       status: "FAILED",
       error: {
         code: "LLM_RATE_LIMITED",
-        message: "RATE_LIMITED",
+        message: "Il modello ha rifiutato la richiesta.",
         stage: "EXECUTION",
       },
     });
@@ -230,7 +255,9 @@ describe("AgentInvocationService", () => {
 
   it("fails with TIMEOUT when the agent itself reports its model call timed out", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: "failed", error: "TIMEOUT" }));
+    fetchMock.mockResolvedValue(
+      jsonResponse({ status: "failed", errorKind: "TIMEOUT", error: "Nessuna risposta." }),
+    );
 
     const result = await service.invoke(task as never);
 

@@ -9,6 +9,7 @@ import {
 } from "../contexts/schemas/analysis-context.schema";
 import { CredentialsService } from "../credentials/credentials.service";
 import { AgentRegistry } from "../operations/agent-registry.service";
+import { TemplatesService } from "../templates/templates.service";
 import {
   AgentResumeRequest,
   AgentRunPayload,
@@ -42,6 +43,7 @@ export class AgentInvocationService {
     @InjectModel(AnalysisContext.name)
     private readonly contextModel: Model<AnalysisContextDocument>,
     private readonly credentials: CredentialsService,
+    private readonly templates: TemplatesService,
   ) {}
 
   async invoke(task: TaskDocument): Promise<AgentInvocationResult> {
@@ -65,6 +67,13 @@ export class AgentInvocationService {
       ? await this.loadSonarqubeCredentials(task.userId)
       : undefined;
 
+    // RF.79-RF.81: il template README caricato dall'utente. Riguarda la sola
+    // operazione DOCS_README; se non ne ha caricato uno il campo resta
+    // assente e l'agente usa il proprio modello di default, che e'
+    // esattamente il ripristino descritto da RF.81.
+    const readmeTemplate =
+      task.operation === "DOCS_README" ? await this.templates.contentForUser(task.userId) : null;
+
     const body: AgentStartRequest = {
       taskId: task.id,
       threadId,
@@ -76,6 +85,7 @@ export class AgentInvocationService {
         // l'operazione non e' una di quelle che lo richiedono.
         ...(task.sprintId ? { sprintId: task.sprintId } : {}),
         ...(sonarqubeCredentials ? { sonarqube_credentials: sonarqubeCredentials } : {}),
+        ...(readmeTemplate ? { readmeTemplate } : {}),
         context_ref: {
           repoOwner: context.repoOwner,
           repoName: context.repoName,
