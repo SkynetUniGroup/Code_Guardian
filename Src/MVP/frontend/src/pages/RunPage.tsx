@@ -5,6 +5,7 @@ import { toApiError } from "../api/errors";
 import { ErrorState } from "../components/shared/ErrorState";
 import { Spinner } from "../components/shared/Spinner";
 import { useSelectionStore } from "../stores/selectionStore";
+import { useTasksStore } from "../stores/tasksStore";
 import type { CreateTaskBatchDto, OperationCode, OperationDescriptorDto } from "../types";
 
 /**
@@ -27,6 +28,7 @@ import type { CreateTaskBatchDto, OperationCode, OperationDescriptorDto } from "
 export function RunPage() {
   const navigate = useNavigate();
   const { contextId, context, clearContext } = useSelectionStore();
+  const setCurrentBatch = useTasksStore((s) => s.setCurrentBatch);
 
   // Set of selected operations — the batch can contain more than one.
   const [selected_ops, setSelectedOps] = useState<Set<OperationCode>>(new Set());
@@ -79,7 +81,11 @@ export function RunPage() {
     };
 
     try {
-      await apiClient.post("/tasks", dto);
+      const response = await apiClient.post<{ taskIds: string[]; batchId: string }>(
+        "/tasks",
+        dto,
+      );
+      setCurrentBatch(response.data.batchId);
       // Ripulisce il contesto salvato: per un nuovo batch l'utente ripassa da
       // /select, cosi' non si riusa per sbaglio un contesto ormai vecchio.
       // (Il commento c'era gia', la chiamata no.)

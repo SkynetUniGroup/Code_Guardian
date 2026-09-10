@@ -44,6 +44,7 @@ export function TasksPage() {
   const tasks_map = useTasksStore((s) => s.tasks);
   const load_tasks = useTasksStore((s) => s.loadTasks);
   const cancel_task = useTasksStore((s) => s.cancel);
+  const current_batch_id = useTasksStore((s) => s.currentBatchId);
 
   const [initial_loading, setInitialLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
@@ -96,17 +97,19 @@ export function TasksPage() {
     }
   }
 
-  const task_list = Object.values(tasks_map).sort((a, b) => {
-    // Sort by status priority: RUNNING > PENDING > others; then preserve insertion order.
-    const priority: Record<string, number> = {
-      RUNNING: 0,
-      PENDING: 1,
-      FAILED: 2,
-      COMPLETED: 3,
-      CANCELLED: 4,
-    };
-    return (priority[a.status] ?? 5) - (priority[b.status] ?? 5);
-  });
+  const task_list = Object.values(tasks_map)
+    .filter((t) => !current_batch_id || t.batchId === current_batch_id)
+    .sort((a, b) => {
+      // Sort by status priority: RUNNING > PENDING > others; then preserve insertion order.
+      const priority: Record<string, number> = {
+        RUNNING: 0,
+        PENDING: 1,
+        FAILED: 2,
+        COMPLETED: 3,
+        CANCELLED: 4,
+      };
+      return (priority[a.status] ?? 5) - (priority[b.status] ?? 5);
+    });
 
   // ---- Render ----
 

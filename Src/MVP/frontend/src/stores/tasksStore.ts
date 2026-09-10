@@ -18,6 +18,9 @@ interface TasksState {
    * important because WebSocket events arrive with taskId references only.
    */
   tasks: Record<string, TaskEntry>;
+
+  /** ID of the most recently launched batch, used to filter the Tasks dashboard. */
+  currentBatchId: string | null;
 }
 
 /**
@@ -67,6 +70,9 @@ interface TasksActions {
    * The backend will confirm via a task.updated event.
    */
   cancel: (taskId: string) => void;
+
+  /** Records the batch just launched from /run, called right after POST /tasks. */
+  setCurrentBatch: (batchId: string) => void;
 }
 
 export type TasksStore = TasksState & TasksActions;
@@ -96,6 +102,7 @@ function makeDefaultEntry(id: string): TaskEntry {
 export const useTasksStore = create<TasksStore>((set, _get) => ({
   // ---- Initial state ----
   tasks: {},
+  currentBatchId: null,
 
   // ---- Actions ----
 
@@ -205,5 +212,9 @@ export const useTasksStore = create<TasksStore>((set, _get) => ({
         },
       };
     });
+  },
+
+  setCurrentBatch: (batchId) => {
+    set({ currentBatchId: batchId });
   },
 }));
