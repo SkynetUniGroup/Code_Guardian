@@ -9,6 +9,60 @@ _ENV_FILE = _PROJECT_ROOT / ".env"
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
+"""Configuration settings for the Code Guardian agents application.
+
+This class uses Pydantic's BaseSettings to load configuration from environment variables
+and/or a .env file. It provides centralized access to all application settings,
+including security, LLM models, operational limits, and third-party integrations.
+
+Attributes:
+    internal_shared_secret (str): Shared secret for internal communication authentication.
+        Alias: INTERNAL_SHARED_SECRET.
+    backend_base_url (str): Base URL for the backend service.
+        Alias: BACKEND_BASE_URL.
+    backend_api_prefix (str): API prefix for backend routes, including global prefix.
+        Alias: BACKEND_API_PREFIX.
+    prompts_dir (str): Directory path where prompt templates are stored.
+        Alias: PROMPTS_DIR.
+    mongo_uri (str): MongoDB connection URI for LangGraph checkpointer.
+        Alias: MONGO_URI.
+    llm_provider (str): Provider for the LLM service (e.g., 'bedrock', 'dashscope').
+        Alias: LLM_PROVIDER.
+    llm_api_key (str): API key for the LLM service (empty for Bedrock IAM roles).
+        Alias: LLM_API_KEY.
+    llm_base_url (str): Base URL for the LLM API (OpenAI-compatible endpoint).
+        Alias: LLM_BASE_URL.
+    llm_model_general (str): General-purpose LLM model identifier.
+        Alias: LLM_MODEL_GENERAL.
+    llm_model_security (str): Security-focused LLM model identifier.
+        Alias: LLM_MODEL_SECURITY.
+    aws_region (str): AWS region for Bedrock or other AWS services.
+        Alias: AWS_REGION.
+    max_output_tokens (int): Maximum number of tokens for LLM output.
+    max_scope_chars (int): Maximum characters allowed in the analysis scope.
+        Alias: MAX_SCOPE_CHARS.
+    changelog_min_readability (float): Minimum readability score for changelog generation.
+        Alias: CHANGELOG_MIN_READABILITY.
+    security_max_output_tokens (int): Maximum tokens for security-related LLM outputs.
+    security_temperature (float): Temperature setting for security LLM calls (lower = more deterministic).
+    max_tool_rounds (int): Maximum number of tool interaction rounds.
+        Alias: MAX_TOOL_ROUNDS.
+    TIMEOUTS_BY_OPERATION (dict[str, int]): Timeout settings (in seconds) for specific operations.
+    redis_url (str): Redis connection URL for queues and caching.
+        Alias: REDIS_URL.
+    enable_sast_semgrep (bool): Flag to enable/disable Semgrep SAST scanning.
+        Alias: ENABLE_SAST_SEMGREP.
+    semgrep_timeout_s (int): Timeout (in seconds) for Semgrep scans.
+        Alias: SEMGREP_TIMEOUT_S.
+    sast_max_findings_llm (int): Maximum number of Semgrep findings to process with LLM.
+        Alias: SAST_MAX_FINDINGS_LLM.
+    sast_max_files (int): Maximum number of files to download for SAST scanning.
+        Alias: SAST_MAX_FILES.
+    enable_sonarqube (bool): Flag to enable/disable SonarQube integration.
+        Alias: ENABLE_SONARQUBE.
+    sonar_cache_ttl_s (int): Cache TTL (in seconds) for SonarQube results.
+        Alias: SONAR_CACHE_TTL_S.
+"""
         env_file=_ENV_FILE,
         env_file_encoding="utf-8",
         frozen=True,
@@ -97,6 +151,17 @@ class Settings(BaseSettings):
 
     def require_llm_key(self) -> str:
         # Bedrock selector: ADR-AWS-1 enforces IAM Task Roles, no static API key
+"""Retrieves the LLM API key based on the configured provider.
+
+For AWS Bedrock, returns an empty string as IAM Task Roles are used (no static API key).
+For other providers (e.g., DashScope/Qwen), validates and returns the configured API key.
+
+Returns:
+    str: The LLM API key (empty string for Bedrock).
+
+Raises:
+    RuntimeError: If the LLM_API_KEY is not configured for non-Bedrock providers.
+"""
         if self.llm_provider.lower() == "bedrock":
             return ""
 
