@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { AxiosError } from "axios";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useSessionStore } from "../stores/sessionStore";
 
@@ -41,7 +42,16 @@ const PROFILO = {
 
 /** Errore HTTP nella forma in cui axios lo propaga. */
 function httpError(status: number) {
-  return { response: { status } };
+  // Dev'essere un AxiosError vero: toApiError legge lo stato solo dopo
+  // `err instanceof AxiosError`, e con un oggetto della sola forma giusta la
+  // pagina non lo vede e cade nel ramo generico.
+  return new AxiosError("Request failed", String(status), undefined, undefined, {
+    status,
+    data: {},
+    statusText: "",
+    headers: {},
+    config: {},
+  } as never);
 }
 
 async function compilaCredenziali(email: string, password: string) {

@@ -274,7 +274,9 @@ describe("useWebSocket", () => {
       lastSocket!.trigger("task.inputRequired", {
         taskId: "task-1",
         kind: "BUSINESS_CONFIRMATION",
-        reportId: "report-tecnico-1",
+        // Nome distinto da `reportId` di task.updated, che e' il report
+        // finale: qui si parla del changelog tecnico da rivedere prima.
+        technicalReportId: "report-tecnico-1",
       }),
     );
 
