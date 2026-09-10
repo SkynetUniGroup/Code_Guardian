@@ -13,7 +13,38 @@ _ENV_FILE = _PROJECT_ROOT / ".env"
 
 
 class Settings(BaseSettings):
-    """Configuration settings loaded from environment variables."""
+    """Configuration settings loaded from environment variables.
+
+    Central class for managing all application configuration. Uses Pydantic for
+    validation and environment variable loading with support for .env files.
+
+    Attributes:
+        model_config: Pydantic configuration for settings management.
+        internal_shared_secret: Secret key for internal service authentication.
+        backend_base_url: Base URL for the backend service.
+        backend_api_prefix: API prefix used by the backend.
+        prompts_dir: Directory containing prompt templates.
+        mongo_uri: MongoDB connection URI for checkpointer.
+        llm_provider: LLM provider to use (bedrock or managed).
+        llm_api_key: API key for the LLM provider.
+        llm_base_url: Base URL for the LLM API endpoint.
+        llm_model_general: Default model for general operations.
+        llm_model_security: Default model for security operations.
+        aws_region: AWS region for Bedrock.
+        max_output_tokens: Maximum tokens for LLM output.
+        max_scope_chars: Maximum characters for prompt context.
+        changelog_min_readability: Minimum readability score for changelog.
+        security_max_output_tokens: Maximum tokens for security operations.
+        max_tool_rounds: Maximum number of tool rounds.
+        TIMEOUTS_BY_OPERATION: Operation-specific timeout mappings.
+        redis_url: Redis connection URL.
+        enable_sast_semgrep: Whether SAST semgrep analysis is enabled.
+        semgrep_timeout_s: Timeout for semgrep scanning.
+        sast_max_findings_llm: Maximum findings to send to LLM.
+        sast_max_files: Maximum files to download for scanning.
+        enable_sonarqube: Whether SonarQube integration is enabled.
+        sonar_cache_ttl_s: SonarQube cache TTL in seconds.
+    """
 
     model_config = SettingsConfigDict(
         env_file=_ENV_FILE,
@@ -24,9 +55,7 @@ class Settings(BaseSettings):
 
     # Security and Internal Communication
     internal_shared_secret: str = Field(default="", alias="INTERNAL_SHARED_SECRET")
-    backend_base_url: str = Field(
-        default="http://backend:3000", alias="BACKEND_BASE_URL"
-    )
+    backend_base_url: str = Field(default="http://backend:3000", alias="BACKEND_BASE_URL")
     # Il backend monta tutte le rotte sotto un prefisso globale
     # (main.ts: app.setGlobalPrefix("api/v1")), /internal/* incluse. Il valore
     # entra sia nell'URL chiamato sia nel messaggio firmato in HMAC, perche'
@@ -35,9 +64,7 @@ class Settings(BaseSettings):
     prompts_dir: str = Field(default="/app/prompts", alias="PROMPTS_DIR")
 
     # LangGraph Checkpointer (MVP)
-    mongo_uri: str = Field(
-        default="mongodb://mongo:27017/codeguardian", alias="MONGO_URI"
-    )
+    mongo_uri: str = Field(default="mongodb://mongo:27017/codeguardian", alias="MONGO_URI")
 
     # LLM Models Configuration
     llm_provider: str = Field(default="bedrock", alias="LLM_PROVIDER")
@@ -59,10 +86,8 @@ class Settings(BaseSettings):
 
     # Operational Limits
     max_output_tokens: int = 4096
-    max_scope_chars: int = Field(default=60_000, alias="MAX_SCOPE_CHARS")
-    changelog_min_readability: float = Field(
-        default=50.0, alias="CHANGELOG_MIN_READABILITY"
-    )
+    max_scope_chars: int = Field(default=100_000, alias="MAX_SCOPE_CHARS")
+    changelog_min_readability: float = Field(default=50.0, alias="CHANGELOG_MIN_READABILITY")
 
     # Dedicated limits for security agents (OWASP/Policy scan)
     security_max_output_tokens: int = 8000
@@ -111,8 +136,11 @@ class Settings(BaseSettings):
     def require_llm_key(self) -> str:
         """Returns the API key or raises a clear exception if missing, ignoring Bedrock.
 
+        For Bedrock provider, returns empty string as AWS uses IAM Task Roles.
+        For managed providers (OpenAI-compatible), validates that LLM_API_KEY is configured.
+
         Returns:
-            str: The configured LLM API key.
+            str: The configured LLM API key, or empty string for Bedrock.
 
         Raises:
             RuntimeError: If the key is missing and the provider is not Bedrock.
@@ -122,10 +150,12 @@ class Settings(BaseSettings):
             return ""
 
         if not self.llm_api_key:
-            raise RuntimeError(
-                "LLM_API_KEY not configured. Required for ManagedAPIProvider."
-            )
+            raise RuntimeError("LLM_API_KEY not configured. Required for ManagedAPIProvider.")
         return self.llm_api_key
 
 
 settings = Settings()
+
+
+# Instantiate settings object for global access throughout the application.
+# This is loaded once at module import time and cached for all subsequent uses.

@@ -86,9 +86,7 @@ class ContextTooLargeError(Exception):
         super().__init__(message)
 
 
-def reduce_messages(
-    existing: list[BaseMessage], new: list[BaseMessage]
-) -> list[BaseMessage]:
+def reduce_messages(existing: list[BaseMessage], new: list[BaseMessage]) -> list[BaseMessage]:
     if new and isinstance(new[0], SystemMessage):
         return new
     return existing + new
@@ -120,9 +118,7 @@ class AgentState:
     error: Exception | None = None
     report: Report | None = None
     tokens_consumed: int = 0
-    messages: Annotated[list[BaseMessage], reduce_messages] = field(
-        default_factory=list
-    )
+    messages: Annotated[list[BaseMessage], reduce_messages] = field(default_factory=list)
     parse_retries: int = 0
     needs_retry: bool = False
     needs_next_phase: bool = False
@@ -219,9 +215,7 @@ class AgentGraph:
                     "status": "failed",
                     "error": report.error.message if report.error else "Agent execution failed",
                     "errorKind": (
-                        report.error.kind.value
-                        if report.error
-                        else ErrorKind.UPSTREAM.value
+                        report.error.kind.value if report.error else ErrorKind.UPSTREAM.value
                     ),
                 }
 
@@ -376,27 +370,32 @@ class AgentGraph:
             dict: The partial state update.
         """
         try:
+            # If there's already an error from a previous node (e.g., componi_prompt),
+            # don't attempt to invoke the LLM - propagate the error directly.
+            # This prevents cascading errors like 3230 "Conversation must have at least one message"
+            # when messages list is empty due to a prior failure.
+            if st.error is not None:
+                logger.warning(
+                    f"[FIX] Skipping LLM invocation due to prior error in state: {st.error}"
+                )
+                return {}
+
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(
-                st.task_id, self._current_redis_client, "invoca_llm"
-            )
+            await self._check_interrupts(st.task_id, self._current_redis_client, "invoca_llm")
 
             elapsed = time.monotonic() - self._start_time
             remaining_timeout = max(1, int(self._timeout_s - elapsed))
 
             tools = self._get_langchain_tools(self._toolset(st), st.context_ref)
-            response = await self._provider.invoke_agent(
-                st.messages, tools, remaining_timeout
-            )
+
+            response = await self._provider.invoke_agent(st.messages, tools, remaining_timeout)
 
             new_tokens = 0
             if hasattr(response, "usage_metadata") and response.usage_metadata:
                 new_tokens = response.usage_metadata.get("total_tokens", 0)
             elif hasattr(response, "response_metadata"):
                 if "token_usage" in response.response_metadata:
-                    new_tokens = response.response_metadata["token_usage"].get(
-                        "total_tokens", 0
-                    )
+                    new_tokens = response.response_metadata["token_usage"].get("total_tokens", 0)
 
             raw_out = str(response.content) if not response.tool_calls else None
 
@@ -421,9 +420,7 @@ class AgentGraph:
         """
         try:
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(
-                st.task_id, self._current_redis_client, "esegui_tools"
-            )
+            await self._check_interrupts(st.task_id, self._current_redis_client, "esegui_tools")
             tools = self._get_langchain_tools(self._toolset(st), st.context_ref)
             tool_node = ToolNode(tools)
             result = await tool_node.ainvoke({"messages": st.messages})
@@ -468,9 +465,7 @@ class AgentGraph:
             if "content" in result and isinstance(result["content"], str):
                 if len(result["content"]) > settings.max_scope_chars:
                     trunc_msg = "\n...[TRUNCATED: CHARACTER LIMIT EXCEEDED]"
-                    result["content"] = (
-                        result["content"][: settings.max_scope_chars] + trunc_msg
-                    )
+                    result["content"] = result["content"][: settings.max_scope_chars] + trunc_msg
 
             return result
 
@@ -520,12 +515,8 @@ class AgentGraph:
         try:
             # Check interrupts inside the try block to ensure timeouts and
             # cancellations are properly routed to the error handler node
-            await self._check_interrupts(
-                st.task_id, self._current_redis_client, "carica_contesto"
-            )
-            ctx = await self._loader.load(
-                st.context_ref, self._toolset(st), st.agent_payload
-            )
+            await self._check_interrupts(st.task_id, self._current_redis_client, "carica_contesto")
+            ctx = await self._loader.load(st.context_ref, self._toolset(st), st.agent_payload)
             return {"loaded_context": ctx}
         except AgentCancelled:
             raise
@@ -544,9 +535,7 @@ class AgentGraph:
         """
         try:
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(
-                st.task_id, self._current_redis_client, "componi_prompt"
-            )
+            await self._check_interrupts(st.task_id, self._current_redis_client, "componi_prompt")
             system_prompt, user_prompt = self._profile.build_prompt(st.loaded_context)
 
             total_len = len(system_prompt) + len(user_prompt)
@@ -579,9 +568,7 @@ class AgentGraph:
         """
         try:
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(
-                st.task_id, self._current_redis_client, "valida_e_parsa"
-            )
+            await self._check_interrupts(st.task_id, self._current_redis_client, "valida_e_parsa")
             ctx = getattr(st, "loaded_context", {})
 
             result = self._profile.parse_output(st.raw_output, ctx)
@@ -686,19 +673,21 @@ class AgentGraph:
         try:
             # Check interrupts inside the try block for proper error routing
             # so that AgentTimeout and AgentCancelled flow into _node_gestisci_errore
-            await self._check_interrupts(
-                st.task_id, self._current_redis_client, "assembla_report"
-            )
+            await self._check_interrupts(st.task_id, self._current_redis_client, "assembla_report")
 
             op = self._profile.operation
             num_blocks = len(st.blocks)
 
             if op.startswith("SECURITY"):
-                summary_text = f"Scan completed. Found {num_blocks} potential vulnerabilities or violations."
+                summary_text = (
+                    f"Scan completed. Found {num_blocks} potential vulnerabilities or violations."
+                )
             elif op.startswith("CHANGELOG"):
                 summary_text = "Changelog generation completed successfully."
                 if num_blocks > 1:
-                    summary_text += f" {num_blocks - 1} issues were ignored due to insufficient metadata."
+                    summary_text += (
+                        f" {num_blocks - 1} issues were ignored due to insufficient metadata."
+                    )
             elif op.startswith("DOCS"):
                 summary_text = "Documentation analysis completed."
                 if st.proposal:
@@ -802,9 +791,7 @@ class AgentGraph:
             context=report_context,
             summary=None,
             executionTimeMs=None,
-            error=ReportError(
-                kind=error_kind, message=error_msg, stage="agent_execution"
-            ),
+            error=ReportError(kind=error_kind, message=error_msg, stage="agent_execution"),
         )
         return {"report": report}
 
