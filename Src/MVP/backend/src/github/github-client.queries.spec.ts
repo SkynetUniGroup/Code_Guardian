@@ -5,10 +5,12 @@ import { vi } from "vitest";
 // caching logic rather than network calls.
 const mockRequest = vi.fn();
 vi.mock("@octokit/rest", () => ({
-  Octokit: vi.fn().mockImplementation(function CostruttoreFinto() { return {
-    request: mockRequest,
-    hook: { after: vi.fn(), before: vi.fn() },
-  })),
+  Octokit: vi.fn().mockImplementation(function CostruttoreFinto() {
+    return {
+      request: mockRequest,
+      hook: { after: vi.fn(), before: vi.fn() },
+    };
+  }),
 }));
 
 import { Test, TestingModule } from "@nestjs/testing";

@@ -9,10 +9,12 @@ type HookBeforeCallback = (options: { method: string; url: string }) => void;
 const mockRequest = vi.fn();
 const mockHookBefore = vi.fn<void, [string, HookBeforeCallback]>();
 vi.mock("@octokit/rest", () => ({
-  Octokit: vi.fn().mockImplementation(function CostruttoreFinto() { return {
-    request: mockRequest,
-    hook: { after: vi.fn(), before: mockHookBefore },
-  })),
+  Octokit: vi.fn().mockImplementation(function CostruttoreFinto() {
+    return {
+      request: mockRequest,
+      hook: { after: vi.fn(), before: mockHookBefore },
+    };
+  }),
 }));
 
 import { Test, TestingModule } from "@nestjs/testing";

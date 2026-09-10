@@ -3,6 +3,7 @@ import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { type Mock, vi } from "vitest";
 import { GithubClientService } from "../github/github-client.service";
+import { SonarqubeClientService } from "../sonarqube/sonarqube-client.service";
 import { CredentialCipherService } from "./credential-cipher.service";
 import { CredentialsService } from "./credentials.service";
 import { ServiceCredential } from "./schemas/service-credential.schema";
@@ -17,6 +18,7 @@ describe("CredentialsService", () => {
     exists: Mock;
   };
   let cipher: { encrypt: Mock; decrypt: Mock };
+  let sonarqube: { verifyProjectAccess: Mock };
   let github: { verifyToken: Mock };
 
   beforeEach(async () => {
@@ -36,6 +38,7 @@ describe("CredentialsService", () => {
       }),
       decrypt: vi.fn().mockReturnValue("ghp_decrypted"),
     };
+    sonarqube = { verifyProjectAccess: vi.fn().mockResolvedValue(undefined) };
     github = { verifyToken: vi.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -44,6 +47,11 @@ describe("CredentialsService", () => {
         { provide: getModelToken(ServiceCredential.name), useValue: model },
         { provide: CredentialCipherService, useValue: cipher },
         { provide: GithubClientService, useValue: github },
+        // Questa base gestisce anche le credenziali SonarQube, e il servizio
+        // ne dipende: senza il provider il modulo di test non si compila
+        // nemmeno. I test qui riguardano il ramo GITHUB, quindi basta che
+        // la verifica del progetto non faccia nulla.
+        { provide: SonarqubeClientService, useValue: sonarqube },
       ],
     }).compile();
 
