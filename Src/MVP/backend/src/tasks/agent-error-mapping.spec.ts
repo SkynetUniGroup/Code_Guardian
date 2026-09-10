@@ -61,7 +61,7 @@ describe("TU_26 (RF.65, RF.67-71, RQ.7, RQ.8) — corrispondenza ErrorKind agent
     }
   }
 
-  /** I membri di `class ErrorKind(str, Enum)` in agents/src/models.py. */
+  /** I membri di `class ErrorKind` in agents/src/models.py. */
   function enumerazioneLatoAgente(): string[] {
     const modulo = sorgente("agents", "src", "models.py");
     const inizio = modulo.indexOf("class ErrorKind");
@@ -71,7 +71,10 @@ describe("TU_26 (RF.65, RF.67-71, RQ.7, RQ.8) — corrispondenza ErrorKind agent
     const resto = modulo.slice(inizio + "class ErrorKind".length);
     const fine = resto.search(/\n(?=\S)/);
     const corpo = fine === -1 ? resto : resto.slice(0, fine);
-    return [...corpo.matchAll(/^\s+([A-Z_]+)\s*=\s*'([A-Z_]+)'/gm)].map((riga) => riga[2]);
+    // Le virgolette possono essere singole o doppie: dipende da come il
+    // formattatore Python configurato ha scritto il file quel giorno, e non
+    // e' qualcosa su cui questo controllo debba avere un'opinione.
+    return [...corpo.matchAll(/^\s+([A-Z_]+)\s*=\s*['"]([A-Z_]+)['"]/gm)].map((riga) => riga[2]);
   }
 
   /** I membri dell'unione `export type ErrorKind` lato backend. */
@@ -80,7 +83,8 @@ describe("TU_26 (RF.65, RF.67-71, RQ.7, RQ.8) — corrispondenza ErrorKind agent
     const inizio = modulo.indexOf("export type ErrorKind");
     expect(inizio).toBeGreaterThanOrEqual(0);
     const dichiarazione = modulo.slice(inizio, modulo.indexOf(";", inizio));
-    return [...dichiarazione.matchAll(/'([A-Z_]+)'/g)].map((voce) => voce[1]);
+    // Anche qui le virgolette dipendono dal formattatore, non dal contratto.
+    return [...dichiarazione.matchAll(/['"]([A-Z_]+)['"]/g)].map((voce) => voce[1]);
   }
 
   it("l'enumerazione del servizio agenti contiene esattamente gli otto valori del catalogo", () => {

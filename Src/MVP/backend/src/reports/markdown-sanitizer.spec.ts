@@ -121,13 +121,12 @@ describe("sanitizeReportBody", () => {
       {
         kind: "FINDING",
         category: "A03:2021",
-        severity: "high",
+        severity: "HIGH",
         filePath: "src/x.ts",
-        startLine: 1,
-        endLine: 2,
-        explanation: "<script>bad()</script>",
-        remediationKind: "TEXT",
-        remediation: "[fix](javascript:void(0))",
+        lineStart: 1,
+        lineEnd: 2,
+        description: "<script>bad()</script>",
+        remediation: { kind: "TEXT", text: "[fix](javascript:void(0))" },
       },
     ];
 
@@ -135,13 +134,12 @@ describe("sanitizeReportBody", () => {
       {
         kind: "FINDING",
         category: "A03:2021",
-        severity: "high",
+        severity: "HIGH",
         filePath: "src/x.ts",
-        startLine: 1,
-        endLine: 2,
-        explanation: "bad()",
-        remediationKind: "TEXT",
-        remediation: "fix",
+        lineStart: 1,
+        lineEnd: 2,
+        description: "bad()",
+        remediation: { kind: "TEXT", text: "fix" },
       },
     ]);
   });
