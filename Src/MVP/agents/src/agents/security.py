@@ -455,4 +455,5 @@ class SecurityPolicyProfile:
                     remediation=remediation,
                 )
             )
+        return blocks, None
 

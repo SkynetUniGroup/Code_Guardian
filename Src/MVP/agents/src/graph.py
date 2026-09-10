@@ -599,11 +599,25 @@ class AgentGraph:
             # Readability auto-correction logic
             if is_readability_retry:
                 if st.parse_retries < 2:
+                    # Il messaggio precedente diceva soltanto "semplifica
+                    # e accorcia", e il modello girava a vuoto per tre
+                    # tentativi restando sempre intorno a trenta. L'indice
+                    # di Flesch premia due cose sole -- frasi corte e parole
+                    # corte -- e conviene dirgliele, con i numeri: lo stesso
+                    # contenuto scritto in inglese piano supera gli ottanta.
                     retry_msg = (
-                        f"The generated text is too complex or uses jargon. "
-                        f"Details: {exc!s}\n"
-                        f"You must simplify the syntax, shorten sentences, "
-                        f"and use more accessible language."
+                        f"Your text was scored with the Flesch Reading Ease index "
+                        f"and came out too low. Details: {exc!s}\n"
+                        f"Rewrite it. That index rewards exactly two things: short "
+                        f"sentences and short words.\n"
+                        f"- Keep every sentence under twelve words. Split a long "
+                        f"bullet into two short ones.\n"
+                        f"- Prefer words of one or two syllables. Replace abstract "
+                        f"nouns such as 'capabilities', 'traceability', "
+                        f"'functionality', 'optimisation' with a plain verb: say "
+                        f"what the user can now do.\n"
+                        f"- Do not drop or reword the markdown links: keep them "
+                        f"exactly as they are."
                     )
                     return {
                         "messages": [
