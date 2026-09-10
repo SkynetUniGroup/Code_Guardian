@@ -38,9 +38,7 @@ def _with_sonarqube(ctx: dict, code_section: str) -> str:
     if not metrics:
         return code_section
 
-    section = SonarQubeService.format_for_prompt(
-        metrics, ctx.get("sonarqube_scope_files", [])
-    )
+    section = SonarQubeService.format_for_prompt(metrics, ctx.get("sonarqube_scope_files", []))
     return f"{section}\n\n{code_section}" if section else code_section
 
 
@@ -117,19 +115,26 @@ class DocsLoader:
                     has_doc = False
                     for j in range(i + 1, min(i + 4, len(lines))):
                         next_line = lines[j].strip()
-                        if next_line:
-                            if next_line.startswith(('"""', "'''")):
-                                has_doc = True
+                        if next_line.startswith(('"""', "'''")):
+                            has_doc = True
+                            break
+                        # Non-empty, non-docstring line means no docstring (must be first statement)
+                        elif next_line:
                             break
 
+                    # DEBUG
+                    import logging
+
+                    logger = logging.getLogger(__name__)
                     match = re.search(r"(def|class)\s+([a-zA-Z0-9_]+)", line)
                     if match:
-                        status = (
-                            "documented, verify alignment"
-                            if has_doc
-                            else "undocumented"
+                        logger.info(
+                            f"[DOCS_DETECT] Line {i + 1}: {match.group(2)} has_doc={has_doc}, next_lines={[(k, lines[k].strip()) for k in range(i + 1, min(i + 4, len(lines)))]}"
                         )
-                        targets.append(f"Line {i+1}: {match.group(2)} ({status})")
+
+                    if match:
+                        status = "documented, verify alignment" if has_doc else "undocumented"
+                        targets.append(f"Line {i + 1}: {match.group(2)} ({status})")
         else:
             ts_pattern = (
                 r"(function\s+[a-zA-Z0-9_]+|class\s+[a-zA-Z0-9_]+|"
@@ -140,21 +145,17 @@ class DocsLoader:
                     has_doc = False
                     for j in range(i - 1, max(i - 4, -1), -1):
                         prev_line = lines[j].strip()
-                        if prev_line:
-                            if prev_line.endswith("*/") or prev_line.startswith("//"):
-                                has_doc = True
+                        if prev_line.endswith("*/") or prev_line.startswith("//"):
+                            has_doc = True
+                            break
+                        # Non-empty, non-comment line means no docstring (JSDoc must precede)
+                        elif prev_line:
                             break
 
-                    match = re.search(
-                        r"(?:function|class|const)\s+([a-zA-Z0-9_]+)", line
-                    )
+                    match = re.search(r"(?:function|class|const)\s+([a-zA-Z0-9_]+)", line)
                     if match:
-                        status = (
-                            "documented, verify alignment"
-                            if has_doc
-                            else "undocumented"
-                        )
-                        targets.append(f"Line {i+1}: {match.group(1)} ({status})")
+                        status = "documented, verify alignment" if has_doc else "undocumented"
+                        targets.append(f"Line {i + 1}: {match.group(1)} ({status})")
 
         return targets
 
@@ -194,14 +195,14 @@ class DocsLoader:
                         break
 
                 if not has_doc:
-                    unit_name = f"Endpoint at line {i+1}: {line.strip()}"
+                    unit_name = f"Endpoint at line {i + 1}: {line.strip()}"
                     for j in range(i, min(i + 4, len(lines))):
                         func_match = re.search(
                             r"(?:def|async def|function|const|class)\s+([a-zA-Z0-9_]+)",
                             lines[j],
                         )
                         if func_match:
-                            unit_name = f"Endpoint '{func_match.group(1)}' (line {i+1})"
+                            unit_name = f"Endpoint '{func_match.group(1)}' (line {i + 1})"
                             break
                     undocumented.append(unit_name)
 
@@ -266,9 +267,7 @@ class DocsLoader:
         files_to_doc = []
         for n in nodes:
             if n["type"] == "file" and n["path"].endswith(supported_exts):
-                if scope_type == "FULL_REPOSITORY" or any(
-                    n["path"].startswith(p) for p in paths
-                ):
+                if scope_type == "FULL_REPOSITORY" or any(n["path"].startswith(p) for p in paths):
                     files_to_doc.append(n["path"])
 
         undocumented_summary = []
@@ -284,7 +283,7 @@ class DocsLoader:
                 if units:
                     summary_text = (
                         f"### File: {path} ###\n```\n{content}\n```\n"
-                        f'Units to process: {", ".join(units)}\n'
+                        f"Units to process: {', '.join(units)}\n"
                     )
                     undocumented_summary.append(summary_text)
 
@@ -381,18 +380,19 @@ class BaseDocsDiffProfile:
                 doc_lines = doc_text.splitlines()
                 num_lines = len(doc_lines)
 
-                diff_unified += f"@@ -{line},0 +{line},{num_lines} @@\n"
+                # For Python/JavaScript/TypeScript, docstrings go after the definition line
+                # The LLM returns the line of the definition, so we insert at line+1
+                # to place the docstring inside the block (Python) or after (JS/TS JSDoc)
+                insert_line = line + 1
+
+                diff_unified += f"@@ -{insert_line},0 +{insert_line},{num_lines} @@\n"
                 for doc_line in doc_lines:
                     diff_unified += f"+{doc_line}\n"
 
         files_involved = list(docs_by_file.keys())
-        target_path = (
-            files_involved[0] if len(files_involved) == 1 else "Multi-file scope"
-        )
+        target_path = files_involved[0] if len(files_involved) == 1 else "Multi-file scope"
 
-        proposal = Proposal(
-            targetPath=target_path, diffUnified=diff_unified, language="auto"
-        )
+        proposal = Proposal(targetPath=target_path, diffUnified=diff_unified, language="auto")
 
         return blocks, proposal
 
@@ -470,9 +470,7 @@ class DocsReadmeProfile:
         self._ctx = ctx
         template_data = load_prompt_template("docs", "readme_docs")
 
-        template_path = (
-            Path(settings.prompts_dir) / "docs" / "default_readme_template.md"
-        )
+        template_path = Path(settings.prompts_dir) / "docs" / "default_readme_template.md"
         readme_template = ""
         if template_path.exists():
             with open(template_path, encoding="utf-8") as f:
@@ -518,9 +516,7 @@ class DocsReadmeProfile:
         to_file = f"b/{readme_path}"
 
         diff = "".join(
-            difflib.unified_diff(
-                original_lines, new_lines, fromfile=from_file, tofile=to_file, n=3
-            )
+            difflib.unified_diff(original_lines, new_lines, fromfile=from_file, tofile=to_file, n=3)
         )
 
         if not diff:
@@ -532,9 +528,7 @@ class DocsReadmeProfile:
             ]
             return blocks, None
 
-        proposal = Proposal(
-            targetPath=readme_path, diffUnified=diff, language="markdown"
-        )
+        proposal = Proposal(targetPath=readme_path, diffUnified=diff, language="markdown")
 
         blocks = [
             TextBlock(
