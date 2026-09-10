@@ -81,15 +81,8 @@ export function RunPage() {
     };
 
     try {
-      const response = await apiClient.post<{ taskIds: string[]; batchId: string }>(
-        "/tasks",
-        dto,
-      );
+      const response = await apiClient.post<{ taskIds: string[]; batchId: string }>("/tasks", dto);
       setCurrentBatch(response.data.batchId);
-      // Ripulisce il contesto salvato: per un nuovo batch l'utente ripassa da
-      // /select, cosi' non si riusa per sbaglio un contesto ormai vecchio.
-      // (Il commento c'era gia', la chiamata no.)
-      clearContext();
       navigate({ to: "/tasks" });
     } catch (err: unknown) {
       const { status, message } = toApiError(err);

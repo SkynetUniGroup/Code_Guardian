@@ -26,6 +26,8 @@ const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
 export function SelectPage() {
   const navigate = useNavigate();
   const setContext = useSelectionStore((s) => s.setContext);
+  const setFormContext = useSelectionStore((s) => s.setFormContext);
+  const formContext = useSelectionStore((s) => s.formContext);
 
   // Repository list state
   const [repos, setRepos] = useState<RepositorySummary[]>([]);
@@ -42,6 +44,18 @@ export function SelectPage() {
   const [form_errors, setFormErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submit_error, setSubmitError] = useState("");
+
+  // Pre-fill form from formContext when it exists
+  useEffect(() => {
+    if (formContext) {
+      setSelectedRepo(formContext.selected_repo);
+      setManualRepoUrl(formContext.manual_repo_url);
+      setRef(formContext.ref);
+      setCommitSha(formContext.commit_sha);
+      setScopeType(formContext.scope_type as CreateContextDto["scopeType"]);
+      setPathsText(formContext.paths_text);
+    }
+  }, [formContext]);
 
   // Fetch repositories on mount.
   useEffect(() => {
@@ -109,7 +123,8 @@ export function SelectPage() {
       .map((s) => s.trim())
       .filter(Boolean);
 
-    const repo_url = manual_repo_url.trim() || `https://github.com/${selected_repo?.owner}/${selected_repo?.name}`;
+    const repo_url =
+      manual_repo_url.trim() || `https://github.com/${selected_repo?.owner}/${selected_repo?.name}`;
 
     const dto: CreateContextDto = {
       repoUrl: repo_url,
@@ -127,6 +142,15 @@ export function SelectPage() {
       // Store the full context DTO so /run can read repo metadata without
       // an additional API round-trip.
       setContext(response.data);
+      // Store form context for repopulating the form on return visits
+      setFormContext({
+        manual_repo_url,
+        selected_repo,
+        ref,
+        commit_sha,
+        scope_type,
+        paths_text,
+      });
       navigate({ to: "/run" });
     } catch {
       setSubmitError("Impossibile salvare il contesto. Verifica i parametri e riprova.");
