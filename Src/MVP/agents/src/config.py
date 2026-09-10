@@ -23,6 +23,39 @@ _ENV_FILE = _PROJECT_ROOT / ".env"
 
 class Settings(BaseSettings):
     """Configuration settings loaded from environment variables.
+"""Configuration settings loaded from environment variables.
+
+Central class for managing all application configuration. Uses Pydantic for
+validation and environment variable loading with support for .env files.
+
+Attributes:
+    model_config (SettingsConfigDict): Pydantic configuration for settings management.
+    internal_shared_secret (str): Secret key for internal service authentication.
+    backend_base_url (str): Base URL for the backend service.
+    backend_api_prefix (str): API prefix used by the backend.
+    prompts_dir (str): Directory containing prompt templates.
+    mongo_uri (str): MongoDB connection URI for checkpointer.
+    llm_provider (str): LLM provider to use (bedrock or managed).
+    llm_api_key (str): API key for the LLM provider.
+    llm_base_url (str): Base URL for the LLM API endpoint.
+    llm_model_general (str): Default model for general operations.
+    llm_model_security (str): Default model for security operations.
+    aws_region (str): AWS region for Bedrock.
+    max_output_tokens (int): Maximum tokens for LLM output.
+    max_scope_chars (int): Maximum characters for prompt context.
+    changelog_min_readability (float): Minimum readability score for changelog.
+    security_max_output_tokens (int): Maximum tokens for security operations.
+    security_temperature (float): Temperature setting for security operations.
+    max_tool_rounds (int): Maximum number of tool rounds.
+    TIMEOUTS_BY_OPERATION (dict[str, int]): Operation-specific timeout mappings.
+    redis_url (str): Redis connection URL.
+    enable_sast_semgrep (bool): Whether SAST semgrep analysis is enabled.
+    semgrep_timeout_s (int): Timeout for semgrep scanning.
+    sast_max_findings_llm (int): Maximum findings to send to LLM.
+    sast_max_files (int): Maximum files to download for scanning.
+    enable_sonarqube (bool): Whether SonarQube integration is enabled.
+    sonar_cache_ttl_s (int): SonarQube cache TTL in seconds.
+"""
 
     Central class for managing all application configuration. Uses Pydantic for
     validation and environment variable loading with support for .env files.
