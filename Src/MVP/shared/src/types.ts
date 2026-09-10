@@ -397,3 +397,19 @@ export interface RepositorySummary {
   defaultBranch: string;
   primaryLanguage: string | null;
 }
+
+// TEMPLATE README (RF.79-RF.81)
+
+/**
+ * Lo stato del template README di un utente, come lo vede l'interfaccia.
+ *
+ * `active: false` non e' un errore: e' il caso normale di chi non ha mai
+ * caricato nulla e sta usando il modello di default dell'Agente Docs. RF.81
+ * lo definisce anche come lo stato in cui si torna dopo una rimozione.
+ */
+export interface ReadmeTemplateDto {
+  active: boolean;
+  filename: string | null;
+  content: string | null;
+  updatedAt: string | null;
+}

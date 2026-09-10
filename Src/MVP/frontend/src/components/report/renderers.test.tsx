@@ -9,28 +9,29 @@ import { TextBlockRenderer } from "./TextBlockRenderer";
 
 function finding(over: Partial<FindingBlock> = {}): FindingBlock {
   return {
-    kind: "finding",
+    kind: "FINDING",
     order: 1,
-    owaspCategory: "A03:2021 – Injection",
-    severity: "critical",
+    category: "A03:2021 – Injection",
+    severity: "CRITICAL",
     filePath: "app/data/user-dao.js",
-    startLine: 42,
-    endLine: 45,
-    explanation: "Query costruita per concatenazione di stringhe.",
-    remediation: "Usare query parametrizzate.",
+    lineStart: 42,
+    lineEnd: 45,
+    description: "Query costruita per concatenazione di stringhe.",
+    remediation: { kind: "TEXT", text: "Usare query parametrizzate." },
     ...over,
   };
 }
 
 function violazione(over: Partial<PolicyViolationBlock> = {}): PolicyViolationBlock {
   return {
-    kind: "policy_violation",
+    kind: "POLICY_VIOLATION",
     order: 1,
     ruleId: "POL-007",
     ruleText: "Vietato loggare dati personali",
     filePath: "src/logger.ts",
     explanation: "Il logger stampa l'email utente.",
-    remediation: "Rimuovere il campo email dal log.",
+    severity: "MEDIUM",
+    remediation: { kind: "TEXT", text: "Rimuovere il campo email dal log." },
     ...over,
   };
 }
@@ -39,11 +40,12 @@ const PROPOSTA: Proposal = {
   targetPath: "src/utils/date.ts",
   diffUnified: "--- a/src/utils/date.ts\n+++ b/src/utils/date.ts\n+/** Formatta una data. */",
   language: "typescript",
+  pullRequestUrl: null,
 };
 
 describe("TextBlockRenderer", () => {
   it("mostra il contenuto testuale del blocco", () => {
-    render(<TextBlockRenderer block={{ kind: "text", order: 1, markdown: "## Sintesi" }} />);
+    render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown: "## Sintesi" }} />);
 
     expect(screen.getByText("## Sintesi")).toBeInTheDocument();
   });
@@ -51,7 +53,7 @@ describe("TextBlockRenderer", () => {
   it("preserva gli a capo del testo", () => {
     const markdown = "Prima riga\nSeconda riga";
     const { container } = render(
-      <TextBlockRenderer block={{ kind: "text", order: 1, markdown }} />,
+      <TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown }} />,
     );
 
     // Il testo, non il nome della classe CSS che lo impagina: asserire
@@ -102,11 +104,11 @@ describe("FindingBlockRenderer", () => {
   });
 
   const GRAVITA: [Severity, string][] = [
-    ["critical", "Critico"],
-    ["high", "Alto"],
-    ["medium", "Medio"],
-    ["low", "Basso"],
-    ["info", "Info"],
+    ["CRITICAL", "Critico"],
+    ["HIGH", "Alto"],
+    ["MEDIUM", "Medio"],
+    ["LOW", "Basso"],
+    ["INFO", "Info"],
   ];
 
   it.each(GRAVITA)('etichetta la gravita\' %s come "%s"', (severity, etichetta) => {
@@ -173,7 +175,11 @@ describe("ProposalRenderer", () => {
   });
 
   it("espone il collegamento alla Pull Request quando l'agente l'ha aperta", () => {
-    render(<ProposalRenderer proposal={{ ...PROPOSTA, prUrl: "https://github.com/o/r/pull/7" }} />);
+    render(
+      <ProposalRenderer
+        proposal={{ ...PROPOSTA, pullRequestUrl: "https://github.com/o/r/pull/7" }}
+      />,
+    );
 
     const collegamento = screen.getByRole("link", { name: /Vedi PR/ });
     expect(collegamento).toHaveAttribute("href", "https://github.com/o/r/pull/7");

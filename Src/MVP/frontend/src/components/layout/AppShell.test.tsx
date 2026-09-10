@@ -140,7 +140,7 @@ describe("AppShell", () => {
     const { rerender } = render(<AppShell />);
     expect(screen.queryByText(/Le credenziali non sono più valide/)).not.toBeInTheDocument();
 
-    act(() => useSessionStore.setState({ credentialsStatus: "invalid" }));
+    act(() => useSessionStore.setState({ credentialsStatus: "INVALID" }));
     rerender(<AppShell />);
 
     expect(screen.getByText(/Le credenziali non sono più valide/)).toBeInTheDocument();

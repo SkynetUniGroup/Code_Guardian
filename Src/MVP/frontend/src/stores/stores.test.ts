@@ -13,15 +13,20 @@ const CONTESTO: AnalysisContextDto = {
   repoOwner: "OWASP",
   repoName: "NodeGoat",
   isPrivate: true,
+  branch: "main",
   resolvedSha: "abc1234",
   scopeType: "FULL_REPOSITORY",
-  paths: [],
   detectedLanguages: ["JavaScript"],
+  unsupportedLanguages: [],
+  predominantLanguage: "JavaScript",
+  unsupportedLanguageWarning: false,
   estimatedFileCount: 42,
+  nonEnglishReadmeDetected: false,
 };
 
 function task(over: Partial<TaskEntry> & { id: string }): TaskEntry {
   return {
+    batchId: null,
     operation: "SECURITY_OWASP",
     status: "RUNNING",
     progressPercent: 0,

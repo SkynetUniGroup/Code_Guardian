@@ -27,11 +27,15 @@ const CONTESTO = {
   repoOwner: "OWASP",
   repoName: "NodeGoat",
   isPrivate: true,
+  branch: "main",
   resolvedSha: "abc1234567890",
   scopeType: "FULL_REPOSITORY" as const,
-  paths: [],
   detectedLanguages: ["JavaScript"],
+  unsupportedLanguages: [],
+  predominantLanguage: "JavaScript",
+  unsupportedLanguageWarning: false,
   estimatedFileCount: 42,
+  nonEnglishReadmeDetected: false,
 };
 
 function httpError(status: number) {
