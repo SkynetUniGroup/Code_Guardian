@@ -9,6 +9,65 @@ _ENV_FILE = _PROJECT_ROOT / ".env"
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
+"""Central configuration model for the Code Guardian agents.
+
+This class leverages Pydantic's `BaseSettings` to load configuration from environment
+variables (via `.env` file or system environment) with type safety and validation.
+All fields are frozen after initialization to prevent runtime modifications.
+
+Attributes:
+    internal_shared_secret (str): Shared secret for internal communication authentication.
+        Alias: `INTERNAL_SHARED_SECRET`.
+    backend_base_url (str): Base URL of the backend service.
+        Alias: `BACKEND_BASE_URL`. Default: `http://backend:3000`.
+    backend_api_prefix (str): Global API prefix mounted by the backend (e.g., `/api/v1`).
+        Alias: `BACKEND_API_PREFIX`. Default: `/api/v1`.
+        Note: This prefix is included in both the request URL and HMAC-signed messages.
+    prompts_dir (str): Directory path where prompt templates are stored.
+        Alias: `PROMPTS_DIR`. Default: `/app/prompts`.
+    mongo_uri (str): MongoDB connection URI for LangGraph checkpointer.
+        Alias: `MONGO_URI`. Default: `mongodb://mongo:27017/codeguardian`.
+    llm_provider (str): Provider for LLM services (e.g., `bedrock`, `dashscope`).
+        Alias: `LLM_PROVIDER`. Default: `bedrock`.
+    llm_api_key (str): API key for LLM provider (empty for Bedrock).
+        Alias: `LLM_API_KEY`. Default: `""`.
+    llm_base_url (str): Base URL for OpenAI-compatible LLM endpoints.
+        Alias: `LLM_BASE_URL`. Default: `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`.
+    llm_model_general (str): General-purpose LLM model identifier.
+        Alias: `LLM_MODEL_GENERAL`. Default: `qwen3-32b`.
+    llm_model_security (str): Security-focused LLM model identifier.
+        Alias: `LLM_MODEL_SECURITY`. Default: `qwen3-coder-30b-a3b-instruct`.
+    aws_region (str): AWS region for Bedrock provider.
+        Alias: `AWS_REGION`. Default: `eu-south-1`.
+    max_output_tokens (int): Maximum tokens for LLM output. Default: `4096`.
+    max_scope_chars (int): Maximum characters allowed for analysis scope.
+        Alias: `MAX_SCOPE_CHARS`. Default: `100_000`.
+    changelog_min_readability (float): Minimum readability score for changelog generation.
+        Alias: `CHANGELOG_MIN_READABILITY`. Default: `50.0`.
+    security_max_output_tokens (int): Maximum tokens for security-focused LLM output.
+        Default: `8000`.
+    security_temperature (float): Temperature setting for security LLM calls.
+        Default: `0.1`.
+    max_tool_rounds (int): Maximum rounds of tool invocation per operation.
+        Alias: `MAX_TOOL_ROUNDS`. Default: `8`.
+    TIMEOUTS_BY_OPERATION (dict[str, int]): Operation-specific timeout thresholds (seconds).
+        Keys: `DOCS_INLINE`, `DOCS_README`, `DOCS_API`, `SECURITY_OWASP`, `SECURITY_POLICY`,
+        `CHANGELOG_TECHNICAL`, `CHANGELOG_BUSINESS`.
+    redis_url (str): Redis connection URL for queues and caching.
+        Alias: `REDIS_URL`. Default: `redis://redis:6379`.
+    enable_sast_semgrep (bool): Flag to enable/disable Semgrep SAST scans.
+        Alias: `ENABLE_SAST_SEMGREP`. Default: `True`.
+    semgrep_timeout_s (int): Timeout (seconds) for Semgrep scans.
+        Alias: `SEMGREP_TIMEOUT_S`. Default: `120`.
+    sast_max_findings_llm (int): Maximum Semgrep findings submitted to LLM for verdict.
+        Alias: `SAST_MAX_FINDINGS_LLM`. Default: `40`.
+    sast_max_files (int): Maximum files downloaded for Semgrep scans.
+        Alias: `SAST_MAX_FILES`. Default: `200`.
+    enable_sonarqube (bool): Flag to enable/disable SonarQube integration.
+        Alias: `ENABLE_SONARQUBE`. Default: `False`.
+    sonar_cache_ttl_s (int): Cache TTL (seconds) for SonarQube results.
+        Alias: `SONAR_CACHE_TTL_S`. Default: `86400`.
+"""
         env_file=_ENV_FILE,
         env_file_encoding="utf-8",
         frozen=True,
