@@ -10,6 +10,9 @@ const NAV_LINKS = [
   { label: "Avvia", path: "/run" },
   { label: "Task", path: "/tasks" },
   { label: "Report", path: "/reports" },
+  // Template (RF.79-RF.81) sta dopo Report: come le credenziali e' una
+  // risorsa personale dell'utente, non un passo del flusso di analisi.
+  { label: "Template", path: "/template" },
 ] as const;
 
 export function AppShell() {
