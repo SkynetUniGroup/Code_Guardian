@@ -51,7 +51,8 @@ services:
     networks:
       - codeguardian-net
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     # Nessun VITE_* qui: Vite inlinea le variabili al momento della build, una
     # env di runtime su un'immagine nginx gia' compilata non ha alcun effetto.
     # Il bundle usa percorsi relativi (/api/v1) e nginx.conf li inoltra al
