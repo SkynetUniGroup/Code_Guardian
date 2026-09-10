@@ -20,16 +20,16 @@ export type ReadmeTemplateDocument = HydratedDocument<ReadmeTemplate>;
 @Schema({ timestamps: true })
 export class ReadmeTemplate {
   @Prop({ required: true })
-  userId: string;
+  userId!: string;
 
   // Conservato per poterlo rimostrare nell'interfaccia ("template attivo:
   // <nome>"): l'estensione è già stata validata al confine, qui è
   // un'etichetta.
   @Prop({ required: true })
-  filename: string;
+  filename!: string;
 
   @Prop({ required: true })
-  content: string;
+  content!: string;
 }
 
 export const ReadmeTemplateSchema = SchemaFactory.createForClass(ReadmeTemplate);
