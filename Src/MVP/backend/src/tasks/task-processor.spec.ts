@@ -1,13 +1,13 @@
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-import { type Mock, type MockInstance, vi } from "vitest";
-import { EventsGateway } from "../events/events.gateway";
-import { AgentRegistry } from "../operations/agent-registry.service";
-import { ReportAssemblyService } from "../reports/report-assembly.service";
-import { AgentInvocationService } from "./agent-invocation.service";
-import { ProposalPublisherService } from "./proposal-publisher.service";
-import { Task } from "./schemas/task.schema";
-import { TaskProcessor } from "./task-processor";
+import { vi, type Mock, type MockInstance } from 'vitest';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getModelToken } from '@nestjs/mongoose';
+import { TaskProcessor } from './task-processor';
+import { Task } from './schemas/task.schema';
+import { EventsGateway } from '../events/events.gateway';
+import { AgentInvocationService } from './agent-invocation.service';
+import { ProposalPublisherService } from './proposal-publisher.service';
+import { AgentRegistry } from '../operations/agent-registry.service';
+import { ReportAssemblyService } from '../reports/report-assembly.service';
 
 // Frozen clock, so every write this class makes is assertable by value
 // instead of through a matcher: process() reads Date.now() once to claim
@@ -21,7 +21,7 @@ const NOW = 1_700_000_000_000;
 // the agent's own 300s ceiling, rather than silently following along.
 const CLAIM_LEASE_MS = 10 * 60 * 1000;
 
-describe("TaskProcessor", () => {
+describe('TaskProcessor', () => {
   let processor: TaskProcessor;
   let taskModel: {
     findOneAndUpdate: Mock;
@@ -41,21 +41,16 @@ describe("TaskProcessor", () => {
     assembleFailed: Mock;
     discard: Mock;
   };
-  let clock: MockInstance<() => number>;
+  let clock: MockInstance<number, []>;
 
-  function makeTask(overrides: Record<string, unknown> = {}): Record<string, unknown> & {
-    sprintId?: string;
-    pendingInput: unknown;
-    status: string;
-    accumulatedMs: number;
-  } {
+  function makeTask(overrides: Record<string, unknown> = {}) {
     return {
-      _id: "task-oid",
-      id: "task1",
-      userId: "user1",
-      batchId: "batchA",
-      operation: "DOCS_README",
-      status: "PENDING",
+      _id: 'task-oid',
+      id: 'task1',
+      userId: 'user1',
+      batchId: 'batchA',
+      operation: 'DOCS_README',
+      status: 'PENDING',
       error: null,
       reportId: null,
       pendingInput: null,
@@ -72,7 +67,7 @@ describe("TaskProcessor", () => {
   }
 
   function completed() {
-    return { status: "COMPLETED", payload: { body: [] } };
+    return { status: 'COMPLETED', payload: { body: [] } };
   }
 
   // The claim is what hands process() its Task — a test that wants the job
@@ -113,13 +108,13 @@ describe("TaskProcessor", () => {
     // DOCS by default — most tests don't care about the Changelog/sprintId
     // pre-check, only the ones under 'BE-17 pause/resume' below do, and they
     // override this per-test.
-    agentRegistry = { getAgent: vi.fn().mockReturnValue("DOCS") };
+    agentRegistry = { getAgent: vi.fn().mockReturnValue('DOCS') };
     reportAssembly = {
-      assembleCompleted: vi.fn().mockResolvedValue({ _id: "report1" }),
-      assembleFailed: vi.fn().mockResolvedValue({ _id: "report1" }),
+      assembleCompleted: vi.fn().mockResolvedValue({ _id: 'report1' }),
+      assembleFailed: vi.fn().mockResolvedValue({ _id: 'report1' }),
       discard: vi.fn().mockResolvedValue(undefined),
     };
-    clock = vi.spyOn(Date, "now").mockReturnValue(NOW);
+    clock = vi.spyOn(Date, 'now').mockReturnValue(NOW);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -129,9 +124,6 @@ describe("TaskProcessor", () => {
         { provide: AgentInvocationService, useValue: agentInvocation },
         { provide: AgentRegistry, useValue: agentRegistry },
         { provide: ReportAssemblyService, useValue: reportAssembly },
-        // Pubblicazione della PR: qui inerte. Il default restituisce il payload
-        // invariato, cioe' il comportamento del caso "nessuna Proposal da
-        // pubblicare", che e' quello di tutti i test tranne quelli sui Docs.
         {
           provide: ProposalPublisherService,
           useValue: { publish: vi.fn(async (_task, payload) => payload) },
@@ -146,27 +138,29 @@ describe("TaskProcessor", () => {
     clock.mockRestore();
   });
 
-  function job(data: { taskId: string; inputValue?: unknown } = { taskId: "task1" }) {
+  function job(
+    data: { taskId: string; inputValue?: unknown } = { taskId: 'task1' },
+  ) {
     return { data } as never;
   }
 
-  describe("claiming", () => {
+  describe('claiming', () => {
     // What a unit test can and cannot show here: mutual exclusion is
     // MongoDB's guarantee, not something a mocked model can demonstrate.
     // What these tests do pin down is the half that lives in this codebase
     // — that the exclusivity is actually asked for, in the filter, where
     // the database can enforce it, and that losing the claim is handled by
     // doing nothing at all.
-    it("claims the Task atomically before anything else, with a filter a second delivery cannot also match", async () => {
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+    it('claims the Task atomically before anything else, with a filter a second delivery cannot also match', async () => {
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.invoke.mockResolvedValue(completed());
 
       await processor.process(job());
 
       expect(taskModel.findOneAndUpdate).toHaveBeenCalledWith(
         {
-          _id: "task1",
-          status: { $in: ["PENDING", "RUNNING"] },
+          _id: 'task1',
+          status: { $in: ['PENDING', 'RUNNING'] },
           $or: [
             { processingClaimedAt: null },
             // A claim older than the lease is treated as abandoned, so a
@@ -192,7 +186,7 @@ describe("TaskProcessor", () => {
       expect(claimToken()).toEqual(expect.any(String));
     });
 
-    it("does nothing at all when the claim comes back empty — gone, terminal, or held by another delivery", async () => {
+    it('does nothing at all when the claim comes back empty — gone, terminal, or held by another delivery', async () => {
       taskModel.findOneAndUpdate.mockResolvedValue(null);
 
       await processor.process(job());
@@ -204,26 +198,26 @@ describe("TaskProcessor", () => {
       expect(events.emitTaskFailed).not.toHaveBeenCalled();
     });
 
-    it("releases the claim once the job is done, so a later resume job can take it", async () => {
+    it('releases the claim once the job is done, so a later resume job can take it', async () => {
       claimSucceeds(makeTask());
       agentInvocation.invoke.mockResolvedValue(completed());
 
       await processor.process(job());
 
       expect(taskModel.updateOne).toHaveBeenLastCalledWith(
-        { _id: "task-oid", processingClaimToken: claimToken() },
+        { _id: 'task-oid', processingClaimToken: claimToken() },
         { $set: { processingClaimedAt: null, processingClaimToken: null } },
       );
     });
 
-    it("releases the claim even when the invocation throws", async () => {
+    it('releases the claim even when the invocation throws', async () => {
       claimSucceeds(makeTask());
-      agentInvocation.invoke.mockRejectedValue(new Error("network down"));
+      agentInvocation.invoke.mockRejectedValue(new Error('network down'));
 
       await processor.process(job());
 
       expect(taskModel.updateOne).toHaveBeenLastCalledWith(
-        { _id: "task-oid", processingClaimToken: claimToken() },
+        { _id: 'task-oid', processingClaimToken: claimToken() },
         { $set: { processingClaimedAt: null, processingClaimToken: null } },
       );
     });
@@ -231,7 +225,7 @@ describe("TaskProcessor", () => {
     // The release filter is the whole point of the token: without it, the
     // first expired lease permanently breaks exclusivity, because the
     // worker that lost the claim still clears the one its successor holds.
-    it("releases only its own claim — a worker whose lease expired clears nothing", async () => {
+    it('releases only its own claim — a worker whose lease expired clears nothing', async () => {
       const task = makeTask();
       taskModel.findOneAndUpdate
         .mockResolvedValueOnce(task) // A claims
@@ -248,29 +242,31 @@ describe("TaskProcessor", () => {
         Record<string, unknown>,
         { $set: Record<string, unknown> },
       ][];
-      const releases = writes.filter(([, update]) => update.$set.processingClaimToken === null);
+      const releases = writes.filter(
+        ([, update]) => update.$set.processingClaimToken === null,
+      );
       expect(releases).toHaveLength(2);
       expect(releases[0][0]).toEqual({
-        _id: "task-oid",
+        _id: 'task-oid',
         processingClaimToken: claimToken(0),
       });
       expect(releases[1][0]).toEqual({
-        _id: "task-oid",
+        _id: 'task-oid',
         processingClaimToken: claimToken(1),
       });
     });
 
-    it("does not fail the job when releasing the claim fails — the lease covers that case instead", async () => {
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+    it('does not fail the job when releasing the claim fails — the lease covers that case instead', async () => {
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.invoke.mockResolvedValue(completed());
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 1 }) // terminal write
-        .mockRejectedValueOnce(new Error("mongo down")); // the release
+        .mockRejectedValueOnce(new Error('mongo down')); // the release
 
       await expect(processor.process(job())).resolves.toBeUndefined();
     });
 
-    it("never routes a state change through document.save()", async () => {
+    it('never routes a state change through document.save()', async () => {
       const task = makeTask();
       claimSucceeds(task);
       agentInvocation.invoke.mockResolvedValue(completed());
@@ -284,7 +280,7 @@ describe("TaskProcessor", () => {
     });
   });
 
-  it("transitions PENDING to RUNNING with a conditional write and emits task.updated before invoking the agent", async () => {
+  it('transitions PENDING to RUNNING with a conditional write and emits task.updated before invoking the agent', async () => {
     claimSucceeds(makeTask());
     agentInvocation.invoke.mockResolvedValue(completed());
 
@@ -293,16 +289,20 @@ describe("TaskProcessor", () => {
     expect(taskModel.updateOne).toHaveBeenNthCalledWith(
       1,
       {
-        _id: "task-oid",
-        status: "PENDING",
+        _id: 'task-oid',
+        status: 'PENDING',
         processingClaimToken: claimToken(),
       },
-      { $set: { status: "RUNNING" } },
+      { $set: { status: 'RUNNING' } },
     );
-    expect(events.emitTaskUpdated).toHaveBeenCalledWith("user1", "task1", "RUNNING");
+    expect(events.emitTaskUpdated).toHaveBeenCalledWith(
+      'user1',
+      'task1',
+      'RUNNING',
+    );
   });
 
-  it("skips the invocation entirely when the Task is cancelled between the claim and the RUNNING transition", async () => {
+  it('skips the invocation entirely when the Task is cancelled between the claim and the RUNNING transition', async () => {
     claimSucceeds(makeTask());
     taskModel.updateOne
       .mockResolvedValueOnce({ matchedCount: 0 }) // no longer PENDING
@@ -314,51 +314,59 @@ describe("TaskProcessor", () => {
     expect(events.emitTaskUpdated).not.toHaveBeenCalled();
     // Still released, even on this early exit.
     expect(taskModel.updateOne).toHaveBeenLastCalledWith(
-      { _id: "task-oid", processingClaimToken: claimToken() },
+      { _id: 'task-oid', processingClaimToken: claimToken() },
       { $set: { processingClaimedAt: null, processingClaimToken: null } },
     );
   });
 
-  describe("BE-18 report assembly", () => {
-    it("assembles a Report on COMPLETED, persists it conditionally, and includes its id in task.updated", async () => {
+  describe('BE-18 report assembly', () => {
+    it('assembles a Report on COMPLETED, persists it conditionally, and includes its id in task.updated', async () => {
       const task = makeTask();
       claimSucceeds(task);
-      const payload = { body: [{ kind: "TEXT", markdown: "hi" }] };
+      const payload = { body: [{ kind: 'TEXT', markdown: 'hi' }] };
       agentInvocation.invoke.mockResolvedValue({
-        status: "COMPLETED",
+        status: 'COMPLETED',
         payload,
       });
 
       await processor.process(job());
 
-      expect(reportAssembly.assembleCompleted).toHaveBeenCalledWith(task, payload);
+      expect(reportAssembly.assembleCompleted).toHaveBeenCalledWith(
+        task,
+        payload,
+      );
       expect(taskModel.updateOne).toHaveBeenNthCalledWith(
         2,
         {
-          _id: "task-oid",
-          status: "RUNNING",
+          _id: 'task-oid',
+          status: 'RUNNING',
           processingClaimToken: claimToken(),
         },
         {
           $set: {
-            status: "COMPLETED",
-            reportId: "report1",
+            status: 'COMPLETED',
+            reportId: 'report1',
             accumulatedMs: 0,
           },
         },
       );
-      expect(events.emitTaskUpdated).toHaveBeenCalledWith("user1", "task1", "COMPLETED", "report1");
+      expect(events.emitTaskUpdated).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        'COMPLETED',
+        'report1',
+      );
     });
 
-    it("assembles a Report on FAILED and records the error in the same conditional write", async () => {
+    it('assembles a Report on FAILED and records the error in the same conditional write', async () => {
       const task = makeTask();
       claimSucceeds(task);
       const error = {
-        code: "UPSTREAM" as const,
-        message: "boom",
-        stage: "EXECUTION",
+        code: 'UPSTREAM' as const,
+        message: 'boom',
+        stage: 'EXECUTION',
       };
-      agentInvocation.invoke.mockResolvedValue({ status: "FAILED", error });
+      agentInvocation.invoke.mockResolvedValue({ status: 'FAILED', error });
 
       await processor.process(job());
 
@@ -366,48 +374,52 @@ describe("TaskProcessor", () => {
       expect(taskModel.updateOne).toHaveBeenNthCalledWith(
         2,
         {
-          _id: "task-oid",
-          status: "RUNNING",
+          _id: 'task-oid',
+          status: 'RUNNING',
           processingClaimToken: claimToken(),
         },
         {
           $set: {
-            status: "FAILED",
+            status: 'FAILED',
             error,
-            reportId: "report1",
+            reportId: 'report1',
             accumulatedMs: 0,
           },
         },
       );
-      expect(events.emitTaskFailed).toHaveBeenCalledWith("user1", "task1", error);
+      expect(events.emitTaskFailed).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        error,
+      );
     });
 
-    it("synthesizes a generic error and still assembles a Report if a FAILED result carries none", async () => {
+    it('synthesizes a generic error and still assembles a Report if a FAILED result carries none', async () => {
       claimSucceeds(makeTask());
-      agentInvocation.invoke.mockResolvedValue({ status: "FAILED" });
+      agentInvocation.invoke.mockResolvedValue({ status: 'FAILED' });
 
       await processor.process(job());
 
       expect(reportAssembly.assembleFailed).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ code: "UPSTREAM" }),
+        expect.objectContaining({ code: 'UPSTREAM' }),
       );
     });
 
-    it("assembles a FAILED Report even when the invocation throws, without letting the error escape", async () => {
+    it('assembles a FAILED Report even when the invocation throws, without letting the error escape', async () => {
       claimSucceeds(makeTask());
-      agentInvocation.invoke.mockRejectedValue(new Error("network down"));
+      agentInvocation.invoke.mockRejectedValue(new Error('network down'));
 
       await expect(processor.process(job())).resolves.toBeUndefined();
 
       expect(reportAssembly.assembleFailed).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ message: "network down" }),
+        expect.objectContaining({ message: 'network down' }),
       );
       expect(events.emitTaskFailed).toHaveBeenCalled();
     });
 
-    it("accumulates machine time across the call and never resets it", async () => {
+    it('accumulates machine time across the call and never resets it', async () => {
       const task = makeTask({ accumulatedMs: 1000 });
       claimSucceeds(task);
       clock
@@ -430,10 +442,10 @@ describe("TaskProcessor", () => {
     // asserts the second call's contribution lands on top of the first's
     // rather than either overwriting it or double-counting the gap between
     // them.
-    it("sums machine time across a real SPRINT_ID pause/resume cycle, excluding the gap between the two calls", async () => {
-      const task = makeTask({ operation: "CHANGELOG_TECHNICAL" });
+    it('sums machine time across a real SPRINT_ID pause/resume cycle, excluding the gap between the two calls', async () => {
+      const task = makeTask({ operation: 'CHANGELOG_TECHNICAL' });
       claimSucceeds(task);
-      agentRegistry.getAgent.mockReturnValue("CHANGELOG");
+      agentRegistry.getAgent.mockReturnValue('CHANGELOG');
 
       clock
         .mockReturnValueOnce(900) // call 1: claim
@@ -443,15 +455,15 @@ describe("TaskProcessor", () => {
       await processor.process(job());
 
       expect(agentInvocation.invoke).not.toHaveBeenCalled();
-      expect(task.pendingInput).toEqual({ kind: "SPRINT_ID" });
+      expect(task.pendingInput).toEqual({ kind: 'SPRINT_ID' });
       expect(task.accumulatedMs).toBe(200); // only this call's own 200ms
 
       // Between the two calls: what TasksService.submitInput does once the
       // user answers SPRINT_ID — clears pendingInput, sets sprintId, leaves
       // status RUNNING. This gap must never be added to accumulatedMs.
-      task.sprintId = "S-1";
+      task.sprintId = 'S-1';
       task.pendingInput = null;
-      task.status = "RUNNING";
+      task.status = 'RUNNING';
 
       clock
         .mockReturnValueOnce(49_000) // call 2: claim, far later
@@ -475,19 +487,21 @@ describe("TaskProcessor", () => {
   // save()d its own result over it — the user's cancel was accepted, the
   // frontend was told CANCELLED, and then the Task quietly became COMPLETED
   // anyway.
-  describe("cancel landing mid-invocation", () => {
-    it("does not overwrite the cancel, and stays silent about the result it can no longer apply", async () => {
-      const task = makeTask({ status: "RUNNING" });
+  describe('cancel landing mid-invocation', () => {
+    it('does not overwrite the cancel, and stays silent about the result it can no longer apply', async () => {
+      const task = makeTask({ status: 'RUNNING' });
       claimSucceeds(task);
       agentInvocation.resume.mockResolvedValue(completed());
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 0 }) // no longer RUNNING
         .mockResolvedValue({ matchedCount: 1 }); // the release still works
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(events.emitTaskUpdated).not.toHaveBeenCalled();
-      expect(task.status).toBe("RUNNING"); // never mirrored to COMPLETED locally either
+      expect(task.status).toBe('RUNNING'); // never mirrored to COMPLETED locally either
     });
 
     // The Report assembled just before the conditional write is not an
@@ -495,110 +509,124 @@ describe("TaskProcessor", () => {
     // Report -> Task, and GET /reports filters on userId alone, so leaving
     // it puts a COMPLETED report of this execution in the user's list right
     // beside the CANCELLED Task it belongs to.
-    it("deletes the Report it just assembled, by id, when the write does not land", async () => {
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+    it('deletes the Report it just assembled, by id, when the write does not land', async () => {
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.resume.mockResolvedValue(completed());
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 0 })
         .mockResolvedValue({ matchedCount: 1 });
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
-      expect(reportAssembly.discard).toHaveBeenCalledWith({ _id: "report1" });
+      expect(reportAssembly.discard).toHaveBeenCalledWith({ _id: 'report1' });
     });
 
-    it("deletes the FAILED Report the same way", async () => {
+    it('deletes the FAILED Report the same way', async () => {
       // A FAILED Report is exactly as visible in GET /reports as a
       // COMPLETED one, so this branch cannot be the tidy one.
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.resume.mockResolvedValue({
-        status: "FAILED",
-        error: { code: "UPSTREAM", message: "boom", stage: "EXECUTION" },
+        status: 'FAILED',
+        error: { code: 'UPSTREAM', message: 'boom', stage: 'EXECUTION' },
       });
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 0 })
         .mockResolvedValue({ matchedCount: 1 });
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
-      expect(reportAssembly.discard).toHaveBeenCalledWith({ _id: "report1" });
+      expect(reportAssembly.discard).toHaveBeenCalledWith({ _id: 'report1' });
     });
 
-    it("keeps the Report when the write does land", async () => {
+    it('keeps the Report when the write does land', async () => {
       // The counterweight: the deletion is conditioned on losing the race,
       // not on assembling a Report.
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.resume.mockResolvedValue(completed());
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(reportAssembly.discard).not.toHaveBeenCalled();
     });
 
-    it("does not fail the job when deleting the orphaned Report fails", async () => {
+    it('does not fail the job when deleting the orphaned Report fails', async () => {
       // Same rule as releaseClaim, and RF.48: the job's own outcome is
       // already settled by this point, and a failed cleanup is worth a log,
       // not a discarded job.
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.resume.mockResolvedValue(completed());
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 0 })
         .mockResolvedValue({ matchedCount: 1 });
-      reportAssembly.discard.mockRejectedValue(new Error("mongo down"));
+      reportAssembly.discard.mockRejectedValue(new Error('mongo down'));
 
       await expect(
-        processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } })),
+        processor.process(
+          job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+        ),
       ).resolves.toBeUndefined();
     });
 
-    it("assembles no Report at all for a pause it could not record", async () => {
+    it('assembles no Report at all for a pause it could not record', async () => {
       // An INTERRUPTED result never builds one, so there is nothing to
       // delete on that path — asserted so the deletion above is not quietly
       // generalized into "delete something on every lost race".
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.resume.mockResolvedValue({
-        status: "INTERRUPTED",
-        pendingInput: { kind: "INCOMPLETE_TASKS", taskIds: ["T-1"] },
+        status: 'INTERRUPTED',
+        pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['T-1'] },
       });
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 0 })
         .mockResolvedValue({ matchedCount: 1 });
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(reportAssembly.assembleCompleted).not.toHaveBeenCalled();
       expect(reportAssembly.assembleFailed).not.toHaveBeenCalled();
       expect(reportAssembly.discard).not.toHaveBeenCalled();
     });
 
-    it("does not announce a failure it could not record either", async () => {
-      const task = makeTask({ status: "RUNNING" });
+    it('does not announce a failure it could not record either', async () => {
+      const task = makeTask({ status: 'RUNNING' });
       claimSucceeds(task);
       agentInvocation.resume.mockResolvedValue({
-        status: "FAILED",
-        error: { code: "UPSTREAM", message: "boom", stage: "EXECUTION" },
+        status: 'FAILED',
+        error: { code: 'UPSTREAM', message: 'boom', stage: 'EXECUTION' },
       });
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 0 })
         .mockResolvedValue({ matchedCount: 1 });
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(events.emitTaskFailed).not.toHaveBeenCalled();
     });
 
-    it("does not announce a pause it could not record either", async () => {
-      const task = makeTask({ status: "RUNNING" });
+    it('does not announce a pause it could not record either', async () => {
+      const task = makeTask({ status: 'RUNNING' });
       claimSucceeds(task);
       agentInvocation.resume.mockResolvedValue({
-        status: "INTERRUPTED",
-        pendingInput: { kind: "INCOMPLETE_TASKS", taskIds: ["T-1"] },
+        status: 'INTERRUPTED',
+        pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['T-1'] },
       });
       taskModel.updateOne
         .mockResolvedValueOnce({ matchedCount: 0 })
         .mockResolvedValue({ matchedCount: 1 });
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(events.emitTaskInputRequired).not.toHaveBeenCalled();
       expect(task.pendingInput).toBeNull();
@@ -611,8 +639,8 @@ describe("TaskProcessor", () => {
   // RUNNING, took the BE-17 fallthrough meant for continuations/resumes,
   // and invoked the agent a second time — double cost now, and a double
   // Pull Request later once BE-9 is wired in.
-  describe("duplicate job delivery", () => {
-    it("invokes the agent once when the same job is delivered twice and the second loses the claim", async () => {
+  describe('duplicate job delivery', () => {
+    it('invokes the agent once when the same job is delivered twice and the second loses the claim', async () => {
       const task = makeTask();
       taskModel.findOneAndUpdate
         .mockResolvedValueOnce(task) // first delivery takes the claim
@@ -631,9 +659,9 @@ describe("TaskProcessor", () => {
     });
   });
 
-  it("does not emit batch.completed while sibling Tasks in the batch are still active", async () => {
+  it('does not emit batch.completed while sibling Tasks in the batch are still active', async () => {
     claimSucceeds(makeTask());
-    agentInvocation.invoke.mockResolvedValue({ status: "FAILED", error: {} });
+    agentInvocation.invoke.mockResolvedValue({ status: 'FAILED', error: {} });
     taskModel.countDocuments.mockResolvedValueOnce(2); // still active
 
     await processor.process(job());
@@ -641,7 +669,7 @@ describe("TaskProcessor", () => {
     expect(events.emitBatchCompleted).not.toHaveBeenCalled();
   });
 
-  it("emits batch.completed with the tally once no sibling Task is still active", async () => {
+  it('emits batch.completed with the tally once no sibling Task is still active', async () => {
     claimSucceeds(makeTask());
     agentInvocation.invoke.mockResolvedValue(completed());
     taskModel.countDocuments
@@ -651,14 +679,19 @@ describe("TaskProcessor", () => {
 
     await processor.process(job());
 
-    expect(events.emitBatchCompleted).toHaveBeenCalledWith("user1", "batchA", 3, 1);
+    expect(events.emitBatchCompleted).toHaveBeenCalledWith(
+      'user1',
+      'batchA',
+      3,
+      1,
+    );
   });
 
-  describe("BE-17 pause/resume", () => {
-    it("pauses a fresh Changelog Task on SPRINT_ID without ever calling the agent", async () => {
-      const task = makeTask({ operation: "CHANGELOG_TECHNICAL" });
+  describe('BE-17 pause/resume', () => {
+    it('pauses a fresh Changelog Task on SPRINT_ID without ever calling the agent', async () => {
+      const task = makeTask({ operation: 'CHANGELOG_TECHNICAL' });
       claimSucceeds(task);
-      agentRegistry.getAgent.mockReturnValue("CHANGELOG");
+      agentRegistry.getAgent.mockReturnValue('CHANGELOG');
 
       await processor.process(job());
 
@@ -671,32 +704,34 @@ describe("TaskProcessor", () => {
       expect(taskModel.updateOne).toHaveBeenNthCalledWith(
         2,
         {
-          _id: "task-oid",
-          status: "RUNNING",
+          _id: 'task-oid',
+          status: 'RUNNING',
           processingClaimToken: claimToken(),
         },
         {
           $set: {
-            pendingInput: { kind: "SPRINT_ID" },
+            pendingInput: { kind: 'SPRINT_ID' },
             accumulatedMs: 0,
             processingClaimedAt: null,
             processingClaimToken: null,
           },
         },
       );
-      expect(events.emitTaskInputRequired).toHaveBeenCalledWith("user1", "task1", {
-        kind: "SPRINT_ID",
-      });
+      expect(events.emitTaskInputRequired).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        { kind: 'SPRINT_ID' },
+      );
       expect(events.emitTaskFailed).not.toHaveBeenCalled();
     });
 
-    it("invokes the agent for a Changelog Task once sprintId is already set", async () => {
+    it('invokes the agent for a Changelog Task once sprintId is already set', async () => {
       const task = makeTask({
-        operation: "CHANGELOG_TECHNICAL",
-        sprintId: "S-12",
+        operation: 'CHANGELOG_TECHNICAL',
+        sprintId: 'S-12',
       });
       claimSucceeds(task);
-      agentRegistry.getAgent.mockReturnValue("CHANGELOG");
+      agentRegistry.getAgent.mockReturnValue('CHANGELOG');
       agentInvocation.invoke.mockResolvedValue(completed());
 
       await processor.process(job());
@@ -704,77 +739,92 @@ describe("TaskProcessor", () => {
       expect(agentInvocation.invoke).toHaveBeenCalledWith(task);
     });
 
-    it("proceeds straight to invoke() for a Changelog Task already RUNNING with sprintId just answered, without re-emitting task.updated RUNNING", async () => {
+    it('proceeds straight to invoke() for a Changelog Task already RUNNING with sprintId just answered, without re-emitting task.updated RUNNING', async () => {
       // The second 'run-task' delivery, after TasksService.submitInput set
       // sprintId and cleared pendingInput but left status RUNNING.
       const task = makeTask({
-        operation: "CHANGELOG_TECHNICAL",
-        status: "RUNNING",
-        sprintId: "S-12",
+        operation: 'CHANGELOG_TECHNICAL',
+        status: 'RUNNING',
+        sprintId: 'S-12',
       });
       claimSucceeds(task);
-      agentRegistry.getAgent.mockReturnValue("CHANGELOG");
+      agentRegistry.getAgent.mockReturnValue('CHANGELOG');
       agentInvocation.invoke.mockResolvedValue(completed());
 
       await processor.process(job());
 
       expect(agentInvocation.invoke).toHaveBeenCalledWith(task);
       expect(events.emitTaskUpdated).toHaveBeenCalledTimes(1); // only COMPLETED
-      expect(events.emitTaskUpdated).toHaveBeenCalledWith("user1", "task1", "COMPLETED", "report1");
+      expect(events.emitTaskUpdated).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        'COMPLETED',
+        'report1',
+      );
     });
 
-    it("sets pendingInput and emits task.inputRequired when the agent itself reports INTERRUPTED", async () => {
+    it('sets pendingInput and emits task.inputRequired when the agent itself reports INTERRUPTED', async () => {
       const task = makeTask();
       claimSucceeds(task);
       const pendingInput = {
-        kind: "INCOMPLETE_TASKS" as const,
-        taskIds: ["T-1"],
+        kind: 'INCOMPLETE_TASKS' as const,
+        taskIds: ['T-1'],
       };
       agentInvocation.invoke.mockResolvedValue({
-        status: "INTERRUPTED",
+        status: 'INTERRUPTED',
         pendingInput,
       });
 
       await processor.process(job());
 
       expect(task.pendingInput).toEqual(pendingInput);
-      expect(events.emitTaskInputRequired).toHaveBeenCalledWith("user1", "task1", pendingInput);
+      expect(events.emitTaskInputRequired).toHaveBeenCalledWith(
+        'user1',
+        'task1',
+        pendingInput,
+      );
       expect(reportAssembly.assembleCompleted).not.toHaveBeenCalled();
       expect(reportAssembly.assembleFailed).not.toHaveBeenCalled();
     });
 
-    it("routes a job carrying inputValue to agentInvocation.resume(), not invoke()", async () => {
-      const task = makeTask({ status: "RUNNING" });
+    it('routes a job carrying inputValue to agentInvocation.resume(), not invoke()', async () => {
+      const task = makeTask({ status: 'RUNNING' });
       claimSucceeds(task);
       agentInvocation.resume.mockResolvedValue(completed());
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(agentInvocation.resume).toHaveBeenCalledWith(task, {
-        action: "PROCEED",
+        action: 'PROCEED',
       });
       expect(agentInvocation.invoke).not.toHaveBeenCalled();
     });
 
-    it("skips a resume-task job for a Task that is no longer claimable (e.g. cancelled meanwhile)", async () => {
+    it('skips a resume-task job for a Task that is no longer claimable (e.g. cancelled meanwhile)', async () => {
       // A cancelled Task fails the claim filter's status check, so the
       // resume never gets a document to work with in the first place.
       taskModel.findOneAndUpdate.mockResolvedValue(null);
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(agentInvocation.resume).not.toHaveBeenCalled();
       expect(taskModel.updateOne).not.toHaveBeenCalled();
     });
 
-    it("does not transition or re-emit task.updated RUNNING for a resume-task job on an already-RUNNING Task", async () => {
-      claimSucceeds(makeTask({ status: "RUNNING" }));
+    it('does not transition or re-emit task.updated RUNNING for a resume-task job on an already-RUNNING Task', async () => {
+      claimSucceeds(makeTask({ status: 'RUNNING' }));
       agentInvocation.resume.mockResolvedValue({
-        status: "FAILED",
-        error: { code: "UPSTREAM", message: "boom", stage: "EXECUTION" },
+        status: 'FAILED',
+        error: { code: 'UPSTREAM', message: 'boom', stage: 'EXECUTION' },
       });
 
-      await processor.process(job({ taskId: "task1", inputValue: { action: "PROCEED" } }));
+      await processor.process(
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
+      );
 
       expect(events.emitTaskUpdated).not.toHaveBeenCalled();
     });

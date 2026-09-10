@@ -1,13 +1,12 @@
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-import { type Mock, vi } from "vitest";
-import { EventsGateway } from "../events/events.gateway";
-import { AgentRegistry } from "../operations/agent-registry.service";
-import { ReportAssemblyService } from "../reports/report-assembly.service";
-import { AgentInvocationService } from "./agent-invocation.service";
-import { ProposalPublisherService } from "./proposal-publisher.service";
-import { Task } from "./schemas/task.schema";
-import { TaskProcessor } from "./task-processor";
+import { vi, type Mock } from 'vitest';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getModelToken } from '@nestjs/mongoose';
+import { TaskProcessor } from './task-processor';
+import { Task } from './schemas/task.schema';
+import { EventsGateway } from '../events/events.gateway';
+import { AgentInvocationService } from './agent-invocation.service';
+import { AgentRegistry } from '../operations/agent-registry.service';
+import { ReportAssemblyService } from '../reports/report-assembly.service';
 
 // These tests are written against the requirement, not the implementation.
 //
@@ -46,16 +45,18 @@ interface StoredTask {
 /** Only the operators TaskProcessor's own filters use. */
 function matches(doc: StoredTask, filter: Record<string, unknown>): boolean {
   return Object.entries(filter).every(([key, expected]) => {
-    if (key === "$or") {
-      return (expected as Record<string, unknown>[]).some((sub) => matches(doc, sub));
+    if (key === '$or') {
+      return (expected as Record<string, unknown>[]).some((sub) =>
+        matches(doc, sub),
+      );
     }
     const actual = doc[key];
-    if (expected !== null && typeof expected === "object") {
+    if (expected !== null && typeof expected === 'object') {
       const ops = expected as Record<string, unknown>;
-      if ("$in" in ops) {
+      if ('$in' in ops) {
         return (ops.$in as unknown[]).includes(actual);
       }
-      if ("$lte" in ops) {
+      if ('$lte' in ops) {
         return actual instanceof Date && actual <= (ops.$lte as Date);
       }
       throw new Error(`unsupported operator in filter: ${JSON.stringify(ops)}`);
@@ -68,7 +69,10 @@ class FakeTaskCollection {
   constructor(private readonly docs: StoredTask[]) {}
 
   findOneAndUpdate = vi.fn(
-    (filter: Record<string, unknown>, update: { $set: Record<string, unknown> }) => {
+    (
+      filter: Record<string, unknown>,
+      update: { $set: Record<string, unknown> },
+    ) => {
       const doc = this.docs.find((d) => matches(d, filter));
       if (!doc) {
         return Promise.resolve(null);
@@ -86,7 +90,10 @@ class FakeTaskCollection {
   );
 
   updateOne = vi.fn(
-    (filter: Record<string, unknown>, update: { $set: Record<string, unknown> }) => {
+    (
+      filter: Record<string, unknown>,
+      update: { $set: Record<string, unknown> },
+    ) => {
       const doc = this.docs.find((d) => matches(d, filter));
       if (!doc) {
         return Promise.resolve({ matchedCount: 0 });
@@ -111,12 +118,12 @@ class FakeTaskCollection {
 
 function makeStored(overrides: Partial<StoredTask> = {}): StoredTask {
   return {
-    _id: "task1",
-    id: "task1",
-    userId: "user1",
-    batchId: "batchA",
-    operation: "CHANGELOG_TECHNICAL",
-    status: "PENDING",
+    _id: 'task1',
+    id: 'task1',
+    userId: 'user1',
+    batchId: 'batchA',
+    operation: 'CHANGELOG_TECHNICAL',
+    status: 'PENDING',
     error: null,
     reportId: null,
     pendingInput: null,
@@ -127,7 +134,7 @@ function makeStored(overrides: Partial<StoredTask> = {}): StoredTask {
   };
 }
 
-describe("TaskProcessor — the window between announcing and releasing", () => {
+describe('TaskProcessor — the window between announcing and releasing', () => {
   let processor: TaskProcessor;
   let store: FakeTaskCollection;
   let events: {
@@ -152,10 +159,10 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
       emitBatchCompleted: vi.fn(),
     };
     agentInvocation = { invoke: vi.fn(), resume: vi.fn() };
-    agentRegistry = { getAgent: vi.fn().mockReturnValue("CHANGELOG") };
+    agentRegistry = { getAgent: vi.fn().mockReturnValue('CHANGELOG') };
     reportAssembly = {
-      assembleCompleted: vi.fn().mockResolvedValue({ _id: "report1" }),
-      assembleFailed: vi.fn().mockResolvedValue({ _id: "report1" }),
+      assembleCompleted: vi.fn().mockResolvedValue({ _id: 'report1' }),
+      assembleFailed: vi.fn().mockResolvedValue({ _id: 'report1' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -166,13 +173,6 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
         { provide: AgentInvocationService, useValue: agentInvocation },
         { provide: AgentRegistry, useValue: agentRegistry },
         { provide: ReportAssemblyService, useValue: reportAssembly },
-        // Pubblicazione della PR: qui inerte. Il default restituisce il payload
-        // invariato, cioe' il comportamento del caso "nessuna Proposal da
-        // pubblicare", che e' quello di tutti i test tranne quelli sui Docs.
-        {
-          provide: ProposalPublisherService,
-          useValue: { publish: vi.fn(async (_task, payload) => payload) },
-        },
       ],
     }).compile();
 
@@ -183,7 +183,7 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
     return { data } as never;
   }
 
-  it("loses the answer to a SPRINT_ID pause when the user replies before the claim is released", async () => {
+  it('starts the agent when the user answers a SPRINT_ID pause before the claim is released', async () => {
     // BE-17's first legitimate case: a Changelog Task with no sprintId
     // pauses without ever calling the agent, the frontend gets
     // task.inputRequired, the user answers, and POST /tasks/:id/input
@@ -199,86 +199,89 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
     events.emitTaskInputRequired.mockImplementation(() => {
       // What TasksService.submitInput does for SPRINT_ID: record the
       // answer, clear pendingInput, enqueue the same job shape.
-      const doc = store.get("task1");
-      doc.sprintId = "SPRINT-42";
+      const doc = store.get('task1');
+      doc.sprintId = 'SPRINT-42';
       doc.pendingInput = null;
-      resumeDelivery = processor.process(job({ taskId: "task1" }));
+      resumeDelivery = processor.process(job({ taskId: 'task1' }));
     });
 
     agentInvocation.invoke.mockResolvedValue({
-      status: "COMPLETED",
+      status: 'COMPLETED',
       payload: { body: [] },
     });
 
-    await processor.process(job({ taskId: "task1" }));
+    await processor.process(job({ taskId: 'task1' }));
     await resumeDelivery;
 
-    const task = store.get("task1");
+    const task = store.get('task1');
 
     // The requirement: the answer starts the agent.
     expect(agentInvocation.invoke).toHaveBeenCalledTimes(1);
     // ...and the Task reaches a terminal state rather than sitting in
     // RUNNING with the user's answer already consumed and no pendingInput
     // left to re-announce.
-    expect(task.status).not.toBe("RUNNING");
+    expect(task.status).not.toBe('RUNNING');
     expect(task.pendingInput).toBeNull();
   });
 
-  it("loses the answer to an agent-reported INCOMPLETE_TASKS pause the same way", async () => {
+  it('resumes the agent when the user answers an agent-reported INCOMPLETE_TASKS pause the same way', async () => {
     // BE-17's second legitimate case: the agent itself pauses mid-run and
     // POST /tasks/:id/input enqueues a resume-task job carrying inputValue.
-    await build([makeStored({ sprintId: "SPRINT-42" })]);
+    await build([makeStored({ sprintId: 'SPRINT-42' })]);
 
     agentInvocation.invoke.mockResolvedValue({
-      status: "INTERRUPTED",
-      pendingInput: { kind: "INCOMPLETE_TASKS", taskIds: ["ISS-1"] },
+      status: 'INTERRUPTED',
+      pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['ISS-1'] },
     });
     agentInvocation.resume.mockResolvedValue({
-      status: "COMPLETED",
+      status: 'COMPLETED',
       payload: { body: [] },
     });
 
     let resumeDelivery: Promise<void> | undefined;
     events.emitTaskInputRequired.mockImplementation(() => {
-      const doc = store.get("task1");
+      const doc = store.get('task1');
       doc.pendingInput = null;
       resumeDelivery = processor.process(
-        job({ taskId: "task1", inputValue: { action: "PROCEED" } }),
+        job({ taskId: 'task1', inputValue: { action: 'PROCEED' } }),
       );
     });
 
-    await processor.process(job({ taskId: "task1" }));
+    await processor.process(job({ taskId: 'task1' }));
     await resumeDelivery;
 
-    const task = store.get("task1");
+    const task = store.get('task1');
 
     expect(agentInvocation.resume).toHaveBeenCalledTimes(1);
-    expect(task.status).not.toBe("RUNNING");
+    expect(task.status).not.toBe('RUNNING');
   });
 
-  it("does not let a worker whose lease expired release the claim its successor now holds", async () => {
+  it('does not let a worker whose lease expired release the claim its successor now holds', async () => {
     // The lease exists so a Task whose worker died mid-invocation becomes
     // processable again. Once a takeover has happened, the original worker
     // finishing must not hand the Task to a third delivery while the
     // successor is still invoking the agent — that is the same double
     // invocation the claim was introduced to prevent, just reached by a
     // different route.
-    await build([makeStored({ operation: "DOCS_README", sprintId: undefined })]);
-    agentRegistry.getAgent.mockReturnValue("DOCS");
+    await build([
+      makeStored({ operation: 'DOCS_README', sprintId: undefined }),
+    ]);
+    agentRegistry.getAgent.mockReturnValue('DOCS');
 
     const T0 = 1_700_000_000_000;
     const LEASE_MS = 10 * 60 * 1000;
-    const clock = vi.spyOn(Date, "now").mockReturnValue(T0);
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(T0);
 
     // Worker A claims and is still inside the agent call.
     let releaseA: () => void = () => undefined;
     agentInvocation.invoke.mockImplementationOnce(
       () =>
         new Promise((resolve) => {
-          releaseA = () => resolve({ status: "COMPLETED", payload: { body: [] } });
+          releaseA = () =>
+            resolve({ status: 'COMPLETED', payload: { body: [] } });
         }),
     );
-    const workerA = processor.process(job({ taskId: "task1" }));
+    const workerA = processor.process(job({ taskId: 'task1' }));
     await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
@@ -290,10 +293,11 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
     agentInvocation.invoke.mockImplementationOnce(
       () =>
         new Promise((resolve) => {
-          releaseB = () => resolve({ status: "COMPLETED", payload: { body: [] } });
+          releaseB = () =>
+            resolve({ status: 'COMPLETED', payload: { body: [] } });
         }),
     );
-    const workerB = processor.process(job({ taskId: "task1" }));
+    const workerB = processor.process(job({ taskId: 'task1' }));
     await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
@@ -304,7 +308,7 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
 
     // With B still in flight, the Task must not be claimable by anyone
     // else: B holds the lease and its invocation is alive.
-    const afterA = store.get("task1").processingClaimedAt;
+    const afterA = store.get('task1').processingClaimedAt;
     expect(afterA).not.toBeNull();
 
     releaseB();

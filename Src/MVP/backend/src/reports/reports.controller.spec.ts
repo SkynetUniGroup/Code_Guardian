@@ -1,5 +1,4 @@
-import { type Mock, type MockedFunction, vi } from "vitest";
-
+import { vi, type Mock, type MockedFunction } from 'vitest';
 // Integration test for GET /reports/:id/export, driven through a real HTTP
 // request against the real ReportsController -> real ReportsExportService,
 // with the real global ValidationPipe/AllExceptionsFilter registered — not
@@ -21,27 +20,29 @@ import { type Mock, type MockedFunction, vi } from "vitest";
 // generic branch answers with {code:'UPSTREAM', message:'An internal error
 // occurred.'} instead of {code:'EXPORT_FAILED', message:<real message>} —
 // only a real filter, actually wired up, can catch that.
-vi.mock("./report-pdf.composer");
+vi.mock('./report-pdf.composer');
 
+import { Test, TestingModule } from '@nestjs/testing';
 import {
   CanActivate,
   ExecutionContext,
   INestApplication,
   NotFoundException,
   ValidationPipe,
-} from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
-import request from "supertest";
-import { App } from "supertest/types";
-import { AllExceptionsFilter } from "../common/filters/all-exceptions.filter";
-import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import { ReportArtifactStorageService } from "./report-artifact-storage.service";
-import { composeReportPdf } from "./report-pdf.composer";
-import { ReportsController } from "./reports.controller";
-import { ReportsService } from "./reports.service";
-import { ReportsExportService } from "./reports-export.service";
+} from '@nestjs/common';
+import request from 'supertest';
+import { App } from 'supertest/types';
+import { ReportsController } from './reports.controller';
+import { ReportsService } from './reports.service';
+import { ReportsExportService } from './reports-export.service';
+import { ReportArtifactStorageService } from './report-artifact-storage.service';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { AllExceptionsFilter } from '../common/filters/all-exceptions.filter';
+import { composeReportPdf } from './report-pdf.composer';
 
-const composeReportPdfMock = composeReportPdf as MockedFunction<typeof composeReportPdf>;
+const composeReportPdfMock = composeReportPdf as MockedFunction<
+  typeof composeReportPdf
+>;
 
 // Stands in for JwtAuthGuard: skips real passport/JWT verification (there is
 // no AuthModule wired into this narrow test module) and attaches the same
@@ -50,21 +51,21 @@ const composeReportPdfMock = composeReportPdf as MockedFunction<typeof composeRe
 class FakeAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<{ user?: unknown }>();
-    req.user = { userId: "user1", role: "DEVELOPER" };
+    req.user = { userId: 'user1', role: 'DEVELOPER' };
     return true;
   }
 }
 
 function makeReportDto(overrides: Record<string, unknown> = {}) {
   return {
-    id: "report1",
-    operation: "DOCS_README",
-    status: "COMPLETED",
+    id: 'report1',
+    operation: 'DOCS_README',
+    status: 'COMPLETED',
     ...overrides,
   };
 }
 
-describe("ReportsController (export, integration)", () => {
+describe('ReportsController (export, integration)', () => {
   let app: INestApplication<App>;
   let reportsService: { findOneForUser: Mock };
   let storage: { putReportArtifact: Mock };
@@ -105,23 +106,25 @@ describe("ReportsController (export, integration)", () => {
     await app.close();
   });
 
-  it("responds 409 with a genuinely empty body for a FAILED report", async () => {
-    reportsService.findOneForUser.mockResolvedValue(makeReportDto({ status: "FAILED" }));
+  it('responds 409 with a genuinely empty body for a FAILED report', async () => {
+    reportsService.findOneForUser.mockResolvedValue(
+      makeReportDto({ status: 'FAILED' }),
+    );
 
     const res = await request(app.getHttpServer())
-      .get("/reports/report1/export?format=pdf")
+      .get('/reports/report1/export?format=pdf')
       .expect(409);
 
-    expect(res.text).toBe("");
+    expect(res.text).toBe('');
     expect(composeReportPdfMock).not.toHaveBeenCalled();
   });
 
-  it("responds 500 with the literal EXPORT_FAILED shape when PDF generation fails, not the global error envelope", async () => {
+  it('responds 500 with the literal EXPORT_FAILED shape when PDF generation fails, not the global error envelope', async () => {
     reportsService.findOneForUser.mockResolvedValue(makeReportDto());
-    composeReportPdfMock.mockRejectedValue(new Error("pdfkit exploded"));
+    composeReportPdfMock.mockRejectedValue(new Error('pdfkit exploded'));
 
     const res = await request(app.getHttpServer())
-      .get("/reports/report1/export?format=pdf")
+      .get('/reports/report1/export?format=pdf')
       .expect(500);
 
     // Exact equality, not objectContaining: AllExceptionsFilter's own
@@ -129,53 +132,53 @@ describe("ReportsController (export, integration)", () => {
     // error occurred.'} — a superset match could pass on that shape too if
     // this test were loosened. This has to be exactly the bespoke body.
     expect(res.body).toEqual({
-      code: "EXPORT_FAILED",
-      message: "pdfkit exploded",
+      code: 'EXPORT_FAILED',
+      message: 'pdfkit exploded',
     });
   });
 
-  it("still routes an ownership-mismatch 404 through the normal error envelope, unlike the two special cases", async () => {
+  it('still routes an ownership-mismatch 404 through the normal error envelope, unlike the two special cases', async () => {
     reportsService.findOneForUser.mockRejectedValue(
-      new NotFoundException("Report report1 not found"),
+      new NotFoundException('Report report1 not found'),
     );
 
     const res = await request(app.getHttpServer())
-      .get("/reports/report1/export?format=pdf")
+      .get('/reports/report1/export?format=pdf')
       .expect(404);
 
     // AllExceptionsFilter's STATUS_FALLBACK_CODE shape — proves this path,
     // unlike FAILED/EXPORT_FAILED, is not special-cased in the controller.
     expect(res.body).toEqual({
-      code: "NOT_FOUND",
-      message: "Report report1 not found",
+      code: 'NOT_FOUND',
+      message: 'Report report1 not found',
     });
   });
 
-  it("streams the composed PDF with the right headers and filename on success", async () => {
+  it('streams the composed PDF with the right headers and filename on success', async () => {
     reportsService.findOneForUser.mockResolvedValue(
-      makeReportDto({ operation: "SECURITY_OWASP", id: "r42" }),
+      makeReportDto({ operation: 'SECURITY_OWASP', id: 'r42' }),
     );
-    const pdf = Buffer.from("%PDF-1.4 fake pdf bytes");
+    const pdf = Buffer.from('%PDF-1.4 fake pdf bytes');
     composeReportPdfMock.mockResolvedValue(pdf);
 
     const res = await request(app.getHttpServer())
-      .get("/reports/r42/export?format=pdf")
+      .get('/reports/r42/export?format=pdf')
       .expect(200);
 
-    expect(res.headers["content-type"]).toBe("application/pdf");
-    expect(res.headers["content-disposition"]).toBe(
+    expect(res.headers['content-type']).toBe('application/pdf');
+    expect(res.headers['content-disposition']).toBe(
       'attachment; filename="code-guardian-SECURITY_OWASP-r42.pdf"',
     );
     expect(Buffer.compare(res.body as Buffer, pdf)).toBe(0);
-    expect(storage.putReportArtifact).toHaveBeenCalledWith("r42", pdf);
+    expect(storage.putReportArtifact).toHaveBeenCalledWith('r42', pdf);
   });
 
-  it("rejects an unsupported export format with the normal 400 validation envelope, before the service is called", async () => {
+  it('rejects an unsupported export format with the normal 400 validation envelope, before the service is called', async () => {
     const res = await request(app.getHttpServer())
-      .get("/reports/report1/export?format=docx")
+      .get('/reports/report1/export?format=docx')
       .expect(400);
 
-    expect(res.body).toMatchObject({ code: "VALIDATION_ERROR" });
+    expect(res.body).toMatchObject({ code: 'VALIDATION_ERROR' });
     expect(reportsService.findOneForUser).not.toHaveBeenCalled();
   });
 });
