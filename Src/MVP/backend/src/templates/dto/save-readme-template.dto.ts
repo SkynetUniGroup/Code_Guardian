@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from "class-validator";
 
 /**
  * RF.79 — il template caricato dall'utente.

@@ -22,54 +22,47 @@ export interface EsitoValidazione {
  */
 const CONTROLLI_NON_AMMESSI = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/;
 
-export function validaTemplateReadme(
-  filename: string,
-  content: string,
-): EsitoValidazione {
-  const nome = (filename ?? '').trim();
+export function validaTemplateReadme(filename: string, content: string): EsitoValidazione {
+  const nome = (filename ?? "").trim();
 
   if (!nome) {
-    return { valido: false, errore: 'Il nome del file è obbligatorio.' };
+    return { valido: false, errore: "Il nome del file è obbligatorio." };
   }
 
   // Un nome con separatori non è un nome di file: è un percorso, e non
   // deve poter descrivere una posizione sul server.
-  if (nome.includes('/') || nome.includes('\\')) {
+  if (nome.includes("/") || nome.includes("\\")) {
     return {
       valido: false,
-      errore: 'Il nome del file non può contenere percorsi.',
+      errore: "Il nome del file non può contenere percorsi.",
     };
   }
 
-  if (!nome.toLowerCase().endsWith('.md')) {
+  if (!nome.toLowerCase().endsWith(".md")) {
     return {
       valido: false,
-      errore:
-        'Il template deve essere un file Markdown con estensione .md.',
+      errore: "Il template deve essere un file Markdown con estensione .md.",
     };
   }
 
   if (!content || !content.trim()) {
-    return { valido: false, errore: 'Il template è vuoto.' };
+    return { valido: false, errore: "Il template è vuoto." };
   }
 
   if (CONTROLLI_NON_AMMESSI.test(content)) {
     return {
       valido: false,
-      errore:
-        'Il file non è un documento di testo: contiene caratteri non stampabili.',
+      errore: "Il file non è un documento di testo: contiene caratteri non stampabili.",
     };
   }
 
   // Misurato in byte e non in caratteri: il limite protegge lo spazio
   // occupato, e un template pieno di accenti o emoji pesa più della sua
   // lunghezza.
-  if (Buffer.byteLength(content, 'utf8') > MAX_TEMPLATE_BYTES) {
+  if (Buffer.byteLength(content, "utf8") > MAX_TEMPLATE_BYTES) {
     return {
       valido: false,
-      errore: `Il template supera la dimensione massima di ${
-        MAX_TEMPLATE_BYTES / 1024
-      } KB.`,
+      errore: `Il template supera la dimensione massima di ${MAX_TEMPLATE_BYTES / 1024} KB.`,
     };
   }
 

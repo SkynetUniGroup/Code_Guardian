@@ -1,11 +1,11 @@
-import { ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { RolesGuard } from './roles.guard';
-import { Roles } from '../decorators/roles.decorator';
-import { UserRole } from '../../auth/schemas/user.schema';
+import { ExecutionContext, ForbiddenException } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { UserRole } from "../../auth/schemas/user.schema";
+import { Roles } from "../decorators/roles.decorator";
+import { RolesGuard } from "./roles.guard";
 
 class DummyController {
-  @Roles('SECURITY_AUDITOR')
+  @Roles("SECURITY_AUDITOR")
   restricted(this: void) {}
 
   open(this: void) {}
@@ -18,35 +18,30 @@ class DummyController {
 const restrictedHandler = DummyController.prototype.restricted;
 const openHandler = DummyController.prototype.open;
 
-function makeContext(
-  role: UserRole | undefined,
-  handler: () => void,
-): ExecutionContext {
+function makeContext(role: UserRole | undefined, handler: () => void): ExecutionContext {
   return {
     getHandler: () => handler,
     getClass: () => DummyController,
     switchToHttp: () => ({
-      getRequest: () => ({ user: role ? { userId: 'u1', role } : undefined }),
+      getRequest: () => ({ user: role ? { userId: "u1", role } : undefined }),
     }),
   } as unknown as ExecutionContext;
 }
 
-describe('RolesGuard', () => {
+describe("RolesGuard", () => {
   const guard = new RolesGuard(new Reflector());
 
-  it('allows the request when the route has no @Roles() at all', () => {
-    expect(guard.canActivate(makeContext('DEVELOPER', openHandler))).toBe(true);
+  it("allows the request when the route has no @Roles() at all", () => {
+    expect(guard.canActivate(makeContext("DEVELOPER", openHandler))).toBe(true);
   });
 
-  it('allows the request when the caller has one of the required roles', () => {
-    expect(
-      guard.canActivate(makeContext('SECURITY_AUDITOR', restrictedHandler)),
-    ).toBe(true);
+  it("allows the request when the caller has one of the required roles", () => {
+    expect(guard.canActivate(makeContext("SECURITY_AUDITOR", restrictedHandler))).toBe(true);
   });
 
-  it('rejects the request when the caller does not have a required role', () => {
-    expect(() =>
-      guard.canActivate(makeContext('DEVELOPER', restrictedHandler)),
-    ).toThrow(ForbiddenException);
+  it("rejects the request when the caller does not have a required role", () => {
+    expect(() => guard.canActivate(makeContext("DEVELOPER", restrictedHandler))).toThrow(
+      ForbiddenException,
+    );
   });
 });
