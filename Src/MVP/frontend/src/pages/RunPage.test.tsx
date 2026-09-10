@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -11,8 +12,10 @@ vi.mock("@tanstack/react-router", () => ({
 }));
 
 const postMock = vi.fn();
+const getMock = vi.fn();
 vi.mock("../api/client", () => ({
   apiClient: {
+    get: (...args: any[]) => getMock(...args),
     post: (...args: any[]) => postMock(...args),
   },
 }));
@@ -38,23 +41,72 @@ const CONTESTO = {
   nonEnglishReadmeDetected: false,
 };
 
-function httpError(status: number) {
-  return { response: { status } };
+function httpError(status: number, message?: string) {
+  // Dev'essere un AxiosError vero: toApiError legge stato e corpo solo dopo
+  // `err instanceof AxiosError`, e con un oggetto della sola forma giusta la
+  // pagina non vedrebbe nemmeno lo stato.
+  return new AxiosError(
+    message ?? "Request failed",
+    String(status),
+    undefined,
+    undefined,
+    { status, data: message ? { message } : {}, statusText: "", headers: {}, config: {} } as never,
+  );
+}
+
+// Le operazioni non sono piu' cablate nella pagina: RunPage le legge da
+// GET /operations, e il backend le filtra per ruolo. Il mock riproduce
+// quel filtro, con gli stessi codici del registro in agent-registry.service.ts.
+const DESCRITTORI = {
+  DOCS_README: { agent: "DOCS", description: "Genera o aggiorna il README." },
+  DOCS_INLINE: { agent: "DOCS", description: "Documenta il codice riga per riga." },
+  DOCS_API: { agent: "DOCS", description: "Documenta gli endpoint esposti." },
+  SECURITY_OWASP: { agent: "SECURITY", description: "Cerca le vulnerabilita' OWASP Top 10." },
+  SECURITY_POLICY: { agent: "SECURITY", description: "Verifica le regole del POLICY.md." },
+  CHANGELOG_TECHNICAL: { agent: "CHANGELOG", description: "Changelog per chi sviluppa." },
+  CHANGELOG_BUSINESS: { agent: "CHANGELOG", description: "Note di rilascio per il committente." },
+} as const;
+
+const PER_RUOLO: Record<UserRole, (keyof typeof DESCRITTORI)[]> = {
+  DEVELOPER: ["DOCS_README", "DOCS_INLINE", "DOCS_API", "CHANGELOG_TECHNICAL"],
+  SECURITY_AUDITOR: ["SECURITY_OWASP", "SECURITY_POLICY"],
+  PROJECT_MANAGER: ["CHANGELOG_TECHNICAL", "CHANGELOG_BUSINESS"],
+};
+
+function operazioniDi(role: UserRole) {
+  return PER_RUOLO[role].map((code) => ({
+    code,
+    // Il backend li manda in inglese; la pagina rende l'etichetta italiana.
+    displayName: code,
+    ...DESCRITTORI[code],
+  }));
 }
 
 /** Prepara sessione e contesto, poi monta la pagina. */
-function renderConContesto(role: UserRole = "SECURITY_AUDITOR") {
+async function renderConContesto(role: UserRole = "SECURITY_AUDITOR") {
+  getMock.mockResolvedValue({ data: operazioniDi(role) });
   useSessionStore.setState({ user: { id: "u1", firstName: "Ada", role }, token: "jwt" });
   useSelectionStore.getState().setContext(CONTESTO);
   render(<RunPage />);
+  // Le operazioni arrivano da GET /operations: prima che la risposta atterri
+  // la pagina non ha ancora alcuna scheda da mostrare.
+  await screen.findByRole("button", { name: new RegExp(PRIMA_ETICHETTA[role]) });
   return userEvent.setup();
 }
+
+const PRIMA_ETICHETTA: Record<UserRole, string> = {
+  DEVELOPER: "Documentazione README",
+  SECURITY_AUDITOR: "Analisi Sicurezza OWASP",
+  PROJECT_MANAGER: "Changelog Tecnico",
+};
 
 beforeEach(() => {
   useSessionStore.setState(initialSession, true);
   useSelectionStore.setState(initialSelection, true);
   navigateMock.mockReset();
   postMock.mockReset();
+  getMock.mockReset();
+  getMock.mockResolvedValue({ data: [] });
 });
 
 describe("RunPage", () => {
@@ -70,8 +122,8 @@ describe("RunPage", () => {
     expect(navigateMock).toHaveBeenCalledWith({ to: "/select" });
   });
 
-  it("riepiloga il contesto attivo: repository, SHA abbreviato, ambito e linguaggi", () => {
-    renderConContesto();
+  it("riepiloga il contesto attivo: repository, SHA abbreviato, ambito e linguaggi", async () => {
+    await renderConContesto();
 
     expect(screen.getByText("OWASP/NodeGoat")).toBeInTheDocument();
     expect(screen.getByText("abc12345")).toBeInTheDocument();
@@ -80,8 +132,8 @@ describe("RunPage", () => {
     expect(screen.getByText(/42 file stimati/)).toBeInTheDocument();
   });
 
-  it("elenca le sole operazioni permesse al ruolo Security Auditor", () => {
-    renderConContesto("SECURITY_AUDITOR");
+  it("elenca le sole operazioni permesse al ruolo Security Auditor", async () => {
+    await renderConContesto("SECURITY_AUDITOR");
 
     expect(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Verifica Policy/ })).toBeInTheDocument();
@@ -89,8 +141,8 @@ describe("RunPage", () => {
     expect(screen.queryByRole("button", { name: /Documentazione README/ })).not.toBeInTheDocument();
   });
 
-  it("elenca le quattro operazioni del ruolo Developer", () => {
-    renderConContesto("DEVELOPER");
+  it("elenca le quattro operazioni del ruolo Developer", async () => {
+    await renderConContesto("DEVELOPER");
 
     for (const etichetta of [
       /Documentazione README/,
@@ -103,8 +155,8 @@ describe("RunPage", () => {
     expect(screen.queryByRole("button", { name: /Analisi Sicurezza/ })).not.toBeInTheDocument();
   });
 
-  it("elenca le due operazioni del ruolo Project Manager", () => {
-    renderConContesto("PROJECT_MANAGER");
+  it("elenca le due operazioni del ruolo Project Manager", async () => {
+    await renderConContesto("PROJECT_MANAGER");
 
     expect(screen.getByRole("button", { name: /Changelog Tecnico/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Changelog Business/ })).toBeInTheDocument();
@@ -112,7 +164,7 @@ describe("RunPage", () => {
   });
 
   it("selezionare e deselezionare la stessa operazione la riporta allo stato iniziale", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
     const carta = screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ });
     expect(carta).toHaveAttribute("aria-pressed", "false");
 
@@ -124,7 +176,7 @@ describe("RunPage", () => {
   });
 
   it("permette di selezionare piu' operazioni contemporaneamente", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
 
     await user.click(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ }));
     await user.click(screen.getByRole("button", { name: /Verifica Policy/ }));
@@ -141,7 +193,7 @@ describe("RunPage", () => {
   });
 
   it("senza alcuna operazione selezionata il pulsante di avvio e' inerte", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
     const avvio = screen.getByRole("button", { name: /Seleziona almeno un'operazione/ });
 
     expect(avvio).toBeDisabled();
@@ -151,7 +203,7 @@ describe("RunPage", () => {
   });
 
   it("avvia le operazioni selezionate sul contesto corrente e passa al monitoraggio", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
     postMock.mockResolvedValueOnce({ data: {} });
     await user.click(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ }));
     await user.click(screen.getByRole("button", { name: /Verifica Policy/ }));
@@ -166,16 +218,20 @@ describe("RunPage", () => {
   });
 
   it("con una sola operazione il pulsante lo dice al singolare", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
 
     await user.click(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ }));
 
     expect(screen.getByRole("button", { name: "Avvia operazione" })).toBeInTheDocument();
   });
 
-  it("al superamento del limite di utilizzo (402) lo dichiara e non naviga", async () => {
-    const user = renderConContesto();
-    postMock.mockRejectedValueOnce(httpError(402));
+  it("al superamento del limite di utilizzo (429) lo dichiara e non naviga", async () => {
+    // RF.66: il backend risponde 429, non 402. Il messaggio mostrato e' il
+    // suo, non il ripiego della pagina, che vale solo se il corpo non ne porta.
+    const user = await renderConContesto();
+    postMock.mockRejectedValueOnce(
+      httpError(429, "Limite di utilizzo del modello AI raggiunto per questo mese."),
+    );
     await user.click(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ }));
 
     await user.click(screen.getByRole("button", { name: "Avvia operazione" }));
@@ -187,7 +243,7 @@ describe("RunPage", () => {
   });
 
   it("se il contesto non esiste piu' (404) invita a ricrearlo", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
     postMock.mockRejectedValueOnce(httpError(404));
     await user.click(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ }));
 
@@ -197,7 +253,7 @@ describe("RunPage", () => {
   });
 
   it("per ogni altro errore mostra un messaggio generico di avvio fallito", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
     postMock.mockRejectedValueOnce(httpError(500));
     await user.click(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ }));
 
@@ -207,7 +263,7 @@ describe("RunPage", () => {
   });
 
   it("cambiando selezione dopo un errore il messaggio sparisce", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
     postMock.mockRejectedValueOnce(httpError(500));
     await user.click(screen.getByRole("button", { name: /Analisi Sicurezza OWASP/ }));
     await user.click(screen.getByRole("button", { name: "Avvia operazione" }));
@@ -219,7 +275,7 @@ describe("RunPage", () => {
   });
 
   it("consente di tornare alla selezione del repository per cambiare contesto", async () => {
-    const user = renderConContesto();
+    const user = await renderConContesto();
 
     await user.click(screen.getByRole("button", { name: "Cambia contesto" }));
 

@@ -6,6 +6,7 @@ import { ErrorState } from "../components/shared/ErrorState";
 import { Spinner } from "../components/shared/Spinner";
 import { useSelectionStore } from "../stores/selectionStore";
 import { useTasksStore } from "../stores/tasksStore";
+import { OPERATION_LABELS } from "../types";
 import type { CreateTaskBatchDto, OperationCode, OperationDescriptorDto } from "../types";
 
 /**
@@ -227,7 +228,15 @@ export function RunPage() {
               <span className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
                 {op.agent}
               </span>
-              <span className="block text-sm font-medium text-[#2a2a2a]">{op.displayName}</span>
+              {/* L'etichetta italiana, la stessa che usano TasksPage, ReportsPage
+                  e ReportDetailPage: il displayName che arriva da GET /operations
+                  e' in inglese, e qui l'utente sceglieva "OWASP Top 10
+                  vulnerability scan" per poi ritrovarselo ovunque come "Analisi
+                  Sicurezza OWASP". Il displayName resta il ripiego se un giorno
+                  il backend introduce un codice che la mappa non conosce. */}
+              <span className="block text-sm font-medium text-[#2a2a2a]">
+                {OPERATION_LABELS[op.code] ?? op.displayName}
+              </span>
               <span className="mt-1 block text-xs leading-relaxed text-gray-500">
                 {op.description}
               </span>
