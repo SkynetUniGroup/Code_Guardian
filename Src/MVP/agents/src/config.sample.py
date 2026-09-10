@@ -96,17 +96,6 @@ class Settings(BaseSettings):
     sonar_cache_ttl_s: int = Field(default=86400, alias="SONAR_CACHE_TTL_S")
 
     def require_llm_key(self) -> str:
-        """Returns the API key or raises a clear exception if missing, ignoring Bedrock.
-
-        For Bedrock provider, returns empty string as AWS uses IAM Task Roles.
-        For managed providers (OpenAI-compatible), validates that LLM_API_KEY is configured.
-
-        Returns:
-            str: The configured LLM API key, or empty string for Bedrock.
-
-        Raises:
-            RuntimeError: If the key is missing and the provider is not Bedrock.
-        """
         # Bedrock selector: ADR-AWS-1 enforces IAM Task Roles, no static API key
         if self.llm_provider.lower() == "bedrock":
             return ""
