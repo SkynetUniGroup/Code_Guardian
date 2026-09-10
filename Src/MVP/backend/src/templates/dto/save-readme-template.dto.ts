@@ -17,9 +17,9 @@ import { IsNotEmpty, IsString } from "class-validator";
 export class SaveReadmeTemplateDto {
   @IsString()
   @IsNotEmpty()
-  filename: string;
+  filename!: string;
 
   @IsString()
   @IsNotEmpty()
-  content: string;
+  content!: string;
 }

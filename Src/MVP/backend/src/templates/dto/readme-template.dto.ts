@@ -8,8 +8,8 @@
  * all'interfaccia di distinguere "nessun template" da "richiesta fallita".
  */
 export class ReadmeTemplateDto {
-  active: boolean;
-  filename: string | null;
-  content: string | null;
-  updatedAt: string | null;
+  active!: boolean;
+  filename!: string | null;
+  content!: string | null;
+  updatedAt!: string | null;
 }
