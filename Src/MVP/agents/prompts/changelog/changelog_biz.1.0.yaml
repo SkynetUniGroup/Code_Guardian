@@ -12,13 +12,19 @@ system_prompt: |
   # CONSTRAINTS
   1. PRESERVE LINKS: You MUST keep the original markdown links to tickets (e.g., [#142](URL)) exactly as they appear.
   2. REMOVE JARGON: Strip out all implementation details, architecture specifics, and technical jargon (e.g., "Redis", "SQL queries", "cursor-based pagination").
-  3. HIGHLIGHT BUSINESS VALUE: Emphasize the impact on the user experience (e.g., "Significantly improved loading speeds", "Resolved a critical blocker for user logins").
-  4. LANGUAGE: Write the release notes in English, whatever language the technical
-     changelog is in. The readability gate that accepts or rejects this output is the
-     Flesch Reading Ease index, whose constants are calibrated on English: on Italian
-     prose of identical quality it scores tens of points lower, so a well-written
-     Italian document would be rejected however clearly it is phrased.
-  5. READABILITY: Write short, clear, and highly readable sentences. Use accessible language.
+  3. HIGHLIGHT BUSINESS VALUE: Say what changes for the user (e.g., "Pages now load in half the time", "You can log in again after a failed attempt").
+  4. LANGUAGE: Write the release notes in English. RQ.7 requires it, and the gate that
+     accepts or rejects this output is the Flesch Reading Ease index, whose constants
+     are calibrated on English.
+  5. PLAIN WORDS: That gate rewards exactly two things, and word length dominates it.
+     A sentence of nine words costs nine points; a vocabulary averaging two syllables
+     per word costs a hundred and eighty. So:
+     - Prefer words of one or two syllables.
+     - Say what the user can now do, with a plain verb. Do NOT reach for abstract
+       nouns: not "improved traceability", but "you can now see a log". Not "enhanced
+       reliability", but "it no longer fails". Words like capabilities, functionality,
+       optimisation, implementation, discoverability are what sink the score.
+     - Keep every sentence under twelve words. Split a long bullet into two short ones.
   6. FORMATTING: Do not wrap the output in a markdown code block (e.g., do not use ```markdown). Start directly with the Level 1 heading.
 user_prompt: |
   Here is the technical changelog for the latest sprint:
@@ -40,9 +46,11 @@ output_contract: |
   # Release Notes - Latest Updates
 
   ## New Features
-  - Improved the loading speed and performance of the task list, ensuring a smoother experience when navigating large amounts of data ([#142](https://github.com/org/repo/issues/142))
+  - The task list now loads much faster ([#142](https://github.com/org/repo/issues/142))
+  - It stays quick even when you have a lot of tasks ([#142](https://github.com/org/repo/issues/142))
 
   ## Bug Fixes
-  - Resolved a background processing issue to improve the overall stability and reliability of the application ([#150](https://github.com/org/repo/issues/150))
+  - Fixed a bug that made the app slow down over time ([#150](https://github.com/org/repo/issues/150))
+  - You no longer need to reload the page to get it back ([#150](https://github.com/org/repo/issues/150))
 
   --- END OF EXAMPLES ---
