@@ -22,8 +22,8 @@ const { SelectPage } = await import("./SelectPage");
 const initialSelection = useSelectionStore.getState();
 
 const REPOS = [
-  { owner: "SkynetUniGroup", name: "Code_Guardian", defaultBranch: "develop", private: false },
-  { owner: "OWASP", name: "NodeGoat", defaultBranch: "master", private: true },
+  { owner: "SkynetUniGroup", name: "Code_Guardian", defaultBranch: "develop", isPrivate: false },
+  { owner: "OWASP", name: "NodeGoat", defaultBranch: "master", isPrivate: true },
 ];
 
 /** Contesto nella forma restituita da POST /contexts. */
@@ -88,7 +88,7 @@ describe("SelectPage", () => {
 
     await user.selectOptions(screen.getByLabelText("Repository"), "OWASP/NodeGoat");
 
-    expect(screen.getByLabelText("Branch o Commit SHA")).toHaveValue("master");
+    expect(screen.getByLabelText("Branch")).toHaveValue("master");
   });
 
   it("crea il contesto sull'intero repository e prosegue verso l'avvio", async () => {
@@ -117,18 +117,22 @@ describe("SelectPage", () => {
     expect(useSelectionStore.getState().context).toEqual(CONTESTO_CREATO.data);
   });
 
-  it("accetta un commit specifico al posto del branch", async () => {
+  it("accetta un commit specifico accanto al branch", async () => {
+    // Il campo unico "Branch o Commit SHA" e' diventato due campi distinti:
+    // il branch resta obbligatorio, il commit e' un di piu' che lo ancora.
     const user = await renderCaricata();
     postMock.mockResolvedValueOnce(CONTESTO_CREATO);
     await user.selectOptions(screen.getByLabelText("Repository"), "OWASP/NodeGoat");
-    const campoRef = screen.getByLabelText("Branch o Commit SHA");
-    await user.clear(campoRef);
-    await user.type(campoRef, "a1b2c3d4e5f6");
+    await user.type(screen.getByLabelText(/Commit SHA/), "a1b2c3d4e5f6");
 
     await user.click(screen.getByRole("button", { name: BOTTONE }));
 
     await waitFor(() => expect(postMock).toHaveBeenCalled());
-    expect(postMock.mock.calls[0][1].branch).toBe("a1b2c3d4e5f6");
+    // Il commit viaggia in `commitSha`, non al posto del branch: RF.22 ancora
+    // il contesto a un commit preciso, e senza branch il backend non saprebbe
+    // dove cercarlo.
+    expect(postMock.mock.calls[0][1].branch).toBe("master");
+    expect(postMock.mock.calls[0][1].commitSha).toBe("a1b2c3d4e5f6");
   });
 
   it("restringe l'ambito a singoli file, uno per riga", async () => {
@@ -209,18 +213,18 @@ describe("SelectPage", () => {
 
     await user.click(screen.getByRole("button", { name: BOTTONE }));
 
-    expect(await screen.findByText("Seleziona un repository")).toBeInTheDocument();
+    expect(await screen.findByText(/Seleziona un repository o incolla l'URL/)).toBeInTheDocument();
     expect(postMock).not.toHaveBeenCalled();
   });
 
-  it("blocca l'invio se il riferimento e' stato svuotato", async () => {
+  it("blocca l'invio se il branch e' stato svuotato", async () => {
     const user = await renderCaricata();
     await user.selectOptions(screen.getByLabelText("Repository"), "OWASP/NodeGoat");
-    await user.clear(screen.getByLabelText("Branch o Commit SHA"));
+    await user.clear(screen.getByLabelText("Branch"));
 
     await user.click(screen.getByRole("button", { name: BOTTONE }));
 
-    expect(await screen.findByText("Inserisci il branch o il commit SHA")).toBeInTheDocument();
+    expect(await screen.findByText("Inserisci il branch")).toBeInTheDocument();
     expect(postMock).not.toHaveBeenCalled();
   });
 

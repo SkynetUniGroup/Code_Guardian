@@ -33,7 +33,6 @@ function riepilogo(over: Partial<Record<string, unknown>> & { id: string }) {
     status: "COMPLETED",
     generatedAt: "2026-08-20T10:30:00Z",
     title: "Analisi OWASP – OWASP/NodeGoat",
-    durationMs: 12500,
     ...over,
   };
 }
@@ -65,14 +64,15 @@ describe("ReportsPage", () => {
     expect(getMock).toHaveBeenCalledWith("/reports");
   });
 
-  it("elenca i report con titolo, operazione, stato, data e durata", async () => {
+  it("elenca i report con titolo, operazione, stato e data", async () => {
     await renderConReport([riepilogo({ id: "rep-1" })]);
 
     const riga = screen.getAllByRole("row")[1];
     expect(within(riga).getByText("Analisi OWASP – OWASP/NodeGoat")).toBeInTheDocument();
     expect(within(riga).getByText("Analisi Sicurezza OWASP")).toBeInTheDocument();
     expect(within(riga).getByText("Completato")).toBeInTheDocument();
-    expect(within(riga).getByText("12.5s")).toBeInTheDocument();
+    // Nessuna durata: ReportSummaryDto non porta durationMs, quindi l'elenco
+    // non ha con cosa renderla. Il campo esisteva nel contratto precedente.
     expect(within(riga).getByText(/20\/08\/2026/)).toBeInTheDocument();
   });
 

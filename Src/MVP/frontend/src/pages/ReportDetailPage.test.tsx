@@ -42,15 +42,15 @@ function report(over: Record<string, unknown> = {}) {
 
 function finding(over: Record<string, unknown> = {}) {
   return {
-    kind: "finding",
+    kind: "FINDING",
     order: 1,
-    owaspCategory: "A03:2021 – Injection",
-    severity: "critical",
+    category: "A03:2021 – Injection",
+    severity: "CRITICAL",
     filePath: "app/data/user-dao.js",
-    startLine: 42,
-    endLine: 45,
-    explanation: "Query costruita per concatenazione di stringhe.",
-    remediation: "Usare query parametrizzate.",
+    lineStart: 42,
+    lineEnd: 45,
+    description: "Query costruita per concatenazione di stringhe.",
+    remediation: { kind: "TEXT", text: "Usare query parametrizzate." },
     ...over,
   };
 }
@@ -122,7 +122,7 @@ describe("ReportDetailPage", () => {
 
   it("renderizza i blocchi di testo formattato", async () => {
     await renderConReport(
-      report({ body: [{ kind: "text", order: 1, markdown: "## Sintesi esecutiva" }] }),
+      report({ body: [{ kind: "TEXT", order: 1, markdown: "## Sintesi esecutiva" }] }),
     );
 
     expect(screen.getByText("## Sintesi esecutiva")).toBeInTheDocument();
@@ -146,7 +146,7 @@ describe("ReportDetailPage", () => {
         operation: "SECURITY_POLICY",
         body: [
           {
-            kind: "policy_violation",
+            kind: "POLICY_VIOLATION",
             order: 1,
             ruleId: "POL-007",
             ruleText: "Vietato loggare dati personali",
@@ -169,7 +169,7 @@ describe("ReportDetailPage", () => {
         operation: "CHANGELOG_TECHNICAL",
         body: [
           {
-            kind: "changelog_item",
+            kind: "CHANGELOG_ITEM",
             order: 1,
             issueRef: "ISSUE-42",
             title: "Aggiunta esportazione PDF",
@@ -188,9 +188,9 @@ describe("ReportDetailPage", () => {
     await renderConReport(
       report({
         body: [
-          { kind: "text", order: 3, markdown: "Terzo" },
-          { kind: "text", order: 1, markdown: "Primo" },
-          { kind: "text", order: 2, markdown: "Secondo" },
+          { kind: "TEXT", order: 3, markdown: "Terzo" },
+          { kind: "TEXT", order: 1, markdown: "Primo" },
+          { kind: "TEXT", order: 2, markdown: "Secondo" },
         ],
       }),
     );
@@ -203,7 +203,7 @@ describe("ReportDetailPage", () => {
     await renderConReport(
       report({
         body: [
-          { kind: "text", order: 1, markdown: "Blocco noto" },
+          { kind: "TEXT", order: 1, markdown: "Blocco noto" },
           { kind: "tipo_dal_futuro", order: 2 },
         ],
       }),
@@ -216,8 +216,8 @@ describe("ReportDetailPage", () => {
     const user = await renderConReport(
       report({
         body: [
-          finding({ order: 1, severity: "critical", owaspCategory: "Injection critica" }),
-          finding({ order: 2, severity: "low", owaspCategory: "Header mancante" }),
+          finding({ order: 1, severity: "CRITICAL", category: "Injection critica" }),
+          finding({ order: 2, severity: "LOW", category: "Header mancante" }),
         ],
       }),
     );
@@ -229,7 +229,7 @@ describe("ReportDetailPage", () => {
   });
 
   it("avvisa quando il filtro non lascia alcun elemento", async () => {
-    const user = await renderConReport(report({ body: [finding({ severity: "critical" })] }));
+    const user = await renderConReport(report({ body: [finding({ severity: "CRITICAL" })] }));
 
     await user.click(screen.getByRole("button", { name: "Basso" }));
 
@@ -240,7 +240,7 @@ describe("ReportDetailPage", () => {
     await renderConReport(
       report({
         operation: "CHANGELOG_TECHNICAL",
-        body: [{ kind: "text", order: 1, markdown: "Solo testo" }],
+        body: [{ kind: "TEXT", order: 1, markdown: "Solo testo" }],
       }),
     );
 
@@ -255,7 +255,7 @@ describe("ReportDetailPage", () => {
           targetPath: "src/utils/date.ts",
           diffUnified: "--- a\n+++ b\n+/** documenta */",
           language: "typescript",
-          prUrl: "https://github.com/OWASP/NodeGoat/pull/7",
+          pullRequestUrl: "https://github.com/OWASP/NodeGoat/pull/7",
         },
       }),
     );
@@ -314,8 +314,8 @@ describe("ReportDetailPage", () => {
     await renderConReport(
       report({
         body: [
-          finding({ order: 1, severity: "critical", owaspCategory: "Injection" }),
-          finding({ order: 2, severity: "info", owaspCategory: "Nota informativa" }),
+          finding({ order: 1, severity: "CRITICAL", category: "Injection" }),
+          finding({ order: 2, severity: "INFO", category: "Nota informativa" }),
         ],
       }),
     );

@@ -78,8 +78,24 @@ describe("sessionStore", () => {
       .getState()
       .login({ id: "u1", firstName: "Ada", role: "DEVELOPER" }, "jwt-segreto");
 
-    expect(JSON.stringify(localStorage)).not.toContain("jwt-segreto");
-    expect(JSON.stringify(sessionStorage)).not.toContain("jwt-segreto");
+    // Due cose da sapere su questo ambiente, entrambe scoperte facendole
+    // fallire. JSON.stringify di uno Storage non ne serializza il contenuto:
+    // l'asserzione precedente confrontava undefined e non guardava nulla. E
+    // qui jsdom espone sessionStorage ma non localStorage, quindi leggerlo
+    // senza controllare fa esplodere il test per una lacuna dell'ambiente
+    // invece che per il codice.
+    const contenuto = (s: Storage | undefined) =>
+      s
+        ? Object.keys(s)
+            .map((k) => `${k}=${s.getItem(k)}`)
+            .join("|")
+        : "";
+
+    expect(contenuto(globalThis.localStorage)).not.toContain("jwt-segreto");
+    expect(contenuto(sessionStorage)).not.toContain("jwt-segreto");
+    // E il token dev'essere comunque nello store, altrimenti passerebbe anche
+    // una login che non ha memorizzato niente.
+    expect(useSessionStore.getState().token).toBe("jwt-segreto");
   });
 
   it("marcare le credenziali non valide non chiude la sessione", () => {
