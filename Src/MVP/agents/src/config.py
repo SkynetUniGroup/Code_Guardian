@@ -1,6 +1,15 @@
-"""Central configuration loaded from environment variables.
+"""Central configuration module for Code Guardian agents.
 
-Uses pydantic-settings for automatic validation.
+This module provides the Settings class which manages all application configuration
+loaded from environment variables using pydantic-settings for automatic validation.
+
+The settings include LLM provider configurations, operational limits, timeout
+mappings, and various service integrations (MongoDB, Redis, SonarQube, Semgrep).
+
+Note:
+    All settings are loaded from environment variables with fallbacks to default
+    values defined in the Settings class. The .env file is also supported via
+    pydantic-settings.
 """
 
 from pathlib import Path
@@ -19,31 +28,31 @@ class Settings(BaseSettings):
     validation and environment variable loading with support for .env files.
 
     Attributes:
-        model_config: Pydantic configuration for settings management.
-        internal_shared_secret: Secret key for internal service authentication.
-        backend_base_url: Base URL for the backend service.
-        backend_api_prefix: API prefix used by the backend.
-        prompts_dir: Directory containing prompt templates.
-        mongo_uri: MongoDB connection URI for checkpointer.
-        llm_provider: LLM provider to use (bedrock or managed).
-        llm_api_key: API key for the LLM provider.
-        llm_base_url: Base URL for the LLM API endpoint.
-        llm_model_general: Default model for general operations.
-        llm_model_security: Default model for security operations.
-        aws_region: AWS region for Bedrock.
-        max_output_tokens: Maximum tokens for LLM output.
-        max_scope_chars: Maximum characters for prompt context.
-        changelog_min_readability: Minimum readability score for changelog.
-        security_max_output_tokens: Maximum tokens for security operations.
-        max_tool_rounds: Maximum number of tool rounds.
-        TIMEOUTS_BY_OPERATION: Operation-specific timeout mappings.
-        redis_url: Redis connection URL.
-        enable_sast_semgrep: Whether SAST semgrep analysis is enabled.
-        semgrep_timeout_s: Timeout for semgrep scanning.
-        sast_max_findings_llm: Maximum findings to send to LLM.
-        sast_max_files: Maximum files to download for scanning.
-        enable_sonarqube: Whether SonarQube integration is enabled.
-        sonar_cache_ttl_s: SonarQube cache TTL in seconds.
+        model_config (SettingsConfigDict): Pydantic configuration for settings management.
+        internal_shared_secret (str): Secret key for internal service authentication.
+        backend_base_url (str): Base URL for the backend service.
+        backend_api_prefix (str): API prefix used by the backend.
+        prompts_dir (str): Directory containing prompt templates.
+        mongo_uri (str): MongoDB connection URI for checkpointer.
+        llm_provider (str): LLM provider to use (bedrock or managed).
+        llm_api_key (str): API key for the LLM provider.
+        llm_base_url (str): Base URL for the LLM API endpoint.
+        llm_model_general (str): Default model for general operations.
+        llm_model_security (str): Default model for security operations.
+        aws_region (str): AWS region for Bedrock.
+        max_output_tokens (int): Maximum tokens for LLM output.
+        max_scope_chars (int): Maximum characters for prompt context.
+        changelog_min_readability (float): Minimum readability score for changelog.
+        security_max_output_tokens (int): Maximum tokens for security operations.
+        max_tool_rounds (int): Maximum number of tool rounds.
+        TIMEOUTS_BY_OPERATION (dict[str, int]): Operation-specific timeout mappings.
+        redis_url (str): Redis connection URL.
+        enable_sast_semgrep (bool): Whether SAST semgrep analysis is enabled.
+        semgrep_timeout_s (int): Timeout for semgrep scanning.
+        sast_max_findings_llm (int): Maximum findings to send to LLM.
+        sast_max_files (int): Maximum files to download for scanning.
+        enable_sonarqube (bool): Whether SonarQube integration is enabled.
+        sonar_cache_ttl_s (int): SonarQube cache TTL in seconds.
     """
 
     model_config = SettingsConfigDict(
@@ -155,7 +164,9 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+"""Global settings instance.
 
-
-# Instantiate settings object for global access throughout the application.
-# This is loaded once at module import time and cached for all subsequent uses.
+This singleton instance is loaded once at module import time and cached for
+all subsequent uses throughout the application. All agent modules import
+this instance to access configuration values.
+"""
