@@ -247,7 +247,7 @@ describe("TU_27 (RV.16) — documento OpenAPI del backend", () => {
     expect(senzaSchema).toEqual([]);
   });
 
-  it.fails("RV.16 — DIFETTO APERTO: i parametri di query non sono documentati", () => {
+  it("RV.16 — i parametri di query sono documentati", () => {
     // Il caso che si tocca con mano: GET /reports/{id}/export accetta un
     // ExportReportQueryDto con `format` obbligatorio, e il documento non
     // lo nomina. Un client scritto leggendo la documentazione chiama

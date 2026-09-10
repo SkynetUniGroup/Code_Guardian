@@ -71,7 +71,9 @@ describe("TI_14 (RQ.8) — propagazione dell'errore dell'agente fino alla task",
 
   it("un RATE_LIMITED dell'agente diventa error.code = LLM_RATE_LIMITED sulla task", async () => {
     const utente = await utentePronto(ambiente.server);
-    chiamateHttp.mockResolvedValue(rispostaAgente({ status: "failed", error: "RATE_LIMITED" }));
+    chiamateHttp.mockResolvedValue(
+      rispostaAgente({ status: "failed", errorKind: "RATE_LIMITED", error: "l'agente ha fallito" }),
+    );
 
     const conclusa = await eseguiOperazione(utente);
 
@@ -84,7 +86,9 @@ describe("TI_14 (RQ.8) — propagazione dell'errore dell'agente fino alla task",
     // e assente dal Report lascerebbe l'utente senza spiegazione nella pagina
     // in cui la cerca.
     const utente = await utentePronto(ambiente.server);
-    chiamateHttp.mockResolvedValue(rispostaAgente({ status: "failed", error: "RATE_LIMITED" }));
+    chiamateHttp.mockResolvedValue(
+      rispostaAgente({ status: "failed", errorKind: "RATE_LIMITED", error: "l'agente ha fallito" }),
+    );
 
     const conclusa = await eseguiOperazione(utente);
 
@@ -114,7 +118,9 @@ describe("TI_14 (RQ.8) — propagazione dell'errore dell'agente fino alla task",
       // rinominato, due passanti e uno sconosciuto che deve ricadere su
       // UPSTREAM invece di arrivare all'utente come codice inventato.
       const utente = await utentePronto(ambiente.server);
-      chiamateHttp.mockResolvedValue(rispostaAgente({ status: "failed", error: dallAgente }));
+      chiamateHttp.mockResolvedValue(
+        rispostaAgente({ status: "failed", errorKind: dallAgente, error: "l'agente ha fallito" }),
+      );
 
       const conclusa = await eseguiOperazione(utente);
 
@@ -129,7 +135,9 @@ describe("TI_14 (RQ.8) — propagazione dell'errore dell'agente fino alla task",
     // scadenza, non aspettando 185 secondi che scatti.
     const scadenze = vi.spyOn(AbortSignal, "timeout");
     const utente = await utentePronto(ambiente.server);
-    chiamateHttp.mockResolvedValue(rispostaAgente({ status: "failed", error: "RATE_LIMITED" }));
+    chiamateHttp.mockResolvedValue(
+      rispostaAgente({ status: "failed", errorKind: "RATE_LIMITED", error: "l'agente ha fallito" }),
+    );
 
     await eseguiOperazione(utente);
 

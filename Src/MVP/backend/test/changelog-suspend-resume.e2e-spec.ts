@@ -340,7 +340,7 @@ describe("TI_09 / TI_10 — sospensione, ripresa e annullamento di CHANGELOG_BUS
     expect((await ambiente.taskModel.findById(taskId))!.status).toBe("CANCELLED");
   }, 180_000);
 
-  it.fails("TI_10 — DIFETTO APERTO: /cancel non azzera pendingInput, e la task continua ad accettare risposte", async () => {
+  it("TI_10 — /cancel azzera pendingInput, e la task non accetta piu' risposte", async () => {
     // TasksService.cancel chiama markCancelled senza il `{ pendingInput:
     // null }` che invece passa il percorso CANCEL di POST /tasks/:id/input,
     // mentre il commento nel codice dichiara che i due percorsi compiono
