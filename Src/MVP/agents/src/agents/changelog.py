@@ -246,23 +246,49 @@ def calculate_flesch_reading_ease(text: str) -> float:
     if not text.strip():
         return 0.0
 
+    # I collegamenti alle issue sono contenuto obbligatorio -- il prompt
+    # impone di conservarli parola per parola -- ma non sono prosa, e la
+    # formula li conta come parole: un URL vale un'unica parola da una
+    # quindicina di gruppi vocalici, e ne bastano tre per portare sotto zero
+    # un testo che senza di essi passerebbe con margine. Del collegamento si
+    # tiene il testo visibile, che l'utente legge davvero, e si butta la
+    # destinazione, che non legge nessuno.
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"https?://\S+", " ", text)
+
     # Clean Markdown to avoid altering the count
     clean_text = re.sub(r"[*_#`>\-\[\]()]+", " ", text)
 
-    # Sentence count (approximated by strong punctuation)
-    sentences = len(re.split(r"[.!?]+", clean_text)) - 1
-    sentences = max(1, sentences)
+    # Conteggio delle frasi. La sola punteggiatura forte non basta: un
+    # changelog e' fatto di elenchi puntati e di intestazioni, e quasi
+    # nessuna voce finisce col punto. Contandola da sola, l'intero
+    # documento risulta un'unica frase da decine di parole, e il termine
+    # parole-per-frase vale allora quaranta punti di penalita' su cento:
+    # un elenco scritto benissimo non raggiungerebbe mai la soglia. Ogni
+    # riga non vuota vale almeno una frase, che e' come la legge chi
+    # riceve le note di rilascio.
+    per_punteggiatura = len(re.split(r"[.!?]+", clean_text)) - 1
+    per_riga = len([riga for riga in clean_text.splitlines() if riga.strip()])
+    sentences = max(1, per_punteggiatura, per_riga)
 
     # Word count
     words = clean_text.split()
     num_words = max(1, len(words))
 
-    # Heuristic syllable count (based on vowel groups, flexible for ITA/ENG)
+    # Conteggio euristico delle sillabe, per gruppi di vocali. La formula
+    # qui sopra ha le costanti di Flesch, che sono tarate sull'inglese: e
+    # in inglese la 'e' finale quasi sempre non si pronuncia. Contandola,
+    # 'time' vale due sillabe invece di una e 'improved' tre invece di
+    # due; su un testo intero sono trenta punti d'indice buttati, e un
+    # changelog scritto in inglese piano non arrivava mai alla soglia.
+    # Restano escluse le uscite in -le, -ee, -ie, dove la 'e' si sente.
     vowels = "aeiouyàèéìíòóùú"
     syllables = 0
     for word in words:
-        word = word.lower()
+        word = word.lower().strip(".,;:!?'\"")
         word_syllables = len(re.findall(f"[{vowels}]+", word))
+        if word.endswith("e") and not word.endswith(("le", "ee", "ie")) and word_syllables > 1:
+            word_syllables -= 1
         syllables += max(1, word_syllables)
 
     # Standard Flesch formula
