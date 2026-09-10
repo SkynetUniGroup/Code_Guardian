@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -23,8 +24,22 @@ function credenziale(connectedAt = "2026-08-20T10:30:00Z") {
   return { id: "cred-1", provider: "GITHUB", connectedAt };
 }
 
-function httpError(status: number) {
-  return { response: { status } };
+function httpError(status: number, code?: string, message?: string) {
+  // Dev'essere un AxiosError vero: toApiError legge il corpo solo dopo un
+  // `err instanceof AxiosError`, quindi un oggetto con la sola forma giusta
+  // gli arriva come errore generico e il `code` va perduto. E il codice
+  // serve: e' su quello che la pagina distingue un token rifiutato da un
+  // guasto qualunque.
+  const data: Record<string, string> = {};
+  if (code) data.code = code;
+  if (message) data.message = message;
+  return new AxiosError(
+    message ?? "Request failed",
+    String(status),
+    undefined,
+    undefined,
+    { status, data, statusText: "", headers: {}, config: {} } as never,
+  );
 }
 
 /** Monta la pagina attendendo la fine della lettura iniziale. */
@@ -35,7 +50,7 @@ async function renderCaricata() {
 }
 
 async function inserisciPat(user: ReturnType<typeof userEvent.setup>, pat = PAT_VALIDO) {
-  await user.type(screen.getByLabelText("GitHub Personal Access Token"), pat);
+  await user.type(screen.getByLabelText(/GitHub Personal Access Token/), pat);
 }
 
 const SALVA = /Salva e verifica/;
@@ -54,7 +69,7 @@ describe("CredentialsPage", () => {
       await renderCaricata();
 
       expect(getMock).toHaveBeenCalledWith("/credentials");
-      expect(useSessionStore.getState().credentialsStatus).toBe("connected");
+      expect(useSessionStore.getState().credentialsStatus).toBe("CONNECTED");
       expect(screen.getByText("Connessa e valida")).toBeInTheDocument();
     });
 
@@ -65,7 +80,7 @@ describe("CredentialsPage", () => {
 
       await renderCaricata();
 
-      expect(useSessionStore.getState().credentialsStatus).toBe("connected");
+      expect(useSessionStore.getState().credentialsStatus).toBe("CONNECTED");
     });
 
     it("segnala l'assenza quando il server non restituisce credenziali", async () => {
@@ -73,7 +88,7 @@ describe("CredentialsPage", () => {
 
       await renderCaricata();
 
-      expect(useSessionStore.getState().credentialsStatus).toBe("missing");
+      expect(useSessionStore.getState().credentialsStatus).toBe("MISSING");
       expect(screen.getByText("Non configurata")).toBeInTheDocument();
     });
 
@@ -84,15 +99,18 @@ describe("CredentialsPage", () => {
 
       await renderCaricata();
 
-      expect(useSessionStore.getState().credentialsStatus).toBe("missing");
+      expect(useSessionStore.getState().credentialsStatus).toBe("MISSING");
     });
 
-    it("se la lettura fallisce assume mancanti invece di bloccarsi", async () => {
+    it("se la lettura fallisce lascia lo stato indeterminato, senza bloccare", async () => {
       getMock.mockRejectedValueOnce(new Error("backend giu"));
 
       await renderCaricata();
 
-      expect(useSessionStore.getState().credentialsStatus).toBe("missing");
+      // Una GET fallita dice che non siamo riusciti a leggere, non che la
+      // credenziale manchi: declassare a MISSING farebbe scattare i guard di
+      // rotta su un'informazione non verificata.
+      expect(useSessionStore.getState().credentialsStatus).toBe("UNKNOWN");
     });
 
     it("mostra la data dell'ultima verifica", async () => {
@@ -100,7 +118,7 @@ describe("CredentialsPage", () => {
 
       await renderCaricata();
 
-      expect(screen.getByText(/Ultima verifica:/)).toBeInTheDocument();
+      expect(screen.getByText(/Ultima validazione:/)).toBeInTheDocument();
     });
 
     it("senza credenziale non propone di verificarla di nuovo", async () => {
@@ -135,7 +153,7 @@ describe("CredentialsPage", () => {
 
       await user.click(screen.getByRole("button", { name: SALVA }));
 
-      await waitFor(() => expect(useSessionStore.getState().credentialsStatus).toBe("connected"));
+      await waitFor(() => expect(useSessionStore.getState().credentialsStatus).toBe("CONNECTED"));
       expect(postMock).toHaveBeenCalledTimes(1);
     });
 
@@ -147,7 +165,7 @@ describe("CredentialsPage", () => {
       await user.click(screen.getByRole("button", { name: SALVA }));
 
       await waitFor(() =>
-        expect(screen.getByLabelText("GitHub Personal Access Token")).toHaveValue(""),
+        expect(screen.getByLabelText(/GitHub Personal Access Token/)).toHaveValue(""),
       );
     });
 
@@ -163,26 +181,32 @@ describe("CredentialsPage", () => {
 
     it("se GitHub rifiuta il token lo dichiara e marca le credenziali non valide", async () => {
       const user = await renderCaricata();
-      postMock.mockRejectedValueOnce(httpError(401));
+      postMock.mockRejectedValueOnce(
+        httpError(400, "CREDENTIAL_INVALID", "GitHub rejected this token."),
+      );
       await inserisciPat(user);
 
       await user.click(screen.getByRole("button", { name: SALVA }));
 
-      expect(await screen.findByText(/GitHub ha rifiutato il token/)).toBeInTheDocument();
-      expect(useSessionStore.getState().credentialsStatus).toBe("invalid");
+      // La pagina mostra il messaggio del backend quando c'e', e tiene il
+      // proprio solo come ripiego: e' quello che l'utente legge davvero.
+      expect(await screen.findByText(/GitHub rejected this token/)).toBeInTheDocument();
+      expect(useSessionStore.getState().credentialsStatus).toBe("INVALID");
     });
 
     it("distingue un guasto del server dal token rifiutato", async () => {
       // Un 500 non dice nulla sul token: marcarlo invalido manderebbe
       // l'utente a rigenerarne uno perfettamente buono.
       const user = await renderCaricata();
-      postMock.mockRejectedValueOnce(httpError(500));
+      postMock.mockRejectedValueOnce(httpError(500, undefined, "Internal server error"));
       await inserisciPat(user);
 
       await user.click(screen.getByRole("button", { name: SALVA }));
 
-      expect(await screen.findByText(/Errore durante il salvataggio/)).toBeInTheDocument();
-      expect(useSessionStore.getState().credentialsStatus).not.toBe("invalid");
+      // Quello che l'utente legge e' il messaggio del backend: apiErrorMessage
+      // usa il proprio ripiego solo se il corpo non ne porta uno.
+      expect(await screen.findByText(/Internal server error/)).toBeInTheDocument();
+      expect(useSessionStore.getState().credentialsStatus).not.toBe("INVALID");
     });
 
     it("dichiara la verifica in corso e blocca il pulsante", async () => {
@@ -206,16 +230,19 @@ describe("CredentialsPage", () => {
   });
 
   describe("validazione del formato", () => {
-    it("rifiuta un PAT dal formato non valido senza contattare il server", async () => {
+    it("non rifiuta un PAT dal formato inatteso: decide GitHub", async () => {
+      // Scelta deliberata, documentata in create-credential.dto.ts: il formato
+      // dei PAT e' cambiato piu' volte (classico a 40 esadecimali, poi ghp_,
+      // poi github_pat_). Un controllo di forma qui produrrebbe falsi negativi
+      // al prossimo cambio, mentre la verifica vera -- il token vale o no --
+      // la fa il backend chiedendolo a GitHub.
       const user = await renderCaricata();
       await inserisciPat(user, "token-qualsiasi");
 
       await user.click(screen.getByRole("button", { name: SALVA }));
 
-      expect(
-        await screen.findByText("Il PAT GitHub deve iniziare con ghp_ oppure github_pat_"),
-      ).toBeInTheDocument();
-      expect(postMock).not.toHaveBeenCalled();
+      await waitFor(() => expect(postMock).toHaveBeenCalled());
+      expect(postMock.mock.calls[0][1].token).toBe("token-qualsiasi");
     });
 
     it("accetta il formato github_pat_ dei token a granularita' fine", async () => {
@@ -234,18 +261,18 @@ describe("CredentialsPage", () => {
 
       await user.click(screen.getByRole("button", { name: SALVA }));
 
-      expect(await screen.findByText("Inserisci il GitHub PAT")).toBeInTheDocument();
+      expect(await screen.findByText("Inserisci il GitHub Personal Access Token")).toBeInTheDocument();
       expect(postMock).not.toHaveBeenCalled();
     });
 
     it("toglie l'errore appena l'utente corregge il campo", async () => {
       const user = await renderCaricata();
       await user.click(screen.getByRole("button", { name: SALVA }));
-      await screen.findByText("Inserisci il GitHub PAT");
+      await screen.findByText("Inserisci il GitHub Personal Access Token");
 
       await inserisciPat(user, "g");
 
-      expect(screen.queryByText("Inserisci il GitHub PAT")).not.toBeInTheDocument();
+      expect(screen.queryByText("Inserisci il GitHub Personal Access Token")).not.toBeInTheDocument();
     });
   });
 
@@ -264,12 +291,14 @@ describe("CredentialsPage", () => {
     it("se il token memorizzato non vale piu' lo dichiara", async () => {
       getMock.mockResolvedValueOnce({ data: [credenziale()] });
       const user = await renderCaricata();
-      postMock.mockRejectedValueOnce(httpError(401));
+      postMock.mockRejectedValueOnce(
+        httpError(400, "CREDENTIAL_INVALID", "La credenziale non è più valida."),
+      );
 
       await user.click(screen.getByRole("button", { name: /Verifica di nuovo/ }));
 
-      expect(await screen.findByText(/Il token memorizzato non è più valido/)).toBeInTheDocument();
-      expect(useSessionStore.getState().credentialsStatus).toBe("invalid");
+      expect(await screen.findByText(/La credenziale non è più valida/)).toBeInTheDocument();
+      expect(useSessionStore.getState().credentialsStatus).toBe("INVALID");
     });
   });
 });
