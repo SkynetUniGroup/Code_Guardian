@@ -89,6 +89,7 @@ function seedTask(id = "task-1") {
   useTasksStore.getState().loadTasks([
     {
       id,
+      batchId: null,
       operation: "SECURITY_OWASP",
       status: "RUNNING",
       progressPercent: 10,

@@ -22,6 +22,7 @@ const initialTasks = useTasksStore.getState();
 function taskInPausa(pendingInput: TaskEntry["pendingInput"]) {
   useTasksStore.getState().loadTasks([
     {
+      batchId: null,
       id: "t1",
       operation: "CHANGELOG_TECHNICAL",
       status: "RUNNING",

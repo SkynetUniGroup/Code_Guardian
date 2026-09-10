@@ -37,6 +37,7 @@ const initialTasks = useTasksStore.getState();
 /** Costruisce una task completa a partire dalle sole differenze rilevanti. */
 function task(over: Partial<TaskEntry> & { id: string }): TaskEntry {
   return {
+    batchId: null,
     operation: "SECURITY_OWASP",
     status: "PENDING",
     progressPercent: 0,
