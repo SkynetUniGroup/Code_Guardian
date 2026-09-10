@@ -87,6 +87,18 @@ class ContextTooLargeError(Exception):
 
 
 def reduce_messages(
+"""Reduces the message list by either replacing it with new messages or appending them.
+
+If the new messages start with a SystemMessage, the existing messages are replaced.
+Otherwise, the new messages are appended to the existing ones.
+
+Args:
+    existing (list[BaseMessage]): The current list of messages.
+    new (list[BaseMessage]): The new messages to add or replace with.
+
+Returns:
+    list[BaseMessage]: The reduced list of messages.
+"""
     existing: list[BaseMessage], new: list[BaseMessage]
 ) -> list[BaseMessage]:
     if new and isinstance(new[0], SystemMessage):
@@ -134,6 +146,15 @@ class AgentGraph:
     """Shared LangGraph execution engine for all agents."""
 
     def __init__(
+"""Initializes the AgentGraph with the required adapters and configuration.
+
+Args:
+    loader (Any): The context loader adapter used to load analysis context.
+    profile (Any): The agent profile configuration containing prompt templates and parsing logic.
+    provider (Any): The LLM provider adapter for invoking the language model.
+    timeout_s (int, optional): The global timeout in seconds for agent execution. Defaults to 90.
+    checkpointer (Any, optional): The persistence checkpointer for saving graph state. Defaults to None.
+"""
         self,
         loader: Any,
         profile: Any,
