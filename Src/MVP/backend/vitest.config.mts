@@ -11,6 +11,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
+    // Vedi il file: espone `jest` come alias di `vi`, perche' gli helper di
+    // test di @nestjs-modules/ioredis sono scritti per Jest.
+    setupFiles: ["./test/setup-unit.ts"],
     include: ["src/**/*.spec.ts"],
     // Gli e2e hanno il proprio config (test/vitest-e2e.config.mts) e hanno
     // bisogno di MongoDB e Redis in esecuzione: non vanno raccolti qui.
