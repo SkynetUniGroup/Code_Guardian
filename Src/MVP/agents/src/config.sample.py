@@ -8,6 +8,63 @@ _ENV_FILE = _PROJECT_ROOT / ".env"
 
 
 class Settings(BaseSettings):
+"""Central configuration settings for the Code Guardian agents.
+
+This class leverages Pydantic's `BaseSettings` to load configuration from environment
+variables and an optional `.env` file, providing type-safe access to all settings.
+
+Attributes:
+    internal_shared_secret (str): Shared secret for internal communication authentication.
+        Alias: `INTERNAL_SHARED_SECRET`.
+    backend_base_url (str): Base URL of the backend service.
+        Alias: `BACKEND_BASE_URL`. Default: `"http://backend:3000"`.
+    backend_api_prefix (str): API prefix used by the backend, including global prefix.
+        Alias: `BACKEND_API_PREFIX`. Default: `"/api/v1"`.
+    prompts_dir (str): Directory path where prompt templates are stored.
+        Alias: `PROMPTS_DIR`. Default: `"/app/prompts"`.
+    mongo_uri (str): MongoDB connection URI for LangGraph checkpointer.
+        Alias: `MONGO_URI`. Default: `"mongodb://mongo:27017/codeguardian"`.
+    llm_provider (str): Provider for the LLM (e.g., "bedrock", "openai").
+        Alias: `LLM_PROVIDER`. Default: `"bedrock"`.
+    llm_api_key (str): API key for the LLM provider (if required).
+        Alias: `LLM_API_KEY`. Default: `""`.
+    llm_base_url (str): Base URL for the LLM provider's API.
+        Alias: `LLM_BASE_URL`. Default: `"https://dashscope-intl.aliyuncs.com/compatible-mode/v1"`.
+    llm_model_general (str): General-purpose LLM model identifier.
+        Alias: `LLM_MODEL_GENERAL`. Default: `"qwen3-32b"`.
+    llm_model_security (str): Security-focused LLM model identifier.
+        Alias: `LLM_MODEL_SECURITY`. Default: `"qwen3-coder-30b-a3b-instruct"`.
+    aws_region (str): AWS region for Bedrock or other AWS services.
+        Alias: `AWS_REGION`. Default: `"eu-south-1"`.
+    max_output_tokens (int): Maximum number of output tokens for LLM responses.
+        Default: `4096`.
+    max_scope_chars (int): Maximum allowed characters for analysis scope.
+        Alias: `MAX_SCOPE_CHARS`. Default: `100000`.
+    changelog_min_readability (float): Minimum readability score for changelog generation.
+        Alias: `CHANGELOG_MIN_READABILITY`. Default: `50.0`.
+    security_max_output_tokens (int): Maximum output tokens for security-related LLM tasks.
+        Default: `8000`.
+    security_temperature (float): Temperature setting for security-related LLM tasks.
+        Default: `0.1`.
+    max_tool_rounds (int): Maximum number of tool interaction rounds for agents.
+        Alias: `MAX_TOOL_ROUNDS`. Default: `8`.
+    TIMEOUTS_BY_OPERATION (dict[str, int]): Timeout settings (in seconds) for specific operations.
+        Keys are operation names (e.g., "DOCS_INLINE"), values are timeouts.
+    redis_url (str): Redis connection URL for queues and caching.
+        Alias: `REDIS_URL`. Default: `"redis://redis:6379"`.
+    enable_sast_semgrep (bool): Flag to enable/disable Semgrep SAST scanning.
+        Alias: `ENABLE_SAST_SEMGREP`. Default: `True`.
+    semgrep_timeout_s (int): Timeout (in seconds) for Semgrep scans.
+        Alias: `SEMGREP_TIMEOUT_S`. Default: `120`.
+    sast_max_findings_llm (int): Maximum number of Semgrep findings to submit to the LLM.
+        Alias: `SAST_MAX_FINDINGS_LLM`. Default: `40`.
+    sast_max_files (int): Maximum number of files to download for Semgrep scanning.
+        Alias: `SAST_MAX_FILES`. Default: `200`.
+    enable_sonarqube (bool): Flag to enable/disable SonarQube integration.
+        Alias: `ENABLE_SONARQUBE`. Default: `False`.
+    sonar_cache_ttl_s (int): Cache TTL (in seconds) for SonarQube results.
+        Alias: `SONAR_CACHE_TTL_S`. Default: `86400`.
+"""
     model_config = SettingsConfigDict(
         env_file=_ENV_FILE,
         env_file_encoding="utf-8",
@@ -96,6 +153,18 @@ class Settings(BaseSettings):
     sonar_cache_ttl_s: int = Field(default=86400, alias="SONAR_CACHE_TTL_S")
 
     def require_llm_key(self) -> str:
+"""Validates and returns the LLM API key based on the provider.
+
+For AWS Bedrock, this method returns an empty string as IAM Task Roles are used
+(per ADR-AWS-1). For other providers, it ensures the `llm_api_key` is configured
+and raises a `RuntimeError` if missing.
+
+Returns:
+    str: The LLM API key (empty string for Bedrock).
+
+Raises:
+    RuntimeError: If `llm_api_key` is not configured for non-Bedrock providers.
+"""
         # Bedrock selector: ADR-AWS-1 enforces IAM Task Roles, no static API key
         if self.llm_provider.lower() == "bedrock":
             return ""
