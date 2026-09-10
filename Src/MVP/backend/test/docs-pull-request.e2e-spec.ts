@@ -11,17 +11,13 @@ import { AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-he
  * I due casi stanno nello stesso file perche' riguardano lo stesso anello
  * mancante, e vale la pena vederli accanto.
  *
- * DIFETTO APERTO, ed e' il motivo dei tre `it.failing` in fondo:
- * **il backend non apre alcuna Pull Request.** GithubWriteService esiste, e'
- * registrato come provider in GithubModule, ha il suo test di unita' che
- * copre anche il PR_CREATION_FAILED — ma
- * `openPullRequestForProposal` non e' chiamato da nessun punto del codice di
- * produzione: TaskProcessor completa la task assemblando il Report e non
- * passa mai di li'. Nemmeno il servizio agenti apre PR: il suo GitHubToolset
- * ha solo operazioni di lettura piu' `report_progress`. Il campo
- * `Proposal.pullRequestUrl` esiste su tutti e tre i lati del confine, ma
- * l'unico modo in cui puo' arrivare valorizzato e' che ce lo metta l'agente,
- * che non ha con cosa farlo.
+ * Il difetto che questo file documentava — il backend non apriva alcuna
+ * Pull Request, perche' `openPullRequestForProposal` non era chiamato da
+ * nessun punto del codice di produzione — su questa base non c'e' piu':
+ * ProposalPublisherService chiude l'anello, e i due casi TI_12 sono test
+ * normali. Resta aperto il solo TI_13, marcato `it.fails` in fondo: il
+ * rifiuto di GitHub non porta ancora la task a FAILED con
+ * PR_CREATION_FAILED.
  *
  * Di conseguenza RF.72 non e' osservabile: `PR_CREATION_FAILED` e' dichiarato
  * in ErrorKind e sollevato da GithubWriteService, ma nessuna task puo'
@@ -145,7 +141,7 @@ describe("TI_12 (RF.82, RF.63) / TI_13 (RF.72) — apertura automatica della Pul
     expect(report.proposal.targetPath).toBe("README.md");
   }, 180_000);
 
-  it.fails("TI_12 — DIFETTO APERTO: ricevuta la Proposal, il backend non apre alcuna Pull Request", async () => {
+  it("TI_12 — ricevuta la Proposal, il backend apre la Pull Request", async () => {
     // RF.82: l'apertura della PR deve essere automatica, non un'azione che
     // l'utente compie altrove copiando il diff a mano.
     const utente = await utentePronto(ambiente.server, "DEVELOPER");
@@ -155,7 +151,7 @@ describe("TI_12 (RF.82, RF.63) / TI_13 (RF.72) — apertura automatica della Pul
     expect(ambiente.scritturaGithub.openPullRequestForProposal).toHaveBeenCalledTimes(1);
   }, 180_000);
 
-  it.fails("TI_12 — DIFETTO APERTO: il Report non porta il collegamento alla PR aperta dal backend", async () => {
+  it("TI_12 — il Report porta il collegamento alla PR aperta dal backend", async () => {
     // RF.63: il collegamento va persistito nel Report, che e' il posto in
     // cui l'utente torna a cercarlo dopo.
     const utente = await utentePronto(ambiente.server, "DEVELOPER");
