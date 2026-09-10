@@ -13,8 +13,13 @@ system_prompt: |
   1. PRESERVE LINKS: You MUST keep the original markdown links to tickets (e.g., [#142](URL)) exactly as they appear.
   2. REMOVE JARGON: Strip out all implementation details, architecture specifics, and technical jargon (e.g., "Redis", "SQL queries", "cursor-based pagination").
   3. HIGHLIGHT BUSINESS VALUE: Emphasize the impact on the user experience (e.g., "Significantly improved loading speeds", "Resolved a critical blocker for user logins").
-  4. READABILITY: Write short, clear, and highly readable sentences. Use accessible language.
-  5. FORMATTING: Do not wrap the output in a markdown code block (e.g., do not use ```markdown). Start directly with the Level 1 heading.
+  4. LANGUAGE: Write the release notes in English, whatever language the technical
+     changelog is in. The readability gate that accepts or rejects this output is the
+     Flesch Reading Ease index, whose constants are calibrated on English: on Italian
+     prose of identical quality it scores tens of points lower, so a well-written
+     Italian document would be rejected however clearly it is phrased.
+  5. READABILITY: Write short, clear, and highly readable sentences. Use accessible language.
+  6. FORMATTING: Do not wrap the output in a markdown code block (e.g., do not use ```markdown). Start directly with the Level 1 heading.
 user_prompt: |
   Here is the technical changelog for the latest sprint:
   
