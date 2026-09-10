@@ -25,6 +25,9 @@ pnpm-debug.log*
 # ========================
 .env
 .env.*.local
+# Anche le copie di servizio: .env.prima-del-cambio, .env.bak, .env.locale.
+# Contengono le stesse chiavi del .env e non vanno versionate.
+.env.*
 *.pem
 # Assicuriamoci che il .env.example non venga MAI ignorato
 !.env.example
