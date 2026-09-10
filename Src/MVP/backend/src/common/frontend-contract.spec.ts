@@ -1,6 +1,6 @@
-import { ValidationPipe, ArgumentMetadata } from '@nestjs/common';
-import { CreateCredentialDto } from '../credentials/dto/create-credential.dto';
-import { CreateContextDto } from '../contexts/dto/create-context.dto';
+import { ArgumentMetadata, ValidationPipe } from "@nestjs/common";
+import { CreateContextDto } from "../contexts/dto/create-context.dto";
+import { CreateCredentialDto } from "../credentials/dto/create-credential.dto";
 
 /**
  * Contract tests between this backend and the MVP frontend.
@@ -15,7 +15,7 @@ import { CreateContextDto } from '../contexts/dto/create-context.dto';
  * against different shapes and never run together — so they stay as the
  * guard that keeps the two sides from drifting apart again.
  */
-describe('Frontend/backend request contract', () => {
+describe("Frontend/backend request contract", () => {
   const pipe = new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
@@ -23,7 +23,7 @@ describe('Frontend/backend request contract', () => {
   });
 
   async function validate(dto: unknown, metatype: new () => object) {
-    const metadata: ArgumentMetadata = { type: 'body', metatype, data: '' };
+    const metadata: ArgumentMetadata = { type: "body", metatype, data: "" };
     return pipe.transform(dto, metadata);
   }
 
@@ -38,108 +38,108 @@ describe('Frontend/backend request contract', () => {
       return null;
     } catch (error) {
       const response = (error as { getResponse: () => { message?: string[] } }).getResponse();
-      return (response.message ?? []).join(' | ');
+      return (response.message ?? []).join(" | ");
     }
   }
 
-  describe('POST /credentials', () => {
+  describe("POST /credentials", () => {
     // frontend/src/pages/CredentialsPage.tsx — handle_submit
     const bodyTheFrontendSends = {
-      provider: 'GITHUB',
-      token: 'ghp_1234567890abcdef',
+      provider: "GITHUB",
+      token: "ghp_1234567890abcdef",
     };
 
-    it('accepts the body the frontend actually sends', async () => {
+    it("accepts the body the frontend actually sends", async () => {
       await expect(validate(bodyTheFrontendSends, CreateCredentialDto)).resolves.toEqual(
         bodyTheFrontendSends,
       );
     });
 
-    it('rejects a provider outside the supported list', async () => {
+    it("rejects a provider outside the supported list", async () => {
       const reasons = await complaints(
-        { provider: 'GITLAB', token: 'glpat_x' },
+        { provider: "GITLAB", token: "glpat_x" },
         CreateCredentialDto,
       );
 
-      expect(reasons).toContain('provider');
+      expect(reasons).toContain("provider");
     });
 
-    it('rejects an empty token rather than storing a useless credential', async () => {
-      const reasons = await complaints({ provider: 'GITHUB', token: '' }, CreateCredentialDto);
+    it("rejects an empty token rather than storing a useless credential", async () => {
+      const reasons = await complaints({ provider: "GITHUB", token: "" }, CreateCredentialDto);
 
-      expect(reasons).toContain('token');
+      expect(reasons).toContain("token");
     });
 
-    it('rejects the shape the frontend used to send, so the old break cannot return', async () => {
+    it("rejects the shape the frontend used to send, so the old break cannot return", async () => {
       const reasons = await complaints(
-        { githubPat: 'ghp_x', openaiApiKey: 'sk-x' },
+        { githubPat: "ghp_x", openaiApiKey: "sk-x" },
         CreateCredentialDto,
       );
 
-      expect(reasons).toContain('githubPat');
-      expect(reasons).toContain('openaiApiKey');
+      expect(reasons).toContain("githubPat");
+      expect(reasons).toContain("openaiApiKey");
     });
   });
 
-  describe('POST /contexts', () => {
+  describe("POST /contexts", () => {
     // frontend/src/pages/SelectPage.tsx — handle_submit
     const bodyTheFrontendSends = {
-      repoUrl: 'https://github.com/OWASP/NodeGoat',
-      branch: 'master',
-      scopeType: 'FULL_REPOSITORY',
+      repoUrl: "https://github.com/OWASP/NodeGoat",
+      branch: "master",
+      scopeType: "FULL_REPOSITORY",
     };
 
-    it('accepts the body the frontend actually sends', async () => {
+    it("accepts the body the frontend actually sends", async () => {
       await expect(validate(bodyTheFrontendSends, CreateContextDto)).resolves.toMatchObject(
         bodyTheFrontendSends,
       );
     });
 
-    it('accepts a restricted scope with its paths', async () => {
+    it("accepts a restricted scope with its paths", async () => {
       await expect(
         validate(
           {
             ...bodyTheFrontendSends,
-            scopeType: 'FILES',
-            paths: ['app/routes/session.js'],
+            scopeType: "FILES",
+            paths: ["app/routes/session.js"],
           },
           CreateContextDto,
         ),
       ).resolves.toBeDefined();
     });
 
-    it('accepts an optional commit pinned inside the branch', async () => {
+    it("accepts an optional commit pinned inside the branch", async () => {
       await expect(
-        validate({ ...bodyTheFrontendSends, commitSha: 'abc1234' }, CreateContextDto),
+        validate({ ...bodyTheFrontendSends, commitSha: "abc1234" }, CreateContextDto),
       ).resolves.toBeDefined();
     });
 
-    it('rejects a repository URL that is not a GitHub one', async () => {
+    it("rejects a repository URL that is not a GitHub one", async () => {
       const reasons = await complaints(
-        { ...bodyTheFrontendSends, repoUrl: 'https://gitlab.com/o/r' },
+        { ...bodyTheFrontendSends, repoUrl: "https://gitlab.com/o/r" },
         CreateContextDto,
       );
 
-      expect(reasons).toContain('repoUrl');
+      expect(reasons).toContain("repoUrl");
     });
 
-    it('rejects an unknown scope type', async () => {
+    it("rejects an unknown scope type", async () => {
       const reasons = await complaints(
-        { ...bodyTheFrontendSends, scopeType: 'TUTTO_IL_MONDO' },
+        { ...bodyTheFrontendSends, scopeType: "TUTTO_IL_MONDO" },
         CreateContextDto,
       );
 
-      expect(reasons).toContain('scopeType');
+      expect(reasons).toContain("scopeType");
     });
 
-    it('rejects the shape the frontend used to send, so the old break cannot return', async () => {
+    it("rejects the shape the frontend used to send, so the old break cannot return", async () => {
       const reasons = await complaints(
-        { repoOwner: 'OWASP', repoName: 'NodeGoat', ref: 'master', scopeType: 'FULL_REPOSITORY' },
+        { repoOwner: "OWASP", repoName: "NodeGoat", ref: "master", scopeType: "FULL_REPOSITORY" },
         CreateContextDto,
       );
 
-      expect(reasons).toContain('repoUrl');
-      expect(reasons).toContain('repoOwner');
+      expect(reasons).toContain("repoUrl");
+      expect(reasons).toContain("repoOwner");
     });
   });
 });

@@ -49,6 +49,9 @@ dev = [
     "pytest-asyncio>=0.23.7",
     "pytest-mock>=3.14.0",
     "respx>=0.21.1",
+    # pytest.ini passa `--cov=src --cov-fail-under=75` in addopts: senza
+    # questo plugin pytest si ferma subito con "unrecognized arguments".
+    "pytest-cov>=5.0.0",
     # Tetto a <0.16 voluto, non una svista.
     #
     # `ruff check` non ha `select` configurato, quindi usa l'insieme di regole

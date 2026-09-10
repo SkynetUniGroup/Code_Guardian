@@ -1,20 +1,20 @@
-import { vi, type Mock } from 'vitest';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
-import { NotFoundException } from '@nestjs/common';
-import { InternalTaskProgressController } from './internal-task-progress.controller';
-import { EventsGateway } from './events.gateway';
-import { InternalAuthGuard } from '../common/guards/internal-auth.guard';
-import { Task } from '../tasks/schemas/task.schema';
+import { NotFoundException } from "@nestjs/common";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
+import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
+import { Task } from "../tasks/schemas/task.schema";
+import { EventsGateway } from "./events.gateway";
+import { InternalTaskProgressController } from "./internal-task-progress.controller";
 
-describe('InternalTaskProgressController', () => {
+describe("InternalTaskProgressController", () => {
   let controller: InternalTaskProgressController;
   let model: { findByIdAndUpdate: Mock };
   let events: { emitTaskProgress: Mock };
 
   beforeEach(async () => {
     model = {
-      findByIdAndUpdate: vi.fn().mockResolvedValue({ userId: 'user-1' }),
+      findByIdAndUpdate: vi.fn().mockResolvedValue({ userId: "user-1" }),
     };
     events = { emitTaskProgress: vi.fn() };
 
@@ -30,46 +30,39 @@ describe('InternalTaskProgressController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    controller = module.get<InternalTaskProgressController>(
-      InternalTaskProgressController,
-    );
+    controller = module.get<InternalTaskProgressController>(InternalTaskProgressController);
   });
 
-  it('records the progress reported by the agent on the task', async () => {
-    await controller.progress('task-1', { stage: 'analisi_llm', percent: 65 });
+  it("records the progress reported by the agent on the task", async () => {
+    await controller.progress("task-1", { stage: "analisi_llm", percent: 65 });
 
-    expect(model.findByIdAndUpdate).toHaveBeenCalledWith('task-1', {
+    expect(model.findByIdAndUpdate).toHaveBeenCalledWith("task-1", {
       progressPercent: 65,
-      currentStage: 'analisi_llm',
+      currentStage: "analisi_llm",
     });
   });
 
-  it('forwards the update to the owner of the task, not to everyone', async () => {
-    await controller.progress('task-1', { stage: 'analisi_llm', percent: 65 });
+  it("forwards the update to the owner of the task, not to everyone", async () => {
+    await controller.progress("task-1", { stage: "analisi_llm", percent: 65 });
 
-    expect(events.emitTaskProgress).toHaveBeenCalledWith(
-      'user-1',
-      'task-1',
-      'analisi_llm',
-      65,
-    );
+    expect(events.emitTaskProgress).toHaveBeenCalledWith("user-1", "task-1", "analisi_llm", 65);
   });
 
-  it('rejects a callback naming a task that does not exist', async () => {
+  it("rejects a callback naming a task that does not exist", async () => {
     model.findByIdAndUpdate.mockResolvedValueOnce(null);
 
     await expect(
-      controller.progress('task-sconosciuta', { stage: 'x', percent: 1 }),
+      controller.progress("task-sconosciuta", { stage: "x", percent: 1 }),
     ).rejects.toThrow(NotFoundException);
   });
 
-  it('emits nothing when the task is unknown', async () => {
+  it("emits nothing when the task is unknown", async () => {
     // Emitting on a room derived from a missing task would either throw or
     // leak the event to the wrong recipient.
     model.findByIdAndUpdate.mockResolvedValueOnce(null);
 
     await expect(
-      controller.progress('task-sconosciuta', { stage: 'x', percent: 1 }),
+      controller.progress("task-sconosciuta", { stage: "x", percent: 1 }),
     ).rejects.toThrow(NotFoundException);
     expect(events.emitTaskProgress).not.toHaveBeenCalled();
   });

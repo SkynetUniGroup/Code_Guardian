@@ -1,13 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import {
-  ReadmeTemplate,
-  ReadmeTemplateDocument,
-} from './schemas/readme-template.schema';
-import { SaveReadmeTemplateDto } from './dto/save-readme-template.dto';
-import { ReadmeTemplateDto } from './dto/readme-template.dto';
-import { validaTemplateReadme } from './readme-template.validation';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { ReadmeTemplateDto } from "./dto/readme-template.dto";
+import { SaveReadmeTemplateDto } from "./dto/save-readme-template.dto";
+import { validaTemplateReadme } from "./readme-template.validation";
+import { ReadmeTemplate, ReadmeTemplateDocument } from "./schemas/readme-template.schema";
 
 /**
  * RF.79 / RF.80 / RF.81 — gestione del template README personalizzato.
@@ -24,10 +21,7 @@ export class TemplatesService {
   ) {}
 
   /** RF.79: carica o sostituisce il template dell'utente. */
-  async save(
-    userId: string,
-    dto: SaveReadmeTemplateDto,
-  ): Promise<ReadmeTemplateDto> {
+  async save(userId: string, dto: SaveReadmeTemplateDto): Promise<ReadmeTemplateDto> {
     // RF.80: il file viene giudicato prima di toccare il database, e il
     // motivo del rifiuto arriva all'utente per esteso.
     const esito = validaTemplateReadme(dto.filename, dto.content);

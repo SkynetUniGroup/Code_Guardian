@@ -1,14 +1,9 @@
-fastapi>=0.111.0
-uvicorn[standard]>=0.30.0
-pydantic>=2.7.0
-pydantic-settings>=2.3.0
-httpx>=0.27.0
-pyyaml>=6.0.1
-langgraph>=0.2.20
-langgraph-checkpoint-mongodb>=0.2.2,<0.3
-langchain-core>=0.2.0
-langchain-openai>=0.1.8
-langchain-aws>=0.1.6
-boto3>=1.34.0
-redis[hiredis]>=5.0.4
-semgrep>=1.80.0
+# La fonte di verita' delle dipendenze e' pyproject.toml.
+#
+# Questo file resta perche' i workflow di CI installano con
+# `pip install -r requirements.txt` e la cache pip e' chiavata sul suo
+# hash. Prima conteneva solo pylint e black: ne' pytest ne' fastapi,
+# langgraph, motor... — cioe' i passi successivi di CI (`python -m pylint`,
+# `python -m pytest`) partivano su un ambiente in cui il codice sotto esame
+# non era nemmeno importabile.
+-e .[dev]

@@ -7,12 +7,12 @@ import {
   HttpStatus,
   Put,
   UseGuards,
-} from '@nestjs/common';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { TemplatesService } from './templates.service';
-import { SaveReadmeTemplateDto } from './dto/save-readme-template.dto';
-import { ReadmeTemplateDto } from './dto/readme-template.dto';
+} from "@nestjs/common";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
+import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
+import { ReadmeTemplateDto } from "./dto/readme-template.dto";
+import { SaveReadmeTemplateDto } from "./dto/save-readme-template.dto";
+import { TemplatesService } from "./templates.service";
 
 /**
  * RF.79 / RF.80 / RF.81 — il template README dell'utente autenticato.
@@ -25,7 +25,7 @@ import { ReadmeTemplateDto } from './dto/readme-template.dto';
  * PUT e non POST perché salvare due volte lo stesso template deve lasciare
  * il sistema nello stesso stato: il caricamento sostituisce, non accumula.
  */
-@Controller('templates/readme')
+@Controller("templates/readme")
 @UseGuards(JwtAuthGuard)
 export class TemplatesController {
   constructor(private readonly templatesService: TemplatesService) {}
@@ -33,20 +33,20 @@ export class TemplatesController {
   @Put()
   @HttpCode(HttpStatus.OK)
   save(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser("userId") userId: string,
     @Body() dto: SaveReadmeTemplateDto,
   ): Promise<ReadmeTemplateDto> {
     return this.templatesService.save(userId, dto);
   }
 
   @Get()
-  find(@CurrentUser('userId') userId: string): Promise<ReadmeTemplateDto> {
+  find(@CurrentUser("userId") userId: string): Promise<ReadmeTemplateDto> {
     return this.templatesService.find(userId);
   }
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@CurrentUser('userId') userId: string): Promise<void> {
+  remove(@CurrentUser("userId") userId: string): Promise<void> {
     return this.templatesService.remove(userId);
   }
 }

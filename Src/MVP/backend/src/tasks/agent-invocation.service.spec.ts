@@ -1,7 +1,7 @@
-import { vi, type Mock } from 'vitest';
-import { AgentInvocationService } from './agent-invocation.service';
-import { AgentRunPayload } from './agent-client.types';
-import { OPERATION_CODES } from '../common/domain-types';
+import { type Mock, vi } from "vitest";
+import { OPERATION_CODES } from "../common/domain-types";
+import { AgentRunPayload } from "./agent-client.types";
+import { AgentInvocationService } from "./agent-invocation.service";
 
 interface MockTask {
   id: string;
@@ -13,16 +13,16 @@ interface MockTask {
 
 function makeTask(overrides: Partial<MockTask> = {}): MockTask {
   return {
-    id: 'task1',
-    userId: 'user1',
-    operation: 'DOCS_README',
+    id: "task1",
+    userId: "user1",
+    operation: "DOCS_README",
     lgThreadId: undefined,
     save: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
 }
 
-describe('AgentInvocationService', () => {
+describe("AgentInvocationService", () => {
   let service: AgentInvocationService;
   let config: { get: Mock };
   let agentRegistry: { getTimeoutS: Mock };
@@ -30,7 +30,7 @@ describe('AgentInvocationService', () => {
   let fetchMock: Mock;
 
   beforeEach(() => {
-    config = { get: vi.fn().mockReturnValue('http://agents:8000') };
+    config = { get: vi.fn().mockReturnValue("http://agents:8000") };
     agentRegistry = { getTimeoutS: vi.fn().mockReturnValue(90) };
     // RF.79: per difetto l'utente non ha un template personalizzato, che è
     // il caso di gran lunga più comune; i test dedicati lo valorizzano.
@@ -53,10 +53,10 @@ describe('AgentInvocationService', () => {
   // below) — this is the minimal valid one, for tests that only care about
   // something else.
   function completedResponse(result: AgentRunPayload = { body: [] }) {
-    return jsonResponse({ status: 'completed', result });
+    return jsonResponse({ status: "completed", result });
   }
 
-  it('generates and persists a threadId when the Task has none', async () => {
+  it("generates and persists a threadId when the Task has none", async () => {
     const task = makeTask();
     fetchMock.mockResolvedValue(completedResponse());
 
@@ -66,8 +66,8 @@ describe('AgentInvocationService', () => {
     expect(task.lgThreadId).toEqual(expect.any(String));
   });
 
-  it('reuses an existing threadId without saving again', async () => {
-    const task = makeTask({ lgThreadId: 'existing-thread' });
+  it("reuses an existing threadId without saving again", async () => {
+    const task = makeTask({ lgThreadId: "existing-thread" });
     fetchMock.mockResolvedValue(completedResponse());
 
     await service.invoke(task as never);
@@ -75,49 +75,45 @@ describe('AgentInvocationService', () => {
     expect(task.save).not.toHaveBeenCalled();
     const [, options] = fetchMock.mock.calls[0] as [string, { body: string }];
     const sentBody = JSON.parse(options.body) as { threadId: string };
-    expect(sentBody.threadId).toBe('existing-thread');
+    expect(sentBody.threadId).toBe("existing-thread");
   });
 
-  it('posts taskId, operationCode and an empty payload to /internal/agent/start', async () => {
+  it("posts taskId, operationCode and an empty payload to /internal/agent/start", async () => {
     const task = makeTask();
     fetchMock.mockResolvedValue(completedResponse());
 
     await service.invoke(task as never);
 
-    const [url, options] = fetchMock.mock.calls[0] as [
-      string,
-      { method: string; body: string },
-    ];
-    expect(url).toBe('http://agents:8000/internal/agent/start');
-    expect(options.method).toBe('POST');
+    const [url, options] = fetchMock.mock.calls[0] as [string, { method: string; body: string }];
+    expect(url).toBe("http://agents:8000/internal/agent/start");
+    expect(options.method).toBe("POST");
     expect(JSON.parse(options.body)).toMatchObject({
-      taskId: 'task1',
-      operationCode: 'DOCS_README',
+      taskId: "task1",
+      operationCode: "DOCS_README",
       payload: {},
     });
   });
 
   // RF.79 / RF.81: il template personalizzato dell'utente raggiunge
   // l'agente, e la sua assenza è il ripristino del modello di default.
-  describe('template README personalizzato (RF.79, RF.81)', () => {
+  describe("template README personalizzato (RF.79, RF.81)", () => {
     function payloadInviato(): Record<string, unknown> {
       const [, options] = fetchMock.mock.calls[0] as [string, { body: string }];
-      return (JSON.parse(options.body) as { payload: Record<string, unknown> })
-        .payload;
+      return (JSON.parse(options.body) as { payload: Record<string, unknown> }).payload;
     }
 
-    it('attaches the caller own README template when they have one', async () => {
-      templates.contentForUser.mockResolvedValue('# Il mio template');
+    it("attaches the caller own README template when they have one", async () => {
+      templates.contentForUser.mockResolvedValue("# Il mio template");
       fetchMock.mockResolvedValue(completedResponse());
 
       await service.invoke(makeTask() as never);
 
       // Chiesto per l'utente proprietario della task, non per un altro.
-      expect(templates.contentForUser).toHaveBeenCalledWith('user1');
-      expect(payloadInviato()).toEqual({ readmeTemplate: '# Il mio template' });
+      expect(templates.contentForUser).toHaveBeenCalledWith("user1");
+      expect(payloadInviato()).toEqual({ readmeTemplate: "# Il mio template" });
     });
 
-    it('sends no template at all when the user has none, so the agent falls back to its default', async () => {
+    it("sends no template at all when the user has none, so the agent falls back to its default", async () => {
       templates.contentForUser.mockResolvedValue(null);
       fetchMock.mockResolvedValue(completedResponse());
 
@@ -126,201 +122,195 @@ describe('AgentInvocationService', () => {
       expect(payloadInviato()).toEqual({});
     });
 
-    it('does not even look for a template for operations other than DOCS_README', async () => {
-      templates.contentForUser.mockResolvedValue('# Il mio template');
+    it("does not even look for a template for operations other than DOCS_README", async () => {
+      templates.contentForUser.mockResolvedValue("# Il mio template");
       fetchMock.mockResolvedValue(completedResponse());
 
-      await service.invoke(makeTask({ operation: 'SECURITY_OWASP' }) as never);
+      await service.invoke(makeTask({ operation: "SECURITY_OWASP" }) as never);
 
       expect(templates.contentForUser).not.toHaveBeenCalled();
       expect(payloadInviato()).toEqual({});
     });
   });
 
-  it('returns COMPLETED carrying the agent result payload — BE-18 needs it to assemble a Report', async () => {
+  it("returns COMPLETED carrying the agent result payload — BE-18 needs it to assemble a Report", async () => {
     const task = makeTask();
     const payload: AgentRunPayload = {
-      body: [{ kind: 'TEXT', markdown: 'hello' }],
-      summary: 'a summary',
+      body: [{ kind: "TEXT", markdown: "hello" }],
+      summary: "a summary",
       tokensConsumed: 42,
     };
     fetchMock.mockResolvedValue(completedResponse(payload));
 
     await expect(service.invoke(task as never)).resolves.toEqual({
-      status: 'COMPLETED',
+      status: "COMPLETED",
       payload,
     });
   });
 
-  it('fails with PARSING when the agent reports completed without a result payload', async () => {
+  it("fails with PARSING when the agent reports completed without a result payload", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: 'completed' }));
+    fetchMock.mockResolvedValue(jsonResponse({ status: "completed" }));
 
     const result = await service.invoke(task as never);
 
     expect(result).toMatchObject({
-      status: 'FAILED',
-      error: { code: 'PARSING' },
+      status: "FAILED",
+      error: { code: "PARSING" },
     });
   });
 
-  it('maps a failed response error through the agent error mapper', async () => {
+  it("maps a failed response error through the agent error mapper", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(
-      jsonResponse({ status: 'failed', error: 'RATE_LIMITED' }),
-    );
+    fetchMock.mockResolvedValue(jsonResponse({ status: "failed", error: "RATE_LIMITED" }));
 
     const result = await service.invoke(task as never);
 
     expect(result).toEqual({
-      status: 'FAILED',
+      status: "FAILED",
       error: {
-        code: 'LLM_RATE_LIMITED',
-        message: 'RATE_LIMITED',
-        stage: 'EXECUTION',
+        code: "LLM_RATE_LIMITED",
+        message: "RATE_LIMITED",
+        stage: "EXECUTION",
       },
     });
   });
 
-  it('returns INTERRUPTED with the pendingInput the agent reported', async () => {
-    const task = makeTask({ operation: 'CHANGELOG_TECHNICAL' });
+  it("returns INTERRUPTED with the pendingInput the agent reported", async () => {
+    const task = makeTask({ operation: "CHANGELOG_TECHNICAL" });
     fetchMock.mockResolvedValue(
       jsonResponse({
-        status: 'interrupted',
-        pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['T-1'] },
+        status: "interrupted",
+        pendingInput: { kind: "INCOMPLETE_TASKS", taskIds: ["T-1"] },
       }),
     );
 
     const result = await service.invoke(task as never);
 
     expect(result).toEqual({
-      status: 'INTERRUPTED',
-      pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['T-1'] },
+      status: "INTERRUPTED",
+      pendingInput: { kind: "INCOMPLETE_TASKS", taskIds: ["T-1"] },
     });
   });
 
-  it('fails with PARSING when the agent reports interrupted without a pendingInput', async () => {
+  it("fails with PARSING when the agent reports interrupted without a pendingInput", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: 'interrupted' }));
+    fetchMock.mockResolvedValue(jsonResponse({ status: "interrupted" }));
 
     const result = await service.invoke(task as never);
 
     expect(result).toMatchObject({
-      status: 'FAILED',
-      error: { code: 'PARSING' },
+      status: "FAILED",
+      error: { code: "PARSING" },
     });
   });
 
-  it('fails with UPSTREAM on a non-2xx HTTP response', async () => {
+  it("fails with UPSTREAM on a non-2xx HTTP response", async () => {
     const task = makeTask();
     fetchMock.mockResolvedValue(jsonResponse({}, false, 500));
 
     const result = await service.invoke(task as never);
 
-    expect(result).toMatchObject({ error: { code: 'UPSTREAM' } });
+    expect(result).toMatchObject({ error: { code: "UPSTREAM" } });
   });
 
-  it('fails with UPSTREAM, not TIMEOUT, when the gateway aborts on its own deadline', async () => {
+  it("fails with UPSTREAM, not TIMEOUT, when the gateway aborts on its own deadline", async () => {
     // TIMEOUT is reserved for the agent itself reporting its model call
     // timed out — the gateway not getting a response at all is a distinct,
     // less specific failure (could be a hang, a crash, a network issue).
     const task = makeTask();
-    const timeoutError = new Error('timed out');
-    timeoutError.name = 'TimeoutError';
+    const timeoutError = new Error("timed out");
+    timeoutError.name = "TimeoutError";
     fetchMock.mockRejectedValue(timeoutError);
 
     const result = await service.invoke(task as never);
 
-    expect(result).toMatchObject({ error: { code: 'UPSTREAM' } });
+    expect(result).toMatchObject({ error: { code: "UPSTREAM" } });
   });
 
-  it('fails with TIMEOUT when the agent itself reports its model call timed out', async () => {
+  it("fails with TIMEOUT when the agent itself reports its model call timed out", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(
-      jsonResponse({ status: 'failed', error: 'TIMEOUT' }),
-    );
+    fetchMock.mockResolvedValue(jsonResponse({ status: "failed", error: "TIMEOUT" }));
 
     const result = await service.invoke(task as never);
 
-    expect(result).toMatchObject({ error: { code: 'TIMEOUT' } });
+    expect(result).toMatchObject({ error: { code: "TIMEOUT" } });
   });
 
-  it('fails with UPSTREAM on a plain network error', async () => {
+  it("fails with UPSTREAM on a plain network error", async () => {
     const task = makeTask();
-    fetchMock.mockRejectedValue(new Error('ECONNREFUSED'));
+    fetchMock.mockRejectedValue(new Error("ECONNREFUSED"));
 
     const result = await service.invoke(task as never);
 
     expect(result.error).toMatchObject({
-      code: 'UPSTREAM',
-      message: 'ECONNREFUSED',
+      code: "UPSTREAM",
+      message: "ECONNREFUSED",
     });
   });
 
-  describe('resume', () => {
-    it('posts taskId, threadId, operationCode and inputValue to /internal/agent/resume', async () => {
+  describe("resume", () => {
+    it("posts taskId, threadId, operationCode and inputValue to /internal/agent/resume", async () => {
       const task = makeTask({
-        operation: 'CHANGELOG_TECHNICAL',
-        lgThreadId: 'existing-thread',
+        operation: "CHANGELOG_TECHNICAL",
+        lgThreadId: "existing-thread",
       });
       fetchMock.mockResolvedValue(completedResponse());
 
-      await service.resume(task as never, { action: 'PROCEED' });
+      await service.resume(task as never, { action: "PROCEED" });
 
-      const [url, options] = fetchMock.mock.calls[0] as [
-        string,
-        { method: string; body: string },
-      ];
-      expect(url).toBe('http://agents:8000/internal/agent/resume');
-      expect(options.method).toBe('POST');
+      const [url, options] = fetchMock.mock.calls[0] as [string, { method: string; body: string }];
+      expect(url).toBe("http://agents:8000/internal/agent/resume");
+      expect(options.method).toBe("POST");
       expect(JSON.parse(options.body)).toEqual({
-        taskId: 'task1',
-        threadId: 'existing-thread',
-        operationCode: 'CHANGELOG_TECHNICAL',
-        inputValue: { action: 'PROCEED' },
+        taskId: "task1",
+        threadId: "existing-thread",
+        operationCode: "CHANGELOG_TECHNICAL",
+        inputValue: { action: "PROCEED" },
       });
     });
 
-    it('never generates a threadId — a resume with none is a caller bug, not started fresh', async () => {
+    it("never generates a threadId — a resume with none is a caller bug, not started fresh", async () => {
       const task = makeTask({ lgThreadId: undefined });
 
-      await expect(
-        service.resume(task as never, { action: 'PROCEED' }),
-      ).rejects.toThrow('no lgThreadId');
+      await expect(service.resume(task as never, { action: "PROCEED" })).rejects.toThrow(
+        "no lgThreadId",
+      );
       expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    it('maps a completed resume response the same way invoke() does, payload included', async () => {
-      const task = makeTask({ lgThreadId: 'thread1' });
+    it("maps a completed resume response the same way invoke() does, payload included", async () => {
+      const task = makeTask({ lgThreadId: "thread1" });
       const payload: AgentRunPayload = { body: [] };
       fetchMock.mockResolvedValue(completedResponse(payload));
 
-      await expect(
-        service.resume(task as never, { action: 'PROCEED' }),
-      ).resolves.toEqual({ status: 'COMPLETED', payload });
+      await expect(service.resume(task as never, { action: "PROCEED" })).resolves.toEqual({
+        status: "COMPLETED",
+        payload,
+      });
     });
 
-    it('can itself return INTERRUPTED again — BUSINESS_CONFIRMATION following INCOMPLETE_TASKS', async () => {
-      const task = makeTask({ lgThreadId: 'thread1' });
+    it("can itself return INTERRUPTED again — BUSINESS_CONFIRMATION following INCOMPLETE_TASKS", async () => {
+      const task = makeTask({ lgThreadId: "thread1" });
       fetchMock.mockResolvedValue(
         jsonResponse({
-          status: 'interrupted',
+          status: "interrupted",
           pendingInput: {
-            kind: 'BUSINESS_CONFIRMATION',
-            technicalReportId: 'report1',
+            kind: "BUSINESS_CONFIRMATION",
+            technicalReportId: "report1",
           },
         }),
       );
 
       const result = await service.resume(task as never, {
-        action: 'PROCEED',
+        action: "PROCEED",
       });
 
       expect(result).toEqual({
-        status: 'INTERRUPTED',
+        status: "INTERRUPTED",
         pendingInput: {
-          kind: 'BUSINESS_CONFIRMATION',
-          technicalReportId: 'report1',
+          kind: "BUSINESS_CONFIRMATION",
+          technicalReportId: "report1",
         },
       });
     });
@@ -338,9 +328,9 @@ describe('AgentInvocationService', () => {
    * viaggia comunque nel corpo, altrimenti l'agente non saprebbe cosa fare.
    * La metà "agentId" sta in agent-registry.service.spec.ts.
    */
-  describe('TU_18 (RF.40, RV.1) — destinazione dell\'invocazione per i sette OperationCode', () => {
+  describe("TU_18 (RF.40, RV.1) — destinazione dell'invocazione per i sette OperationCode", () => {
     it.each(OPERATION_CODES)(
-      '%s viene inviata in POST a <AGENTS_SERVICE_URL>/internal/agent/start col proprio codice nel corpo',
+      "%s viene inviata in POST a <AGENTS_SERVICE_URL>/internal/agent/start col proprio codice nel corpo",
       async (code) => {
         const task = makeTask({ operation: code });
         fetchMock.mockResolvedValue(completedResponse());
@@ -351,41 +341,35 @@ describe('AgentInvocationService', () => {
           string,
           { method: string; body: string },
         ];
-        expect(url).toBe('http://agents:8000/internal/agent/start');
-        expect(options.method).toBe('POST');
-        expect(
-          (JSON.parse(options.body) as { operationCode: string }).operationCode,
-        ).toBe(code);
+        expect(url).toBe("http://agents:8000/internal/agent/start");
+        expect(options.method).toBe("POST");
+        expect((JSON.parse(options.body) as { operationCode: string }).operationCode).toBe(code);
       },
     );
 
-    it('la destinazione è una sola per tutte e sette le operazioni', async () => {
+    it("la destinazione è una sola per tutte e sette le operazioni", async () => {
       fetchMock.mockResolvedValue(completedResponse());
 
       for (const code of OPERATION_CODES) {
         await service.invoke(makeTask({ operation: code }) as never);
       }
 
-      const destinazioni = new Set(
-        fetchMock.mock.calls.map(([url]) => url as string),
-      );
+      const destinazioni = new Set(fetchMock.mock.calls.map(([url]) => url as string));
       expect(fetchMock).toHaveBeenCalledTimes(OPERATION_CODES.length);
-      expect([...destinazioni]).toEqual([
-        'http://agents:8000/internal/agent/start',
-      ]);
+      expect([...destinazioni]).toEqual(["http://agents:8000/internal/agent/start"]);
     });
 
-    it('la destinazione viene dalla configurazione, non da una costante nel codice', async () => {
+    it("la destinazione viene dalla configurazione, non da una costante nel codice", async () => {
       // Se fosse cablata, l'MVP non sarebbe schierabile fuori da
       // docker-compose: AGENTS_SERVICE_URL cambia fra locale, container e AWS.
-      config.get.mockReturnValue('http://agenti-di-collaudo:9100');
+      config.get.mockReturnValue("http://agenti-di-collaudo:9100");
       fetchMock.mockResolvedValue(completedResponse());
 
-      await service.invoke(makeTask({ operation: 'SECURITY_OWASP' }) as never);
+      await service.invoke(makeTask({ operation: "SECURITY_OWASP" }) as never);
 
       const [url] = fetchMock.mock.calls[0] as [string];
-      expect(url).toBe('http://agenti-di-collaudo:9100/internal/agent/start');
-      expect(config.get).toHaveBeenCalledWith('AGENTS_SERVICE_URL');
+      expect(url).toBe("http://agenti-di-collaudo:9100/internal/agent/start");
+      expect(config.get).toHaveBeenCalledWith("AGENTS_SERVICE_URL");
     });
   });
 });

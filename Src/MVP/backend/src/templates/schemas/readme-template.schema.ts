@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
 
 export type ReadmeTemplateDocument = HydratedDocument<ReadmeTemplate>;
 
@@ -32,7 +32,6 @@ export class ReadmeTemplate {
   content: string;
 }
 
-export const ReadmeTemplateSchema =
-  SchemaFactory.createForClass(ReadmeTemplate);
+export const ReadmeTemplateSchema = SchemaFactory.createForClass(ReadmeTemplate);
 
 ReadmeTemplateSchema.index({ userId: 1 }, { unique: true });

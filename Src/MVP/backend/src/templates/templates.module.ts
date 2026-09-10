@@ -1,11 +1,8 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { TemplatesController } from './templates.controller';
-import { TemplatesService } from './templates.service';
-import {
-  ReadmeTemplate,
-  ReadmeTemplateSchema,
-} from './schemas/readme-template.schema';
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { ReadmeTemplate, ReadmeTemplateSchema } from "./schemas/readme-template.schema";
+import { TemplatesController } from "./templates.controller";
+import { TemplatesService } from "./templates.service";
 
 /**
  * RF.79-RF.81. Esporta TemplatesService perché TasksModule ne ha bisogno:
@@ -14,9 +11,7 @@ import {
  */
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: ReadmeTemplate.name, schema: ReadmeTemplateSchema },
-    ]),
+    MongooseModule.forFeature([{ name: ReadmeTemplate.name, schema: ReadmeTemplateSchema }]),
   ],
   controllers: [TemplatesController],
   providers: [TemplatesService],

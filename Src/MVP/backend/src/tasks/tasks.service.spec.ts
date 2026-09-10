@@ -1,23 +1,23 @@
-import { vi, type Mock } from 'vitest';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
-import { getQueueToken } from '@nestjs/bullmq';
+import { getQueueToken } from "@nestjs/bullmq";
 import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
   NotFoundException,
-} from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { TaskCancellationService } from './task-cancellation.service';
-import { Task } from './schemas/task.schema';
-import { AnalysisContext } from '../contexts/schemas/analysis-context.schema';
-import { CredentialsService } from '../credentials/credentials.service';
-import { AgentRegistry } from '../operations/agent-registry.service';
-import { EventsGateway } from '../events/events.gateway';
-import { UsageLimitService } from './usage-limit.service';
+} from "@nestjs/common";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
+import { AnalysisContext } from "../contexts/schemas/analysis-context.schema";
+import { CredentialsService } from "../credentials/credentials.service";
+import { EventsGateway } from "../events/events.gateway";
+import { AgentRegistry } from "../operations/agent-registry.service";
+import { Task } from "./schemas/task.schema";
+import { TaskCancellationService } from "./task-cancellation.service";
+import { TasksService } from "./tasks.service";
+import { UsageLimitService } from "./usage-limit.service";
 
-describe('TasksService', () => {
+describe("TasksService", () => {
   let service: TasksService;
   let taskModel: {
     findOne: Mock;
@@ -32,7 +32,7 @@ describe('TasksService', () => {
   let queue: { addBulk: Mock; add: Mock };
   let usageLimit: { checkAndIncrement: Mock };
 
-  const developer = { userId: 'user1', role: 'DEVELOPER' as const };
+  const developer = { userId: "user1", role: "DEVELOPER" as const };
 
   beforeEach(async () => {
     taskModel = {
@@ -64,7 +64,7 @@ describe('TasksService', () => {
         { provide: AgentRegistry, useValue: agentRegistry },
         { provide: EventsGateway, useValue: events },
         { provide: UsageLimitService, useValue: usageLimit },
-        { provide: getQueueToken('tasks'), useValue: queue },
+        { provide: getQueueToken("tasks"), useValue: queue },
         {
           provide: TaskCancellationService,
           useValue: { requestCancellation: vi.fn(async () => undefined) },
@@ -75,138 +75,138 @@ describe('TasksService', () => {
     service = module.get(TasksService);
   });
 
-  describe('createBatch', () => {
-    it('rejects an empty operations array with 400, before touching the database', async () => {
+  describe("createBatch", () => {
+    it("rejects an empty operations array with 400, before touching the database", async () => {
       await expect(
-        service.createBatch(developer, { contextId: 'ctx1', operations: [] }),
+        service.createBatch(developer, { contextId: "ctx1", operations: [] }),
       ).rejects.toThrow(BadRequestException);
       expect(contextModel.findOne).not.toHaveBeenCalled();
     });
 
-    it('rejects when the context does not exist or is not owned by the caller', async () => {
+    it("rejects when the context does not exist or is not owned by the caller", async () => {
       contextModel.findOne.mockResolvedValue(null);
 
       await expect(
         service.createBatch(developer, {
-          contextId: 'ctx1',
-          operations: ['DOCS_README'],
+          contextId: "ctx1",
+          operations: ["DOCS_README"],
         }),
       ).rejects.toThrow(NotFoundException);
       expect(contextModel.findOne).toHaveBeenCalledWith({
-        _id: 'ctx1',
-        userId: 'user1',
+        _id: "ctx1",
+        userId: "user1",
       });
     });
 
-    it('rejects when no GitHub credential is configured', async () => {
-      contextModel.findOne.mockResolvedValue({ _id: 'ctx1' });
+    it("rejects when no GitHub credential is configured", async () => {
+      contextModel.findOne.mockResolvedValue({ _id: "ctx1" });
       credentials.hasCredential.mockResolvedValue(false);
 
       await expect(
         service.createBatch(developer, {
-          contextId: 'ctx1',
-          operations: ['DOCS_README'],
+          contextId: "ctx1",
+          operations: ["DOCS_README"],
         }),
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('rejects the whole batch with 403 if any operation is not permitted for the role', async () => {
-      contextModel.findOne.mockResolvedValue({ _id: 'ctx1' });
+    it("rejects the whole batch with 403 if any operation is not permitted for the role", async () => {
+      contextModel.findOne.mockResolvedValue({ _id: "ctx1" });
       credentials.hasCredential.mockResolvedValue(true);
       agentRegistry.getForRole.mockReturnValue([
         {
-          code: 'DOCS_README',
-          displayName: '',
-          description: '',
-          agent: 'DOCS',
+          code: "DOCS_README",
+          displayName: "",
+          description: "",
+          agent: "DOCS",
         },
       ]);
 
       await expect(
         service.createBatch(developer, {
-          contextId: 'ctx1',
-          operations: ['DOCS_README', 'SECURITY_OWASP'],
+          contextId: "ctx1",
+          operations: ["DOCS_README", "SECURITY_OWASP"],
         }),
       ).rejects.toThrow(ForbiddenException);
       expect(taskModel.insertMany).not.toHaveBeenCalled();
     });
 
-    it('deduplicates operations, persists one Task per operation under a shared batchId, and enqueues one job each', async () => {
-      contextModel.findOne.mockResolvedValue({ _id: 'ctx1' });
+    it("deduplicates operations, persists one Task per operation under a shared batchId, and enqueues one job each", async () => {
+      contextModel.findOne.mockResolvedValue({ _id: "ctx1" });
       credentials.hasCredential.mockResolvedValue(true);
       agentRegistry.getForRole.mockReturnValue([
         {
-          code: 'DOCS_README',
-          displayName: '',
-          description: '',
-          agent: 'DOCS',
+          code: "DOCS_README",
+          displayName: "",
+          description: "",
+          agent: "DOCS",
         },
         {
-          code: 'DOCS_INLINE',
-          displayName: '',
-          description: '',
-          agent: 'DOCS',
+          code: "DOCS_INLINE",
+          displayName: "",
+          description: "",
+          agent: "DOCS",
         },
       ]);
       taskModel.insertMany.mockResolvedValue([
-        { id: 'task1', batchId: 'batchA' },
-        { id: 'task2', batchId: 'batchA' },
+        { id: "task1", batchId: "batchA" },
+        { id: "task2", batchId: "batchA" },
       ]);
 
       const result = await service.createBatch(developer, {
-        contextId: 'ctx1',
-        operations: ['DOCS_README', 'DOCS_README', 'DOCS_INLINE'],
+        contextId: "ctx1",
+        operations: ["DOCS_README", "DOCS_README", "DOCS_INLINE"],
       });
 
       // batchId isn't a fixed fixture value — it's generated per call and
       // echoed back in the response, so assert against result.batchId
       // rather than hardcoding it, to prove the *same* id was used for both
       // documents, not just that insertMany received two arbitrary ones.
-      expect(result.taskIds).toEqual(['task1', 'task2']);
-      expect(typeof result.batchId).toBe('string');
+      expect(result.taskIds).toEqual(["task1", "task2"]);
+      expect(typeof result.batchId).toBe("string");
       expect(taskModel.insertMany).toHaveBeenCalledWith([
         expect.objectContaining({
-          operation: 'DOCS_README',
+          operation: "DOCS_README",
           batchId: result.batchId,
         }),
         expect.objectContaining({
-          operation: 'DOCS_INLINE',
+          operation: "DOCS_INLINE",
           batchId: result.batchId,
         }),
       ]);
       expect(queue.addBulk).toHaveBeenCalledWith([
-        { name: 'run-task', data: { taskId: 'task1' } },
-        { name: 'run-task', data: { taskId: 'task2' } },
+        { name: "run-task", data: { taskId: "task1" } },
+        { name: "run-task", data: { taskId: "task2" } },
       ]);
       // 2, not 3: the usage check is charged against the deduplicated
       // count — the same number of Tasks actually created — not the raw
       // request body.
-      expect(usageLimit.checkAndIncrement).toHaveBeenCalledWith('user1', 2);
+      expect(usageLimit.checkAndIncrement).toHaveBeenCalledWith("user1", 2);
     });
 
-    it('rejects with 429 when the monthly usage limit is exceeded, before creating anything', async () => {
-      contextModel.findOne.mockResolvedValue({ _id: 'ctx1' });
+    it("rejects with 429 when the monthly usage limit is exceeded, before creating anything", async () => {
+      contextModel.findOne.mockResolvedValue({ _id: "ctx1" });
       credentials.hasCredential.mockResolvedValue(true);
       agentRegistry.getForRole.mockReturnValue([
         {
-          code: 'DOCS_README',
-          displayName: '',
-          description: '',
-          agent: 'DOCS',
+          code: "DOCS_README",
+          displayName: "",
+          description: "",
+          agent: "DOCS",
         },
       ]);
       usageLimit.checkAndIncrement.mockRejectedValue(
-        Object.assign(new Error('limit exceeded'), {
-          code: 'USAGE_LIMIT_EXCEEDED',
+        Object.assign(new Error("limit exceeded"), {
+          code: "USAGE_LIMIT_EXCEEDED",
         }),
       );
 
       await expect(
         service.createBatch(developer, {
-          contextId: 'ctx1',
-          operations: ['DOCS_README'],
+          contextId: "ctx1",
+          operations: ["DOCS_README"],
         }),
-      ).rejects.toMatchObject({ code: 'USAGE_LIMIT_EXCEEDED' });
+      ).rejects.toMatchObject({ code: "USAGE_LIMIT_EXCEEDED" });
       expect(taskModel.insertMany).not.toHaveBeenCalled();
       expect(queue.addBulk).not.toHaveBeenCalled();
     });
@@ -217,81 +217,71 @@ describe('TasksService', () => {
   // quindi senza un'asserzione esplicita su di esso togliere `userId` dalla
   // query non farebbe fallire niente — GET /tasks restituirebbe le task di
   // tutti e GET /tasks/:id sarebbe leggibile da chiunque indovini un id.
-  describe('findAllForUser', () => {
-    it('queries only the caller own tasks, newest first', async () => {
+  describe("findAllForUser", () => {
+    it("queries only the caller own tasks, newest first", async () => {
       const sort = vi.fn().mockResolvedValue([]);
       taskModel.find.mockReturnValue({ sort });
 
-      await service.findAllForUser('user1');
+      await service.findAllForUser("user1");
 
-      expect(taskModel.find).toHaveBeenCalledWith({ userId: 'user1' });
+      expect(taskModel.find).toHaveBeenCalledWith({ userId: "user1" });
       expect(sort).toHaveBeenCalledWith({ createdAt: -1 });
     });
   });
 
-  describe('findOneForUser', () => {
-    it('scopes the lookup by id and owner together', async () => {
+  describe("findOneForUser", () => {
+    it("scopes the lookup by id and owner together", async () => {
       taskModel.findOne.mockResolvedValue(null);
 
-      await expect(service.findOneForUser('user1', 'task1')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findOneForUser("user1", "task1")).rejects.toThrow(NotFoundException);
       expect(taskModel.findOne).toHaveBeenCalledWith({
-        _id: 'task1',
-        userId: 'user1',
+        _id: "task1",
+        userId: "user1",
       });
     });
 
-    it('throws NotFoundException when the task does not belong to the caller', async () => {
+    it("throws NotFoundException when the task does not belong to the caller", async () => {
       taskModel.findOne.mockResolvedValue(null);
 
-      await expect(service.findOneForUser('user1', 'task1')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findOneForUser("user1", "task1")).rejects.toThrow(NotFoundException);
     });
   });
 
-  describe('cancel', () => {
-    it('scopes the initial lookup by id and owner together', async () => {
+  describe("cancel", () => {
+    it("scopes the initial lookup by id and owner together", async () => {
       taskModel.findOne.mockResolvedValue(null);
 
-      await expect(service.cancel('user1', 'task1')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.cancel("user1", "task1")).rejects.toThrow(NotFoundException);
       expect(taskModel.findOne).toHaveBeenCalledWith({
-        _id: 'task1',
-        userId: 'user1',
+        _id: "task1",
+        userId: "user1",
       });
     });
 
-    it('throws NotFoundException when the task does not belong to the caller', async () => {
+    it("throws NotFoundException when the task does not belong to the caller", async () => {
       taskModel.findOne.mockResolvedValue(null);
 
-      await expect(service.cancel('user1', 'task1')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.cancel("user1", "task1")).rejects.toThrow(NotFoundException);
     });
 
-    it('rejects with 409 when the task is already in a terminal state', async () => {
+    it("rejects with 409 when the task is already in a terminal state", async () => {
       taskModel.findOne.mockResolvedValue({
-        status: 'COMPLETED',
+        status: "COMPLETED",
         canTransitionTo: vi.fn().mockReturnValue(false),
       });
 
-      await expect(service.cancel('user1', 'task1')).rejects.toThrow(
-        ConflictException,
-      );
+      await expect(service.cancel("user1", "task1")).rejects.toThrow(ConflictException);
     });
 
-    it('transitions to CANCELLED with a conditional write and emits task.updated', async () => {
+    it("transitions to CANCELLED with a conditional write and emits task.updated", async () => {
       const task = {
-        status: 'PENDING',
+        status: "PENDING",
         canTransitionTo: vi.fn().mockReturnValue(true),
         save: vi.fn().mockResolvedValue(undefined),
       };
       taskModel.findOne.mockResolvedValue(task);
 
-      await service.cancel('user1', 'task1');
+      await service.cancel("user1", "task1");
 
       // The status filter is the point: a document fetched moments earlier
       // can't decide the race against a TaskProcessor invocation finishing
@@ -299,43 +289,37 @@ describe('TasksService', () => {
       // evaluates at write time.
       expect(taskModel.updateOne).toHaveBeenCalledWith(
         {
-          _id: 'task1',
-          userId: 'user1',
-          status: { $in: ['PENDING', 'RUNNING'] },
+          _id: "task1",
+          userId: "user1",
+          status: { $in: ["PENDING", "RUNNING"] },
         },
-        { $set: { status: 'CANCELLED' } },
+        { $set: { status: "CANCELLED" } },
       );
       expect(task.save).not.toHaveBeenCalled();
-      expect(events.emitTaskUpdated).toHaveBeenCalledWith(
-        'user1',
-        'task1',
-        'CANCELLED',
-      );
+      expect(events.emitTaskUpdated).toHaveBeenCalledWith("user1", "task1", "CANCELLED");
     });
 
-    it('rejects with 409, and announces nothing, when the Task reached a terminal state before the write landed', async () => {
+    it("rejects with 409, and announces nothing, when the Task reached a terminal state before the write landed", async () => {
       // The Task was RUNNING when read, and TaskProcessor completed it
       // before this write got there. Cancelling it now would resurrect a
       // terminal Task, so the write matches nothing and the caller is told.
       taskModel.findOne.mockResolvedValue({
-        status: 'RUNNING',
+        status: "RUNNING",
         canTransitionTo: vi.fn().mockReturnValue(true),
         save: vi.fn(),
       });
       taskModel.updateOne.mockResolvedValue({ matchedCount: 0 });
 
-      await expect(service.cancel('user1', 'task1')).rejects.toThrow(
-        ConflictException,
-      );
+      await expect(service.cancel("user1", "task1")).rejects.toThrow(ConflictException);
       expect(events.emitTaskUpdated).not.toHaveBeenCalled();
     });
   });
 
-  describe('submitInput', () => {
+  describe("submitInput", () => {
     function makeTask(overrides: Record<string, unknown> = {}) {
       return {
-        id: 'task1',
-        status: 'RUNNING',
+        id: "task1",
+        status: "RUNNING",
         pendingInput: null,
         sprintId: undefined,
         canTransitionTo: vi.fn().mockReturnValue(true),
@@ -344,42 +328,42 @@ describe('TasksService', () => {
       };
     }
 
-    it('throws NotFoundException when the task does not belong to the caller', async () => {
+    it("throws NotFoundException when the task does not belong to the caller", async () => {
       taskModel.findOne.mockResolvedValue(null);
 
       await expect(
-        service.submitInput('user1', 'task1', { kind: 'SPRINT_ID' } as never),
+        service.submitInput("user1", "task1", { kind: "SPRINT_ID" } as never),
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('rejects with 409 when the task has no pending input', async () => {
+    it("rejects with 409 when the task has no pending input", async () => {
       taskModel.findOne.mockResolvedValue(makeTask({ pendingInput: null }));
 
       await expect(
-        service.submitInput('user1', 'task1', { kind: 'SPRINT_ID' } as never),
+        service.submitInput("user1", "task1", { kind: "SPRINT_ID" } as never),
       ).rejects.toThrow(ConflictException);
     });
 
-    it('rejects with 409 when the submitted kind does not match what the task is waiting for', async () => {
+    it("rejects with 409 when the submitted kind does not match what the task is waiting for", async () => {
       taskModel.findOne.mockResolvedValue(
-        makeTask({ pendingInput: { kind: 'BUSINESS_CONFIRMATION' } }),
+        makeTask({ pendingInput: { kind: "BUSINESS_CONFIRMATION" } }),
       );
 
       await expect(
-        service.submitInput('user1', 'task1', {
-          kind: 'SPRINT_ID',
-          sprintId: 'S-1',
+        service.submitInput("user1", "task1", {
+          kind: "SPRINT_ID",
+          sprintId: "S-1",
         } as never),
       ).rejects.toThrow(ConflictException);
     });
 
-    it('SPRINT_ID: sets sprintId, clears pendingInput and enqueues a run-task job', async () => {
-      const task = makeTask({ pendingInput: { kind: 'SPRINT_ID' } });
+    it("SPRINT_ID: sets sprintId, clears pendingInput and enqueues a run-task job", async () => {
+      const task = makeTask({ pendingInput: { kind: "SPRINT_ID" } });
       taskModel.findOne.mockResolvedValue(task);
 
-      await service.submitInput('user1', 'task1', {
-        kind: 'SPRINT_ID',
-        sprintId: 'S-42',
+      await service.submitInput("user1", "task1", {
+        kind: "SPRINT_ID",
+        sprintId: "S-42",
       } as never);
 
       // Il ramo SPRINT_ID scrive con task.save(), non con l'updateOne
@@ -387,65 +371,61 @@ describe('TasksService', () => {
       // contro la scrittura sulla Task di un altro è la findOne iniziale,
       // quindi il suo filtro va asserito.
       expect(taskModel.findOne).toHaveBeenCalledWith({
-        _id: 'task1',
-        userId: 'user1',
+        _id: "task1",
+        userId: "user1",
       });
-      expect(task.sprintId).toBe('S-42');
+      expect(task.sprintId).toBe("S-42");
       expect(task.pendingInput).toBeNull();
       expect(task.save).toHaveBeenCalled();
-      expect(queue.add).toHaveBeenCalledWith('run-task', { taskId: 'task1' });
+      expect(queue.add).toHaveBeenCalledWith("run-task", { taskId: "task1" });
     });
 
-    it('INCOMPLETE_TASKS + PROCEED: clears pendingInput and enqueues a resume-task job', async () => {
+    it("INCOMPLETE_TASKS + PROCEED: clears pendingInput and enqueues a resume-task job", async () => {
       const task = makeTask({
-        pendingInput: { kind: 'INCOMPLETE_TASKS', taskIds: ['T-1'] },
+        pendingInput: { kind: "INCOMPLETE_TASKS", taskIds: ["T-1"] },
       });
       taskModel.findOne.mockResolvedValue(task);
 
-      await service.submitInput('user1', 'task1', {
-        kind: 'INCOMPLETE_TASKS',
-        action: 'PROCEED',
+      await service.submitInput("user1", "task1", {
+        kind: "INCOMPLETE_TASKS",
+        action: "PROCEED",
       } as never);
 
       expect(task.pendingInput).toBeNull();
-      expect(queue.add).toHaveBeenCalledWith('resume-task', {
-        taskId: 'task1',
-        inputValue: { action: 'PROCEED' },
+      expect(queue.add).toHaveBeenCalledWith("resume-task", {
+        taskId: "task1",
+        inputValue: { action: "PROCEED" },
       });
       expect(events.emitTaskUpdated).not.toHaveBeenCalled();
     });
 
-    it('BUSINESS_CONFIRMATION + CANCEL: cancels the task instead of resuming the agent', async () => {
+    it("BUSINESS_CONFIRMATION + CANCEL: cancels the task instead of resuming the agent", async () => {
       const task = makeTask({
         pendingInput: {
-          kind: 'BUSINESS_CONFIRMATION',
-          technicalReportId: 'r1',
+          kind: "BUSINESS_CONFIRMATION",
+          technicalReportId: "r1",
         },
       });
       taskModel.findOne.mockResolvedValue(task);
 
-      await service.submitInput('user1', 'task1', {
-        kind: 'BUSINESS_CONFIRMATION',
-        action: 'CANCEL',
+      await service.submitInput("user1", "task1", {
+        kind: "BUSINESS_CONFIRMATION",
+        action: "CANCEL",
       } as never);
 
       // Same conditional write POST /tasks/:id/cancel uses — it is the same
       // transition — plus clearing the pendingInput this answer resolves.
       expect(taskModel.updateOne).toHaveBeenCalledWith(
         {
-          _id: 'task1',
-          userId: 'user1',
-          status: { $in: ['PENDING', 'RUNNING'] },
+          _id: "task1",
+          userId: "user1",
+          status: { $in: ["PENDING", "RUNNING"] },
         },
-        { $set: { status: 'CANCELLED', pendingInput: null } },
+        { $set: { status: "CANCELLED", pendingInput: null } },
       );
       expect(task.save).not.toHaveBeenCalled();
       expect(queue.add).not.toHaveBeenCalled();
-      expect(events.emitTaskUpdated).toHaveBeenCalledWith(
-        'user1',
-        'task1',
-        'CANCELLED',
-      );
+      expect(events.emitTaskUpdated).toHaveBeenCalledWith("user1", "task1", "CANCELLED");
     });
   });
 });

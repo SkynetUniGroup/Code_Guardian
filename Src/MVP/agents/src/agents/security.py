@@ -12,6 +12,7 @@ from typing import Any
 from ..config import settings
 from ..github_toolset import GitHubToolset
 from ..models import (
+    SEVERITY_ORDER,
     Block,
     FindingBlock,
     PolicyViolationBlock,
@@ -27,6 +28,62 @@ logger = logging.getLogger(__name__)
 # Estensioni per cui esiste un ruleset Semgrep in sast_analyzer: tenerle
 # allineate evita di scaricare file che poi nessuna regola guarderebbe.
 _SUPPORTED_EXTS = (".ts", ".js", ".jsx", ".tsx", ".py", ".java", ".go", ".rb")
+
+
+
+def _normalizza_percorso(path: str) -> str:
+    """Riduce un percorso alla forma con cui viene confrontato.
+
+    Il modello riscrive volentieri lo stesso file come './src/a.js',
+    'src\a.js' o con una barra iniziale: sono lo stesso file, e scartarli
+    come fuori ambito sarebbe un falso negativo.
+    """
+    return path.replace("\\", "/").lstrip("./").lstrip("/")
+
+
+def _only_in_scope(blocks: list[FindingBlock], ctx: dict | None) -> list[FindingBlock]:
+    """Scarta i riscontri su file che non erano nell'ambito richiesto (RF.30).
+
+    Il modello riceve l'elenco dei file da esaminare, ma nulla gli impedisce
+    di segnalare vulnerabilita' su percorsi che non gli sono mai stati dati:
+    file esclusi dall'ambito, oppure inventati di sana pianta. Riportarli
+    significherebbe attribuire all'utente riscontri su codice che non ha
+    chiesto di analizzare e che l'agente non ha letto.
+
+    Senza 'scope_files' nel contesto -- un chiamante che passa un ctx vuoto --
+    non c'e' nulla con cui confrontare e i blocchi passano invariati.
+    """
+    scope = (ctx or {}).get("scope_files")
+    if not scope:
+        return blocks
+
+    ammessi = {_normalizza_percorso(p) for p in scope}
+    return [b for b in blocks if _normalizza_percorso(b.filePath) in ammessi]
+
+
+def _most_critical_first(blocks: list[FindingBlock]) -> list[FindingBlock]:
+    """Riordina i riscontri dal piu' al meno critico (RF.61).
+
+    L'ordinamento e' stabile: a parita' di gravita' resta l'ordine in cui il
+    modello li ha prodotti, che e' l'unico criterio secondario disponibile.
+    Una gravita' che non compare in SEVERITY_ORDER finisce in fondo invece
+    di far fallire l'ordinamento.
+    """
+    return sorted(
+        blocks,
+        key=lambda b: SEVERITY_ORDER.index(b.severity) if b.severity in SEVERITY_ORDER else -1,
+        reverse=True,
+    )
+
+
+def _renumbered(blocks: list[FindingBlock], start: int = 0) -> list[FindingBlock]:
+    """Rinumera 'order' dopo filtro e riordino.
+
+    'order' e' la posizione con cui il blocco viene reso a schermo: lasciarlo
+    al valore di arrivo dopo aver scartato o spostato dei riscontri
+    produrrebbe buchi e numerazioni incoerenti con l'ordine effettivo.
+    """
+    return [b.model_copy(update={"order": start + i}) for i, b in enumerate(blocks)]
 
 
 class ContextResourceMissingError(Exception):
@@ -145,6 +202,10 @@ class SecurityLoader:
         return {
             "policy": policy_content,
             "files": tree_str,
+            # Duplica l'elenco che tree_str gia' rende in forma leggibile
+            # per il prompt: questo serve a parse_output per scartare i
+            # riscontri su percorsi fuori dall'ambito richiesto (RF.30).
+            "scope_files": files_to_scan,
             "sast_section": sast_section,
             "sast_findings": sast_findings,
             "sast_summary": sast_summary,
@@ -265,6 +326,10 @@ class OwaspScanProfile:
         ctx = ctx or {}
         blocks: list[Block] = self._apply_sast_verdicts(data, ctx)
         order_offset = len(blocks)
+        # I riscontri del modello si raccolgono a parte: filtro d'ambito e
+        # riordino per gravita' riguardano solo loro, mentre i blocchi SAST
+        # restano in testa con la numerazione che gia' hanno.
+        trovati: list[FindingBlock] = []
 
         for order, item in enumerate(data.get("findings", [])):
             rem_data = item.get("remediation", {})
@@ -293,7 +358,7 @@ class OwaspScanProfile:
 
             end_line = item.get("end_line")
 
-            blocks.append(
+            trovati.append(
                 FindingBlock(
                     order=order_offset + order,
                     category=str(item.get("category", "Uncategorized")),
@@ -305,7 +370,10 @@ class OwaspScanProfile:
                     remediation=remediation,
                 )
             )
-        return blocks, None
+
+        trovati = _only_in_scope(trovati, ctx)
+        trovati = _most_critical_first(trovati)
+        return blocks + _renumbered(trovati, order_offset), None
 
     @staticmethod
     def _apply_sast_verdicts(data: dict, ctx: dict) -> list[Block]:
