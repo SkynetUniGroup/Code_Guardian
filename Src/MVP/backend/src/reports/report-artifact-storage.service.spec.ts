@@ -6,18 +6,17 @@ vi.mock("@aws-sdk/client-s3", () => ({
   S3Client: vi.fn().mockImplementation(function CostruttoreFinto() {
     return { send: mockSend };
   }),
-  CreateBucketCommand: vi.fn((input: unknown) => ({
-    __type: "CreateBucketCommand",
-    input,
-  })),
-  PutBucketLifecycleConfigurationCommand: vi.fn((input: unknown) => ({
-    __type: "PutBucketLifecycleConfigurationCommand",
-    input,
-  })),
-  PutObjectCommand: vi.fn((input: unknown) => ({
-    __type: "PutObjectCommand",
-    input,
-  })),
+  CreateBucketCommand: vi.fn(function CreateBucketCommand(input: unknown) {
+    return { __type: "CreateBucketCommand", input };
+  }),
+  PutBucketLifecycleConfigurationCommand: vi.fn(function PutBucketLifecycleConfigurationCommand(
+    input: unknown,
+  ) {
+    return { __type: "PutBucketLifecycleConfigurationCommand", input };
+  }),
+  PutObjectCommand: vi.fn(function PutObjectCommand(input: unknown) {
+    return { __type: "PutObjectCommand", input };
+  }),
 }));
 
 import { ReportArtifactStorageService } from "./report-artifact-storage.service";

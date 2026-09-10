@@ -293,7 +293,11 @@ describe("TasksService", () => {
           userId: "user1",
           status: { $in: ["PENDING", "RUNNING"] },
         },
-        { $set: { status: "CANCELLED" } },
+        // pendingInput azzerato insieme allo stato (TI_10): senza, la task
+        // restava CANCELLED con una richiesta di input ancora aperta, e
+        // submitInput la trovava valida, rispondeva 204 e accodava un job
+        // per una task annullata.
+        { $set: { status: "CANCELLED", pendingInput: null } },
       );
       expect(task.save).not.toHaveBeenCalled();
       expect(events.emitTaskUpdated).toHaveBeenCalledWith("user1", "task1", "CANCELLED");

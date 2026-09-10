@@ -5,6 +5,7 @@ import { EventsGateway } from "../events/events.gateway";
 import { AgentRegistry } from "../operations/agent-registry.service";
 import { ReportAssemblyService } from "../reports/report-assembly.service";
 import { AgentInvocationService } from "./agent-invocation.service";
+import { ProposalPublisherService } from "./proposal-publisher.service";
 import { Task } from "./schemas/task.schema";
 import { TaskProcessor } from "./task-processor";
 
@@ -165,6 +166,10 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
         { provide: AgentInvocationService, useValue: agentInvocation },
         { provide: AgentRegistry, useValue: agentRegistry },
         { provide: ReportAssemblyService, useValue: reportAssembly },
+        {
+          provide: ProposalPublisherService,
+          useValue: { publish: vi.fn(async (_task, payload) => payload) },
+        },
       ],
     }).compile();
 
