@@ -32,28 +32,37 @@ Nota su biome: segnala centinaia di errori `␍`, sono i CRLF che git mette in
 checkout su Windows. Li ha anche bedrock (244) senza che nessuno abbia toccato
 niente: su Linux, dove gira la CI, non esistono.
 
-## 2. I test di integrazione (serve Docker Desktop avviato)
+## 2. Gli e2e (serve Docker Desktop avviato)
 
-Mongo, Redis e MinIO, nessuna credenziale esterna:
+Mongo, Redis e MinIO su porte dedicate (27018/6380/9002), nessuna credenziale
+esterna. 62 passati, 3 rossi attesi, 10 saltati, zero fallimenti:
 
     cd Src\MVP
     pnpm test:integration:up
     pnpm test:integration:test
     pnpm test:integration:down
 
+I 10 saltati chiedono un PAT GitHub vero. Per eseguirli aggiungi a
+`Src\MVP\.env` la riga `E2E_GITHUB_PAT=...` (e, per TI_16 sul repository
+privato, anche `E2E_PRIVATE_REPO_URL=...`).
+
+I 3 rossi attesi sono difetti ancora aperti, marcati `it.fails`: TI_13 (il
+rifiuto di GitHub non porta la task a FAILED con PR_CREATION_FAILED) e due
+lacune dell'OpenAPI su schemi di richiesta e risposta.
+
 ## 3. Lo stack intero (serve Docker + le tue chiavi AWS)
 
-Apri `Src\MVP\.env` e riempi tu queste due righe, io non le tocco:
-
-    AWS_ACCESS_KEY_ID=
-    AWS_SECRET_ACCESS_KEY=
-
-Poi:
+`Src\MVP\.env` e' gia' al suo posto. Le immagini sono gia' costruite:
 
     cd Src\MVP
-    docker compose up --build
+    docker compose up -d
 
-Frontend su http://localhost:5173, backend su http://localhost:3000/api/v1.
+- frontend  http://localhost:5173
+- backend   http://localhost:3000/api/v1  (salute: /api/v1/auth/health)
+- agenti    solo sulla rete interna, non pubblicati sull'host
+
+Le rotte della feature templates (RF.79-81) sono registrate e vive:
+GET, PUT e DELETE su /api/v1/templates/readme.
 
 ## 4. Cosa e' ancora rosso, e perche'
 
@@ -67,18 +76,18 @@ Backend (55)
 - `credentials.service.spec.ts` (15) — questa base gestisce anche SONARQUBE.
 - `report-artifact-storage` (4), `task-processor.claim-window` (3),
   `report-pdf.composer` (3), `agent-error-mapping` (2), e quattro singoli.
-- `github-write.service.spec.ts` (2) — questi NON vanno riparati: sono i tuoi
-  test che pretendono un file per PR, mentre qui la PR e' multi-file. Vanno
+- `github-write.service.spec.ts` (2) — questi NON vanno riparati: sono i test
+  che pretendono un file per PR, mentre qui la PR e' multi-file. Vanno
   sostituiti con gli spec di questa base.
 
-Frontend (56) — quasi tutti testo dell'interfaccia: le due UI scrivono
+Frontend (46) — quasi tutti testo dell'interfaccia: le due UI scrivono
 etichette e messaggi diversi. `CredentialsPage` (13), `RunPage` (11),
-`ReportDetailPage` (10), `renderers` (9), `SelectPage` (5), poi singoli.
-Qui non decide il codice: decidete voi quale dicitura tenere.
+`ReportDetailPage` (10), `SelectPage` (5), poi singoli. Qui non decide il
+codice: decidete voi quale dicitura tenere.
 
 Agenti (22) — `test_graph` (9) e `test_graph_nodes` (1): il grafo e' diverso.
 `test_docs` (6): manca il pezzo lato agenti del template README (RF.79-81),
-che ho portato solo lato backend. `test_github_toolset` (4), piu' due singoli.
+portato finora solo lato backend. `test_github_toolset` (4), piu' due singoli.
 
 ## 5. Cosa e' stato portato
 
