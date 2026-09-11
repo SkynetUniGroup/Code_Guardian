@@ -89,9 +89,11 @@ async def test_ti14_the_failure_report_carries_the_rate_limited_kind():
 
     risultato = await grafo.execute_step(build_state())
 
-    report = risultato['result']['report']
-    assert report['status'] == 'FAILED'
-    assert report['error']['kind'] == ErrorKind.RATE_LIMITED.value
+    # Un run fallito si annuncia come 'failed' e porta la categoria a parte:
+    # non un 'completed' con dentro un report FAILED, che il backend avrebbe
+    # registrato come riuscito.
+    assert risultato['status'] == 'failed'
+    assert risultato['errorKind'] == ErrorKind.RATE_LIMITED.value
 
 
 @pytest.mark.asyncio

@@ -90,6 +90,22 @@ def _identita_delle_docstring(albero: ast.Module) -> set[int]:
             and isinstance(corpo[0].value.value, str)
         ):
             identita.add(id(corpo[0].value))
+
+        # Anche le docstring di attributo (PEP 258): una stringa da sola
+        # subito dopo un'assegnazione documenta quel nome, ed e' cosi' che
+        # config.py descrive `settings`. Per l'AST non e' una docstring --
+        # non e' la prima istruzione del contenitore -- ma documentazione lo
+        # e' comunque, e contarla farebbe di questo test una misura della
+        # prolissita' dei commenti invece che dell'isolamento dei prompt.
+        if corpo:
+            for precedente, successivo in zip(corpo, corpo[1:]):
+                if (
+                    isinstance(precedente, (ast.Assign, ast.AnnAssign))
+                    and isinstance(successivo, ast.Expr)
+                    and isinstance(successivo.value, ast.Constant)
+                    and isinstance(successivo.value.value, str)
+                ):
+                    identita.add(id(successivo.value))
     return identita
 
 
@@ -184,7 +200,15 @@ def _prompt_scritti_nel_codice(percorso: Path) -> list[tuple[int, int]]:
                 continue
             for bersaglio in nodo.targets:
                 if isinstance(bersaglio, ast.Name):
-                    lunghezza_per_nome[bersaglio.id] = _testo_letterale(nodo.value)
+                    # Il massimo, non l'ultimo visto: una funzione puo'
+                    # assegnare lo stesso nome piu' volte -- graph.py lo fa
+                    # con retry_msg -- e tenere solo l'ultima significava che
+                    # bastava spostarne una nel YAML perche' l'altra
+                    # sparisse dal conteggio.
+                    lunghezza_per_nome[bersaglio.id] = max(
+                        lunghezza_per_nome.get(bersaglio.id, 0),
+                        _testo_letterale(nodo.value),
+                    )
 
         for nodo in ast.walk(funzione):
             if not isinstance(nodo, ast.Call) or not isinstance(nodo.func, ast.Name):
@@ -249,8 +273,17 @@ def test_tu17_prompt_templates_all_stay_far_above_the_threshold():
     smetterebbe di poter distinguere un prompt da un messaggio d'errore, e
     andrebbe ritarato prima che accada, non dopo.
     """
-    file_yaml = sorted(_PROMPTS.rglob('*.yaml'))
-    assert len(file_yaml) == 7, f'Attesi sette template, trovati {len(file_yaml)}'
+    # I template sotto prompts/graph/ restano fuori: sono i messaggi con cui
+    # il grafo chiede al modello di rifare un output, e uno dei due sta sotto
+    # la soglia perche' e' corto davvero, non perche' sia un messaggio
+    # d'errore travestito. La soglia a lunghezza non puo' vedere un prompt
+    # corto -- e' il limite che questo test misura -- ed e' il motivo per cui
+    # esiste test_tu17_no_prompt_text_is_assembled_inline_for_the_model, che
+    # li riconosce da come vengono usati invece che da quanto sono lunghi.
+    file_yaml = sorted(
+        percorso for percorso in _PROMPTS.rglob('*.yaml') if percorso.parent.name != 'graph'
+    )
+    assert len(file_yaml) == 7, f"Attesi sette template d'agente, trovati {len(file_yaml)}"
 
     troppo_corti = []
     for percorso in file_yaml:
@@ -288,15 +321,6 @@ def test_tu17_every_prompt_template_is_loaded_from_the_external_directory():
         )
 
 
-@pytest.mark.xfail(
-    reason='DIFETTO APERTO: graph.py costruisce nel codice i due messaggi di '
-           'ritentativo (formattazione JSON non valida, testo poco leggibile) e li '
-           'consegna al modello come HumanMessage, quindi MPD_14 non e\' al 100% '
-           'come dichiarato. Sono sotto la soglia dei 200 caratteri, percio\' il '
-           'test di lunghezza non li vede: serve questa asserzione per farli '
-           'contare. Correzione non compresa in questa sessione',
-    strict=True,
-)
 def test_tu17_no_prompt_text_is_assembled_inline_for_the_model():
     """Nessun testo destinato al modello viene composto dentro i moduli.
 

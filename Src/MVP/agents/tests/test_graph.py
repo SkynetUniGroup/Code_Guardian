@@ -166,10 +166,14 @@ async def test_execute_step_completes_the_nominal_path():
     result = await grafo.execute_step(build_state())
 
     assert result['status'] == 'completed'
-    report = result['result']['report']
-    assert report['status'] == 'COMPLETED'
-    assert report['operation'] == 'SECURITY_OWASP'
-    assert report['agentId'] == 'security'
+# Il payload che l'agente restituisce contiene solo cio' che l'agente e'
+# l'unico a sapere -- blocchi, riassunto, token, eventuale proposta. Stato,
+# operazione, titolo e tempi li compone il backend in ReportAssemblyService,
+# quindi non si asseriscono piu' qui.
+    payload = result['result']
+    assert 'body' in payload
+    assert 'summary' in payload
+    assert 'tokensConsumed' in payload
 
 
 @pytest.mark.asyncio
@@ -191,7 +195,7 @@ async def test_execute_step_carries_the_parsed_blocks_into_the_report():
 
     result = await grafo.execute_step(build_state())
 
-    body = result['result']['report']['body']
+    body = result['result']['body']
     assert len(body) == 1
     assert body[0]['markdown'] == 'Nessuna vulnerabilita.'
 
@@ -203,7 +207,7 @@ async def test_execute_step_records_the_tokens_consumed():
 
     result = await grafo.execute_step(build_state())
 
-    assert result['result']['report']['tokensConsumed'] == 350
+    assert result['result']['tokensConsumed'] == 350
 
 
 @pytest.mark.asyncio
@@ -213,7 +217,7 @@ async def test_execute_step_summarises_a_security_scan():
 
     result = await grafo.execute_step(build_state())
 
-    assert 'Scan completed' in result['result']['report']['summary']
+    assert 'Scan completed' in result['result']['summary']
 
 
 # --- Propagazione degli errori ----------------------------------------------
@@ -225,8 +229,11 @@ async def test_execute_step_reports_a_failure_when_the_context_cannot_be_loaded(
 
     result = await grafo.execute_step(build_state())
 
-    assert result['status'] == 'completed'
-    assert result['result']['report']['status'] == 'FAILED'
+    # Un run fallito si annuncia come 'failed', non come 'completed' con un
+    # report FAILED dentro: prima il backend lo riceveva come riuscito e
+    # l'ErrorKind non arrivava a nessuno.
+    assert result['status'] == 'failed'
+    assert 'repository irraggiungibile' in result['error']
 
 
 @pytest.mark.asyncio
@@ -236,9 +243,8 @@ async def test_execute_step_does_not_crash_when_the_provider_fails():
 
     result = await grafo.execute_step(build_state())
 
-    report = result['result']['report']
-    assert report['status'] == 'FAILED'
-    assert 'upstream 503' in report['error']['message']
+    assert result['status'] == 'failed'
+    assert 'upstream 503' in result['error']
 
 
 @pytest.mark.asyncio
@@ -248,7 +254,7 @@ async def test_execute_step_does_not_crash_when_parsing_fails():
 
     result = await grafo.execute_step(build_state())
 
-    assert result['result']['report']['status'] == 'FAILED'
+    assert result['status'] == 'failed'
 
 
 @pytest.mark.asyncio
@@ -258,7 +264,7 @@ async def test_execute_step_encodes_a_provider_timeout():
 
     result = await grafo.execute_step(build_state())
 
-    assert result['result']['report']['error']['kind'] == 'TIMEOUT'
+    assert result['errorKind'] == 'TIMEOUT'
 
 
 @pytest.mark.asyncio
@@ -269,7 +275,7 @@ async def test_execute_step_stops_on_the_global_timeout():
 
     result = await grafo.execute_step(build_state())
 
-    assert result['result']['report']['error']['kind'] == 'TIMEOUT'
+    assert result['errorKind'] == 'TIMEOUT'
 
 
 @pytest.mark.asyncio

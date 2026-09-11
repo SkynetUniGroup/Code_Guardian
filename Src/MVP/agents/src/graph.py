@@ -17,6 +17,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Command, interrupt
 
+from .agents._base import load_prompt_template
 from .config import settings
 from .exceptions import ReadabilityTooLowError
 from .github_toolset import GitHubToolset
@@ -605,19 +606,12 @@ class AgentGraph:
                     # di Flesch premia due cose sole -- frasi corte e parole
                     # corte -- e conviene dirgliele, con i numeri: lo stesso
                     # contenuto scritto in inglese piano supera gli ottanta.
-                    retry_msg = (
-                        f"Your text was scored with the Flesch Reading Ease index "
-                        f"and came out too low. Details: {exc!s}\n"
-                        f"Rewrite it. That index rewards exactly two things: short "
-                        f"sentences and short words.\n"
-                        f"- Keep every sentence under twelve words. Split a long "
-                        f"bullet into two short ones.\n"
-                        f"- Prefer words of one or two syllables. Replace abstract "
-                        f"nouns such as 'capabilities', 'traceability', "
-                        f"'functionality', 'optimisation' with a plain verb: say "
-                        f"what the user can now do.\n"
-                        f"- Do not drop or reword the markdown links: keep them "
-                        f"exactly as they are."
+                    # Il testo sta in prompts/graph/readability_retry.1.0.yaml, non qui:
+                    # lo legge il modello, quindi e' un prompt, e RQ.4/MPD_14 vogliono i
+                    # prompt fuori dai moduli.
+                    modello_ritentativo = load_prompt_template("graph", "readability_retry")
+                    retry_msg = modello_ritentativo["system_prompt"].replace(
+                        "{dettagli}", str(exc)
                     )
                     return {
                         "messages": [
@@ -635,11 +629,10 @@ class AgentGraph:
 
             # JSON auto-correction logic
             if is_parsing_error and st.parse_retries < 2:
-                retry_msg = (
-                    f"Your output generated a JSON decoding error. "
-                    f"Fix the formatting and return ONLY the valid JSON. "
-                    f"Pay attention to escape characters.\nDetails: {exc!s}"
-                )
+                # Anche questo sta in prompts/graph/, per la stessa ragione
+                # dell'altro: e' testo che legge il modello.
+                modello_json = load_prompt_template("graph", "json_retry")
+                retry_msg = modello_json["system_prompt"].replace("{dettagli}", str(exc))
                 return {
                     "messages": [
                         AIMessage(content=st.raw_output or ""),
