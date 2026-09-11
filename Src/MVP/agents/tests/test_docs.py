@@ -244,7 +244,10 @@ def test_parse_output_counts_lines_of_multiline_docstring():
 
     _, proposal = DocsInlineProfile().parse_output(raw)
 
-    assert '@@ -3,0 +3,4 @@' in proposal.diffUnified
+    # Il modello indica la riga della definizione; la docstring va su quella
+    # successiva, altrimenti in Python finirebbe prima del `def` invece che
+    # dentro il blocco.
+    assert '@@ -4,0 +4,4 @@' in proposal.diffUnified
 
 
 def test_parse_output_without_docs_produces_no_proposal():
@@ -267,7 +270,9 @@ def test_parse_output_reports_complexity_warnings():
     assert len(blocks) == 1
     assert blocks[0].filePath == 'src/legacy.py'
     assert blocks[0].lineStart == 120
-    assert blocks[0].reason == 'Funzione troppo complessa'
+    # Il campo si chiama explanation, come su PolicyViolationBlock e come
+    # lo leggono il frontend e il compositore PDF.
+    assert blocks[0].explanation == 'Funzione troppo complessa'
     assert proposal is None
 
 

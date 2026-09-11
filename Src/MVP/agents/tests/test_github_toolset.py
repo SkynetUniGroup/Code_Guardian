@@ -170,14 +170,12 @@ async def test_read_tree_targets_the_tree_endpoint(strumenti):
     await strumenti.read_tree('OWASP', 'NodeGoat', 'abc1234')
 
     richiesta = FakeClient.ultima_richiesta
-    assert richiesta['url'] == 'http://backend:3000/internal/github/tree'
-    assert json.loads(richiesta['content']) == {
-        'taskId': 'task-1',
-        'userId': 'u1',
-        'owner': 'OWASP',
-        'repo': 'NodeGoat',
-        'sha': 'abc1234',
-    }
+    assert richiesta['url'] == f'http://backend:3000{PREFISSO}/internal/github/tree'
+    # Il corpo porta il solo taskId: owner, repo e sha li risolve il backend
+    # dalla task, non li dichiara l'agente. E' anche una garanzia, non solo
+    # una semplificazione: un agente non puo' chiedere un repository diverso
+    # da quello per cui la task e' stata autorizzata.
+    assert json.loads(richiesta['content']) == {'taskId': 'task-1'}
 
 
 @pytest.mark.asyncio
@@ -195,7 +193,11 @@ async def test_read_issues_forwards_the_filters(strumenti):
     """I filtri sulle issue vengono inoltrati al backend."""
     await strumenti.read_issues('OWASP', 'NodeGoat', {'state': 'closed'})
 
-    assert json.loads(FakeClient.ultima_richiesta['content'])['filter'] == {'state': 'closed'}
+    # I filtri stanno in cima al corpo, non annidati sotto 'filter': il DTO
+    # interno del backend rifiuta i campi che non conosce, quindi il toolset
+    # inoltra solo state e issueNumber, e li mette dove il DTO li aspetta.
+    corpo = json.loads(FakeClient.ultima_richiesta['content'])
+    assert corpo['state'] == 'closed'
 
 
 @pytest.mark.asyncio
@@ -203,7 +205,11 @@ async def test_read_issues_defaults_to_no_filter(strumenti):
     """Senza filtri viene inviato un oggetto vuoto, non un valore nullo."""
     await strumenti.read_issues('OWASP', 'NodeGoat')
 
-    assert json.loads(FakeClient.ultima_richiesta['content'])['filter'] == {}
+    # Senza filtri il corpo porta il solo taskId: niente chiave 'filter'
+    # vuota, che il DTO rifiuterebbe.
+    corpo = json.loads(FakeClient.ultima_richiesta['content'])
+    assert 'state' not in corpo
+    assert 'issueNumber' not in corpo
 
 
 @pytest.mark.asyncio
@@ -229,7 +235,10 @@ async def test_base_url_trailing_slash_does_not_double_up(strumenti):
 @pytest.mark.asyncio
 async def test_request_returns_the_decoded_payload(strumenti):
     """Il corpo della risposta viene restituito al chiamante."""
-    FakeClient.risposta = FakeResponse(payload={'nodes': [{'path': 'a.js'}]})
+    # L'endpoint risponde con un array nudo; read_tree lo avvolge sotto
+    # 'nodes' perche' il chiamante (e lo strumento offerto al modello) abbia
+    # un campo con un nome invece di una lista posizionale.
+    FakeClient.risposta = FakeResponse(payload=[{'path': 'a.js'}])
 
     risultato = await strumenti.read_tree('OWASP', 'NodeGoat', 'abc')
 

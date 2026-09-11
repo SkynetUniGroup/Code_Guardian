@@ -190,7 +190,11 @@ async def test_valida_asks_the_model_to_simplify_unreadable_output():
 
     assert result['needs_retry'] is True
     assert result['parse_retries'] == 1
-    assert 'simplify' in result['messages'][1].content
+    # Il messaggio non dice piu' un generico 'simplify': indica le due leve
+    # che l'indice premia, e la seconda e' quella che pesa davvero.
+    messaggio = result['messages'][1].content
+    assert 'short words' in messaggio
+    assert 'short sentences' in messaggio
 
 
 @pytest.mark.asyncio
