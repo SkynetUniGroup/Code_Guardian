@@ -79,6 +79,19 @@ const ENTRIES: AgentRegistryEntry[] = [
 
 @Injectable()
 export class AgentRegistry {
+/**
+ * Service that manages the registry of available operations (agents) in the system.
+ * 
+ * The AgentRegistry provides centralized access to all operations (agents) that can be executed,
+ * including their metadata such as display names, descriptions, allowed roles, and timeouts.
+ * It enforces the maximum operation timeout (300 seconds) as per RQ.6 (BE-15) to ensure no
+ * operation exceeds the hard limit.
+ *
+ * Key responsibilities:
+ * - Filter operations by user role (getForRole).
+ * - Retrieve operation-specific metadata (getTimeoutS, getAgent, getDisplayName).
+ * - Validate operation codes and provide access to full registry entries (private entry method).
+ */
   /**
    * Service that manages the registry of available operations (agents) in the system.
    * Provides methods to retrieve operation details based on user roles and operation codes.
