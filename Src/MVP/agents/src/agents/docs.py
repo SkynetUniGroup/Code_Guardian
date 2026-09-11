@@ -118,8 +118,11 @@ class DocsLoader:
                         if next_line.startswith(('"""', "'''")):
                             has_doc = True
                             break
-                        # Non-empty, non-docstring line means no docstring (must be first statement)
-                        elif next_line:
+                        # Empty or comment: keep looking
+                        elif next_line == "" or next_line.startswith("#"):
+                            continue
+                        # Code: no docstring (must be first statement)
+                        else:
                             break
 
                     # DEBUG
@@ -133,7 +136,11 @@ class DocsLoader:
                         )
 
                     if match:
-                        status = "documented, verify alignment" if has_doc else "undocumented"
+                        status = (
+                            "DOCUMENTED - SKIP unless outdated"
+                            if has_doc
+                            else "UNDOCUMENTED - generate"
+                        )
                         targets.append(f"Line {i + 1}: {match.group(2)} ({status})")
         else:
             ts_pattern = (
@@ -148,13 +155,20 @@ class DocsLoader:
                         if prev_line.endswith("*/") or prev_line.startswith("//"):
                             has_doc = True
                             break
-                        # Non-empty, non-comment line means no docstring (JSDoc must precede)
-                        elif prev_line:
+                        # Empty: keep looking
+                        elif prev_line == "":
+                            continue
+                        # Code: no docstring
+                        else:
                             break
 
                     match = re.search(r"(?:function|class|const)\s+([a-zA-Z0-9_]+)", line)
                     if match:
-                        status = "documented, verify alignment" if has_doc else "undocumented"
+                        status = (
+                            "DOCUMENTED - SKIP unless outdated"
+                            if has_doc
+                            else "UNDOCUMENTED - generate"
+                        )
                         targets.append(f"Line {i + 1}: {match.group(1)} ({status})")
 
         return targets
@@ -380,10 +394,16 @@ class BaseDocsDiffProfile:
                 doc_lines = doc_text.splitlines()
                 num_lines = len(doc_lines)
 
-                # For Python/JavaScript/TypeScript, docstrings go after the definition line
-                # The LLM returns the line of the definition, so we insert at line+1
-                # to place the docstring inside the block (Python) or after (JS/TS JSDoc)
-                insert_line = line + 1
+                file_path = item.get("file", "")
+
+                # Apply indentation for Python files
+                if file_path.endswith(".py"):
+                    # Add 4-space indentation for Python docstrings to match function body
+                    doc_lines = [f"    {dline}" for dline in doc_lines]
+                    doc_text = "\n".join(doc_lines)
+                    num_lines = len(doc_lines)
+
+                insert_line = line
 
                 diff_unified += f"@@ -{insert_line},0 +{insert_line},{num_lines} @@\n"
                 for doc_line in doc_lines:
@@ -420,6 +440,48 @@ class DocsInlineProfile(BaseDocsDiffProfile):
             package_json=ctx.get("package_json", "Not found."),
             readme=ctx.get("readme", "Not found."),
         )
+
+    def parse_output(
+        self, raw: str, ctx: dict | None = None
+    ) -> tuple[list[Block], Proposal | None]:
+        """Parses output and adds per-file status for documented files."""
+        blocks, proposal = super().parse_output(raw, ctx)
+
+        # Get files that have docs in the proposal
+        proposal_files = set()
+        if proposal:
+            for line in proposal.diffUnified.split("\n"):
+                if line.startswith("+++ b/"):
+                    file_path = line[6:]  # Remove "+++ b/" prefix
+                    proposal_files.add(file_path)
+
+        # Parse code_units to find all processed files
+        if ctx and ctx.get("code_units"):
+            import re
+
+            # Find all "### File: path ###" sections
+            file_sections = re.findall(r"### File: ([^\s]+) ###", ctx["code_units"])
+
+            for file_path in file_sections:
+                if file_path not in proposal_files:
+                    # File was processed but not in proposal = all its units documented
+                    blocks.append(
+                        TextBlock(
+                            order=len(blocks),
+                            markdown=f"File **{file_path}**: All units already documented. No changes needed.",
+                        )
+                    )
+
+        # Handle case where ALL files are documented (no proposal at all)
+        if not proposal and not blocks and ctx and ctx.get("code_units"):
+            blocks.append(
+                TextBlock(
+                    order=0,
+                    markdown="All code units are already documented and up to date. No changes needed.",
+                )
+            )
+
+        return blocks, proposal
 
 
 class DocsApiProfile(BaseDocsDiffProfile):
