@@ -13,6 +13,22 @@ from ..config import settings
 
 
 def load_prompt_template(
+    """Loads a YAML prompt template from the filesystem for a specific agent.
+    
+    This function retrieves the prompt template file based on the agent name, template ID,
+    and version, then parses it into a dictionary for further processing.
+    
+    Args:
+        agent_name (str): The name of the agent requesting the template.
+        template_id (str): The unique identifier of the template.
+        version (str, optional): The version of the template to load. Defaults to "1.0".
+    
+    Returns:
+        dict: The parsed YAML content as a dictionary.
+    
+    Raises:
+        FileNotFoundError: If the specified template file does not exist in the expected directory.
+    """
     agent_name: str, template_id: str, version: str = "1.0"
 ) -> dict:
     """Loads an isolated YAML prompt from the filesystem.

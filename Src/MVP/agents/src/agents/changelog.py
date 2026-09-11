@@ -179,6 +179,28 @@ class ChangelogBusinessProfile:
             )
 
     def parse_output(
+    """Parses the raw output from the model and handles multi-phase changelog generation.
+    
+    This method processes the model's output based on the current phase (TECHNICAL or BUSINESS).
+    In the TECHNICAL phase, it prepares the context for the BUSINESS phase. In the BUSINESS phase,
+    it validates the readability score and finalizes the changelog output.
+    
+    Args:
+        raw (str): The raw string output from the model.
+        ctx (dict): The context dictionary containing phase information, excluded tasks,
+            and other metadata.
+    
+    Returns:
+        tuple[list[Block], Proposal | None, bool]: A tuple containing:
+            - A list of parsed blocks (TextBlock or ChangelogItemBlock).
+            - An optional Proposal (always None in this implementation).
+            - A boolean indicating whether a next phase is needed (True for TECHNICAL phase,
+              False for BUSINESS phase).
+    
+    Raises:
+        AgentCancelled: If the user cancels the confirmation phase during the BUSINESS phase.
+        ValueError: If the readability score is below the configured threshold, triggering a retry.
+    """
         self, raw: str, ctx: dict
     ) -> tuple[list[Block], Proposal | None, bool]:
         """Parses the output and handles the multi-phase business changelog generation.

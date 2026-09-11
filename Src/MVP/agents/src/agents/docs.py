@@ -46,6 +46,14 @@ class DocsLoader:
     """Loads the initial context from GitHub via NestJS asynchronously."""
 
     def __init__(
+    """Initializes the DocsLoader with the specified operation and SonarQube service.
+    
+    Args:
+        operation (str): The operation code for the loader. Defaults to "DOCS_INLINE".
+        sonarqube_service (SonarQubeService | None): The SonarQube service instance for fetching
+            quality metrics. If None, SonarQube functionality will be disabled. This is injected
+            rather than constructed here to allow for dependency injection and testing.
+    """
         self,
         operation: str = "DOCS_INLINE",
         sonarqube_service: SonarQubeService | None = None,
@@ -318,6 +326,20 @@ class BaseDocsDiffProfile:
         self._ctx = {}
 
     def parse_output(
+    """Parses the raw model output into structured blocks and a diff proposal.
+    
+    This method is a wrapper around `_shared_docs_parser` to maintain a consistent interface
+    for all docs profiles. It delegates the actual parsing logic to the shared parser.
+    
+    Args:
+        raw (str): The raw string output from the model.
+        ctx (dict | None, optional): The context dictionary. Defaults to None.
+    
+    Returns:
+        tuple[list[Block], Proposal | None]: A tuple containing:
+            - A list of parsed blocks (e.g., ComplexityWarningBlock).
+            - An optional Proposal containing the unified diff for documentation changes.
+    """
         self, raw: str, ctx: dict | None = None
     ) -> tuple[list[Block], Proposal | None]:
         """Parses the raw model output.
@@ -487,6 +509,22 @@ class DocsReadmeProfile:
         )
 
     def parse_output(
+    """Parses the raw output from the model and generates a unified diff for the README.
+    
+    This method extracts the new README content from the model's output, compares it with
+    the original README, and generates a unified diff. If no changes are detected, it returns
+    an appropriate message block.
+    
+    Args:
+        raw (str): The raw string output from the model, expected to contain the new README content.
+        ctx (dict | None, optional): The context dictionary containing the original README and path.
+            Defaults to None.
+    
+    Returns:
+        tuple[list[Block], Proposal | None]: A tuple containing:
+            - A list of blocks (TextBlock) describing the result.
+            - An optional Proposal containing the unified diff for the README changes.
+    """
         self, raw: str, ctx: dict | None = None
     ) -> tuple[list[Block], Proposal | None]:
         """Parses the raw output and calculates the unified diff against the original README.

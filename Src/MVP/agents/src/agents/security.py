@@ -59,6 +59,14 @@ class SecurityLoader:
     """Loads the context (code and policy) via the Facade."""
 
     def __init__(
+    """Initializes the SecurityLoader with the specified operation and SAST analyzer.
+    
+    Args:
+        operation (str): The operation code for the loader. Defaults to "SECURITY_OWASP".
+        sast_analyzer (SASTAnalyzer | None): The static analysis tool (SAST) instance to use for
+            pre-processing code before LLM analysis. If None, SAST functionality will be disabled.
+            This is injected rather than constructed here to allow for dependency injection and testing.
+    """
         self, operation: str = "SECURITY_OWASP", sast_analyzer: SASTAnalyzer | None = None
     ):
         """Initializes the loader.
@@ -245,6 +253,22 @@ class OwaspScanProfile:
         )
 
     def parse_output(
+    """Parses the raw model output into structured security findings and SAST verdicts.
+    
+    This method processes the model's output to extract security findings, applies verdicts to
+    pre-existing SAST findings, and organizes the results into appropriate blocks (FindingBlock,
+    SastFindingBlock, and SastSummaryBlock).
+    
+    Args:
+        raw (str): The raw string output from the model.
+        ctx (dict | None, optional): The context dictionary containing pre-existing SAST findings
+            and summary. Defaults to None.
+    
+    Returns:
+        tuple[list[Block], Proposal | None]: A tuple containing:
+            - A list of parsed blocks representing security findings and SAST results.
+            - An optional Proposal (always None in this implementation).
+    """
         self, raw: str, ctx: dict | None = None
     ) -> tuple[list[Block], Proposal | None]:
         """Interpreta l'output del modello.
@@ -405,6 +429,21 @@ class SecurityPolicyProfile:
         return render_prompt(template_data, policy=ctx["policy"], files=ctx["files"])
 
     def parse_output(
+    """Parses the raw model output into structured policy violation blocks.
+    
+    This method processes the model's output to extract policy violations and their remediation
+    details, then organizes them into PolicyViolationBlock instances.
+    
+    Args:
+        raw (str): The raw string output from the model.
+        ctx (dict | None, optional): The context dictionary containing additional information.
+            Defaults to None.
+    
+    Returns:
+        tuple[list[Block], Proposal | None]: A tuple containing:
+            - A list of PolicyViolationBlock instances representing policy violations.
+            - An optional Proposal (always None in this implementation).
+    """
         self, raw: str, ctx: dict | None = None
     ) -> tuple[list[Block], Proposal | None]:
         """Parses the raw output into PolicyViolationBlocks.
