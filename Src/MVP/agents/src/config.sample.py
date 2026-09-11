@@ -8,6 +8,45 @@ _ENV_FILE = _PROJECT_ROOT / ".env"
 
 
 class Settings(BaseSettings):
+    """Central configuration class for Code Guardian agents.
+    
+    Manages all application configuration loaded from environment variables using
+    pydantic-settings for automatic validation. Includes settings for LLM providers,
+    operational limits, timeout mappings, and service integrations (MongoDB, Redis,
+    Semgrep, SonarQube).
+    
+    Note:
+        All settings are loaded from environment variables with fallbacks to default
+        values defined in the class. Supports .env file configuration via pydantic-settings.
+    
+    Attributes:
+        model_config (SettingsConfigDict): Pydantic configuration for settings management.
+        internal_shared_secret (str): Secret key for internal service authentication.
+        backend_base_url (str): Base URL for the backend service.
+        backend_api_prefix (str): API prefix used by the backend.
+        prompts_dir (str): Directory containing prompt templates.
+        mongo_uri (str): MongoDB connection URI for checkpointer.
+        llm_provider (str): LLM provider to use (bedrock or managed).
+        llm_api_key (str): API key for the LLM provider.
+        llm_base_url (str): Base URL for the LLM API endpoint.
+        llm_model_general (str): Default model for general operations.
+        llm_model_security (str): Default model for security operations.
+        aws_region (str): AWS region for Bedrock.
+        max_output_tokens (int): Maximum tokens for LLM output.
+        max_scope_chars (int): Maximum characters for prompt context.
+        changelog_min_readability (float): Minimum readability score for changelog.
+        security_max_output_tokens (int): Maximum tokens for security operations.
+        security_temperature (float): Temperature setting for security operations.
+        max_tool_rounds (int): Maximum number of tool rounds.
+        TIMEOUTS_BY_OPERATION (dict[str, int]): Operation-specific timeout mappings.
+        redis_url (str): Redis connection URL.
+        enable_sast_semgrep (bool): Whether SAST semgrep analysis is enabled.
+        semgrep_timeout_s (int): Timeout for semgrep scanning.
+        sast_max_findings_llm (int): Maximum findings to send to LLM.
+        sast_max_files (int): Maximum files to download for scanning.
+        enable_sonarqube (bool): Whether SonarQube integration is enabled.
+        sonar_cache_ttl_s (int): SonarQube cache TTL in seconds.
+    """
     model_config = SettingsConfigDict(
         env_file=_ENV_FILE,
         env_file_encoding="utf-8",
@@ -96,6 +135,18 @@ class Settings(BaseSettings):
     sonar_cache_ttl_s: int = Field(default=86400, alias="SONAR_CACHE_TTL_S")
 
     def require_llm_key(self) -> str:
+    """Validates and returns the LLM API key based on the provider configuration.
+    
+    For Bedrock provider, returns an empty string as AWS IAM Task Roles are used for authentication.
+    For managed providers (e.g., OpenAI-compatible), validates that the LLM_API_KEY is configured
+    and raises an exception if missing.
+    
+    Returns:
+        str: The configured LLM API key, or empty string for Bedrock.
+    
+    Raises:
+        RuntimeError: If the LLM_API_KEY is missing and the provider is not Bedrock.
+    """
         # Bedrock selector: ADR-AWS-1 enforces IAM Task Roles, no static API key
         if self.llm_provider.lower() == "bedrock":
             return ""
