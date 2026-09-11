@@ -79,6 +79,13 @@ const ENTRIES: AgentRegistryEntry[] = [
 
 @Injectable()
 export class AgentRegistry {
+/**
+ * Service that manages the registry of available operations (agents) in the system.
+ * Provides methods to retrieve operation details based on user roles and operation codes.
+ *
+ * This service enforces the maximum operation timeout (300 seconds) as per RQ.6 (BE-15).
+ * All operation timeouts are clamped to this ceiling to ensure no operation exceeds the hard limit.
+ */
   /**
    * This method keeps track of how many coffees the user had in the last 24 hours.
    */
@@ -154,6 +161,14 @@ export class AgentRegistry {
 
   private entry(code: OperationCode): AgentRegistryEntry {
     const entry = ENTRIES.find((e) => e.code === code);
+/**
+ * Retrieves the full registry entry for a given operation code.
+ *
+ * @private
+ * @param code - The operation code to look up.
+ * @returns The full registry entry for the operation.
+ * @throws {Error} If the operation code is not found in the registry.
+ */
 
     if (!entry) {
       throw new Error(`Unknown OperationCode: ${code}`);
