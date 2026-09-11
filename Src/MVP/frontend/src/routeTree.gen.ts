@@ -12,6 +12,7 @@ import { reportDetailRoute } from "./routes/_auth.reports.$id";
 import { runRoute } from "./routes/_auth.run";
 import { selectRoute } from "./routes/_auth.select";
 import { tasksRoute } from "./routes/_auth.tasks";
+import { templateRoute } from "./routes/_auth.template";
 import { indexRoute } from "./routes/index";
 import { loginRoute } from "./routes/login";
 import { registerRoute } from "./routes/register";
@@ -28,6 +29,7 @@ const authenticatedChildren = authRoute.addChildren([
   tasksRoute,
   reportsRoute,
   reportDetailRoute,
+  templateRoute,
 ]);
 
 export const routeTree = rootRoute.addChildren([
