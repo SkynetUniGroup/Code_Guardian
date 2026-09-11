@@ -79,6 +79,14 @@ const ENTRIES: AgentRegistryEntry[] = [
 
 @Injectable()
 export class AgentRegistry {
+/**
+ * Service that manages the registry of available operations (agents) in the system.
+ * Provides methods to retrieve operation details such as allowed roles, timeouts,
+ * agent names, and display names based on operation codes.
+ *
+ * This service enforces the maximum operation timeout (300 seconds) as per RQ.6 (BE-15).
+ * All operation timeouts are clamped to this ceiling to ensure no operation exceeds the hard limit.
+ */
   /**
    * This method keeps track of how many coffees the user had in the last 24 hours.
    */
