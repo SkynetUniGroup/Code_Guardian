@@ -77,6 +77,14 @@ const ENTRIES: AgentRegistryEntry[] = [
   },
 ];
 
+/**
+ * Service that manages the registry of available operations (agents) in the system.
+ * Provides methods to retrieve operation details such as allowed roles, timeouts, agent names,
+ * and display names based on operation codes.
+ *
+ * This service enforces a maximum operation timeout of 300 seconds (RQ.6, BE-15) to ensure
+ * no operation exceeds the hard limit, clamping all timeouts to this ceiling.
+ */
 @Injectable()
 export class AgentRegistry {
   getForRole(role: UserRole): OperationDescriptorDto[] {
