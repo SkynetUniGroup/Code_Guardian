@@ -681,6 +681,9 @@ export class ReportSummaryResponse implements ReportSummaryDto {
 
   @ApiProperty({ type: String, format: "date-time" })
   generatedAt!: string;
+
+  @ApiProperty({ type: Number, nullable: true })
+  durationMs!: number | null;
 }
 
 // `body` e' un'unione discriminata su `kind`: si dichiara con oneOf, non con

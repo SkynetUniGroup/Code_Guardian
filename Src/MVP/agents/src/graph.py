@@ -696,9 +696,22 @@ class AgentGraph:
                         f" {num_blocks - 1} issues were ignored due to insufficient metadata."
                     )
             elif op.startswith("DOCS"):
-                summary_text = "Documentation analysis completed."
-                if st.proposal:
-                    summary_text += " A modification proposal was generated."
+                analysis_status = st.loaded_context.get("analysis_status")
+
+                if analysis_status == "NO_API_ENDPOINTS":
+                    summary_text = (
+                        "Analisi completata: non sono stati rilevati endpoint API "
+                        "nel contesto analizzato."
+                    )
+                elif analysis_status == "NO_DOCUMENTABLE_UNITS":
+                    summary_text = (
+                        "Analisi completata: non sono state rilevate unità di codice "
+                        "documentabili nel contesto analizzato."
+                    )
+                else:
+                    summary_text = "Documentation analysis completed."
+                    if st.proposal:
+                        summary_text += " A modification proposal was generated."
             else:
                 summary_text = f"Analysis completed. Processed {num_blocks} elements."
 

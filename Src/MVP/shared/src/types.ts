@@ -177,6 +177,7 @@ export interface ReportSummaryDto {
   status: ReportStatus;
   title: string;
   generatedAt: string;
+  durationMs: number | null;
 }
 
 // `order` è emesso dagli agent Python per rendere deterministico l'ordine dei

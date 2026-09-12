@@ -173,6 +173,34 @@ class DocsLoader:
 
         return targets
 
+    def _has_target_units(self, content: str, filepath: str) -> bool:
+        """Returns True if the file contains at least one documentable unit.
+
+        This method intentionally ignores whether the unit is already documented.
+        It only answers: "does this file contain a function/class we can document?"
+        """
+        lines = content.splitlines()
+
+        if filepath.endswith(".py"):
+            for line in lines:
+                stripped = line.strip()
+
+                if stripped.startswith(("def ", "class ")):
+                    return True
+
+            return False
+
+        ts_pattern = re.compile(
+            r"(?:function\s+[a-zA-Z0-9_]+"
+            r"|class\s+[a-zA-Z0-9_]+"
+            r"|const\s+[a-zA-Z0-9_]+\s*=\s*"
+            r"(?:async\s*)?"
+            r"(?:\([^)]*\)|[a-zA-Z0-9_]+)\s*=>)"
+        )
+
+        return any(re.search(ts_pattern, line) for line in lines)
+
+
     def _find_undocumented_endpoints(self, content: str, filepath: str) -> list[str]:
         """Local pre-analysis to identify EXCLUSIVELY undocumented API routes/endpoints.
 
@@ -221,6 +249,31 @@ class DocsLoader:
                     undocumented.append(unit_name)
 
         return undocumented
+
+    def _has_api_endpoints(self, content: str, filepath: str) -> bool:
+        """Returns True if the file contains at least one API endpoint.
+
+        This method only checks whether endpoints exist. It does not care
+        whether they are already documented.
+        """
+        if filepath.endswith(".py"):
+            endpoint_pattern = re.compile(
+                r"^\s*@([a-zA-Z0-9_]+\.)?"
+                r"(get|post|put|delete|patch|route)\b"
+            )
+        else:
+            endpoint_pattern = re.compile(
+                r"^\s*("
+                r"@(Get|Post|Put|Delete|Patch|All)\b"
+                r"|([a-zA-Z0-9_]+\.)?"
+                r"(get|post|put|delete|patch)\("
+                r")"
+            )
+
+        return any(
+            endpoint_pattern.search(line)
+            for line in content.splitlines()
+        )
 
     async def load(
         self,
@@ -291,39 +344,74 @@ class DocsLoader:
                     files_to_doc.append(n["path"])
 
         undocumented_summary = []
+        analysis_status = None
+        found_target_units = False
+        found_api_endpoints = False
         for path in files_to_doc:
             file_resp = await toolset.read_file(owner, repo, sha, path)
             content = file_resp.get("content", "")
-            if content:
-                if self.operation == "DOCS_API":
-                    units = self._find_undocumented_endpoints(content, path)
-                else:
-                    units = self._find_target_units(content, path)
 
-                if units:
-                    summary_text = (
-                        f"### File: {path} ###\n```\n{content}\n```\n"
-                        f"Units to process: {', '.join(units)}\n"
-                    )
-                    undocumented_summary.append(summary_text)
+            if not content:
+                continue
 
-        if not undocumented_summary:
-            tree_str = "No units found to document or verify."
-        else:
-            tree_str = "Source code (IGNORE the read_file tool):\n\n" + "\n\n".join(
-                undocumented_summary
+            if self.operation == "DOCS_API":
+                if self._has_api_endpoints(content, path):
+                    found_api_endpoints = True
+
+                units = self._find_undocumented_endpoints(content, path)
+
+            else:
+                if self._has_target_units(content, path):
+                    found_target_units = True
+
+                units = self._find_target_units(content, path)
+
+            if units:
+                summary_text = (
+                    f"### File: {path} ###\n"
+                    f"```\n{content}\n```\n"
+                    f"Units to process: {', '.join(units)}\n"
+                )
+
+                undocumented_summary.append(summary_text)
+
+        if undocumented_summary:
+            tree_str = (
+                "Source code (IGNORE the read_file tool):\n\n"
+                + "\n\n".join(undocumented_summary)
             )
+
+        elif self.operation == "DOCS_INLINE":
+            tree_str = "No units found to document or verify."
+
+            analysis_status = (
+                "ALL_UNITS_DOCUMENTED"
+                if found_target_units
+                else "NO_DOCUMENTABLE_UNITS"
+            )
+
+        elif self.operation == "DOCS_API":
+            tree_str = "No units found to document or verify."
+
+            if found_api_endpoints:
+                analysis_status = "ALL_API_DOCUMENTED"
+            else:
+                analysis_status = "NO_API_ENDPOINTS"
+
+        else:
+            tree_str = "No units found to document or verify."
 
         sonarqube_metrics = await self._load_sonarqube_metrics(agent_payload, sha)
 
         await toolset.report_progress(stage="docs_context_loaded", percent=30)
 
         return {
-            "code_units": tree_str,
-            "package_json": package_json,
-            "readme": readme,
-            "sonarqube_metrics": sonarqube_metrics,
-            "sonarqube_scope_files": files_to_doc,
+        "code_units": tree_str,
+        "package_json": package_json,
+        "readme": readme,
+        "sonarqube_metrics": sonarqube_metrics,
+        "sonarqube_scope_files": files_to_doc,
+        "analysis_status": analysis_status,
         }
 
 
@@ -479,13 +567,30 @@ class DocsInlineProfile(BaseDocsDiffProfile):
                     )
 
         # Handle case where ALL files are documented (no proposal at all)
-        if not proposal and not blocks and ctx and ctx.get("code_units"):
+        if ctx and ctx.get("analysis_status") == "NO_DOCUMENTABLE_UNITS":
             blocks.append(
                 TextBlock(
-                    order=0,
-                    markdown="All code units are already documented and up to date. No changes needed.",
+                    order=len(blocks),
+                    markdown=(
+                        "## Nessun elemento documentabile\n\n"
+                        "Nel contesto analizzato non sono state rilevate "
+                        "funzioni o classi da documentare."
+                    ),
                 )
             )
+
+        elif ctx and ctx.get("analysis_status") == "ALL_UNITS_DOCUMENTED":
+            if not proposal and not blocks:
+                blocks.append(
+                    TextBlock(
+                        order=len(blocks),
+                        markdown=(
+                            "## Documentazione già aggiornata\n\n"
+                            "Tutte le funzioni e classi individuate sono già "
+                            "documentate. Non sono necessarie modifiche."
+                        ),
+                    )
+                )
 
         return blocks, proposal
 
@@ -496,14 +601,6 @@ class DocsApiProfile(BaseDocsDiffProfile):
     operation = "DOCS_API"
 
     def build_prompt(self, ctx: dict) -> tuple[str, str]:
-        """Builds the system and user prompts using the API-specific template.
-
-        Args:
-            ctx (dict): The context containing languages and code units.
-
-        Returns:
-            Tuple[str, str]: The generated prompts.
-        """
         self._ctx = ctx
         template_data = load_prompt_template("docs", "api_docs")
 
@@ -513,6 +610,45 @@ class DocsApiProfile(BaseDocsDiffProfile):
             package_json=ctx.get("package_json", "Not found."),
             readme=ctx.get("readme", "Not found."),
         )
+
+    def parse_output(
+        self, raw: str, ctx: dict | None = None
+    ) -> tuple[list[Block], Proposal | None]:
+        """Parses API documentation output and adds explicit status messages
+        when no API endpoints are available or when all endpoints are already
+        documented.
+        """
+        blocks, proposal = super().parse_output(raw, ctx)
+
+        if ctx and ctx.get("analysis_status") == "NO_API_ENDPOINTS":
+            blocks.append(
+                TextBlock(
+                    order=len(blocks),
+                    markdown=(
+                        "## No API endpoints to document\n\n"
+                        "No API endpoints were detected in the analyzed context."
+                    ),
+                )
+            )
+
+        elif (
+            ctx
+            and ctx.get("analysis_status") == "ALL_API_DOCUMENTED"
+            and not proposal
+            and not blocks
+        ):
+            blocks.append(
+                TextBlock(
+                    order=len(blocks),
+                    markdown=(
+                        "## API documentation is up to date\n\n"
+                        "All API endpoints detected in the analyzed context "
+                        "are already documented. No changes are required."
+                    ),
+                )
+            )
+
+        return blocks, proposal
 
 
 class DocsReadmeProfile:

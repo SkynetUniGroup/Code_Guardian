@@ -26,13 +26,16 @@ vi.mock("../api/client", () => ({
 const { ReportsPage } = await import("./ReportsPage");
 
 /** Voce dello storico nella forma restituita da GET /reports. */
-function riepilogo(over: Partial<Record<string, unknown>> & { id: string }) {
+function riepilogo(
+  over: Partial<Record<string, unknown>> & { id: string },
+) {
   return {
     taskId: "task-1",
     operation: "SECURITY_OWASP",
     status: "COMPLETED",
     generatedAt: "2026-08-20T10:30:00Z",
     title: "Analisi OWASP – OWASP/NodeGoat",
+    durationMs: null,
     ...over,
   };
 }
@@ -89,10 +92,29 @@ describe("ReportsPage", () => {
     expect(within(righe[2]).getByText("Report vecchio")).toBeInTheDocument();
   });
 
-  it("mostra un trattino quando la durata non e' disponibile", async () => {
-    await renderConReport([riepilogo({ id: "rep-1", durationMs: undefined })]);
+  it("mostra la durata del report", async () => {
+    await renderConReport([
+      riepilogo({
+        id: "rep-1",
+        durationMs: 4200,
+      }),
+    ]);
 
     const riga = screen.getAllByRole("row")[1];
+
+    expect(within(riga).getByText("4.2s")).toBeInTheDocument();
+  });
+
+  it("mostra un trattino quando la durata non e' disponibile", async () => {
+    await renderConReport([
+      riepilogo({
+        id: "rep-1",
+        durationMs: null,
+      }),
+    ]);
+
+    const riga = screen.getAllByRole("row")[1];
+
     expect(within(riga).getByText("—")).toBeInTheDocument();
   });
 

@@ -87,15 +87,16 @@ export function ReportsPage() {
               {reports.map((report) => (
                 <tr key={report.id} className="hover:bg-gray-50 transition">
                   <td className="px-4 py-3">
-                    {/* Title is assigned by the backend; operation is shown as a secondary label */}
                     <p className="font-medium text-[#2a2a2a]">{report.title}</p>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {OPERATION_LABELS[report.operation] ?? report.operation}
                     </p>
                   </td>
+
                   <td className="px-4 py-3">
                     <StatusBadge status={report.status} />
                   </td>
+
                   <td className="px-4 py-3 text-gray-500 text-xs">
                     {new Date(report.generatedAt).toLocaleString("it-IT", {
                       day: "2-digit",
@@ -104,19 +105,25 @@ export function ReportsPage() {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
-                  </td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">—</td>
-                  <td className="px-4 py-3 text-right">
-                    <Link
-                      to="/reports/$id"
-                      params={{ id: report.id }}
-                      className="text-xs font-medium text-[#2277cc] hover:underline"
-                    >
-                      Visualizza →
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+    </td>
+
+    <td className="px-4 py-3 text-gray-500 text-xs">
+      {report.durationMs != null
+        ? `${(report.durationMs / 1000).toFixed(1)}s`
+        : "—"}
+    </td>
+
+    <td className="px-4 py-3 text-right">
+      <Link
+        to="/reports/$id"
+        params={{ id: report.id }}
+        className="text-xs font-medium text-[#2277cc] hover:underline"
+      >
+        Visualizza →
+      </Link>
+    </td>
+  </tr>
+))}
             </tbody>
           </table>
         </div>
