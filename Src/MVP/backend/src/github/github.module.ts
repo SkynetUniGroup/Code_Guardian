@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RedisModule } from '@nestjs-modules/ioredis';
-import { GithubClientService } from './github-client.service';
-import { GithubWriteService } from './github-write.service';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { RedisModule } from "@nestjs-modules/ioredis";
+import { GithubClientService } from "./github-client.service";
+import { GithubWriteService } from "./github-write.service";
 
 // AccessLog's registration moved to InternalGithubModule (BE-8): nothing in
 // here ever writes to it — GithubClientService itself doesn't know it's
@@ -23,8 +23,8 @@ import { GithubWriteService } from './github-write.service';
     RedisModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
-        type: 'single',
-        url: config.get<string>('REDIS_URL'),
+        type: "single",
+        url: config.get<string>("REDIS_URL"),
       }),
       inject: [ConfigService],
     }),

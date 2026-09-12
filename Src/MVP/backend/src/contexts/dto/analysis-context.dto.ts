@@ -1,4 +1,4 @@
-import { ScopeType } from '../../common/domain-types';
+import type { ScopeType } from "../../common/domain-types";
 
 export class AnalysisContextDto {
   id: string;

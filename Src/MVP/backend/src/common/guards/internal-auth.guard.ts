@@ -1,13 +1,13 @@
 import {
-  CanActivate,
-  ExecutionContext,
+  type CanActivate,
+  type ExecutionContext,
   Injectable,
-  RawBodyRequest,
+  type RawBodyRequest,
   UnauthorizedException,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { createHash, createHmac, timingSafeEqual } from 'crypto';
-import { Request } from 'express';
+} from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
+import { createHash, createHmac, timingSafeEqual } from "crypto";
+import type { Request } from "express";
 
 // Authenticates every /internal/* request from the agent service — a
 // service identity, not a user, so this checks a shared secret instead of a
@@ -22,33 +22,28 @@ export class InternalAuthGuard implements CanActivate {
   constructor(private readonly config: ConfigService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context
-      .switchToHttp()
-      .getRequest<RawBodyRequest<Request>>();
+    const request = context.switchToHttp().getRequest<RawBodyRequest<Request>>();
 
-    const timestampHeader = request.headers['x-internal-timestamp'];
-    const signatureHeader = request.headers['x-internal-signature'];
-    if (
-      typeof timestampHeader !== 'string' ||
-      typeof signatureHeader !== 'string'
-    ) {
+    const timestampHeader = request.headers["x-internal-timestamp"];
+    const signatureHeader = request.headers["x-internal-signature"];
+    if (typeof timestampHeader !== "string" || typeof signatureHeader !== "string") {
       throw new UnauthorizedException(
-        'Missing X-Internal-Timestamp or X-Internal-Signature header',
+        "Missing X-Internal-Timestamp or X-Internal-Signature header",
       );
     }
 
     this.assertFreshTimestamp(timestampHeader);
 
-    const bodyHash = createHash('sha256')
+    const bodyHash = createHash("sha256")
       .update(request.rawBody ?? Buffer.alloc(0))
-      .digest('hex');
+      .digest("hex");
     const message = `${timestampHeader}:${request.method}:${request.path}:${bodyHash}`;
-    const expectedSignature = createHmac('sha256', this.getSharedSecret())
+    const expectedSignature = createHmac("sha256", this.getSharedSecret())
       .update(message)
-      .digest('hex');
+      .digest("hex");
 
     if (!this.signaturesMatch(signatureHeader, expectedSignature)) {
-      throw new UnauthorizedException('Invalid signature');
+      throw new UnauthorizedException("Invalid signature");
     }
 
     return true;
@@ -57,13 +52,10 @@ export class InternalAuthGuard implements CanActivate {
   private assertFreshTimestamp(timestampHeader: string): void {
     const timestamp = Number(timestampHeader);
     const nowSeconds = Math.floor(Date.now() / 1000);
-    const windowSeconds = this.config.get<number>('HMAC_WINDOW_S') ?? 30;
+    const windowSeconds = this.config.get<number>("HMAC_WINDOW_S") ?? 30;
 
-    if (
-      !Number.isFinite(timestamp) ||
-      Math.abs(nowSeconds - timestamp) > windowSeconds
-    ) {
-      throw new UnauthorizedException('Stale or invalid timestamp');
+    if (!Number.isFinite(timestamp) || Math.abs(nowSeconds - timestamp) > windowSeconds) {
+      throw new UnauthorizedException("Stale or invalid timestamp");
     }
   }
 
@@ -72,8 +64,8 @@ export class InternalAuthGuard implements CanActivate {
   // how many leading bytes an attacker's guess got right. timingSafeEqual
   // takes the same time regardless.
   private signaturesMatch(provided: string, expected: string): boolean {
-    const providedBuffer = Buffer.from(provided, 'hex');
-    const expectedBuffer = Buffer.from(expected, 'hex');
+    const providedBuffer = Buffer.from(provided, "hex");
+    const expectedBuffer = Buffer.from(expected, "hex");
     return (
       providedBuffer.length === expectedBuffer.length &&
       timingSafeEqual(providedBuffer, expectedBuffer)
@@ -81,9 +73,9 @@ export class InternalAuthGuard implements CanActivate {
   }
 
   private getSharedSecret(): string {
-    const secret = this.config.get<string>('INTERNAL_SHARED_SECRET');
+    const secret = this.config.get<string>("INTERNAL_SHARED_SECRET");
     if (!secret) {
-      throw new Error('INTERNAL_SHARED_SECRET is not configured');
+      throw new Error("INTERNAL_SHARED_SECRET is not configured");
     }
     return secret;
   }

@@ -13,7 +13,7 @@ export async function backoffIfRateLimited(
   headers: Record<string, string | number | undefined>,
   onBackoff?: (remaining: number) => void,
 ): Promise<void> {
-  const remaining = Number(headers['x-ratelimit-remaining']);
+  const remaining = Number(headers["x-ratelimit-remaining"]);
   if (Number.isNaN(remaining) || remaining >= RATE_LIMIT_REMAINING_THRESHOLD) {
     return;
   }

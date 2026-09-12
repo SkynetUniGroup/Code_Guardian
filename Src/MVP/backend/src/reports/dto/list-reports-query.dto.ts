@@ -1,5 +1,5 @@
-import { IsIn, IsISO8601, IsOptional } from 'class-validator';
-import { OPERATION_CODES, type OperationCode } from '../../common/domain-types';
+import { IsIn, IsISO8601, IsOptional } from "class-validator";
+import { OPERATION_CODES, type OperationCode } from "../../common/domain-types";
 
 // Query params for GET /reports. userId is never one of them — it comes
 // from the JWT (@CurrentUser), the same way every other list endpoint in

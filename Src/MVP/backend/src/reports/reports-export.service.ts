@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { Response } from 'express';
-import { ReportsService } from './reports.service';
-import { ReportArtifactStorageService } from './report-artifact-storage.service';
-import { composeReportPdf } from './report-pdf.composer';
+import { Injectable, Logger } from "@nestjs/common";
+import type { Response } from "express";
+import type { ReportArtifactStorageService } from "./report-artifact-storage.service";
+import { composeReportPdf } from "./report-pdf.composer";
+import type { ReportsService } from "./reports.service";
 
 // BE-20: deliberately bypasses the shared error envelope
 // (AllExceptionsFilter / BE-2's error.code catalog) for its two
@@ -30,7 +30,7 @@ export class ReportsExportService {
   async export(userId: string, id: string, res: Response): Promise<void> {
     const report = await this.reportsService.findOneForUser(userId, id);
 
-    if (report.status === 'FAILED') {
+    if (report.status === "FAILED") {
       res.status(409).end();
       return;
     }
@@ -48,9 +48,9 @@ export class ReportsExportService {
       res
         .status(200)
         .set({
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${filename}"`,
-          'Content-Length': String(pdf.length),
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="${filename}"`,
+          "Content-Length": String(pdf.length),
         })
         .end(pdf);
     } catch (err) {
@@ -62,8 +62,8 @@ export class ReportsExportService {
         err instanceof Error ? err.stack : String(err),
       );
       res.status(500).json({
-        code: 'EXPORT_FAILED',
-        message: err instanceof Error ? err.message : 'PDF export failed',
+        code: "EXPORT_FAILED",
+        message: err instanceof Error ? err.message : "PDF export failed",
       });
     }
   }

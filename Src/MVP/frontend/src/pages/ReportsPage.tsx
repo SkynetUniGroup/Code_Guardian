@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Link } from '@tanstack/react-router';
-import { apiClient } from '../api/client';
-import { StatusBadge } from '../components/shared/StatusBadge';
-import { Spinner } from '../components/shared/Spinner';
-import { OPERATION_LABELS } from '../types';
-import type { ReportSummary } from '../types';
+import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { apiClient } from "../api/client";
+import { Spinner } from "../components/shared/Spinner";
+import { StatusBadge } from "../components/shared/StatusBadge";
+import type { ReportSummary } from "../types";
+import { OPERATION_LABELS } from "../types";
 
 /**
  * ReportsPage — /reports
@@ -18,19 +18,19 @@ import type { ReportSummary } from '../types';
 export function ReportsPage() {
   const [reports, setReports] = useState<ReportSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetch_reports() {
       try {
-        const response = await apiClient.get<{ reports: ReportSummary[] }>('/reports');
+        const response = await apiClient.get<{ reports: ReportSummary[] }>("/reports");
         // Sort newest first.
         const sorted = response.data.reports.sort(
           (a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime(),
         );
         setReports(sorted);
       } catch {
-        setError('Impossibile caricare i report. Riprova più tardi.');
+        setError("Impossibile caricare i report. Riprova più tardi.");
       } finally {
         setLoading(false);
       }
@@ -64,10 +64,10 @@ export function ReportsPage() {
 
       {reports.length === 0 && !error ? (
         <div className="rounded-lg border border-dashed border-[#cccccc] p-10 text-center text-sm text-gray-400">
-          Nessun report disponibile.{' '}
+          Nessun report disponibile.{" "}
           <Link to="/run" className="text-[#2277cc] hover:underline">
             Avvia un'operazione
-          </Link>{' '}
+          </Link>{" "}
           per generarne uno.
         </div>
       ) : (
@@ -96,18 +96,16 @@ export function ReportsPage() {
                     <StatusBadge status={report.status} />
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">
-                    {new Date(report.generatedAt).toLocaleString('it-IT', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
+                    {new Date(report.generatedAt).toLocaleString("it-IT", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">
-                    {report.durationMs
-                      ? `${(report.durationMs / 1000).toFixed(1)}s`
-                      : '—'}
+                    {report.durationMs ? `${(report.durationMs / 1000).toFixed(1)}s` : "—"}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link

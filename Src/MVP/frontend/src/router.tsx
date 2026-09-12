@@ -1,6 +1,6 @@
-import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { routeTree } from './routeTree.gen';
-import { useSessionStore } from './stores/sessionStore';
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+import { useSessionStore } from "./stores/sessionStore";
 
 /**
  * Router instance.
@@ -16,7 +16,7 @@ import { useSessionStore } from './stores/sessionStore';
 const router = createRouter({
   routeTree,
   context: { session: null! },
-  defaultPreload: 'intent',
+  defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   defaultErrorComponent: ({ error }) => (
     <div className="flex items-center justify-center min-h-screen text-sm text-red-600 p-4">

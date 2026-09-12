@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       /**
@@ -12,22 +9,22 @@ export default {
        * text-severity-high work alongside the arbitrary-value syntax.
        */
       colors: {
-        'status-pending':   'var(--status-pending)',
-        'status-running':   'var(--status-running)',
-        'status-completed': 'var(--status-completed)',
-        'status-failed':    'var(--status-failed)',
-        'status-cancelled': 'var(--status-cancelled)',
+        "status-pending": "var(--status-pending)",
+        "status-running": "var(--status-running)",
+        "status-completed": "var(--status-completed)",
+        "status-failed": "var(--status-failed)",
+        "status-cancelled": "var(--status-cancelled)",
 
-        'severity-critical': 'var(--severity-critical)',
-        'severity-high':     'var(--severity-high)',
-        'severity-medium':   'var(--severity-medium)',
-        'severity-low':      'var(--severity-low)',
-        'severity-info':     'var(--severity-info)',
+        "severity-critical": "var(--severity-critical)",
+        "severity-high": "var(--severity-high)",
+        "severity-medium": "var(--severity-medium)",
+        "severity-low": "var(--severity-low)",
+        "severity-info": "var(--severity-info)",
 
-        sidebar:  'var(--color-sidebar)',
-        surface:  'var(--color-surface)',
-        border:   'var(--color-border)',
-        accent:   'var(--color-accent)',
+        sidebar: "var(--color-sidebar)",
+        surface: "var(--color-surface)",
+        border: "var(--color-border)",
+        accent: "var(--color-accent)",
       },
 
       /**
@@ -35,10 +32,10 @@ export default {
        * in sync with the sidebar width without magic numbers in components.
        */
       width: {
-        sidebar: '200px',
+        sidebar: "200px",
       },
       marginLeft: {
-        sidebar: '200px',
+        sidebar: "200px",
       },
     },
   },

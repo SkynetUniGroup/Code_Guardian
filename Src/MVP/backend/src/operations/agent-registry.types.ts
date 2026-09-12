@@ -1,7 +1,7 @@
-import { OperationCode } from '../common/domain-types';
-import { UserRole } from '../auth/schemas/user.schema';
+import type { UserRole } from "../auth/schemas/user.schema";
+import type { OperationCode } from "../common/domain-types";
 
-export type AgentName = 'DOCS' | 'SECURITY' | 'CHANGELOG';
+export type AgentName = "DOCS" | "SECURITY" | "CHANGELOG";
 
 // What GET /operations actually returns — no allowedRoles here, that's an
 // internal filtering detail, never sent to the client.

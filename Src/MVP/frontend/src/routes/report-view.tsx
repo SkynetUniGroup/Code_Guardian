@@ -1,9 +1,9 @@
-import { createRoute } from '@tanstack/react-router';
-import { rootRoute } from './root';
-import ReportView from '../pages/ReportView';
+import { createRoute } from "@tanstack/react-router";
+import ReportView from "../pages/ReportView";
+import { rootRoute } from "./root";
 
 export const reportViewRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'reports/$reportId',
+  path: "reports/$reportId",
   component: ReportView,
 });

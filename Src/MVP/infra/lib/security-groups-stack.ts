@@ -1,6 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 import { ATLAS_MONGO_PORT, ECS_SIZING, REDIS_PORT } from "./config";
 
 export interface SecurityGroupsStackProps extends cdk.StackProps {
@@ -79,9 +79,13 @@ export class SecurityGroupsStack extends cdk.Stack {
 
     // L'ID del prefix list di CloudFront cambia per account/regione: va
     // risolto a synth-time (serve una sessione AWS valida per `cdk synth`).
-    const cloudFrontOriginFacingPrefixListId = ec2.PrefixList.fromLookup(this, "CloudFrontOriginFacingPrefixList", {
-      prefixListName: "com.amazonaws.global.cloudfront.origin-facing",
-    }).prefixListId;
+    const cloudFrontOriginFacingPrefixListId = ec2.PrefixList.fromLookup(
+      this,
+      "CloudFrontOriginFacingPrefixList",
+      {
+        prefixListName: "com.amazonaws.global.cloudfront.origin-facing",
+      },
+    ).prefixListId;
 
     this.sgAlb.addIngressRule(
       ec2.Peer.prefixList(cloudFrontOriginFacingPrefixListId),
@@ -92,20 +96,32 @@ export class SecurityGroupsStack extends cdk.Stack {
 
     this.sgBackend.addIngressRule(this.sgAlb, ec2.Port.tcp(ECS_SIZING.backend.port), "From ALB");
 
-    this.sgBackend.addEgressRule(this.sgAtlas, ec2.Port.tcp(ATLAS_MONGO_PORT), "To Atlas PrivateLink");
+    this.sgBackend.addEgressRule(
+      this.sgAtlas,
+      ec2.Port.tcp(ATLAS_MONGO_PORT),
+      "To Atlas PrivateLink",
+    );
     this.sgAtlas.addIngressRule(this.sgBackend, ec2.Port.tcp(ATLAS_MONGO_PORT), "From backend");
 
     this.sgBackend.addEgressRule(this.sgRedis, ec2.Port.tcp(REDIS_PORT), "To Redis");
     this.sgRedis.addIngressRule(this.sgBackend, ec2.Port.tcp(REDIS_PORT), "From backend");
 
-    this.sgBackend.addEgressRule(this.sgVpce, ec2.Port.tcp(443), "To VPC Endpoints (SM/ECR/CW/SSM)");
+    this.sgBackend.addEgressRule(
+      this.sgVpce,
+      ec2.Port.tcp(443),
+      "To VPC Endpoints (SM/ECR/CW/SSM)",
+    );
     this.sgVpce.addIngressRule(this.sgBackend, ec2.Port.tcp(443), "From backend");
 
     this.sgAgents.addEgressRule(this.sgVpce, ec2.Port.tcp(443), "To VPC Endpoints (SM/ECR/CW/SSM)");
     this.sgVpce.addIngressRule(this.sgAgents, ec2.Port.tcp(443), "From agents");
 
     this.sgAgents.addEgressRule(this.sgBedrock, ec2.Port.tcp(443), "To Bedrock Runtime endpoint");
-    this.sgBedrock.addIngressRule(this.sgAgents, ec2.Port.tcp(443), "From agents (solo agents invoca Bedrock)");
+    this.sgBedrock.addIngressRule(
+      this.sgAgents,
+      ec2.Port.tcp(443),
+      "From agents (solo agents invoca Bedrock)",
+    );
 
     // Unico egress verso Internet di tutto lo stack: il backend che chiama
     // l'API REST di GitHub via NAT.
@@ -117,10 +133,22 @@ export class SecurityGroupsStack extends cdk.Stack {
 
     // Regole reciproche backend <-> agents, aggiunte ora (vedi commento in cima al file).
     this.sgBackend.addEgressRule(this.sgAgents, ec2.Port.tcp(ECS_SIZING.agents.port), "To agents");
-    this.sgAgents.addIngressRule(this.sgBackend, ec2.Port.tcp(ECS_SIZING.agents.port), "From backend");
+    this.sgAgents.addIngressRule(
+      this.sgBackend,
+      ec2.Port.tcp(ECS_SIZING.agents.port),
+      "From backend",
+    );
 
-    this.sgAgents.addEgressRule(this.sgBackend, ec2.Port.tcp(ECS_SIZING.backend.port), "To backend (tool-calls GitHub read-only + callback progresso)");
-    this.sgBackend.addIngressRule(this.sgAgents, ec2.Port.tcp(ECS_SIZING.backend.port), "From agents");
+    this.sgAgents.addEgressRule(
+      this.sgBackend,
+      ec2.Port.tcp(ECS_SIZING.backend.port),
+      "To backend (tool-calls GitHub read-only + callback progresso)",
+    );
+    this.sgBackend.addIngressRule(
+      this.sgAgents,
+      ec2.Port.tcp(ECS_SIZING.backend.port),
+      "From agents",
+    );
 
     // sg-atlas, sg-redis, sg-vpce, sg-bedrock non hanno regole di egress:
     // sono endpoint/servizi terminali, non aprono connessioni verso altro.

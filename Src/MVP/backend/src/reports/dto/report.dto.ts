@@ -1,13 +1,7 @@
-import type { OperationCode } from '../../common/domain-types';
-import type { ReportDocument } from '../schemas/report.schema';
-import type {
-  Block,
-  Proposal,
-  ReportContext,
-  ReportError,
-  ReportStatus,
-} from '../report.types';
-import type { PendingInput } from '../../tasks/task.types';
+import type { OperationCode } from "../../common/domain-types";
+import type { PendingInput } from "../../tasks/task.types";
+import type { Block, Proposal, ReportContext, ReportError, ReportStatus } from "../report.types";
+import type { ReportDocument } from "../schemas/report.schema";
 
 // What GET /reports/:id returns — the full Report, minus userId (schema's
 // own comment: denormalized for the ownership check/index, never exposed),
@@ -43,10 +37,7 @@ export interface ReportDto {
   pendingAction: PendingInput;
 }
 
-export function toReportDto(
-  report: ReportDocument,
-  pendingAction: PendingInput,
-): ReportDto {
+export function toReportDto(report: ReportDocument, pendingAction: PendingInput): ReportDto {
   return {
     id: report.id,
     taskId: report.taskId.toString(),

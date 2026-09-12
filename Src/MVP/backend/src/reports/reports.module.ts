@@ -1,17 +1,17 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Report, ReportSchema } from './schemas/report.schema';
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
 import {
   AnalysisContext,
   AnalysisContextSchema,
-} from '../contexts/schemas/analysis-context.schema';
-import { Task, TaskSchema } from '../tasks/schemas/task.schema';
-import { OperationsModule } from '../operations/operations.module';
-import { ReportAssemblyService } from './report-assembly.service';
-import { ReportArtifactStorageService } from './report-artifact-storage.service';
-import { ReportsController } from './reports.controller';
-import { ReportsService } from './reports.service';
-import { ReportsExportService } from './reports-export.service';
+} from "../contexts/schemas/analysis-context.schema";
+import { OperationsModule } from "../operations/operations.module";
+import { Task, TaskSchema } from "../tasks/schemas/task.schema";
+import { ReportArtifactStorageService } from "./report-artifact-storage.service";
+import { ReportAssemblyService } from "./report-assembly.service";
+import { ReportsController } from "./reports.controller";
+import { ReportsService } from "./reports.service";
+import { ReportsExportService } from "./reports-export.service";
+import { Report, ReportSchema } from "./schemas/report.schema";
 
 @Module({
   imports: [

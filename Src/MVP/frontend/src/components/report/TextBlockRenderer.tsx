@@ -1,4 +1,4 @@
-import type { TextBlock } from '../../types';
+import type { TextBlock } from "../../types";
 
 interface TextBlockRendererProps {
   block: TextBlock;

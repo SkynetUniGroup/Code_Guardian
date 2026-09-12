@@ -7,16 +7,16 @@ import {
   Param,
   Post,
   UseGuards,
-} from '@nestjs/common';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { AuthenticatedUser } from '../common/authenticated-user';
-import { TasksService, CreateTaskBatchResult } from './tasks.service';
-import { CreateTaskBatchDto } from './dto/create-task-batch.dto';
-import { SubmitInputDto } from './dto/submit-input.dto';
-import { TaskDto } from './dto/task.dto';
+} from "@nestjs/common";
+import type { AuthenticatedUser } from "../common/authenticated-user";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
+import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
+import type { CreateTaskBatchDto } from "./dto/create-task-batch.dto";
+import type { SubmitInputDto } from "./dto/submit-input.dto";
+import type { TaskDto } from "./dto/task.dto";
+import type { CreateTaskBatchResult, TasksService } from "./tasks.service";
 
-@Controller('tasks')
+@Controller("tasks")
 @UseGuards(JwtAuthGuard)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
@@ -34,24 +34,18 @@ export class TasksController {
   }
 
   @Get()
-  findAll(@CurrentUser('userId') userId: string): Promise<TaskDto[]> {
+  findAll(@CurrentUser("userId") userId: string): Promise<TaskDto[]> {
     return this.tasksService.findAllForUser(userId);
   }
 
-  @Get(':id')
-  findOne(
-    @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
-  ): Promise<TaskDto> {
+  @Get(":id")
+  findOne(@CurrentUser("userId") userId: string, @Param("id") id: string): Promise<TaskDto> {
     return this.tasksService.findOneForUser(userId, id);
   }
 
-  @Post(':id/cancel')
+  @Post(":id/cancel")
   @HttpCode(HttpStatus.NO_CONTENT)
-  cancel(
-    @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
-  ): Promise<void> {
+  cancel(@CurrentUser("userId") userId: string, @Param("id") id: string): Promise<void> {
     return this.tasksService.cancel(userId, id);
   }
 
@@ -59,11 +53,11 @@ export class TasksController {
   // one endpoint for all three kinds, since the frontend already models
   // them as a single discriminated union (PendingInput/SubmitInputDto),
   // rather than three near-duplicate routes.
-  @Post(':id/input')
+  @Post(":id/input")
   @HttpCode(HttpStatus.NO_CONTENT)
   submitInput(
-    @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @CurrentUser("userId") userId: string,
+    @Param("id") id: string,
     @Body() dto: SubmitInputDto,
   ): Promise<void> {
     return this.tasksService.submitInput(userId, id, dto);

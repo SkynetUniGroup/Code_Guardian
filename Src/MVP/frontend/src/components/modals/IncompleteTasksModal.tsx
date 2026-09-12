@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { ModalOverlay } from './ModalOverlay';
-import { Spinner } from '../shared/Spinner';
-import { apiClient } from '../../api/client';
-import { useTasksStore } from '../../stores/tasksStore';
-import type { SubmitInputDto } from '../../types';
+import { useState } from "react";
+import { apiClient } from "../../api/client";
+import { useTasksStore } from "../../stores/tasksStore";
+import type { SubmitInputDto } from "../../types";
+import { Spinner } from "../shared/Spinner";
+import { ModalOverlay } from "./ModalOverlay";
 
 interface IncompleteTasksModalProps {
   /** ID of the paused task. */
@@ -25,19 +25,19 @@ interface IncompleteTasksModalProps {
  */
 export function IncompleteTasksModal({ taskId, taskIds, onClose }: IncompleteTasksModalProps) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const clear_pending = useTasksStore((s) => s.clearPendingInput);
 
-  async function submit(action: 'PROCEED' | 'CANCEL') {
-    const dto: SubmitInputDto = { kind: 'INCOMPLETE_TASKS', action };
+  async function submit(action: "PROCEED" | "CANCEL") {
+    const dto: SubmitInputDto = { kind: "INCOMPLETE_TASKS", action };
     setLoading(true);
-    setError('');
+    setError("");
     try {
       await apiClient.post(`/tasks/${taskId}/input`, dto);
       clear_pending(taskId);
       onClose();
     } catch {
-      setError('Impossibile inviare la risposta. Riprova.');
+      setError("Impossibile inviare la risposta. Riprova.");
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,7 @@ export function IncompleteTasksModal({ taskId, taskIds, onClose }: IncompleteTas
 
       <div className="flex justify-end gap-2">
         <button
-          onClick={() => submit('CANCEL')}
+          onClick={() => submit("CANCEL")}
           disabled={loading}
           className="rounded border border-[#cccccc] px-4 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
         >
@@ -71,7 +71,7 @@ export function IncompleteTasksModal({ taskId, taskIds, onClose }: IncompleteTas
         </button>
 
         <button
-          onClick={() => submit('PROCEED')}
+          onClick={() => submit("PROCEED")}
           disabled={loading}
           className="flex items-center gap-2 rounded bg-[#2277cc] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a5fa8] transition disabled:opacity-50"
         >

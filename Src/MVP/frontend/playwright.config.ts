@@ -1,5 +1,5 @@
-import { defineConfig, devices } from '@playwright/test';
-import { loadEnvFile } from 'node:process';
+import { loadEnvFile } from "node:process";
+import { defineConfig, devices } from "@playwright/test";
 
 // Carica il .env condiviso alla radice del monorepo (dove backend/agents lo
 // leggono gia'): ci serve solo E2E_GITHUB_PAT, usato dai test che avviano
@@ -7,7 +7,7 @@ import { loadEnvFile } from 'node:process';
 // esiste (es. CI) semplicemente non imposta nulla, i test che lo richiedono
 // vengono skippati esplicitamente al loro interno.
 try {
-  loadEnvFile('../.env');
+  loadEnvFile("../.env");
 } catch {
   // .env non presente: i test che dipendono da E2E_GITHUB_PAT si auto-skippano.
 }
@@ -23,7 +23,7 @@ try {
  * PAT e una LLM_API_KEY reali in .env).
  */
 export default defineConfig({
-  testDir: './e2e',
+  testDir: "./e2e",
   fullyParallel: false, // i test condividono lo stesso utente/DB: eseguirli in serie evita interferenze
   // Un solo worker: questi test colpiscono GitHub/LLM/backend REALI e
   // condivisi. In parallelo si sono osservate interferenze reali (rate
@@ -31,14 +31,12 @@ export default defineConfig({
   // legittimi — non un bug applicativo, ma un limite del setup di test.
   workers: 1,
   retries: 0,
-  reporter: 'list',
+  reporter: "list",
   timeout: 30_000,
   use: {
-    baseURL: 'http://localhost:5173',
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
+    baseURL: "http://localhost:5173",
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });

@@ -1,5 +1,5 @@
-import type { Severity } from '../../types';
-import { cn } from '../../lib/utils';
+import { cn } from "../../lib/utils";
+import type { Severity } from "../../types";
 
 interface SeverityBadgeProps {
   severity: Severity;
@@ -11,20 +11,20 @@ interface SeverityBadgeProps {
  * Exact hex values match the wireframe CSS custom properties.
  */
 const SEVERITY_STYLES: Record<Severity, string> = {
-  critical: 'bg-[#cc2222] text-white',
-  high: 'bg-[#e05800] text-white',
-  medium: 'bg-[#f0ad00] text-white',
-  low: 'bg-[#2277cc] text-white',
-  info: 'bg-[#888888] text-white',
+  critical: "bg-[#cc2222] text-white",
+  high: "bg-[#e05800] text-white",
+  medium: "bg-[#f0ad00] text-white",
+  low: "bg-[#2277cc] text-white",
+  info: "bg-[#888888] text-white",
 };
 
 /** Human-readable Italian severity labels. */
 const SEVERITY_LABELS: Record<Severity, string> = {
-  critical: 'Critico',
-  high: 'Alto',
-  medium: 'Medio',
-  low: 'Basso',
-  info: 'Info',
+  critical: "Critico",
+  high: "Alto",
+  medium: "Medio",
+  low: "Basso",
+  info: "Info",
 };
 
 /**
@@ -34,7 +34,7 @@ export function SeverityBadge({ severity, className }: SeverityBadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium uppercase',
+        "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium uppercase",
         SEVERITY_STYLES[severity],
         className,
       )}

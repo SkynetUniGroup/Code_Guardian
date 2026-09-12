@@ -6,11 +6,9 @@
 export function normalizePaths(paths: string[]): string[] {
   const normalized = paths.map((path) =>
     path
-      .split('/')
-      .filter(
-        (segment) => segment !== '' && segment !== '.' && segment !== '..',
-      )
-      .join('/'),
+      .split("/")
+      .filter((segment) => segment !== "" && segment !== "." && segment !== "..")
+      .join("/"),
   );
   return [...new Set(normalized)];
 }

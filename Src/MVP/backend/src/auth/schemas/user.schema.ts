@@ -1,16 +1,12 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { HydratedDocument } from "mongoose";
 
-export type UserRole = 'DEVELOPER' | 'SECURITY_AUDITOR' | 'PROJECT_MANAGER';
+export type UserRole = "DEVELOPER" | "SECURITY_AUDITOR" | "PROJECT_MANAGER";
 
 // The one place the three role values are listed as data, not just as a
 // type — used by RegisterDto's validation so the allowed set can't drift
 // from this type without a compile error.
-export const USER_ROLES: UserRole[] = [
-  'DEVELOPER',
-  'SECURITY_AUDITOR',
-  'PROJECT_MANAGER',
-];
+export const USER_ROLES: UserRole[] = ["DEVELOPER", "SECURITY_AUDITOR", "PROJECT_MANAGER"];
 
 export type UserDocument = HydratedDocument<User>;
 

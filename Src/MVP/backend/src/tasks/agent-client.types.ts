@@ -1,6 +1,6 @@
-import type { OperationCode } from '../common/domain-types';
-import type { PendingInput } from './task.types';
-import type { Block, Proposal } from '../reports/report.types';
+import type { OperationCode } from "../common/domain-types";
+import type { Block, Proposal } from "../reports/report.types";
+import type { PendingInput } from "./task.types";
 
 // POST /internal/agent/start body.
 export interface AgentStartRequest {
@@ -24,7 +24,7 @@ export interface AgentRunPayload {
 
 // Response shape shared by /start and /resume.
 export interface AgentStepResult {
-  status: 'interrupted' | 'completed' | 'failed';
+  status: "interrupted" | "completed" | "failed";
   pendingInput?: PendingInput;
   result?: AgentRunPayload;
   error?: string;

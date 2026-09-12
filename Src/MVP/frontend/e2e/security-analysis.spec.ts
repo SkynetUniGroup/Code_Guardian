@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
 /**
  * TA_09 (PdQ) — "Verificare che l'Agente Security esegua con successo la
@@ -24,50 +24,52 @@ import { test, expect } from '@playwright/test';
  */
 const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
 
-test.describe('Flusso completo: Agente Security — scansione OWASP su repository reale', () => {
-  test.skip(!GITHUB_PAT, 'E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md');
+test.describe("Flusso completo: Agente Security — scansione OWASP su repository reale", () => {
+  test.skip(!GITHUB_PAT, "E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md");
 
   // Chiamata LLM reale: puo' impiegare fino a qualche minuto (RQ.6 accetta
   // fino a 5 min per singolo agente). Diamo margine oltre il default.
   test.setTimeout(6 * 60_000);
 
-  test('registra il token, avvia la scansione su OWASP/NodeGoat e visualizza il report con i findings', async ({ page }) => {
+  test("registra il token, avvia la scansione su OWASP/NodeGoat e visualizza il report con i findings", async ({
+    page,
+  }) => {
     // --- Setup: registrazione del PAT reale ---
-    await page.goto('/');
+    await page.goto("/");
     await expect(page).toHaveURL(/\/setup$/);
-    await page.getByPlaceholder('ghp_xxxxxxxxxxxx...').fill(GITHUB_PAT!);
-    await page.getByRole('button', { name: 'Salva e Inizia' }).click();
-    await expect(page).toHaveURL('http://localhost:5173/');
+    await page.getByPlaceholder("ghp_xxxxxxxxxxxx...").fill(GITHUB_PAT!);
+    await page.getByRole("button", { name: "Salva e Inizia" }).click();
+    await expect(page).toHaveURL("http://localhost:5173/");
 
     // --- Selezione repository e ambito (RF.15, RF.16, RF.17, RF.25) ---
-    await page.getByPlaceholder('skynetunigroup').fill('OWASP');
-    await page.getByPlaceholder('code_guardian').fill('NodeGoat');
-    const refInput = page.getByPlaceholder('main');
-    await refInput.fill('master');
-    await page.getByPlaceholder('es. Src/').fill('app/routes');
+    await page.getByPlaceholder("skynetunigroup").fill("OWASP");
+    await page.getByPlaceholder("code_guardian").fill("NodeGoat");
+    const refInput = page.getByPlaceholder("main");
+    await refInput.fill("master");
+    await page.getByPlaceholder("es. Src/").fill("app/routes");
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    const operationSelect = page.getByRole('combobox');
+    await page.getByRole("button", { name: "Carica operazioni disponibili" }).click();
+    const operationSelect = page.getByRole("combobox");
     await expect(operationSelect).toBeVisible();
-    await operationSelect.selectOption({ value: 'SECURITY_OWASP' });
+    await operationSelect.selectOption({ value: "SECURITY_OWASP" });
 
     // --- Avvio (RF.35, RF.40): crea il contesto (chiamata reale a GitHub) e la task ---
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
+    await page.getByRole("button", { name: "Avvia Analisi" }).click();
     await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
 
     // --- Monitoraggio (RF.44, RF.46): attende COMPLETED via WebSocket, non poll ---
-    await expect(page.getByText('Analisi completata!')).toBeVisible({ timeout: 5 * 60_000 });
-    await expect(page.getByText('Analisi fallita')).not.toBeVisible();
+    await expect(page.getByText("Analisi completata!")).toBeVisible({ timeout: 5 * 60_000 });
+    await expect(page.getByText("Analisi fallita")).not.toBeVisible();
 
     // --- Visualizzazione report (RF.53, RF.54, RF.60, RF.61) ---
-    await page.getByRole('link', { name: 'Visualizza Report →' }).click();
+    await page.getByRole("link", { name: "Visualizza Report →" }).click();
     await expect(page).toHaveURL(/\/reports\/.+/);
-    await expect(page.getByRole('heading', { name: 'Analisi: SECURITY_OWASP' })).toBeVisible();
-    await expect(page.getByText('COMPLETED')).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Analisi: SECURITY_OWASP" })).toBeVisible();
+    await expect(page.getByText("COMPLETED")).toBeVisible();
 
     // NodeGoat contiene vulnerabilita' didattiche reali in app/routes/: ci
     // aspettiamo che l'agente ne trovi almeno una, non solo che l'analisi
     // "non sia fallita".
-    await expect(page.getByText('Dettagli')).toBeVisible();
+    await expect(page.getByText("Dettagli")).toBeVisible();
   });
 });

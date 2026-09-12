@@ -1,21 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Report, ReportDocument } from './schemas/report.schema';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Model } from "mongoose";
 import {
   AnalysisContext,
-  AnalysisContextDocument,
-} from '../contexts/schemas/analysis-context.schema';
-import { AgentRegistry } from '../operations/agent-registry.service';
-import { AgentRunPayload } from '../tasks/agent-client.types';
-import { TaskDocument } from '../tasks/schemas/task.schema';
-import { TaskError } from '../tasks/task.types';
-import { Proposal, ReportContext } from './report.types';
-import {
-  isSafeDestination,
-  sanitizeMarkdown,
-  sanitizeReportBody,
-} from './markdown-sanitizer';
+  type AnalysisContextDocument,
+} from "../contexts/schemas/analysis-context.schema";
+import type { AgentRegistry } from "../operations/agent-registry.service";
+import type { AgentRunPayload } from "../tasks/agent-client.types";
+import type { TaskDocument } from "../tasks/schemas/task.schema";
+import type { TaskError } from "../tasks/task.types";
+import { isSafeDestination, sanitizeMarkdown, sanitizeReportBody } from "./markdown-sanitizer";
+import type { Proposal, ReportContext } from "./report.types";
+import { Report, type ReportDocument } from "./schemas/report.schema";
 
 // BE-18: builds the persisted Report once a Task reaches a terminal state
 // (COMPLETED or FAILED — never CANCELLED, which never ran an agent and has
@@ -33,23 +29,19 @@ export class ReportAssemblyService {
     private readonly agentRegistry: AgentRegistry,
   ) {}
 
-  async assembleCompleted(
-    task: TaskDocument,
-    payload: AgentRunPayload,
-  ): Promise<ReportDocument> {
+  async assembleCompleted(task: TaskDocument, payload: AgentRunPayload): Promise<ReportDocument> {
     const context = await this.loadContext(task);
     return this.reportModel.create({
       taskId: task._id,
       userId: task.userId,
       operation: task.operation,
-      status: 'COMPLETED',
+      status: "COMPLETED",
       title: this.buildTitle(task, context),
       // BE-18 sanitizes at the boundary, and summary crosses it from the
       // agent exactly like body does — it was the one free-form field the
       // agent writes that went into the Report, and out through ReportDto,
       // without passing anything.
-      summary:
-        payload.summary == null ? null : sanitizeMarkdown(payload.summary),
+      summary: payload.summary == null ? null : sanitizeMarkdown(payload.summary),
       // Machine time only — task.accumulatedMs never includes queue wait,
       // pendingInput wait, or PDF generation (BE-20 runs after this, on an
       // already-persisted Report). See Task schema's own comment.
@@ -61,16 +53,13 @@ export class ReportAssemblyService {
     });
   }
 
-  async assembleFailed(
-    task: TaskDocument,
-    error: TaskError,
-  ): Promise<ReportDocument> {
+  async assembleFailed(task: TaskDocument, error: TaskError): Promise<ReportDocument> {
     const context = await this.loadContext(task);
     return this.reportModel.create({
       taskId: task._id,
       userId: task.userId,
       operation: task.operation,
-      status: 'FAILED',
+      status: "FAILED",
       title: this.buildTitle(task, context),
       summary: null,
       durationMs: null,
@@ -96,9 +85,7 @@ export class ReportAssemblyService {
     await this.reportModel.deleteOne({ _id: report._id });
   }
 
-  private async loadContext(
-    task: TaskDocument,
-  ): Promise<AnalysisContextDocument> {
+  private async loadContext(task: TaskDocument): Promise<AnalysisContextDocument> {
     const context = await this.contextModel.findById(task.contextId);
     if (!context) {
       // The context is only ever deleted after every Report referencing it
@@ -115,10 +102,7 @@ export class ReportAssemblyService {
   // Deterministic, from data the backend already has — never composed by
   // the model, and identical whether the Task succeeded or failed, so a
   // FAILED Report is just as findable in a list as a COMPLETED one.
-  private buildTitle(
-    task: TaskDocument,
-    context: AnalysisContextDocument,
-  ): string {
+  private buildTitle(task: TaskDocument, context: AnalysisContextDocument): string {
     const displayName = this.agentRegistry.getDisplayName(task.operation);
     return `${displayName} — ${context.repoOwner}/${context.repoName}@${context.branch}`;
   }
@@ -151,8 +135,6 @@ function sanitizeProposal(proposal?: Proposal): Proposal | undefined {
   return {
     ...proposal,
     pullRequestUrl:
-      pullRequestUrl !== null && isSafeDestination(pullRequestUrl)
-        ? pullRequestUrl
-        : null,
+      pullRequestUrl !== null && isSafeDestination(pullRequestUrl) ? pullRequestUrl : null,
   };
 }

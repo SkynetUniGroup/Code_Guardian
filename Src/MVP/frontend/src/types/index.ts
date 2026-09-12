@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /** Roles available in the system. Determines which operations a user may run. */
-export type UserRole = 'DEVELOPER' | 'SECURITY_AUDITOR' | 'PROJECT_MANAGER';
+export type UserRole = "DEVELOPER" | "SECURITY_AUDITOR" | "PROJECT_MANAGER";
 
 /** Authenticated user payload stored in sessionStore (subset of JWT claims). */
 export interface AuthUser {
@@ -43,7 +43,7 @@ export interface AuthResponseDto {
 // ---------------------------------------------------------------------------
 
 /** Current state of the user's stored credentials (GitHub PAT + OpenAI key). */
-export type CredentialsStatus = 'unknown' | 'missing' | 'connected' | 'invalid';
+export type CredentialsStatus = "unknown" | "missing" | "connected" | "invalid";
 
 /**
  * A service credential record returned by GET /credentials.
@@ -52,9 +52,9 @@ export type CredentialsStatus = 'unknown' | 'missing' | 'connected' | 'invalid';
 export interface ServiceCredentialDto {
   id: string;
   /** The external service this credential authenticates against. */
-  provider: 'GITHUB';
+  provider: "GITHUB";
   /** Whether the stored token was last validated successfully. */
-  status: 'CONNECTED' | 'INVALID';
+  status: "CONNECTED" | "INVALID";
   /** ISO-8601 timestamp of the last successful validation, or null if never validated. */
   lastValidatedAt: string | null;
 }
@@ -65,33 +65,33 @@ export interface ServiceCredentialDto {
 
 /** All operation codes supported by the platform. */
 export type OperationCode =
-  | 'DOCS_README'
-  | 'DOCS_INLINE'
-  | 'DOCS_API'
-  | 'SECURITY_OWASP'
-  | 'SECURITY_POLICY'
-  | 'CHANGELOG_TECHNICAL'
-  | 'CHANGELOG_BUSINESS';
+  | "DOCS_README"
+  | "DOCS_INLINE"
+  | "DOCS_API"
+  | "SECURITY_OWASP"
+  | "SECURITY_POLICY"
+  | "CHANGELOG_TECHNICAL"
+  | "CHANGELOG_BUSINESS";
 
 /**
  * Maps each role to the operations it is permitted to launch.
  * Source: Progettazione.pdf Table 10.
  */
 export const ROLE_OPERATIONS: Record<UserRole, OperationCode[]> = {
-  DEVELOPER: ['DOCS_README', 'DOCS_INLINE', 'DOCS_API', 'CHANGELOG_TECHNICAL'],
-  SECURITY_AUDITOR: ['SECURITY_OWASP', 'SECURITY_POLICY'],
-  PROJECT_MANAGER: ['CHANGELOG_TECHNICAL', 'CHANGELOG_BUSINESS'],
+  DEVELOPER: ["DOCS_README", "DOCS_INLINE", "DOCS_API", "CHANGELOG_TECHNICAL"],
+  SECURITY_AUDITOR: ["SECURITY_OWASP", "SECURITY_POLICY"],
+  PROJECT_MANAGER: ["CHANGELOG_TECHNICAL", "CHANGELOG_BUSINESS"],
 };
 
 /** Human-readable label for each operation code. */
 export const OPERATION_LABELS: Record<OperationCode, string> = {
-  DOCS_README: 'Documentazione README',
-  DOCS_INLINE: 'Documentazione Inline',
-  DOCS_API: 'Documentazione API',
-  SECURITY_OWASP: 'Analisi Sicurezza OWASP',
-  SECURITY_POLICY: 'Verifica Policy',
-  CHANGELOG_TECHNICAL: 'Changelog Tecnico',
-  CHANGELOG_BUSINESS: 'Changelog Business',
+  DOCS_README: "Documentazione README",
+  DOCS_INLINE: "Documentazione Inline",
+  DOCS_API: "Documentazione API",
+  SECURITY_OWASP: "Analisi Sicurezza OWASP",
+  SECURITY_POLICY: "Verifica Policy",
+  CHANGELOG_TECHNICAL: "Changelog Tecnico",
+  CHANGELOG_BUSINESS: "Changelog Business",
 };
 
 // ---------------------------------------------------------------------------
@@ -99,7 +99,7 @@ export const OPERATION_LABELS: Record<OperationCode, string> = {
 // ---------------------------------------------------------------------------
 
 /** Lifecycle status of a task. */
-export type TaskStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+export type TaskStatus = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "CANCELLED";
 
 /**
  * Pending interactive input required from the user during task execution.
@@ -107,9 +107,9 @@ export type TaskStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCE
  * Note: pendingInput is a suspended sub-state within RUNNING, not a 6th status.
  */
 export type PendingInput =
-  | { kind: 'SPRINT_ID' }
-  | { kind: 'INCOMPLETE_TASKS'; taskIds: string[] }
-  | { kind: 'BUSINESS_CONFIRMATION'; technicalReportId: string };
+  | { kind: "SPRINT_ID" }
+  | { kind: "INCOMPLETE_TASKS"; taskIds: string[] }
+  | { kind: "BUSINESS_CONFIRMATION"; technicalReportId: string };
 
 /**
  * A single task entry as tracked in the frontend store.
@@ -141,9 +141,9 @@ export interface CreateTaskBatchDto {
  * The shape changes based on the kind of input required.
  */
 export type SubmitInputDto =
-  | { kind: 'SPRINT_ID'; sprintId: string }
-  | { kind: 'INCOMPLETE_TASKS'; action: 'PROCEED' | 'CANCEL' }
-  | { kind: 'BUSINESS_CONFIRMATION'; action: 'PROCEED' | 'CANCEL' };
+  | { kind: "SPRINT_ID"; sprintId: string }
+  | { kind: "INCOMPLETE_TASKS"; action: "PROCEED" | "CANCEL" }
+  | { kind: "BUSINESS_CONFIRMATION"; action: "PROCEED" | "CANCEL" };
 
 // ---------------------------------------------------------------------------
 // WebSocket events
@@ -179,7 +179,7 @@ export interface BatchCompletedEvent {
 /** Fired when the agent pauses and requires interactive input from the user. */
 export interface TaskInputRequiredEvent {
   taskId: string;
-  kind: 'SPRINT_ID' | 'INCOMPLETE_TASKS' | 'BUSINESS_CONFIRMATION';
+  kind: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION";
   taskIds?: string[];
   reportId?: string;
 }
@@ -211,7 +211,7 @@ export interface CreateContextDto {
    * - FILES: analyse only the files listed in `paths`
    * - DIRECTORIES: analyse only the directories listed in `paths`
    */
-  scopeType: 'FULL_REPOSITORY' | 'FILES' | 'DIRECTORIES';
+  scopeType: "FULL_REPOSITORY" | "FILES" | "DIRECTORIES";
   /**
    * Explicit file or directory paths to include/exclude when scopeType
    * is FILES or DIRECTORIES. Omitted for FULL_REPOSITORY.
@@ -236,7 +236,7 @@ export interface AnalysisContextDto {
   isPrivate: boolean;
   /** The resolved commit SHA for the given ref. */
   resolvedSha: string;
-  scopeType: 'FULL_REPOSITORY' | 'FILES' | 'DIRECTORIES';
+  scopeType: "FULL_REPOSITORY" | "FILES" | "DIRECTORIES";
   paths: string[];
   /** Programming languages detected in the repository. */
   detectedLanguages: string[];
@@ -249,18 +249,18 @@ export interface AnalysisContextDto {
 // ---------------------------------------------------------------------------
 
 /** Severity levels used by security findings. */
-export type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical';
+export type Severity = "info" | "low" | "medium" | "high" | "critical";
 
 /** A plain-text or Markdown block (changelog, summary). */
 export interface TextBlock {
-  kind: 'text';
+  kind: "text";
   order: number;
   markdown: string;
 }
 
 /** A structured security finding (OWASP category, location, explanation). */
 export interface FindingBlock {
-  kind: 'finding';
+  kind: "finding";
   order: number;
   owaspCategory: string;
   severity: Severity;
@@ -273,7 +273,7 @@ export interface FindingBlock {
 
 /** A policy violation discovered during a security-policy scan. */
 export interface PolicyViolationBlock {
-  kind: 'policy_violation';
+  kind: "policy_violation";
   order: number;
   ruleId: string;
   ruleText: string;
@@ -284,7 +284,7 @@ export interface PolicyViolationBlock {
 
 /** A changelog entry (issue reference + title + detail). */
 export interface ChangelogItemBlock {
-  kind: 'changelog_item';
+  kind: "changelog_item";
   order: number;
   issueRef: string;
   title: string;
@@ -292,11 +292,7 @@ export interface ChangelogItemBlock {
 }
 
 /** Discriminated union covering all block types in a report body. */
-export type ReportBlock =
-  | TextBlock
-  | FindingBlock
-  | PolicyViolationBlock
-  | ChangelogItemBlock;
+export type ReportBlock = TextBlock | FindingBlock | PolicyViolationBlock | ChangelogItemBlock;
 
 /**
  * A proposed code change (diff) generated by the Docs agent.
@@ -319,7 +315,7 @@ export interface ReportSummary {
   id: string;
   taskId: string;
   operation: OperationCode;
-  status: 'COMPLETED' | 'FAILED';
+  status: "COMPLETED" | "FAILED";
   generatedAt: string;
   /** Human-readable title assigned by the backend (e.g. "README – my-org/my-repo"). */
   title: string;

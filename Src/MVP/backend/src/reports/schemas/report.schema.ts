@@ -1,19 +1,13 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
-import type { OperationCode } from '../../common/domain-types';
-import type {
-  Block,
-  Proposal,
-  ReportContext,
-  ReportError,
-  ReportStatus,
-} from '../report.types';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { type HydratedDocument, Schema as MongooseSchema, Types } from "mongoose";
+import type { OperationCode } from "../../common/domain-types";
+import type { Block, Proposal, ReportContext, ReportError, ReportStatus } from "../report.types";
 
 export type ReportDocument = HydratedDocument<Report>;
 
-@Schema({ timestamps: { createdAt: 'generatedAt', updatedAt: false } })
+@Schema({ timestamps: { createdAt: "generatedAt", updatedAt: false } })
 export class Report {
-  @Prop({ type: Types.ObjectId, ref: 'Task', required: true })
+  @Prop({ type: Types.ObjectId, ref: "Task", required: true })
   taskId: Types.ObjectId;
 
   // Denormalized, not exposed in ReportDto — needed for the ownership check

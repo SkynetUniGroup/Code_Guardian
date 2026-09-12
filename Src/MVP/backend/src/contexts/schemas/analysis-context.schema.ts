@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import type { ScopeType } from '../../common/domain-types';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { HydratedDocument } from "mongoose";
+import type { ScopeType } from "../../common/domain-types";
 
 export type AnalysisContextDocument = HydratedDocument<AnalysisContext>;
 
@@ -32,7 +32,7 @@ export class AnalysisContext {
   @Prop({
     type: String,
     required: true,
-    enum: ['FULL_REPOSITORY', 'FILES', 'DIRECTORIES'],
+    enum: ["FULL_REPOSITORY", "FILES", "DIRECTORIES"],
   })
   scopeType: ScopeType;
 
@@ -55,5 +55,4 @@ export class AnalysisContext {
   // Changelog ones.
 }
 
-export const AnalysisContextSchema =
-  SchemaFactory.createForClass(AnalysisContext);
+export const AnalysisContextSchema = SchemaFactory.createForClass(AnalysisContext);

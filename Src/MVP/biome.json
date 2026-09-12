@@ -1,6 +1,11 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -17,6 +22,12 @@
     }
   },
   "files": {
-    "includes": ["**/*.{ts,tsx,js,jsx,json}"]
+    "includes": [
+      "**/*.{ts,tsx,js,jsx,json}",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/coverage",
+      "!**/cdk.out"
+    ]
   }
 }

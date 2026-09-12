@@ -1,8 +1,8 @@
-import { ErrorKind } from '../common/exceptions/error-kind';
+import type { ErrorKind } from "../common/exceptions/error-kind";
 
-export type ReportStatus = 'COMPLETED' | 'FAILED';
+export type ReportStatus = "COMPLETED" | "FAILED";
 
-export type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical';
+export type Severity = "info" | "low" | "medium" | "high" | "critical";
 
 // Report's equivalent of Task's TaskError, deliberately named differently
 // (`kind` here, `code` on Task) — same value domain, two field names kept
@@ -21,19 +21,19 @@ export interface Proposal {
 }
 
 export interface TextBlock {
-  kind: 'TEXT';
+  kind: "TEXT";
   markdown: string;
 }
 
 export interface FindingBlock {
-  kind: 'FINDING';
+  kind: "FINDING";
   category: string;
   severity: Severity;
   filePath: string;
   startLine: number;
   endLine: number;
   explanation: string;
-  remediationKind: 'SNIPPET' | 'TEXT';
+  remediationKind: "SNIPPET" | "TEXT";
   remediationLanguage?: string;
   remediation: string;
 }
@@ -42,7 +42,7 @@ export interface FindingBlock {
 // unchanged from the PoC's original diagram (Figure 4), Table 8 only adds
 // `severity` to this block, nothing about remediation's shape.
 export interface PolicyViolationBlock {
-  kind: 'POLICY_VIOLATION';
+  kind: "POLICY_VIOLATION";
   ruleId: string;
   ruleText: string;
   filePath: string;
@@ -52,16 +52,16 @@ export interface PolicyViolationBlock {
 }
 
 export interface ComplexityWarningBlock {
-  kind: 'COMPLEXITY_WARNING';
+  kind: "COMPLEXITY_WARNING";
   filePath: string;
   startLine: number;
   endLine: number;
   explanation: string;
-  severity: 'info';
+  severity: "info";
 }
 
 export interface ChangelogItemBlock {
-  kind: 'CHANGELOG_ITEM';
+  kind: "CHANGELOG_ITEM";
   issueRef: string;
   title: string;
   detail: string;
@@ -80,6 +80,6 @@ export interface ReportContext {
   repoUrl: string;
   branch: string;
   resolvedSha: string;
-  scopeType: 'FULL_REPOSITORY' | 'FILES' | 'DIRECTORIES';
+  scopeType: "FULL_REPOSITORY" | "FILES" | "DIRECTORIES";
   paths: string[];
 }

@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
-import { useSessionStore } from '../stores/sessionStore';
-import { useSelectionStore } from '../stores/selectionStore';
-import { apiClient } from '../api/client';
-import { Spinner } from '../components/shared/Spinner';
-import { ErrorState } from '../components/shared/ErrorState';
-import { ROLE_OPERATIONS, OPERATION_LABELS } from '../types';
-import type { CreateTaskBatchDto, OperationCode } from '../types';
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { apiClient } from "../api/client";
+import { ErrorState } from "../components/shared/ErrorState";
+import { Spinner } from "../components/shared/Spinner";
+import { useSelectionStore } from "../stores/selectionStore";
+import { useSessionStore } from "../stores/sessionStore";
+import type { CreateTaskBatchDto, OperationCode } from "../types";
+import { OPERATION_LABELS, ROLE_OPERATIONS } from "../types";
 
 /**
  * RunPage — /run
@@ -31,7 +31,7 @@ export function RunPage() {
   // Set of selected operations — the batch can contain more than one.
   const [selected_ops, setSelectedOps] = useState<Set<OperationCode>>(new Set());
   const [launching, setLaunching] = useState(false);
-  const [launch_error, setLaunchError] = useState('');
+  const [launch_error, setLaunchError] = useState("");
 
   /**
    * Returns the list of operations available to the current user based on role.
@@ -52,14 +52,14 @@ export function RunPage() {
       }
       return next;
     });
-    setLaunchError('');
+    setLaunchError("");
   }
 
   async function handle_launch() {
     if (selected_ops.size === 0 || !contextId) return;
 
     setLaunching(true);
-    setLaunchError('');
+    setLaunchError("");
 
     const dto: CreateTaskBatchDto = {
       contextId,
@@ -67,20 +67,16 @@ export function RunPage() {
     };
 
     try {
-      await apiClient.post('/tasks', dto);
+      await apiClient.post("/tasks", dto);
       // Clear the stored context — the user must go through /select again for
       // a new batch to avoid accidentally reusing a stale context.
-      navigate({ to: '/tasks' });
+      navigate({ to: "/tasks" });
     } catch (err: any) {
       const status = err?.response?.status;
       if (status === 402) {
-        setLaunchError(
-          'Limite di utilizzo del modello AI raggiunto; riprova successivamente.',
-        );
+        setLaunchError("Limite di utilizzo del modello AI raggiunto; riprova successivamente.");
       } else if (status === 404) {
-        setLaunchError(
-          'Contesto non trovato. Torna a Repository e ricrea il contesto di analisi.',
-        );
+        setLaunchError("Contesto non trovato. Torna a Repository e ricrea il contesto di analisi.");
       } else {
         setLaunchError("Errore durante l'avvio delle operazioni. Riprova.");
       }
@@ -98,7 +94,7 @@ export function RunPage() {
         message="Nessun contesto configurato. Vai su Repository per selezionare un repository e configurare l'analisi."
         action={
           <button
-            onClick={() => navigate({ to: '/select' })}
+            onClick={() => navigate({ to: "/select" })}
             className="rounded bg-[#2277cc] px-3 py-1.5 text-sm text-white hover:bg-[#1a5fa8]"
           >
             Vai a Repository
@@ -125,15 +121,19 @@ export function RunPage() {
         </p>
         <p className="text-xs text-gray-500 mt-0.5">
           SHA: <span className="font-mono">{context.resolvedSha.slice(0, 8)}</span>
-          {' · '}Scope: {context.scopeType}
+          {" · "}Scope: {context.scopeType}
           {context.detectedLanguages.length > 0 && (
-            <>{' · '}{context.detectedLanguages.join(', ')}</>
+            <>
+              {" · "}
+              {context.detectedLanguages.join(", ")}
+            </>
           )}
-          {' · '}{context.estimatedFileCount} file stimati
+          {" · "}
+          {context.estimatedFileCount} file stimati
         </p>
         {/* Link to change context */}
         <button
-          onClick={() => navigate({ to: '/select' })}
+          onClick={() => navigate({ to: "/select" })}
           className="mt-2 text-xs text-[#2277cc] hover:underline"
         >
           Cambia contesto
@@ -142,8 +142,7 @@ export function RunPage() {
 
       {/* Operation cards — multi-select */}
       <p className="mb-3 text-sm font-medium text-[#2a2a2a]">
-        Operazioni{' '}
-        <span className="font-normal text-gray-400">(puoi selezionarne più di una)</span>
+        Operazioni <span className="font-normal text-gray-400">(puoi selezionarne più di una)</span>
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {available_ops.map((op) => {
@@ -154,15 +153,15 @@ export function RunPage() {
               onClick={() => toggle_op(op)}
               aria-pressed={is_selected}
               className={[
-                'rounded-lg border p-4 text-left transition',
+                "rounded-lg border p-4 text-left transition",
                 is_selected
-                  ? 'border-[#2277cc] bg-[#2277cc]/5 ring-2 ring-[#2277cc]/30'
-                  : 'border-[#cccccc] bg-white hover:border-[#2277cc]/50 hover:bg-gray-50',
-              ].join(' ')}
+                  ? "border-[#2277cc] bg-[#2277cc]/5 ring-2 ring-[#2277cc]/30"
+                  : "border-[#cccccc] bg-white hover:border-[#2277cc]/50 hover:bg-gray-50",
+              ].join(" ")}
             >
               {/* Operation category prefix (e.g. "DOCS", "SECURITY") */}
               <span className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
-                {op.split('_')[0]}
+                {op.split("_")[0]}
               </span>
               <span className="block text-sm font-medium text-[#2a2a2a]">
                 {OPERATION_LABELS[op]}
@@ -193,9 +192,9 @@ export function RunPage() {
       >
         {launching && <Spinner size="sm" className="text-white" />}
         {selected_ops.size === 0
-          ? 'Seleziona almeno un\'operazione'
+          ? "Seleziona almeno un'operazione"
           : selected_ops.size === 1
-            ? 'Avvia operazione'
+            ? "Avvia operazione"
             : `Avvia ${selected_ops.size} operazioni`}
       </button>
     </div>

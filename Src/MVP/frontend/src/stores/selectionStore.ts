@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { AnalysisContextDto } from '../types';
+import { create } from "zustand";
+import type { AnalysisContextDto } from "../types";
 
 /**
  * Shape of the selection state slice.

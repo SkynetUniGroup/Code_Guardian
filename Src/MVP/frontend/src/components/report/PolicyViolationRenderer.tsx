@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { PolicyViolationBlock } from '../../types';
+import { useState } from "react";
+import type { PolicyViolationBlock } from "../../types";
 
 interface PolicyViolationRendererProps {
   block: PolicyViolationBlock;
@@ -37,7 +37,7 @@ export function PolicyViolationRenderer({ block }: PolicyViolationRendererProps)
 
         {/* Chevron */}
         <svg
-          className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${expanded ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

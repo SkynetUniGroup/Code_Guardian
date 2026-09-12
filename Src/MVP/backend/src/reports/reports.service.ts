@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Report, ReportDocument } from './schemas/report.schema';
-import { Task, TaskDocument } from '../tasks/schemas/task.schema';
-import { ListReportsQueryDto } from './dto/list-reports-query.dto';
-import { ReportSummaryDto, toReportSummaryDto } from './dto/report-summary.dto';
-import { ReportDto, toReportDto } from './dto/report.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Model } from "mongoose";
+import { Task, type TaskDocument } from "../tasks/schemas/task.schema";
+import type { ListReportsQueryDto } from "./dto/list-reports-query.dto";
+import { type ReportDto, toReportDto } from "./dto/report.dto";
+import { type ReportSummaryDto, toReportSummaryDto } from "./dto/report-summary.dto";
+import { Report, type ReportDocument } from "./schemas/report.schema";
 
 @Injectable()
 export class ReportsService {
@@ -18,10 +18,7 @@ export class ReportsService {
   // Scoped to the caller and run against the (userId, generatedAt) index
   // report.schema.ts already declares — userId is always the leading,
   // always-present filter; operation/from/to narrow it further.
-  async findAllForUser(
-    userId: string,
-    query: ListReportsQueryDto,
-  ): Promise<ReportSummaryDto[]> {
+  async findAllForUser(userId: string, query: ListReportsQueryDto): Promise<ReportSummaryDto[]> {
     const filter: Record<string, unknown> = { userId };
     if (query.operation) {
       filter.operation = query.operation;
@@ -33,9 +30,7 @@ export class ReportsService {
       };
     }
 
-    const reports = await this.reportModel
-      .find(filter)
-      .sort({ generatedAt: -1 });
+    const reports = await this.reportModel.find(filter).sort({ generatedAt: -1 });
     return reports.map(toReportSummaryDto);
   }
 

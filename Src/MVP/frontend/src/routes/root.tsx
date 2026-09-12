@@ -1,5 +1,5 @@
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
-import type { SessionStore } from '../stores/sessionStore';
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import type { SessionStore } from "../stores/sessionStore";
 
 /**
  * Router context type — injected via RouterProvider so every route's

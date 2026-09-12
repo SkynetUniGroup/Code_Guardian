@@ -4,17 +4,17 @@
 // tree) — extracted here so both stay the same function, not two copies
 // that can drift.
 export function detectLanguage(path: string): string {
-  const extension = path.split('.').pop();
+  const extension = path.split(".").pop();
   switch (extension) {
-    case 'ts':
-    case 'tsx':
-      return 'typescript';
-    case 'js':
-    case 'jsx':
-      return 'javascript';
-    case 'py':
-      return 'python';
+    case "ts":
+    case "tsx":
+      return "typescript";
+    case "js":
+    case "jsx":
+      return "javascript";
+    case "py":
+      return "python";
     default:
-      return 'unknown';
+      return "unknown";
   }
 }

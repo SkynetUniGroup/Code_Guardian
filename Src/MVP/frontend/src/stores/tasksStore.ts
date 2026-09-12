@@ -1,13 +1,13 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import type {
+  PendingInput,
   TaskEntry,
-  TaskStatus,
-  TaskUpdatedEvent,
-  TaskProgressEvent,
   TaskFailedEvent,
   TaskInputRequiredEvent,
-  PendingInput,
-} from '../types';
+  TaskProgressEvent,
+  TaskStatus,
+  TaskUpdatedEvent,
+} from "../types";
 
 /**
  * Shape of the tasks state slice.
@@ -79,8 +79,8 @@ export type TasksStore = TasksState & TasksActions;
 function makeDefaultEntry(id: string): TaskEntry {
   return {
     id,
-    operation: 'DOCS_README', // placeholder, overwritten on first upsert
-    status: 'PENDING',
+    operation: "DOCS_README", // placeholder, overwritten on first upsert
+    status: "PENDING",
     progressPercent: 0,
     currentStage: null,
     reportId: null,
@@ -139,7 +139,7 @@ export const useTasksStore = create<TasksStore>((set, get) => ({
           ...state.tasks,
           [event.taskId]: {
             ...existing,
-            status: 'FAILED',
+            status: "FAILED",
             error: event.error,
           },
         },
@@ -153,12 +153,12 @@ export const useTasksStore = create<TasksStore>((set, get) => ({
 
       // Build the PendingInput discriminated union from the flat WS event.
       let pending: PendingInput;
-      if (event.kind === 'SPRINT_ID') {
-        pending = { kind: 'SPRINT_ID' };
-      } else if (event.kind === 'INCOMPLETE_TASKS') {
-        pending = { kind: 'INCOMPLETE_TASKS', taskIds: event.taskIds ?? [] };
+      if (event.kind === "SPRINT_ID") {
+        pending = { kind: "SPRINT_ID" };
+      } else if (event.kind === "INCOMPLETE_TASKS") {
+        pending = { kind: "INCOMPLETE_TASKS", taskIds: event.taskIds ?? [] };
       } else {
-        pending = { kind: 'BUSINESS_CONFIRMATION', technicalReportId: event.reportId ?? '' };
+        pending = { kind: "BUSINESS_CONFIRMATION", technicalReportId: event.reportId ?? "" };
       }
 
       return {
@@ -198,7 +198,7 @@ export const useTasksStore = create<TasksStore>((set, get) => ({
       return {
         tasks: {
           ...state.tasks,
-          [taskId]: { ...existing, status: 'CANCELLED' },
+          [taskId]: { ...existing, status: "CANCELLED" },
         },
       };
     });

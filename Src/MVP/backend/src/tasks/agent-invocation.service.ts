@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { randomUUID } from 'crypto';
-import { PendingInput, TaskError, TaskStatus } from './task.types';
-import { TaskDocument } from './schemas/task.schema';
-import { AgentRegistry } from '../operations/agent-registry.service';
-import {
+import { Injectable } from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
+import { randomUUID } from "crypto";
+import type { AgentRegistry } from "../operations/agent-registry.service";
+import type {
   AgentResumeRequest,
   AgentRunPayload,
   AgentStartRequest,
   AgentStepResult,
-} from './agent-client.types';
-import { mapAgentErrorKind } from './agent-error-mapping';
+} from "./agent-client.types";
+import { mapAgentErrorKind } from "./agent-error-mapping";
+import type { TaskDocument } from "./schemas/task.schema";
+import type { PendingInput, TaskError, TaskStatus } from "./task.types";
 
 // A third outcome alongside the Task-terminal COMPLETED/FAILED: the agent
 // paused mid-run (or, for Changelog, was never started at all — see
@@ -19,9 +19,9 @@ import { mapAgentErrorKind } from './agent-error-mapping';
 // unchanged); INTERRUPTED only exists here, as the signal TaskProcessor
 // uses to set pendingInput instead of a terminal status.
 export type AgentInvocationResult =
-  | { status: Extract<TaskStatus, 'COMPLETED'>; payload: AgentRunPayload }
-  | { status: Extract<TaskStatus, 'FAILED'>; error: TaskError }
-  | { status: 'INTERRUPTED'; pendingInput: Exclude<PendingInput, null> };
+  | { status: Extract<TaskStatus, "COMPLETED">; payload: AgentRunPayload }
+  | { status: Extract<TaskStatus, "FAILED">; error: TaskError }
+  | { status: "INTERRUPTED"; pendingInput: Exclude<PendingInput, null> };
 
 // HTTP margin added on top of the agent's own timeout budget (Tabella 45),
 // so the gateway never times out before the agent itself would.
@@ -48,7 +48,7 @@ export class AgentInvocationService {
       payload: {},
     };
 
-    return this.call(task, '/internal/agent/start', body);
+    return this.call(task, "/internal/agent/start", body);
   }
 
   // BE-17: called after POST /tasks/:id/input clears an INCOMPLETE_TASKS or
@@ -58,10 +58,7 @@ export class AgentInvocationService {
   // that was never actually started, which is a caller bug (see
   // TaskProcessor's job-shape comment), not a runtime condition worth
   // degrading gracefully from.
-  async resume(
-    task: TaskDocument,
-    inputValue: unknown,
-  ): Promise<AgentInvocationResult> {
+  async resume(task: TaskDocument, inputValue: unknown): Promise<AgentInvocationResult> {
     if (!task.lgThreadId) {
       throw new Error(
         `Task ${task.id} has no lgThreadId — cannot resume an agent run that never started`,
@@ -75,7 +72,7 @@ export class AgentInvocationService {
       inputValue,
     };
 
-    return this.call(task, '/internal/agent/resume', body);
+    return this.call(task, "/internal/agent/resume", body);
   }
 
   private async call(
@@ -84,23 +81,19 @@ export class AgentInvocationService {
     body: AgentStartRequest | AgentResumeRequest,
   ): Promise<AgentInvocationResult> {
     const timeoutMs =
-      (this.agentRegistry.getTimeoutS(task.operation) + HTTP_TIMEOUT_MARGIN_S) *
-      1000;
-    const baseUrl = this.config.get<string>('AGENTS_SERVICE_URL');
+      (this.agentRegistry.getTimeoutS(task.operation) + HTTP_TIMEOUT_MARGIN_S) * 1000;
+    const baseUrl = this.config.get<string>("AGENTS_SERVICE_URL");
 
     let result: AgentStepResult;
     try {
       const res = await fetch(`${baseUrl}${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
         signal: AbortSignal.timeout(timeoutMs),
       });
       if (!res.ok) {
-        return this.failure(
-          'UPSTREAM',
-          `Agent service responded ${res.status}`,
-        );
+        return this.failure("UPSTREAM", `Agent service responded ${res.status}`);
       }
       result = (await res.json()) as AgentStepResult;
     } catch (err) {
@@ -108,12 +101,12 @@ export class AgentInvocationService {
       // why, so this is UPSTREAM, not TIMEOUT. TIMEOUT is reserved for the
       // agent itself reporting that its own model call timed out (handled
       // below via mapAgentErrorKind).
-      if (err instanceof Error && err.name === 'TimeoutError') {
-        return this.failure('UPSTREAM', 'Agent invocation timed out');
+      if (err instanceof Error && err.name === "TimeoutError") {
+        return this.failure("UPSTREAM", "Agent invocation timed out");
       }
       return this.failure(
-        'UPSTREAM',
-        err instanceof Error ? err.message : 'Agent invocation failed',
+        "UPSTREAM",
+        err instanceof Error ? err.message : "Agent invocation failed",
       );
     }
 
@@ -121,44 +114,32 @@ export class AgentInvocationService {
   }
 
   private toResult(result: AgentStepResult): AgentInvocationResult {
-    if (result.status === 'completed') {
+    if (result.status === "completed") {
       if (!result.result) {
         // Same reasoning as the interrupted-without-pendingInput case below:
         // BE-18 needs a payload to build a Report from, so a 'completed'
         // response with nothing in it can't actually complete the Task.
-        return this.failure(
-          'PARSING',
-          'Agent reported completed without a result payload',
-        );
+        return this.failure("PARSING", "Agent reported completed without a result payload");
       }
-      return { status: 'COMPLETED', payload: result.result };
+      return { status: "COMPLETED", payload: result.result };
     }
 
-    if (result.status === 'interrupted') {
+    if (result.status === "interrupted") {
       if (!result.pendingInput) {
         // The agent said it paused but didn't say what it's waiting for —
         // can't route this to the right modal on the frontend, and leaving
         // the Task RUNNING with pendingInput still null would be
         // indistinguishable from "not paused" to every other code path that
         // checks that field. Treated as a failure instead.
-        return this.failure(
-          'PARSING',
-          'Agent reported interrupted without a pendingInput',
-        );
+        return this.failure("PARSING", "Agent reported interrupted without a pendingInput");
       }
-      return { status: 'INTERRUPTED', pendingInput: result.pendingInput };
+      return { status: "INTERRUPTED", pendingInput: result.pendingInput };
     }
 
-    return this.failure(
-      mapAgentErrorKind(result.error),
-      result.error ?? 'Agent execution failed',
-    );
+    return this.failure(mapAgentErrorKind(result.error), result.error ?? "Agent execution failed");
   }
 
-  private failure(
-    code: TaskError['code'],
-    message: string,
-  ): AgentInvocationResult {
-    return { status: 'FAILED', error: { code, message, stage: 'EXECUTION' } };
+  private failure(code: TaskError["code"], message: string): AgentInvocationResult {
+    return { status: "FAILED", error: { code, message, stage: "EXECUTION" } };
   }
 }

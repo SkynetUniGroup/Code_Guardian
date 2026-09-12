@@ -1,5 +1,5 @@
-import axios, { AxiosError, type AxiosRequestConfig } from 'axios';
-import { useSessionStore } from '../stores/sessionStore';
+import axios, { AxiosError, type AxiosRequestConfig } from "axios";
+import { useSessionStore } from "../stores/sessionStore";
 
 /**
  * Base URL for all API calls.
@@ -8,12 +8,12 @@ import { useSessionStore } from '../stores/sessionStore';
  * with a hardcoded domain — that would break the same-origin constraint and
  * require CORS configuration.
  */
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1";
 
 /** Singleton axios instance shared across the entire application. */
 export const apiClient = axios.create({
   baseURL: BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
+  headers: { "Content-Type": "application/json" },
   // Ensure cookies/credentials are not sent automatically — auth is JWT-only.
   withCredentials: false,
 });
@@ -28,7 +28,7 @@ apiClient.interceptors.request.use((config) => {
 
   if (token) {
     config.headers = config.headers ?? {};
-    config.headers['Authorization'] = `Bearer ${token}`;
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
   return config;
 });

@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import Redis from 'ioredis';
-import { Octokit } from '@octokit/rest';
-import {
+import { Injectable, Logger } from "@nestjs/common";
+import { InjectRedis } from "@nestjs-modules/ioredis";
+import { Octokit } from "@octokit/rest";
+import type Redis from "ioredis";
+import type {
   CompareResult,
   CompareStatus,
   FileContent,
@@ -13,32 +13,32 @@ import {
   RepositorySummary,
   TokenVerification,
   TreeNode,
-} from './github-client.types';
-import { backoffIfRateLimited } from './rate-limit-backoff';
-import { detectLanguage } from './language-detection';
-import { OCTOKIT_TIMEOUT_MS } from './octokit-timeout';
+} from "./github-client.types";
 import {
-  GET_TREE_ROUTE,
   GET_FILE_CONTENT_ROUTE,
-  LIST_ISSUES_ROUTE,
   GET_ISSUE_DETAIL_ROUTE,
   GET_README_ROUTE,
-} from './github-routes';
+  GET_TREE_ROUTE,
+  LIST_ISSUES_ROUTE,
+} from "./github-routes";
+import { detectLanguage } from "./language-detection";
+import { OCTOKIT_TIMEOUT_MS } from "./octokit-timeout";
+import { backoffIfRateLimited } from "./rate-limit-backoff";
 
 // Declared return types, not inline `as` casts: a bare ternary here would
 // infer as plain `string`, and a cast is exactly what eslint's
 // no-unnecessary-type-assertion rule will silently strip on the next --fix
 // even when it's still needed — it already did once (getTree's node type).
 function toNodeType(githubType: string): NodeType {
-  return githubType === 'tree' ? 'dir' : 'file';
+  return githubType === "tree" ? "dir" : "file";
 }
 
 function toCompareStatus(githubStatus: string): CompareStatus {
   if (
-    githubStatus === 'ahead' ||
-    githubStatus === 'behind' ||
-    githubStatus === 'identical' ||
-    githubStatus === 'diverged'
+    githubStatus === "ahead" ||
+    githubStatus === "behind" ||
+    githubStatus === "identical" ||
+    githubStatus === "diverged"
   ) {
     return githubStatus;
   }
@@ -71,56 +71,43 @@ export class GithubClientService {
       auth: token,
       request: { signal: AbortSignal.timeout(OCTOKIT_TIMEOUT_MS) },
     });
-    octokit.hook.before('request', (options) => {
-      if (options.method !== 'GET') {
+    octokit.hook.before("request", (options) => {
+      if (options.method !== "GET") {
         throw new Error(
           `GithubClientService: refusing a non-GET request (${options.method} ${options.url})`,
         );
       }
     });
-    octokit.hook.after('request', async (response) => {
+    octokit.hook.after("request", async (response) => {
       await backoffIfRateLimited(response.headers, (remaining) =>
-        this.logger.warn(
-          `GitHub rate limit running low (${remaining} remaining) — slowing down`,
-        ),
+        this.logger.warn(`GitHub rate limit running low (${remaining} remaining) — slowing down`),
       );
     });
     return octokit;
   }
 
   async listRepositories(token: string): Promise<RepositorySummary[]> {
-    const { data } = await this.client(token).request('GET /user/repos', {
-      sort: 'updated',
+    const { data } = await this.client(token).request("GET /user/repos", {
+      sort: "updated",
       per_page: 100,
     });
     return data.map((repo) => this.toRepositorySummary(repo));
   }
 
-  async getRepository(
-    token: string,
-    owner: string,
-    repo: string,
-  ): Promise<RepositorySummary> {
-    const { data } = await this.client(token).request(
-      'GET /repos/{owner}/{repo}',
-      { owner, repo },
-    );
+  async getRepository(token: string, owner: string, repo: string): Promise<RepositorySummary> {
+    const { data } = await this.client(token).request("GET /repos/{owner}/{repo}", { owner, repo });
     return this.toRepositorySummary(data);
   }
 
-  async listRefs(
-    token: string,
-    owner: string,
-    repo: string,
-  ): Promise<RefSummary> {
+  async listRefs(token: string, owner: string, repo: string): Promise<RefSummary> {
     const client = this.client(token);
     const [branches, tags] = await Promise.all([
-      client.request('GET /repos/{owner}/{repo}/branches', {
+      client.request("GET /repos/{owner}/{repo}/branches", {
         owner,
         repo,
         per_page: 100,
       }),
-      client.request('GET /repos/{owner}/{repo}/tags', {
+      client.request("GET /repos/{owner}/{repo}/tags", {
         owner,
         repo,
         per_page: 100,
@@ -136,16 +123,12 @@ export class GithubClientService {
     };
   }
 
-  async resolveRefToSha(
-    token: string,
-    owner: string,
-    repo: string,
-    ref: string,
-  ): Promise<string> {
-    const { data } = await this.client(token).request(
-      'GET /repos/{owner}/{repo}/commits/{ref}',
-      { owner, repo, ref },
-    );
+  async resolveRefToSha(token: string, owner: string, repo: string, ref: string): Promise<string> {
+    const { data } = await this.client(token).request("GET /repos/{owner}/{repo}/commits/{ref}", {
+      owner,
+      repo,
+      ref,
+    });
     return data.sha;
   }
 
@@ -153,12 +136,7 @@ export class GithubClientService {
   // the cache below is keyed on it and kept for 24h on the assumption that
   // content at that key is immutable. A caller passing a branch name would
   // silently serve stale content for up to 24h once that branch moves.
-  async getTree(
-    token: string,
-    owner: string,
-    repo: string,
-    sha: string,
-  ): Promise<TreeNode[]> {
+  async getTree(token: string, owner: string, repo: string, sha: string): Promise<TreeNode[]> {
     const cacheKey = `github:tree:${owner}/${repo}@${sha}`;
     const cached = await this.redis.get(cacheKey);
     if (cached) {
@@ -169,26 +147,21 @@ export class GithubClientService {
       owner,
       repo,
       tree_sha: sha,
-      recursive: '1',
+      recursive: "1",
     });
 
     // Submodule entries (type "commit") aren't selectable per the design
     // (§ Ambito di analisi) — excluded here rather than forced into a
     // file/dir type that would misrepresent them.
     const tree = data.tree
-      .filter((node) => node.type === 'blob' || node.type === 'tree')
+      .filter((node) => node.type === "blob" || node.type === "tree")
       .map((node) => ({
-        path: node.path ?? '',
+        path: node.path ?? "",
         type: toNodeType(node.type),
         sizeBytes: node.size ?? 0,
       }));
 
-    await this.redis.set(
-      cacheKey,
-      JSON.stringify(tree),
-      'EX',
-      CACHE_TTL_SECONDS,
-    );
+    await this.redis.set(cacheKey, JSON.stringify(tree), "EX", CACHE_TTL_SECONDS);
     return tree;
   }
 
@@ -215,11 +188,11 @@ export class GithubClientService {
       ref,
     });
 
-    if (Array.isArray(data) || data.type !== 'file' || !data.content) {
+    if (Array.isArray(data) || data.type !== "file" || !data.content) {
       throw new Error(`${path} is not a readable file at ${ref}`);
     }
 
-    const content = Buffer.from(data.content, 'base64').toString('utf8');
+    const content = Buffer.from(data.content, "base64").toString("utf8");
     const file: FileContent = {
       path: data.path,
       content,
@@ -227,12 +200,7 @@ export class GithubClientService {
       language: detectLanguage(data.path),
     };
 
-    await this.redis.set(
-      cacheKey,
-      JSON.stringify(file),
-      'EX',
-      CACHE_TTL_SECONDS,
-    );
+    await this.redis.set(cacheKey, JSON.stringify(file), "EX", CACHE_TTL_SECONDS);
     return file;
   }
 
@@ -260,7 +228,7 @@ export class GithubClientService {
         repo,
         ref,
       });
-      const content = Buffer.from(data.content, 'base64').toString('utf8');
+      const content = Buffer.from(data.content, "base64").toString("utf8");
       file = {
         path: data.path,
         content,
@@ -275,29 +243,19 @@ export class GithubClientService {
       }
     }
 
-    await this.redis.set(
-      cacheKey,
-      JSON.stringify(file),
-      'EX',
-      CACHE_TTL_SECONDS,
-    );
+    await this.redis.set(cacheKey, JSON.stringify(file), "EX", CACHE_TTL_SECONDS);
     return file;
   }
 
   private isNotFound(error: unknown): boolean {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'status' in error &&
-      error.status === 404
-    );
+    return typeof error === "object" && error !== null && "status" in error && error.status === 404;
   }
 
   async listIssues(
     token: string,
     owner: string,
     repo: string,
-    state: 'open' | 'closed' | 'all' = 'all',
+    state: "open" | "closed" | "all" = "all",
   ): Promise<IssueSummary[]> {
     const { data } = await this.client(token).request(LIST_ISSUES_ROUTE, {
       owner,
@@ -308,9 +266,7 @@ export class GithubClientService {
 
     // This endpoint returns pull requests too; PRs carry a `pull_request`
     // field that plain issues don't.
-    return data
-      .filter((issue) => !issue.pull_request)
-      .map((issue) => this.toIssueSummary(issue));
+    return data.filter((issue) => !issue.pull_request).map((issue) => this.toIssueSummary(issue));
   }
 
   async getIssueDetail(
@@ -327,7 +283,7 @@ export class GithubClientService {
 
     return {
       ...this.toIssueSummary(data),
-      body: data.body ?? '',
+      body: data.body ?? "",
     };
   }
 
@@ -349,10 +305,10 @@ export class GithubClientService {
   // GitHub outage (§4.2, RS.4): this method doesn't catch anything itself,
   // it just relays what happened.
   async verifyToken(token: string): Promise<TokenVerification> {
-    const { headers } = await this.client(token).request('GET /user');
-    const scopesHeader = headers['x-oauth-scopes'] ?? '';
+    const { headers } = await this.client(token).request("GET /user");
+    const scopesHeader = headers["x-oauth-scopes"] ?? "";
     const scopes = scopesHeader
-      .split(',')
+      .split(",")
       .map((scope) => scope.trim())
       .filter(Boolean);
     return { scopes };
@@ -366,7 +322,7 @@ export class GithubClientService {
     head: string,
   ): Promise<CompareResult> {
     const { data } = await this.client(token).request(
-      'GET /repos/{owner}/{repo}/compare/{basehead}',
+      "GET /repos/{owner}/{repo}/compare/{basehead}",
       { owner, repo, basehead: `${base}...${head}` },
     );
     return { status: toCompareStatus(data.status) };
@@ -401,9 +357,7 @@ export class GithubClientService {
       number: issue.number,
       title: issue.title,
       state: issue.state,
-      labels: issue.labels.map((l) =>
-        typeof l === 'string' ? l : (l.name ?? ''),
-      ),
+      labels: issue.labels.map((l) => (typeof l === "string" ? l : (l.name ?? ""))),
       milestone: issue.milestone?.title ?? null,
       closedAt: issue.closed_at ? new Date(issue.closed_at) : null,
       hasSufficientMetadata: !!issue.body && issue.body.length > 50,

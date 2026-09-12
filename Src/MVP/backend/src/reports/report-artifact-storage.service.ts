@@ -1,11 +1,11 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   CreateBucketCommand,
   PutBucketLifecycleConfigurationCommand,
   PutObjectCommand,
   S3Client,
-} from '@aws-sdk/client-s3';
+} from "@aws-sdk/client-s3";
+import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
 
 // BE-20: archives the composed PDF in object storage, keyed by the report
 // id. Not read back by the export endpoint itself — every call to
@@ -25,14 +25,14 @@ export class ReportArtifactStorageService implements OnModuleInit {
   private readonly bucket: string;
 
   constructor(private readonly config: ConfigService) {
-    this.bucket = this.config.get<string>('REPORTS_BUCKET_NAME')!;
+    this.bucket = this.config.get<string>("REPORTS_BUCKET_NAME")!;
     this.client = new S3Client({
-      region: this.config.get<string>('S3_REGION'),
-      endpoint: this.config.get<string>('S3_ENDPOINT'),
-      forcePathStyle: this.config.get<boolean>('S3_FORCE_PATH_STYLE'),
+      region: this.config.get<string>("S3_REGION"),
+      endpoint: this.config.get<string>("S3_ENDPOINT"),
+      forcePathStyle: this.config.get<boolean>("S3_FORCE_PATH_STYLE"),
       credentials: {
-        accessKeyId: this.config.get<string>('S3_ACCESS_KEY_ID')!,
-        secretAccessKey: this.config.get<string>('S3_SECRET_ACCESS_KEY')!,
+        accessKeyId: this.config.get<string>("S3_ACCESS_KEY_ID")!,
+        secretAccessKey: this.config.get<string>("S3_SECRET_ACCESS_KEY")!,
       },
     });
   }
@@ -48,9 +48,7 @@ export class ReportArtifactStorageService implements OnModuleInit {
       await this.client.send(new CreateBucketCommand({ Bucket: this.bucket }));
     } catch (err) {
       if (!this.isBucketAlreadyOwned(err)) {
-        this.logger.warn(
-          `Could not create bucket "${this.bucket}": ${this.describe(err)}`,
-        );
+        this.logger.warn(`Could not create bucket "${this.bucket}": ${this.describe(err)}`);
         return;
       }
     }
@@ -62,8 +60,8 @@ export class ReportArtifactStorageService implements OnModuleInit {
           LifecycleConfiguration: {
             Rules: [
               {
-                ID: 'expire-report-artifacts-30d',
-                Status: 'Enabled',
+                ID: "expire-report-artifacts-30d",
+                Status: "Enabled",
                 Filter: {},
                 Expiration: { Days: 30 },
               },
@@ -72,9 +70,7 @@ export class ReportArtifactStorageService implements OnModuleInit {
         }),
       );
     } catch (err) {
-      this.logger.warn(
-        `Could not set lifecycle policy on "${this.bucket}": ${this.describe(err)}`,
-      );
+      this.logger.warn(`Could not set lifecycle policy on "${this.bucket}": ${this.describe(err)}`);
     }
   }
 
@@ -84,14 +80,14 @@ export class ReportArtifactStorageService implements OnModuleInit {
         Bucket: this.bucket,
         Key: reportId,
         Body: pdf,
-        ContentType: 'application/pdf',
+        ContentType: "application/pdf",
       }),
     );
   }
 
   private isBucketAlreadyOwned(err: unknown): boolean {
-    const name = err instanceof Error ? err.name : '';
-    return name === 'BucketAlreadyOwnedByYou' || name === 'BucketAlreadyExists';
+    const name = err instanceof Error ? err.name : "";
+    return name === "BucketAlreadyOwnedByYou" || name === "BucketAlreadyExists";
   }
 
   private describe(err: unknown): string {

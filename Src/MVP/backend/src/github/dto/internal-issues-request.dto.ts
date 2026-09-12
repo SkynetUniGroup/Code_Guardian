@@ -1,4 +1,4 @@
-import { IsIn, IsInt, IsMongoId, IsOptional, Min } from 'class-validator';
+import { IsIn, IsInt, IsMongoId, IsOptional, Min } from "class-validator";
 
 export class InternalIssuesRequestDto {
   @IsMongoId()
@@ -12,6 +12,6 @@ export class InternalIssuesRequestDto {
   issueNumber?: number;
 
   @IsOptional()
-  @IsIn(['open', 'closed', 'all'])
-  state?: 'open' | 'closed' | 'all';
+  @IsIn(["open", "closed", "all"])
+  state?: "open" | "closed" | "all";
 }

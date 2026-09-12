@@ -6,7 +6,7 @@ export interface RepositorySummary {
   primaryLanguage: string | null;
 }
 
-export type NodeType = 'file' | 'dir';
+export type NodeType = "file" | "dir";
 
 export interface TreeNode {
   path: string;
@@ -45,7 +45,7 @@ export interface IssueDetail extends IssueSummary {
   body: string;
 }
 
-export type CompareStatus = 'ahead' | 'behind' | 'identical' | 'diverged';
+export type CompareStatus = "ahead" | "behind" | "identical" | "diverged";
 
 export interface CompareResult {
   status: CompareStatus;

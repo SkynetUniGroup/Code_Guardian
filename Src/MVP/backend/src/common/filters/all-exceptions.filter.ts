@@ -1,14 +1,14 @@
 import {
-  ArgumentsHost,
+  type ArgumentsHost,
   BadRequestException,
   Catch,
-  ExceptionFilter,
+  type ExceptionFilter,
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import { Response } from 'express';
-import { AppException } from '../exceptions/app.exception';
+} from "@nestjs/common";
+import type { Response } from "express";
+import { AppException } from "../exceptions/app.exception";
 
 interface ErrorResponseBody {
   code: string;
@@ -21,11 +21,11 @@ interface ErrorResponseBody {
 // directly by future code instead of through AppException. Anything with a
 // status not listed here still falls back to UPSTREAM.
 const STATUS_FALLBACK_CODE: Partial<Record<number, string>> = {
-  [HttpStatus.UNAUTHORIZED]: 'UNAUTHORIZED',
-  [HttpStatus.FORBIDDEN]: 'FORBIDDEN',
-  [HttpStatus.NOT_FOUND]: 'NOT_FOUND',
-  [HttpStatus.CONFLICT]: 'CONFLICT',
-  [HttpStatus.TOO_MANY_REQUESTS]: 'TOO_MANY_REQUESTS',
+  [HttpStatus.UNAUTHORIZED]: "UNAUTHORIZED",
+  [HttpStatus.FORBIDDEN]: "FORBIDDEN",
+  [HttpStatus.NOT_FOUND]: "NOT_FOUND",
+  [HttpStatus.CONFLICT]: "CONFLICT",
+  [HttpStatus.TOO_MANY_REQUESTS]: "TOO_MANY_REQUESTS",
 };
 
 @Catch()
@@ -46,8 +46,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (exception instanceof BadRequestException) {
       const body: ErrorResponseBody = {
-        code: 'VALIDATION_ERROR',
-        message: 'Validation failed.',
+        code: "VALIDATION_ERROR",
+        message: "Validation failed.",
         details: this.extractValidationDetails(exception),
       };
       response.status(HttpStatus.BAD_REQUEST).json(body);
@@ -57,7 +57,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const body: ErrorResponseBody = {
-        code: STATUS_FALLBACK_CODE[status] ?? 'UPSTREAM',
+        code: STATUS_FALLBACK_CODE[status] ?? "UPSTREAM",
         message: exception.message,
       };
       response.status(status).json(body);
@@ -65,12 +65,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
 
     this.logger.error(
-      'Unhandled exception',
+      "Unhandled exception",
       exception instanceof Error ? exception.stack : String(exception),
     );
     const body: ErrorResponseBody = {
-      code: 'UPSTREAM',
-      message: 'An internal error occurred.',
+      code: "UPSTREAM",
+      message: "An internal error occurred.",
     };
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(body);
   }
@@ -78,9 +78,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private extractValidationDetails(exception: BadRequestException): string[] {
     const body = exception.getResponse();
     if (
-      typeof body === 'object' &&
+      typeof body === "object" &&
       body !== null &&
-      'message' in body &&
+      "message" in body &&
       Array.isArray(body.message)
     ) {
       return (body as { message: string[] }).message;

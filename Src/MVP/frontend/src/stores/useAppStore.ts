@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { Report, Task, OperationCode, ReportStatus } from '../types';
+import { create } from "zustand";
+import { OperationCode, type Report, ReportStatus, type Task } from "../types";
 
 interface AnalysisContext {
   id: string;
@@ -53,31 +53,33 @@ export const useAppStore = create<AppStore>((set) => ({
   formData: null,
 
   // Actions
-  addContext: (context) => set((state) => ({
-    contexts: [...state.contexts, context]
-  })),
+  addContext: (context) =>
+    set((state) => ({
+      contexts: [...state.contexts, context],
+    })),
 
   setTasks: (tasks) => set({ tasks }),
 
-  addTask: (task) => set((state) => ({
-    tasks: [...state.tasks, task]
-  })),
+  addTask: (task) =>
+    set((state) => ({
+      tasks: [...state.tasks, task],
+    })),
 
-  updateTask: (taskId, updates) => set((state) => ({
-    tasks: state.tasks.map(t =>
-      t.id === taskId ? { ...t, ...updates } : t
-    )
-  })),
+  updateTask: (taskId, updates) =>
+    set((state) => ({
+      tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, ...updates } : t)),
+    })),
 
   setCurrentTask: (taskId) => set({ currentTaskId: taskId }),
 
-  addReport: (report) => set((state) => ({
-    reports: { ...state.reports, [report.id]: report }
-  })),
+  addReport: (report) =>
+    set((state) => ({
+      reports: { ...state.reports, [report.id]: report },
+    })),
 
   setWebSocketConnected: (connected) => set({ websocketConnected: connected }),
 
   setConfigured: (status) => set({ isConfigured: status }),
-  
+
   setFormData: (data) => set({ formData: data }),
 }));

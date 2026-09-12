@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import * as argon2 from 'argon2';
+import { Injectable } from "@nestjs/common";
+import * as argon2 from "argon2";
 
 // OWASP-minimum parameters for the MVP. Unlike BE-5's AES-GCM cipher, the
 // salt lives inside the encoded hash string argon2 produces — nothing

@@ -1,5 +1,5 @@
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
-import { SUPPORTED_PROVIDERS } from '../supported-providers';
+import { IsIn, IsNotEmpty, IsString } from "class-validator";
+import { SUPPORTED_PROVIDERS } from "../supported-providers";
 
 export class CreateCredentialDto {
   @IsIn(SUPPORTED_PROVIDERS)

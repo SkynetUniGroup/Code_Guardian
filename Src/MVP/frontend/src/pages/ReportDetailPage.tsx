@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from '@tanstack/react-router';
-import { useSessionStore } from '../stores/sessionStore';
-import { apiClient, streamDownload } from '../api/client';
-import { StatusBadge } from '../components/shared/StatusBadge';
-import { Spinner } from '../components/shared/Spinner';
-import { ErrorState } from '../components/shared/ErrorState';
-import { TextBlockRenderer } from '../components/report/TextBlockRenderer';
-import { FindingBlockRenderer } from '../components/report/FindingBlockRenderer';
-import { PolicyViolationRenderer } from '../components/report/PolicyViolationRenderer';
-import { ProposalRenderer } from '../components/report/ProposalRenderer';
-import { OPERATION_LABELS } from '../types';
-import type { Report, ReportBlock, Severity } from '../types';
+import { Link, useParams } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { apiClient, streamDownload } from "../api/client";
+import { FindingBlockRenderer } from "../components/report/FindingBlockRenderer";
+import { PolicyViolationRenderer } from "../components/report/PolicyViolationRenderer";
+import { ProposalRenderer } from "../components/report/ProposalRenderer";
+import { TextBlockRenderer } from "../components/report/TextBlockRenderer";
+import { ErrorState } from "../components/shared/ErrorState";
+import { Spinner } from "../components/shared/Spinner";
+import { StatusBadge } from "../components/shared/StatusBadge";
+import { useSessionStore } from "../stores/sessionStore";
+import type { Report, ReportBlock, Severity } from "../types";
+import { OPERATION_LABELS } from "../types";
 
 /**
  * ReportDetailPage — /reports/:id
@@ -36,12 +36,12 @@ export function ReportDetailPage() {
 
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [pdf_loading, setPdfLoading] = useState(false);
-  const [pdf_error, setPdfError] = useState('');
+  const [pdf_error, setPdfError] = useState("");
 
   // Severity filter for finding/policy reports.
-  const [severity_filter, setSeverityFilter] = useState<Severity | 'all'>('all');
+  const [severity_filter, setSeverityFilter] = useState<Severity | "all">("all");
 
   useEffect(() => {
     async function fetch_report() {
@@ -49,7 +49,7 @@ export function ReportDetailPage() {
         const response = await apiClient.get<Report>(`/reports/${id}`);
         setReport(response.data);
       } catch {
-        setError('Impossibile caricare il report. Potrebbe essere stato eliminato.');
+        setError("Impossibile caricare il report. Potrebbe essere stato eliminato.");
       } finally {
         setLoading(false);
       }
@@ -61,13 +61,13 @@ export function ReportDetailPage() {
   async function handle_pdf_export() {
     if (!token) return;
     setPdfLoading(true);
-    setPdfError('');
+    setPdfError("");
     try {
       const blob = await streamDownload(`/reports/${id}/export?format=pdf`, token);
 
       // Create a temporary anchor element to trigger the browser download dialog.
       const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
+      const anchor = document.createElement("a");
       anchor.href = url;
       anchor.download = `report-${id}.pdf`;
       document.body.appendChild(anchor);
@@ -75,7 +75,7 @@ export function ReportDetailPage() {
       document.body.removeChild(anchor);
       URL.revokeObjectURL(url);
     } catch {
-      setPdfError('Errore durante il download del PDF. Riprova.');
+      setPdfError("Errore durante il download del PDF. Riprova.");
     } finally {
       setPdfLoading(false);
     }
@@ -95,7 +95,7 @@ export function ReportDetailPage() {
   if (error || !report) {
     return (
       <ErrorState
-        message={error || 'Report non trovato.'}
+        message={error || "Report non trovato."}
         action={
           <Link
             to="/reports"
@@ -115,25 +115,25 @@ export function ReportDetailPage() {
    */
   const filtered_blocks: ReportBlock[] = report.body
     .filter((block) => {
-      if (severity_filter === 'all') return true;
-      if (block.kind === 'finding') return block.severity === severity_filter;
-      if (block.kind === 'policy_violation') return true; // no severity on policy violations
+      if (severity_filter === "all") return true;
+      if (block.kind === "finding") return block.severity === severity_filter;
+      if (block.kind === "policy_violation") return true; // no severity on policy violations
       return true;
     })
     .sort((a, b) => a.order - b.order);
 
   // Check whether this report contains severity-filterable blocks.
   const has_findings = report.body.some(
-    (b) => b.kind === 'finding' || b.kind === 'policy_violation',
+    (b) => b.kind === "finding" || b.kind === "policy_violation",
   );
 
-  const severity_options: Array<{ value: Severity | 'all'; label: string }> = [
-    { value: 'all', label: 'Tutti' },
-    { value: 'critical', label: 'Critico' },
-    { value: 'high', label: 'Alto' },
-    { value: 'medium', label: 'Medio' },
-    { value: 'low', label: 'Basso' },
-    { value: 'info', label: 'Info' },
+  const severity_options: Array<{ value: Severity | "all"; label: string }> = [
+    { value: "all", label: "Tutti" },
+    { value: "critical", label: "Critico" },
+    { value: "high", label: "Alto" },
+    { value: "medium", label: "Medio" },
+    { value: "low", label: "Basso" },
+    { value: "info", label: "Info" },
   ];
 
   return (
@@ -141,10 +141,7 @@ export function ReportDetailPage() {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <Link
-            to="/reports"
-            className="mb-2 block text-xs text-[#2277cc] hover:underline"
-          >
+          <Link to="/reports" className="mb-2 block text-xs text-[#2277cc] hover:underline">
             ← Torna ai report
           </Link>
           <h1 className="text-lg font-semibold text-[#2a2a2a]">
@@ -152,10 +149,8 @@ export function ReportDetailPage() {
           </h1>
           <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
             <StatusBadge status={report.status} />
-            <span>{new Date(report.generatedAt).toLocaleString('it-IT')}</span>
-            {report.durationMs && (
-              <span>{(report.durationMs / 1000).toFixed(1)}s</span>
-            )}
+            <span>{new Date(report.generatedAt).toLocaleString("it-IT")}</span>
+            {report.durationMs && <span>{(report.durationMs / 1000).toFixed(1)}s</span>}
           </div>
         </div>
 
@@ -210,11 +205,11 @@ export function ReportDetailPage() {
               key={value}
               onClick={() => setSeverityFilter(value)}
               className={[
-                'rounded px-2.5 py-1 text-xs font-medium transition',
+                "rounded px-2.5 py-1 text-xs font-medium transition",
                 severity_filter === value
-                  ? 'bg-[#2a2a2a] text-white'
-                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200',
-              ].join(' ')}
+                  ? "bg-[#2a2a2a] text-white"
+                  : "bg-gray-100 text-gray-500 hover:bg-gray-200",
+              ].join(" ")}
             >
               {label}
             </button>
@@ -226,21 +221,18 @@ export function ReportDetailPage() {
       <div className="flex flex-col gap-3">
         {filtered_blocks.map((block) => {
           switch (block.kind) {
-            case 'text':
+            case "text":
               return <TextBlockRenderer key={block.order} block={block} />;
 
-            case 'finding':
+            case "finding":
               return <FindingBlockRenderer key={block.order} block={block} />;
 
-            case 'policy_violation':
+            case "policy_violation":
               return <PolicyViolationRenderer key={block.order} block={block} />;
 
-            case 'changelog_item':
+            case "changelog_item":
               return (
-                <div
-                  key={block.order}
-                  className="rounded border border-[#cccccc] bg-white p-4"
-                >
+                <div key={block.order} className="rounded border border-[#cccccc] bg-white p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-mono text-gray-500">
                       {block.issueRef}

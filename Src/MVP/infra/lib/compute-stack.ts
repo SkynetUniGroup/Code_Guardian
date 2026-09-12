@@ -1,15 +1,15 @@
 import * as cdk from "aws-cdk-lib";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as ecr from "aws-cdk-lib/aws-ecr";
+import type * as ec2 from "aws-cdk-lib/aws-ec2";
+import type * as ecr from "aws-cdk-lib/aws-ecr";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as logs from "aws-cdk-lib/aws-logs";
-import * as s3 from "aws-cdk-lib/aws-s3";
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
+import type * as s3 from "aws-cdk-lib/aws-s3";
+import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as servicediscovery from "aws-cdk-lib/aws-servicediscovery";
-import * as ssm from "aws-cdk-lib/aws-ssm";
-import { Construct } from "constructs";
+import type * as ssm from "aws-cdk-lib/aws-ssm";
+import type { Construct } from "constructs";
 import {
   ALB_DEREGISTRATION_DELAY_SECONDS,
   ALB_IDLE_TIMEOUT_SECONDS,
@@ -20,8 +20,8 @@ import {
   ECS_SIZING,
   HEALTH_CHECK_GRACE_PERIOD_SECONDS,
   HEALTH_CHECK_PATH,
-  REGION,
   RATE_LIMIT_GITHUB_RPM,
+  REGION,
 } from "./config";
 
 export interface ComputeStackProps extends cdk.StackProps {
@@ -92,7 +92,9 @@ export class ComputeStack extends cdk.Stack {
     const backendExecutionRole = new iam.Role(this, "BackendExecutionRole", {
       roleName: "codeguardian-backend-execution-role",
       assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy")],
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy"),
+      ],
     });
 
     const backendTaskRole = new iam.Role(this, "BackendTaskRole", {
@@ -164,7 +166,9 @@ export class ComputeStack extends cdk.Stack {
     const agentsExecutionRole = new iam.Role(this, "AgentsExecutionRole", {
       roleName: "codeguardian-agents-execution-role",
       assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy")],
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy"),
+      ],
     });
 
     const agentsTaskRole = new iam.Role(this, "AgentsTaskRole", {

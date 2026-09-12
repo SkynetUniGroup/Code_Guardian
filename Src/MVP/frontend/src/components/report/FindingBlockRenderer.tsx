@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import type { FindingBlock } from '../../types';
-import { SeverityBadge } from '../shared/SeverityBadge';
+import { useState } from "react";
+import type { FindingBlock } from "../../types";
+import { SeverityBadge } from "../shared/SeverityBadge";
 
 interface FindingBlockRendererProps {
   block: FindingBlock;
@@ -32,9 +32,7 @@ export function FindingBlockRenderer({ block }: FindingBlockRendererProps) {
         <SeverityBadge severity={block.severity} className="mt-0.5 shrink-0" />
 
         <div className="flex-1 min-w-0">
-          <span className="block text-sm font-semibold text-[#2a2a2a]">
-            {block.owaspCategory}
-          </span>
+          <span className="block text-sm font-semibold text-[#2a2a2a]">{block.owaspCategory}</span>
           <span className="block text-xs text-gray-500 truncate">
             {block.filePath} · righe {block.startLine}–{block.endLine}
           </span>
@@ -42,7 +40,7 @@ export function FindingBlockRenderer({ block }: FindingBlockRendererProps) {
 
         {/* Expand/collapse chevron */}
         <svg
-          className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${expanded ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

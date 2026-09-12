@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
 /**
  * TS/TA per l'Agente Changelog, operazione CHANGELOG_TECHNICAL (RF.94-97).
@@ -22,35 +22,37 @@ import { test, expect } from '@playwright/test';
  */
 const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
 
-test.describe('Flusso completo: Agente Changelog — changelog tecnico da Issue reali', () => {
-  test.skip(!GITHUB_PAT, 'E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md');
+test.describe("Flusso completo: Agente Changelog — changelog tecnico da Issue reali", () => {
+  test.skip(!GITHUB_PAT, "E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md");
   test.setTimeout(6 * 60_000);
 
-  test('avvia CHANGELOG_TECHNICAL: completa ma senza poter scegliere lo Sprint da UI (RF.98 non implementato)', async ({ page }) => {
-    await page.goto('/');
-    await page.getByPlaceholder('ghp_xxxxxxxxxxxx...').fill(GITHUB_PAT!);
-    await page.getByRole('button', { name: 'Salva e Inizia' }).click();
-    await expect(page).toHaveURL('http://localhost:5173/');
+  test("avvia CHANGELOG_TECHNICAL: completa ma senza poter scegliere lo Sprint da UI (RF.98 non implementato)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByPlaceholder("ghp_xxxxxxxxxxxx...").fill(GITHUB_PAT!);
+    await page.getByRole("button", { name: "Salva e Inizia" }).click();
+    await expect(page).toHaveURL("http://localhost:5173/");
 
-    await page.getByPlaceholder('skynetunigroup').fill('SkynetUniGroup');
-    await page.getByPlaceholder('code_guardian').fill('Code_Guardian');
+    await page.getByPlaceholder("skynetunigroup").fill("SkynetUniGroup");
+    await page.getByPlaceholder("code_guardian").fill("Code_Guardian");
     // Nessun campo Sprint ID nel form: confermato assente cercando "sprint"
     // in tutto frontend/src prima di scrivere questo test.
     await expect(page.getByText(/sprint/i)).toHaveCount(0);
     // Scope minimo solo per superare la validazione RF.31 (100 file) che si
     // applica anche a Changelog nonostante non legga codice — vedi nota sopra.
-    await page.getByPlaceholder('es. Src/').fill('Website');
+    await page.getByPlaceholder("es. Src/").fill("Website");
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'CHANGELOG_TECHNICAL' });
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
+    await page.getByRole("button", { name: "Carica operazioni disponibili" }).click();
+    await page.getByRole("combobox").selectOption({ value: "CHANGELOG_TECHNICAL" });
+    await page.getByRole("button", { name: "Avvia Analisi" }).click();
 
     await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
-    await expect(page.getByText('Analisi completata!')).toBeVisible({ timeout: 5 * 60_000 });
-    await expect(page.getByText('Analisi fallita')).not.toBeVisible();
+    await expect(page.getByText("Analisi completata!")).toBeVisible({ timeout: 5 * 60_000 });
+    await expect(page.getByText("Analisi fallita")).not.toBeVisible();
 
-    await page.getByRole('link', { name: 'Visualizza Report →' }).click();
-    await expect(page.getByRole('heading', { name: 'Analisi: CHANGELOG_TECHNICAL' })).toBeVisible();
-    await expect(page.getByText('Dettagli')).toBeVisible();
+    await page.getByRole("link", { name: "Visualizza Report →" }).click();
+    await expect(page.getByRole("heading", { name: "Analisi: CHANGELOG_TECHNICAL" })).toBeVisible();
+    await expect(page.getByText("Dettagli")).toBeVisible();
   });
 });

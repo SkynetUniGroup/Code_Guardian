@@ -1,6 +1,5 @@
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import { Construct } from "constructs";
 import {
   CfnCluster,
   CfnPrivateEndpointAws,
@@ -8,6 +7,7 @@ import {
   CfnPrivateEndpointServicePropsCloudProvider,
   CfnProject,
 } from "awscdk-resources-mongodbatlas";
+import type { Construct } from "constructs";
 import { ATLAS_INSTANCE_SIZE, ATLAS_REGION } from "./config";
 
 export interface AtlasStackProps extends cdk.StackProps {
@@ -110,7 +110,8 @@ export class AtlasStack extends cdk.Stack {
     new cdk.CfnOutput(this, "AtlasClusterName", { value: "codeguardian-mvp" });
     new cdk.CfnOutput(this, "AtlasPrivateEndpointId", {
       value: awsPrivateEndpoint.ref,
-      description: "Recuperare da Atlas (Connect -> Private Endpoint) la connection string e aggiornare il secret codeguardian/mongo-uri",
+      description:
+        "Recuperare da Atlas (Connect -> Private Endpoint) la connection string e aggiornare il secret codeguardian/mongo-uri",
     });
   }
 }

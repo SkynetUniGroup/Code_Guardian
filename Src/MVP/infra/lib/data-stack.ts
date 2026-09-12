@@ -1,9 +1,9 @@
 import * as cdk from "aws-cdk-lib";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
+import type * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as elasticache from "aws-cdk-lib/aws-elasticache";
-import * as kms from "aws-cdk-lib/aws-kms";
+import type * as kms from "aws-cdk-lib/aws-kms";
 import * as ssm from "aws-cdk-lib/aws-ssm";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 import { REDIS_PORT } from "./config";
 
 export interface DataStackProps extends cdk.StackProps {
@@ -34,7 +34,8 @@ export class DataStack extends cdk.Stack {
     });
 
     this.redis = new elasticache.CfnReplicationGroup(this, "RedisReplicationGroup", {
-      replicationGroupDescription: "Code Guardian MVP -- Redis nodo singolo (coda BullMQ + cache GitHub + rate limiter RQ.8)",
+      replicationGroupDescription:
+        "Code Guardian MVP -- Redis nodo singolo (coda BullMQ + cache GitHub + rate limiter RQ.8)",
       engine: "redis",
       // transitEncryptionMode: "required" in creazione richiede Redis >= 7.0.5:
       // fissata esplicitamente per non dipendere dalla versione di default,

@@ -1,20 +1,17 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Logger } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Job } from 'bullmq';
-import { Task, TaskDocument } from './schemas/task.schema';
-import {
-  AgentInvocationResult,
-  AgentInvocationService,
-} from './agent-invocation.service';
-import { AgentRunPayload } from './agent-client.types';
-import { TaskError } from './task.types';
-import { AgentRegistry } from '../operations/agent-registry.service';
-import { EventsGateway } from '../events/events.gateway';
-import { ReportAssemblyService } from '../reports/report-assembly.service';
-import { ReportDocument } from '../reports/schemas/report.schema';
+import { Processor, WorkerHost } from "@nestjs/bullmq";
+import { Logger } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Job } from "bullmq";
+import { randomUUID } from "crypto";
+import type { Model } from "mongoose";
+import type { EventsGateway } from "../events/events.gateway";
+import type { AgentRegistry } from "../operations/agent-registry.service";
+import type { ReportAssemblyService } from "../reports/report-assembly.service";
+import type { ReportDocument } from "../reports/schemas/report.schema";
+import type { AgentRunPayload } from "./agent-client.types";
+import type { AgentInvocationResult, AgentInvocationService } from "./agent-invocation.service";
+import { Task, type TaskDocument } from "./schemas/task.schema";
+import type { TaskError } from "./task.types";
 
 // Two job shapes on the same 'tasks' queue: a plain {taskId} is either a
 // brand-new PENDING pickup, or (BE-17) a Changelog Task whose sprintId was
@@ -24,13 +21,12 @@ import { ReportDocument } from '../reports/schemas/report.schema';
 // BUSINESS_CONFIRMATION pendingInput was just cleared by
 // TasksService.submitInput, carrying whatever the agent should be resumed
 // with.
-export type RunTaskJobData =
-  { taskId: string } | { taskId: string; inputValue: unknown };
+export type RunTaskJobData = { taskId: string } | { taskId: string; inputValue: unknown };
 
 function isResumeJob(
   data: RunTaskJobData,
 ): data is Extract<RunTaskJobData, { inputValue: unknown }> {
-  return 'inputValue' in data;
+  return "inputValue" in data;
 }
 
 // How long a processing claim stays valid before another delivery may take
@@ -67,7 +63,7 @@ const CLAIM_LEASE_MS = 10 * 60 * 1000;
 // says now). Both are gone if — and only if — the guard lives in the query
 // filter, where the database can enforce it, instead of in an `if` over a
 // value read moments earlier.
-@Processor('tasks')
+@Processor("tasks")
 export class TaskProcessor extends WorkerHost {
   private readonly logger = new Logger(TaskProcessor.name);
 
@@ -97,10 +93,7 @@ export class TaskProcessor extends WorkerHost {
     const { task, claimToken } = claimed;
 
     try {
-      if (
-        task.status === 'PENDING' &&
-        !(await this.markRunning(task, claimToken))
-      ) {
+      if (task.status === "PENDING" && !(await this.markRunning(task, claimToken))) {
         // Cancelled in the window between the claim and the transition.
         return;
       }
@@ -121,9 +114,9 @@ export class TaskProcessor extends WorkerHost {
       } catch (err) {
         task.accumulatedMs += Date.now() - startedAt;
         await this.finishFailed(task, claimToken, {
-          code: 'UPSTREAM',
-          message: err instanceof Error ? err.message : 'Unknown error',
-          stage: 'EXECUTION',
+          code: "UPSTREAM",
+          message: err instanceof Error ? err.message : "Unknown error",
+          stage: "EXECUTION",
         });
       }
 
@@ -147,9 +140,7 @@ export class TaskProcessor extends WorkerHost {
   // agent. Reading first and checking afterwards cannot express that, which
   // is exactly how two deliveries used to both get past the RUNNING
   // fallthrough and invoke the agent twice.
-  private async claim(
-    taskId: string,
-  ): Promise<{ task: TaskDocument; claimToken: string } | null> {
+  private async claim(taskId: string): Promise<{ task: TaskDocument; claimToken: string } | null> {
     // One clock read for both ends of the comparison: the threshold below
     // and the stamp written on success have to be the same "now", or a
     // claim could be judged stale against a moment it was never measured
@@ -168,11 +159,8 @@ export class TaskProcessor extends WorkerHost {
         // answered, and a resume — the last two both already RUNNING.
         // Terminal statuses are absent by construction, which is also what
         // makes a cancelled Task skip silently.
-        status: { $in: ['PENDING', 'RUNNING'] },
-        $or: [
-          { processingClaimedAt: null },
-          { processingClaimedAt: { $lte: staleBefore } },
-        ],
+        status: { $in: ["PENDING", "RUNNING"] },
+        $or: [{ processingClaimedAt: null }, { processingClaimedAt: { $lte: staleBefore } }],
       },
       {
         $set: {
@@ -199,10 +187,7 @@ export class TaskProcessor extends WorkerHost {
   // Releasing a claim that is no longer ours is a silent no-op: the holder
   // that owns it now is mid-invocation and there is nothing here worth
   // reporting to anyone.
-  private async releaseClaim(
-    task: TaskDocument,
-    claimToken: string,
-  ): Promise<void> {
+  private async releaseClaim(task: TaskDocument, claimToken: string): Promise<void> {
     try {
       await this.taskModel.updateOne(
         { _id: task._id, processingClaimToken: claimToken },
@@ -235,19 +220,16 @@ export class TaskProcessor extends WorkerHost {
   // memory, so assigning status here would let that unrelated save write
   // RUNNING back over a cancel that landed in between, reintroducing the
   // very lost update the conditional writes in this class exist to prevent.
-  private async markRunning(
-    task: TaskDocument,
-    claimToken: string,
-  ): Promise<boolean> {
+  private async markRunning(task: TaskDocument, claimToken: string): Promise<boolean> {
     const { matchedCount } = await this.taskModel.updateOne(
-      { _id: task._id, status: 'PENDING', processingClaimToken: claimToken },
-      { $set: { status: 'RUNNING' } },
+      { _id: task._id, status: "PENDING", processingClaimToken: claimToken },
+      { $set: { status: "RUNNING" } },
     );
     if (matchedCount === 0) {
       return false;
     }
 
-    this.events.emitTaskUpdated(task.userId, task.id, 'RUNNING');
+    this.events.emitTaskUpdated(task.userId, task.id, "RUNNING");
     return true;
   }
 
@@ -291,7 +273,7 @@ export class TaskProcessor extends WorkerHost {
     changes: Record<string, unknown>,
   ): Promise<boolean> {
     const { matchedCount } = await this.taskModel.updateOne(
-      { _id: task._id, status: 'RUNNING', processingClaimToken: claimToken },
+      { _id: task._id, status: "RUNNING", processingClaimToken: claimToken },
       { $set: changes },
     );
     return matchedCount === 1;
@@ -306,15 +288,12 @@ export class TaskProcessor extends WorkerHost {
   // second time the Task is already RUNNING, so process() skips the PENDING
   // transition and comes straight here, and this time the check falls
   // through to invoke().
-  private async startOrPause(
-    task: TaskDocument,
-  ): Promise<AgentInvocationResult> {
+  private async startOrPause(task: TaskDocument): Promise<AgentInvocationResult> {
     const needsSprintId =
-      this.agentRegistry.getAgent(task.operation) === 'CHANGELOG' &&
-      task.sprintId == null;
+      this.agentRegistry.getAgent(task.operation) === "CHANGELOG" && task.sprintId == null;
 
     if (needsSprintId) {
-      return { status: 'INTERRUPTED', pendingInput: { kind: 'SPRINT_ID' } };
+      return { status: "INTERRUPTED", pendingInput: { kind: "SPRINT_ID" } };
     }
     return this.agentInvocation.invoke(task);
   }
@@ -324,7 +303,7 @@ export class TaskProcessor extends WorkerHost {
     claimToken: string,
     result: AgentInvocationResult,
   ): Promise<void> {
-    if (result.status === 'INTERRUPTED') {
+    if (result.status === "INTERRUPTED") {
       // The claim is released *here*, inside the same conditional write
       // that records the pause, rather than in process()'s finally. The
       // pause and the release are one fact: the moment this Task is waiting
@@ -353,22 +332,18 @@ export class TaskProcessor extends WorkerHost {
         return;
       }
       task.pendingInput = result.pendingInput;
-      this.events.emitTaskInputRequired(
-        task.userId,
-        task.id,
-        result.pendingInput,
-      );
+      this.events.emitTaskInputRequired(task.userId, task.id, result.pendingInput);
       return;
     }
 
-    if (result.status === 'FAILED') {
+    if (result.status === "FAILED") {
       // The type says `error` is always populated (AgentInvocationService's
       // own failure() always builds one) — this fallback is for whatever a
       // caller passes at runtime regardless of what the type promises.
       const error = result.error ?? {
-        code: 'UPSTREAM',
-        message: 'Agent invocation failed with no further detail',
-        stage: 'EXECUTION',
+        code: "UPSTREAM",
+        message: "Agent invocation failed with no further detail",
+        stage: "EXECUTION",
       };
       await this.finishFailed(task, claimToken, error);
       return;
@@ -388,7 +363,7 @@ export class TaskProcessor extends WorkerHost {
   ): Promise<void> {
     const report = await this.reportAssembly.assembleCompleted(task, payload);
     const persisted = await this.persistIfStillRunning(task, claimToken, {
-      status: 'COMPLETED',
+      status: "COMPLETED",
       reportId: report._id,
       accumulatedMs: task.accumulatedMs,
     });
@@ -411,13 +386,8 @@ export class TaskProcessor extends WorkerHost {
     }
 
     task.reportId = report._id;
-    task.status = 'COMPLETED';
-    this.events.emitTaskUpdated(
-      task.userId,
-      task.id,
-      'COMPLETED',
-      task.reportId.toString(),
-    );
+    task.status = "COMPLETED";
+    this.events.emitTaskUpdated(task.userId, task.id, "COMPLETED", task.reportId.toString());
   }
 
   // Shared by applyResult's FAILED branch and process()'s catch block — a
@@ -432,7 +402,7 @@ export class TaskProcessor extends WorkerHost {
   ): Promise<void> {
     const report = await this.reportAssembly.assembleFailed(task, error);
     const persisted = await this.persistIfStillRunning(task, claimToken, {
-      status: 'FAILED',
+      status: "FAILED",
       error,
       reportId: report._id,
       accumulatedMs: task.accumulatedMs,
@@ -447,7 +417,7 @@ export class TaskProcessor extends WorkerHost {
     }
 
     task.reportId = report._id;
-    task.status = 'FAILED';
+    task.status = "FAILED";
     task.error = error;
     this.events.emitTaskFailed(task.userId, task.id, error);
   }
@@ -479,23 +449,20 @@ export class TaskProcessor extends WorkerHost {
   // status-specific beyond PENDING/RUNNING — so a batch with a paused Task
   // correctly never reports completed until it's answered one way or
   // another.
-  private async maybeEmitBatchCompleted(
-    batchId: string,
-    userId: string,
-  ): Promise<void> {
+  private async maybeEmitBatchCompleted(batchId: string, userId: string): Promise<void> {
     const stillActive = await this.taskModel.countDocuments({
       batchId,
-      status: { $in: ['PENDING', 'RUNNING'] },
+      status: { $in: ["PENDING", "RUNNING"] },
     });
     if (stillActive > 0) {
       return;
     }
 
     const [completed, failed] = await Promise.all([
-      this.taskModel.countDocuments({ batchId, status: 'COMPLETED' }),
+      this.taskModel.countDocuments({ batchId, status: "COMPLETED" }),
       this.taskModel.countDocuments({
         batchId,
-        status: { $in: ['FAILED', 'CANCELLED'] },
+        status: { $in: ["FAILED", "CANCELLED"] },
       }),
     ]);
     this.events.emitBatchCompleted(userId, batchId, completed, failed);

@@ -1,19 +1,19 @@
-import { Controller, Get, Param, Query, Res, UseGuards } from '@nestjs/common';
-import type { Response } from 'express';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { ReportsService } from './reports.service';
-import { ReportsExportService } from './reports-export.service';
-import { ListReportsQueryDto } from './dto/list-reports-query.dto';
-import { ExportReportQueryDto } from './dto/export-report-query.dto';
-import { ReportSummaryDto } from './dto/report-summary.dto';
-import { ReportDto } from './dto/report.dto';
+import { Controller, Get, Param, Query, Res, UseGuards } from "@nestjs/common";
+import type { Response } from "express";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
+import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
+import type { ExportReportQueryDto } from "./dto/export-report-query.dto";
+import type { ListReportsQueryDto } from "./dto/list-reports-query.dto";
+import type { ReportDto } from "./dto/report.dto";
+import type { ReportSummaryDto } from "./dto/report-summary.dto";
+import type { ReportsService } from "./reports.service";
+import type { ReportsExportService } from "./reports-export.service";
 
 // Every route here is personal to the caller — no RolesGuard, just proof of
 // identity, same shape as TasksController/RepositoriesController: what a
 // caller may see is already settled by which Reports carry their userId,
 // not by their role.
-@Controller('reports')
+@Controller("reports")
 @UseGuards(JwtAuthGuard)
 export class ReportsController {
   constructor(
@@ -23,17 +23,14 @@ export class ReportsController {
 
   @Get()
   findAll(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser("userId") userId: string,
     @Query() query: ListReportsQueryDto,
   ): Promise<ReportSummaryDto[]> {
     return this.reportsService.findAllForUser(userId, query);
   }
 
-  @Get(':id')
-  findOne(
-    @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
-  ): Promise<ReportDto> {
+  @Get(":id")
+  findOne(@CurrentUser("userId") userId: string, @Param("id") id: string): Promise<ReportDto> {
     return this.reportsService.findOneForUser(userId, id);
   }
 
@@ -42,10 +39,10 @@ export class ReportsController {
   // outcome, none of which fits returning a single typed value the way
   // every other route on this controller does. See ReportsExportService for
   // why.
-  @Get(':id/export')
+  @Get(":id/export")
   async export(
-    @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @CurrentUser("userId") userId: string,
+    @Param("id") id: string,
     @Query() _query: ExportReportQueryDto,
     @Res() res: Response,
   ): Promise<void> {

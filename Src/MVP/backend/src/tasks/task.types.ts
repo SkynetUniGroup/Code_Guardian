@@ -1,7 +1,6 @@
-import { ErrorKind } from '../common/exceptions/error-kind';
+import type { ErrorKind } from "../common/exceptions/error-kind";
 
-export type TaskStatus =
-  'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+export type TaskStatus = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "CANCELLED";
 
 // Task uses `code`; Report's equivalent structure uses `kind` for the same
 // value domain — two different field names for the same thing, kept as-is
@@ -14,7 +13,7 @@ export interface TaskError {
 }
 
 export type PendingInput =
-  | { kind: 'SPRINT_ID' }
-  | { kind: 'INCOMPLETE_TASKS'; taskIds: string[] }
-  | { kind: 'BUSINESS_CONFIRMATION'; technicalReportId: string }
+  | { kind: "SPRINT_ID" }
+  | { kind: "INCOMPLETE_TASKS"; taskIds: string[] }
+  | { kind: "BUSINESS_CONFIRMATION"; technicalReportId: string }
   | null;

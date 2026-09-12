@@ -1,4 +1,4 @@
-import { Provider } from '@nestjs/common';
+import type { Provider } from "@nestjs/common";
 
 export type FrancFn = (text: string) => string;
 
@@ -10,12 +10,12 @@ export type FrancFn = (text: string) => string;
 // means the import only ever has to work in the one place that was always
 // going to run outside Jest anyway. Everything downstream just receives an
 // already-resolved, ordinary synchronous function via DI.
-export const FRANC = Symbol('FRANC');
+export const FRANC = Symbol("FRANC");
 
 export const francProvider: Provider = {
   provide: FRANC,
   useFactory: async (): Promise<FrancFn> => {
-    const { franc } = await import('franc-min');
+    const { franc } = await import("franc-min");
     return franc;
   },
 };

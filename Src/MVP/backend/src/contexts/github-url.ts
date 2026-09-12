@@ -3,8 +3,7 @@
 // owner/repo extraction below never has to guess where the repo name ends.
 // Used both as a class-validator @Matches() constraint on every query/body
 // DTO that accepts a repoUrl, and by parseGithubUrl() itself.
-export const GITHUB_REPO_URL_REGEX =
-  /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
+export const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
 
 export interface ParsedGithubUrl {
   owner: string;

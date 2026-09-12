@@ -18,7 +18,9 @@
   "license": "ISC",
   "type": "module",
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.18",

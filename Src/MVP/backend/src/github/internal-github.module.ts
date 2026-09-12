@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { GithubModule } from './github.module';
-import { CredentialsModule } from '../credentials/credentials.module';
-import { TasksModule } from '../tasks/tasks.module';
-import { ContextsModule } from '../contexts/contexts.module';
-import { InternalGithubController } from './internal-github.controller';
-import { InternalTaskContextResolver } from './internal-task-context.resolver';
-import { AccessLog, AccessLogSchema } from './schemas/access-log.schema';
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { ContextsModule } from "../contexts/contexts.module";
+import { CredentialsModule } from "../credentials/credentials.module";
+import { TasksModule } from "../tasks/tasks.module";
+import { GithubModule } from "./github.module";
+import { InternalGithubController } from "./internal-github.controller";
+import { InternalTaskContextResolver } from "./internal-task-context.resolver";
+import { AccessLog, AccessLogSchema } from "./schemas/access-log.schema";
 
 // Deliberately its own module rather than folded into GithubModule:
 // CredentialsModule already imports GithubModule (for BE-6's live token
@@ -20,9 +20,7 @@ import { AccessLog, AccessLogSchema } from './schemas/access-log.schema';
     CredentialsModule,
     TasksModule,
     ContextsModule,
-    MongooseModule.forFeature([
-      { name: AccessLog.name, schema: AccessLogSchema },
-    ]),
+    MongooseModule.forFeature([{ name: AccessLog.name, schema: AccessLogSchema }]),
   ],
   controllers: [InternalGithubController],
   providers: [InternalTaskContextResolver],

@@ -1,4 +1,4 @@
-import { UserRole } from '../schemas/user.schema';
+import type { UserRole } from "../schemas/user.schema";
 
 export interface UserProfileDto {
   id: string;

@@ -1,9 +1,9 @@
-import { createRoute } from '@tanstack/react-router';
-import { rootRoute } from './root';
-import RepositorySelection from '../pages/RepositorySelection';
+import { createRoute } from "@tanstack/react-router";
+import RepositorySelection from "../pages/RepositorySelection";
+import { rootRoute } from "./root";
 
 export const repositorySelectionRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: "/",
   component: RepositorySelection,
 });

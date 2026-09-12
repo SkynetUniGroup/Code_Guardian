@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { AuthUser, CredentialsStatus } from '../types';
+import { create } from "zustand";
+import type { AuthUser, CredentialsStatus } from "../types";
 
 /**
  * Shape of the session state slice (data only).
@@ -57,7 +57,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   // ---- Initial state ----
   user: null,
   token: null,
-  credentialsStatus: 'unknown',
+  credentialsStatus: "unknown",
 
   // ---- Actions ----
 
@@ -68,7 +68,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
 
   logout: () => {
-    set({ user: null, token: null, credentialsStatus: 'unknown' });
+    set({ user: null, token: null, credentialsStatus: "unknown" });
   },
 
   setCredentialsStatus: (status) => {
@@ -76,6 +76,6 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
 
   markCredentialsInvalid: () => {
-    set({ credentialsStatus: 'invalid' });
+    set({ credentialsStatus: "invalid" });
   },
 }));

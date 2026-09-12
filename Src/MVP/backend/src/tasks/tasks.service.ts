@@ -1,28 +1,28 @@
+import { InjectQueue } from "@nestjs/bullmq";
 import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Model, Types } from 'mongoose';
-import { Queue } from 'bullmq';
-import { Task, TaskDocument } from './schemas/task.schema';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import type { Queue } from "bullmq";
+import { type Model, Types } from "mongoose";
+import type { AuthenticatedUser } from "../common/authenticated-user";
 import {
   AnalysisContext,
-  AnalysisContextDocument,
-} from '../contexts/schemas/analysis-context.schema';
-import { CredentialsService } from '../credentials/credentials.service';
-import { AgentRegistry } from '../operations/agent-registry.service';
-import { EventsGateway } from '../events/events.gateway';
-import { UsageLimitService } from './usage-limit.service';
-import { AuthenticatedUser } from '../common/authenticated-user';
-import { CreateTaskBatchDto } from './dto/create-task-batch.dto';
-import { SubmitInputDto } from './dto/submit-input.dto';
-import { TaskDto, toTaskDto } from './dto/task.dto';
-import { RunTaskJobData } from './task-processor';
+  type AnalysisContextDocument,
+} from "../contexts/schemas/analysis-context.schema";
+import type { CredentialsService } from "../credentials/credentials.service";
+import type { EventsGateway } from "../events/events.gateway";
+import type { AgentRegistry } from "../operations/agent-registry.service";
+import type { CreateTaskBatchDto } from "./dto/create-task-batch.dto";
+import type { SubmitInputDto } from "./dto/submit-input.dto";
+import { type TaskDto, toTaskDto } from "./dto/task.dto";
+import { Task, type TaskDocument } from "./schemas/task.schema";
+import type { RunTaskJobData } from "./task-processor";
+import type { UsageLimitService } from "./usage-limit.service";
 
 export interface CreateTaskBatchResult {
   taskIds: string[];
@@ -39,7 +39,7 @@ export class TasksService {
     private readonly agentRegistry: AgentRegistry,
     private readonly events: EventsGateway,
     private readonly usageLimit: UsageLimitService,
-    @InjectQueue('tasks') private readonly queue: Queue<RunTaskJobData>,
+    @InjectQueue("tasks") private readonly queue: Queue<RunTaskJobData>,
   ) {}
 
   // Four pre-accept checks: whole batch rejected on the first failure,
@@ -55,9 +55,7 @@ export class TasksService {
   ): Promise<CreateTaskBatchResult> {
     const operations = [...new Set(dto.operations)];
     if (operations.length === 0) {
-      throw new BadRequestException(
-        'operations must contain at least one operation code',
-      );
+      throw new BadRequestException("operations must contain at least one operation code");
     }
 
     const context = await this.contextModel.findOne({
@@ -68,21 +66,16 @@ export class TasksService {
       throw new NotFoundException(`Context ${dto.contextId} not found`);
     }
 
-    const hasCredential = await this.credentials.hasCredential(
-      user.userId,
-      'GITHUB',
-    );
+    const hasCredential = await this.credentials.hasCredential(user.userId, "GITHUB");
     if (!hasCredential) {
-      throw new NotFoundException('No GITHUB credential configured');
+      throw new NotFoundException("No GITHUB credential configured");
     }
 
-    const allowed = new Set(
-      this.agentRegistry.getForRole(user.role).map((entry) => entry.code),
-    );
+    const allowed = new Set(this.agentRegistry.getForRole(user.role).map((entry) => entry.code));
     const disallowed = operations.filter((op) => !allowed.has(op));
     if (disallowed.length > 0) {
       throw new ForbiddenException(
-        `Operation(s) not permitted for role ${user.role}: ${disallowed.join(', ')}`,
+        `Operation(s) not permitted for role ${user.role}: ${disallowed.join(", ")}`,
       );
     }
 
@@ -95,13 +88,13 @@ export class TasksService {
         batchId,
         contextId: context._id,
         operation,
-        status: 'PENDING',
+        status: "PENDING",
       })),
     );
 
     await this.queue.addBulk(
       tasks.map((task) => ({
-        name: 'run-task',
+        name: "run-task",
         data: { taskId: task.id },
       })),
     );
@@ -132,10 +125,8 @@ export class TasksService {
     if (!task) {
       throw new NotFoundException(`Task ${id} not found`);
     }
-    if (!task.canTransitionTo('CANCELLED')) {
-      throw new ConflictException(
-        `Task ${id} cannot be cancelled from status ${task.status}`,
-      );
+    if (!task.canTransitionTo("CANCELLED")) {
+      throw new ConflictException(`Task ${id} cannot be cancelled from status ${task.status}`);
     }
 
     if (!(await this.markCancelled(id, userId))) {
@@ -143,7 +134,7 @@ export class TasksService {
         `Task ${id} reached a terminal state before it could be cancelled`,
       );
     }
-    this.events.emitTaskUpdated(userId, id, 'CANCELLED');
+    this.events.emitTaskUpdated(userId, id, "CANCELLED");
   }
 
   // The cancellation itself, conditioned on the Task still being
@@ -161,8 +152,8 @@ export class TasksService {
     changes: Record<string, unknown> = {},
   ): Promise<boolean> {
     const { matchedCount } = await this.taskModel.updateOne(
-      { _id: id, userId, status: { $in: ['PENDING', 'RUNNING'] } },
-      { $set: { status: 'CANCELLED', ...changes } },
+      { _id: id, userId, status: { $in: ["PENDING", "RUNNING"] } },
+      { $set: { status: "CANCELLED", ...changes } },
     );
     return matchedCount === 1;
   }
@@ -174,11 +165,7 @@ export class TasksService {
   // already drains — rather than resuming the agent from here directly —
   // keeps this method a thin state transition, symmetric with how
   // createBatch never calls the agent gateway itself either.
-  async submitInput(
-    userId: string,
-    id: string,
-    dto: SubmitInputDto,
-  ): Promise<void> {
+  async submitInput(userId: string, id: string, dto: SubmitInputDto): Promise<void> {
     const task = await this.taskModel.findOne({ _id: id, userId });
     if (!task) {
       throw new NotFoundException(`Task ${id} not found`);
@@ -189,12 +176,10 @@ export class TasksService {
       throw new ConflictException(`Task ${id} has no pending input`);
     }
     if (pending.kind !== dto.kind) {
-      throw new ConflictException(
-        `Task ${id} is waiting for ${pending.kind}, not ${dto.kind}`,
-      );
+      throw new ConflictException(`Task ${id} is waiting for ${pending.kind}, not ${dto.kind}`);
     }
 
-    if (dto.kind === 'SPRINT_ID') {
+    if (dto.kind === "SPRINT_ID") {
       task.sprintId = dto.sprintId;
       task.pendingInput = null;
       await task.save();
@@ -203,7 +188,7 @@ export class TasksService {
       // the PENDING transition and goes straight to invoking the agent
       // now that sprintId is set.
       const jobData: RunTaskJobData = { taskId: task.id };
-      await this.queue.add('run-task', jobData);
+      await this.queue.add("run-task", jobData);
       return;
     }
 
@@ -211,11 +196,9 @@ export class TasksService {
     // agent at all — it's the same Task-level transition
     // POST /tasks/:id/cancel performs, just entered from a paused Task
     // instead of a running one.
-    if (dto.action === 'CANCEL') {
-      if (!task.canTransitionTo('CANCELLED')) {
-        throw new ConflictException(
-          `Task ${id} cannot be cancelled from status ${task.status}`,
-        );
+    if (dto.action === "CANCEL") {
+      if (!task.canTransitionTo("CANCELLED")) {
+        throw new ConflictException(`Task ${id} cannot be cancelled from status ${task.status}`);
       }
       // Same conditional write as POST /tasks/:id/cancel — it is the same
       // transition, entered from a paused Task instead of a running one, so
@@ -226,7 +209,7 @@ export class TasksService {
           `Task ${id} reached a terminal state before it could be cancelled`,
         );
       }
-      this.events.emitTaskUpdated(userId, id, 'CANCELLED');
+      this.events.emitTaskUpdated(userId, id, "CANCELLED");
       return;
     }
 
@@ -234,8 +217,8 @@ export class TasksService {
     await task.save();
     const jobData: RunTaskJobData = {
       taskId: task.id,
-      inputValue: { action: 'PROCEED' },
+      inputValue: { action: "PROCEED" },
     };
-    await this.queue.add('resume-task', jobData);
+    await this.queue.add("resume-task", jobData);
   }
 }

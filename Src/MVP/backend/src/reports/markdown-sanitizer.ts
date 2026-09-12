@@ -1,4 +1,4 @@
-import { Block } from './report.types';
+import type { Block } from "./report.types";
 
 // Raw HTML embedded in Markdown that's meant to be rendered as Markdown, not
 // as HTML — any tag, opening or closing. Deliberately broad (not just
@@ -19,8 +19,7 @@ const HTML_TAG = /<\/?[a-zA-Z][^>]*>/g;
 // whitespace or angle brackets) and email (no scheme at all, so nothing it
 // can carry).
 const URI_AUTOLINK = /^<[a-zA-Z][a-zA-Z0-9+.-]{1,31}:[^\s<>]*>$/;
-const EMAIL_AUTOLINK =
-  /^<[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*>$/;
+const EMAIL_AUTOLINK = /^<[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*>$/;
 
 function isAutolink(candidate: string): boolean {
   return URI_AUTOLINK.test(candidate) || EMAIL_AUTOLINK.test(candidate);
@@ -56,12 +55,12 @@ const UNCLOSED_COMMENT = /<!--/g;
 // which is the only place either form is allowed through.
 function stripRawHtml(markdown: string): string {
   return markdown
-    .replace(HTML_CDATA, '')
-    .replace(HTML_COMMENT, '')
-    .replace(HTML_PROCESSING_INSTRUCTION, '')
-    .replace(HTML_DECLARATION, '')
-    .replace(UNCLOSED_COMMENT, '')
-    .replace(HTML_TAG, (tag) => (isAutolink(tag) ? tag : ''));
+    .replace(HTML_CDATA, "")
+    .replace(HTML_COMMENT, "")
+    .replace(HTML_PROCESSING_INSTRUCTION, "")
+    .replace(HTML_DECLARATION, "")
+    .replace(UNCLOSED_COMMENT, "")
+    .replace(HTML_TAG, (tag) => (isAutolink(tag) ? tag : ""));
 }
 
 // Schemes a link destination is allowed to keep. An allowlist, not a
@@ -76,7 +75,7 @@ function stripRawHtml(markdown: string): string {
 // keeps its text and loses its destination. (If the team would rather have
 // the literal denylist, invert this set — but then every new bypass is
 // another patch here.)
-const ALLOWED_SCHEMES = new Set(['http', 'https', 'mailto']);
+const ALLOWED_SCHEMES = new Set(["http", "https", "mailto"]);
 
 // RFC 3986: scheme = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." ) ":". No
 // match means the destination is relative (`./src/x.ts`, `#anchor`) —
@@ -143,7 +142,7 @@ export function sanitizeMarkdown(markdown: string): string {
   // leaves a string in which no `[label](destination)` can form at all, and
   // the last pass already judged every autolink in it — so this is closed,
   // not merely tired.
-  return text.replace(/\[/g, '\\[');
+  return text.replace(/\[/g, "\\[");
 }
 
 // How deep the re-scan below may nest before it stops recursing and falls
@@ -177,15 +176,15 @@ function rejectUnsafeLinks(markdown: string, depth = 0): string {
     // link or an autolink, which is the one thing this function has to
     // guarantee about anything it emits. Content past this depth is already
     // not something an agent wrote by accident.
-    return markdown.replace(/[[<]/g, '');
+    return markdown.replace(/[[<]/g, "");
   }
 
-  let out = '';
+  let out = "";
   let index = 0;
 
   while (index < markdown.length) {
-    const open = markdown.indexOf('[', index);
-    const angle = markdown.indexOf('<', index);
+    const open = markdown.indexOf("[", index);
+    const angle = markdown.indexOf("<", index);
 
     if (open === -1 && angle === -1) {
       out += markdown.slice(index);
@@ -209,15 +208,12 @@ function rejectUnsafeLinks(markdown: string, depth = 0): string {
     if (!link) {
       // Not a link after all — no `](` following the label, or parentheses
       // that never close. The `[` is just a character.
-      out += '[';
+      out += "[";
       index = open + 1;
       continue;
     }
 
-    if (
-      isSafeDestination(link.destination) &&
-      !hasUnmatchedOpenBracket(link.destination)
-    ) {
+    if (isSafeDestination(link.destination) && !hasUnmatchedOpenBracket(link.destination)) {
       // Safe, but not therefore beyond inspection. The region this scanner
       // calls "the destination" runs to the balanced `)`, while a CommonMark
       // destination ends at the first unescaped whitespace — so the region
@@ -247,11 +243,11 @@ function rejectUnsafeLinks(markdown: string, depth = 0): string {
       // `[![img](javascript:1)](x)` is still there and still in the safe
       // direction — re-scanning the label does not disturb it, because a
       // label with no link in it comes back out of this function unchanged.
-      out += '[';
+      out += "[";
       out += escapeUnmatchedBrackets(rejectUnsafeLinks(link.label, depth + 1));
-      out += '](';
+      out += "](";
       out += rejectUnsafeLinks(link.destination, depth + 1);
-      out += ')';
+      out += ")";
     } else {
       // The text the agent wrote is kept; only the destination is dropped.
       // Deleting the whole link would silently lose content, which is worse
@@ -259,7 +255,7 @@ function rejectUnsafeLinks(markdown: string, depth = 0): string {
       // goes with it, or it would be left dangling in front of the alt text.
       // The label is examined here for the same reason it is above: this is
       // the other place it reaches the output.
-      if (out.endsWith('!')) {
+      if (out.endsWith("!")) {
         out = out.slice(0, -1);
       }
       out += escapeUnmatchedBrackets(rejectUnsafeLinks(link.label, depth + 1));
@@ -292,11 +288,11 @@ function unmatchedOpenBrackets(region: string): number[] {
   const open: number[] = [];
   for (let i = 0; i < region.length; i += 1) {
     const char = region[i];
-    if (char === '\\') {
+    if (char === "\\") {
       i += 1;
-    } else if (char === '[') {
+    } else if (char === "[") {
       open.push(i);
-    } else if (char === ']' && open.length > 0) {
+    } else if (char === "]" && open.length > 0) {
       open.pop();
     }
   }
@@ -321,10 +317,10 @@ function escapeUnmatchedBrackets(label: string): string {
     return label;
   }
 
-  let out = '';
+  let out = "";
   let cursor = 0;
   for (const position of positions) {
-    out += label.slice(cursor, position) + '\\[';
+    out += label.slice(cursor, position) + "\\[";
     cursor = position + 1;
   }
   return out + label.slice(cursor);
@@ -341,11 +337,11 @@ function escapeUnmatchedBrackets(label: string): string {
 // through as well, so a `<...>` run is judged wherever it happens to start
 // and end. On text the main scan already handled it is a no-op.
 function rejectUnsafeAutolinks(markdown: string): string {
-  let out = '';
+  let out = "";
   let index = 0;
 
   while (index < markdown.length) {
-    const angle = markdown.indexOf('<', index);
+    const angle = markdown.indexOf("<", index);
     if (angle === -1) {
       out += markdown.slice(index);
       break;
@@ -367,16 +363,12 @@ function rejectUnsafeAutolinks(markdown: string): string {
 // plain text would just hand a linkifying renderer the same string again.
 // Anything that isn't an autolink is not this function's business: the `<`
 // goes through as the ordinary character it is.
-function readAutolink(
-  markdown: string,
-  angle: number,
-  keep: (kept: string) => void,
-): number {
-  const close = markdown.indexOf('>', angle + 1);
+function readAutolink(markdown: string, angle: number, keep: (kept: string) => void): number {
+  const close = markdown.indexOf(">", angle + 1);
   const candidate = close === -1 ? null : markdown.slice(angle, close + 1);
 
   if (candidate === null || !isAutolink(candidate)) {
-    keep('<');
+    keep("<");
     return angle + 1;
   }
 
@@ -419,20 +411,20 @@ function readLabelEnd(markdown: string, open: number): number {
   while (cursor < markdown.length) {
     const char = markdown[cursor];
 
-    if (char === '\\' && cursor + 1 < markdown.length) {
+    if (char === "\\" && cursor + 1 < markdown.length) {
       cursor += 2;
       continue;
     }
 
-    if (char === '[') {
+    if (char === "[") {
       depth += 1;
-    } else if (char === ']') {
+    } else if (char === "]") {
       depth -= 1;
-      if (firstCandidate === -1 && markdown[cursor + 1] === '(') {
+      if (firstCandidate === -1 && markdown[cursor + 1] === "(") {
         firstCandidate = cursor;
       }
       if (depth === 0) {
-        return markdown[cursor + 1] === '(' ? cursor : firstCandidate;
+        return markdown[cursor + 1] === "(" ? cursor : firstCandidate;
       }
     }
 
@@ -444,27 +436,27 @@ function readLabelEnd(markdown: string, open: number): number {
 
 function readLink(markdown: string, open: number): ParsedLink | null {
   const labelEnd = readLabelEnd(markdown, open);
-  if (labelEnd === -1 || markdown[labelEnd + 1] !== '(') {
+  if (labelEnd === -1 || markdown[labelEnd + 1] !== "(") {
     return null;
   }
 
   let depth = 1;
   let cursor = labelEnd + 2;
-  let destination = '';
+  let destination = "";
 
   while (cursor < markdown.length) {
     const char = markdown[cursor];
 
-    if (char === '\\' && cursor + 1 < markdown.length) {
+    if (char === "\\" && cursor + 1 < markdown.length) {
       // An escaped character can neither open nor close the destination.
       destination += char + markdown[cursor + 1];
       cursor += 2;
       continue;
     }
 
-    if (char === '(') {
+    if (char === "(") {
       depth += 1;
-    } else if (char === ')') {
+    } else if (char === ")") {
       depth -= 1;
       if (depth === 0) {
         return {
@@ -577,9 +569,9 @@ export function isSafeDestination(destination: string): boolean {
     // agree (percent-decoding, a renderer that normalizes) would turn this
     // into a hole, so the removal earns its place from the pointy-bracket
     // form it exists for, not from a monotonicity it does not have.
-    .replace(/[<>]/g, '')
+    .replace(/[<>]/g, "")
     // eslint-disable-next-line no-control-regex -- the point is the control characters
-    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/[\u0000-\u001F\u007F]/g, "")
     .trim()
     .toLowerCase();
 
@@ -605,23 +597,23 @@ export function sanitizeReportBody(body: Block[]): Block[] {
 
 function sanitizeBlock(block: Block): Block {
   switch (block.kind) {
-    case 'TEXT':
+    case "TEXT":
       return { ...block, markdown: sanitizeMarkdown(block.markdown) };
-    case 'FINDING':
+    case "FINDING":
       return {
         ...block,
         explanation: sanitizeMarkdown(block.explanation),
         remediation: sanitizeMarkdown(block.remediation),
       };
-    case 'POLICY_VIOLATION':
+    case "POLICY_VIOLATION":
       return {
         ...block,
         explanation: sanitizeMarkdown(block.explanation),
         remediation: sanitizeMarkdown(block.remediation),
       };
-    case 'COMPLEXITY_WARNING':
+    case "COMPLEXITY_WARNING":
       return { ...block, explanation: sanitizeMarkdown(block.explanation) };
-    case 'CHANGELOG_ITEM':
+    case "CHANGELOG_ITEM":
       return { ...block, detail: sanitizeMarkdown(block.detail) };
   }
 }

@@ -1,29 +1,29 @@
-import { Outlet, Link, useRouterState, useNavigate } from '@tanstack/react-router';
-import { useWebSocket } from '../../hooks/useWebSocket';
-import { useSessionStore } from '../../stores/sessionStore';
-import { CredentialBanner } from './CredentialBanner';
-import { RoleBadge } from './RoleBadge';
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useWebSocket } from "../../hooks/useWebSocket";
+import { useSessionStore } from "../../stores/sessionStore";
+import { CredentialBanner } from "./CredentialBanner";
+import { RoleBadge } from "./RoleBadge";
 
 const NAV_LINKS = [
-  { label: 'Credenziali', path: '/credentials' },
-  { label: 'Repository',  path: '/select' },
-  { label: 'Avvia',       path: '/run' },
-  { label: 'Task',        path: '/tasks' },
-  { label: 'Report',      path: '/reports' },
+  { label: "Credenziali", path: "/credentials" },
+  { label: "Repository", path: "/select" },
+  { label: "Avvia", path: "/run" },
+  { label: "Task", path: "/tasks" },
+  { label: "Report", path: "/reports" },
 ] as const;
 
 export function AppShell() {
   useWebSocket();
 
-  const user        = useSessionStore((s) => s.user);
-  const logout      = useSessionStore((s) => s.logout);
-  const navigate    = useNavigate();
+  const user = useSessionStore((s) => s.user);
+  const logout = useSessionStore((s) => s.logout);
+  const navigate = useNavigate();
   const routerState = useRouterState();
-  const current     = routerState.location.pathname;
+  const current = routerState.location.pathname;
 
   function handle_logout() {
     logout();
-    navigate({ to: '/login' });
+    navigate({ to: "/login" });
   }
 
   return (
@@ -43,17 +43,17 @@ export function AppShell() {
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="flex flex-col gap-0.5 px-2">
               {NAV_LINKS.map(({ label, path }) => {
-                const is_active = current === path || current.startsWith(path + '/');
+                const is_active = current === path || current.startsWith(path + "/");
                 return (
                   <li key={path}>
                     <Link
                       to={path}
                       className={[
-                        'flex items-center rounded px-3 py-2 text-sm transition',
+                        "flex items-center rounded px-3 py-2 text-sm transition",
                         is_active
-                          ? 'bg-white/15 font-medium text-white'
-                          : 'text-white/70 hover:bg-white/10 hover:text-white',
-                      ].join(' ')}
+                          ? "bg-white/15 font-medium text-white"
+                          : "text-white/70 hover:bg-white/10 hover:text-white",
+                      ].join(" ")}
                     >
                       {label}
                     </Link>

@@ -1,12 +1,5 @@
-import {
-  IsEmail,
-  IsIn,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
-import { USER_ROLES, type UserRole } from '../schemas/user.schema';
+import { IsEmail, IsIn, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { USER_ROLES, type UserRole } from "../schemas/user.schema";
 
 export class RegisterDto {
   @IsString()
@@ -25,7 +18,7 @@ export class RegisterDto {
   @IsString()
   @MinLength(8)
   @Matches(/(?=.*[A-Za-z])(?=.*\d)/, {
-    message: 'password must contain at least one letter and one digit',
+    message: "password must contain at least one letter and one digit",
   })
   password: string;
 

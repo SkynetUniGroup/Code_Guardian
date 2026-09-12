@@ -1,6 +1,6 @@
-import PDFDocument from 'pdfkit';
-import type { ReportDto } from './dto/report.dto';
-import type { Block, Proposal } from './report.types';
+import PDFDocument from "pdfkit";
+import type { ReportDto } from "./dto/report.dto";
+import type { Block, Proposal } from "./report.types";
 
 // BE-20: composes the PDF programmatically from the persisted ReportDto —
 // never from rendered HTML (the issue is explicit about this), so there's
@@ -19,19 +19,15 @@ export function composeReportPdf(report: ReportDto): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 50, bufferPages: true });
     const chunks: Buffer[] = [];
-    doc.on('data', (chunk: Buffer) => chunks.push(chunk));
-    doc.on('end', () => resolve(Buffer.concat(chunks)));
-    doc.on('error', reject);
+    doc.on("data", (chunk: Buffer) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
 
     try {
       renderHeader(doc, report);
       if (report.summary) {
-        doc
-          .moveDown()
-          .fontSize(11)
-          .font('Helvetica-Oblique')
-          .text(report.summary);
-        doc.font('Helvetica');
+        doc.moveDown().fontSize(11).font("Helvetica-Oblique").text(report.summary);
+        doc.font("Helvetica");
       }
 
       doc.moveDown();
@@ -52,46 +48,40 @@ export function composeReportPdf(report: ReportDto): Promise<Buffer> {
 }
 
 function renderHeader(doc: PDFKit.PDFDocument, report: ReportDto): void {
-  doc.fontSize(18).font('Helvetica-Bold').text(report.title);
-  doc.font('Helvetica');
+  doc.fontSize(18).font("Helvetica-Bold").text(report.title);
+  doc.font("Helvetica");
   doc
     .fontSize(9)
-    .fillColor('#555555')
+    .fillColor("#555555")
     .text(
       `${report.context.scopeType} · ${report.context.branch}@${report.context.resolvedSha.slice(0, 12)} · generated ${report.generatedAt}`,
     );
-  doc.fillColor('black');
+  doc.fillColor("black");
 }
 
 function renderBlock(doc: PDFKit.PDFDocument, block: Block): void {
   switch (block.kind) {
-    case 'TEXT':
+    case "TEXT":
       doc.fontSize(11).text(block.markdown);
       return;
-    case 'FINDING':
-      renderHeading(
-        doc,
-        `Finding — ${block.severity.toUpperCase()} — ${block.category}`,
-      );
+    case "FINDING":
+      renderHeading(doc, `Finding — ${block.severity.toUpperCase()} — ${block.category}`);
       renderMeta(doc, `${block.filePath}:${block.startLine}-${block.endLine}`);
       doc.fontSize(10).text(block.explanation);
       renderRemediation(doc, block.remediation, block.remediationLanguage);
       return;
-    case 'POLICY_VIOLATION':
-      renderHeading(
-        doc,
-        `Policy violation — ${block.severity.toUpperCase()} — ${block.ruleId}`,
-      );
+    case "POLICY_VIOLATION":
+      renderHeading(doc, `Policy violation — ${block.severity.toUpperCase()} — ${block.ruleId}`);
       renderMeta(doc, `${block.filePath} · ${block.ruleText}`);
       doc.fontSize(10).text(block.explanation);
       renderRemediation(doc, block.remediation);
       return;
-    case 'COMPLEXITY_WARNING':
-      renderHeading(doc, 'Complexity warning');
+    case "COMPLEXITY_WARNING":
+      renderHeading(doc, "Complexity warning");
       renderMeta(doc, `${block.filePath}:${block.startLine}-${block.endLine}`);
       doc.fontSize(10).text(block.explanation);
       return;
-    case 'CHANGELOG_ITEM':
+    case "CHANGELOG_ITEM":
       renderHeading(doc, `${block.issueRef} — ${block.title}`);
       doc.fontSize(10).text(block.detail);
       return;
@@ -104,28 +94,24 @@ function renderProposal(doc: PDFKit.PDFDocument, proposal: Proposal): void {
   if (proposal.pullRequestUrl) {
     renderMeta(doc, `Pull Request: ${proposal.pullRequestUrl}`);
   }
-  doc.fontSize(9).font('Courier').text(proposal.diffUnified);
-  doc.font('Helvetica');
+  doc.fontSize(9).font("Courier").text(proposal.diffUnified);
+  doc.font("Helvetica");
 }
 
 function renderHeading(doc: PDFKit.PDFDocument, text: string): void {
-  doc.fontSize(13).font('Helvetica-Bold').text(text);
-  doc.font('Helvetica');
+  doc.fontSize(13).font("Helvetica-Bold").text(text);
+  doc.font("Helvetica");
 }
 
 function renderMeta(doc: PDFKit.PDFDocument, text: string): void {
-  doc.fontSize(9).fillColor('#555555').text(text);
-  doc.fillColor('black');
+  doc.fontSize(9).fillColor("#555555").text(text);
+  doc.fillColor("black");
 }
 
-function renderRemediation(
-  doc: PDFKit.PDFDocument,
-  remediation: string,
-  language?: string,
-): void {
+function renderRemediation(doc: PDFKit.PDFDocument, remediation: string, language?: string): void {
   doc
     .fontSize(9)
-    .font('Helvetica-Bold')
-    .text(`Remediation${language ? ` (${language})` : ''}:`);
-  doc.font('Helvetica').fontSize(10).text(remediation);
+    .font("Helvetica-Bold")
+    .text(`Remediation${language ? ` (${language})` : ""}:`);
+  doc.font("Helvetica").fontSize(10).text(remediation);
 }

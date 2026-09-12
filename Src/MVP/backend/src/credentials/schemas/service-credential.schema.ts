@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { HydratedDocument } from "mongoose";
 
 export type ServiceCredentialDocument = HydratedDocument<ServiceCredential>;
 
@@ -32,7 +32,6 @@ export class ServiceCredential {
   connectedAt: Date;
 }
 
-export const ServiceCredentialSchema =
-  SchemaFactory.createForClass(ServiceCredential);
+export const ServiceCredentialSchema = SchemaFactory.createForClass(ServiceCredential);
 
 ServiceCredentialSchema.index({ userId: 1, provider: 1 }, { unique: true });
