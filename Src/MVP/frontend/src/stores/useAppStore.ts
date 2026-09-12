@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { OperationCode, type Report, ReportStatus, type Task } from "../types";
+import { OperationCode, type Report, type TaskEntry } from "../types";
 
 interface AnalysisContext {
   id: string;
@@ -11,7 +11,7 @@ interface AnalysisContext {
 
 interface AppState {
   contexts: AnalysisContext[];
-  tasks: Task[];
+  tasks: TaskEntry[];
   reports: Record<string, Report>;
   currentTaskId: string | null;
   websocketConnected: boolean;
@@ -26,9 +26,9 @@ interface AppState {
 
 interface AppActions {
   addContext: (context: AnalysisContext) => void;
-  setTasks: (tasks: Task[]) => void;
-  addTask: (task: Task) => void;
-  updateTask: (taskId: string, updates: Partial<Task>) => void;
+  setTasks: (tasks: TaskEntry[]) => void;
+  addTask: (task: TaskEntry) => void;
+  updateTask: (taskId: string, updates: Partial<TaskEntry>) => void;
   setCurrentTask: (taskId: string | null) => void;
   addReport: (report: Report) => void;
   setWebSocketConnected: (connected: boolean) => void;

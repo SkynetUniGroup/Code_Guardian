@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { Report, Task } from "../types";
+import type { Report, TaskEntry } from "../types";
 import { useAppStore } from "./useAppStore";
 
 // Lo store e' un singleton globale (create() di zustand): resettiamo lo
@@ -11,11 +11,15 @@ beforeEach(() => {
   useAppStore.setState(initialState, true);
 });
 
-const makeTask = (overrides: Partial<Task> = {}): Task => ({
+const makeTask = (overrides: Partial<TaskEntry> = {}): TaskEntry => ({
   id: "task-1",
-  contextId: "ctx-1",
   operation: "SECURITY_OWASP",
   status: "PENDING",
+  progressPercent: 0,
+  currentStage: null,
+  reportId: null,
+  error: null,
+  pendingInput: null,
   ...overrides,
 });
 
@@ -104,6 +108,7 @@ describe("useAppStore", () => {
       agentId: "a",
       operation: "SECURITY_OWASP",
       status: "COMPLETED",
+      title: "Report A",
       body: [],
       generatedAt: "2026-01-01T00:00:00Z",
     };
@@ -122,7 +127,8 @@ describe("useAppStore", () => {
       taskId: "t",
       agentId: "a",
       operation: "SECURITY_OWASP",
-      status: "RUNNING",
+      status: "FAILED",
+      title: "Report A",
       body: [],
       generatedAt: "2026-01-01T00:00:00Z",
     };

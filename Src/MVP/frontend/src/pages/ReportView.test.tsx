@@ -23,6 +23,7 @@ const makeReport = (overrides: Partial<Report> = {}): Report => ({
   agentId: "security",
   operation: "SECURITY_OWASP",
   status: "COMPLETED",
+  title: "Report 1",
   body: [],
   generatedAt: "2026-08-18T10:00:00Z",
   ...overrides,

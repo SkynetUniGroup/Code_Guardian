@@ -22,7 +22,9 @@ class FakeSocket {
   }
 
   emit(event: string, payload?: any) {
-    this.handlers.get(event)?.forEach((h) => h(payload));
+    this.handlers.get(event)?.forEach((h) => {
+      h(payload);
+    });
   }
 
   listenerCount(event: string) {
@@ -103,9 +105,16 @@ describe("useWebSocket", () => {
   });
 
   it("task.progress porta la task in stato RUNNING", async () => {
-    useAppStore
-      .getState()
-      .addTask({ id: "task-1", contextId: "ctx", operation: "SECURITY_OWASP", status: "PENDING" });
+    useAppStore.getState().addTask({
+      id: "task-1",
+      operation: "SECURITY_OWASP",
+      status: "PENDING",
+      progressPercent: 0,
+      currentStage: null,
+      reportId: null,
+      error: null,
+      pendingInput: null,
+    });
     renderHook(() => useWebSocket());
     await waitFor(() => expect(lastSocket).not.toBeNull());
 
@@ -115,15 +124,23 @@ describe("useWebSocket", () => {
   });
 
   it("task.updated con status COMPLETED recupera e memorizza il report se non gia' presente", async () => {
-    useAppStore
-      .getState()
-      .addTask({ id: "task-1", contextId: "ctx", operation: "SECURITY_OWASP", status: "RUNNING" });
+    useAppStore.getState().addTask({
+      id: "task-1",
+      operation: "SECURITY_OWASP",
+      status: "RUNNING",
+      progressPercent: 0,
+      currentStage: null,
+      reportId: null,
+      error: null,
+      pendingInput: null,
+    });
     getReportMock.mockResolvedValueOnce({
       id: "report-1",
       taskId: "task-1",
       agentId: "security",
       operation: "SECURITY_OWASP",
       status: "COMPLETED",
+      title: "Report 1",
       body: [],
       generatedAt: "2026-01-01T00:00:00Z",
     });
@@ -145,15 +162,23 @@ describe("useWebSocket", () => {
   });
 
   it("task.updated con status COMPLETED NON ri-recupera un report gia' presente in store (dedup)", async () => {
-    useAppStore
-      .getState()
-      .addTask({ id: "task-1", contextId: "ctx", operation: "SECURITY_OWASP", status: "RUNNING" });
+    useAppStore.getState().addTask({
+      id: "task-1",
+      operation: "SECURITY_OWASP",
+      status: "RUNNING",
+      progressPercent: 0,
+      currentStage: null,
+      reportId: null,
+      error: null,
+      pendingInput: null,
+    });
     useAppStore.getState().addReport({
       id: "report-1",
       taskId: "task-1",
       agentId: "security",
       operation: "SECURITY_OWASP",
       status: "COMPLETED",
+      title: "Report 1",
       body: [],
       generatedAt: "2026-01-01T00:00:00Z",
     });
@@ -172,9 +197,16 @@ describe("useWebSocket", () => {
   });
 
   it("task.updated con status COMPLETED logga l'errore se il recupero del report fallisce", async () => {
-    useAppStore
-      .getState()
-      .addTask({ id: "task-1", contextId: "ctx", operation: "SECURITY_OWASP", status: "RUNNING" });
+    useAppStore.getState().addTask({
+      id: "task-1",
+      operation: "SECURITY_OWASP",
+      status: "RUNNING",
+      progressPercent: 0,
+      currentStage: null,
+      reportId: null,
+      error: null,
+      pendingInput: null,
+    });
     getReportMock.mockRejectedValueOnce(new Error("report non trovato"));
     renderHook(() => useWebSocket());
     await waitFor(() => expect(lastSocket).not.toBeNull());
@@ -209,9 +241,16 @@ describe("useWebSocket", () => {
   });
 
   it("task.failed porta la task in stato FAILED", async () => {
-    useAppStore
-      .getState()
-      .addTask({ id: "task-1", contextId: "ctx", operation: "SECURITY_OWASP", status: "RUNNING" });
+    useAppStore.getState().addTask({
+      id: "task-1",
+      operation: "SECURITY_OWASP",
+      status: "RUNNING",
+      progressPercent: 0,
+      currentStage: null,
+      reportId: null,
+      error: null,
+      pendingInput: null,
+    });
     renderHook(() => useWebSocket());
     await waitFor(() => expect(lastSocket).not.toBeNull());
 

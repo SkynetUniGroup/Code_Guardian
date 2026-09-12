@@ -20,7 +20,7 @@ const router = createRouter({
   defaultPreloadStaleTime: 0,
   defaultErrorComponent: ({ error }) => (
     <div className="flex items-center justify-center min-h-screen text-sm text-red-600 p-4">
-      Errore inatteso: {error.message}
+      Errore inatteso: {error instanceof Error ? error.message : String(error)}
     </div>
   ),
 });

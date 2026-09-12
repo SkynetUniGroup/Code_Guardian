@@ -72,9 +72,13 @@ export default function RepositorySelection() {
 
       addTask({
         id: newTaskId,
-        contextId: contextData.contextId,
         operation: selectedOperation,
         status: "PENDING",
+        progressPercent: 0,
+        currentStage: null,
+        reportId: null,
+        error: null,
+        pendingInput: null,
       });
       setCurrentTask(newTaskId);
 
@@ -95,8 +99,11 @@ export default function RepositorySelection() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Repository Owner</label>
+            <label htmlFor="repo-owner" className="block text-sm font-medium text-gray-700">
+              Repository Owner
+            </label>
             <input
+              id="repo-owner"
               type="text"
               value={localForm.repoOwner}
               onChange={(e) => {
@@ -110,8 +117,11 @@ export default function RepositorySelection() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Repository Name</label>
+            <label htmlFor="repo-name" className="block text-sm font-medium text-gray-700">
+              Repository Name
+            </label>
             <input
+              id="repo-name"
               type="text"
               value={localForm.repoName}
               onChange={(e) => {
@@ -128,8 +138,11 @@ export default function RepositorySelection() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Ref</label>
+            <label htmlFor="repo-ref" className="block text-sm font-medium text-gray-700">
+              Ref
+            </label>
             <input
+              id="repo-ref"
               type="text"
               value={localForm.ref}
               onChange={(e) => {
@@ -143,8 +156,11 @@ export default function RepositorySelection() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Scope (Opzionale)</label>
+            <label htmlFor="repo-scope" className="block text-sm font-medium text-gray-700">
+              Scope (Opzionale)
+            </label>
             <input
+              id="repo-scope"
               type="text"
               value={localForm.scope}
               onChange={(e) => {
@@ -159,7 +175,9 @@ export default function RepositorySelection() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Operazione</label>
+          <label htmlFor="operation-select" className="block text-sm font-medium text-gray-700">
+            Operazione
+          </label>
           {operations.length === 0 && (
             <button
               type="button"
@@ -171,6 +189,7 @@ export default function RepositorySelection() {
           )}
           {operations.length > 0 && (
             <select
+              id="operation-select"
               value={selectedOperation}
               onChange={(e) => setSelectedOperation(e.target.value as OperationCode)}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white"

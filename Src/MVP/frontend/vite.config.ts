@@ -72,10 +72,10 @@ export default defineConfig(({ mode }) => ({
          * Split vendor code into a separate chunk so the browser can cache
          * React, TanStack Router, etc. independently from application code.
          */
-        manualChunks: {
-          vendor: ["react", "react-dom", "@tanstack/react-router"],
-          state: ["zustand"],
-          network: ["axios", "socket.io-client"],
+        manualChunks: (id: string) => {
+          if (/node_modules\/(react|react-dom|@tanstack\/react-router)/.test(id)) return "vendor";
+          if (/node_modules\/zustand/.test(id)) return "state";
+          if (/node_modules\/(axios|socket\.io-client)/.test(id)) return "network";
         },
       },
     },
