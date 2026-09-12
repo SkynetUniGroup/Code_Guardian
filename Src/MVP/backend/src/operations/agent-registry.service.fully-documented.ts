@@ -68,6 +68,54 @@ const ENTRIES: AgentRegistryEntry[] = [
   },
 ];
 
+/**
+ * Service responsible for managing and providing information about available operations
+ * that can be executed by agents in the system. It acts as a registry for all operations,
+ * allowing retrieval of operation details based on user roles, operation codes, and other criteria.
+ *
+ * @injectable
+ */
+
+  /**
+   * Retrieves a list of operations that are allowed for the given user role.
+   *
+   * @param role - The user role for which to filter operations.
+   * @returns An array of operation descriptors (DTOs) containing code, display name,
+   *          description, and agent information for each allowed operation.
+   */
+
+  /**
+   * Gets the timeout (in seconds) for a specific operation, capped at the maximum allowed timeout.
+   *
+   * @param code - The operation code for which to retrieve the timeout.
+   * @returns The timeout in seconds for the specified operation.
+   * @throws {Error} If the operation code is unknown.
+   */
+
+  /**
+   * Retrieves the agent name responsible for executing a specific operation.
+   *
+   * @param code - The operation code for which to retrieve the agent name.
+   * @returns The name of the agent associated with the specified operation.
+   * @throws {Error} If the operation code is unknown.
+   */
+
+  /**
+   * Retrieves the display name of a specific operation.
+   *
+   * @param code - The operation code for which to retrieve the display name.
+   * @returns The display name of the specified operation.
+   * @throws {Error} If the operation code is unknown.
+   */
+
+  /**
+   * Retrieves the full registry entry for a specific operation.
+   *
+   * @private
+   * @param code - The operation code for which to retrieve the entry.
+   * @returns The full registry entry for the specified operation.
+   * @throws {Error} If the operation code is unknown.
+   */
 @Injectable()
 export class AgentRegistry {
   getForRole(role: UserRole): OperationDescriptorDto[] {
