@@ -150,26 +150,70 @@ class DocsLoader:
             for i, line in enumerate(lines):
                 if re.search(ts_pattern, line):
                     has_doc = False
-                    for j in range(i - 1, max(i - 4, -1), -1):
+
+                    # Collect all decorators immediately above this declaration
+                    decorator_lines = []
+                    j = i - 1
+                    while j >= max(i - 4, 0):
                         prev_line = lines[j].strip()
-                        if prev_line.endswith("*/") or prev_line.startswith("//"):
-                            has_doc = True
-                            break
-                        # Empty: keep looking
-                        elif prev_line == "":
-                            continue
-                        # Code: no docstring
+                        if prev_line.startswith("@"):
+                            decorator_lines.insert(0, j)
+                            j -= 1
                         else:
                             break
 
+                    # Look back for JSDoc, starting from before the first decorator
+                    start_search = decorator_lines[0] - 1 if decorator_lines else i - 1
+
+                    k = start_search
+                    while k >= 0:
+                        prev_line = lines[k].strip()
+
+                        # Found closing */ - verify it's JSDoc, not /* */
+                        if prev_line.endswith("*/"):
+                            # Search backward unlimited to find matching /**
+                            m = k
+                            found_jsdoc_start = False
+                            while m >= 0:
+                                check_line = lines[m].strip()
+                                if check_line.startswith("/**"):
+                                    found_jsdoc_start = True
+                                    break
+                                elif check_line.startswith("*") or check_line == "":
+                                    m -= 1
+                                    continue
+                                else:
+                                    break
+
+                            if found_jsdoc_start:
+                                has_doc = True
+                            break
+
+                        elif prev_line.startswith("//"):
+                            k -= 1
+                            continue
+                        elif prev_line == "":
+                            k -= 1
+                            continue
+                        else:
+                            break
+
+                        k -= 1
+
+                    # Determine insertion line for TS: BEFORE first decorator or declaration
+                    insert_line = decorator_lines[0] if decorator_lines else i
+
                     match = re.search(r"(?:function|class|const)\s+([a-zA-Z0-9_]+)", line)
+                    if not match:
+                        match = re.search(r"([a-zA-Z0-9_]+)\s*(", line)
+
                     if match:
                         status = (
                             "DOCUMENTED - SKIP unless outdated"
                             if has_doc
                             else "UNDOCUMENTED - generate"
                         )
-                        targets.append(f"Line {i + 1}: {match.group(1)} ({status})")
+                        targets.append(f"Line {insert_line + 1}: {match.group(1)} ({status})")
 
         return targets
 
