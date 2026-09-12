@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import type { ContextsService } from "./contexts.service";
-import type { AnalysisContextDto } from "./dto/analysis-context.dto";
-import type { CreateContextDto } from "./dto/create-context.dto";
+import { ContextsService } from "./contexts.service";
+import { AnalysisContextDto } from "./dto/analysis-context.dto";
+import { CreateContextDto } from "./dto/create-context.dto";
 
 @Controller("contexts")
 @UseGuards(JwtAuthGuard)

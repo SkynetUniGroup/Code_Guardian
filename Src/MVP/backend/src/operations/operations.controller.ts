@@ -2,7 +2,7 @@ import { Controller, Get, UseGuards } from "@nestjs/common";
 import type { UserRole } from "../auth/schemas/user.schema";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import type { AgentRegistry } from "./agent-registry.service";
+import { AgentRegistry } from "./agent-registry.service";
 import type { OperationDescriptorDto } from "./agent-registry.types";
 
 @Controller("operations")

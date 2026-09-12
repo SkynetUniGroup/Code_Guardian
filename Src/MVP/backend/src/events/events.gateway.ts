@@ -1,4 +1,4 @@
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import {
   ConnectedSocket,
   type OnGatewayConnection,

@@ -5,7 +5,7 @@ import {
   AnalysisContext,
   type AnalysisContextDocument,
 } from "../contexts/schemas/analysis-context.schema";
-import type { AgentRegistry } from "../operations/agent-registry.service";
+import { AgentRegistry } from "../operations/agent-registry.service";
 import type { AgentRunPayload } from "../tasks/agent-client.types";
 import type { TaskDocument } from "../tasks/schemas/task.schema";
 import type { TaskError } from "../tasks/task.types";

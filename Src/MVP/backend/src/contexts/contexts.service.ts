@@ -7,17 +7,17 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
-import type { CredentialsService } from "../credentials/credentials.service";
-import type { GithubClientService } from "../github/github-client.service";
+import { CredentialsService } from "../credentials/credentials.service";
+import { GithubClientService } from "../github/github-client.service";
 import type { TreeNode } from "../github/github-client.types";
 import { detectLanguage } from "../github/language-detection";
-import type { AnalysisContextDto } from "./dto/analysis-context.dto";
-import type { CreateContextDto } from "./dto/create-context.dto";
+import { AnalysisContextDto } from "./dto/analysis-context.dto";
+import { CreateContextDto } from "./dto/create-context.dto";
 import type { FrancFn } from "./franc.provider";
 import { FRANC } from "./franc.provider";
 import { normalizePaths } from "./path-normalization";
 import { isReadmeNonEnglish } from "./readme-language";
-import type { RepoResolverService } from "./repo-resolver.service";
+import { RepoResolverService } from "./repo-resolver.service";
 import { AnalysisContext, type AnalysisContextDocument } from "./schemas/analysis-context.schema";
 
 const GITHUB_PROVIDER = "GITHUB";

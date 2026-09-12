@@ -1,10 +1,10 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import type { AuthService } from "./auth.service";
+import { AuthService } from "./auth.service";
 import type { AuthTokenDto } from "./dto/auth-token.dto";
-import type { LoginDto } from "./dto/login.dto";
-import type { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
 import type { UserProfileDto } from "./dto/user-profile.dto";
 
 @Controller("auth")

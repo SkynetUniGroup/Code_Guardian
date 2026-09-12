@@ -2,10 +2,10 @@ import { Controller, Get, Query, UseGuards } from "@nestjs/common";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
 import type { RefSummary, RepositorySummary } from "../github/github-client.types";
-import type { RepoTreeQueryDto } from "./dto/repo-tree-query.dto";
-import type { RepoUrlQueryDto } from "./dto/repo-url-query.dto";
-import type { RepositoryTreeDto } from "./dto/repository-tree.dto";
-import type { RepositoriesService } from "./repositories.service";
+import { RepoTreeQueryDto } from "./dto/repo-tree-query.dto";
+import { RepoUrlQueryDto } from "./dto/repo-url-query.dto";
+import { RepositoryTreeDto } from "./dto/repository-tree.dto";
+import { RepositoriesService } from "./repositories.service";
 
 // Every route here is personal to the caller — no RolesGuard, just proof of
 // identity, same shape as CredentialsController.

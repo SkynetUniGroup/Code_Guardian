@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
-import type { ConfigService } from "@nestjs/config";
+import { ConfigService } from "@nestjs/config";
 import { InjectModel } from "@nestjs/mongoose";
-import type { Model } from "mongoose";
+import { Model } from "mongoose";
 import { AppException } from "../common/exceptions/app.exception";
 import { UsageCounter, type UsageCounterDocument } from "./schemas/usage-counter.schema";
 

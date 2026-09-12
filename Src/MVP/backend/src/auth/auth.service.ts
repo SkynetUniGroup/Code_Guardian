@@ -4,14 +4,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
-import type { Model } from "mongoose";
+import { Model } from "mongoose";
 import type { AuthTokenDto } from "./dto/auth-token.dto";
-import type { LoginDto } from "./dto/login.dto";
-import type { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
 import type { UserProfileDto } from "./dto/user-profile.dto";
-import type { PasswordService } from "./password.service";
+import { PasswordService } from "./password.service";
 import { User, type UserDocument } from "./schemas/user.schema";
 
 // A real hash of an arbitrary password, precomputed offline. Verified against

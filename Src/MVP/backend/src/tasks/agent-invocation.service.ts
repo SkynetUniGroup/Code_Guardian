@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import type { ConfigService } from "@nestjs/config";
+import { ConfigService } from "@nestjs/config";
 import { randomUUID } from "crypto";
-import type { AgentRegistry } from "../operations/agent-registry.service";
+import { AgentRegistry } from "../operations/agent-registry.service";
 import type {
   AgentResumeRequest,
   AgentRunPayload,

@@ -10,11 +10,11 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { ApiExcludeController } from "@nestjs/swagger";
-import type { Model } from "mongoose";
+import { Model } from "mongoose";
 import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
 import { Task, type TaskDocument } from "../tasks/schemas/task.schema";
-import type { TaskProgressCallbackDto } from "./dto/task-progress-callback.dto";
-import type { EventsGateway } from "./events.gateway";
+import { TaskProgressCallbackDto } from "./dto/task-progress-callback.dto";
+import { EventsGateway } from "./events.gateway";
 
 // Called by the agent service mid-execution. This is the only one of the
 // five realtime signals that crosses the network from outside this

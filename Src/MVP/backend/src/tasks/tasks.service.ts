@@ -14,15 +14,15 @@ import {
   AnalysisContext,
   type AnalysisContextDocument,
 } from "../contexts/schemas/analysis-context.schema";
-import type { CredentialsService } from "../credentials/credentials.service";
-import type { EventsGateway } from "../events/events.gateway";
-import type { AgentRegistry } from "../operations/agent-registry.service";
-import type { CreateTaskBatchDto } from "./dto/create-task-batch.dto";
-import type { SubmitInputDto } from "./dto/submit-input.dto";
+import { CredentialsService } from "../credentials/credentials.service";
+import { EventsGateway } from "../events/events.gateway";
+import { AgentRegistry } from "../operations/agent-registry.service";
+import { CreateTaskBatchDto } from "./dto/create-task-batch.dto";
+import { SubmitInputDto } from "./dto/submit-input.dto";
 import { type TaskDto, toTaskDto } from "./dto/task.dto";
 import { Task, type TaskDocument } from "./schemas/task.schema";
 import type { RunTaskJobData } from "./task-processor";
-import type { UsageLimitService } from "./usage-limit.service";
+import { UsageLimitService } from "./usage-limit.service";
 
 export interface CreateTaskBatchResult {
   taskIds: string[];

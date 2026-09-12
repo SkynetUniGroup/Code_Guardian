@@ -3,7 +3,7 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import { Octokit } from "@octokit/rest";
 import { applyPatch } from "diff";
 import { AppException } from "../common/exceptions/app.exception";
-import type { GithubClientService } from "./github-client.service";
+import { GithubClientService } from "./github-client.service";
 import { OCTOKIT_TIMEOUT_MS } from "./octokit-timeout";
 
 export interface ProposalChange {

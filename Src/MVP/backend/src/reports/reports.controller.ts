@@ -2,12 +2,12 @@ import { Controller, Get, Param, Query, Res, UseGuards } from "@nestjs/common";
 import type { Response } from "express";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import type { ExportReportQueryDto } from "./dto/export-report-query.dto";
-import type { ListReportsQueryDto } from "./dto/list-reports-query.dto";
+import { ExportReportQueryDto } from "./dto/export-report-query.dto";
+import { ListReportsQueryDto } from "./dto/list-reports-query.dto";
 import type { ReportDto } from "./dto/report.dto";
 import type { ReportSummaryDto } from "./dto/report-summary.dto";
-import type { ReportsService } from "./reports.service";
-import type { ReportsExportService } from "./reports-export.service";
+import { ReportsService } from "./reports.service";
+import { ReportsExportService } from "./reports-export.service";
 
 // Every route here is personal to the caller — no RolesGuard, just proof of
 // identity, same shape as TasksController/RepositoriesController: what a

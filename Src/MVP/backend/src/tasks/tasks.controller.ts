@@ -11,10 +11,11 @@ import {
 import type { AuthenticatedUser } from "../common/authenticated-user";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import type { CreateTaskBatchDto } from "./dto/create-task-batch.dto";
-import type { SubmitInputDto } from "./dto/submit-input.dto";
+import { CreateTaskBatchDto } from "./dto/create-task-batch.dto";
+import { SubmitInputDto } from "./dto/submit-input.dto";
 import type { TaskDto } from "./dto/task.dto";
-import type { CreateTaskBatchResult, TasksService } from "./tasks.service";
+import type { CreateTaskBatchResult } from "./tasks.service";
+import { TasksService } from "./tasks.service";
 
 @Controller("tasks")
 @UseGuards(JwtAuthGuard)

@@ -27,7 +27,21 @@
       "!**/dist",
       "!**/node_modules",
       "!**/coverage",
-      "!**/cdk.out"
+      "!**/cdk.out",
+      "!infra/bin/*.js",
+      "!infra/lib/**/*.js"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["backend/src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ]
 }

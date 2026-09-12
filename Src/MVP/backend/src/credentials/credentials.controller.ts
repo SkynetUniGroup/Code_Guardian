@@ -11,9 +11,9 @@ import {
 } from "@nestjs/common";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import type { CredentialsService } from "./credentials.service";
-import type { CreateCredentialDto } from "./dto/create-credential.dto";
-import type { ServiceCredentialDto } from "./dto/service-credential.dto";
+import { CredentialsService } from "./credentials.service";
+import { CreateCredentialDto } from "./dto/create-credential.dto";
+import { ServiceCredentialDto } from "./dto/service-credential.dto";
 
 // Every route here is personal to the caller — no RolesGuard, just proof of
 // identity via JwtAuthGuard, applied once at the controller level since

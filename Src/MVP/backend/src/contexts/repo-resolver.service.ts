@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import type { GithubClientService } from "../github/github-client.service";
+import { GithubClientService } from "../github/github-client.service";
 import { parseGithubUrl } from "./github-url";
 
 export interface ResolvedRepo {

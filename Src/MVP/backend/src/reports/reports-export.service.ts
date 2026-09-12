@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import type { Response } from "express";
-import type { ReportArtifactStorageService } from "./report-artifact-storage.service";
+import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { composeReportPdf } from "./report-pdf.composer";
-import type { ReportsService } from "./reports.service";
+import { ReportsService } from "./reports.service";
 
 // BE-20: deliberately bypasses the shared error envelope
 // (AllExceptionsFilter / BE-2's error.code catalog) for its two

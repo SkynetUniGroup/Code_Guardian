@@ -571,6 +571,7 @@ export function isSafeDestination(destination: string): boolean {
     // form it exists for, not from a monotonicity it does not have.
     .replace(/[<>]/g, "")
     // eslint-disable-next-line no-control-regex -- the point is the control characters
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: the point is the control characters
     .replace(/[\u0000-\u001F\u007F]/g, "")
     .trim()
     .toLowerCase();

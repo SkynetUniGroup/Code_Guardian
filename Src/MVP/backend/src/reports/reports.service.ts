@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
 import { Task, type TaskDocument } from "../tasks/schemas/task.schema";
-import type { ListReportsQueryDto } from "./dto/list-reports-query.dto";
+import { ListReportsQueryDto } from "./dto/list-reports-query.dto";
 import { type ReportDto, toReportDto } from "./dto/report.dto";
 import { type ReportSummaryDto, toReportSummaryDto } from "./dto/report-summary.dto";
 import { Report, type ReportDocument } from "./schemas/report.schema";

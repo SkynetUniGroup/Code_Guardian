@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import type { Model } from "mongoose";
+import { Model } from "mongoose";
 import {
   AnalysisContext,
   type AnalysisContextDocument,
 } from "../contexts/schemas/analysis-context.schema";
-import type { CredentialsService } from "../credentials/credentials.service";
+import { CredentialsService } from "../credentials/credentials.service";
 import { Task, type TaskDocument } from "../tasks/schemas/task.schema";
 
 export interface ResolvedTaskContext {
