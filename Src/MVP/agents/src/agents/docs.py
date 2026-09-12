@@ -145,10 +145,16 @@ class DocsLoader:
         else:
             ts_pattern = (
                 r"(function\s+[a-zA-Z0-9_]+|class\s+[a-zA-Z0-9_]+|"
-                r"const\s+[a-zA-Z0-9_]+\s*=\s*(?:async\s*)?(?:\([^)]*\)|[a-zA-Z0-9_]+)\s*=>)"
+                r"const\s+[a-zA-Z0-9_]+\s*=\s*(?:async\s*)?(?:\([^)]*\)|[a-zA-Z0-9_]+)\s*=>|"
+                r"[a-zA-Z0-9_]+\s*\("
+                r")"
             )
             for i, line in enumerate(lines):
-                if re.search(ts_pattern, line):
+                stripped = line.strip()
+                if re.search(ts_pattern, stripped):
+                    # Skip decorator-only lines (they're not code units to document)
+                    if stripped.startswith("@"):
+                        continue
                     has_doc = False
 
                     # Collect all decorators immediately above this declaration
