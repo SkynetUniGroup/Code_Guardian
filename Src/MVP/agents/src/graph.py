@@ -521,6 +521,17 @@ class AgentGraph:
             return {"loaded_context": ctx}
         except AgentCancelled:
             raise
+        except GraphInterrupt:
+            # interrupt() segnala una pausa, non un guasto: e' cosi' che il
+            # loader del Changelog chiede all'utente cosa fare delle issue
+            # senza metadati sufficienti. Essendo GraphInterrupt una Exception,
+            # senza questo ramo finiva nel generico qui sotto e veniva
+            # trasformata in {"error": ...}: il grafo andava in gestisci_errore
+            # e la task moriva con UPSTREAM e il payload dell'interrupt come
+            # messaggio, invece di sospendersi e aspettare una risposta. Deve
+            # risalire intatta fino al loop di LangGraph, che e' l'unico a
+            # saperla mettere sotto __interrupt__.
+            raise
         except Exception as exc:
             logger.error("Error in carica_contesto: %s", exc)
             return {"error": exc}

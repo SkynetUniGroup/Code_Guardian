@@ -420,3 +420,28 @@ async def test_report_refuses_an_operation_outside_the_shared_contract():
 
     assert 'report' not in result
     assert 'error' in result
+
+
+@pytest.mark.asyncio
+async def test_carica_contesto_lascia_risalire_la_pausa_per_le_issue_incomplete():
+    """Una pausa richiesta dal loader non deve diventare un errore.
+
+    Il loader del Changelog chiama `interrupt()` quando incontra issue senza
+    metadati sufficienti: LangGraph la propaga come GraphInterrupt, che essendo
+    una Exception finiva nel `except Exception` del nodo e veniva convertita in
+    {"error": ...}. La task moriva allora con UPSTREAM e il payload della pausa
+    come messaggio, invece di sospendersi e attendere la risposta dell'utente.
+    """
+    from langgraph.errors import GraphInterrupt
+
+    pausa = GraphInterrupt(())
+    grafo = AgentGraph(
+        loader=FakeLoader(error=pausa),
+        profile=FakeProfile(),
+        provider=FakeProvider(),
+        timeout_s=90,
+    )
+    grafo._current_redis_client = FakeRedis()
+
+    with pytest.raises(GraphInterrupt):
+        await grafo._node_carica_contesto(build_state())
