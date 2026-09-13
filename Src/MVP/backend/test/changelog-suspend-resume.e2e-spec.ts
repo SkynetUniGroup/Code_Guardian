@@ -42,7 +42,8 @@ describe("TI_09 / TI_10 — sospensione, ripresa e annullamento di CHANGELOG_BUS
   };
   const SOSPENSIONE_3 = {
     kind: "BUSINESS_CONFIRMATION" as const,
-    technicalReportId: "000000000000000000000001",
+    technicalChangelog: "## Sprint 1\n\n- #12 login",
+    technicalChangelogTruncated: false,
   };
 
   function attendi(ms: number): Promise<void> {

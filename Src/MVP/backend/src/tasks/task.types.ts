@@ -20,5 +20,5 @@ export interface TaskError {
 /*export type PendingInput =
   | { kind: 'SPRINT_ID' }
   | { kind: 'INCOMPLETE_TASKS'; taskIds: string[] }
-  | { kind: 'BUSINESS_CONFIRMATION'; technicalReportId: string }
+  | { kind: 'BUSINESS_CONFIRMATION'; technicalChangelog: string }
   | null;*/

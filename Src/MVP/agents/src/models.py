@@ -305,9 +305,16 @@ class PendingInputBusinessConfirmation(BaseModel):
     """Pending input for the business changelog confirmation."""
 
     kind: Literal["BUSINESS_CONFIRMATION"]
-    # Left intentionally Optional: Python does not generate it,
-    # NestJS will populate it after persisting the report to MongoDB.
-    technicalReportId: str | None = None
+    # Il changelog tecnico appena prodotto, come testo Markdown.
+    #
+    # Qui c'era `technicalReportId`, con la nota che l'avrebbe riempito NestJS
+    # dopo aver persistito il report. Non poteva succedere: in quel momento il
+    # Report tecnico non esiste ancora, perche' le due fasi stanno dentro un
+    # solo Task e il Report nasce alla fine. Si manda il testo, che invece c'e'.
+    technicalChangelog: str = ""
+    # True quando il testo e' stato tagliato al tetto: serve all'interfaccia
+    # per dirlo, invece di far credere che il changelog finisca li'.
+    technicalChangelogTruncated: bool = False
 
 
 PendingInput = Annotated[

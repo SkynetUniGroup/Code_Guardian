@@ -266,18 +266,24 @@ describe("TasksPage", () => {
     expect(within(modale).getByText(/ISSUE-9/)).toBeInTheDocument();
   });
 
-  it("per una task in attesa di conferma apre il modulo di approvazione", async () => {
+  it("per una task in attesa di conferma apre la revisione del changelog tecnico", async () => {
     const user = await renderConTask([
       task({
         id: "t1",
         status: "RUNNING",
-        pendingInput: { kind: "BUSINESS_CONFIRMATION", technicalReportId: "rep-tec-1" },
+        pendingInput: {
+          kind: "BUSINESS_CONFIRMATION",
+          technicalChangelog: "## Sprint 3\n\n- #12 login",
+          technicalChangelogTruncated: false,
+        },
       }),
     ]);
 
-    await user.click(await screen.findByRole("button", { name: "Conferma apertura PR" }));
+    await user.click(await screen.findByRole("button", { name: "Rivedi il changelog tecnico" }));
 
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    // Il testo arriva fin qui dalla richiesta di input: la finestra lo mostra
+    // senza dover navigare altrove.
+    expect(within(screen.getByRole("dialog")).getByText(/#12 login/)).toBeInTheDocument();
   });
 
   it("una task senza richieste pendenti non mostra alcun pulsante di intervento", async () => {
@@ -286,6 +292,6 @@ describe("TasksPage", () => {
     await screen.findByText("In esecuzione");
     expect(screen.queryByRole("button", { name: /Sprint ID/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Task incompleti/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /Conferma apertura/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Rivedi il changelog/ })).not.toBeInTheDocument();
   });
 });

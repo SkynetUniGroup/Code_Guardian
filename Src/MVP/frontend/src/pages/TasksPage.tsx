@@ -36,7 +36,11 @@ import { OPERATION_LABELS } from "../types";
 type ModalRequest =
   | { kind: "SPRINT_ID" }
   | { kind: "INCOMPLETE_TASKS"; taskIds: string[] }
-  | { kind: "BUSINESS_CONFIRMATION"; technicalReportId: string };
+  | {
+      kind: "BUSINESS_CONFIRMATION";
+      technicalChangelog: string;
+      technicalChangelogTruncated: boolean;
+    };
 
 type ActiveModal = ModalRequest & { taskId: string };
 
@@ -168,7 +172,8 @@ export function TasksPage() {
       {active_modal?.kind === "BUSINESS_CONFIRMATION" && (
         <BusinessConfirmationModal
           taskId={active_modal.taskId}
-          technicalReportId={active_modal.technicalReportId}
+          technicalChangelog={active_modal.technicalChangelog}
+          technicalChangelogTruncated={active_modal.technicalChangelogTruncated}
           onClose={() => setActiveModal(null)}
         />
       )}
@@ -259,12 +264,13 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
             onClick={() =>
               on_open_modal({
                 kind: "BUSINESS_CONFIRMATION",
-                technicalReportId: pending.technicalReportId,
+                technicalChangelog: pending.technicalChangelog,
+                technicalChangelogTruncated: pending.technicalChangelogTruncated,
               })
             }
             className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#c98f00] transition"
           >
-            Conferma apertura PR
+            Rivedi il changelog tecnico
           </button>
         )}
 

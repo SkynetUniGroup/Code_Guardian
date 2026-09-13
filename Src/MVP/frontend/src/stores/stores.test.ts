@@ -189,12 +189,13 @@ describe("tasksStore", () => {
     });
   });
 
-  it("una richiesta BUSINESS_CONFIRMATION senza report produce una stringa vuota", () => {
+  it("una richiesta BUSINESS_CONFIRMATION senza testo ripiega su una stringa vuota", () => {
     useTasksStore.getState().applyInputRequired({ taskId: "t1", kind: "BUSINESS_CONFIRMATION" });
 
     expect(useTasksStore.getState().tasks.t1.pendingInput).toEqual({
       kind: "BUSINESS_CONFIRMATION",
-      technicalReportId: "",
+      technicalChangelog: "",
+      technicalChangelogTruncated: false,
     });
   });
 

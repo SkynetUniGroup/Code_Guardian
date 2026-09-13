@@ -266,7 +266,7 @@ describe("useWebSocket", () => {
     });
   });
 
-  it("task.inputRequired di tipo BUSINESS_CONFIRMATION conserva il report tecnico di riferimento", async () => {
+  it("task.inputRequired di tipo BUSINESS_CONFIRMATION conserva il changelog tecnico", async () => {
     seedTask();
     await renderConnected();
 
@@ -274,15 +274,18 @@ describe("useWebSocket", () => {
       lastSocket!.trigger("task.inputRequired", {
         taskId: "task-1",
         kind: "BUSINESS_CONFIRMATION",
-        // Nome distinto da `reportId` di task.updated, che e' il report
-        // finale: qui si parla del changelog tecnico da rivedere prima.
-        technicalReportId: "report-tecnico-1",
+        // Il changelog tecnico viaggia come testo, non come id di un Report:
+        // quando la conferma viene chiesta il Report non esiste ancora, perche'
+        // le due fasi stanno dentro un solo Task e il Report nasce alla fine.
+        technicalChangelog: "## Sprint 3\n\n- #12 login",
+        technicalChangelogTruncated: false,
       }),
     );
 
     expect(useTasksStore.getState().tasks["task-1"].pendingInput).toEqual({
       kind: "BUSINESS_CONFIRMATION",
-      technicalReportId: "report-tecnico-1",
+      technicalChangelog: "## Sprint 3\n\n- #12 login",
+      technicalChangelogTruncated: false,
     });
   });
 

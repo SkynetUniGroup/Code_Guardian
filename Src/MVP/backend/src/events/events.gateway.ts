@@ -54,33 +54,38 @@ export class EventsGateway implements OnGatewayConnection {
     this.server.to(this.roomFor(userId)).emit("batch.completed", { batchId, completed, failed });
   }
 
-  // Flat shape — { taskId, kind, taskIds?, technicalReportId? } — matching
+  // Flat shape — { taskId, kind, taskIds?, technicalChangelog? } — matching
   // how the other four events are shaped, and matching the Progettazione
   // Frontend's own Table 6 rather than nesting a `pendingInput` object.
   // taskId is a deliberate addition beyond that table: a bare PendingInput
   // carries no way to tell the frontend which task it belongs to once more
-  // than one is in flight. technicalReportId is a deliberate *correction* to
-  // Table 6, which names this field `reportId` — already taken, on this
-  // same TaskEntry, by the task's own final report (see task.updated above
-  // and TaskDto.reportId). BUSINESS_CONFIRMATION's report is a different,
-  // earlier-phase report (the technical changelog preview); reusing `reportId`
-  // for it would let one overwrite the other on whichever event lands last.
-  // `technicalReportId` is what both design docs' own PendingInput type
-  // already calls this same field — Table 6 is the outlier, not this.
+  // than one is in flight.
+  //
+  // Il campo del changelog tecnico e' una correzione alla Tabella 6, che lo
+  // chiama `reportId`. Non e' solo un nome gia' preso da TaskEntry (il report
+  // finale del Task, vedi task.updated): e' che qui **non c'e' nessun report**.
+  // Le due fasi di CHANGELOG_BUSINESS stanno dentro un solo Task e il Report
+  // nasce alla fine, quindi quando si chiede la conferma non esiste ancora
+  // niente a cui puntare. Si manda il testo, prodotto un istante prima.
   emitTaskInputRequired(
     userId: string,
     taskId: string,
     pendingInput: Exclude<PendingInput, null>,
   ): void {
     const taskIds = "taskIds" in pendingInput ? pendingInput.taskIds : undefined;
-    const technicalReportId =
-      "technicalReportId" in pendingInput ? pendingInput.technicalReportId : undefined;
+    const technicalChangelog =
+      "technicalChangelog" in pendingInput ? pendingInput.technicalChangelog : undefined;
+    const technicalChangelogTruncated =
+      "technicalChangelogTruncated" in pendingInput
+        ? pendingInput.technicalChangelogTruncated
+        : undefined;
 
     this.server.to(this.roomFor(userId)).emit("task.inputRequired", {
       taskId,
       kind: pendingInput.kind,
       taskIds,
-      technicalReportId,
+      technicalChangelog,
+      technicalChangelogTruncated,
     });
   }
 

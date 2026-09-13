@@ -167,7 +167,8 @@ export const useTasksStore = create<TasksStore>((set, _get) => ({
       } else {
         pending = {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: event.technicalReportId ?? "",
+          technicalChangelog: event.technicalChangelog ?? "",
+          technicalChangelogTruncated: event.technicalChangelogTruncated ?? false,
         };
       }
 

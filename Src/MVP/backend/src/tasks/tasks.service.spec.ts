@@ -407,7 +407,8 @@ describe("TasksService", () => {
       const task = makeTask({
         pendingInput: {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: "r1",
+          technicalChangelog: "## Sprint 1",
+          technicalChangelogTruncated: false,
         },
       });
       taskModel.findOne.mockResolvedValue(task);
