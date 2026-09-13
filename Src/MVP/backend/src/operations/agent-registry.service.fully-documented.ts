@@ -68,8 +68,18 @@ const ENTRIES: AgentRegistryEntry[] = [
   },
 ];
 
+/**
+ * Service that manages the registry of available agents and their operations.
+ * Provides methods to retrieve agent information based on user roles and operation codes.
+ */
 @Injectable()
 export class AgentRegistry {
+/**
+ * Retrieves the list of operations available for a specific user role.
+ *
+ * @param role - The user role to filter operations by.
+ * @returns An array of operation descriptors available for the given role.
+ */
   getForRole(role: UserRole): OperationDescriptorDto[] {
     return ENTRIES.filter((entry) => entry.allowedRoles.includes(role)).map(
       ({ code, displayName, description, agent }) => ({
@@ -81,18 +91,43 @@ export class AgentRegistry {
     );
   }
 
+/**
+ * Retrieves the timeout in seconds for a specific operation, capped at the maximum allowed timeout.
+ *
+ * @param code - The operation code to get the timeout for.
+ * @returns The timeout in seconds for the specified operation.
+ */
   getTimeoutS(code: OperationCode): number {
     return Math.min(this.entry(code).timeoutS, MAX_OPERATION_TIMEOUT_S);
   }
 
+/**
+ * Retrieves the agent name responsible for a specific operation.
+ *
+ * @param code - The operation code to get the agent for.
+ * @returns The name of the agent responsible for the specified operation.
+ */
   getAgent(code: OperationCode): AgentName {
     return this.entry(code).agent;
   }
 
+/**
+ * Retrieves the display name of a specific operation.
+ *
+ * @param code - The operation code to get the display name for.
+ * @returns The display name of the specified operation.
+ */
   getDisplayName(code: OperationCode): string {
     return this.entry(code).displayName;
   }
 
+/**
+ * Retrieves the full registry entry for a specific operation code.
+ *
+ * @param code - The operation code to retrieve the entry for.
+ * @returns The registry entry corresponding to the operation code.
+ * @throws {Error} If the operation code is not found in the registry.
+ */
   private entry(code: OperationCode): AgentRegistryEntry {
     const entry = ENTRIES.find((e) => e.code === code);
 
