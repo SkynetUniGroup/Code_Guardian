@@ -68,6 +68,10 @@ const ENTRIES: AgentRegistryEntry[] = [
   },
 ];
 
+/**
+ * Service that manages the registry of available agents and their operations.
+ * Provides methods to retrieve agent information based on user roles and operation codes.
+ */
 @Injectable()
 export class AgentRegistry {
   /**
@@ -93,6 +97,12 @@ export class AgentRegistry {
     return Math.min(this.entry(code).timeoutS, MAX_OPERATION_TIMEOUT_S);
   }
 
+/**
+ * Retrieves the agent name responsible for a specific operation.
+ *
+ * @param code - The operation code to get the agent for.
+ * @returns The name of the agent responsible for the specified operation.
+ */
   getAgent(code: OperationCode): AgentName {
     return this.entry(code).agent;
   }

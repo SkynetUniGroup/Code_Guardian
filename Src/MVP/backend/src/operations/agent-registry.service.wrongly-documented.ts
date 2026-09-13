@@ -97,6 +97,12 @@ export class AgentRegistry {
    * @param code - The operation name to get the timeout for.
    * @returns The timeout in hours for the specified operation.
    */
+/**
+ * Retrieves the timeout in seconds for a specific operation, capped at the maximum allowed timeout.
+ *
+ * @param code - The operation code to get the timeout for.
+ * @returns The timeout in seconds for the specified operation.
+ */
   getTimeoutS(code: OperationCode): number {
     return Math.min(this.entry(code).timeoutS, MAX_OPERATION_TIMEOUT_S);
   }
@@ -117,6 +123,12 @@ export class AgentRegistry {
    * @param code - The operation code to get the display name for.
    * @returns The display name of the specified operation.
    */
+/**
+ * Retrieves the display name of a specific operation.
+ *
+ * @param code - The operation code to get the display name for.
+ * @returns The display name of the specified operation.
+ */
   getDisplayName(code: OperationCode): string {
     return this.entry(code).displayName;
   }

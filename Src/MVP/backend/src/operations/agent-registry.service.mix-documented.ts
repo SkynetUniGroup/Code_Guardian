@@ -91,6 +91,12 @@ export class AgentRegistry {
     );
   }
 
+/**
+ * Retrieves the timeout in seconds for a specific operation, capped at the maximum allowed timeout.
+ *
+ * @param code - The operation code to get the timeout for.
+ * @returns The timeout in seconds for the specified operation.
+ */
   getTimeoutS(code: OperationCode): number {
     return Math.min(this.entry(code).timeoutS, MAX_OPERATION_TIMEOUT_S);
   }
