@@ -63,6 +63,7 @@ export function IncompleteTasksModal({ taskId, taskIds, onClose }: IncompleteTas
 
       <div className="flex justify-end gap-2">
         <button
+          type="button"
           onClick={() => submit("CANCEL")}
           disabled={loading}
           className="rounded border border-[#cccccc] px-4 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
@@ -71,6 +72,7 @@ export function IncompleteTasksModal({ taskId, taskIds, onClose }: IncompleteTas
         </button>
 
         <button
+          type="button"
           onClick={() => submit("PROCEED")}
           disabled={loading}
           className="flex items-center gap-2 rounded bg-[#2277cc] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a5fa8] transition disabled:opacity-50"

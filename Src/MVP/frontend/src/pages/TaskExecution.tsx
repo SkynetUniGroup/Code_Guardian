@@ -4,10 +4,9 @@ import { useAppStore } from "../stores/useAppStore";
 
 export default function TaskExecution() {
   const { taskId } = useParams({ strict: false }) as { taskId: string };
-  const { tasks, reports, setCurrentTask } = useAppStore();
+  const { tasks, setCurrentTask } = useAppStore();
 
   const task = tasks.find((t) => t.id === taskId);
-  const report = task?.reportId ? reports[task.reportId] : null;
 
   useEffect(() => {
     if (taskId) {

@@ -25,6 +25,7 @@ export function FindingBlockRenderer({ block }: FindingBlockRendererProps) {
     <div className="rounded border border-[#cccccc] bg-white overflow-hidden">
       {/* Header row — always visible */}
       <button
+        type="button"
         className="flex w-full items-start gap-3 p-4 text-left hover:bg-gray-50 transition"
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}

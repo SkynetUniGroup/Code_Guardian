@@ -8,7 +8,9 @@ import { getReport } from "../utils/api";
 const DiffViewer = ({ proposal }: { proposal: any }) => {
   if (!proposal || !proposal.diffUnified) return null;
 
-  const lines = proposal.diffUnified.split("\n");
+  const lines = proposal.diffUnified
+    .split("\n")
+    .map((line: string, i: number) => ({ id: i, line }));
 
   return (
     <div className="mt-8 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
@@ -26,7 +28,7 @@ const DiffViewer = ({ proposal }: { proposal: any }) => {
 
       <div className="overflow-x-auto">
         <pre className="text-sm font-mono leading-tight py-4">
-          {lines.map((line: string, index: number) => {
+          {lines.map(({ id, line }: { id: number; line: string }) => {
             let lineClass = "px-5 py-0.5 whitespace-pre";
 
             if (line.startsWith("+") && !line.startsWith("+++")) {
@@ -42,7 +44,7 @@ const DiffViewer = ({ proposal }: { proposal: any }) => {
             }
 
             return (
-              <div key={index} className={lineClass}>
+              <div key={id} className={lineClass}>
                 {line || " "}
               </div>
             );
@@ -57,7 +59,9 @@ const DiffViewer = ({ proposal }: { proposal: any }) => {
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          role="img"
         >
+          <title>Informazione</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

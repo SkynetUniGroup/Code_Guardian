@@ -156,6 +156,7 @@ export function ReportDetailPage() {
 
         {/* PDF export button */}
         <button
+          type="button"
           onClick={handle_pdf_export}
           disabled={pdf_loading}
           title="Esporta in PDF"
@@ -202,6 +203,7 @@ export function ReportDetailPage() {
           <span className="text-xs font-medium text-gray-500 mr-1">Filtra per severità:</span>
           {severity_options.map(({ value, label }) => (
             <button
+              type="button"
               key={value}
               onClick={() => setSeverityFilter(value)}
               className={[

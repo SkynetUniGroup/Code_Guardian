@@ -71,6 +71,7 @@ export function BusinessConfirmationModal({
 
       <div className="flex justify-end gap-2">
         <button
+          type="button"
           onClick={() => submit("CANCEL")}
           disabled={loading}
           className="rounded border border-[#cccccc] px-4 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
@@ -79,6 +80,7 @@ export function BusinessConfirmationModal({
         </button>
 
         <button
+          type="button"
           onClick={() => submit("PROCEED")}
           disabled={loading}
           className="flex items-center gap-2 rounded bg-[#2a8a2a] px-4 py-2 text-sm font-medium text-white hover:bg-[#1e6b1e] transition disabled:opacity-50"

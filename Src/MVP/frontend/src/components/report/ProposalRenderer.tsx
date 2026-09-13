@@ -63,6 +63,7 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
 
       {/* Toggle diff preview */}
       <button
+        type="button"
         className="flex w-full items-center gap-2 px-4 py-2 text-left text-xs text-gray-500 hover:bg-gray-50 transition border-b border-[#cccccc]"
         onClick={() => setDiffVisible((v) => !v)}
       >

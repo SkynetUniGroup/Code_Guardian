@@ -94,6 +94,7 @@ export function RunPage() {
         message="Nessun contesto configurato. Vai su Repository per selezionare un repository e configurare l'analisi."
         action={
           <button
+            type="button"
             onClick={() => navigate({ to: "/select" })}
             className="rounded bg-[#2277cc] px-3 py-1.5 text-sm text-white hover:bg-[#1a5fa8]"
           >
@@ -133,6 +134,7 @@ export function RunPage() {
         </p>
         {/* Link to change context */}
         <button
+          type="button"
           onClick={() => navigate({ to: "/select" })}
           className="mt-2 text-xs text-[#2277cc] hover:underline"
         >
@@ -149,6 +151,7 @@ export function RunPage() {
           const is_selected = selected_ops.has(op);
           return (
             <button
+              type="button"
               key={op}
               onClick={() => toggle_op(op)}
               aria-pressed={is_selected}
@@ -186,6 +189,7 @@ export function RunPage() {
 
       {/* Launch button */}
       <button
+        type="button"
         onClick={handle_launch}
         disabled={selected_ops.size === 0 || launching}
         className="mt-6 flex w-full items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-200 transition disabled:opacity-50"

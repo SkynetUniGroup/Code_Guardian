@@ -212,6 +212,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
         {/* Pending input action buttons */}
         {task.pendingInput?.kind === "SPRINT_ID" && (
           <button
+            type="button"
             onClick={() => on_open_modal("SPRINT_ID")}
             className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#c98f00] transition"
           >
@@ -221,6 +222,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
 
         {task.pendingInput?.kind === "INCOMPLETE_TASKS" && (
           <button
+            type="button"
             onClick={() =>
               on_open_modal("INCOMPLETE_TASKS", {
                 taskIds: (task.pendingInput as any).taskIds,
@@ -234,6 +236,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
 
         {task.pendingInput?.kind === "BUSINESS_CONFIRMATION" && (
           <button
+            type="button"
             onClick={() =>
               on_open_modal("BUSINESS_CONFIRMATION", {
                 technicalReportId: (task.pendingInput as any).technicalReportId,
@@ -259,6 +262,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
         {/* Cancel button */}
         {can_cancel && (
           <button
+            type="button"
             onClick={on_cancel}
             disabled={cancelling}
             className="ml-auto flex items-center gap-1.5 rounded border border-[#cc2222] px-3 py-1.5 text-xs font-medium text-[#cc2222] hover:bg-red-50 transition disabled:opacity-50"

@@ -46,10 +46,11 @@ export default function Setup() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor="github-pat" className="block text-sm font-medium text-gray-700">
             GitHub PAT (Sola lettura)
           </label>
           <input
+            id="github-pat"
             type="password"
             value={githubToken}
             onChange={(e) => setGithubToken(e.target.value)}

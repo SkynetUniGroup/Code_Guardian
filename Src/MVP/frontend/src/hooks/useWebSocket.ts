@@ -158,5 +158,16 @@ export function useWebSocket(): void {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [token]); // Re-run when the token changes (login / logout).
+    // Re-run when the token changes (login / logout). The store actions are
+    // included for exhaustive-deps correctness, but zustand gives them a
+    // stable identity across renders, so they never actually trigger a re-run.
+  }, [
+    token,
+    markCredentialsInvalid,
+    upsertFromUpdated,
+    upsertFromProgress,
+    applyFailed,
+    applyInputRequired,
+    loadTasks,
+  ]);
 }

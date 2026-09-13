@@ -126,6 +126,7 @@ export function SelectPage() {
         message={repos_error}
         action={
           <button
+            type="button"
             onClick={() => window.location.reload()}
             className="rounded border border-[#cccccc] px-3 py-1.5 text-sm text-[#2a2a2a] hover:bg-gray-50"
           >
