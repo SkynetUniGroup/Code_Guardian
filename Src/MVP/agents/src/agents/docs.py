@@ -126,9 +126,6 @@ class DocsLoader:
                             break
 
                     # DEBUG
-                    import logging
-
-                    logger = logging.getLogger(__name__)
                     match = re.search(r"(def|class)\s+([a-zA-Z0-9_]+)", line)
                     if match:
                         logger.info(
@@ -144,17 +141,72 @@ class DocsLoader:
                         targets.append(f"Line {i + 1}: {match.group(2)} ({status})")
         else:
             ts_pattern = (
-                r"(function\s+[a-zA-Z0-9_]+|class\s+[a-zA-Z0-9_]+|"
-                r"const\s+[a-zA-Z0-9_]+\s*=\s*(?:async\s*)?(?:\([^)]*\)|[a-zA-Z0-9_]+)\s*=>|"
-                r"[a-zA-Z0-9_]+\s*\("
+                r"^\s*"  # Start of line with optional whitespace
+                r"(?:"  # Alternatives
+                r"(?:export\s+)?function\s+[a-zA-Z0-9_]+|"  # export function
+                r"(?:export\s+)?class\s+[a-zA-Z0-9_]+|"  # export class
+                r"(?:export\s+)?const\s+[a-zA-Z0-9_]+\s*=\s*(?:async\s*)?(?:\([^)]*\)|[a-zA-Z0-9_]+)\s*=>|"  # export const
+                r"(?:private\s+|public\s+|protected\s+)?[a-zA-Z0-9_]+\s*\("  # methods with access modifiers
                 r")"
             )
+            # TypeScript/JavaScript keywords and built-ins that shouldn't be documented
+            ts_keywords = {
+                "if",
+                "else",
+                "switch",
+                "case",
+                "default",
+                "break",
+                "continue",
+                "for",
+                "while",
+                "do",
+                "return",
+                "throw",
+                "try",
+                "catch",
+                "finally",
+                "new",
+                "delete",
+                "typeof",
+                "instanceof",
+                "void",
+                "this",
+                "super",
+                "import",
+                "export",
+                "from",
+                "as",
+                "let",
+                "var",
+                "Error",
+                "Math",
+                "Array",
+                "Object",
+                "String",
+                "Number",
+                "Boolean",
+                "Promise",
+                "JSON",
+                "RegExp",
+                "Date",
+                "Set",
+                "Map",
+                "WeakMap",
+                "WeakSet",
+            }
+
             for i, line in enumerate(lines):
-                stripped = line.strip()
-                if re.search(ts_pattern, stripped):
+                if re.search(ts_pattern, line.strip()):
                     # Skip decorator-only lines (they're not code units to document)
-                    if stripped.startswith("@"):
+                    if line.strip().startswith("@"):
                         continue
+                    # Skip if the line starts with a keyword followed by (
+                    match = re.match(r"^([a-zA-Z0-9_]+)\s*\(", line.strip())
+                    if match:
+                        identifier = match.group(1)
+                        if identifier in ts_keywords:
+                            continue
                     has_doc = False
 
                     # Collect all decorators immediately above this declaration
@@ -211,7 +263,7 @@ class DocsLoader:
 
                     match = re.search(r"(?:function|class|const)\s+([a-zA-Z0-9_]+)", line)
                     if not match:
-                        match = re.search(r"([a-zA-Z0-9_]+)\s*(", line)
+                        match = re.search(r"([a-zA-Z0-9_]+)\s*\(", line)
 
                     if match:
                         status = (
@@ -219,7 +271,7 @@ class DocsLoader:
                             if has_doc
                             else "UNDOCUMENTED - generate"
                         )
-                        targets.append(f"Line {insert_line + 1}: {match.group(1)} ({status})")
+                        targets.append(f"Line {insert_line}: {match.group(1)} ({status})")
 
         return targets
 
@@ -513,8 +565,6 @@ class DocsInlineProfile(BaseDocsDiffProfile):
 
         # Parse code_units to find all processed files
         if ctx and ctx.get("code_units"):
-            import re
-
             # Find all "### File: path ###" sections
             file_sections = re.findall(r"### File: ([^\s]+) ###", ctx["code_units"])
 
