@@ -1,10 +1,5 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from "@nestjs/common";
+import { HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { AppException } from "../common/exceptions/app.exception";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
 import { CredentialsService } from "../credentials/credentials.service";
@@ -53,8 +48,10 @@ export class ContextsService {
     );
 
     if (!branchRef) {
-      throw new NotFoundException(
+      throw new AppException(
+        "CONTEXT_RESOURCE_MISSING",
         `Branch "${dto.branch}" non trovato nel repository ${owner}/${repo}.`,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -69,8 +66,10 @@ export class ContextsService {
       );
 
       if (comparison.status !== "ahead" && comparison.status !== "identical") {
-        throw new UnprocessableEntityException(
+        throw new AppException(
+          "CONTEXT_RESOURCE_INVALID",
           `Commit ${dto.commitSha} does not belong to branch "${dto.branch}".`,
+          HttpStatus.UNPROCESSABLE_ENTITY,
         );
       }
     }
@@ -99,11 +98,17 @@ export class ContextsService {
       dto.scopeType === "FULL_REPOSITORY" ? [] : normalizePaths(dto.paths ?? []);
     if (dto.scopeType === "FULL_REPOSITORY") {
       if (dto.paths && dto.paths.length > 0) {
-        throw new BadRequestException("paths must be omitted when scopeType is FULL_REPOSITORY.");
+        throw new AppException(
+          "CONTEXT_RESOURCE_INVALID",
+          "paths must be omitted when scopeType is FULL_REPOSITORY.",
+          HttpStatus.BAD_REQUEST,
+        );
       }
     } else if (normalizedPaths.length === 0) {
-      throw new BadRequestException(
+      throw new AppException(
+        "CONTEXT_RESOURCE_MISSING",
         `paths must contain at least one entry when scopeType is ${dto.scopeType}.`,
+        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -115,13 +120,17 @@ export class ContextsService {
       for (const path of normalizedPaths) {
         const entry = byPath.get(path);
         if (!entry) {
-          throw new BadRequestException(
-            `Path "${path}" does not exist in ${owner}/${repo} at ${resolvedSha}.`,
+          throw new AppException(
+            "CONTEXT_RESOURCE_MISSING",
+            `Path "${path}" does not exist in ${owner}/${repo}.`,
+            HttpStatus.BAD_REQUEST,
           );
         }
         if (entry.type !== expectedType) {
-          throw new BadRequestException(
+          throw new AppException(
+            "CONTEXT_RESOURCE_INVALID",
             `Path "${path}" is a ${entry.type}, not a ${expectedType}, but scopeType is ${dto.scopeType}.`,
+            HttpStatus.BAD_REQUEST,
           );
         }
       }

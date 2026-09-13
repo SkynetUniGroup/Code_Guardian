@@ -87,7 +87,10 @@ function reportCompleto(): ReportDto {
   return makeReport({
     summary: "A short summary.",
     body: [
-      { kind: "TEXT", markdown: "Some *markdown* text." },
+      {
+        kind: "TEXT",
+        markdown: "## A heading\n\nSome **bold** and *italic* text.\n\n- first item\n- second item",
+      },
       {
         kind: "FINDING",
         category: "A03:2021",
@@ -163,10 +166,22 @@ describe("composeReportPdf", () => {
     expect(testo).not.toContain("A short summary.");
   });
 
-  it("prints a TEXT block verbatim", async () => {
+  it("renders a TEXT block's Markdown instead of printing it verbatim", async () => {
     const testo = testoDelPdf(await composeReportPdf(reportCompleto()));
 
-    expect(testo).toContain("Some *markdown* text.");
+    // Il markup deve sparire: né asterischi, né cancelletti, né trattini
+    // di lista devono restare nel testo estratto.
+    expect(testo).not.toContain("*");
+    expect(testo).not.toContain("##");
+
+    // Ma il contenuto reale dev'esserci, "ripulito" dal markup.
+    expect(testo).toContain("A heading");
+    expect(testo).toContain("Some bold and italic text.");
+    expect(testo).toContain("first item");
+    expect(testo).toContain("second item");
+
+    // Gli item di lista devono aver preso il bullet "•", non il trattino originale.
+    expect(testo).toContain("• first item");
   });
 
   it("prints severity, category, file position and remediation of a FINDING", async () => {

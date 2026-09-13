@@ -62,7 +62,7 @@ function renderHeader(doc: PDFKit.PDFDocument, report: ReportDto): void {
 function renderBlock(doc: PDFKit.PDFDocument, block: Block): void {
   switch (block.kind) {
     case "TEXT":
-      doc.fontSize(11).text(block.markdown);
+      renderMarkdown(doc, block.markdown);
       return;
     case "FINDING":
       renderHeading(doc, `Finding — ${block.severity.toUpperCase()} — ${block.category}`);
@@ -164,6 +164,90 @@ function renderRemediation(doc: PDFKit.PDFDocument, remediation: Remediation): v
     doc.font("Helvetica").fontSize(10).text(remediation.text);
   }
   doc.font("Helvetica");
+}
+
+function renderMarkdown(doc: PDFKit.PDFDocument, markdown: string): void {
+  const lines = markdown.split(/\r?\n/);
+  let inCodeFence = false;
+  let codeFenceLines: string[] = [];
+
+  for (const line of lines) {
+    if (/^```/.test(line)) {
+      if (inCodeFence) {
+        doc.font("Courier").fontSize(9).text(codeFenceLines.join("\n"));
+        doc.font("Helvetica").fontSize(11);
+        codeFenceLines = [];
+        inCodeFence = false;
+      } else {
+        inCodeFence = true;
+      }
+      continue;
+    }
+    if (inCodeFence) {
+      codeFenceLines.push(line);
+      continue;
+    }
+
+    if (line.trim() === "") {
+      doc.moveDown(0.5);
+      continue;
+    }
+
+    const heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      const level = heading[1].length;
+      const headingSize = Math.max(18 - level * 2, 10);
+      doc.moveDown(0.3);
+      renderInline(doc, heading[2], headingSize, true);
+      doc.moveDown(0.2);
+      continue;
+    }
+
+    const listItem = line.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
+    if (listItem) {
+      const bullet = /\d+\./.test(listItem[2]) ? listItem[2] : "•";
+      doc.font("Helvetica-Bold").fontSize(11).text(`${bullet} `, { continued: true });
+      renderInline(doc, listItem[3], 11, false);
+      continue;
+    }
+
+    renderInline(doc, line, 11, false);
+  }
+
+  if (inCodeFence && codeFenceLines.length > 0) {
+    doc.font("Courier").fontSize(9).text(codeFenceLines.join("\n"));
+    doc.font("Helvetica").fontSize(11);
+  }
+}
+
+const INLINE_TOKEN = /(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|_[^_]+_|\[[^\]]+\]\([^)]+\))/;
+
+function renderInline(doc: PDFKit.PDFDocument, text: string, size: number, bold: boolean): void {
+  const parts = text.split(INLINE_TOKEN).filter((p) => p.length > 0);
+
+  parts.forEach((part, index) => {
+    const opts = index === parts.length - 1 ? {} : { continued: true };
+    const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+
+    if (link) {
+      doc
+        .font(bold ? "Helvetica-Bold" : "Helvetica")
+        .fontSize(size)
+        .fillColor("#2277cc")
+        .text(link[1], { ...opts, link: link[2], underline: true });
+      doc.fillColor("black");
+    } else if (/^\*\*[^*]+\*\*$/.test(part)) {
+      doc.font("Helvetica-Bold").fontSize(size).text(part.slice(2, -2), opts);
+    } else if (/^`[^`]+`$/.test(part)) {
+      doc.font("Courier").fontSize(size - 1).text(part.slice(1, -1), opts);
+    } else if (/^\*[^*]+\*$/.test(part) || /^_[^_]+_$/.test(part)) {
+      doc.font("Helvetica-Oblique").fontSize(size).text(part.slice(1, -1), opts);
+    } else {
+      doc.font(bold ? "Helvetica-Bold" : "Helvetica").fontSize(size).text(part, opts);
+    }
+  });
+
+  doc.font("Helvetica").fontSize(11).fillColor("black");
 }
 
 // lineEnd è opzionale su FindingBlock: un finding su una riga sola non ha un

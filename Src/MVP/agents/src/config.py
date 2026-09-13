@@ -101,7 +101,7 @@ class Settings(BaseSettings):
     # Dedicated limits for security agents (OWASP/Policy scan)
     security_max_output_tokens: int = 8000
     security_temperature: float = 0.1
-    max_tool_rounds: int = Field(default=8, alias="MAX_TOOL_ROUNDS")
+    max_tool_rounds: int = Field(default=12, alias="MAX_TOOL_ROUNDS")
 
     # Specific timeouts for OperationCode
     TIMEOUTS_BY_OPERATION: dict[str, int] = {

@@ -14,6 +14,9 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "PROJECT_MANAGER", label: "Project Manager" },
 ];
 
+
+const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+
 /**
  * RegisterPage — /register
  *
@@ -32,7 +35,7 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirm_password, setConfirmPassword] = useState("");
   const [role, setRole] = useState<UserRole>("DEVELOPER");
-
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
@@ -43,7 +46,11 @@ export function RegisterPage() {
     if (!last_name.trim()) next.last_name = "Inserisci il cognome";
     if (!email.trim()) next.email = "Inserisci la email";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Email non valida";
-    if (password.length < 8) next.password = "La password deve essere di almeno 8 caratteri";
+    if (password.length < 8) {
+      next.password = "La password deve essere di almeno 8 caratteri";
+    } else if (!PASSWORD_REGEX.test(password)) {
+      next.password = "La password deve contenere almeno una lettera e un numero";
+    }
     if (password !== confirm_password) next.confirm_password = "Le password non coincidono";
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -72,9 +79,13 @@ export function RegisterPage() {
       // Redirect to /credentials so the user sets up their secrets immediately.
       navigate({ to: "/credentials" });
     } catch (err: unknown) {
-      const { status } = toApiError(err);
+      const { status, code, details } = toApiError(err);
+      const password_detail = details?.find((d) => /password/i.test(d));
+
       if (status === 409) {
         setErrors({ global: "Esiste già un account con questa email." });
+      } else if (code === "VALIDATION_ERROR" && password_detail) {
+        setErrors({ password: "La password deve contenere almeno una lettera e un numero" });
       } else {
         setErrors({ global: "Errore durante la registrazione. Riprova." });
       }
@@ -154,24 +165,29 @@ export function RegisterPage() {
             </select>
           </div>
 
-          <ValidatedField
-            label="Password"
-            type="password"
-            autoComplete="new-password"
-            placeholder="Minimo 8 caratteri"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setErrors((p) => ({ ...p, password: "" }));
-            }}
-            error={errors.password}
-          />
+          <div className="flex flex-col gap-1">
+            <ValidatedField
+              label="Password"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Inserisci Password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((p) => ({ ...p, password: "" }));
+              }}
+              error={errors.password}
+            />
+            <p className="text-xs text-gray-400">
+              Almeno 8 caratteri, con almeno una lettera e un numero.
+            </p>
+          </div>
 
           <ValidatedField
             label="Conferma Password"
             type="password"
             autoComplete="new-password"
-            placeholder="••••••••"
+            placeholder="Ripeti la password"
             value={confirm_password}
             onChange={(e) => {
               setConfirmPassword(e.target.value);

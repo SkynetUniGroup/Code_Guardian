@@ -45,7 +45,7 @@ export interface IssueDetail extends IssueSummary {
   body: string;
 }
 
-export type CompareStatus = "ahead" | "behind" | "identical" | "diverged";
+export type CompareStatus = "ahead" | "behind" | "identical" | "diverged" | "not_found";
 
 export interface CompareResult {
   status: CompareStatus;

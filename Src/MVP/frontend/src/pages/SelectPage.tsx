@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useEffect, useState } from "react";
 import { apiClient } from "../api/client";
-import { apiErrorMessage } from "../api/errors";
+import { apiErrorMessage, toApiError } from "../api/errors";
 import { ErrorState } from "../components/shared/ErrorState";
 import { Spinner } from "../components/shared/Spinner";
 import { ValidatedField } from "../components/shared/ValidatedField";
@@ -10,6 +10,25 @@ import type { AnalysisContextDto, CreateContextDto, RepositorySummary } from "..
 
 
 const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
+
+function fieldErrorFromApiError(err: unknown): Record<string, string> {
+  const { code, message } = toApiError(err);
+  if (!message) return {};
+
+  if (code === "CONTEXT_RESOURCE_MISSING" && /branch/i.test(message)) {
+    return { ref: message };
+  }
+  if (code === "CONTEXT_RESOURCE_MISSING" && /path/i.test(message)) {
+    return { paths: message };
+  }
+  if (code === "CONTEXT_RESOURCE_INVALID" && /commit/i.test(message)) {
+    return { commit_sha: message };
+  }
+  if (code === "CONTEXT_RESOURCE_INVALID" && /path/i.test(message)) {
+    return { paths: message };
+  }
+  return {};
+}
 
 /**
  * SelectPage — /select
@@ -99,7 +118,7 @@ export function SelectPage() {
     if (!selected_repo && !manual_url) {
       next.repo = "Seleziona un repository o incolla l'URL di un repository pubblico";
     } else if (manual_url && !GITHUB_REPO_URL_REGEX.test(manual_url)) {
-      next.repo = "URL non valido (https://github.com/owner/repo)";
+      next.repo_url = "URL non valido (https://github.com/owner/repo)";
     }
     if (!ref.trim()) next.ref = "Inserisci il branch";
     if (commit_sha.trim() && !/^[0-9a-f]{7,40}$/i.test(commit_sha.trim())) {
@@ -111,6 +130,7 @@ export function SelectPage() {
     setFormErrors(next);
     return Object.keys(next).length === 0;
   }
+  
 
   async function handle_submit(e: FormEvent) {
     e.preventDefault();
@@ -155,7 +175,14 @@ export function SelectPage() {
       });
       navigate({ to: "/run" });
     } catch (err) {
-      setSubmitError(apiErrorMessage(err,"Impossibile salvare il contesto. Verifica i parametri e riprova.",),);
+      const field_errors = fieldErrorFromApiError(err);
+      if (Object.keys(field_errors).length > 0) {
+        setFormErrors((p) => ({ ...p, ...field_errors }));
+      } else {
+        setSubmitError(
+          apiErrorMessage(err, "Impossibile salvare il contesto. Verifica i parametri e riprova."),
+        );
+      }
     } finally {
       setSubmitting(false);
     }
@@ -209,7 +236,7 @@ export function SelectPage() {
         {/* Repository selector */}
         <div className="flex flex-col gap-1">
           <label htmlFor="repo-select" className="text-sm font-medium text-[#2a2a2a]">
-            Repository
+            Seleziona repository 
           </label>
           <select
             id="repo-select"
@@ -233,14 +260,15 @@ export function SelectPage() {
 
         {/* Manual repository URL — for public repos not owned/collaborated by the connected GitHub account */}
         <ValidatedField
-          label="...oppure incolla l'URL di un repository pubblico"
+          label="Oppure incolla l'URL di un repository pubblico"
           placeholder="https://github.com/owner/repo"
           value={manual_repo_url}
           onChange={(e) => {
             handle_manual_repo_url_change(e.target.value);
-            setFormErrors((p) => ({ ...p, repo: "" }));
+            setFormErrors((p) => ({ ...p, repo: "", repo_url: "" }));
           }}
           disabled={!!selected_repo}
+          error={form_errors.repo_url}  
           className="disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
         />
 

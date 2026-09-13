@@ -33,7 +33,7 @@ export const ValidatedField = forwardRef<HTMLInputElement, ValidatedFieldProps>(
           id={field_id}
           className={cn(
             "w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none transition",
-            "placeholder:text-[#484f58] focus:border-[#58a6ff] focus:ring-2 focus:ring-[#58a6ff]/20",
+            "placeholder:text-[#9aa4ae] focus:border-[#58a6ff] focus:ring-2 focus:ring-[#58a6ff]/20",
             error && "border-[#f85149] focus:border-[#f85149] focus:ring-[#f85149]/20",
             className,
           )}

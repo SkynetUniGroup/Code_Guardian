@@ -359,11 +359,18 @@ export class GithubClientService {
     base: string,
     head: string,
   ): Promise<CompareResult> {
-    const { data } = await this.client(token).request(
-      "GET /repos/{owner}/{repo}/compare/{basehead}",
-      { owner, repo, basehead: `${base}...${head}` },
-    );
-    return { status: toCompareStatus(data.status) };
+    try {
+      const { data } = await this.client(token).request(
+        "GET /repos/{owner}/{repo}/compare/{basehead}",
+        { owner, repo, basehead: `${base}...${head}` },
+      );
+      return { status: toCompareStatus(data.status) };
+    } catch (error) {
+      if (this.isNotFound(error)) {
+        return { status: "not_found" };
+      }
+      throw error;
+    }
   }
 
   private toRepositorySummary(repo: {
