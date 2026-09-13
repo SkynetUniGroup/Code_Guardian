@@ -9,6 +9,7 @@ import { CredentialsModule } from "../credentials/credentials.module";
 import { EventsModule } from "../events/events.module";
 import { OperationsModule } from "../operations/operations.module";
 import { ReportsModule } from "../reports/reports.module";
+import { TemplatesModule } from "../templates/templates.module";
 import { AgentInvocationService } from "./agent-invocation.service";
 import { Task, TaskSchema } from "./schemas/task.schema";
 import { UsageCounter, UsageCounterSchema } from "./schemas/usage-counter.schema";
@@ -37,6 +38,9 @@ import { UsageLimitService } from "./usage-limit.service";
     // BE-18: TaskProcessor assembles and persists a Report via
     // ReportAssemblyService once a Task reaches COMPLETED or FAILED.
     ReportsModule,
+    // RF.79-RF.81: AgentInvocationService legge il template README
+    // dell'utente per allegarlo al payload di DOCS_README.
+    TemplatesModule,
   ],
   controllers: [TasksController],
   providers: [TasksService, TaskProcessor, AgentInvocationService, UsageLimitService],

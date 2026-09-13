@@ -30,49 +30,49 @@ export class SecurityGroupsStack extends cdk.Stack {
 
     this.sgAlb = new ec2.SecurityGroup(this, "SgAlb", {
       vpc,
-      securityGroupName: "sg-alb",
+      securityGroupName: "codeguardian-alb",
       description: "ALB pubblico dietro CloudFront",
       allowAllOutbound: false,
     });
 
     this.sgBackend = new ec2.SecurityGroup(this, "SgBackend", {
       vpc,
-      securityGroupName: "sg-backend",
+      securityGroupName: "codeguardian-backend",
       description: "Servizio ECS backend (NestJS)",
       allowAllOutbound: false,
     });
 
     this.sgAgents = new ec2.SecurityGroup(this, "SgAgents", {
       vpc,
-      securityGroupName: "sg-agents",
+      securityGroupName: "codeguardian-agents",
       description: "Servizio ECS agents (Python/LangGraph) -- zero egress verso Internet",
       allowAllOutbound: false,
     });
 
     this.sgAtlas = new ec2.SecurityGroup(this, "SgAtlas", {
       vpc,
-      securityGroupName: "sg-atlas",
+      securityGroupName: "codeguardian-atlas",
       description: "Interface VPC Endpoint verso MongoDB Atlas PrivateLink",
       allowAllOutbound: false,
     });
 
     this.sgRedis = new ec2.SecurityGroup(this, "SgRedis", {
       vpc,
-      securityGroupName: "sg-redis",
+      securityGroupName: "codeguardian-redis",
       description: "Amazon ElastiCache (Redis)",
       allowAllOutbound: false,
     });
 
     this.sgVpce = new ec2.SecurityGroup(this, "SgVpce", {
       vpc,
-      securityGroupName: "sg-vpce",
+      securityGroupName: "codeguardian-vpce",
       description: "VPC Endpoints Interface generici (Secrets Manager, ECR, CloudWatch Logs, SSM)",
       allowAllOutbound: false,
     });
 
     this.sgBedrock = new ec2.SecurityGroup(this, "SgBedrock", {
       vpc,
-      securityGroupName: "sg-bedrock",
+      securityGroupName: "codeguardian-bedrock",
       description: "VPC Endpoint Interface Bedrock Runtime -- ingress solo da sg-agents",
       allowAllOutbound: false,
     });

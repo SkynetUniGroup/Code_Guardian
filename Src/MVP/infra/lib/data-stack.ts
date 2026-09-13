@@ -60,6 +60,9 @@ export class DataStack extends cdk.Stack {
     this.paramRedisUrl = new ssm.StringParameter(this, "RedisUrlParam", {
       parameterName: "/codeguardian/redis-url",
       description: "REDIS_URL -- endpoint TLS del Replication Group ElastiCache",
+      // I segnaposto dentro la stringa sono di CloudFormation (Fn::Sub), non
+      // template literal JavaScript: li risolve AWS a deploy-time.
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: vedi sopra
       stringValue: cdk.Fn.sub("rediss://${Host}:${Port}", {
         Host: this.redis.attrPrimaryEndPointAddress,
         Port: this.redis.attrPrimaryEndPointPort,

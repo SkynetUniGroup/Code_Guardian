@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { AnalysisContextDto } from "../types";
+import type { AnalysisContextDto, RepositorySummary } from "../types";
 
 /**
  * Shape of the selection state slice.
@@ -19,6 +19,20 @@ interface SelectionState {
    * so it can render an informative summary without a second API call.
    */
   context: AnalysisContextDto | null;
+
+  /**
+   * Form context matching the SelectPage form fields.
+   * Used ONLY to repopulate the form when user returns to /select.
+   * Populated on successful form submission, cleared on new selection.
+   */
+  formContext: {
+    manual_repo_url: string;
+    selected_repo: RepositorySummary | null;
+    ref: string;
+    commit_sha: string;
+    scope_type: string;
+    paths_text: string;
+  } | null;
 }
 
 /**
@@ -30,6 +44,19 @@ interface SelectionActions {
    * Called immediately after a successful POST /contexts response.
    */
   setContext: (context: AnalysisContextDto) => void;
+
+  /**
+   * Stores the form context for repopulating the SelectPage form.
+   * Called on successful form submission.
+   */
+  setFormContext: (formData: {
+    manual_repo_url: string;
+    selected_repo: RepositorySummary | null;
+    ref: string;
+    commit_sha: string;
+    scope_type: string;
+    paths_text: string;
+  }) => void;
 
   /**
    * Clears the current selection.
@@ -51,6 +78,7 @@ export const useSelectionStore = create<SelectionStore>((set) => ({
   // ---- Initial state ----
   contextId: null,
   context: null,
+  formContext: null,
 
   // ---- Actions ----
 
@@ -58,7 +86,11 @@ export const useSelectionStore = create<SelectionStore>((set) => ({
     set({ contextId: context.id, context });
   },
 
+  setFormContext: (formData) => {
+    set({ formContext: formData });
+  },
+
   clearContext: () => {
-    set({ contextId: null, context: null });
+    set({ contextId: null, context: null, formContext: null });
   },
 }));

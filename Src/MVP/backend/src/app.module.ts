@@ -12,6 +12,7 @@ import { InternalGithubModule } from "./github/internal-github.module";
 import { OperationsModule } from "./operations/operations.module";
 import { ReportsModule } from "./reports/reports.module";
 import { TasksModule } from "./tasks/tasks.module";
+import { TemplatesModule } from "./templates/templates.module";
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TasksModule } from "./tasks/tasks.module";
     ReportsModule,
     OperationsModule,
     EventsModule,
+    TemplatesModule,
   ],
 })
 export class AppModule {}

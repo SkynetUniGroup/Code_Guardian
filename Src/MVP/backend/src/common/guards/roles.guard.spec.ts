@@ -1,6 +1,6 @@
-import { type ExecutionContext, ForbiddenException } from "@nestjs/common";
+import { ExecutionContext, ForbiddenException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import type { UserRole } from "../../auth/schemas/user.schema";
+import { UserRole } from "../../auth/schemas/user.schema";
 import { Roles } from "../decorators/roles.decorator";
 import { RolesGuard } from "./roles.guard";
 
