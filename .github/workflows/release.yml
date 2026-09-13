@@ -50,7 +50,7 @@ jobs:
 
       - name: Python linting
         working-directory: Src/MVP/agents
-        run: python -m pylint .
+        run: python -m ruff check src/
 
       - name: Python unit tests
         working-directory: Src/MVP/agents
@@ -76,21 +76,34 @@ jobs:
 
       - name: Deploy frontend on S3
         run: |
-          aws s3 sync ./dist s3://code-guardian-frontend --delete
+          aws s3 sync ./frontend/dist s3://${{ secrets.FRONTEND_BUCKET_NAME }} --delete
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
       - name: Login Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push Docker image
+      - name: Build, tag, and push backend image
         run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/code-guardian-backend:${{ github.ref_name }} .
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/code-guardian-backend:${{ github.ref_name }}
+          docker build -f backend/Dockerfile -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/backend:${{ github.ref_name }} .
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/backend:${{ github.ref_name }}
 
-      - name: Deploy to ECS
+      - name: Build, tag, and push agents image
+        run: |
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/agents:${{ github.ref_name }} agents/
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/agents:${{ github.ref_name }}
+
+      - name: Deploy backend to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          task-definition: task-definition.json
-          service: code-guardian-service
-          cluster: code-guardian-cluster
+          task-definition: Src/MVP/backend-task-definition.json
+          service: backend
+          cluster: codeguardian-cluster
+          wait-for-service-stability: true
+
+      - name: Deploy agents to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: Src/MVP/agents-task-definition.json
+          service: agents
+          cluster: codeguardian-cluster
           wait-for-service-stability: true
