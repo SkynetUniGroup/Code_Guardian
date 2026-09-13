@@ -48,12 +48,19 @@ import { TemplatesModule } from "./templates/templates.module";
         if (!redisUrlStr) {
           throw new Error("REDIS_URL is required");
         }
-        const redisUrl = new URL(redisUrlStr);
+      const redisUrl = new URL(redisUrlStr);
         return {
           connection: {
             host: redisUrl.hostname,
             port: Number(redisUrl.port) || 6379,
             password: redisUrl.password || undefined,
+            // rediss:// (ElastiCache con transit encryption, produzione)
+            // richiede TLS esplicito qui: a differenza di ioredis, che lo
+            // riconosce da solo dallo schema quando gli si passa l'URL
+            // intero (vedi RedisModule sopra), BullMQ vuole host/port/
+            // password separati e non deduce nulla dallo schema, che qui
+            // si perde nel parsing.
+            ...(redisUrl.protocol === "rediss:" ? { tls: {} } : {}),
           },
         };
       },

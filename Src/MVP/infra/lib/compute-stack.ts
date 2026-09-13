@@ -125,13 +125,19 @@ export class ComputeStack extends cdk.Stack {
         NODE_ENV: "production",
         PORT: String(ECS_SIZING.backend.port),
         RATE_LIMIT_GITHUB_RPM: String(RATE_LIMIT_GITHUB_RPM),
-        ARTIFACTS_BUCKET: artifactsBucket.bucketName,
+        REPORTS_BUCKET_NAME: artifactsBucket.bucketName,
+        CORS_ORIGIN: this.node.tryGetContext("corsOrigin") ?? "http://localhost:5173",
+        // Default Joi (env.validation.ts) e' "http://agents:8000", pensato
+        // per Docker Compose. Su AWS il backend trova gli agenti solo via
+        // Cloud Map, con questo nome.
+        AGENTS_SERVICE_URL: `http://agents.${CLOUD_MAP_NAMESPACE}:${ECS_SIZING.agents.port}`,
+        S3_REGION: REGION,
       },
       // `secrets` concede da sé il grantRead all'execution role per ciascuna
       // voce. Usano la chiave KMS di default, non la CMK condivisa (vedi
       // kms-secrets-stack.ts).
       secrets: {
-        MONGO_URI: ecs.Secret.fromSecretsManager(secretMongoUri),
+        MONGODB_URI: ecs.Secret.fromSecretsManager(secretMongoUri),
         JWT_SECRET: ecs.Secret.fromSecretsManager(secretJwt),
         CREDENTIAL_MASTER_KEY: ecs.Secret.fromSecretsManager(secretCredentialMasterKey),
         INTERNAL_SHARED_SECRET: ecs.Secret.fromSecretsManager(secretInternalSharedSecret),
@@ -181,7 +187,12 @@ export class ComputeStack extends cdk.Stack {
     agentsTaskRole.addToPolicy(
       new iam.PolicyStatement({
         sid: "InvokeQwenModelsOnly",
-        actions: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+        actions: [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:Converse",
+          "bedrock:ConverseStream",
+        ],
         resources: [BEDROCK_MODEL_ARN_PATTERN],
         conditions: { StringEquals: { "aws:RequestedRegion": REGION } },
       }),
@@ -209,11 +220,19 @@ export class ComputeStack extends cdk.Stack {
         PORT: String(ECS_SIZING.agents.port),
         // PROMPTS_DIR non è una env var: i prompt sono bake-in nell'immagine
         // Docker, Fargate non supporta bind mount.
+        LLM_MODEL_GENERAL: "qwen.qwen3-32b-v1:0",
+        LLM_MODEL_SECURITY: "qwen.qwen3-coder-30b-a3b-v1:0",
       },
       secrets: {
         INTERNAL_SHARED_SECRET: ecs.Secret.fromSecretsManager(secretInternalSharedSecret),
         BACKEND_BASE_URL: ecs.Secret.fromSsmParameter(paramBackendBaseUrl),
         LLM_PROVIDER: ecs.Secret.fromSsmParameter(paramLlmProvider),
+        // Stesso secret del backend (MONGODB_URI), nome diverso: il
+        // checkpointer LangGraph lato Python legge MONGO_URI. Default Joi
+        // "mongodb://mongo:27017/codeguardian" e' l'hostname Docker
+        // Compose, inesistente nella VPC.
+        MONGO_URI: ecs.Secret.fromSecretsManager(secretMongoUri),
+        REDIS_URL: ecs.Secret.fromSsmParameter(paramRedisUrl),
       },
     });
 

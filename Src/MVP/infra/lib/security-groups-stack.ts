@@ -1,7 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import type { Construct } from "constructs";
-import { ATLAS_MONGO_PORT, ECS_SIZING, REDIS_PORT } from "./config";
+import { ATLAS_MONGO_PORT, ECS_SIZING, REDIS_PORT, REGION } from "./config";
 
 export interface SecurityGroupsStackProps extends cdk.StackProps {
   vpc: ec2.IVpc;
@@ -96,15 +96,32 @@ export class SecurityGroupsStack extends cdk.Stack {
 
     this.sgBackend.addIngressRule(this.sgAlb, ec2.Port.tcp(ECS_SIZING.backend.port), "From ALB");
 
-    this.sgBackend.addEgressRule(
+        this.sgBackend.addEgressRule(
       this.sgAtlas,
       ec2.Port.tcp(ATLAS_MONGO_PORT),
       "To Atlas PrivateLink",
     );
     this.sgAtlas.addIngressRule(this.sgBackend, ec2.Port.tcp(ATLAS_MONGO_PORT), "From backend");
 
+    // TEMPORANEO: il cluster Atlas vive in eu-central-1 (Frankfurt), non in
+    // eu-south-1 come questa infrastruttura — PrivateLink funziona solo
+    // dentro la stessa region, quindi l'endpoint sopra non è mai
+    // utilizzabile per questo cluster. Finché il cluster non viene spostato
+    // in eu-south-1 (o si abbandona l'idea del PrivateLink), il backend
+    // raggiunge Atlas via Internet pubblico attraverso il NAT Gateway,
+    // autenticato dalla IP Access List su Atlas (IP del NAT Gateway
+    // whitelisted a mano). Va tolta quando si risolve il disallineamento
+    // di region.
+    this.sgBackend.addEgressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(ATLAS_MONGO_PORT),
+      "To Atlas via Internet pubblico (region mismatch col Private Endpoint)",
+    );
+
     this.sgBackend.addEgressRule(this.sgRedis, ec2.Port.tcp(REDIS_PORT), "To Redis");
     this.sgRedis.addIngressRule(this.sgBackend, ec2.Port.tcp(REDIS_PORT), "From backend");
+    this.sgAgents.addEgressRule(this.sgRedis, ec2.Port.tcp(REDIS_PORT), "To Redis");
+    this.sgRedis.addIngressRule(this.sgAgents, ec2.Port.tcp(REDIS_PORT), "From agents");
 
     this.sgBackend.addEgressRule(
       this.sgVpce,
@@ -116,11 +133,42 @@ export class SecurityGroupsStack extends cdk.Stack {
     this.sgAgents.addEgressRule(this.sgVpce, ec2.Port.tcp(443), "To VPC Endpoints (SM/ECR/CW/SSM)");
     this.sgVpce.addIngressRule(this.sgAgents, ec2.Port.tcp(443), "From agents");
 
+        // I livelli delle immagini ECR sono fisicamente su S3: anche con gli
+    // endpoint Interface ecr.api/ecr.dkr coperti da sgVpce sopra, il pull
+    // effettivo di un livello puo' reindirizzare a un URL S3 il cui IP di
+    // destinazione resta quello pubblico di S3 (il Gateway Endpoint lo
+    // instrada privatamente sotto banco, ma il security group valuta
+    // comunque l'IP di destinazione apparente). Un Gateway Endpoint non ha
+    // una ENI/SG propria da referenziare: serve la prefix list di S3. Non
+    // e' un buco verso Internet generico (non viola il divieto di riga
+    // 15-17): la prefix list copre solo gli IP di S3 di questa region,
+    // sempre instradati via il Gateway Endpoint gia' esistente.
+    const s3PrefixListId = ec2.PrefixList.fromLookup(this, "S3PrefixList", {
+      prefixListName: `com.amazonaws.${REGION}.s3`,
+    }).prefixListId;
+    this.sgAgents.addEgressRule(
+      ec2.Peer.prefixList(s3PrefixListId),
+      ec2.Port.tcp(443),
+      "To S3 (livelli immagine ECR, via Gateway Endpoint)",
+    );
+
     this.sgAgents.addEgressRule(this.sgBedrock, ec2.Port.tcp(443), "To Bedrock Runtime endpoint");
     this.sgBedrock.addIngressRule(
       this.sgAgents,
       ec2.Port.tcp(443),
       "From agents (solo agents invoca Bedrock)",
+    );
+
+        // TEMPORANEO, stesso motivo del backend (vedi sopra): il cluster Atlas
+    // e' in eu-central-1, non eu-south-1, quindi il Private Endpoint non e'
+    // mai utilizzabile. Nota bene: questa riga viola deliberatamente la
+    // garanzia di riga 15-17 ("sg-agents non ha mai egress verso
+    // 0.0.0.0/0") -- e' un compromesso di sicurezza consapevole, non un
+    // errore. Va tolta quando si risolve il disallineamento di region.
+    this.sgAgents.addEgressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(ATLAS_MONGO_PORT),
+      "To Atlas via Internet pubblico (region mismatch col Private Endpoint) -- TEMPORANEO, viola il divieto di riga 15-17",
     );
 
     // Unico egress verso Internet di tutto lo stack: il backend che chiama
