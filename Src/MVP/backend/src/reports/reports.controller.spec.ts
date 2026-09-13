@@ -69,11 +69,14 @@ function makeReportDto(overrides: Record<string, unknown> = {}) {
 
 describe("ReportsController (export, integration)", () => {
   let app: INestApplication<App>;
-  let reportsService: { findOneForUser: Mock };
+  let reportsService: { findOneForUser: Mock; removeForUser: Mock };
   let storage: { putReportArtifact: Mock };
 
   beforeEach(async () => {
-    reportsService = { findOneForUser: vi.fn() };
+    reportsService = {
+      findOneForUser: vi.fn(),
+      removeForUser: vi.fn().mockResolvedValue(undefined),
+    };
     storage = { putReportArtifact: vi.fn().mockResolvedValue(undefined) };
     composeReportPdfMock.mockReset();
 
@@ -110,6 +113,12 @@ describe("ReportsController (export, integration)", () => {
 
   afterEach(async () => {
     await app.close();
+  });
+
+  it("deletes a report through the owner-scoped service and returns 204", async () => {
+    await request(app.getHttpServer()).delete("/reports/report1").expect(204);
+
+    expect(reportsService.removeForUser).toHaveBeenCalledWith("user1", "report1");
   });
 
   it("responds 409 with a genuinely empty body for a FAILED report", async () => {

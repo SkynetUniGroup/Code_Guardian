@@ -1,9 +1,20 @@
-import { Controller, Get, Param, Query, Res, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Query,
+  Res,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiConflictResponse,
   ApiNotFoundResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -80,6 +91,20 @@ export class ReportsController {
   })
   findOne(@CurrentUser("userId") userId: string, @Param("id") id: string): Promise<ReportDto> {
     return this.reportsService.findOneForUser(userId, id);
+  }
+
+  @Delete(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "Elimina un report" })
+  @ApiParam({ name: "id", description: "Id del report." })
+  @ApiNoContentResponse()
+  @ApiUnauthorizedResponse({ type: ApiErrorResponse })
+  @ApiNotFoundResponse({
+    description: "Report inesistente o di un altro utente.",
+    type: ApiErrorResponse,
+  })
+  remove(@CurrentUser("userId") userId: string, @Param("id") id: string): Promise<void> {
+    return this.reportsService.removeForUser(userId, id);
   }
 
   // BE-20: @Res() in raw mode (no {passthrough: true}) — this handler needs

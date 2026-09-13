@@ -3,6 +3,7 @@ import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { type Mock, vi } from "vitest";
 import { Task } from "../tasks/schemas/task.schema";
+import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { ReportsService } from "./reports.service";
 import { Report } from "./schemas/report.schema";
 
@@ -27,18 +28,21 @@ function makeReport(overrides: Record<string, unknown> = {}) {
 
 describe("ReportsService", () => {
   let service: ReportsService;
-  let reportModel: { find: Mock; findOne: Mock };
-  let taskModel: { findById: Mock };
+  let reportModel: { find: Mock; findOne: Mock; findOneAndDelete: Mock };
+  let taskModel: { findById: Mock; updateOne: Mock };
+  let artifactStorage: { deleteReportArtifact: Mock };
 
   beforeEach(async () => {
-    reportModel = { find: vi.fn(), findOne: vi.fn() };
-    taskModel = { findById: vi.fn() };
+    reportModel = { find: vi.fn(), findOne: vi.fn(), findOneAndDelete: vi.fn() };
+    taskModel = { findById: vi.fn(), updateOne: vi.fn().mockResolvedValue({}) };
+    artifactStorage = { deleteReportArtifact: vi.fn().mockResolvedValue(undefined) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ReportsService,
         { provide: getModelToken(Report.name), useValue: reportModel },
         { provide: getModelToken(Task.name), useValue: taskModel },
+        { provide: ReportArtifactStorageService, useValue: artifactStorage },
       ],
     }).compile();
 
@@ -61,9 +65,10 @@ describe("ReportsService", () => {
           status: "COMPLETED",
           title: "README generation/update — owner/repo@main",
           generatedAt: "2026-01-01T00:00:00.000Z",
+          durationMs: 4200,
         },
       ]);
-      // Thin on purpose — body/proposal/error/summary/durationMs never leak
+      // Thin on purpose — body/proposal/error/summary never leak
       // into the list.
       expect(result[0]).not.toHaveProperty("body");
       expect(result[0]).not.toHaveProperty("summary");
@@ -159,6 +164,47 @@ describe("ReportsService", () => {
       const result = await service.findOneForUser("user1", "report1");
 
       expect(result.pendingAction).toBeNull();
+    });
+  });
+
+  describe("removeForUser", () => {
+    it("deletes only the caller report, clears its Task link, and removes its archived PDF", async () => {
+      const report = makeReport({ _id: "report-oid" });
+      reportModel.findOneAndDelete.mockResolvedValue(report);
+
+      await service.removeForUser("user1", "report1");
+
+      expect(reportModel.findOneAndDelete).toHaveBeenCalledWith({
+        _id: "report1",
+        userId: "user1",
+      });
+      expect(taskModel.updateOne).toHaveBeenCalledWith(
+        { _id: report.taskId, userId: "user1", reportId: "report-oid" },
+        { $set: { reportId: null } },
+      );
+      expect(artifactStorage.deleteReportArtifact).toHaveBeenCalledWith("report1");
+    });
+
+    it("returns the same 404 for an absent or another user's report", async () => {
+      reportModel.findOneAndDelete.mockResolvedValue(null);
+
+      await expect(service.removeForUser("attacker", "someone-elses-report")).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(reportModel.findOneAndDelete).toHaveBeenCalledWith({
+        _id: "someone-elses-report",
+        userId: "attacker",
+      });
+      expect(taskModel.updateOne).not.toHaveBeenCalled();
+      expect(artifactStorage.deleteReportArtifact).not.toHaveBeenCalled();
+    });
+
+    it("keeps the successful deletion when object storage is unavailable", async () => {
+      reportModel.findOneAndDelete.mockResolvedValue(makeReport({ _id: "report-oid" }));
+      artifactStorage.deleteReportArtifact.mockRejectedValue(new Error("storage unavailable"));
+
+      await expect(service.removeForUser("user1", "report1")).resolves.toBeUndefined();
+      expect(taskModel.updateOne).toHaveBeenCalled();
     });
   });
 });

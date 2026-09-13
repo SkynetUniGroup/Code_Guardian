@@ -74,7 +74,7 @@ class FakeTaskCollection {
         return Promise.resolve(null);
       }
       Object.assign(doc, update.$set);
-      // findOneAndUpdate({new: true}) hands the processor a hydrated
+      // findOneAndUpdate({ returnDocument: "after" }) hands the processor a hydrated
       // document; a copy stands in for it, so the processor's in-memory
       // mutations don't leak back into the store the way only a real
       // conditional write should.

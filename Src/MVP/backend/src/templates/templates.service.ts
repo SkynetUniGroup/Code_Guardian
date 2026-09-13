@@ -35,7 +35,7 @@ export class TemplatesService {
     const salvato = await this.templateModel.findOneAndUpdate(
       { userId },
       { $set: { filename: dto.filename.trim(), content: dto.content } },
-      { upsert: true, new: true, setDefaultsOnInsert: true },
+      { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
     );
 
     return toDto(salvato);

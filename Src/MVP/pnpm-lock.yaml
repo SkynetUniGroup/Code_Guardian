@@ -229,9 +229,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.5
         version: 19.2.5(@types/react@19.2.18)
-      '@types/socket.io-client':
-        specifier: ^3.0.0
-        version: 3.0.0(supports-color@8.1.1)
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.2.2(@types/node@26.4.1)(jiti@1.21.7)(terser@5.51.2)(yaml@2.9.0))
@@ -1421,10 +1418,6 @@ packages:
 
   '@types/serve-static@2.2.0':
     resolution: {integrity: sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ==}
-
-  '@types/socket.io-client@3.0.0':
-    resolution: {integrity: sha512-s+IPvFoEIjKA3RdJz/Z2dGR4gLgysKi8owcnrVwNjgvc01Lk68LJDDsG2GRqegFITcxmvCMYM7bhMpwEMlHmDg==}
-    deprecated: This is a stub types definition. socket.io-client provides its own type definitions, so you do not need this installed.
 
   '@types/superagent@8.1.11':
     resolution: {integrity: sha512-KA7srSW/HENDtOw9DOqaFLgWuMqN9WgjEw62lh9dpvRaZDkhdOkazASd7X7i2eMUYLHa1U37ZttnePsH5zTDHw==}
@@ -5458,14 +5451,6 @@ snapshots:
     dependencies:
       '@types/http-errors': 2.0.5
       '@types/node': 26.4.1
-
-  '@types/socket.io-client@3.0.0(supports-color@8.1.1)':
-    dependencies:
-      socket.io-client: 4.8.3(supports-color@8.1.1)
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
 
   '@types/superagent@8.1.11':
     dependencies:

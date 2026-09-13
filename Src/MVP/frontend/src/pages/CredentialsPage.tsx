@@ -38,6 +38,7 @@ const GITHUB_PROVIDER = "GITHUB";
 const SONARQUBE_PROVIDER = "SONARQUBE";
 
 export function CredentialsPage() {
+  const role = useSessionStore((s) => s.user?.role);
   const set_status = useSessionStore((s) => s.setCredentialsStatus);
   const credentials_status = useSessionStore((s) => s.credentialsStatus);
 
@@ -291,7 +292,7 @@ export function CredentialsPage() {
         </button>
       </form>
 
-      {!fetch_loading && (
+      {!fetch_loading && role === "DEVELOPER" && (
         <SonarqubeCredentialCard
           credential={sonar_credential}
           onChange={setSonarCredential}

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -13,6 +14,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -21,12 +23,14 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import type { AuthenticatedUser } from "../common/authenticated-user";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
 import { ApiErrorResponse, ServiceCredentialResponse } from "../common/openapi/api-schemas";
 import { CredentialsService } from "./credentials.service";
 import { CreateCredentialDto } from "./dto/create-credential.dto";
 import type { ServiceCredentialDto } from "./dto/service-credential.dto";
+import { SONARQUBE_PROVIDER } from "./supported-providers";
 
 // Every route here is personal to the caller — no RolesGuard, just proof of
 // identity via JwtAuthGuard, applied once at the controller level since
@@ -52,11 +56,18 @@ export class CredentialsController {
       "Corpo non valido, oppure token rifiutato da GitHub o privo dello scope `repo` (code CREDENTIAL_INVALID).",
     type: ApiErrorResponse,
   })
+  @ApiForbiddenResponse({
+    description: "Only Developers can configure a SonarQube credential.",
+    type: ApiErrorResponse,
+  })
   create(
-    @CurrentUser("userId") userId: string,
+    @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateCredentialDto,
   ): Promise<ServiceCredentialDto> {
-    return this.credentialsService.create(userId, dto);
+    if (dto.provider === SONARQUBE_PROVIDER && user.role !== "DEVELOPER") {
+      throw new ForbiddenException("Only Developers can configure SonarQube credentials");
+    }
+    return this.credentialsService.create(user.userId, dto);
   }
 
   @Get()

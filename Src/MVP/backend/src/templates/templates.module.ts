@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { RolesGuard } from "../common/guards/roles.guard";
 import { ReadmeTemplate, ReadmeTemplateSchema } from "./schemas/readme-template.schema";
 import { TemplatesController } from "./templates.controller";
 import { TemplatesService } from "./templates.service";
@@ -14,7 +15,7 @@ import { TemplatesService } from "./templates.service";
     MongooseModule.forFeature([{ name: ReadmeTemplate.name, schema: ReadmeTemplateSchema }]),
   ],
   controllers: [TemplatesController],
-  providers: [TemplatesService],
+  providers: [TemplatesService, RolesGuard],
   exports: [TemplatesService],
 })
 export class TemplatesModule {}

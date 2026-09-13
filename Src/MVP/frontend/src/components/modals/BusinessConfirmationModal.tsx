@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { apiClient } from "../../api/client";
+import { TextBlockRenderer } from "../../components/report/TextBlockRenderer";
 import { useTasksStore } from "../../stores/tasksStore";
 import type { SubmitInputDto } from "../../types";
 import { Spinner } from "../shared/Spinner";
@@ -75,9 +76,11 @@ export function BusinessConfirmationModal({
       </p>
 
       {technicalChangelog ? (
-        <pre className="mb-4 max-h-72 overflow-auto whitespace-pre-wrap rounded border border-[#cccccc] bg-gray-50 p-3 text-xs leading-relaxed text-[#2a2a2a]">
-          {technicalChangelog}
-        </pre>
+        <div className="mb-4 max-h-72 overflow-auto">
+          <TextBlockRenderer
+            block={{ kind: "TEXT", order: 0, markdown: technicalChangelog }}
+          />
+        </div>
       ) : (
         <p className="mb-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-[#8a5a00]">
           Il testo del changelog tecnico non è arrivato insieme alla richiesta. Puoi comunque

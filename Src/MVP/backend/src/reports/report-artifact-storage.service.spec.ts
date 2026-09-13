@@ -9,6 +9,9 @@ vi.mock("@aws-sdk/client-s3", () => ({
   CreateBucketCommand: vi.fn(function CreateBucketCommand(input: unknown) {
     return { __type: "CreateBucketCommand", input };
   }),
+  DeleteObjectCommand: vi.fn(function DeleteObjectCommand(input: unknown) {
+    return { __type: "DeleteObjectCommand", input };
+  }),
   PutBucketLifecycleConfigurationCommand: vi.fn(function PutBucketLifecycleConfigurationCommand(
     input: unknown,
   ) {
@@ -115,6 +118,20 @@ describe("ReportArtifactStorageService", () => {
           Body: pdf,
           ContentType: "application/pdf",
         },
+      });
+    });
+  });
+
+  describe("deleteReportArtifact", () => {
+    it("removes the archived PDF by report id", async () => {
+      mockSend.mockResolvedValue({});
+      const service = new ReportArtifactStorageService(makeConfig() as never);
+
+      await service.deleteReportArtifact("report1");
+
+      expect(mockSend).toHaveBeenCalledWith({
+        __type: "DeleteObjectCommand",
+        input: { Bucket: "code-guardian-reports", Key: "report1" },
       });
     });
   });

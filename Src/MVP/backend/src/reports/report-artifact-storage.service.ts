@@ -1,5 +1,6 @@
 import {
   CreateBucketCommand,
+  DeleteObjectCommand,
   PutBucketLifecycleConfigurationCommand,
   PutObjectCommand,
   S3Client,
@@ -96,6 +97,16 @@ export class ReportArtifactStorageService implements OnModuleInit {
         Key: reportId,
         Body: pdf,
         ContentType: "application/pdf",
+      }),
+    );
+  }
+
+  /** Removes the archived PDF when its report is deleted by its owner. */
+  async deleteReportArtifact(reportId: string): Promise<void> {
+    await this.client.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: reportId,
       }),
     );
   }

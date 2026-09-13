@@ -82,7 +82,7 @@ describe("CredentialsService", () => {
       expect(filter).toEqual({ userId: "user1", provider: "GITHUB" });
       expect(update.ciphertext).toEqual(Buffer.from("c"));
       expect(update.connectedAt).toBeInstanceOf(Date);
-      expect(options).toEqual({ upsert: true, new: true });
+      expect(options).toEqual({ upsert: true, returnDocument: "after" });
 
       expect(result).toEqual({
         id: "cred1",

@@ -179,7 +179,7 @@ describe("TaskProcessor", () => {
             processingClaimToken: claimToken(),
           },
         },
-        { new: true },
+        { returnDocument: "after" },
       );
       expect(claimToken()).toEqual(expect.any(String));
     });

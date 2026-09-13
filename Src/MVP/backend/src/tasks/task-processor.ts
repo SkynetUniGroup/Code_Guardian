@@ -170,7 +170,7 @@ export class TaskProcessor extends WorkerHost {
           processingClaimToken: claimToken,
         },
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     return task === null ? null : { task, claimToken };

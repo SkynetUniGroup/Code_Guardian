@@ -34,7 +34,7 @@ export class UsageLimitService {
     const updated = await this.usageCounterModel.findOneAndUpdate(
       { userId, yearMonth },
       { $inc: { count: taskCount } },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
 
     if (updated.count > limit) {

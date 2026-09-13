@@ -48,7 +48,7 @@ describe("AppShell", () => {
     expect(useWebSocketMock).toHaveBeenCalledTimes(1);
   });
 
-  it("espone le sei voci di navigazione previste", () => {
+  it("espone il template nella navigazione del Developer", () => {
     autentica();
 
     render(<AppShell />);
@@ -68,6 +68,16 @@ describe("AppShell", () => {
       ["Template", "/template"],
     ]);
   });
+
+  it.each(["SECURITY_AUDITOR", "PROJECT_MANAGER"] as const)(
+    "non espone il template nella navigazione di %s",
+    (role) => {
+      autentica(role);
+      render(<AppShell />);
+
+      expect(screen.queryByRole("link", { name: "Template" })).not.toBeInTheDocument();
+    },
+  );
 
   it("evidenzia la voce corrispondente alla pagina aperta", () => {
     autentica();

@@ -262,6 +262,17 @@ describe("BusinessConfirmationModal", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
+  it("formatta il changelog tecnico come il report", () => {
+    inPausa();
+    render(
+      <BusinessConfirmationModal taskId="t1" technicalChangelog={TECNICO} onClose={vi.fn()} />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Sprint 3", level: 2 })).toBeInTheDocument();
+    expect(screen.getByRole("list")).toBeInTheDocument();
+    expect(screen.queryByText(/## Sprint 3/)).not.toBeInTheDocument();
+  });
+
   it("non nomina le Pull Request, che il changelog non apre", () => {
     inPausa();
     render(

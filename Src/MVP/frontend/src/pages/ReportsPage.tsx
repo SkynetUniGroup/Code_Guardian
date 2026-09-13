@@ -1,6 +1,7 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { apiClient } from "../api/client";
+import { ModalOverlay } from "../components/modals/ModalOverlay";
 import { Spinner } from "../components/shared/Spinner";
 import { StatusBadge } from "../components/shared/StatusBadge";
 import type { ReportSummaryDto as ReportSummary } from "../types";
@@ -16,9 +17,13 @@ import { OPERATION_LABELS } from "../types";
  * Reports are sorted by generation date descending (newest first).
  */
 export function ReportsPage() {
+  const navigate = useNavigate();
   const [reports, setReports] = useState<ReportSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deleting_id, setDeletingId] = useState<string | null>(null);
+  const [report_to_delete, setReportToDelete] = useState<ReportSummary | null>(null);
+  const [delete_error, setDeleteError] = useState("");
 
   useEffect(() => {
     async function fetch_reports() {
@@ -38,6 +43,26 @@ export function ReportsPage() {
     }
     fetch_reports();
   }, []);
+
+  async function handle_delete() {
+    if (!report_to_delete) return;
+    const report = report_to_delete;
+    setDeletingId(report.id);
+    setDeleteError("");
+    try {
+      await apiClient.delete(`/reports/${report.id}`);
+      setReports((current) => current.filter(({ id }) => id !== report.id));
+      setReportToDelete(null);
+    } catch {
+      setDeleteError("Impossibile eliminare il report. Riprova più tardi.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  function open_report(reportId: string) {
+    navigate({ to: "/reports/$id", params: { id: reportId } });
+  }
 
   // ---- Render ----
 
@@ -80,12 +105,26 @@ export function ReportsPage() {
                 <th className="px-4 py-3">Stato</th>
                 <th className="px-4 py-3">Data</th>
                 <th className="px-4 py-3">Durata</th>
-                <th className="px-4 py-3"></th>
+                <th className="px-4 py-3">
+                  <span className="sr-only">Azioni</span>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#eeeeee] bg-white">
               {reports.map((report) => (
-                <tr key={report.id} className="hover:bg-gray-50 transition">
+                <tr
+                  key={report.id}
+                  tabIndex={0}
+                  onClick={() => open_report(report.id)}
+                  onKeyDown={(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      open_report(report.id);
+                    }
+                  }}
+                  className="cursor-pointer outline-none hover:bg-gray-50 focus-visible:bg-blue-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#2277cc] transition"
+                >
                   <td className="px-4 py-3">
                     <p className="font-medium text-[#2a2a2a]">{report.title}</p>
                     <p className="text-xs text-gray-400 mt-0.5">
@@ -105,29 +144,65 @@ export function ReportsPage() {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
-    </td>
+                  </td>
 
-    <td className="px-4 py-3 text-gray-500 text-xs">
-      {report.durationMs != null
-        ? `${(report.durationMs / 1000).toFixed(1)}s`
-        : "—"}
-    </td>
+                  <td className="px-4 py-3 text-gray-500 text-xs">
+                    {report.durationMs != null ? `${(report.durationMs / 1000).toFixed(1)}s` : "—"}
+                  </td>
 
-    <td className="px-4 py-3 text-right">
-      <Link
-        to="/reports/$id"
-        params={{ id: report.id }}
-        className="text-xs font-medium text-[#2277cc] hover:underline"
-      >
-        Visualizza →
-      </Link>
-    </td>
-  </tr>
-))}
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setDeleteError("");
+                        setReportToDelete(report);
+                      }}
+                      disabled={deleting_id !== null}
+                      className="rounded bg-[#cc2222] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#a61b1b] transition disabled:cursor-not-allowed disabled:opacity-50"
+                      aria-label={`Elimina ${report.title}`}
+                    >
+                      {deleting_id === report.id ? "Eliminazione…" : "Elimina"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <ModalOverlay
+        open={report_to_delete !== null}
+        title="Elimina report"
+        onClose={() => {
+          if (deleting_id === null) setReportToDelete(null);
+        }}
+      >
+        <p className="mb-3 text-sm text-gray-600">
+          Eliminare definitivamente il report “{report_to_delete?.title}”?
+        </p>
+        <p className="mb-4 text-xs text-gray-500">L&apos;operazione non può essere annullata.</p>
+        {delete_error && <p className="mb-3 text-xs text-[#cc2222]">{delete_error}</p>}
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setReportToDelete(null)}
+            disabled={deleting_id !== null}
+            className="rounded border border-[#cccccc] px-4 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
+          >
+            Annulla
+          </button>
+          <button
+            type="button"
+            onClick={handle_delete}
+            disabled={deleting_id !== null}
+            className="rounded bg-[#cc2222] px-4 py-2 text-sm font-medium text-white hover:bg-[#a61b1b] transition disabled:opacity-50"
+          >
+            {deleting_id ? "Eliminazione…" : "Elimina report"}
+          </button>
+        </div>
+      </ModalOverlay>
     </div>
   );
 }

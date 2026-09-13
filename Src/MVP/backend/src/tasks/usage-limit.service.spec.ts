@@ -33,7 +33,7 @@ describe("UsageLimitService", () => {
     const [filter, update, options] = model.findOneAndUpdate.mock.calls[0] as [
       { userId: string; yearMonth: string },
       { $inc: { count: number } },
-      { upsert: boolean; new: boolean },
+      { upsert: boolean; returnDocument: "after" },
     ];
     expect(filter.userId).toBe("user1");
     // Il mese vero, non la sua forma: con /^\d{4}-\d{2}$/ anche un
@@ -42,7 +42,7 @@ describe("UsageLimitService", () => {
     // tetto a vita.
     expect(filter.yearMonth).toBe(new Date().toISOString().slice(0, 7));
     expect(update).toEqual({ $inc: { count: 3 } });
-    expect(options).toEqual({ upsert: true, new: true });
+    expect(options).toEqual({ upsert: true, returnDocument: "after" });
     expect(model.updateOne).not.toHaveBeenCalled();
   });
 

@@ -33,13 +33,13 @@ function httpError(status: number, code?: string, message?: string) {
   const data: Record<string, string> = {};
   if (code) data.code = code;
   if (message) data.message = message;
-  return new AxiosError(
-    message ?? "Request failed",
-    String(status),
-    undefined,
-    undefined,
-    { status, data, statusText: "", headers: {}, config: {} } as never,
-  );
+  return new AxiosError(message ?? "Request failed", String(status), undefined, undefined, {
+    status,
+    data,
+    statusText: "",
+    headers: {},
+    config: {},
+  } as never);
 }
 
 /** Monta la pagina attendendo la fine della lettura iniziale. */
@@ -56,12 +56,34 @@ async function inserisciPat(user: ReturnType<typeof userEvent.setup>, pat = PAT_
 const SALVA = /Salva e verifica/;
 
 beforeEach(() => {
-  useSessionStore.setState(initialSession, true);
+  useSessionStore.setState(
+    { ...initialSession, user: { id: "user-1", firstName: "Ada", role: "DEVELOPER" } },
+    true,
+  );
   getMock.mockReset().mockResolvedValue({ data: [] });
   postMock.mockReset();
 });
 
 describe("CredentialsPage", () => {
+  it("shows SonarQube only to Developers", async () => {
+    await renderCaricata();
+
+    expect(screen.getByRole("heading", { name: "SonarQube / SonarCloud" })).toBeInTheDocument();
+  });
+
+  it.each(["SECURITY_AUDITOR", "PROJECT_MANAGER"] as const)(
+    "does not show SonarQube to %s",
+    async (role) => {
+      useSessionStore.setState({ user: { id: "user-1", firstName: "Ada", role } });
+
+      await renderCaricata();
+
+      expect(
+        screen.queryByRole("heading", { name: "SonarQube / SonarCloud" }),
+      ).not.toBeInTheDocument();
+    },
+  );
+
   describe("stato iniziale", () => {
     it("legge le credenziali memorizzate al montaggio", async () => {
       getMock.mockResolvedValueOnce({ data: [credenziale()] });
@@ -261,7 +283,9 @@ describe("CredentialsPage", () => {
 
       await user.click(screen.getByRole("button", { name: SALVA }));
 
-      expect(await screen.findByText("Inserisci il GitHub Personal Access Token")).toBeInTheDocument();
+      expect(
+        await screen.findByText("Inserisci il GitHub Personal Access Token"),
+      ).toBeInTheDocument();
       expect(postMock).not.toHaveBeenCalled();
     });
 
@@ -272,7 +296,9 @@ describe("CredentialsPage", () => {
 
       await inserisciPat(user, "g");
 
-      expect(screen.queryByText("Inserisci il GitHub Personal Access Token")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Inserisci il GitHub Personal Access Token"),
+      ).not.toBeInTheDocument();
     });
   });
 

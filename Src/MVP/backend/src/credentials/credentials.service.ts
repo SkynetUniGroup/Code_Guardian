@@ -55,7 +55,7 @@ export class CredentialsService {
     const credential = await this.credentialModel.findOneAndUpdate(
       { userId, provider: dto.provider },
       { ...encrypted, connectedAt },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
 
     return this.toDto(credential);

@@ -53,7 +53,7 @@ describe("TemplatesService", () => {
       expect(model.findOneAndUpdate).toHaveBeenCalledWith(
         { userId: "user1" },
         { $set: { filename: "template.md", content: contenuto } },
-        expect.objectContaining({ upsert: true, new: true }),
+        expect.objectContaining({ upsert: true, returnDocument: "after" }),
       );
       expect(risultato).toEqual({
         active: true,
