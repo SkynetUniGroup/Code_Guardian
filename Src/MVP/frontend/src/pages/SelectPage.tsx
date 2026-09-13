@@ -1,11 +1,13 @@
 import { useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useEffect, useState } from "react";
 import { apiClient } from "../api/client";
+import { apiErrorMessage } from "../api/errors";
 import { ErrorState } from "../components/shared/ErrorState";
 import { Spinner } from "../components/shared/Spinner";
 import { ValidatedField } from "../components/shared/ValidatedField";
 import { useSelectionStore } from "../stores/selectionStore";
 import type { AnalysisContextDto, CreateContextDto, RepositorySummary } from "../types";
+
 
 const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
 
@@ -152,8 +154,8 @@ export function SelectPage() {
         paths_text,
       });
       navigate({ to: "/run" });
-    } catch {
-      setSubmitError("Impossibile salvare il contesto. Verifica i parametri e riprova.");
+    } catch (err) {
+      setSubmitError(apiErrorMessage(err,"Impossibile salvare il contesto. Verifica i parametri e riprova.",),);
     } finally {
       setSubmitting(false);
     }

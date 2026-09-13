@@ -124,8 +124,10 @@ describe("ReportDetailPage", () => {
     await renderConReport(
       report({ body: [{ kind: "TEXT", order: 1, markdown: "## Sintesi esecutiva" }] }),
     );
-
-    expect(screen.getByText("## Sintesi esecutiva")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Sintesi esecutiva" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("## Sintesi esecutiva")).not.toBeInTheDocument();
   });
 
   it("renderizza un riscontro con categoria, gravita' e riferimenti al codice", async () => {

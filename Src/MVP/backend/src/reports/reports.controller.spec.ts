@@ -35,6 +35,7 @@ import request from "supertest";
 import { App } from "supertest/types";
 import { AllExceptionsFilter } from "../common/filters/all-exceptions.filter";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
+import { AgentRegistry } from "../operations/agent-registry.service";
 import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { composeReportPdf } from "./report-pdf.composer";
 import { ReportsController } from "./reports.controller";
@@ -60,6 +61,8 @@ function makeReportDto(overrides: Record<string, unknown> = {}) {
     id: "report1",
     operation: "DOCS_README",
     status: "COMPLETED",
+    generatedAt: "2026-09-13T10:00:00.000Z",
+    context: { repoOwner: "OWASP", repoName: "NodeGoat" },
     ...overrides,
   };
 }
@@ -78,9 +81,13 @@ describe("ReportsController (export, integration)", () => {
       controllers: [ReportsController],
       providers: [
         // The real service, wired to real ReportsExportService — only its
-        // two collaborators are mocked, exactly the boundary a real
-        // deployment would have (Mongo, MinIO).
+        // collaborators are mocked, exactly the boundary a real
+        // deployment would have (Mongo, MinIO). AgentRegistry is real too:
+        // it's pure lookup logic (no I/O), so there is no boundary reason
+        // to mock it, and using the real display-name mapping is what
+        // proves the actual filename that reaches the client.
         ReportsExportService,
+        AgentRegistry,
         { provide: ReportsService, useValue: reportsService },
         { provide: ReportArtifactStorageService, useValue: storage },
       ],
@@ -151,9 +158,14 @@ describe("ReportsController (export, integration)", () => {
     });
   });
 
-  it("streams the composed PDF with the right headers and filename on success", async () => {
+  it("streams the composed PDF with the right headers and a human-readable filename on success", async () => {
     reportsService.findOneForUser.mockResolvedValue(
-      makeReportDto({ operation: "SECURITY_OWASP", id: "r42" }),
+      makeReportDto({
+        operation: "SECURITY_OWASP",
+        id: "r42",
+        generatedAt: "2026-09-13T10:00:00.000Z",
+        context: { repoOwner: "OWASP", repoName: "NodeGoat" },
+      }),
     );
     const pdf = Buffer.from("%PDF-1.4 fake pdf bytes");
     composeReportPdfMock.mockResolvedValue(pdf);
@@ -164,7 +176,7 @@ describe("ReportsController (export, integration)", () => {
 
     expect(res.headers["content-type"]).toBe("application/pdf");
     expect(res.headers["content-disposition"]).toBe(
-      'attachment; filename="code-guardian-SECURITY_OWASP-r42.pdf"',
+      'attachment; filename="owasp-top-10-vulnerability-scan-owasp-nodegoat-2026-09-13.pdf"',
     );
     expect(Buffer.compare(res.body as Buffer, pdf)).toBe(0);
     expect(storage.putReportArtifact).toHaveBeenCalledWith("r42", pdf);

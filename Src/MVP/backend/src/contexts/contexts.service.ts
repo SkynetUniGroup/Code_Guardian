@@ -45,10 +45,17 @@ export class ContextsService {
 
     // Step 4: branch existence (RF.21). listRefs also gives us the branch's
     // HEAD sha, reused directly in step 6 — no second call.
-    const refs = await this.githubClient.listRefs(token, owner, repo);
-    const branchRef = refs.branches.find((b) => b.name === dto.branch);
+    const branchRef = await this.githubClient.getBranch(
+      token,
+      owner,
+      repo,
+      dto.branch,
+    );
+
     if (!branchRef) {
-      throw new NotFoundException(`Branch "${dto.branch}" not found in ${owner}/${repo}.`);
+      throw new NotFoundException(
+        `Branch "${dto.branch}" non trovato nel repository ${owner}/${repo}.`,
+      );
     }
 
     // Step 5: commit membership (RF.22), only if commitSha was supplied.
@@ -60,6 +67,7 @@ export class ContextsService {
         dto.commitSha,
         branchRef.sha,
       );
+
       if (comparison.status !== "ahead" && comparison.status !== "identical") {
         throw new UnprocessableEntityException(
           `Commit ${dto.commitSha} does not belong to branch "${dto.branch}".`,

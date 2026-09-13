@@ -99,15 +99,20 @@ export class GithubClientService {
     return this.toRepositorySummary(data);
   }
 
-  async listRefs(token: string, owner: string, repo: string): Promise<RefSummary> {
+  async listRefs(
+    token: string,
+    owner: string,
+    repo: string,
+  ): Promise<RefSummary> {
     const client = this.client(token);
+
     const [branches, tags] = await Promise.all([
-      client.request("GET /repos/{owner}/{repo}/branches", {
+      client.paginate("GET /repos/{owner}/{repo}/branches", {
         owner,
         repo,
         per_page: 100,
       }),
-      client.request("GET /repos/{owner}/{repo}/tags", {
+      client.paginate("GET /repos/{owner}/{repo}/tags", {
         owner,
         repo,
         per_page: 100,
@@ -115,11 +120,14 @@ export class GithubClientService {
     ]);
 
     return {
-      branches: branches.data.map((b) => ({
+      branches: branches.map((b) => ({
         name: b.name,
         sha: b.commit.sha,
       })),
-      tags: tags.data.map((t) => ({ name: t.name, sha: t.commit.sha })),
+      tags: tags.map((t) => ({
+        name: t.name,
+        sha: t.commit.sha,
+      })),
     };
   }
 
@@ -246,6 +254,36 @@ export class GithubClientService {
     await this.redis.set(cacheKey, JSON.stringify(file), "EX", CACHE_TTL_SECONDS);
     return file;
   }
+
+  async getBranch(
+    token: string,
+    owner: string,
+    repo: string,
+    branch: string,
+  ): Promise<{ name: string; sha: string } | null> {
+    try {
+      const { data } = await this.client(token).request(
+        "GET /repos/{owner}/{repo}/branches/{branch}",
+        {
+          owner,
+          repo,
+          branch,
+        },
+      );
+
+      return {
+        name: data.name,
+        sha: data.commit.sha,
+      };
+    } catch (error) {
+      if (this.isNotFound(error)) {
+        return null;
+      }
+
+      throw error;
+    }
+  }
+
 
   private isNotFound(error: unknown): boolean {
     return typeof error === "object" && error !== null && "status" in error && error.status === 404;

@@ -14,6 +14,17 @@ from ..graph import AgentCancelled, resume_action
 from ..models import Block, ChangelogItemBlock, Proposal, TextBlock
 from ._base import load_prompt_template, render_prompt
 
+class SprintNotFoundError(Exception):
+    """Raised when the requested Sprint ID matches no milestone in the repository.
+
+    Mapped to ErrorKind.CONTEXT_RESOURCE_INVALID by the graph's error node,
+    the same way ContextResourceInvalidError works in agents/security.py.
+    """
+
+    def __init__(self, message: str):
+        self.error_type = "CONTEXT_RESOURCE_INVALID"
+        super().__init__(message)
+
 
 class ChangelogLoader:
     """Loads issues from GitHub, filters invalid ones, and prepares the changelog context."""
@@ -54,6 +65,17 @@ class ChangelogLoader:
             context_ref.repoOwner, context_ref.repoName, {"state": "closed"}
         )
         issues = issues_response.get("issues", [])
+
+        if sprint_id != "Current Sprint":
+            known_milestones = {
+                issue.get("milestone") for issue in issues if issue.get("milestone")
+            }
+            if sprint_id not in known_milestones:
+                raise SprintNotFoundError(
+                    f"Sprint ID '{sprint_id}' does not match any milestone found "
+                    "among the closed issues of this repository. Check the value "
+                    "and try again."
+                )
 
         kept_tasks, excluded_tasks, insufficient_ids = [], [], []
 

@@ -14,6 +14,7 @@ import { StatusBadge } from "../components/shared/StatusBadge";
 import { useSessionStore } from "../stores/sessionStore";
 import type { Block, Report, Severity } from "../types";
 import { OPERATION_LABELS } from "../types";
+import { buildReportPdfFilename } from "../lib/utils";
 
 /**
  * ReportDetailPage — /reports/:id
@@ -62,17 +63,21 @@ export function ReportDetailPage() {
 
   /** Triggers a streaming PDF download via the backend export endpoint. */
   async function handle_pdf_export() {
-    if (!token) return;
+    if (!token || !report) return;
+
+    const current_report = report;
+
     setPdfLoading(true);
     setPdfError("");
+
     try {
       const blob = await streamDownload(`/reports/${id}/export?format=pdf`, token);
 
-      // Create a temporary anchor element to trigger the browser download dialog.
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `report-${id}.pdf`;
+      anchor.download = buildReportPdfFilename(current_report);
+
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
