@@ -315,9 +315,17 @@ export class PendingInputResponse {
   @ApiProperty({
     type: String,
     required: false,
-    description: "Solo per BUSINESS_CONFIRMATION: il report tecnico da rivedere.",
+    description:
+      "Solo per BUSINESS_CONFIRMATION: il changelog tecnico da rivedere, in Markdown. E' il testo e non l'id di un Report perche' in quel momento il Report non esiste ancora: le due fasi stanno dentro un solo Task e il Report nasce alla fine.",
   })
-  technicalReportId?: string;
+  technicalChangelog?: string;
+
+  @ApiProperty({
+    type: Boolean,
+    required: false,
+    description: "Solo per BUSINESS_CONFIRMATION: vero se l'anteprima e' stata troncata.",
+  })
+  technicalChangelogTruncated?: boolean;
 }
 
 // `pendingInput` e `remediation` sono unioni discriminate: appiattirle in una

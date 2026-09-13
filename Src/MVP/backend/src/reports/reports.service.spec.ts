@@ -135,7 +135,8 @@ describe("ReportsService", () => {
       taskModel.findById.mockResolvedValue({
         pendingInput: {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: "r0",
+          technicalChangelog: "## Sprint 1",
+          technicalChangelogTruncated: false,
         },
       });
 
@@ -144,7 +145,8 @@ describe("ReportsService", () => {
       expect(taskModel.findById).toHaveBeenCalledWith(report.taskId);
       expect(result.pendingAction).toEqual({
         kind: "BUSINESS_CONFIRMATION",
-        technicalReportId: "r0",
+        technicalChangelog: "## Sprint 1",
+        technicalChangelogTruncated: false,
       });
       expect(result.taskId).toBe("task1");
       expect(result.body).toEqual([{ kind: "TEXT", markdown: "hi" }]);

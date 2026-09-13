@@ -521,6 +521,17 @@ class AgentGraph:
             return {"loaded_context": ctx}
         except AgentCancelled:
             raise
+        except GraphInterrupt:
+            # interrupt() segnala una pausa, non un guasto: e' cosi' che il
+            # loader del Changelog chiede all'utente cosa fare delle issue
+            # senza metadati sufficienti. Essendo GraphInterrupt una Exception,
+            # senza questo ramo finiva nel generico qui sotto e veniva
+            # trasformata in {"error": ...}: il grafo andava in gestisci_errore
+            # e la task moriva con UPSTREAM e il payload dell'interrupt come
+            # messaggio, invece di sospendersi e aspettare una risposta. Deve
+            # risalire intatta fino al loop di LangGraph, che e' l'unico a
+            # saperla mettere sotto __interrupt__.
+            raise
         except Exception as exc:
             logger.error("Error in carica_contesto: %s", exc)
             return {"error": exc}
@@ -647,8 +658,29 @@ class AgentGraph:
                 exc.error_type = "PARSING"
             return {"error": exc, "needs_retry": False}
 
+    # Quanto changelog tecnico si manda all'interfaccia. Un tetto c'e' perche'
+    # questo testo attraversa il pendingInput, quindi finisce su MongoDB dentro
+    # il Task e passa per un evento WebSocket: non e' il posto per un documento
+    # senza limiti. 20k caratteri stanno larghi su uno sprint reale.
+    _TECHNICAL_PREVIEW_MAX_CHARS = 20_000
+
     async def _node_await_confirmation(self, st: AgentState) -> dict:
         """Suspends execution waiting for human input for the Business phase.
+
+        Manda all'interfaccia il changelog tecnico appena prodotto, come testo.
+
+        Prima mandava `technicalReportId: None`, e non per una svista: in questo
+        istante un Report tecnico **non esiste**. CHANGELOG_BUSINESS e' un solo
+        Task che fa due fasi dentro lo stesso grafo (await_confirmation torna a
+        componi_prompt), e il Report viene assemblato solo alla fine, su
+        assembla_report. Non c'era nessun id da mandare perche' non c'era
+        nessun Report a cui puntare, e l'interfaccia finiva per costruire un
+        link verso `/reports/`.
+
+        Il testo invece c'e' gia': lo scrive ChangelogBusinessProfile.parse_output
+        in ctx["technical_text"] alla fine della fase tecnica, e ctx e'
+        st.loaded_context. Mandarlo direttamente evita di dover inventare un
+        Report intermedio su un Task ancora RUNNING.
 
         Args:
             st (AgentState): The current graph state.
@@ -659,8 +691,20 @@ class AgentGraph:
         Raises:
             AgentCancelled: If the user cancels the confirmation phase.
         """
+        ctx = st.loaded_context or {}
+        technical = str(ctx.get("technical_text") or "")
+        truncated = len(technical) > self._TECHNICAL_PREVIEW_MAX_CHARS
+        if truncated:
+            technical = technical[: self._TECHNICAL_PREVIEW_MAX_CHARS]
+
         action = resume_action(
-            interrupt({"kind": "BUSINESS_CONFIRMATION", "technicalReportId": None})
+            interrupt(
+                {
+                    "kind": "BUSINESS_CONFIRMATION",
+                    "technicalChangelog": technical,
+                    "technicalChangelogTruncated": truncated,
+                }
+            )
         )
 
         if action == "CANCEL":

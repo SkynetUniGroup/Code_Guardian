@@ -74,7 +74,20 @@ export interface TaskError {
 export type PendingInput =
   | { kind: "SPRINT_ID" }
   | { kind: "INCOMPLETE_TASKS"; taskIds: string[] }
-  | { kind: "BUSINESS_CONFIRMATION"; technicalReportId: string }
+  // Il changelog tecnico viaggia come testo, non come id di un Report.
+  //
+  // Qui c'era `technicalReportId`, e non poteva funzionare: CHANGELOG_BUSINESS
+  // e' un solo Task che fa due fasi dentro lo stesso grafo dell'agente, e il
+  // Report nasce solo alla fine. Nell'istante in cui si chiede la conferma un
+  // Report tecnico non esiste, quindi non c'e' nessun id da mandare —
+  // l'interfaccia ci costruiva sopra un link verso `/reports/`.
+  | {
+      kind: "BUSINESS_CONFIRMATION";
+      /** Il changelog tecnico appena prodotto, in Markdown. */
+      technicalChangelog: string;
+      /** Vero se il testo e' stato tagliato perche' troppo lungo. */
+      technicalChangelogTruncated: boolean;
+    }
   | null;
 
 export type SubmitInputDto =
@@ -379,9 +392,10 @@ export interface TaskInputRequiredEvent {
   taskId: string;
   kind: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION";
   taskIds?: string[];
-  // Report del changelog tecnico da rivedere prima della fase business.
-  // Nome distinto da `reportId` (task.updated), che è il report finale.
-  technicalReportId?: string;
+  // Il changelog tecnico da rivedere prima della fase business, come testo.
+  // Non un id: vedi il commento su PendingInput qui sopra.
+  technicalChangelog?: string;
+  technicalChangelogTruncated?: boolean;
 }
 
 export interface BatchCompletedEvent {

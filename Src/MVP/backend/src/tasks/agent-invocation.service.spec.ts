@@ -324,7 +324,8 @@ describe("AgentInvocationService", () => {
           status: "interrupted",
           pendingInput: {
             kind: "BUSINESS_CONFIRMATION",
-            technicalReportId: "report1",
+            technicalChangelog: "## Sprint 1",
+            technicalChangelogTruncated: false,
           },
         }),
       );
@@ -337,7 +338,8 @@ describe("AgentInvocationService", () => {
         status: "INTERRUPTED",
         pendingInput: {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: "report1",
+          technicalChangelog: "## Sprint 1",
+          technicalChangelogTruncated: false,
         },
       });
     });

@@ -84,7 +84,8 @@ describe("EventsGateway", () => {
           taskId: "task-1",
           kind: "SPRINT_ID",
           taskIds: undefined,
-          technicalReportId: undefined,
+          technicalChangelog: undefined,
+          technicalChangelogTruncated: undefined,
         });
       });
 
@@ -99,24 +100,28 @@ describe("EventsGateway", () => {
           taskId: "task-1",
           kind: "INCOMPLETE_TASKS",
           taskIds: ["issue-1", "issue-2"],
-          technicalReportId: undefined,
+          technicalChangelog: undefined,
+          technicalChangelogTruncated: undefined,
         });
       });
 
-      // Named technicalReportId, not reportId as in Progettazione Frontend
-      // Table 6 — see the comment on emitTaskInputRequired for why.
-      it("flattens the BUSINESS_CONFIRMATION variant as technicalReportId, not reportId", () => {
+      // Il changelog tecnico viaggia come testo, non come id: quando si chiede
+      // la conferma il Report non esiste ancora (le due fasi stanno dentro un
+      // solo Task). Vedi il commento su emitTaskInputRequired.
+      it("flattens the BUSINESS_CONFIRMATION variant carrying the technical changelog text", () => {
         const server = { to: vi.fn().mockReturnThis(), emit: vi.fn() };
         emit(server).emitTaskInputRequired("user-1", "task-1", {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: "report-99",
+          technicalChangelog: "## Sprint 3\n\n- #12 login",
+          technicalChangelogTruncated: false,
         });
 
         expect(server.emit).toHaveBeenCalledWith("task.inputRequired", {
           taskId: "task-1",
           kind: "BUSINESS_CONFIRMATION",
           taskIds: undefined,
-          technicalReportId: "report-99",
+          technicalChangelog: "## Sprint 3\n\n- #12 login",
+          technicalChangelogTruncated: false,
         });
       });
     });
