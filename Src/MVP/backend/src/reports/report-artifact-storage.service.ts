@@ -1,6 +1,5 @@
 import {
   CreateBucketCommand,
-  DeleteObjectCommand,
   PutBucketLifecycleConfigurationCommand,
   PutObjectCommand,
   S3Client,
@@ -27,16 +26,22 @@ export class ReportArtifactStorageService implements OnModuleInit {
 
   constructor(private readonly config: ConfigService) {
     this.bucket = this.require("REPORTS_BUCKET_NAME");
-    this.client = new S3Client({
+    const accessKeyId = this.config.get<string>("S3_ACCESS_KEY_ID");
+    const secretAccessKey = this.config.get<string>("S3_SECRET_ACCESS_KEY");
+  this.client = new S3Client({
       region: this.config.get<string>("S3_REGION"),
       // Assente contro AWS S3 reale: l'SDK risolve da solo l'endpoint
       // regionale a partire da S3_REGION.
       endpoint: this.config.get<string>("S3_ENDPOINT"),
       forcePathStyle: this.config.get<boolean>("S3_FORCE_PATH_STYLE"),
-      credentials: {
-        accessKeyId: this.require("S3_ACCESS_KEY_ID"),
-        secretAccessKey: this.require("S3_SECRET_ACCESS_KEY"),
-      },
+      // Presenti solo contro MinIO in locale (S3_ENDPOINT impostato).
+      // Contro AWS S3 reale, ometterle del tutto fa scattare la catena di
+      // credenziali di default dell'SDK, che su Fargate legge il Task Role
+      // — nessuna chiave statica da gestire (compute-stack.ts già concede
+      // a backendTaskRole l'accesso al bucket via grantReadWrite).
+      ...(accessKeyId && secretAccessKey
+        ? { credentials: { accessKeyId, secretAccessKey } }
+        : {}),
     });
   }
 
@@ -97,16 +102,6 @@ export class ReportArtifactStorageService implements OnModuleInit {
         Key: reportId,
         Body: pdf,
         ContentType: "application/pdf",
-      }),
-    );
-  }
-
-  /** Removes the archived PDF when its report is deleted by its owner. */
-  async deleteReportArtifact(reportId: string): Promise<void> {
-    await this.client.send(
-      new DeleteObjectCommand({
-        Bucket: this.bucket,
-        Key: reportId,
       }),
     );
   }

@@ -36,6 +36,19 @@ export const envValidationSchema = Joi.object({
   S3_REGION: Joi.string().default("us-east-1"),
   S3_ENDPOINT: Joi.string().uri().optional(),
   S3_FORCE_PATH_STYLE: Joi.boolean().default(false),
-  S3_ACCESS_KEY_ID: Joi.string().required(),
-  S3_SECRET_ACCESS_KEY: Joi.string().required(),
+    // Obbligatorie solo insieme a S3_ENDPOINT (MinIO in locale, che non
+  // conosce IAM e ha per forza bisogno di credenziali esplicite). Contro
+  // AWS S3 reale (S3_ENDPOINT assente) restano opzionali: l'SDK usa da
+  // solo la catena di credenziali di default, che su Fargate risolve nel
+  // Task Role — vedi report-artifact-storage.service.ts.
+  S3_ACCESS_KEY_ID: Joi.string().when("S3_ENDPOINT", {
+    is: Joi.exist(),
+    then: Joi.required(),
+    otherwise: Joi.optional(),
+  }),
+  S3_SECRET_ACCESS_KEY: Joi.string().when("S3_ENDPOINT", {
+    is: Joi.exist(),
+    then: Joi.required(),
+    otherwise: Joi.optional(),
+  }),
 });
