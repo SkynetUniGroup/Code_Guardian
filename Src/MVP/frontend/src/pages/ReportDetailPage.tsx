@@ -17,26 +17,27 @@ import { OPERATION_LABELS } from "../types";
 import { buildReportPdfFilename } from "../lib/utils";
 
 /**
- * ReportDetailPage — /reports/:id
+ * ReportDetailPage â /reports/:id
  *
  * Fetches and renders a full report from GET /reports/:id.
  *
  * The report body is a polymorphic array of blocks dispatched to the
  * appropriate renderer based on each block's `kind` field:
- *  - 'TEXT'            → TextBlockRenderer
- *  - 'FINDING'         → FindingBlockRenderer (OWASP findings, filterable by severity)
- *  - 'POLICY_VIOLATION'→ PolicyViolationRenderer
- *  - 'CHANGELOG_ITEM'  → rendered inline as a timeline card
+ *  - 'TEXT'            â TextBlockRenderer
+ *  - 'FINDING'         â FindingBlockRenderer (OWASP findings, filterable by severity)
+ *  - 'POLICY_VIOLATION'â PolicyViolationRenderer
+ *  - 'CHANGELOG_ITEM'  â rendered inline as a timeline card
  *
  * If the report has a `proposal` (Docs agent), it is displayed below the body
  * via ProposalRenderer with a primary PR link button.
  *
- * Issue 12 — PDF export: the Export PDF button triggers a streaming binary
+ * Issue 12 â PDF export: the Export PDF button triggers a streaming binary
  * download via the streamDownload() utility, not a direct S3 URL.
  */
 export function ReportDetailPage() {
   const { id } = useParams({ strict: false }) as { id: string };
-  const token = useSessionStore((s) => s.token);
+ 
+ const token = useSessionStore((s) => s.token);
 
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
@@ -95,7 +96,7 @@ export function ReportDetailPage() {
     return (
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Spinner size="sm" />
-        Loading report…
+        Loading reportâ¦
       </div>
     );
   }
@@ -107,7 +108,8 @@ export function ReportDetailPage() {
         action={
           <Link
             to="/reports"
-            className="rounded bg-[#2277cc] px-3 py-1.5 text-sm text-white hover:bg-[#1a5fa8]"
+            className="rounded bg-[#2277cc] px-3 py-1.5 text-s
+m text-white hover:bg-[#1a5fa8]"
           >
             Back to reports
           </Link>
@@ -154,9 +156,10 @@ export function ReportDetailPage() {
   );
 
   const severity_options: Array<{ value: Severity | "all"; label: string }> = [
-    { value: "all", label: "All" },
+    { value: "all", label: 
+"All" },
     { value: "CRITICAL", label: "Critico" },
-    { value: "HIGH", label: "Alto" },
+    { value: "HIGH", label: "High" },
     { value: "MEDIUM", label: "Medio" },
     { value: "LOW", label: "Basso" },
     { value: "INFO", label: "Info" },
@@ -168,7 +171,7 @@ export function ReportDetailPage() {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <Link to="/reports" className="mb-2 block text-xs text-[#2277cc] hover:underline">
-            ← Back to reports
+            â Back to reports
           </Link>
           <h1 className="text-lg font-semibold text-[#2a2a2a]">
             {OPERATION_LABELS[report.operation] ?? report.operation}
@@ -207,7 +210,8 @@ export function ReportDetailPage() {
             </svg>
           )}
           Export PDF
-        </button>
+        </butto
+n>
       </div>
 
       {pdf_error && (
@@ -257,11 +261,12 @@ export function ReportDetailPage() {
         </div>
       )}
 
-      {/* Report body — block dispatcher */}
+      {/* Report body â block dispatcher */}
       <div className="flex flex-col gap-3">
         {filtered_blocks.map((block, index) => {
           const key = `${block.kind}-${index}`;
-          switch (block.kind) {
+          switch (block.kind) 
+{
             case "TEXT":
               return <TextBlockRenderer key={key} block={block} />;
 

@@ -15,7 +15,7 @@ import type { CreateTaskBatchDto, OperationCode, OperationDescriptorDto } from "
  * Shows the operations available to the user by reading them from GET /operations:
  * it is the backend (AgentRegistry) that filters them by role, and it is always the backend that
  * rejects with 403 an unauthorized operation. A role→operations table
- * replicata qui poteva solo divergere da quella applicata davvero.
+ * replicated here could only diverge from the one actually applied.
  *
  * This page reads the analysis context set by /select from the selectionStore.
  * If no context has been selected, the user is prompted to go back to /select.
@@ -40,8 +40,7 @@ export function RunPage() {
   const [ops_loading, setOpsLoading] = useState(true);
   const [ops_error, setOpsError] = useState("");
 
-  
-useEffect(() => {
+  useEffect(() => {
     async function fetch_operations() {
       try {
         const response = await apiClient.get<OperationDescriptorDto[]>("/operations");
@@ -89,7 +88,7 @@ useEffect(() => {
     } catch (err: unknown) {
       const { status, message } = toApiError(err);
       if (status === 429) {
-        // USAGE_LIMIT_EXCEEDED (RF.66): il backend risponde 429, non 402.
+        // USAGE_LIMIT_EXCEEDED (RF.66): the backend responds 429, not 402.
         setLaunchError(
           message ?? "You have reached the monthly operation limit; try again next month.",
         );
@@ -107,8 +106,7 @@ useEffect(() => {
 
   // ---- Render ----
 
-  // Guard: if no context has been selected, show a prompt to go to /select
-.
+  // Guard: if no context has been selected, show a prompt to go to /select.
   if (!contextId || !context) {
     return (
       <ErrorState
@@ -136,7 +134,7 @@ useEffect(() => {
       {/* Context summary — shows which repo and scope is currently active */}
       <div className="mb-6 rounded-lg border border-[#cccccc] bg-gray-50 px-4 py-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
-          Contesto attivo
+          Active context
         </p>
         <p className="text-sm font-medium text-[#2a2a2a]">
           {context.repoOwner}/{context.repoName}
@@ -151,34 +149,33 @@ useEffect(() => {
             </>
           )}
           {" · "}
-          {context.estimatedFileCount} file stimati
+          {context.estimatedFileCount} estimated files
         </p>
         {/* RV.8: non-blocking warning computed by the backend at context creation.
-            contesto. Il campo arrivava nel DTO con un TODO e non veniva mai
+            The field arrived in the DTO with a TODO and was never
             displayed, so the user did not know that the generated documentation
-            poteva risentire di un README in un'altra lingua. */}
+            could be affected by a README in another language. */}
         {context.nonEnglishReadmeDetected && (
-          <p className="mt-2 rounded bor
-der border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
+          <p className="mt-2 rounded border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
             This repository's README does not appear to be in English: agents work better on
-            contenuti in inglese, i risultati potrebbero essere meno accurati.
+            English content, results may be less accurate.
           </p>
         )}
         {/* RF.24: same treatment as RV.8 above — non-blocking warning,
-            calcolato dal backend alla creazione del contesto. Compare quando il
-            linguaggio predominante non e' fra i tre supportati: e' il caso in
-            where the analysis would see a minimal fraction of the repository, and without
+            computed by the backend at context creation. It appears when the
+            predominant language is not among the three supported: it is the case where
+            the analysis would see a minimal fraction of the repository, and without
             saying it a nearly empty report would look like a nearly clean repository. */}
         {context.unsupportedLanguageWarning && (
           <p className="mt-2 rounded border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
             This repository is primarily written in{" "}
-            <span className="font-medium">{context.predominantLanguage}</span>, che gli agenti non
-            sanno analizzare: verranno esaminati solo i file TypeScript, JavaScript e Python
-            {context.detectedLanguages.length === 0 ? ", che qui non risultano presenti" : ""}.
+            <span className="font-medium">{context.predominantLanguage}</span>, which agents cannot
+            analyze: only TypeScript, JavaScript and Python files will be examined
+            {context.detectedLanguages.length === 0 ? ", which are not present here" : ""}.
             {context.unsupportedLanguages.length > 1 && (
               <>
                 {" "}
-                Altri linguaggi non supportati: {context.unsupportedLanguages.slice(1).join(", ")}.
+                Other unsupported languages: {context.unsupportedLanguages.slice(1).join(", ")}.
               </>
             )}
           </p>
@@ -190,7 +187,7 @@ der border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
           onClick={() => navigate({ to: "/select" })}
           className="mt-2 text-xs text-[#2277cc] hover:underline"
         >
-          Cambia contesto
+          Change context
         </button>
       </div>
 
@@ -202,8 +199,7 @@ der border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
 
       {ops_loading && (
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Spinner size
-="sm" />
+          <Spinner size="sm" />
           Loading operations…
         </div>
       )}
@@ -232,8 +228,8 @@ der border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
               <span className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
                 {op.agent}
               </span>
-              {/* The Italian label, the same one used by TasksPage, ReportsPage
-                  e ReportDetailPage: il displayName che arriva da GET /operations
+              {/* The localized label, the same one used by TasksPage, ReportsPage
+                  and ReportDetailPage: the displayName that comes from GET /operations
                   is in English, and here the user chose "OWASP Top 10
                   vulnerability scan" only to find it everywhere as "Security
                   OWASP Analysis". The displayName remains the fallback if one day
@@ -244,11 +240,10 @@ der border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
               <span className="mt-1 block text-xs leading-relaxed text-gray-500">
                 {op.description}
               </span>
-              {/* Visual selected indicator */
-}
+              {/* Visual selected indicator */}
               {is_selected && (
                 <span className="mt-2 inline-block rounded-full bg-[#2277cc] px-2 py-0.5 text-[10px] font-semibold text-white">
-                  Selezionata
+                  Selected
                 </span>
               )}
             </button>

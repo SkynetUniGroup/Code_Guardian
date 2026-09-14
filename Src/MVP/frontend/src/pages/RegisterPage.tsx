@@ -18,7 +18,7 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
 /**
- * RegisterPage — /register
+ * RegisterPage â /register
  *
  * New-user registration form. On success, the user is immediately logged in
  * (the backend returns a JWT) and redirected to /credentials so they can
@@ -45,7 +45,8 @@ export function RegisterPage() {
     if (!first_name.trim()) next.first_name = "Enter your first name";
     if (!last_name.trim()) next.last_name = "Enter your last name";
     if (!email.trim()) next.email = "Enter your email";
-    else if (!/^[^\s@]+@[^\s@
+    else if (!/^[^\s@]+@[^\
+s@
 ]+\.[^\s@]+$/.test(email)) next.email = "Invalid email";
     if (password.length < 8) {
       next.password = "Password must be at least 8 characters long";
@@ -86,7 +87,7 @@ export function RegisterPage() {
       if (status === 409) {
         setErrors({ global: "An account with this email already exists." });
       } else if (code === "VALIDATION_ERROR" && password_detail) {
-        setErrors({ password: "La password deve contenere almeno una lettera e un numero" });
+        setErrors({ password: "Password must contain at least one letter and one number" });
       } else {
         setErrors({ global: "Error during registration. Try again." });
       }
@@ -98,7 +99,8 @@ export function RegisterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm rounded-lg border border-[#cccccc] bg-gra
-y-50 p-8 shadow-sm">
+y-50 p-
+8 shadow-sm">
         <h1 className="mb-1 text-xl font-bold text-[#2a2a2a]">Code Guardian</h1>
         <p className="mb-6 text-sm text-gray-400">Create your account</p>
 
@@ -151,12 +153,13 @@ y-50 p-8 shadow-sm">
           {/* Role selector */}
           <div className="flex flex-col gap-1">
             <label htmlFor="role-select" className="text-sm font-medium text-[#2a2a2a]">
-              Ruolo
+              Role
             </label>
             <select
               id="role-select"
               value={role}
-              onChange={(e) => setRole(e.target.value as U
+              onChange={(e) => setRole(e.target.value as
+ U
 serRole)}
               className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20"
             >
@@ -205,18 +208,20 @@ serRole)}
             className="mt-2 flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-200 transition disabled:opacity-60"
           >
             {loading && <Spinner size="sm" className="text-white" />}
-            Registrati
+            Register
           </button>
         </form>
 
         <p className="mt-4 text-center text-xs text-gray-500">
           Already have an account?{" "}
-          <Link to="/login" c
+          <Link to="/
+login" c
 lassName="text-[#2277cc] hover:underline">
-            Accedi
+            Sign in
           </Link>
         </p>
       </div>
     </div>
   );
 }
+

@@ -8,12 +8,12 @@ import { useSessionStore } from "../stores/sessionStore";
 import type { CreateCredentialDto, ServiceCredentialDto } from "../types";
 
 /**
- * CredentialsPage — /credentials
+ * CredentialsPage â /credentials
  *
  * Manages the user's service credentials.
  *
  *  - **GitHub PAT** (`provider: "GITHUB"`): required. Without it, /select and /run
- *    are unreachable — the guard is on the route's `beforeLoad` and the
+ *    are unreachable â the guard is on the route's `beforeLoad` and the
  *    state lives in `sessionStore.credentialsStatus`.
  *  - **SonarQube** (`provider: "SONARQUBE"`): optional. If present, DOCS_*
  *    operations enrich the prompt with the project's quality metrics; if
@@ -24,13 +24,13 @@ import type { CreateCredentialDto, ServiceCredentialDto } from "../types";
  * agent service (LLM_API_KEY / IAM Task Role), so it is not requested here.
  *
  * Contract:
- *  - GET    /credentials                → ServiceCredentialDto[]
- *  - POST   /credentials {provider, ...} → 201 ServiceCredentialDto.
+ *  - GET    /credentials                â ServiceCredentialDto[]
+ *  - POST   /credentials {provider, ...} â 201 ServiceCredentialDto.
  *    The backend verifies the credential live against the provider *before*
- *    saving it (RF.13–RF.14): a rejected token returns 400 CREDENTIAL_INVALID
+ *    saving it (RF.13âRF.14): a rejected token returns 400 CREDENTIAL_INVALID
  *    and is not persisted.
- *  - POST   /credentials/:id/validate   → re-validates a saved credential
- *  - DELETE /credentials/:id            → local revocation
+ *  - POST   /credentials/:id/validate   â re-validates a saved credential
+ *  - DELETE /credentials/:id            â local revocation
  *
  * Secrets never remain in the browser after submission: the fields are cleared.
  */
@@ -39,7 +39,8 @@ const SONARQUBE_PROVIDER = "SONARQUBE";
 
 export function CredentialsPage() {
   const role = useSessionStore((s) => s.user?.role);
-  const set_status = useSessionStore((s) => s.setCredentialsStatus);
+  const set_status = useSessionStore((s) => s.setCredentialsSt
+atus);
   const credentials_status = useSessionStore((s) => s.credentialsStatus);
 
   const [github_pat, setGithubPat] = useState("");
@@ -54,7 +55,7 @@ export function CredentialsPage() {
   const [sonar_credential, setSonarCredential] = useState<ServiceCredentialDto | null>(null);
 
   useEffect(() => {
-    /** GET /credentials → raw array of ServiceCredentialDto. */
+    /** GET /credentials â raw array of ServiceCredentialDto. */
     async function fetch_status() {
       try {
         const response = await apiClient.get<ServiceCredentialDto[]>("/credentials");
@@ -77,13 +78,14 @@ export function CredentialsPage() {
   /**
    * Minimal client-side validation: the GitHub PAT format has changed over time
    * (classic 40-char hex, `ghp_`, fine-grained `github_pat_`), so we only
-   * check that the field is not empty — exactly as the backend DTO does.
+   * check that the field is not empty â exactly as the backend DTO does.
    * Whether the token actually works is told by GitHub, not a regex.
    */
   function validate(): boolean {
     const next: typeof errors = {};
     if (!github_pat.trim()) {
-      next.github_pat = "Enter your GitHub Personal Access Token";
+      next.github_pat = "Enter your GitHub Per
+sonal Access Token";
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -125,7 +127,7 @@ export function CredentialsPage() {
     }
   }
 
-  /** "Verify again" — POST /credentials/:id/validate (§4.2). */
+  /** "Verify again" â POST /credentials/:id/validate (Â§4.2). */
   async function handle_revalidate() {
     if (!github_credential) return;
     setRevalidating(true);
@@ -150,9 +152,10 @@ export function CredentialsPage() {
 
   /**
    * Local revocation: removes the encrypted token from our database, does not
-   * revoke it on GitHub — that remains a user action on their account (§4.1).
+   * revoke it on GitHub â that remains a user action on their account (Â§4.1).
    */
-  async function handle_remove() {
+  async function handle_remove()
+ {
     if (!github_credential) return;
     setRemoving(true);
     setErrors({});
@@ -170,7 +173,7 @@ export function CredentialsPage() {
   }
 
   function format_date(iso: string | null): string {
-    if (!iso) return "—";
+    if (!iso) return "â";
     return new Date(iso).toLocaleString("en-US", {
       dateStyle: "short",
       timeStyle: "short",
@@ -202,7 +205,8 @@ export function CredentialsPage() {
             )}
             <span className="text-xs text-gray-400">
               {credentials_status === "CONNECTED" && "Connected and valid"}
-              {credentials_status === "INVALID" && "Invalid – update it"}
+              {credentials_status === "INVALID" && "Invalid â update i
+t"}
               {credentials_status === "MISSING" && "Not configured"}
               {credentials_status === "UNKNOWN" && "Status unverifiable"}
             </span>
@@ -256,7 +260,8 @@ export function CredentialsPage() {
             label={
               github_credential
                 ? "Replace GitHub Personal Access Token"
-                : "GitHub Personal Access Token"
+      
+          : "GitHub Personal Access Token"
             }
             type="password"
             autoComplete="off"
@@ -288,7 +293,7 @@ export function CredentialsPage() {
           className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#111] disabled:opacity-60"
         >
           {saving && <Spinner size="sm" className="text-white" />}
-          {saving ? "Verifying…" : "Save and verify"}
+          {saving ? "Verifyingâ¦" : "Save and verify"}
         </button>
       </form>
 
@@ -304,7 +309,7 @@ export function CredentialsPage() {
 }
 
 /**
- * SonarQube card — optional provider.
+ * SonarQube card â optional provider.
  *
  * Holds its own local state and does not touch `sessionStore`: a missing or
  * invalid SonarQube credential must never block a route. The status text is
@@ -316,7 +321,8 @@ function SonarqubeCredentialCard({
   onChange,
   formatDate,
 }: {
-  credential: ServiceCredentialDto | null;
+  credential: 
+ServiceCredentialDto | null;
   onChange: (next: ServiceCredentialDto | null) => void;
   formatDate: (iso: string | null) => string;
 }) {
@@ -370,7 +376,8 @@ function SonarqubeCredentialCard({
         apiErrorMessage(
           err,
           code === "CREDENTIAL_INVALID"
-            ? "SonarQube rejected these credentials."
+            ? "SonarQube rejected these 
+credentials."
             : "Error during save. Try again later.",
         ),
       );
@@ -429,7 +436,8 @@ function SonarqubeCredentialCard({
           <span className="text-sm text-gray-500">Project:</span>
           <StatusBadge status={credential ? "COMPLETED" : "PENDING"} />
           <span className="text-xs text-gray-400">
-            {credential ? "Project linked" : "No SonarQube project"}
+            {credential ? "Projec
+t linked" : "No SonarQube project"}
           </span>
         </div>
         {credential && (
@@ -483,7 +491,8 @@ function SonarqubeCredentialCard({
             setInstanceUrl(e.target.value);
             setFieldErrors((p) => ({ ...p, instanceUrl: "" }));
           }}
-          error={fieldErrors.instanceUrl}
+          erro
+r={fieldErrors.instanceUrl}
         />
         <ValidatedField
           label="Project key"
@@ -529,7 +538,7 @@ function SonarqubeCredentialCard({
           className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#111] disabled:opacity-60"
         >
           {saving && <Spinner size="sm" className="text-white" />}
-          {saving ? "Verifica in corso…" : "Link project"}
+          {saving ? "Verifying…" : "Link project"}
         </button>
       </form>
     </section>
