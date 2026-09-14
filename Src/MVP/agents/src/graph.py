@@ -27,20 +27,19 @@ logger = logging.getLogger(__name__)
 
 
 def resume_action(value: Any) -> str:
-    """Normalizza il valore con cui il grafo viene ripreso.
+    """Normalizes the value with which the graph is resumed.
 
-    Il backend riprende un Task passando `inputValue = {"action": "PROCEED"}`
-    (TasksService.submitInput), mentre i nodi confrontavano il valore con la
-    stringa "CANCEL": un dict non e' mai uguale a una stringa, quindi un CANCEL
-    esplicito dell'utente veniva letto come "procedi". Accetta entrambe le
-    forme, cosi' che una chiamata manuale all'API con la sola stringa continui
-    a funzionare.
+    The backend resumes a Task by passing 'inputValue = {"action": "PROCEED"}'
+    (TasksService.submitInput), while the nodes compared the value against the
+    string "CANCEL": a dict is never equal to a string, so an explicit CANCEL
+    from the user was read as "proceed". Accepts both forms, so that a manual
+    API call with just the string continues to work.
 
     Args:
-        value (Any): Il valore passato a Command(resume=...).
+        value (Any): The value passed to Command(resume=...).
 
     Returns:
-        str: "PROCEED" o "CANCEL" (default "PROCEED" se non riconosciuto).
+        str: "PROCEED" or "CANCEL" (defaults to "PROCEED" if not recognized).
     """
     if isinstance(value, dict):
         value = value.get("action")
@@ -97,12 +96,13 @@ def reduce_messages(existing: list[BaseMessage], new: list[BaseMessage]) -> list
 class AgentState:
     """Represents the shared state moving through the LangGraph execution nodes.
 
-    Nota: qui NON c'e' il toolset. Lo stato viene serializzato e scritto su
-    MongoDB dal checkpointer a ogni step, e GitHubToolset porta con se'
-    INTERNAL_SHARED_SECRET: tenercelo dentro significava riversare il segreto
-    condiviso backend-agenti nel database a ogni nodo attraversato, in chiaro e
-    per ogni task. Il toolset e' ricostruibile da user_id + task_id, che sono
-    due identificatori: lo si ricrea al volo con _toolset() quando serve.
+    Note: the toolset is NOT stored here. The state is serialized and written
+    to MongoDB by the checkpointer at every step, and GitHubToolset carries
+    INTERNAL_SHARED_SECRET: keeping it here would mean pouring the shared
+    backend-agents secret into the database at every node traversed, in clear
+    text and for every task. The toolset is reconstructible from user_id +
+    task_id, which are two identifiers: it is recreated on the fly with
+    _toolset() when needed.
     """
 
     user_id: str
@@ -156,13 +156,13 @@ class AgentGraph:
 
     @staticmethod
     def _toolset(st: AgentState) -> GitHubToolset:
-        """Ricostruisce il toolset dallo stato.
+        """Reconstructs the toolset from the state.
 
         Args:
-            st (AgentState): Lo stato corrente del grafo.
+            st (AgentState): The current graph state.
 
         Returns:
-            GitHubToolset: Un toolset per l'utente e il task correnti.
+            GitHubToolset: A toolset for the current user and task.
         """
         return GitHubToolset(user_id=st.user_id, task_id=st.task_id)
 
@@ -191,10 +191,10 @@ class AgentGraph:
             else:
                 result = await self._compiled.ainvoke(initial_state, config=config)
 
-            # Da LangGraph 0.2 un interrupt non risale piu' come eccezione: il
-            # grafo ritorna normalmente e mette gli interrupt pendenti sotto la
-            # chiave __interrupt__. Il ramo except GraphInterrupt piu' sotto
-            # resta per le versioni che invece la sollevano.
+            # Since LangGraph 0.2 an interrupt no longer surfaces as an
+            # exception: the graph returns normally and puts pending
+            # interrupts under the __interrupt__ key. The except GraphInterrupt
+            # branch below remains for versions that still raise it.
             pending = self._pending_interrupt(result)
             if pending is not None:
                 return {"status": "interrupted", "pendingInput": pending}
@@ -207,10 +207,9 @@ class AgentGraph:
                     "errorKind": ErrorKind.UPSTREAM.value,
                 }
 
-            # gestisci_errore produce comunque un Report, ma con status FAILED:
-            # senza questo controllo un run fallito veniva annunciato al backend
-            # come "completed", e l'ErrorKind calcolato la' non arrivava a
-            # nessuno.
+            # handle_error still produces a Report, but with status FAILED:
+            # without this check a failed run was announced to the backend
+            # as "completed", and the ErrorKind computed there reached no one.
             if report.status == "FAILED":
                 return {
                     "status": "failed",
@@ -232,13 +231,13 @@ class AgentGraph:
 
     @staticmethod
     def _pending_interrupt(result: Any) -> Any | None:
-        """Estrae il valore dell'interrupt dallo stato ritornato, se presente.
+        """Extracts the interrupt value from the returned state, if present.
 
         Args:
-            result (Any): Lo stato ritornato da ainvoke().
+            result (Any): The state returned by ainvoke().
 
         Returns:
-            Any | None: Il payload del primo interrupt pendente, o None.
+            Any | None: The payload of the first pending interrupt, or None.
         """
         if not isinstance(result, dict):
             return None
@@ -250,18 +249,18 @@ class AgentGraph:
 
     @staticmethod
     def _run_payload(report: Report) -> dict:
-        """Costruisce l'AgentRunPayload atteso dal backend.
+        """Builds the AgentRunPayload expected by the backend.
 
-        Solo cio' che l'agente e' l'unico a sapere: i blocchi, l'eventuale
-        proposta di modifica, il riassunto e i token consumati. Titolo, stato,
-        contesto denormalizzato e tempi li compone il backend in
-        ReportAssemblyService, che ha i dati di partenza.
+        Only what the agent alone knows: the blocks, the optional
+        modification proposal, the summary and the tokens consumed. Title,
+        status, denormalized context and timings are composed by the backend
+        in ReportAssemblyService, which has the source data.
 
         Args:
-            report (Report): Il report prodotto dal nodo assembla_report.
+            report (Report): The report produced by the assemble_report node.
 
         Returns:
-            dict: Il payload serializzato in JSON.
+            dict: The payload serialized as JSON.
         """
         payload = report.model_dump(mode="json")
         run_payload = {
@@ -269,8 +268,8 @@ class AgentGraph:
             "summary": payload.get("summary"),
             "tokensConsumed": payload.get("tokensConsumed", 0),
         }
-        # `proposal` e' opzionale lato backend (AgentRunPayload.proposal?), non
-        # nullable: si omette invece di mandare null.
+        # 'proposal' is optional on the backend side (AgentRunPayload.proposal?),
+        # not nullable: omit it instead of sending null.
         if payload.get("proposal") is not None:
             run_payload["proposal"] = payload["proposal"]
         return run_payload
@@ -286,55 +285,55 @@ class AgentGraph:
         """
         g = StateGraph(AgentState)
 
-        g.add_node("carica_contesto", self._node_carica_contesto)
-        g.add_node("componi_prompt", self._node_componi_prompt)
-        g.add_node("invoca_llm", self._node_invoca_llm)
-        g.add_node("esegui_tools", self._node_esegui_tools)
-        g.add_node("valida_e_parsa", self._node_valida_e_parsa)
+        g.add_node("load_context", self._node_load_context)
+        g.add_node("compose_prompt", self._node_compose_prompt)
+        g.add_node("invoke_llm", self._node_invoke_llm)
+        g.add_node("execute_tools", self._node_execute_tools)
+        g.add_node("validate_and_parse", self._node_validate_and_parse)
         g.add_node("await_confirmation", self._node_await_confirmation)
-        g.add_node("assembla_report", self._node_assembla_report)
-        g.add_node("gestisci_errore", self._node_gestisci_errore)
+        g.add_node("assemble_report", self._node_assemble_report)
+        g.add_node("handle_error", self._node_handle_error)
 
-        g.add_edge(START, "carica_contesto")
+        g.add_edge(START, "load_context")
         g.add_conditional_edges(
-            "carica_contesto",
+            "load_context",
             self._route,
-            {"continua": "componi_prompt", "errore": "gestisci_errore"},
+            {"continue": "compose_prompt", "error": "handle_error"},
         )
-        g.add_edge("componi_prompt", "invoca_llm")
+        g.add_edge("compose_prompt", "invoke_llm")
 
         # Conditional edge: the vital tool loop of the agent
         g.add_conditional_edges(
-            "invoca_llm",
+            "invoke_llm",
             self._route_llm_output,
             {
-                "tools": "esegui_tools",
-                "continua": "valida_e_parsa",
-                "errore": "gestisci_errore",
+                "tools": "execute_tools",
+                "continue": "validate_and_parse",
+                "error": "handle_error",
             },
         )
 
         # After tool execution, returns to LLM to process results unless it failed
         g.add_conditional_edges(
-            "esegui_tools",
+            "execute_tools",
             self._route,
-            {"continua": "invoca_llm", "errore": "gestisci_errore"},
+            {"continue": "invoke_llm", "error": "handle_error"},
         )
 
         g.add_conditional_edges(
-            "valida_e_parsa",
-            self._route_post_valida,
+            "validate_and_parse",
+            self._route_post_validate,
             {
-                "continua": "assembla_report",
-                "retry": "invoca_llm",
+                "continue": "assemble_report",
+                "retry": "invoke_llm",
                 "next_phase": "await_confirmation",
-                "errore": "gestisci_errore",
+                "error": "handle_error",
             },
         )
 
-        g.add_edge("await_confirmation", "componi_prompt")
-        g.add_edge("assembla_report", END)
-        g.add_edge("gestisci_errore", END)
+        g.add_edge("await_confirmation", "compose_prompt")
+        g.add_edge("assemble_report", END)
+        g.add_edge("handle_error", END)
 
         return g.compile(checkpointer=checkpointer)
 
@@ -348,7 +347,7 @@ class AgentGraph:
             str: The routing decision.
         """
         if st.error is not None:
-            return "errore"
+            return "error"
 
         last_message = st.messages[-1]
 
@@ -356,12 +355,12 @@ class AgentGraph:
         if hasattr(last_message, "tool_calls") and len(last_message.tool_calls) > 0:
             max_rounds = getattr(self._profile, "max_tool_rounds", 6)
             if st.tool_rounds >= max_rounds:
-                return "errore"
+                return "error"
             return "tools"
 
-        return "continua"
+        return "continue"
 
-    async def _node_invoca_llm(self, st: AgentState) -> dict:
+    async def _node_invoke_llm(self, st: AgentState) -> dict:
         """Invokes the LLM using the designated provider.
 
         Args:
@@ -371,7 +370,7 @@ class AgentGraph:
             dict: The partial state update.
         """
         try:
-            # If there's already an error from a previous node (e.g., componi_prompt),
+            # If there's already an error from a previous node (e.g., compose_prompt),
             # don't attempt to invoke the LLM - propagate the error directly.
             # This prevents cascading errors like 3230 "Conversation must have at least one message"
             # when messages list is empty due to a prior failure.
@@ -382,7 +381,7 @@ class AgentGraph:
                 return {}
 
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(st.task_id, self._current_redis_client, "invoca_llm")
+            await self._check_interrupts(st.task_id, self._current_redis_client, "invoke_llm")
 
             elapsed = time.monotonic() - self._start_time
             remaining_timeout = max(1, int(self._timeout_s - elapsed))
@@ -410,7 +409,7 @@ class AgentGraph:
         except Exception as exc:
             return {"error": exc}
 
-    async def _node_esegui_tools(self, st: AgentState) -> dict:
+    async def _node_execute_tools(self, st: AgentState) -> dict:
         """Executes the requested tools and appends results to the state.
 
         Args:
@@ -421,7 +420,7 @@ class AgentGraph:
         """
         try:
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(st.task_id, self._current_redis_client, "esegui_tools")
+            await self._check_interrupts(st.task_id, self._current_redis_client, "execute_tools")
             tools = self._get_langchain_tools(self._toolset(st), st.context_ref)
             tool_node = ToolNode(tools)
             result = await tool_node.ainvoke({"messages": st.messages})
@@ -482,10 +481,10 @@ class AgentGraph:
         Returns:
             str: The routing decision.
         """
-        return "errore" if st.error is not None else "continua"
+        return "error" if st.error is not None else "continue"
 
     @staticmethod
-    def _route_post_valida(st: AgentState) -> str:
+    def _route_post_validate(st: AgentState) -> str:
         """Routes the execution after output validation.
 
         Args:
@@ -495,16 +494,16 @@ class AgentGraph:
             str: The routing decision.
         """
         if st.error is not None:
-            return "errore"
+            return "error"
         if getattr(st, "needs_next_phase", False):
             return "next_phase"
         if st.needs_retry:
             return "retry"
-        return "continua"
+        return "continue"
 
     # Graph Nodes (Asynchronous to support HTTPX towards NestJS)
 
-    async def _node_carica_contesto(self, st: AgentState) -> dict:
+    async def _node_load_context(self, st: AgentState) -> dict:
         """Loads the context via the profile's adapter.
 
         Args:
@@ -516,27 +515,27 @@ class AgentGraph:
         try:
             # Check interrupts inside the try block to ensure timeouts and
             # cancellations are properly routed to the error handler node
-            await self._check_interrupts(st.task_id, self._current_redis_client, "carica_contesto")
+            await self._check_interrupts(st.task_id, self._current_redis_client, "load_context")
             ctx = await self._loader.load(st.context_ref, self._toolset(st), st.agent_payload)
             return {"loaded_context": ctx}
         except AgentCancelled:
             raise
         except GraphInterrupt:
-            # interrupt() segnala una pausa, non un guasto: e' cosi' che il
-            # loader del Changelog chiede all'utente cosa fare delle issue
-            # senza metadati sufficienti. Essendo GraphInterrupt una Exception,
-            # senza questo ramo finiva nel generico qui sotto e veniva
-            # trasformata in {"error": ...}: il grafo andava in gestisci_errore
-            # e la task moriva con UPSTREAM e il payload dell'interrupt come
-            # messaggio, invece di sospendersi e aspettare una risposta. Deve
-            # risalire intatta fino al loop di LangGraph, che e' l'unico a
-            # saperla mettere sotto __interrupt__.
+            # interrupt() signals a pause, not a failure: this is how the
+            # Changelog loader asks the user what to do about issues with
+            # insufficient metadata. Since GraphInterrupt is an Exception,
+            # without this branch it fell into the generic handler below and
+            # was turned into {"error": ...}: the graph went to handle_error
+            # and the task died with UPSTREAM and the interrupt payload as
+            # the message, instead of suspending and waiting for a response.
+            # It must propagate intact up to the LangGraph loop, which is the
+            # only one that knows how to put it under __interrupt__.
             raise
         except Exception as exc:
-            logger.error("Error in carica_contesto: %s", exc)
+            logger.error("Error in load_context: %s", exc)
             return {"error": exc}
 
-    async def _node_componi_prompt(self, st: AgentState) -> dict:
+    async def _node_compose_prompt(self, st: AgentState) -> dict:
         """Composes the system and user prompts.
 
         Args:
@@ -547,7 +546,7 @@ class AgentGraph:
         """
         try:
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(st.task_id, self._current_redis_client, "componi_prompt")
+            await self._check_interrupts(st.task_id, self._current_redis_client, "compose_prompt")
             system_prompt, user_prompt = self._profile.build_prompt(st.loaded_context)
 
             total_len = len(system_prompt) + len(user_prompt)
@@ -566,10 +565,10 @@ class AgentGraph:
         except AgentCancelled:
             raise
         except Exception as exc:
-            logger.error("Error in componi_prompt: %s", exc)
+            logger.error("Error in compose_prompt: %s", exc)
             return {"error": exc}
 
-    async def _node_valida_e_parsa(self, st: AgentState) -> dict:
+    async def _node_validate_and_parse(self, st: AgentState) -> dict:
         """Validates and parses the LLM output, handling specific retries.
 
         Args:
@@ -580,7 +579,7 @@ class AgentGraph:
         """
         try:
             # Check interrupts inside the try block for proper error routing
-            await self._check_interrupts(st.task_id, self._current_redis_client, "valida_e_parsa")
+            await self._check_interrupts(st.task_id, self._current_redis_client, "validate_and_parse")
             ctx = getattr(st, "loaded_context", {})
 
             result = self._profile.parse_output(st.raw_output, ctx)
@@ -611,18 +610,18 @@ class AgentGraph:
             # Readability auto-correction logic
             if is_readability_retry:
                 if st.parse_retries < 2:
-                    # Il messaggio precedente diceva soltanto "semplifica
-                    # e accorcia", e il modello girava a vuoto per tre
-                    # tentativi restando sempre intorno a trenta. L'indice
-                    # di Flesch premia due cose sole -- frasi corte e parole
-                    # corte -- e conviene dirgliele, con i numeri: lo stesso
-                    # contenuto scritto in inglese piano supera gli ottanta.
-                    # Il testo sta in prompts/graph/readability_retry.1.0.yaml, non qui:
-                    # lo legge il modello, quindi e' un prompt, e RQ.4/MPD_14 vogliono i
-                    # prompt fuori dai moduli.
-                    modello_ritentativo = load_prompt_template("graph", "readability_retry")
-                    retry_msg = modello_ritentativo["system_prompt"].replace(
-                        "{dettagli}", str(exc)
+                    # The previous message only said "simplify and shorten",
+                    # and the model spun in circles for three attempts always
+                    # hovering around thirty. The Flesch index rewards only two
+                    # things -- short sentences and short words -- and it pays
+                    # to tell it so, with numbers: the same content written in
+                    # plain English scores above eighty.
+                    # The text lives in prompts/graph/readability_retry.1.0.yaml,
+                    # not here: the model reads it, so it is a prompt, and
+                    # RQ.4/MPD_14 want prompts outside modules.
+                    retry_template = load_prompt_template("graph", "readability_retry")
+                    retry_msg = retry_template["system_prompt"].replace(
+                        "{details}", str(exc)
                     )
                     return {
                         "messages": [
@@ -640,10 +639,10 @@ class AgentGraph:
 
             # JSON auto-correction logic
             if is_parsing_error and st.parse_retries < 2:
-                # Anche questo sta in prompts/graph/, per la stessa ragione
-                # dell'altro: e' testo che legge il modello.
-                modello_json = load_prompt_template("graph", "json_retry")
-                retry_msg = modello_json["system_prompt"].replace("{dettagli}", str(exc))
+                # This also lives in prompts/graph/, for the same reason as
+                # the other: it is text the model reads.
+                json_template = load_prompt_template("graph", "json_retry")
+                retry_msg = json_template["system_prompt"].replace("{details}", str(exc))
                 return {
                     "messages": [
                         AIMessage(content=st.raw_output or ""),
@@ -658,29 +657,30 @@ class AgentGraph:
                 exc.error_type = "PARSING"
             return {"error": exc, "needs_retry": False}
 
-    # Quanto changelog tecnico si manda all'interfaccia. Un tetto c'e' perche'
-    # questo testo attraversa il pendingInput, quindi finisce su MongoDB dentro
-    # il Task e passa per un evento WebSocket: non e' il posto per un documento
-    # senza limiti. 20k caratteri stanno larghi su uno sprint reale.
+    # How much technical changelog to send to the interface. There is a cap
+    # because this text traverses the pendingInput, so it ends up in MongoDB
+    # inside the Task and passes through a WebSocket event: it is not the
+    # place for an unbounded document. 20k characters are ample for a real
+    # sprint.
     _TECHNICAL_PREVIEW_MAX_CHARS = 20_000
 
     async def _node_await_confirmation(self, st: AgentState) -> dict:
         """Suspends execution waiting for human input for the Business phase.
 
-        Manda all'interfaccia il changelog tecnico appena prodotto, come testo.
+        Sends the technical changelog just produced to the interface, as text.
 
-        Prima mandava `technicalReportId: None`, e non per una svista: in questo
-        istante un Report tecnico **non esiste**. CHANGELOG_BUSINESS e' un solo
-        Task che fa due fasi dentro lo stesso grafo (await_confirmation torna a
-        componi_prompt), e il Report viene assemblato solo alla fine, su
-        assembla_report. Non c'era nessun id da mandare perche' non c'era
-        nessun Report a cui puntare, e l'interfaccia finiva per costruire un
-        link verso `/reports/`.
+        It used to send 'technicalReportId: None', and not by oversight: at
+        this point a technical Report **does not exist**. CHANGELOG_BUSINESS
+        is a single Task that does two phases inside the same graph
+        (await_confirmation returns to compose_prompt), and the Report is
+        assembled only at the end, on assemble_report. There was no id to
+        send because there was no Report to point to, and the interface
+        ended up constructing a link to '/reports/'.
 
-        Il testo invece c'e' gia': lo scrive ChangelogBusinessProfile.parse_output
-        in ctx["technical_text"] alla fine della fase tecnica, e ctx e'
-        st.loaded_context. Mandarlo direttamente evita di dover inventare un
-        Report intermedio su un Task ancora RUNNING.
+        The text is already there instead: ChangelogBusinessProfile.parse_output
+        writes it to ctx["technical_text"] at the end of the technical phase,
+        and ctx is st.loaded_context. Sending it directly avoids having to
+        invent an intermediate Report on a Task that is still RUNNING.
 
         Args:
             st (AgentState): The current graph state.
@@ -712,7 +712,7 @@ class AgentGraph:
 
         return {}
 
-    async def _node_assembla_report(self, st: AgentState) -> dict:
+    async def _node_assemble_report(self, st: AgentState) -> dict:
         """Assembles the final Report DTO.
 
         Args:
@@ -723,8 +723,8 @@ class AgentGraph:
         """
         try:
             # Check interrupts inside the try block for proper error routing
-            # so that AgentTimeout and AgentCancelled flow into _node_gestisci_errore
-            await self._check_interrupts(st.task_id, self._current_redis_client, "assembla_report")
+            # so that AgentTimeout and AgentCancelled flow into _node_handle_error
+            await self._check_interrupts(st.task_id, self._current_redis_client, "assemble_report")
 
             op = self._profile.operation
             num_blocks = len(st.blocks)
@@ -744,13 +744,13 @@ class AgentGraph:
 
                 if analysis_status == "NO_API_ENDPOINTS":
                     summary_text = (
-                        "Analisi completata: non sono stati rilevati endpoint API "
-                        "nel contesto analizzato."
+                        "Analysis completed: no API endpoints were detected "
+                        "in the analyzed context."
                     )
                 elif analysis_status == "NO_DOCUMENTABLE_UNITS":
                     summary_text = (
-                        "Analisi completata: non sono state rilevate unità di codice "
-                        "documentabili nel contesto analizzato."
+                        "Analysis completed: no documentable code units "
+                        "were detected in the analyzed context."
                     )
                 else:
                     summary_text = "Documentation analysis completed."
@@ -788,7 +788,7 @@ class AgentGraph:
         except Exception as exc:
             return {"error": exc}
 
-    async def _node_gestisci_errore(self, st: AgentState) -> dict:
+    async def _node_handle_error(self, st: AgentState) -> dict:
         """Builds a failure report ensuring it complies with the DTO contract.
 
         Args:
@@ -847,35 +847,21 @@ class AgentGraph:
             else:
                 error_kind = ErrorKind.UPSTREAM
 
+        report_error = ReportError(
+            kind=error_kind or ErrorKind.UPSTREAM,
+            message=error_msg,
+            stage=op,
+        )
+
         report = Report(
             taskId=st.task_id,
             agentId=self._profile.agent,
             operation=op,
             status="FAILED",
-            context=report_context,
             summary=None,
-            executionTimeMs=None,
-            error=ReportError(kind=error_kind, message=error_msg, stage="agent_execution"),
+            context=report_context,
+            error=report_error,
+            body=[],
+            tokensConsumed=st.tokens_consumed,
         )
         return {"report": report}
-
-    async def _check_interrupts(
-        self, task_id: str, redis_client: aioredis.Redis, stage: str
-    ) -> None:
-        """Checks both global timeout and cooperative cancellation requests.
-
-        Args:
-            task_id (str): The ID of the task.
-            redis_client (aioredis.Redis): The active Redis client.
-            stage (str): The current execution stage.
-
-        Raises:
-            AgentTimeout: If the execution time exceeds the global timeout.
-            AgentCancelled: If the cancellation flag is found in Redis.
-        """
-        if time.monotonic() - self._start_time > self._timeout_s:
-            raise AgentTimeout(stage=stage)
-
-        flag = await redis_client.get(f"cancel:task:{task_id}")
-        if flag is not None:
-            raise AgentCancelled(stage=stage)
