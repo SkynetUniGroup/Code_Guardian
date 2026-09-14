@@ -1,14 +1,14 @@
-# Python slim image. 3.12 e non 3.14: e' il minimo dichiarato in pyproject
-# (requires-python = ">=3.12") ed e' la versione per cui esistono wheel
-# precompilate di tutto lo stack langchain/langgraph — su 3.14 pip proverebbe a
-# compilarle dai sorgenti.
+# Python slim image. 3.12 not 3.14: it is the minimum declared in pyproject
+# (requires-python = ">=3.12") and it is the version for which prebuilt
+# wheels exist for the whole langchain/langgraph stack — on 3.14 pip would
+# try to build them from source.
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# Nessun pacchetto di sistema da installare: qui non si compila nulla.
-# (La riga precedente usava `apk`, che e' di Alpine e su questa immagine
-# Debian non esiste nemmeno: il build falliva alla seconda istruzione.)
+# No system packages to install: nothing is compiled here.
+# (The previous line used `apk`, which is Alpine's and on this Debian
+# image does not even exist: the build failed on the second instruction.)
 
 # Copy dependency management files and source code
 COPY pyproject.toml ./
@@ -19,14 +19,14 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 # Install project dependencies
 RUN pip install --no-cache-dir -e ".[dev]"
 
-# Pre-scarica i ruleset Semgrep dentro l'immagine, cosi' la prima scansione non
-# paga il download (e non dipende dalla rete a runtime).
+# Pre-download the Semgrep rulesets into the image, so the first scan does
+# not pay the download cost (and does not depend on the network at runtime).
 #
-# Si analizza una cartella vuota: non c'e' nulla da trovare, ma il download
-# delle regole avviene comunque ed e' quello che si vuole mettere in cache.
-# `--metrics=off` disattiva la telemetria verso semgrep.dev; `|| true` fa si'
-# che un exit code diverso da zero (rete assente in fase di build, per dire)
-# non rompa l'immagine — al massimo il download si ripete al primo utilizzo.
+# An empty folder is analyzed: there is nothing to find, but the rule
+# download still happens and that is what we want to cache.
+# `--metrics=off` disables telemetry to semgrep.dev; `|| true` ensures
+# that a non-zero exit code (no network at build time, for example) does
+# not break the image — at worst the download repeats on first use.
 RUN mkdir -p /tmp/warmup && semgrep --config p/owasp-top-ten --metrics=off /tmp/warmup 2>/dev/null || true
 
 # Copy prompt templates
@@ -35,8 +35,8 @@ COPY prompts ./prompts
 # Expose internal port
 EXPOSE 8000
 
-# Healthcheck via urllib: l'immagine slim non ha curl e installarlo solo per
-# questo non vale il livello in piu'.
+# Healthcheck via urllib: the slim image has no curl and installing it just
+# for this is not worth the extra layer.
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=20s \
     CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=3).status == 200 else 1)"
 

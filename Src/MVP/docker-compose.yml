@@ -8,9 +8,9 @@ services:
   # http://agents:8000, matching AGENTS_SERVICE_URL in backend/.env.
   agents:
     build: ./agents
-    # Senza questa riga il container finiva sulla rete di default mentre tutti
-    # gli altri stanno su codeguardian-net: "backend", "mongodb" e "redis" non
-    # si risolvevano affatto, e ogni chiamata dell'agente moriva in DNS.
+    # Without this line the container ended up on the default network while all
+    # the others are on codeguardian-net: "backend", "mongodb" and "redis"
+    # did not resolve at all, and every agent call died in DNS.
     networks:
       - codeguardian-net
     env_file:
@@ -20,19 +20,19 @@ services:
       # network, containers reach each other by service name, never by
       # localhost or the backend's own hostnames.
       BACKEND_BASE_URL: http://backend:3000
-      # Deve combaciare con app.setGlobalPrefix() in backend/src/main.ts: entra
-      # sia nell'URL chiamato sia nel messaggio firmato in HMAC.
+      # Must match app.setGlobalPrefix() in backend/src/main.ts: it ends up both
+      # in the called URL and in the HMAC-signed message.
       BACKEND_API_PREFIX: /api/v1
       MONGO_URI: mongodb://mongodb:27017/codeguardian
       REDIS_URL: redis://redis:6379
       INTERNAL_SHARED_SECRET: ${INTERNAL_SHARED_SECRET}
       PROMPTS_DIR: /app/prompts
-      # Analisi statica: i default stanno in config.py, qui si rendono
-      # esplicite le due leve che si toccano piu' spesso in sviluppo.
+      # Static analysis: the defaults live in config.py, here the two levers
+      # most often tweaked during development are made explicit.
       ENABLE_SAST_SEMGREP: ${ENABLE_SAST_SEMGREP:-true}
-      # Le metriche SonarQube per i prompt DOCS_*: attive se l'utente ha
-      # salvato una credenziale SONARQUBE da /credentials. Il backend la
-      # inoltra nel payload dell'agente (agent-invocation.service.ts).
+      # SonarQube metrics for the DOCS_* prompts: active if the user has
+      # saved a SONARQUBE credential from /credentials. The backend forwards
+      # it in the agent payload (agent-invocation.service.ts).
       ENABLE_SONARQUBE: ${ENABLE_SONARQUBE:-true}
     depends_on:
       backend:
@@ -50,13 +50,14 @@ services:
       - "5173:80"
     networks:
       - codeguardian-net
-    depends_on:
+    de
+pends_on:
       backend:
         condition: service_healthy
-    # Nessun VITE_* qui: Vite inlinea le variabili al momento della build, una
-    # env di runtime su un'immagine nginx gia' compilata non ha alcun effetto.
-    # Il bundle usa percorsi relativi (/api/v1) e nginx.conf li inoltra al
-    # backend — vedi frontend/nginx.conf.
+    # No VITE_* here: Vite inlines variables at build time, a runtime env on
+    # an already-compiled nginx image has no effect.
+    # The bundle uses relative paths (/api/v1) and nginx.conf forwards them
+    # to the backend — see frontend/nginx.conf.
 
   backend:
     build:
@@ -84,11 +85,11 @@ services:
       TSC_WATCHFILE: PriorityPollingInterval
       TSC_WATCHDIRECTORY: DynamicPriorityPolling
     volumes:
-      # Solo i sorgenti, e montati al loro posto dentro il workspace.
-      # Montare ./backend su /app (com'era) sostituiva la RADICE del monorepo
-      # costruita nell'immagine: sparivano pnpm-workspace.yaml, shared/ e
-      # backend/node_modules, e `pnpm --filter backend` non trovava piu' nessun
-      # workspace da avviare.
+      # Only the sources, mounted in their place inside the workspace.
+      # Mounting ./backend on /app (as it was) replaced the monorepo ROOT
+      # built into the image: pnpm-workspace.yaml, shared/ and
+      # backend/node_modules disappeared, and `pnpm --filter backend` could no
+      # longer find any workspace to start.
       - ./backend/src:/app/backend/src
       - ./backend/test:/app/backend/test
     depends_on:
@@ -97,7 +98,8 @@ services:
       redis:
         condition: service_healthy
       # Era un elemento di lista in mezzo a una mappa: YAML non valido, e
-      # `docker compose up` rifiutava l'intero file.
+      # `docker compose up` rifiutava l'intero 
+file.
       minio:
         condition: service_healthy
     healthcheck:
@@ -141,8 +143,8 @@ services:
     networks:
       - codeguardian-net
     environment:
-      # Devono combaciare con S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY del
-      # backend, altrimenti la creazione del bucket all'avvio fallisce con 403.
+      # Must match S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY of the
+      # backend, otherwise bucket creation at startup fails with 403.
       MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-minioadmin}
       MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-minioadmin}
     command: server /data --console-address ":9001"
