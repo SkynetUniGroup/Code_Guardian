@@ -1,16 +1,16 @@
 import { createConnection } from "node:net";
 
 /**
- * Setup della suite e2e.
+ * E2e suite setup.
  *
- * Due compiti:
- *  1. puntare la configurazione dell'app ai servizi di docker-compose.test.yml
- *     (porte dedicate, database usa-e-getta), prima che AppModule legga l'env;
- *  2. dire chiaramente se quei servizi non ci sono, invece di far esplodere la
- *     suite con un timeout di Mongoose che non spiega nulla.
+ * Two tasks:
+ *  1. point the app configuration to the services from docker-compose.test.yml
+ *     (dedicated ports, throwaway database), before AppModule reads the env;
+ *  2. clearly report if those services are not available, instead of
+ *     crashing the suite with a Mongoose timeout that explains nothing.
  *
- * Il file era referenziato da vitest-e2e.config.mts ma non esisteva: la suite
- * e2e non era mai partita.
+ * The file was referenced by vitest-e2e.config.mts but did not exist: the
+ * e2e suite had never started.
  */
 
 const MONGO_HOST = "127.0.0.1";
@@ -22,8 +22,8 @@ process.env.PORT = process.env.PORT ?? "3001";
 process.env.CORS_ORIGIN = "http://localhost:5173";
 process.env.MONGODB_URI = `mongodb://${MONGO_HOST}:${MONGO_PORT}/codeguardian-e2e`;
 process.env.REDIS_URL = `redis://${MONGO_HOST}:${REDIS_PORT}`;
-// Segreti fittizi ma di lunghezza valida: il Joi in env.validation.ts ne
-// pretende almeno 16 caratteri, e senza l'app non fa nemmeno il bootstrap.
+// Fake but valid-length secrets: the Joi in env.validation.ts requires
+// at least 16 characters, and without them the app does not even bootstrap.
 process.env.JWT_SECRET = "e2e-jwt-secret-0123456789abcdef";
 process.env.CREDENTIAL_MASTER_KEY = "e2e-credential-master-key-0123456789";
 process.env.INTERNAL_SHARED_SECRET = "e2e-internal-shared-secret-0123456789";
@@ -34,7 +34,7 @@ process.env.S3_FORCE_PATH_STYLE = "true";
 process.env.REPORTS_BUCKET_NAME = "code-guardian-reports-e2e";
 process.env.AGENTS_SERVICE_URL = "http://127.0.0.1:8999";
 
-/** True se qualcosa risponde su host:port entro il timeout. */
+/** True if something responds on host:port within the timeout. */
 function canConnect(host: string, port: number, timeoutMs = 1500): Promise<boolean> {
   return new Promise((resolve) => {
     const socket = createConnection({ host, port });
@@ -50,8 +50,8 @@ function canConnect(host: string, port: number, timeoutMs = 1500): Promise<boole
 }
 
 /**
- * Esportata perché i test la interrogano per auto-skipparsi: senza i servizi su
- * (`pnpm test:integration:up`) una suite e2e rossa non direbbe nulla sul codice.
+ * Exported so tests can query it to auto-skip: without the services up
+ * (`pnpm test:integration:up`) a red e2e suite would say nothing about the code.
  */
 export async function servicesAvailable(): Promise<boolean> {
   const [mongo, redis] = await Promise.all([
@@ -63,7 +63,7 @@ export async function servicesAvailable(): Promise<boolean> {
 
 if (!(await servicesAvailable())) {
   console.warn(
-    "\n[e2e] MongoDB (27018) e/o Redis (6380) non raggiungibili: i test e2e verranno saltati.\n" +
-      "      Avviali con:  pnpm test:integration:up\n",
+    "\n[e2e] MongoDB (27018) and/or Redis (6380) not reachable: e2e tests will be skipped.\n" +
+      "      Start them with:  pnpm test:integration:up\n",
   );
 }

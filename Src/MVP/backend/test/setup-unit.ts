@@ -1,14 +1,15 @@
 import { vi } from "vitest";
 
-// `createMockRedis` e `RedisTestModule.forTest` di @nestjs-modules/ioredis
-// sono implementati con `jest.fn()`: la libreria da' per scontato Jest, e
-// sotto Vitest `jest` non esiste, quindi ogni spec che li usa muore con
-// "jest is not defined" prima ancora di arrivare a una asserzione.
+// `createMockRedis` and `RedisTestModule.forTest` from @nestjs-modules/ioredis
+// are implemented with `jest.fn()`: the library assumes Jest, and under
+// Vitest `jest` does not exist, so every spec that uses them dies with
+// "jest is not defined" before even reaching an assertion.
 //
-// L'alternativa sarebbe sostituire quell'helper con un doppio scritto a mano
-// in ogni spec che lo usa, duplicando l'elenco dei metodi Redis che la
-// libreria gia' mantiene. Questo alias e' una riga e non tocca node_modules.
+// The alternative would be to replace that helper with a hand-written mock
+// in every spec that uses it, duplicating the list of Redis methods that
+// the library already maintains. This alias is one line and does not touch
+// node_modules.
 //
-// Da rimuovere quando la libreria fornira' i propri doppi in modo neutro
-// rispetto al runner.
+// To be removed when the library provides its own mocks in a
+// runner-neutral way.
 (globalThis as unknown as { jest: typeof vi }).jest = vi;
