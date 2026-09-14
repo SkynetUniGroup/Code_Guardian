@@ -1,5 +1,6 @@
 import {
   CreateBucketCommand,
+  DeleteObjectCommand,
   PutBucketLifecycleConfigurationCommand,
   PutObjectCommand,
   S3Client,
@@ -102,6 +103,18 @@ export class ReportArtifactStorageService implements OnModuleInit {
         Key: reportId,
         Body: pdf,
         ContentType: "application/pdf",
+      }),
+    );
+  }
+
+  // Il chiamante (ReportsService.remove) ingoia già ogni errore qui: un
+  // outage di S3 non deve far sembrare fallita la cancellazione del report,
+  // che sul database (la fonte di verità) è già avvenuta.
+  async deleteReportArtifact(reportId: string): Promise<void> {
+    await this.client.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: reportId,
       }),
     );
   }
