@@ -13,48 +13,48 @@ import { AgentInvocationService } from "./../src/tasks/agent-invocation.service"
 import { Task, TaskDocument } from "./../src/tasks/schemas/task.schema";
 
 /**
- * TI_05 (Piano di Qualifica) — ciclo di vita completo di una task contro lo
- * stack applicativo reale.
+ * TI_05 (Test Plan) — full task lifecycle against the real application
+ * stack.
  *
- * Gira il vero AppModule contro un vero MongoDB e un vero Redis (quelli di
- * `docker compose up -d mongodb redis`). Sono sostituiti solo i due confini
- * effettivamente esterni al sistema: GitHub e il servizio agenti Python.
- * Tutto il resto — validazione, guardie, persistenza, instradamento
- * dell'Orchestratore, assemblaggio del Report — è il codice di produzione.
+ * Runs the real AppModule against a real MongoDB and a real Redis (those
+ * from `docker compose up -d mongodb redis`). Only the two boundaries that
+ * are truly external to the system are replaced: GitHub and the Python
+ * agent service. Everything else — validation, guards, persistence,
+ * Orchestrator routing, Report assembly — is production code.
  *
- * Percorso verificato: registrazione → credenziale → contesto → task →
- * instradamento all'agente → esecuzione → Report persistito e leggibile.
+ * Verified path: registration -> credential -> context -> task ->
+ * routing to the agent -> execution -> Report persisted and readable.
  *
- * Va eseguito con la coda in esclusiva: l'AppModule registra un worker
- * BullMQ, quindi un backend di sviluppo acceso sullo stesso Redis
- * consumerebbe i job di questo test col servizio agenti reale invece che
- * col doppio, e le asserzioni sull'invocazione fallirebbero. Fermare
- * `npm run start:dev` prima di lanciarlo; in CI il problema non si pone.
+ * Must be run with the queue in exclusive mode: the AppModule registers a
+ * BullMQ worker, so a development backend running on the same Redis would
+ * consume this test's jobs with the real agent service instead of the
+ * mock, and the invocation assertions would fail. Stop
+ * `npm run start:dev` before running it; in CI the issue does not arise.
  */
 
 const REPO_URL = "https://github.com/OWASP/NodeGoat";
 
-/** Alberatura minima che il resolver del contesto si aspetta da GitHub. */
-const ALBERO = [
+/** Minimal tree structure that the context resolver expects from GitHub. */
+const TREE = [
   { path: "app/data/user-dao.js", type: "file" as const, sizeBytes: 2048 },
   { path: "app/routes/session.js", type: "file" as const, sizeBytes: 1024 },
 ];
 
-describe("TI_05 — ciclo di vita della task (stack reale)", () => {
+describe("TI_05 — task lifecycle (real stack)", () => {
   let app: INestApplication<App>;
   let server: App;
   let taskModel: Model<TaskDocument>;
   let reportModel: Model<ReportDocument>;
 
-  /** Doppio del servizio agenti: risponde come farebbe un agente riuscito. */
-  const agente = {
+  /** Agent service mock: responds as a successful agent would. */
+  const agent = {
     invoke: vi.fn(),
     resume: vi.fn(),
   };
 
-  /** Doppio di GitHub: nessuna chiamata di rete, risposte deterministiche. */
+  /** GitHub mock: no network calls, deterministic responses. */
   const github = {
-    verifyToken: vi.fn().mockResolvedValue({ scopes: ["repo"], login: "utente-di-prova" }),
+    verifyToken: vi.fn().mockResolvedValue({ scopes: ["repo"], login: "test-user" }),
     listRepositories: vi.fn().mockResolvedValue([
       {
         owner: "OWASP",
@@ -72,7 +72,7 @@ describe("TI_05 — ciclo di vita della task (stack reale)", () => {
       primaryLanguage: "JavaScript",
     }),
     resolveRefToSha: vi.fn().mockResolvedValue("abc1234567890"),
-    getTree: vi.fn().mockResolvedValue(ALBERO),
+    getTree: vi.fn().mockResolvedValue(TREE),
     getFileContent: vi.fn().mockResolvedValue({
       path: "app/data/user-dao.js",
       content: "function login() {}",
@@ -88,10 +88,10 @@ describe("TI_05 — ciclo di vita della task (stack reale)", () => {
     getIssueDetail: vi.fn(),
   };
 
-  /** Registra un utente e apre una sessione, restituendo il token. */
-  async function utenteAutenticato(role = "SECURITY_AUDITOR") {
-    const email = `ti05-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@esempio.invalid`;
-    const password = "password-di-prova-123";
+  /** Registers a user and opens a session, returning the token. */
+  async function authenticatedUser(role = "SECURITY_AUDITOR") {
+    const email = `ti05-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.invalid`;
+    const password = "test-password-123";
     await request(server)
       .post("/api/v1/auth/register")
       .send({ firstName: "Ada", lastName: "Lovelace", email, password, role })
@@ -106,20 +106,20 @@ describe("TI_05 — ciclo di vita della task (stack reale)", () => {
   }
 
   /**
-   * Attende che la task raggiunga uno stato terminale.
+   * Waits for the task to reach a terminal state.
    *
-   * Il worker BullMQ registrato dall'AppModule consuma la coda da solo: il
-   * test non deve invocare il processore a mano — lo farebbe in corsa con
-   * lui — ma osservare l'esito del percorso reale.
+   * The BullMQ worker registered by the AppModule consumes the queue on its
+   * own: the test must not invoke the processor manually — it would race
+   * with it — but observe the outcome of the real path.
    */
-  async function attendiEsito(taskId: string, timeoutMs = 20_000) {
-    const scadenza = Date.now() + timeoutMs;
-    while (Date.now() < scadenza) {
+  async function waitForOutcome(taskId: string, timeoutMs = 20_000) {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
       const task = await taskModel.findById(taskId);
       if (task && ["COMPLETED", "FAILED", "CANCELLED"].includes(task.status)) return task;
       await new Promise((r) => setTimeout(r, 200));
     }
-    throw new Error(`La task ${taskId} non ha raggiunto uno stato terminale in ${timeoutMs}ms`);
+    throw new Error(`Task ${taskId} did not reach a terminal state within ${timeoutMs}ms`);
   }
 
   beforeAll(async () => {
@@ -129,18 +129,19 @@ describe("TI_05 — ciclo di vita della task (stack reale)", () => {
       .overrideProvider(GithubClientService)
       .useValue(github)
       .overrideProvider(AgentInvocationService)
-      .useValue(agente)
-      // franc-min è ESM-only e viene risolto con un import() dinamico, che
-      // Jest non sa eseguire senza --experimental-vm-modules (lo dichiara il
-      // commento in franc.provider.ts). È una libreria di terze parti per il
-      // riconoscimento della lingua: sostituirla non tocca la logica in esame.
+      .useValue(agent)
+      // franc-min is ESM-only and is resolved with a dynamic import(),
+      // which Jest cannot run without --experimental-vm-modules (as stated
+      // in the comment in franc.provider.ts). It is a third-party library
+      // for language detection: replacing it does not affect the logic
+      // under test.
       .overrideProvider(FRANC)
       .useValue(() => "eng")
       .compile();
 
     app = moduleFixture.createNestApplication();
-    // Le stesse impostazioni di main.ts: senza, i DTO non verrebbero
-    // validati e il test non eserciterebbe il contratto reale.
+    // The same settings as main.ts: without them, DTOs would not be
+    // validated and the test would not exercise the real contract.
     app.useGlobalPipes(
       new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
     );
@@ -157,35 +158,35 @@ describe("TI_05 — ciclo di vita della task (stack reale)", () => {
   });
 
   beforeEach(() => {
-    agente.invoke.mockReset();
-    agente.resume.mockReset();
+    agent.invoke.mockReset();
+    agent.resume.mockReset();
   });
 
-  it("porta una task da creazione a Report persistito", async () => {
-    const token = await utenteAutenticato();
+  it("brings a task from creation to persisted Report", async () => {
+    const token = await authenticatedUser();
 
-    // 1. Credenziale: il backend la verifica contro GitHub prima di salvarla.
+    // 1. Credential: the backend verifies it against GitHub before saving.
     await request(server)
       .post("/api/v1/credentials")
       .set("Authorization", `Bearer ${token}`)
-      .send({ provider: "GITHUB", token: "ghp_token_di_prova_0123456789" })
+      .send({ provider: "GITHUB", token: "ghp_test_token_0123456789" })
       .expect(201);
 
-    // 2. Contesto di analisi.
-    const contesto = await request(server)
+    // 2. Analysis context.
+    const context = await request(server)
       .post("/api/v1/contexts")
       .set("Authorization", `Bearer ${token}`)
       .send({ repoUrl: REPO_URL, branch: "master", scopeType: "FULL_REPOSITORY" })
       .expect(201);
 
-    expect(contesto.body.id).toBeDefined();
-    expect(contesto.body.resolvedSha).toBe("abc1234567890");
+    expect(context.body.id).toBeDefined();
+    expect(context.body.resolvedSha).toBe("abc1234567890");
 
-    // 3. Avvio della task: l'Orchestratore instrada l'operazione.
-    // La forma è quella di AgentInvocationResult, il contratto che il
-    // servizio espone al processore, non la risposta HTTP grezza
-    // dell'agente che il servizio stesso traduce.
-    agente.invoke.mockResolvedValue({
+    // 3. Task start: the Orchestrator routes the operation.
+    // The shape is that of AgentInvocationResult, the contract the
+    // service exposes to the processor, not the raw HTTP response
+    // of the agent that the service itself translates.
+    agent.invoke.mockResolvedValue({
       status: "COMPLETED",
       payload: {
         body: [
@@ -196,115 +197,115 @@ describe("TI_05 — ciclo di vita della task (stack reale)", () => {
             filePath: "app/data/user-dao.js",
             lineStart: 12,
             lineEnd: 14,
-            description: "Query costruita per concatenazione di stringhe.",
-            remediation: { kind: "TEXT", text: "Usare query parametrizzate." },
+            description: "Query built by string concatenation.",
+            remediation: { kind: "TEXT", text: "Use parameterized queries." },
           },
         ],
-        summary: "Trovata 1 vulnerabilità.",
+        summary: "Found 1 vulnerability.",
         tokensConsumed: 350,
       },
     });
 
-    const avvio = await request(server)
+    const start = await request(server)
       .post("/api/v1/tasks")
       .set("Authorization", `Bearer ${token}`)
-      .send({ contextId: contesto.body.id, operations: ["SECURITY_OWASP"] })
+      .send({ contextId: context.body.id, operations: ["SECURITY_OWASP"] })
       .expect(202);
 
-    const [taskId] = avvio.body.taskIds;
+    const [taskId] = start.body.taskIds;
     expect(taskId).toBeDefined();
 
-    // 4. La task è persistita su Mongo, associata all'operazione richiesta.
-    const salvata = await taskModel.findById(taskId);
-    expect(salvata).not.toBeNull();
-    expect(salvata!.operation).toBe("SECURITY_OWASP");
+    // 4. The task is persisted on Mongo, associated with the requested operation.
+    const saved = await taskModel.findById(taskId);
+    expect(saved).not.toBeNull();
+    expect(saved!.operation).toBe("SECURITY_OWASP");
 
-    // 5. Esecuzione: il worker della coda prende in carico la task.
-    const conclusa = await attendiEsito(taskId);
+    // 5. Execution: the queue worker picks up the task.
+    const completed = await waitForOutcome(taskId);
 
-    // 6. L'agente è stato interpellato una volta sola, per quella task.
-    expect(agente.invoke).toHaveBeenCalledTimes(1);
+    // 6. The agent was called exactly once, for that task.
+    expect(agent.invoke).toHaveBeenCalledTimes(1);
 
-    // 7. La task è conclusa e il Report è persistito.
-    // L'errore viene incluso nel confronto: un fallimento qui è molto più
-    // rapido da diagnosticare sapendo *cosa* è andato storto.
-    expect({ status: conclusa.status, error: conclusa.error }).toMatchObject({
+    // 7. The task is completed and the Report is persisted.
+    // The error is included in the comparison: a failure here is much
+    // faster to diagnose knowing *what* went wrong.
+    expect({ status: completed.status, error: completed.error }).toMatchObject({
       status: "COMPLETED",
     });
-    expect(conclusa.reportId).toBeDefined();
+    expect(completed.reportId).toBeDefined();
 
-    const salvato = await reportModel.findById(conclusa.reportId);
-    expect(salvato).not.toBeNull();
+    const savedReport = await reportModel.findById(completed.reportId);
+    expect(savedReport).not.toBeNull();
 
-    // 8. Il Report è leggibile dalle API, dal suo proprietario.
-    const letto = await request(server)
-      .get(`/api/v1/reports/${conclusa.reportId}`)
+    // 8. The Report is readable from the API, by its owner.
+    const read = await request(server)
+      .get(`/api/v1/reports/${completed.reportId}`)
       .set("Authorization", `Bearer ${token}`)
       .expect(200);
 
-    expect(letto.body.operation).toBe("SECURITY_OWASP");
-    expect(letto.body.status).toBe("COMPLETED");
-    expect(letto.body.body).toHaveLength(1);
+    expect(read.body.operation).toBe("SECURITY_OWASP");
+    expect(read.body.status).toBe("COMPLETED");
+    expect(read.body.body).toHaveLength(1);
   }, 120_000);
 
-  it("un fallimento dell'agente produce un Report FAILED, non un errore muto", async () => {
-    const token = await utenteAutenticato();
+  it("an agent failure produces a FAILED Report, not a silent error", async () => {
+    const token = await authenticatedUser();
     await request(server)
       .post("/api/v1/credentials")
       .set("Authorization", `Bearer ${token}`)
-      .send({ provider: "GITHUB", token: "ghp_token_di_prova_0123456789" })
+      .send({ provider: "GITHUB", token: "ghp_test_token_0123456789" })
       .expect(201);
-    const contesto = await request(server)
+    const context = await request(server)
       .post("/api/v1/contexts")
       .set("Authorization", `Bearer ${token}`)
       .send({ repoUrl: REPO_URL, branch: "master", scopeType: "FULL_REPOSITORY" })
       .expect(201);
 
-    agente.invoke.mockResolvedValue({
+    agent.invoke.mockResolvedValue({
       status: "FAILED",
-      error: { code: "TIMEOUT", message: "nessuna risposta dal modello", stage: "invoca_llm" },
+      error: { code: "TIMEOUT", message: "no response from the model", stage: "invoke_llm" },
     });
 
-    const avvio = await request(server)
+    const start = await request(server)
       .post("/api/v1/tasks")
       .set("Authorization", `Bearer ${token}`)
-      .send({ contextId: contesto.body.id, operations: ["SECURITY_OWASP"] })
+      .send({ contextId: context.body.id, operations: ["SECURITY_OWASP"] })
       .expect(202);
-    const [taskId] = avvio.body.taskIds;
+    const [taskId] = start.body.taskIds;
 
-    const conclusa = await attendiEsito(taskId);
+    const completed = await waitForOutcome(taskId);
 
-    expect(conclusa.status).toBe("FAILED");
-    expect(conclusa.error).toBeDefined();
+    expect(completed.status).toBe("FAILED");
+    expect(completed.error).toBeDefined();
   }, 120_000);
 
-  it("un report di un altro utente non è leggibile", async () => {
-    const proprietario = await utenteAutenticato();
-    const estraneo = await utenteAutenticato();
+  it("another user's report is not readable", async () => {
+    const owner = await authenticatedUser();
+    const stranger = await authenticatedUser();
     await request(server)
       .post("/api/v1/credentials")
-      .set("Authorization", `Bearer ${proprietario}`)
-      .send({ provider: "GITHUB", token: "ghp_token_di_prova_0123456789" })
+      .set("Authorization", `Bearer ${owner}`)
+      .send({ provider: "GITHUB", token: "ghp_test_token_0123456789" })
       .expect(201);
-    const contesto = await request(server)
+    const context = await request(server)
       .post("/api/v1/contexts")
-      .set("Authorization", `Bearer ${proprietario}`)
+      .set("Authorization", `Bearer ${owner}`)
       .send({ repoUrl: REPO_URL, branch: "master", scopeType: "FULL_REPOSITORY" })
       .expect(201);
-    agente.invoke.mockResolvedValue({
+    agent.invoke.mockResolvedValue({
       status: "COMPLETED",
       payload: { body: [], summary: "ok" },
     });
-    const avvio = await request(server)
+    const start = await request(server)
       .post("/api/v1/tasks")
-      .set("Authorization", `Bearer ${proprietario}`)
-      .send({ contextId: contesto.body.id, operations: ["SECURITY_OWASP"] })
+      .set("Authorization", `Bearer ${owner}`)
+      .send({ contextId: context.body.id, operations: ["SECURITY_OWASP"] })
       .expect(202);
-    const conclusa = await attendiEsito(avvio.body.taskIds[0]);
+    const completed = await waitForOutcome(start.body.taskIds[0]);
 
     await request(server)
-      .get(`/api/v1/reports/${conclusa.reportId}`)
-      .set("Authorization", `Bearer ${estraneo}`)
+      .get(`/api/v1/reports/${completed.reportId}`)
+      .set("Authorization", `Bearer ${stranger}`)
       .expect(404);
   }, 120_000);
 });
