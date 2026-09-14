@@ -50,23 +50,25 @@ export class EventsGateway implements OnGatewayConnection {
     this.server.to(this.roomFor(userId)).emit("task.failed", { taskId, error });
   }
 
-  emitBatchCompleted(userId: string, batchId: string, completed: number, failed: number): void {
+  emitBatchCom
+pleted(userId: string, batchId: string, completed: number, failed: number): void {
     this.server.to(this.roomFor(userId)).emit("batch.completed", { batchId, completed, failed });
   }
 
   // Flat shape — { taskId, kind, taskIds?, technicalChangelog? } — matching
-  // how the other four events are shaped, and matching the Progettazione
-  // Frontend's own Table 6 rather than nesting a `pendingInput` object.
+  // how the other four events are shaped, and matching the Frontend Design
+  // document's own Table 6 rather than nesting a `pendingInput` object.
   // taskId is a deliberate addition beyond that table: a bare PendingInput
   // carries no way to tell the frontend which task it belongs to once more
   // than one is in flight.
   //
-  // Il campo del changelog tecnico e' una correzione alla Tabella 6, che lo
-  // chiama `reportId`. Non e' solo un nome gia' preso da TaskEntry (il report
-  // finale del Task, vedi task.updated): e' che qui **non c'e' nessun report**.
-  // Le due fasi di CHANGELOG_BUSINESS stanno dentro un solo Task e il Report
-  // nasce alla fine, quindi quando si chiede la conferma non esiste ancora
-  // niente a cui puntare. Si manda il testo, prodotto un istante prima.
+  // The technical changelog field is a correction to Table 6, which calls
+  // it `reportId`. It is not just a name already taken by TaskEntry (the
+  // final report of the Task, see task.updated): it is that here **there is
+  // no report**. The two phases of CHANGELOG_BUSINESS live inside a single
+  // Task and the Report is born at the end, so when confirmation is
+  // requested there is nothing yet to point to. The text is sent, produced a
+  // moment earlier.
   emitTaskInputRequired(
     userId: string,
     taskId: string,

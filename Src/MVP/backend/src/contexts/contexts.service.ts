@@ -29,14 +29,15 @@ export class ContextsService {
   ) {}
 
   // Implements the ten-step sequence from mvp_backend_design.tex
-  // ("Sequenza di validazione"), in order, stopping at the first failure.
+  // ("Validation sequence"), in order, stopping at the first failure.
   // Nothing is persisted until every step passes.
   async create(userId: string, dto: CreateContextDto): Promise<AnalysisContextDto> {
     const token = await this.credentials.getDecryptedToken(userId, GITHUB_PROVIDER);
 
     // Steps 1-3: URL syntax (enforced by the DTO's @Matches before this
     // method ever runs), owner/repo extraction, reachability + isPrivate.
-    const { owner, repo, isPrivate } = await this.repoResolver.resolve(token, dto.repoUrl);
+    const { owner, repo, isPrivate } = await thi
+s.repoResolver.resolve(token, dto.repoUrl);
 
     // Step 4: branch existence (RF.21). listRefs also gives us the branch's
     // HEAD sha, reused directly in step 6 — no second call.
@@ -50,7 +51,7 @@ export class ContextsService {
     if (!branchRef) {
       throw new AppException(
         "CONTEXT_RESOURCE_MISSING",
-        `Branch "${dto.branch}" non trovato nel repository ${owner}/${repo}.`,
+        `Branch "${dto.branch}" not found in repository ${owner}/${repo}.`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -96,6 +97,7 @@ export class ContextsService {
     // Step 8: non-empty scope (RF.29) — declarative, no I/O.
     const normalizedPaths =
       dto.scopeType === "FULL_REPOSITORY" ? [] : normalizePaths(dto.paths ?? []);
+
     if (dto.scopeType === "FULL_REPOSITORY") {
       if (dto.paths && dto.paths.length > 0) {
         throw new AppException(
@@ -157,7 +159,8 @@ export class ContextsService {
     return this.toDto(context);
   }
 
-  // FULL_REPOSITORY: every file in the tree. FILES: exactly the selected
+  // FULL_REPOSITORY: every file in t
+he tree. FILES: exactly the selected
   // paths. DIRECTORIES: every file whose path falls under one of the
   // selected prefixes, recursively — the doc is explicit that expansion
   // happens at read time and this is that read.
@@ -178,18 +181,18 @@ export class ContextsService {
     ).length;
   }
 
-  // RF.24/RV.7: quali linguaggi ci sono nel repository, divisi fra quelli che
-  // gli agenti sanno analizzare e quelli che no, piu' il predominante.
+  // RF.24/RV.7: which languages are in the repository, split between those
+  // the agents can analyse and those they cannot, plus the predominant one.
   //
-  // La versione precedente scartava i file non riconosciuti *prima* di
-  // arrivare al contesto (`.filter(l => l !== 'unknown')`), e con essi
-  // l'informazione necessaria all'avviso: un repository interamente in Go
-  // usciva con `detectedLanguages: []`, identico a un repository vuoto, e
-  // nessuno strato a valle poteva piu' distinguerli.
+  // The previous version discarded unrecognised files *before* reaching the
+  // context (`.filter(l => l !== 'unknown')`), and with them the information
+  // necessary for the warning: a repository entirely in Go came out with
+  // `detectedLanguages: []`, identical to an empty repository, and no
+  // downstream layer could tell them apart anymore.
   //
-  // Il predominante si calcola per numero di file e non per byte: e' una
-  // stima piu' grossolana ma non richiede di leggere gli oggetti dell'albero,
-  // e qui serve solo a scegliere il tono dell'avviso.
+  // The predominant language is calculated by number of files and not by
+  // bytes: it is a coarser estimate but does not require reading the tree
+  // objects, and here it only serves to choose the tone of the warning.
   private detectLanguages(tree: TreeNode[]): {
     detectedLanguages: string[];
     unsupportedLanguages: string[];
@@ -207,10 +210,10 @@ export class ContextsService {
       counts.set(language, (counts.get(language) ?? 0) + 1);
     }
 
-    // Ordinamento per numero di file decrescente, con il nome come criterio
-    // di parita': senza, due linguaggi con lo stesso conteggio si scambiano
-    // di posto fra una creazione di contesto e l'altra e l'avviso cambia
-    // testo senza che sia cambiato nulla.
+    // Sorting by descending file count, with name as the tie-breaker:
+    // without it, two languages with the same count would swap places
+    // between one context creation and the next, and the warning would
+    // change text without anything having changed.
     const byFrequency = [...counts.entries()].sort(
       ([leftName, leftCount], [rightName, rightCount]) =>
         rightCount - leftCount || leftName.localeCompare(rightName),
@@ -256,15 +259,15 @@ export class ContextsService {
       detectedLanguages: context.detectedLanguages,
       unsupportedLanguages: context.unsupportedLanguages ?? [],
       predominantLanguage: context.predominantLanguage ?? null,
-      // Ricavato e non memorizzato: e' una funzione dei due campi qui sopra,
-      // e un booleano persistito accanto ai dati da cui dipende e' solo un
-      // modo in piu' per farli divergere.
+      // Derived and not stored: it is a function of the two fields above,
+      // and a boolean persisted alongside the data it depends on is only
+      // another way for them to diverge.
       //
-      // La soglia e' il linguaggio *predominante*, non la semplice presenza di
-      // codice non supportato: quasi ogni repository contiene almeno uno
-      // script di shell, e un avviso che compare sempre non lo legge piu'
-      // nessuno. L'elenco completo resta comunque in `unsupportedLanguages`,
-      // per chi lo vuole mostrare in ogni caso.
+      // The threshold is the *predominant* language, not the mere presence of
+      // unsupported code: almost every repository contains at least one
+      // shell script, and a warning that always appears is read by no one
+      // anymore. The full list remains in `unsupportedLanguages` regardless,
+      // for those who want to show it in every case.
       unsupportedLanguageWarning:
         (context.unsupportedLanguages ?? []).length > 0 &&
         !isSupportedLanguage(context.predominantLanguage ?? ""),

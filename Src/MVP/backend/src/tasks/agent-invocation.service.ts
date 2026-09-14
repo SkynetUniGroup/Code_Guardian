@@ -42,7 +42,8 @@ export class AgentInvocationService {
     private readonly agentRegistry: AgentRegistry,
     @InjectModel(AnalysisContext.name)
     private readonly contextModel: Model<AnalysisContextDocument>,
-    private readonly credentials: CredentialsService,
+    private readonly credentials: CredentialsServi
+ce,
     private readonly templates: TemplatesService,
   ) {}
 
@@ -59,18 +60,18 @@ export class AgentInvocationService {
       return this.failure("UPSTREAM", "Context not found for task");
     }
 
-    // Solo le operazioni DOCS_* leggono le metriche SonarQube (DocsLoader).
-    // La credenziale e' opzionale: se l'utente non ne ha una, o se la
-    // lettura fallisse, l'operazione gira comunque — quindi qui un errore
-    // non blocca l'avvio del task, al massimo lascia il prompt senza metriche.
+    // Only DOCS_* operations read SonarQube metrics (DocsLoader).
+    // The credential is optional: if the user does not have one, or if the
+    // read fails, the operation still runs — so an error here does not
+    // block task startup, at most it leaves the prompt without metrics.
     const sonarqubeCredentials = task.operation.startsWith("DOCS")
       ? await this.loadSonarqubeCredentials(task.userId)
       : undefined;
 
-    // RF.79-RF.81: il template README caricato dall'utente. Riguarda la sola
-    // operazione DOCS_README; se non ne ha caricato uno il campo resta
-    // assente e l'agente usa il proprio modello di default, che e'
-    // esattamente il ripristino descritto da RF.81.
+    // RF.79-RF.81: the README template uploaded by the user. Concerns only
+    // the DOCS_README operation; if the user has not uploaded one the field
+    // remains absent and the agent uses its own default model, which is
+    // exactly the restore described by RF.81.
     const readmeTemplate =
       task.operation === "DOCS_README" ? await this.templates.contentForUser(task.userId) : null;
 
@@ -80,15 +81,16 @@ export class AgentInvocationService {
       operationCode: task.operation,
       payload: {
         userId: task.userId,
-        // Presente solo quando il Task ne ha uno: startOrPause mette in pausa
-        // le operazioni Changelog finche' non arriva, quindi qui o c'e' o
-        // l'operazione non e' una di quelle che lo richiedono.
+        // Present only when the Task has one: startOrPause pauses
+        // Changelog operations until it arrives, so here either it exists
+        // or the operation is not one that requires it.
         ...(task.sprintId ? { sprintId: task.sprintId } : {}),
         ...(sonarqubeCredentials ? { sonarqube_credentials: sonarqubeCredentials } : {}),
         ...(readmeTemplate ? { readmeTemplate } : {}),
         context_ref: {
           repoOwner: context.repoOwner,
-          repoName: context.repoName,
+          rep
+oName: context.repoName,
           repoUrl: context.repoUrl,
           branch: context.branch,
           resolvedSha: context.resolvedSha,
@@ -143,7 +145,8 @@ export class AgentInvocationService {
     path: string,
     body: AgentStartRequest | AgentResumeRequest,
   ): Promise<AgentInvocationResult> {
-    const timeoutMs =
+    const timeo
+utMs =
       (this.agentRegistry.getTimeoutS(task.operation) + HTTP_TIMEOUT_MARGIN_S) * 1000;
     const baseUrl = this.config.get<string>("AGENTS_SERVICE_URL");
 
@@ -191,7 +194,8 @@ export class AgentInvocationService {
       if (!result.pendingInput) {
         // The agent said it paused but didn't say what it's waiting for —
         // can't route this to the right modal on the frontend, and leaving
-        // the Task RUNNING with pendingInput still null would be
+        // the Task RUNNING with pendi
+ngInput still null would be
         // indistinguishable from "not paused" to every other code path that
         // checks that field. Treated as a failure instead.
         return this.failure("PARSING", "Agent reported interrupted without a pendingInput");

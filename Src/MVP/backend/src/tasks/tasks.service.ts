@@ -47,7 +47,8 @@ export class TasksService {
   // Four pre-accept checks: whole batch rejected on the first failure,
   // nothing partially queued. Order goes cheapest/local first, database
   // reads next, and the usage-limit check (RF.66, BE-14) last — it's the
-  // only one that writes (and might have to roll its own write back), so it
+  //
+ only one that writes (and might have to roll its own write back), so it
   // only runs once everything else about the request is already known
   // valid, rather than spending quota on a request that would've failed
   // anyway.
@@ -106,7 +107,8 @@ export class TasksService {
 
   async findAllForUser(userId: string): Promise<TaskDto[]> {
     const tasks = await this.taskModel.find({ userId }).sort({ createdAt: -1 });
-    return tasks.map(toTaskDto);
+    return 
+tasks.map(toTaskDto);
   }
 
   async findOneForUser(userId: string, id: string): Promise<TaskDto> {
@@ -131,23 +133,24 @@ export class TasksService {
       throw new ConflictException(`Task ${id} cannot be cancelled from status ${task.status}`);
     }
 
-    // `pendingInput: null` non e' un dettaglio estetico: senza, la richiesta
-    // di input resta aperta su un Task terminale. submitInput() la trova
-    // ancora valida, risponde 204 e accoda un job che TaskProcessor scartera'
-    // in silenzio, e GET /tasks/:id continua a dichiarare un pendingInput su
-    // cui il frontend decide se mostrare la finestra di dialogo. E' la stessa
-    // transizione che compie il percorso CANCEL di submitInput(), che infatti
-    // lo azzera gia'.
+    // `pendingInput: null` is not an aesthetic detail: without it, the input
+    // request stays open on a terminal Task. submitInput() still finds it
+    // valid, responds 204 and enqueues a job that TaskProcessor silently
+    // discards, and GET /tasks/:id keeps declaring a pendingInput on
+    // which the frontend decides whether to show the dialog. It is the same
+    // transition that the CANCEL path of submitInput() performs, which
+    // already nulls it.
     if (!(await this.markCancelled(id, userId, { pendingInput: null }))) {
       throw new ConflictException(
         `Task ${id} reached a terminal state before it could be cancelled`,
       );
     }
-    // Solo dopo che la transizione e' passata: segnalare la cancellazione a un
-    // agente il cui Task e' nel frattempo arrivato a COMPLETED lo fermerebbe
-    // per niente (e, con l'id riusato da un retry, quello sbagliato).
+    // Only after the transition has passed: signalling cancellation to an
+    // agent whose Task has in the meantime reached COMPLETED would stop it
+    // for nothing (and, with the id reused by a retry, the wrong one).
     await this.cancellation.requestCancellation(id);
-    this.events.emitTaskUpdated(userId, id, "CANCELLED");
+    this.events.e
+mitTaskUpdated(userId, id, "CANCELLED");
   }
 
   // The cancellation itself, conditioned on the Task still being
@@ -189,7 +192,8 @@ export class TasksService {
       throw new ConflictException(`Task ${id} has no pending input`);
     }
     if (pending.kind !== dto.kind) {
-      throw new ConflictException(`Task ${id} is waiting for ${pending.kind}, not ${dto.kind}`);
+      throw new ConflictException(`Task ${id} is w
+aiting for ${pending.kind}, not ${dto.kind}`);
     }
 
     if (dto.kind === "SPRINT_ID") {

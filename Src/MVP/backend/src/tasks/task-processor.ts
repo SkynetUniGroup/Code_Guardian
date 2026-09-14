@@ -35,7 +35,8 @@ function isResumeJob(
 // operation's agent budget is capped at 300s (RQ.6) — enforced, not merely
 // tabulated, by the clamp in AgentRegistry.getTimeoutS, which is what this
 // number's safety actually rests on — and AgentInvocationService aborts its
-// own HTTP call at that ceiling plus its margin, so nothing legitimate can
+// own HTTP call at that ceilin
+g plus its margin, so nothing legitimate can
 // still be running after this. A claim this old means the worker holding it
 // died — killed mid-invocation, container restarted — without ever reaching
 // the release below, and the Task would otherwise be unprocessable forever.
@@ -69,7 +70,8 @@ export class TaskProcessor extends WorkerHost {
   private readonly logger = new Logger(TaskProcessor.name);
 
   constructor(
-    @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>,
+    @InjectModel(Task.name) private readonly taskModel: Mo
+del<TaskDocument>,
     private readonly events: EventsGateway,
     private readonly agentInvocation: AgentInvocationService,
     private readonly agentRegistry: AgentRegistry,
@@ -114,7 +116,8 @@ export class TaskProcessor extends WorkerHost {
         task.accumulatedMs += Date.now() - startedAt;
         await this.applyResult(task, claimToken, result);
       } catch (err) {
-        task.accumulatedMs += Date.now() - startedAt;
+        task.accumulatedMs += Date.now() - s
+tartedAt;
         await this.finishFailed(task, claimToken, {
           code: "UPSTREAM",
           message: err instanceof Error ? err.message : "Unknown error",
@@ -154,6 +157,7 @@ export class TaskProcessor extends WorkerHost {
     const claimToken = randomUUID();
 
     const task = await this.taskModel.findOneAndUpdate(
+
       {
         _id: taskId,
         // The three ways a Task may legitimately be picked up: a fresh
@@ -197,7 +201,8 @@ export class TaskProcessor extends WorkerHost {
       );
     } catch (err) {
       // Never rethrow from the finally: the work itself may well have
-      // succeeded, and failing the whole job over the release would undo
+      // succeeded, and failing the whole job over the release woul
+d undo
       // RF.48's isolation for no gain. A claim left behind here is taken
       // over again after CLAIM_LEASE_MS.
       this.logger.warn(
@@ -239,7 +244,8 @@ export class TaskProcessor extends WorkerHost {
   // through here: a $set conditioned on the Task still being RUNNING,
   // instead of task.save(). save() writes whatever paths were touched in
   // memory without looking at what the database holds now, so a cancel that
-  // landed while the agent was working was silently overwritten by the
+  // landed while the agent was worki
+ng was silently overwritten by the
   // completing invocation.
   //
   // The claim is part of the filter for the same reason the status is: a
@@ -275,7 +281,8 @@ export class TaskProcessor extends WorkerHost {
     changes: Record<string, unknown>,
   ): Promise<boolean> {
     const { matchedCount } = await this.taskModel.updateOne(
-      { _id: task._id, status: "RUNNING", processingClaimToken: claimToken },
+      { _id: task._id, status: "RUNNING", pr
+ocessingClaimToken: claimToken },
       { $set: changes },
     );
     return matchedCount === 1;
@@ -317,7 +324,8 @@ export class TaskProcessor extends WorkerHost {
       // emitTaskInputRequired() below — the very event whose purpose is to
       // make the frontend answer — and the release. An answer landing in
       // that window enqueued a job whose claim() found the claim still held
-      // and returned null, so the job exited silently; with no `attempts`
+      // and returned null, so the
+ job exited silently; with no `attempts`
       // configured on the queue (tasks.module.ts) BullMQ counts that as a
       // success and never retries, stranding the Task RUNNING with
       // pendingInput already cleared and no way for the user to answer
@@ -363,11 +371,11 @@ export class TaskProcessor extends WorkerHost {
     claimToken: string,
     payload: AgentRunPayload,
   ): Promise<void> {
-    // Se l'agente ha prodotto una Proposal, la PR va aperta *prima*
-    // dell'assemblaggio: il Report e' un documento immutabile e deve nascere
-    // gia' con l'URL della PR dentro, non essere modificato dopo. Se
-    // l'apertura fallisce, publish() restituisce il payload invariato e il
-    // report esce comunque, con il solo diff.
+    // If the agent produced a Proposal, the PR must be opened *before*
+    // assembly: the Report is an immutable document and must be born
+    // already with the PR URL inside, not modified afterwards. If
+    // opening fails, publish() returns the payload unchanged and the
+    // report still comes out, with only the diff.
     const publishedPayload = await this.proposalPublisher.publish(task, payload);
     const report = await this.reportAssembly.assembleCompleted(task, publishedPayload);
     const persisted = await this.persistIfStillRunning(task, claimToken, {
@@ -401,10 +409,11 @@ export class TaskProcessor extends WorkerHost {
   // Shared by applyResult's FAILED branch and process()'s catch block — a
   // Task that never reaches the agent at all (e.g. resume() throwing on a
   // missing lgThreadId) still needs a Report to point users at, same as one
-  // the agent itself reported failing: "con successo o meno" (BE-18) covers
+  // the agent itself reported failing: "whether successful or not" (BE-18) covers
   // both.
   private async finishFailed(
-    task: TaskDocument,
+    t
+ask: TaskDocument,
     claimToken: string,
     error: TaskError,
   ): Promise<void> {
@@ -453,7 +462,8 @@ export class TaskProcessor extends WorkerHost {
   // short-lived group and there's no separate Batch collection to keep a
   // counter on (batchId is a correlation label only, per Task's own schema
   // comment). A RUNNING Task paused on pendingInput still counts as active
-  // here exactly as it did before BE-17 — this query was never
+  // her
+e exactly as it did before BE-17 — this query was never
   // status-specific beyond PENDING/RUNNING — so a batch with a paused Task
   // correctly never reports completed until it's answered one way or
   // another.

@@ -44,7 +44,8 @@ export class CredentialsService {
   // Nothing is persisted unless the live provider check passes (§4.2,
   // RF.13–RF.14). The upsert on (userId, provider) means reconnecting an
   // already-configured provider replaces it instead of creating a second row
-  // — the unique index on the schema would reject a plain insert here, and
+  // — the unique index on the schema would 
+reject a plain insert here, and
   // that's the point: this is the one path allowed to satisfy it.
   async create(userId: string, dto: CreateCredentialDto): Promise<ServiceCredentialDto> {
     await this.verifyCredential(dto);
@@ -90,9 +91,10 @@ export class CredentialsService {
     }
   }
 
-  // Re-checks a credential that's already saved (the "Verifica di nuovo"
+  // Re-checks a credential that's already saved (the "Verify again"
   // button, §4.2) — distinct from `create`'s pre-save check. On failure the
-  // stored ciphertext is left exactly as it was: a token that stopped
+  // st
+ored ciphertext is left exactly as it was: a token that stopped
   // working is still evidence the user may want to see or fix, not a reason
   // to silently delete their configuration.
   async revalidate(userId: string, id: string): Promise<ServiceCredentialDto> {
@@ -139,7 +141,8 @@ export class CredentialsService {
     userId: string,
   ): Promise<SonarqubeCredentialPayload | null> {
     const credential = await this.credentialModel.findOne({
-      userId,
+    
+  userId,
       provider: SONARQUBE_PROVIDER,
     });
     if (!credential) {
@@ -192,9 +195,10 @@ export class CredentialsService {
   // A 401 means GitHub itself rejected the token — bad or revoked. Missing
   // the required scope is treated the same way: either case means this
   // credential can't do what Code Guardian needs it for, and the frontend's
-  // secondary action is the same for both ("Rimanda a /credentials").
+  // secondary action is the same for both ("Redirect to /credentials").
   // Anything else — network failure, GitHub 5xx, a rate-limit 403 — is
-  // deliberately NOT caught here: it propagates to the global exception
+  // deliberately NOT caught here: it propagates to the global excepti
+on
   // filter and falls back to UPSTREAM. A dropped connection must never look
   // like a bad credential (§4.2, RS.4).
   private async verifyGithubToken(token: string): Promise<void> {
@@ -219,8 +223,8 @@ export class CredentialsService {
     // fine-grained token's grants without already knowing a repository, so
     // the only thing checked here for one is that GitHub accepted it at
     // all — its actual repository access gets verified for real, for every
-    // token type, once a repository is selected (§ Raggiungibilità e
-    // accesso, POST /contexts). Rejecting a fine-grained token here based on
+    // token type, once a repository is selected (§ Reachability and
+    // access, POST /contexts). Rejecting a fine-grained token here based on
     // an empty scope list would be a false negative, not a safety net.
     if (this.isFineGrainedToken(token)) {
       return;
@@ -246,7 +250,8 @@ export class CredentialsService {
   private toDto(credential: ServiceCredentialDocument): ServiceCredentialDto {
     return {
       id: credential._id.toString(),
-      provider: credential.provider,
+      provider: credential.p
+rovider,
       connectedAt: credential.connectedAt.toISOString(),
     };
   }
