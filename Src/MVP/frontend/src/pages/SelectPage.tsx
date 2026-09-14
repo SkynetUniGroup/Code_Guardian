@@ -47,8 +47,7 @@ function fieldErrorFromApiError(err: unknown): Record<string, string> {
 export function SelectPage() {
   const navigate = useNavigate();
   const setContext = useSelectionStore((s) => s.setContext);
-  const setFormContext = useSelectionStore((s
-) => s.setFormContext);
+  const setFormContext = useSelectionStore((s) => s.setFormContext);
   const formContext = useSelectionStore((s) => s.formContext);
 
   // Repository list state
@@ -99,8 +98,7 @@ export function SelectPage() {
     fetch_repos();
   }, []);
 
-  // When the u
-ser selects a repo, pre-fill the ref with its default branch.
+  // When the user selects a repo, pre-fill the ref with its default branch.
   function handle_repo_change(owner_name: string) {
     const repo = repos.find((r) => `${r.owner}/${r.name}` === owner_name) ?? null;
     setSelectedRepo(repo);
@@ -124,7 +122,7 @@ ser selects a repo, pre-fill the ref with its default branch.
     }
     if (!ref.trim()) next.ref = "Enter the branch";
     if (commit_sha.trim() && !/^[0-9a-f]{7,40}$/i.test(commit_sha.trim())) {
-      next.commit_sha = "Il commit SHA deve essere esadecimale (7-40 caratteri)";
+      next.commit_sha = "The commit SHA must be hexadecimal (7-40 characters)";
     }
     if (scope_type !== "FULL_REPOSITORY" && !paths_text.trim()) {
       next.paths = "Enter at least one path";
@@ -155,8 +153,7 @@ ser selects a repo, pre-fill the ref with its default branch.
       branch: ref.trim(),
       // If absent, the backend anchors the context to the branch HEAD (RF.17).
       // The field existed in the DTO but nobody filled it: pinning to a
-      // comm
-it specifico (RF.22) era irraggiungibile dall'interfaccia.
+      // specific commit (RF.22) was unreachable from the interface.
       ...(commit_sha.trim() ? { commitSha: commit_sha.trim() } : {}),
       scopeType: scope_type,
       ...(paths_array.length > 0 ? { paths: paths_array } : {}),
@@ -268,8 +265,7 @@ it specifico (RF.22) era irraggiungibile dall'interfaccia.
           placeholder="https://github.com/owner/repo"
           value={manual_repo_url}
           onChange={(e) => {
-            handle_manual_re
-po_url_change(e.target.value);
+            handle_manual_repo_url_change(e.target.value);
             setFormErrors((p) => ({ ...p, repo: "", repo_url: "" }));
           }}
           disabled={!!selected_repo}
@@ -289,7 +285,7 @@ po_url_change(e.target.value);
           error={form_errors.ref}
         />
 
-        {/* Commit SHA (opzionale) */}
+        {/* Commit SHA (optional) */}
         <div className="flex flex-col gap-1">
           <ValidatedField
             label="Commit SHA (optional)"
@@ -322,15 +318,14 @@ po_url_change(e.target.value);
             }}
             className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20"
           >
-            <option value="FU
-LL_REPOSITORY">Full repository</option>
-            <option value="FILES">File specifici</option>
+            <option value="FULL_REPOSITORY">Full repository</option>
+            <option value="FILES">Specific files</option>
             <option value="DIRECTORIES">Specific directories</option>
           </select>
           <p className="text-xs text-gray-400">
             {scope_type === "FULL_REPOSITORY" &&
               "All files in the repository will be included in the analysis."}
-            {scope_type === "FILES" && "Specifica i file esatti da analizzare (uno per riga)."}
+            {scope_type === "FILES" && "Specify the exact files to analyze (one per line)."}
             {scope_type === "DIRECTORIES" && "Specify the directories to analyze (one per line)."}
           </p>
         </div>
@@ -368,8 +363,7 @@ LL_REPOSITORY">Full repository</option>
         <button
           type="submit"
           disabled={submitting}
-        
-  className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-200 transition disabled:opacity-60"
+          className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-200 transition disabled:opacity-60"
         >
           {submitting && <Spinner size="sm" className="text-white" />}
           Save context and go to Start
