@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Esportazione del Report in PDF" id="flusso-export-diagram">
+    <mxGraphModel dx="1585" dy="1691" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="820" pageHeight="620" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Lifeline headers -->
+        <mxCell id="h-fe" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="Frontend&#xa;(React)" vertex="1">
+          <mxGeometry height="40" width="180" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="h-be" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="Backend&#xa;(ReportsExportService)" vertex="1">
+          <mxGeometry height="40" width="200" x="290" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="h-s3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;" value="S3&#xa;(Artefatti)" vertex="1">
+          <mxGeometry height="40" width="180" x="560" y="20" as="geometry" />
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="l-fe" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;" edge="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="130" y="60" as="sourcePoint" /><mxPoint x="130" y="580" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="l-be" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;" edge="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="380" y="60" as="sourcePoint" /><mxPoint x="380" y="580" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="l-s3" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;" edge="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="650" y="60" as="sourcePoint" /><mxPoint x="650" y="580" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- 1: request -->
+        <mxCell id="m1" parent="1" edge="1" style="endArrow=block;endFill=1;html=1;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="130" y="90" as="sourcePoint" /><mxPoint x="380" y="90" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="m1l" parent="1" vertex="1" style="text;html=1;align=center;fontSize=10;" value="GET /reports/:id/export?format=pdf">
+          <mxGeometry height="20" width="230" x="140" y="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note404" parent="1" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=6;" value="Recupera il Report. Se non esiste o non appartiene all'utente: 404, attraverso lo stesso canale d'errore condiviso di ogni altro endpoint — non un caso speciale qui.">
+          <mxGeometry height="46" width="480" x="140" y="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note0" parent="1" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=6;" value="Se lo stato è FAILED: 409 a corpo vuoto, nessun PDF viene generato — la prima delle due eccezioni al contratto d'errore condiviso.">
+          <mxGeometry height="46" width="480" x="140" y="165" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note1" parent="1" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=6;" value="Compone l'intero PDF in memoria prima di toccare la risposta HTTP: se la generazione fallisce a metà, nessuno status 200 è già stato inviato.">
+          <mxGeometry height="44" width="480" x="140" y="220" as="geometry" />
+        </mxCell>
+
+        <!-- upload to S3 -->
+        <mxCell id="m2" parent="1" edge="1" style="endArrow=block;endFill=1;html=1;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="380" y="295" as="sourcePoint" /><mxPoint x="650" y="295" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="m2l" parent="1" vertex="1" style="text;html=1;align=center;fontSize=10;" value="carica il PDF generato">
+          <mxGeometry height="20" width="200" x="430" y="277" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m3" parent="1" edge="1" style="endArrow=block;endFill=1;dashed=1;html=1;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="650" y="335" as="sourcePoint" /><mxPoint x="380" y="335" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="m3l" parent="1" vertex="1" style="text;html=1;align=center;fontSize=10;" value="conferma">
+          <mxGeometry height="20" width="150" x="440" y="317" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m4" parent="1" edge="1" style="endArrow=block;endFill=1;dashed=1;html=1;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="380" y="375" as="sourcePoint" /><mxPoint x="130" y="375" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="m4l" parent="1" vertex="1" style="text;html=1;align=center;fontSize=10;" value="200, Content-Type: application/pdf, Content-Disposition: attachment — corpo: il PDF">
+          <mxGeometry height="20" width="260" x="140" y="357" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note2" parent="1" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=6;" value="Un errore in una qualunque di queste fasi (composizione del PDF o caricamento su S3) restituisce invece 500 { code: EXPORT_FAILED, message } — la seconda eccezione al contratto d'errore condiviso: nessuno stato di Task o Report cambia, nessun evento WebSocket viene emesso.">
+          <mxGeometry height="60" width="480" x="140" y="410" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

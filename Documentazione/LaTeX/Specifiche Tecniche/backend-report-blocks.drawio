@@ -1,0 +1,177 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Report e Blocchi" id="backend-report-blocks-diagram">
+    <mxGraphModel dx="1212" dy="620" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="report" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«entity»&lt;/font&gt;&lt;br&gt;Report" vertex="1">
+          <mxGeometry height="210" width="320" x="510" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="report-attr" parent="report" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="- taskId: ObjectId&lt;br&gt;- userId: string&lt;br&gt;- operation: OperationCode&lt;br&gt;- status: ReportStatus&lt;br&gt;- title: string&lt;br&gt;- summary: string | null&lt;br&gt;- durationMs: number | null&lt;br&gt;- tokensConsumed: number&lt;br&gt;- context: ReportContext" vertex="1">
+          <mxGeometry height="140" width="320" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="report-div" parent="report" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="report-ops" parent="report" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="320" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="proposal" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«valueObject»&lt;/font&gt;&lt;br&gt;Proposal" vertex="1">
+          <mxGeometry height="148" width="210" x="940" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="proposal-attr" parent="proposal" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="- targetPath: string&lt;br&gt;- diffUnified: string&lt;br&gt;- language: string&lt;br&gt;- pullRequestUrl: string | null" vertex="1">
+          <mxGeometry height="80" width="210" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="proposal-div" parent="proposal" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="210" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="proposal-ops" parent="proposal" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="210" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="error" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«valueObject»&lt;/font&gt;&lt;br&gt;ReportError" vertex="1">
+          <mxGeometry height="130" width="210" x="940" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="error-attr" parent="error" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="- kind: ErrorKind&lt;br&gt;- message: string&lt;br&gt;- stage: string" vertex="1">
+          <mxGeometry height="62" width="210" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="error-div" parent="error" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="210" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="error-ops" parent="error" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="210" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="block" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«interface»&lt;/font&gt;&lt;br&gt;Block" vertex="1">
+          <mxGeometry height="94" width="260" x="550" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="block-attr" parent="block" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ kind: string" vertex="1">
+          <mxGeometry height="26" width="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="block-div" parent="block" style="line;strokeColor=#666666;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="260" y="66" as="geometry" />
+        </mxCell>
+        <mxCell id="block-ops" parent="block" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="260" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="text" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«valueObject»&lt;/font&gt;&lt;br&gt;TextBlock" vertex="1">
+          <mxGeometry height="112" width="200" x="170" y="346" as="geometry" />
+        </mxCell>
+        <mxCell id="text-attr" parent="text" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ kind: &#39;TEXT&#39;&lt;br&gt;- markdown: string" vertex="1">
+          <mxGeometry height="44" width="200" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="text-div" parent="text" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="200" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="text-ops" parent="text" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="200" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="changelog" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«valueObject»&lt;/font&gt;&lt;br&gt;ChangelogItemBlock" vertex="1">
+          <mxGeometry height="148" width="220" x="320" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="changelog-attr" parent="changelog" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ kind: &#39;CHANGELOG_ITEM&#39;&lt;br&gt;- issueRef: string&lt;br&gt;- title: string&lt;br&gt;- detail: string" vertex="1">
+          <mxGeometry height="80" width="220" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="changelog-div" parent="changelog" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="220" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="changelog-ops" parent="changelog" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="220" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="finding" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«valueObject»&lt;/font&gt;&lt;br&gt;FindingBlock" vertex="1">
+          <mxGeometry height="230" width="240" x="400" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="finding-attr" parent="finding" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ kind: &#39;FINDING&#39;&lt;br&gt;- category: string&lt;br&gt;- severity: Severity&lt;br&gt;- filePath: string&lt;br&gt;- startLine: number&lt;br&gt;- endLine: number&lt;br&gt;- explanation: string&lt;br&gt;- remediationKind: &#39;SNIPPET&#39; | &#39;TEXT&#39;&lt;br&gt;- remediationLanguage?: string&lt;br&gt;- remediation: string" vertex="1">
+          <mxGeometry height="160" width="240" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="finding-div" parent="finding" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="240" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="finding-ops" parent="finding" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="240" y="208" as="geometry" />
+        </mxCell>
+        <mxCell id="policy" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«valueObject»&lt;/font&gt;&lt;br&gt;PolicyViolationBlock" vertex="1">
+          <mxGeometry height="170" width="240" x="680" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="policy-attr" parent="policy" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ kind: &#39;POLICY_VIOLATION&#39;&lt;br&gt;- ruleId: string&lt;br&gt;- ruleText: string&lt;br&gt;- filePath: string&lt;br&gt;- explanation: string&lt;br&gt;- severity: Severity&lt;br&gt;- remediation: string" vertex="1">
+          <mxGeometry height="110" width="240" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="policy-div" parent="policy" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="240" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="policy-ops" parent="policy" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="240" y="158" as="geometry" />
+        </mxCell>
+        <mxCell id="complexity" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«valueObject»&lt;/font&gt;&lt;br&gt;ComplexityWarningBlock" vertex="1">
+          <mxGeometry height="160" width="230" x="1000" y="436" as="geometry" />
+        </mxCell>
+        <mxCell id="complexity-attr" parent="complexity" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ kind: &#39;COMPLEXITY_WARNING&#39;&lt;br&gt;- filePath: string&lt;br&gt;- startLine: number&lt;br&gt;- endLine: number&lt;br&gt;- explanation: string&lt;br&gt;- severity: &#39;info&#39;" vertex="1">
+          <mxGeometry height="94" width="230" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="complexity-div" parent="complexity" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="230" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="complexity-ops" parent="complexity" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="230" y="142" as="geometry" />
+        </mxCell>
+        <mxCell id="cBody" edge="1" parent="1" source="report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;" target="block" value="body">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="300" />
+              <mxPoint x="660" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cBodyS" connectable="0" parent="cBody" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cBodyT" connectable="0" parent="cBody" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cProposal" edge="1" parent="1" source="report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;" target="proposal" value="proposal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cProposalS" connectable="0" parent="cProposal" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cProposalT" connectable="0" parent="cProposal" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..1" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cError" edge="1" parent="1" source="report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;" target="error" value="error">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cErrorS" connectable="0" parent="cError" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cErrorT" connectable="0" parent="cError" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..1" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g1" edge="1" parent="1" source="text" style="rounded=0;html=1;dashed=1;endArrow=block;endFill=0;endSize=16;startArrow=none;" target="block">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" edge="1" parent="1" source="finding" style="rounded=0;html=1;dashed=1;endArrow=block;endFill=0;endSize=16;startArrow=none;" target="block">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g3" edge="1" parent="1" source="policy" style="rounded=0;html=1;dashed=1;endArrow=block;endFill=0;endSize=16;startArrow=none;" target="block">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g4" edge="1" parent="1" source="complexity" style="rounded=0;html=1;dashed=1;endArrow=block;endFill=0;endSize=16;startArrow=none;" target="block">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g5" edge="1" parent="1" source="changelog" style="rounded=0;html=1;dashed=1;endArrow=block;endFill=0;endSize=16;startArrow=none;" target="block">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

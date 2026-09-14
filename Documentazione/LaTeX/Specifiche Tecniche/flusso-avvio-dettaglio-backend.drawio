@@ -1,0 +1,262 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Avvio ed esecuzione - dettaglio Backend" id="flusso-avvio-dettaglio-uml-diagram">
+    <mxGraphModel dx="1144" dy="1616" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1030" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sd" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=11;verticalAlign=top;align=left;width=330;height=20;" value="sd&amp;nbsp; &amp;nbsp;Avvio ed esecuzione di un&#39;operazione — dettaglio Backend" vertex="1">
+          <mxGeometry height="1030" width="1535" x="40" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="fe" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="Frontend" vertex="1">
+          <mxGeometry height="960" width="170" x="40" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-fe" parent="fe" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="210" width="10" x="80" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tc" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="TasksController" vertex="1">
+          <mxGeometry height="960" width="170" x="235" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-tc" parent="tc" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="210" width="10" x="80" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ts" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="TasksService" vertex="1">
+          <mxGeometry height="960" width="1110" x="430" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-ts" parent="ts" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="130" width="10" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="opt2" parent="ts" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=11;verticalAlign=top;align=left;width=40;height=25;" value="opt" vertex="1">
+          <mxGeometry height="100" width="1490" x="-380" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="tp" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="TaskProcessor" vertex="1">
+          <mxGeometry height="960" width="170" x="625" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-tp" parent="tp" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="570" width="10" x="80" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="ai" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="AgentInvocationService" vertex="1">
+          <mxGeometry height="960" width="170" x="820" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-ai" parent="ai" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="80" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="pp" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="ProposalPublisherService" vertex="1">
+          <mxGeometry height="960" width="170" x="1015" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-pp" parent="pp" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="80" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ra" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="ReportAssemblyService" vertex="1">
+          <mxGeometry height="960" width="170" x="1210" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-ra" parent="ra" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="80" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="eg" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="EventsGateway" vertex="1">
+          <mxGeometry height="960" width="170" x="1405" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="act-eg-1" parent="eg" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="80" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="act-eg-2" parent="eg" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="80" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="act-eg-3" parent="eg" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="80" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="110" as="sourcePoint" />
+            <mxPoint x="315" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1l" parent="1" style="text;html=1;align=center;fontSize=10;" value="1: POST /tasks { contextId, operations }" vertex="1">
+          <mxGeometry height="20" width="220" x="110" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="325" y="150" as="sourcePoint" />
+            <mxPoint x="510" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2l" parent="1" style="text;html=1;align=center;fontSize=10;" value="2: createBatch(user, dto)" vertex="1">
+          <mxGeometry height="20" width="200" x="335" y="132" as="geometry" />
+        </mxCell>
+        <mxCell id="sm1" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="180" />
+              <mxPoint x="570" y="200" />
+            </Array>
+            <mxPoint x="520" y="180" as="sourcePoint" />
+            <mxPoint x="520" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sm1l" parent="1" style="text;html=1;align=left;fontSize=10;" value="3: verifica contesto, credenziale, ruolo e quota (4 controlli in sequenza)" vertex="1">
+          <mxGeometry height="26" width="280" x="580" y="178" as="geometry" />
+        </mxCell>
+        <mxCell id="sm2" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="220" />
+              <mxPoint x="570" y="240" />
+            </Array>
+            <mxPoint x="520" y="220" as="sourcePoint" />
+            <mxPoint x="520" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sm2l" parent="1" style="text;html=1;align=left;fontSize=10;" value="4: crea le Task PENDING e accoda un job per ciascuna" vertex="1">
+          <mxGeometry height="26" width="280" x="580" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="280" as="sourcePoint" />
+            <mxPoint x="325" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3l" parent="1" style="text;html=1;align=center;fontSize=10;" value="5: { taskIds, batchId }" vertex="1">
+          <mxGeometry height="20" width="180" x="340" y="262" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="315" y="320" as="sourcePoint" />
+            <mxPoint x="130" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4l" parent="1" style="text;html=1;align=center;fontSize=10;" value="6: 202 { taskIds, batchId }" vertex="1">
+          <mxGeometry height="20" width="200" x="140" y="302" as="geometry" />
+        </mxCell>
+        <mxCell id="m5" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="400" as="sourcePoint" />
+            <mxPoint x="1485" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5l" parent="1" style="text;html=1;align=center;fontSize=10;" value="7: emitTaskUpdated(userId, taskId, RUNNING)" vertex="1">
+          <mxGeometry height="20" width="280" x="720" y="382" as="geometry" />
+        </mxCell>
+        <mxCell id="m6" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1485" y="440" as="sourcePoint" />
+            <mxPoint x="130" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6l" parent="1" style="text;html=1;align=center;fontSize=10;" value="8: WS task.updated (RUNNING)" vertex="1">
+          <mxGeometry height="20" width="200" x="140" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="m7" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="480" as="sourcePoint" />
+            <mxPoint x="900" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7l" parent="1" style="text;html=1;align=center;fontSize=10;" value="9: invoke(task)" vertex="1">
+          <mxGeometry height="20" width="160" x="720" y="462" as="geometry" />
+        </mxCell>
+        <mxCell id="m8" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="900" y="520" as="sourcePoint" />
+            <mxPoint x="715" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8l" parent="1" style="text;html=1;align=center;fontSize=10;" value="10: risultato: COMPLETED / FAILED / INTERRUPTED" vertex="1">
+          <mxGeometry height="20" width="260" x="720" y="502" as="geometry" />
+        </mxCell>
+        <mxCell id="opt1" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=11;verticalAlign=top;align=left;width=35;height=25;" value="opt" vertex="1">
+          <mxGeometry height="110" width="500" x="625" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="g1" parent="1" style="text;html=1;align=left;fontSize=9;" value="[ l&#39;agente ha prodotto una Proposal — Agente Docs ]" vertex="1">
+          <mxGeometry height="16" width="340" x="660" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="m9" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="600" as="sourcePoint" />
+            <mxPoint x="1095" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9l" parent="1" style="text;html=1;align=center;fontSize=10;" value="11: publish(task, payload)" vertex="1">
+          <mxGeometry height="20" width="200" x="720" y="582" as="geometry" />
+        </mxCell>
+        <mxCell id="m10" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1095" y="640" as="sourcePoint" />
+            <mxPoint x="715" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10l" parent="1" style="text;html=1;align=center;fontSize=10;" value="12: payload (con l&#39;URL della PR, se aperta)" vertex="1">
+          <mxGeometry height="20" width="240" x="720" y="622" as="geometry" />
+        </mxCell>
+        <mxCell id="m11" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="690" as="sourcePoint" />
+            <mxPoint x="1290" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m11l" parent="1" style="text;html=1;align=center;fontSize=10;" value="13: assembleCompleted(task, payload)" vertex="1">
+          <mxGeometry height="20" width="240" x="720" y="672" as="geometry" />
+        </mxCell>
+        <mxCell id="m12" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1290" y="730" as="sourcePoint" />
+            <mxPoint x="715" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12l" parent="1" style="text;html=1;align=center;fontSize=10;" value="14: Report" vertex="1">
+          <mxGeometry height="20" width="150" x="720" y="712" as="geometry" />
+        </mxCell>
+        <mxCell id="sm3" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="765" y="760" />
+              <mxPoint x="765" y="780" />
+            </Array>
+            <mxPoint x="715" y="760" as="sourcePoint" />
+            <mxPoint x="715" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sm3l" parent="1" style="text;html=1;align=left;fontSize=10;" value="15: persiste lo stato COMPLETED e il reportId" vertex="1">
+          <mxGeometry height="20" width="280" x="775" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="m13" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="810" as="sourcePoint" />
+            <mxPoint x="1485" y="810" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13l" parent="1" style="text;html=1;align=center;fontSize=10;" value="16: emitTaskUpdated(userId, taskId, COMPLETED, reportId)" vertex="1">
+          <mxGeometry height="20" width="320" x="720" y="792" as="geometry" />
+        </mxCell>
+        <mxCell id="m14" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1485" y="850" as="sourcePoint" />
+            <mxPoint x="130" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14l" parent="1" style="text;html=1;align=center;fontSize=10;" value="17: WS task.updated (COMPLETED)" vertex="1">
+          <mxGeometry height="20" width="220" x="140" y="832" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" parent="1" style="text;html=1;align=left;fontSize=9;" value="[ nessun&#39;altra Task del batch è ancora attiva ]" vertex="1">
+          <mxGeometry height="16" width="320" x="55" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="m15" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="930" as="sourcePoint" />
+            <mxPoint x="1485" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15l" parent="1" style="text;html=1;align=center;fontSize=10;" value="18: emitBatchCompleted(userId, batchId, completed, failed)" vertex="1">
+          <mxGeometry height="20" width="340" x="720" y="912" as="geometry" />
+        </mxCell>
+        <mxCell id="m16" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1485" y="960" as="sourcePoint" />
+            <mxPoint x="130" y="960" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16l" parent="1" style="text;html=1;align=center;fontSize=10;" value="19: WS batch.completed" vertex="1">
+          <mxGeometry height="20" width="180" x="140" y="942" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

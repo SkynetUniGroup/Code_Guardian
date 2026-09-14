@@ -1,0 +1,110 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Vista d&#39;insieme" id="vista-insieme-diagram">
+    <mxGraphModel dx="448" dy="229" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="browser" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1" value="Browser (utente)" vertex="1">
+          <mxGeometry height="60" width="160" x="40" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1" value="Frontend&#xa;React (file statici)" vertex="1">
+          <mxGeometry height="60" width="180" x="320" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" value="Backend&lt;br&gt;(NestJS)" vertex="1">
+          <mxGeometry height="80" width="200" x="320" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="mongodb" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="MongoDB" vertex="1">
+          <mxGeometry height="80" width="140" x="60" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="Redis&#xa;(coda + cache)" vertex="1">
+          <mxGeometry height="80" width="140" x="240" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="Storage&lt;br&gt;(PDF)" vertex="1">
+          <mxGeometry height="60" width="140" x="480" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="github" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1" value="GitHub API" vertex="1">
+          <mxGeometry height="60" width="160" x="640" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="agenti" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" value="Servizio Agenti&lt;br&gt;(LangGraph)" vertex="1">
+          <mxGeometry height="80" width="200" x="310" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="llm" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1" value="LLM esterno" vertex="1">
+          <mxGeometry height="60" width="180" x="640" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="e-browser-frontend" edge="1" parent="1" source="browser" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="frontend" value="HTTPS&#xa;(scarica l&#39;app)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-browser-backend" edge="1" parent="1" source="browser" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="backend" value="REST + WebSocket">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-backend-mongo" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="mongodb" value="Persistenza">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="130" y="270.05" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-backend-redis" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="redis" value="">
+          <mxGeometry relative="1" x="0.5238" y="-20" as="geometry">
+            <mxPoint x="20" y="-20" as="offset" />
+            <Array as="points">
+              <mxPoint x="420" y="340.05" />
+              <mxPoint x="310" y="340.05" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-backend-s3" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="s3" value="">
+          <mxGeometry relative="1" x="0.5417" y="39" as="geometry">
+            <mxPoint x="-9" y="-25" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-backend-github" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="github" value="Lettura / scrittura&#xa;(unico token)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-backend-agenti" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.394;entryY=-0.014;entryDx=0;entryDy=0;entryPerimeter=0;" value="Avvia esecuzione">
+          <mxGeometry relative="1" x="0.3744" y="-50" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="400" y="300.05" />
+            </Array>
+            <mxPoint x="401.2" y="300" as="sourcePoint" />
+            <mxPoint x="399.99999999999994" y="678.8799999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-agenti-backend" edge="1" parent="1" source="agenti" style="rounded=0;html=1;fontSize=11;exitX=0.709;exitY=-0.001;exitDx=0;exitDy=0;entryX=0.66;entryY=0.989;entryDx=0;entryDy=0;entryPerimeter=0;edgeStyle=orthogonalEdgeStyle;exitPerimeter=0;" target="backend" value="Richieste di lettura&#xa;+ avanzamento">
+          <mxGeometry relative="1" x="-0.3684" y="-50" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="451.8" y="670.01" />
+              <mxPoint x="452.01" y="670.01" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-agenti-llm" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;entryX=-0.011;entryY=0.65;entryDx=0;entryDy=0;entryPerimeter=0;" target="llm" value="Chiamata al modello">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="490" y="609" />
+            </Array>
+            <mxPoint x="490" y="680" as="sourcePoint" />
+            <mxPoint x="720" y="610.0026315789473" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-agenti-mongo" edge="1" parent="1" source="agenti" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;strokeColor=#b85450;fontColor=#b85450;" target="mongodb" value="Checkpoint LangGraph&#xa;(stato d&#39;esecuzione)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-agenti-redis" edge="1" parent="1" source="redis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;strokeColor=#b85450;fontColor=#b85450;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.152;entryY=0.011;entryDx=0;entryDy=0;entryPerimeter=0;" target="agenti" value="Flag di cancellazione">
+          <mxGeometry relative="1" x="-0.0485" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="310" y="590.03" />
+              <mxPoint x="340.03" y="590.03" />
+              <mxPoint x="340.03" y="680.91" />
+            </Array>
+            <mxPoint x="350" y="680.8" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

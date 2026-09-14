@@ -1,0 +1,141 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Architettura di Deployment" id="deployment-diagram">
+    <mxGraphModel dx="1585" dy="811" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1250" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="browser" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="Browser (utente)" vertex="1">
+          <mxGeometry height="50" width="160" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudfront" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="CloudFront&#xa;(distribuzione CDN)" vertex="1">
+          <mxGeometry height="50" width="140" x="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s3frontend" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="S3 -- Frontend&#xa;(statico)" vertex="1">
+          <mxGeometry height="50" width="170" x="520" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="github" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" value="GitHub API&#xa;(esterno)" vertex="1">
+          <mxGeometry height="50" width="170" x="880" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vpcBoundary" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#999999;verticalAlign=top;align=left;fontSize=13;fontStyle=1;spacingLeft=10;spacingTop=6;" value="VPC" vertex="1">
+          <mxGeometry height="490" width="1040" x="40" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="pubA" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#dae8fc;strokeColor=#6c8ebf;opacity=40;verticalAlign=top;align=left;fontSize=11;fontStyle=1;spacingLeft=8;spacingTop=4;" value="Subnet pubblica" vertex="1">
+          <mxGeometry height="110" width="480" x="70" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="albA" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="ALB" vertex="1">
+          <mxGeometry height="50" width="140" x="90" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="nat" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="NAT Gateway" vertex="1">
+          <mxGeometry height="50" width="180" x="340" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="privShared" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#e1d5e7;strokeColor=#9673a6;opacity=40;verticalAlign=top;align=left;fontSize=11;fontStyle=1;spacingLeft=8;spacingTop=4;" value="Subnet privata" vertex="1">
+          <mxGeometry height="290" width="970" x="70" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="ecsBackend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" value="ECS Fargate&lt;br&gt;Backend" vertex="1">
+          <mxGeometry height="55" width="200" x="100" y="373" as="geometry" />
+        </mxCell>
+        <mxCell id="ecsAgents" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" value="ECS Fargate&lt;br&gt;Agenti" vertex="1">
+          <mxGeometry height="55" width="200" x="100" y="477.5" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="ElastiCache&#xa;(Redis)" vertex="1">
+          <mxGeometry height="55" width="170" x="410" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="atlasEndpoint" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12" value="Endpoint PrivateLink" vertex="1">
+          <mxGeometry height="55" width="170" x="315" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="vpce" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" value="VPC Endpoints" vertex="1">
+          <mxGeometry height="82.5" width="200" x="565" y="463.75" as="geometry" />
+        </mxCell>
+        <mxCell id="atlas" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1" value="MongoDB Atlas&#xa;(esterno)" vertex="1">
+          <mxGeometry height="55" width="180" x="310" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="bedrock" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" value="Amazon Bedrock&lt;br&gt;(esterno alla VPC)" vertex="1">
+          <mxGeometry height="55" width="180" x="575" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="s3artifacts" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="S3 -- Artefatti&#xa;(esterno alla VPC)" vertex="1">
+          <mxGeometry height="55" width="190" x="800" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="e-browser-cf" edge="1" parent="1" source="browser" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="cloudfront">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-cf-s3f" edge="1" parent="1" source="cloudfront" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="s3frontend" value="contenuti statici">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-cf-alb" edge="1" parent="1" source="cloudfront" style="rounded=0;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="albA" value="richieste API e WebSocket">
+          <mxGeometry relative="1" x="-0.3172" y="-3" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="270" y="79.99652173913049" as="sourcePoint" />
+            <mxPoint x="170.00000000000023" y="230.04" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-alb-backend" edge="1" parent="1" source="albA" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0.628;exitY=1.016;exitDx=0;exitDy=0;exitPerimeter=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="177.9" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-backend-github" edge="1" parent="1" source="ecsBackend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="github" value="HTTPS -- via NAT Gateway&#xa;(unica via verso Internet pubblico)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-backend-agenti" edge="1" parent="1" source="ecsBackend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0.25;exitY=1;entryX=0.25;entryY=0;" target="ecsAgents" value="Avvia esecuzione">
+          <mxGeometry relative="1" x="-0.1111" y="-50" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-agenti-backend" edge="1" parent="1" source="ecsAgents" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0.75;exitY=0;entryX=0.75;entryY=1;" target="ecsBackend" value="Tool-call + avanzamento">
+          <mxGeometry relative="1" x="0.1111" y="-60" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-backend-redis" edge="1" parent="1" source="ecsBackend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="redis" value="Coda + cache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-backend-atlasep" edge="1" parent="1" source="ecsBackend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="atlasEndpoint">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-atlasep-atlas" edge="1" parent="1" source="atlasEndpoint" style="rounded=0;html=1;fontSize=11;edgeStyle=orthogonalEdgeStyle;" target="atlas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-backend-vpce" edge="1" parent="1" source="ecsBackend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="vpce">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-vpce-s3art" edge="1" parent="1" source="vpce" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="s3artifacts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BsF08lQK2AIS2RE4HFp9-2" connectable="0" parent="e-vpce-s3art" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="(solo Backend)" vertex="1">
+          <mxGeometry relative="1" x="0.6938" y="-1" as="geometry">
+            <mxPoint x="1" y="9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-agenti-vpce" edge="1" parent="1" source="ecsAgents" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="vpce">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-vpce-bedrock" edge="1" parent="1" source="vpce" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="bedrock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BsF08lQK2AIS2RE4HFp9-1" connectable="0" parent="e-vpce-bedrock" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="(solo Agenti)" vertex="1">
+          <mxGeometry relative="1" x="0.2228" y="1" as="geometry">
+            <mxPoint x="-1" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-agenti-redis" edge="1" parent="1" source="redis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;strokeColor=#b85450;fontColor=#b85450;entryX=0.998;entryY=0.095;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" target="ecsAgents" value="Flag di cancellazione">
+          <mxGeometry relative="1" x="-0.5051" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="495" y="482.71" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-agenti-atlasep" edge="1" parent="1" source="ecsAgents" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;strokeColor=#b85450;fontColor=#b85450;exitX=1;exitY=0.771;exitDx=0;exitDy=0;exitPerimeter=0;" value="Checkpoint LangGraph">
+          <mxGeometry relative="1" x="-0.6669" y="-30" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="370" y="520" />
+            </Array>
+            <mxPoint x="270" y="505" as="sourcePoint" />
+            <mxPoint x="370" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,755 @@
+\documentclass[12pt, a4paper]{article}
+
+% Pacchetti fondamentali
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, left=2.5cm, right=2.5cm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[figure,table]{totalcount}
+\usepackage{fancyhdr}
+\usepackage{adjustbox}
+\usepackage{extramarks}
+\usepackage{makecell}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xltabular}
+\usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{35pt}
+
+% Setup dei link interattivi (indice)
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\newcommand{\doctitle}{Specifiche Tecniche} % Sostituisci con il titolo reale
+
+% --- INTESTAZIONE (HEADER) ---
+\lhead{\nouppercase{\firstleftmark}}
+\rhead{\adjustbox{valign=m}{\includegraphics[height=1cm]{logo_skynet_dark.png}}}
+
+% --- PIÈ DI PAGINA (FOOTER) ---
+\lfoot{\doctitle} 
+\rfoot{\thepage} 
+
+% Linee di separazione
+\renewcommand{\headrulewidth}{0.4pt} % Linea sotto l'intestazione
+\renewcommand{\footrulewidth}{0.4pt} % Linea sopra il piè di pagina
+
+\begin{document}
+
+% ==========================================
+% FRONTESPIZIO
+% ==========================================
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.5\linewidth]{logo_skynet_dark.png}
+    
+    {\Large Gruppo SkyNet}\\
+    {\normalsize \href{mailto:skynetunigroup@gmail.com}{skynetunigroup@gmail.com}}
+    \vspace*{1.5cm}
+    
+    {\Huge \textbf{\doctitle}} \\
+    
+    \vspace{3cm}
+    
+    % Tabella Informazioni Documento, sostituire con il contenuto reale
+    \begin{table}[h]
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabularx}{\textwidth}{|l|X|}
+            \hline
+            \textbf{Versione} & \textit{0.7} \\ \hline
+            \textbf{Uso} & \textit{Esterno} \\ \hline
+            \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
+            \textbf{Redattori} & \textit{Sara Ristovic} \\ \hline
+            \textbf{Verifica} & \textit{Marco Barbiero, Dario Pirrone} \\ \hline
+            \textbf{Approvazione} & \textit{Nome Cognome} \\ \hline
+
+        \end{tabularx}
+    \end{table}
+    
+    \vfill
+\end{titlepage}
+\stepcounter{page}
+
+\newpage
+
+% ==========================================
+% REGISTRO DELLE VERSIONI
+% ==========================================
+\section*{Versioni del documento}
+\markboth{Versioni del documento}{}
+\begin{tabularx}{\textwidth}{|c|c|X|l|l|}
+    \hline
+    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+    %%%%%%
+    0.7 & 2026/09/13 & Scrittura della sezione "Flusso dei dati" & \makecell[l]{Sara Ristovic} & \makecell[l]{Nome Cognome} \\ \hline
+    %%%%%%
+    0.6 & 2026/09/13 & Scrittura della sezione "Design Pattern Implementati" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
+    %%%%%%
+    0.5 & 2026/09/11 & Scrittura della sottosezione "Architettura del Servizio Agenti" & \makecell[l]{Sara Ristovic} & \makecell[l]{Marco Barbiero} \\ \hline
+    %%%%%%
+    0.4 & 2026/09/06 & Scrittura delle sottosezioni Architettura di Deployment, del Frontend e del Backend; Scrittura della sottosezione "Modello dei Dati Persistiti" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
+    %%%%%%
+    0.3 & 2026/09/03 & Scrittura della sottosezione "Vista d'insieme" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
+    %%%%%%
+    0.2 & 2026/09/02 & Scrittura della sezione "Tecnologie" & \makecell[l]{Sara Ristovic} & \makecell[l]{Marco Barbiero} \\ \hline
+    %%%%%%
+    0.1 & 2026/09/01 & Strutturazione del documento e scrittura della sezione "Introduzione" & \makecell[l]{Sara Ristovic} & \makecell[l]{Marco Barbiero} \\ \hline
+    %%%%%%
+\end{tabularx}
+
+\newpage
+% ==========================================
+% INDICI
+% ==========================================
+\tableofcontents
+\iftotaltables  % Se sono presenti tabelle o figure appare l'indice
+    \vspace{1cm}
+    \listoftables
+\fi
+
+\iftotalfigures
+    \vspace{1cm}
+    \listoffigures
+\fi
+\newpage
+
+% ==========================================
+% CONTENUTO DEL DOCUMENTO
+% ==========================================
+
+\section{Introduzione}
+
+\subsection{Scopo del documento}
+
+Il presente documento ha l'obiettivo di esporre l’architettura logica dell'MVP \textbf{Code Guardian}, delineandone le componenti principali, le relative responsabilità e le connessioni tra di esse. Si propone inoltre come principale strumento di riferimento per l'ulteriore sviluppo e la manutenzione del prodotto. Al suo interno vengono dettagliate le tecnologie selezionate, descritta l’architettura di deployment, illustrati i design pattern adottati e analizzati altri aspetti progettuali di rilievo. Infine, il documento riporta la copertura dell'implementazione dei requisiti stabiliti nella prima fase del progetto.
+ 
+Il testo è stato redatto a conclusione della progettazione architetturale, integrando e sintetizzando le parti salienti dei documenti di dettaglio relativi a backend, frontend, infrastruttura AWS e servizio agenti. L’architettura definitiva si mantiene coerente con quanto validato nel \textit{PoC}, capitalizzando le soluzioni tecniche e le componenti buone del prototipo.
+
+\subsection{Scopo del prodotto}
+
+\textbf{Code Guardian} è un'applicazione web progettata per automatizzare i processi di security audit, manutenzione e documentazione all'interno dei repository software. L'obiettivo principale del sistema è sollevare i team di sviluppo dal carico di lavoro manuale più ripetitivo, elevando allo stesso tempo la sicurezza del codice e garantendo che la documentazione tecnica sia sempre aggiornata.
+
+Il cuore del prodotto si basa su un orchestratore deterministico che coordina l'attività di tre agenti intelligenti basati su LLM esterni:
+\begin{itemize}
+    \item \textbf{Agente Docs}: si occupa di creare e aggiornare dinamicamente il README di progetto in base alle effettive modifiche del codice sorgente. Genera  inoltre commenti inline standardizzati (JSDoc) e compila guide API sempre allineate allo stato del software, scrivendo direttamente nel file API.md.
+    \item \textbf{Agente Security}: esegue un'analisi semantica del codice per individuare le falle di sicurezza più critiche appartenenti alla classificazione OWASP Top 10. Inoltre, sposa la filosofia del Policy-as-code verificando l'aderenza delle pratiche di scrittura del codice alle regole interne definite dal team nel file POLICY.md.
+    \item \textbf{Agente Changelog}: si integra direttamente con \textit{GitHub Issues} per estrarre le attività completate durante uno \textit{sprint}. Traduce poi il gergo tecnico delle task in report chiari e leggibili, producendo sia un changelog di tipo ingegneristico per gli sviluppatori, sia un changelog orientato al business per i clienti e il management.
+\end{itemize}
+
+Il prodotto risponde alle esigenze di diversi tipi di utente:
+\begin{itemize}
+    \item \textbf{Sviluppatori}: beneficiano dell'allineamento automatico della documentazione.
+    \item \textbf{Security Auditor}: ottengono una piattaforma per monitorare facilmente l'aderenza alle linee guida di sviluppo sicuro del team e agli standard di sicurezza.
+    \item \textbf{Project Manager e Stakeholder di business}: possono seguire con trasparenza l'andamento reale dello sviluppo e i progressi di ogni \textit{sprint} senza dover possedere competenze tecniche avanzate.
+\end{itemize}
+
+\subsection{Riferimenti}
+\subsubsection{Riferimenti normativi}
+\begin{itemize}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2p.pdf}{Capitolato d'appalto C2 - \textbf{Code Guardian}}
+\item
+  \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento del Progetto Didattico}
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/analisi_dei_requisiti_v1.0.0.pdf}{\textbf{Code Guardian} - \textbf{Analisi dei Requisiti}}
+
+\end{itemize}
+
+
+\subsubsection{Riferimenti informativi}
+\begin{itemize}
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf}{Glossario}
+\end{itemize}
+
+
+\newpage
+\section{Tecnologie}
+
+In questa sezione vengono elencate le tecnologie adottate per la release MVP, organizzate per ruolo. Le versioni riportate sono quelle risolte nei file di dipendenza dei rispettivi servizi (\texttt{package-lock.json}, \texttt{pnpm-lock.yaml}, \texttt{pyproject.toml}) alla data di redazione.
+
+\subsection{Linguaggi e Framework}
+
+% TODO: versione Node.js da riallineare col team -- backend e frontend
+% dichiarano oggi due major diverse (24 vs 20); verificare col collega
+% se/quando il bump a Node 26 viene effettivamente committato.
+% Nota: root/pnpm-lock.yaml risolve il devEngine a Node 24.20.0 (coerente
+% con backend, non con frontend) -- utile come riferimento, non è però
+% la versione del runtime Docker (tag "node:24-alpine"/"node:20-alpine"
+% sono floating e non pinnati in un lockfile).
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|l|l|l|X|}
+    \caption{Linguaggi e framework principali, per servizio.}\label{tab:linguaggi-framework} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Versione} & \textbf{Servizio} & \textbf{Descrizione} \\ \hline
+    \endfirsthead
+    \multicolumn{4}{l}{\small\textit{(segue dalla pagina precedente)}} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Versione} & \textbf{Servizio} & \textbf{Descrizione} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\small\textit{(continua nella pagina successiva)}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    TypeScript & 5.9.3 & \makecell[l]{Backend \\ Frontend} & Linguaggio principale. \\ \hline
+    Node.js & 24 (\textit{da verificare}) & Backend & Runtime JavaScript su cui gira il servizio NestJS in container. \\ \hline
+    Node.js & 20 (\textit{da verificare}) & Frontend & Runtime usato in fase di build dell'immagine Docker del Frontend. \\ \hline
+    NestJS & 11.2.3 & Backend & Framework Backend, basato su Node.js/TypeScript. \\ \hline
+    React & 19.2.8 & Frontend & Libreria per la costruzione dell'interfaccia utente. \\ \hline
+    % Agenti: nessun lockfile -- versione = vincolo minimo (>=) di pyproject.toml, non quella risolta. Da riverificare.
+    Python & 3.12 & Agenti & Linguaggio del servizio Agenti. \\ \hline
+    FastAPI & 0.110.0 & Agenti & Framework web su cui è esposta l'API interna del servizio Agenti. \\ \hline
+    Uvicorn & 0.29.0 & Agenti & Server ASGI su cui gira FastAPI. \\ \hline
+    LangGraph & 0.2.20 & Agenti & Framework di orchestrazione del grafo agente. \\ \hline
+\end{xltabular}
+
+\subsection{Librerie Frontend}
+
+Librerie applicative usate dal Frontend oltre al framework React.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
+    \caption{Librerie Frontend.}\label{tab:librerie-frontend} \\
+    \hline
+    \textbf{Libreria} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endfirsthead
+    \multicolumn{3}{l}{\small\textit{(segue dalla pagina precedente)}} \\
+    \hline
+    \textbf{Libreria} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{3}{r}{\small\textit{(continua nella pagina successiva)}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    Vite & 8.2.2 & Bundler e dev-server. \\ \hline
+    @vitejs/plugin-react & 6.1.1 & Plugin ufficiale Vite per il supporto a React. \\ \hline
+    \texttt{@tanstack/react-router} & 1.170.32 & Router con tipizzazione nativa di rotte e parametri. \\ \hline
+    Zustand & 5.0.15 & Gestione dello stato globale applicativo (store). \\ \hline
+    Tailwind CSS & 3.4.19 & Framework CSS utility-first, base del design system. \\ \hline
+    \makecell[l]{\texttt{clsx} \\ \texttt{class-variance-authority} \\ \texttt{tailwind-merge} \\ \texttt{lucide-react}} & \makecell[l]{2.1.1 \\ 0.7.1 \\ 3.6.0 \\ 0.513.0} & Libreria di componenti accessibili: i componenti \texttt{shadcn/ui} vengono copiati direttamente nel codice sorgente del Frontend, non installati come pacchetto npm (\texttt{shadcn/ui} non compare quindi in \texttt{package.json}). Le quattro voci a sinistra sono invece le dipendenze reali che quei componenti importano, effettivamente installate. \\ \hline
+    Socket.IO Client & 4.8.3 & Client per il canale realtime verso il Backend. \\ \hline
+    Axios & 1.20.0 & Client HTTP per le chiamate REST al Backend. \\ \hline
+\end{xltabular}
+
+\subsection{Librerie Backend}
+
+Librerie applicative usate dal Backend oltre al framework NestJS.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
+    \caption{Librerie Backend.}\label{tab:librerie-backend} \\
+    \hline
+    \textbf{Libreria} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endfirsthead
+    \multicolumn{3}{l}{\small\textit{(segue dalla pagina precedente)}} \\
+    \hline
+    \textbf{Libreria} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{3}{r}{\small\textit{(continua nella pagina successiva)}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    \texttt{mongoose} / \texttt{@nestjs/mongoose} & 9.9.4 / 11.0.4 & ODM per l'accesso a MongoDB, con il relativo modulo di integrazione NestJS. \\ \hline
+    \texttt{@nestjs/jwt} & 12.0.1 & Emissione e verifica dei token JWT di sessione. \\ \hline
+    Passport / \texttt{passport-jwt} & 0.7.0 / 4.0.1 & Strategia di autenticazione basata su JWT. \\ \hline
+    argon2 & 0.45.1 & Hashing delle password (Argon2id). \\ \hline
+    class-validator / class-transformer & 0.15.1 / 0.5.1 & Validazione e trasformazione dei DTO in ingresso. \\ \hline
+    Joi & 18.2.5 & Validazione delle variabili di configurazione/ambiente. \\ \hline
+    \texttt{@nestjs/swagger} & 11.4.7 & Generazione della documentazione OpenAPI degli endpoint pubblici. \\ \hline
+    \texttt{socket.io} / \texttt{@nestjs/platform-socket.io} & 4.8.3 / 11.2.3 & Canale realtime verso il Frontend, con il relativo adapter NestJS. \\ \hline
+    \texttt{@octokit/rest} & 22.0.1 & Client per le chiamate all'API REST di GitHub. \\ \hline
+    diff & 9.0.0 & Applicazione delle patch/diff proposte dagli agenti sui file. \\ \hline
+    franc-min & 6.2.0 & Rilevamento della lingua del README, usato dall'Agente Docs. \\ \hline
+\end{xltabular}
+
+\subsection{Persistenza e Caching}
+
+Tecnologie di persistenza e caching condivise da Backend e Agenti.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
+    \caption{Persistenza e caching.}\label{tab:persistenza-caching} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endfirsthead
+    \multicolumn{3}{l}{\small\textit{(segue dalla pagina precedente)}} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{3}{r}{\small\textit{(continua nella pagina successiva)}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    MongoDB & 7 & Database documentale; container locale in sviluppo, MongoDB Atlas (cluster M10, via AWS PrivateLink) in produzione. \\ \hline
+    Redis & 7 & Coda e cache in memoria; container locale in sviluppo, Amazon ElastiCache in produzione. \\ \hline
+    \texttt{ioredis} / \texttt{@nestjs-modules/ioredis} & 6.0.0 / 2.2.2 & Client Redis lato Backend, con il relativo modulo di integrazione NestJS. \\ \hline
+    \texttt{bullmq} / \texttt{@nestjs/bullmq} & 6.3.2 / 11.0.5 & Libreria di code sopra Redis, con il relativo modulo di integrazione NestJS, per l'esecuzione asincrona degli agenti. \\ \hline
+    % Agenti: nessun lockfile -- versioni = vincolo minimo (>=) di pyproject.toml, non quelle risolte. Da riverificare.
+    motor & 3.3.2 & Driver MongoDB asincrono lato Agenti. \\ \hline
+    langgraph-checkpoint-mongodb & 0.2.0 & Persistenza su MongoDB dello stato (checkpoint) del grafo LangGraph. \\ \hline
+    redis-py & 5.0.0 & Client Redis lato Agenti. \\ \hline
+\end{xltabular}
+
+\subsection{Autenticazione e Crittografia}
+
+Algoritmi e standard adottati per l'autenticazione e la protezione delle credenziali.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|l|X|}
+    \caption{Autenticazione e crittografia.}\label{tab:auth-crittografia} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Descrizione} \\ \hline
+    \endfirsthead
+    \multicolumn{2}{l}{\small\textit{(segue dalla pagina precedente)}} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Descrizione} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{2}{r}{\small\textit{(continua nella pagina successiva)}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    JWT (HS256) & Token di sessione stateless. \\ \hline
+    Argon2id & Hashing delle password. \\ \hline
+    AES-256-GCM & Cifratura autenticata delle credenziali di servizio (es. token GitHub). \\ \hline
+    HKDF-SHA256 & Derivazione della chiave di cifratura per-record a partire dalla chiave master. \\ \hline
+\end{xltabular}
+
+\subsection{LLM e Infrastruttura Cloud (AWS)}
+
+Servizi gestiti su cui è ospitato il modello linguistico e l'infrastruttura di produzione.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
+    \caption{LLM e infrastruttura Cloud (AWS).}\label{tab:llm-cloud-aws} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endfirsthead
+    \multicolumn{3}{l}{\small\textit{(segue dalla pagina precedente)}} \\
+    \hline
+    \textbf{Tecnologia} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{3}{r}{\small\textit{(continua nella pagina successiva)}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    % Agenti: nessun lockfile -- versioni = vincolo minimo (>=) di pyproject.toml, non quelle risolte. Da riverificare.
+    \texttt{langchain-openai} & 0.1.1 & Integrazione LangChain con provider LLM tramite API compatibile OpenAI. \\ \hline
+    \texttt{langchain-aws} & 0.1.6 & Integrazione LangChain con Amazon Bedrock. \\ \hline
+    boto3 & 1.34.0 & SDK AWS per Python, usato dal servizio Agenti per Bedrock. \\ \hline
+    Amazon Bedrock & --- & Hosting gestito dei modelli LLM in produzione (famiglia Qwen3: Qwen3-32B, Qwen3-Coder-30B-A3B-Instruct, Qwen3-235B-A22B come fallback), regione \texttt{eu-south-1}. \\ \hline
+    Amazon ECS su Fargate & --- & Orchestrazione dei container Backend e Agenti. \\ \hline
+    Amazon ECR & --- & Registro delle immagini container. \\ \hline
+    Application Load Balancer (ALB) & --- & Bilanciamento del traffico verso il Backend. \\ \hline
+    AWS Cloud Map & --- & Service discovery interno tra Backend e Agenti. \\ \hline
+    Amazon S3 / CloudFront & --- & Storage degli artefatti applicativi, hosting statico e distribuzione del Frontend. \\ \hline
+    AWS Secrets Manager / Parameter Store / KMS & --- & Gestione di segreti, configurazione e cifratura a riposo. \\ \hline
+    \texttt{aws-cdk-lib} & 2.266.0 & Strumento di Infrastructure-as-Code con cui è provisionata l'infrastruttura AWS. \\ \hline
+    awscdk-resources-mongodbatlas & 3.13.1 & Costrutto CDK per il provisioning diretto di MongoDB Atlas. \\ \hline
+    GitHub Actions & --- & Automazione di build, test e deploy dell'infrastruttura, federata verso AWS via OIDC (nessuna chiave IAM statica). \\ \hline
+\end{xltabular}
+
+\subsection{Testing}
+
+Framework di test adottati per ciascun servizio.
+
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|l|l|l|X|}
+    \caption{Framework di testing, per ambito.}\label{tab:testing} \\
+    \hline
+    \textbf{Framework} & \textbf{Versione} & \textbf{Ambito} & \textbf{Descrizione} \\ \hline
+    \endfirsthead
+    \multicolumn{4}{l}{\small\textit{(segue dalla pagina precedente)}} \\
+    \hline
+    \textbf{Framework} & \textbf{Versione} & \textbf{Ambito} & \textbf{Descrizione} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\small\textit{(continua nella pagina successiva)}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    Jest & 30.4.2 & Backend & Test unitari e di integrazione. \\ \hline
+    Vitest & 4.1.11 (\textit{da verificare}) & Monorepo (root) & Test unitari e di integrazione trasversali. \\ \hline
+    Vitest & 3.2.7 (\textit{da verificare}) & Frontend & Test unitari dei componenti. \\ \hline
+    Playwright & 1.62.1 & Frontend & Test end-to-end. \\ \hline
+    % Agenti: nessun lockfile -- pytest = vincolo minimo (>=) di pyproject.toml; pytest-asyncio non ha alcun vincolo di versione dichiarato. Da riverificare.
+    pytest / pytest-asyncio & 8.0.0 / \textit{non vincolata} & Agenti & Test unitari e di integrazione, incluso il testing di endpoint asincroni. \\ \hline
+\end{xltabular}
+
+\newpage
+\section{Architettura}
+
+\subsection{Vista d'insieme}
+\label{subsec:vista-insieme}
+
+L'architettura di Code Guardian è un'architettura client-server estesa, articolata non in due ma in \textbf{tre unità di deploy indipendenti}: un Frontend, un Backend e un servizio Agenti. Le tre unità sono sviluppate, containerizzate e distribuite separatamente, e comunicano esclusivamente attraverso interfacce di rete ben definite: nessuna condivide memoria, processo o filesystem con un'altra.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{vista-insieme.pdf}
+    \caption{Vista d'insieme dei servizi di Code Guardian e dei loro collegamenti.}
+    \label{fig:vista-insieme}
+\end{figure}
+
+Dal punto di vista dell'utente il sistema espone un'unica origine web: il browser scarica il Frontend, un'applicazione React compilata in file statici, e da quel momento comunica soltanto con il Backend, sia tramite chiamate REST sia tramite un canale WebSocket dedicato agli aggiornamenti in tempo reale delle operazioni in corso. Frontend e Backend restano comunque due unità distinte: aggiornare l'una non richiede di ridistribuire l'altra, perché il loro unico punto di contatto è il contratto REST/WebSocket, mai un dettaglio implementativo condiviso.
+
+Il Backend è il fulcro del sistema. È l'unico componente che detiene le credenziali dell'utente, inclusa quella verso GitHub, sempre mantenuta cifrata; l'unico che persiste i dati applicativi, cioè utenti, credenziali, contesti di analisi, Task e Report; e l'unico autorizzato a modificare i repository sorvegliati, tramite l'apertura automatica di Pull Request. Riceve le richieste dal Frontend, le traduce in unità di lavoro (le Task), e ne affida l'esecuzione al servizio Agenti, restando responsabile di raccoglierne l'esito, di persisterlo e di notificarlo all'utente.
+
+%%%% DA VERIFICARE E SISTEMARE CON IL GRUPPO - non siamo sicuri se tenerlo cosi' o meno %%%%
+Il servizio Agenti condivide con il Backend la stessa istanza di MongoDB e la stessa istanza di Redis, ma con un ruolo diverso e molto più circoscritto: vi legge e scrive soltanto lo stato interno delle proprie esecuzioni, cioè il punto in cui un'analisi sospesa può essere ripresa in un secondo momento e un'eventuale richiesta di annullamento in corso, mai un dato applicativo di dominio come una Task, un Report o una credenziale.
+
+Il servizio Agenti è invece deliberatamente isolato dal resto del sistema. È l'unico componente che dialoga con il modello linguistico (LLM), ma non possiede alcuna credenziale verso GitHub e non può raggiungere Internet: quando un agente ha bisogno di leggere un file di un repository o l'elenco delle sue issue, non si collega a GitHub, ma chiede quel contenuto al Backend, che lo recupera per suo conto. Questa scelta confina il token dell'utente in un solo servizio e riduce la superficie d'attacco del componente più esposto all'imprevedibilità di un modello linguistico: anche nella peggiore delle ipotesi, un agente compromesso non avrebbe comunque un canale attraverso cui uscire.
+
+La comunicazione tra Backend e Agenti è quindi bidirezionale, ma asimmetrica nei permessi: il Backend avvia l'esecuzione di un agente e ne riceve il risultato finale, mentre l'agente, durante l'esecuzione, può soltanto richiedere indietro al Backend le singole letture di cui ha bisogno. Nessuna delle due direzioni espone un endpoint pubblico: è traffico interno, non raggiungibile né dal Frontend né da Internet.
+
+Infine, l'esecuzione di un'operazione non è mai sincrona rispetto alla richiesta dell'utente: il Backend accoda il lavoro e risponde subito, lasciando che l'esecuzione effettiva avvenga in background e che l'esito raggiunga il Frontend attraverso il canale realtime. I dettagli di questo meccanismo sono discussi più avanti; ciò che rileva in questa vista d'insieme è che nessuna delle tre unità resta mai bloccata in attesa di una risposta lenta di un'altra, né tantomeno di un intervento umano.
+
+\subsection{Architettura di Deployment}
+\label{subsec:deployment}
+
+Se la vista d'insieme descrive chi parla con chi, questa sezione descrive dove ciascun componente gira fisicamente e attraverso quali confini di rete passa ogni collegamento. L'infrastruttura di produzione è ospitata su AWS, all'interno di un'unica rete privata virtuale (VPC) distribuita su due \textit{Availability Zone} che è il minimo tecnico richiesto per poter attivare un Application Load Balancer. Come emerge più avanti in questa stessa sezione, i singoli servizi restano infatti a istanza unica, e la topologia multi-AZ è più una predisposizione di rete che una protezione attiva contro un guasto.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{architettura-deployment.pdf}
+    \caption{Architettura di deployment su AWS.}
+    \label{fig:deployment}
+\end{figure}
+
+La VPC è divisa in subnet pubbliche e private. Solo le subnet pubbliche possono raggiungere direttamente Internet; le subnet private instradano il traffico in uscita attraverso un unico NAT Gateway. Backend e Agenti girano entrambi in subnet private dello stesso tipo: ciò che impedisce concretamente al servizio Agenti di raggiungere Internet non è quindi la subnet in cui si trova, ma il suo Security Group, configurato per non consentire mai traffico in uscita se non verso le poche destinazioni esplicitamente permesse. Ogni componente ha un proprio Security Group dedicato, e ciascuno nega per difetto tutto il traffico non esplicitamente concesso.
+
+Il percorso pubblico non cambia rispetto a quanto già descritto nella vista d'insieme: un'unica distribuzione CloudFront riceve tutto il traffico del browser e lo instrada verso due origini diverse a seconda del percorso richiesto, i file statici del Frontend, letti da un bucket S3 privato, oppure il Backend, raggiunto attraverso un Application Load Balancer (ALB). L'ALB non possiede un proprio certificato TLS: è CloudFront a terminare HTTPS verso il browser, mentre il collegamento tra CloudFront e l'ALB resta in HTTP semplice, comunque confinato all'interno della rete di AWS. Il bucket del Frontend resta privato, leggibile solo da CloudFront tramite un meccanismo dedicato (\textit{Origin Access Control}); CloudFront è inoltre configurato per restituire comunque la pagina applicativa sui percorsi non gestiti dal bucket, così che il routing lato client funzioni anche dopo un ricaricamento diretto della pagina.
+
+Backend e Agenti sono due servizi ECS su Fargate distinti, ciascuno con il proprio dimensionamento di CPU e memoria, proporzionato al carico atteso: il servizio Agenti riceve più risorse, essendo quello che dialoga con il modello linguistico. Entrambi girano oggi con una singola replica, una semplificazione accettata per l'MVP e non un obiettivo architetturale. Per compensare l'assenza di ridondanza, ogni distribuzione richiede che la nuova versione sia effettivamente in salute prima di terminare quella precedente, ed è annullata automaticamente se la nuova versione non riesce mai a diventarlo.
+
+Entrambi i servizi girano come processi a lunga vita, mai come funzioni invocate una tantum per singola richiesta: un modello di esecuzione puramente serverless non potrebbe ospitare né lo stato di una conversazione con il modello linguistico che può restare sospesa, in attesa di un input umano per un tempo non prevedibile, né una connessione WebSocket che deve rimanere aperta per l'intera durata di una Task. È questo vincolo a spiegare perché entrambi restano servizi containerizzati sempre attivi, invece di adottare un modello \textit{serverless}.
+
+Il meccanismo con cui Backend e Agenti si trovano a runtime, già introdotto nella vista d'insieme, è una zona DNS privata interna, non raggiungibile dall'esterno della rete: ciascun servizio si registra con un nome stabile, e l'altro lo risolve senza che nessuno dei due debba conoscere in anticipo un indirizzo IP.
+
+Il livello dati vive anch'esso interamente all'interno della rete privata. MongoDB è ospitato su MongoDB Atlas, un servizio gestito esterno ad AWS, raggiunto però attraverso un collegamento privato dedicato (PrivateLink) invece che tramite Internet pubblico: il cluster non accetta alcuna connessione che non provenga da quel collegamento. Redis (ElastiCache) gira invece come una singola istanza, anche questo un rischio esplicitamente accettato per l'MVP.
+
+Oltre a queste due destinazioni, la rete privata include una serie di collegamenti dedicati verso gli altri servizi AWS di cui Backend e Agenti hanno bisogno, dalla gestione dei segreti al registro delle immagini container, proprio per evitare che quel traffico debba uscire dalla rete privata e passare dal NAT Gateway. Il collegamento verso il modello linguistico (Amazon Bedrock) è uno di questi, ma con una particolarità: è raggiungibile soltanto dal Security Group del servizio Agenti, cosicché anche a livello di rete, non solo nel codice applicativo, resti vero che è soltanto l'Agente a poter invocare il modello.
+
+\textit{[Punto aperto: il Security Group del servizio Agenti non prevede oggi alcuna regola verso Redis né verso l'endpoint PrivateLink di MongoDB Atlas, mentre il servizio vi si connette direttamente per il proprio stato di esecuzione (§3.1, checkpoint LangGraph e flag di cancellazione). La regola di rete corrispondente va aggiunta prima del rilascio.]}
+
+Rimane infine un solo canale che attraversa davvero il confine della rete privata verso l'Internet pubblico: quello del Backend verso l'API di GitHub, instradato attraverso il NAT Gateway. È deliberatamente l'unico.
+
+\subsection{Architettura del Frontend}
+\label{subsec:frontend}
+
+Il Frontend è un'applicazione a pagina singola (\textit{Single-Page Application}): una volta caricata, il browser non richiede più pagine intere al server, ma sostituisce il contenuto a schermo interamente lato client. L'instradamento tra le schermate (\textit{routing}) è quindi gestito interamente nel browser, ed è reso possibile proprio dall'origine unica descritta in §3.2: senza la riscrittura degli errori operata da CloudFront, un accesso diretto o un ricaricamento su un percorso profondo dell'applicazione non funzionerebbe.
+
+Le rotte sono divise in due gruppi: un piccolo insieme di rotte pubbliche (accesso, registrazione) e un gruppo di rotte autenticate (configurazione delle credenziali, selezione del contesto, avvio delle operazioni, dashboard, storico e dettaglio dei report), annidate sotto un'unica intestazione applicativa condivisa. Prima di mostrare una qualunque schermata autenticata, il router verifica sincronamente lo stato di sessione già presente in memoria, senza mai attendere una chiamata di rete: è quanto rende la navigazione percepita come istantanea.
+
+Lo stato applicativo condiviso non vive in un unico contenitore globale, ma in tre store distinti, ciascuno responsabile di un solo dominio: l'identità e la sessione dell'utente, il contesto operativo scelto in fase di configurazione, e lo stato in tempo reale delle operazioni in corso. Tutto ciò che non deve sopravvivere a un cambio di rotta, né essere letto da più componenti contemporaneamente, resta invece nello stato locale della singola schermata che lo usa.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{frontend-stores.pdf}
+    \caption{Architettura degli store applicativi e comunicazione di rete.}
+    \label{fig:frontend-stores}
+\end{figure}
+
+Lo store dedicato alle operazioni non viene mai scritto direttamente dall'interfaccia: è popolato esclusivamente dagli eventi che il Backend invia sul canale WebSocket già descritto in §3.1, e prevede un meccanismo di riallineamento esplicito. Poiché quel canale non garantisce la consegna degli eventi emessi durante un'eventuale disconnessione, alla riconnessione il Frontend richiede nuovamente lo stato delle operazioni tramite API REST, invece di fidarsi implicitamente del solo canale realtime.
+
+Esiste un solo caso in cui un singolo evento aggiorna due store distinti anziché uno soltanto: quando il canale realtime segnala che le credenziali configurate non sono più valide, lo stesso evento aggiorna sia lo stato delle operazioni sia lo stato di sessione, attivando contestualmente l'avviso persistente in interfaccia e le guardie di rotta. I due store restano però indipendenti l'uno dall'altro: nessuno dei due richiama o dipende dall'altro, è l'evento stesso a raggiungere entrambi.
+
+Il token di sessione (JWT) è mantenuto esclusivamente in memoria, mai in una forma persistente del browser: un ricaricamento completo della pagina invalida quindi la sessione corrente, richiedendo un nuovo accesso. È un compromesso accettato consapevolmente, per ridurre la superficie di attacco in un perimetro che, per l'MVP, non prevede protezioni avanzate contro script malevoli lato client.
+
+Verso il Backend il Frontend consuma esclusivamente percorsi relativi sotto un unico prefisso, mai un dominio assoluto: a differenza del Backend, che riceve la propria configurazione a runtime, il Frontend è distribuito come artefatto statico già compilato, e ogni indirizzo assoluto cablato al suo interno resterebbe fissato in modo irreversibile per ogni ambiente in cui quello stesso pacchetto venisse distribuito. Lo stesso token di sessione autentica sia le chiamate REST sia l'apertura del canale WebSocket.
+
+La gestione degli errori distingue due famiglie con pattern d'interfaccia diversi. Gli errori di validazione e configurazione sono sincroni, risolvibili immediatamente dall'utente senza lasciare la schermata corrente, e vengono mostrati in prossimità del campo interessato. Gli errori di esecuzione di un'operazione sono invece asincroni, emergono a distanza di tempo dall'avvio tramite il canale realtime, e sono presentati attraverso un unico componente condiviso, alimentato da un catalogo chiuso di codici d'errore ciascuno con un proprio messaggio ed un'eventuale azione secondaria. Fa eccezione il solo fallimento dell'esportazione PDF, che non altera lo stato del report né sostituisce i contenuti già visualizzati, poiché non riflette alcun problema dell'analisi sottostante.
+
+\subsection{Architettura del Backend}
+\label{subsec:backend}
+
+Coerentemente con quanto già introdotto nella vista d'insieme, il Backend è organizzato per dominio funzionale piuttosto che per livello tecnico: non esistono cartelle trasversali condivise da tutto il progetto, ma un modulo NestJS autonomo per ciascuna area di competenza — identità, credenziali, integrazione GitHub, contesti di analisi, task, operazioni, report, comunicazione realtime — ciascuno con i propri controller, servizi e schema di persistenza. È l'organizzazione idiomatica suggerita dallo stesso framework, e permette a più sviluppatori di lavorare in parallelo su moduli diversi senza sovrapporsi.
+
+Le due sottosezioni seguenti approfondiscono le due aree del Backend con la struttura interna più articolata: l'integrazione con GitHub e l'orchestrazione dell'esecuzione delle Task. Le restanti responsabilità, quali l'autenticazione, la cifratura delle credenziali e la validazione del contesto di analisi, restano organizzate secondo lo stesso principio, ma senza una struttura interna sufficientemente ricca da giustificare un diagramma dedicato.
+
+\subsubsection{Integrazione con GitHub}
+
+Il confine più importante dell'intero sistema, cioè che nessun componente diverso dal Backend detiene mai il token GitHub dell'utente né lo espone all'esterno, è realizzato da due percorsi separati e non simmetrici: uno di sola lettura, esposto agli agenti attraverso una facade interna, e uno di scrittura, riservato esclusivamente al Backend stesso.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{backend-github-integration.pdf}
+    \caption{Struttura interna dell'integrazione con GitHub: facade di sola lettura e percorso di scrittura.}
+    \label{fig:backend-github}
+\end{figure}
+
+Il percorso di lettura è \texttt{InternalGithubController}: un endpoint interno, non documentato pubblicamente e raggiungibile solo dalla rete privata, protetto da una firma HMAC verificata da \texttt{InternalAuthGuard} anziché da un token utente, poiché il chiamante è un servizio e non una persona. Ogni chiamata attraversa tre controlli prima di raggiungere GitHub: viene innanzitutto verificata contro un elenco chiuso di operazioni permesse, costruito sugli stessi identificativi di rotta usati dal client GitHub reale, cosicché quell'elenco e le chiamate effettive non possano mai divergere; il contesto (repository, commit, token dell'utente) viene risolto a partire dal solo identificativo della Task; e l'accesso viene infine registrato come riga di \texttt{AccessLog}, rendendo il vincolo di sola lettura verificabile a posteriori e non solo dichiarato. Le chiamate effettive verso GitHub passano tutte da \texttt{GithubClientService}, che rifiuta per costruzione qualunque richiesta che non sia una \texttt{GET}.
+
+È anche il motivo per cui Redis, oltre a fare da coda per l'esecuzione asincrona, compare qui come cache delle letture più soggette a ripetizione nel corso di un'analisi: la struttura del repository, il contenuto dei singoli file e il README. La cache è indicizzata per repository e per commit, e poiché il contenuto di un repository a un commit specifico è per definizione immutabile, un dato già in cache non può mai risultare obsoleto. Ciò riduce la pressione sulla quota dell'API di GitHub condivisa da tutte le richieste del sistema.
+
+Il percorso di scrittura, \texttt{GithubWriteService}, esiste come classe del tutto separata anziché come estensione della precedente, proprio per non indebolire quella garanzia: riusa \texttt{GithubClientService} solo per le proprie letture di supporto, ad esempio risolvere un branch o leggere il contenuto attuale di un file, ma apre branch, commit e Pull Request con un proprio client. Nessun agente vi ha accesso: è invocato dal Backend soltanto dopo che un agente ha già terminato la propria esecuzione, per applicare la modifica proposta.
+
+\subsubsection{Orchestrazione ed Esecuzione}
+
+L'instradamento di un'operazione verso l'agente corretto non è mai una decisione del modello linguistico, ma una tabella statica: \texttt{AgentRegistry} associa ogni codice operazione al proprio agente, ai ruoli abilitati a richiederlo e al tempo massimo concesso per l'esecuzione, ed è la stessa tabella a filtrare sia il catalogo delle operazioni mostrato all'utente sia i controlli di autorizzazione all'avvio di una Task.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{backend-task-orchestration.pdf}
+    \caption{Struttura interna dell'orchestrazione ed esecuzione delle Task.}
+    \label{fig:backend-orchestration}
+\end{figure}
+
+\texttt{TasksController} e \texttt{TasksService} gestiscono il ciclo di vita di una Task dalla richiesta alla persistenza, ma non la eseguono direttamente: l'avvio di un batch si conclude accodando un job per ciascuna Task, e la richiesta HTTP termina immediatamente. È \texttt{TaskProcessor}, un consumatore della coda separato dal ciclo della richiesta, a prelevare i job uno alla volta e a invocare l'agente tramite \texttt{AgentInvocationService}; un job che fallisce aggiorna solo la propria Task e non ha alcun effetto sulle altre in coda. Ogni cambiamento di stato, sia esso di avanzamento, completamento o fallimento, viene propagato al Frontend da \texttt{EventsGateway} sul canale WebSocket già descritto in precedenza: la distribuzione avviene per utente e non per singola Task, cosicché un'unica connessione basti a tenere aggiornata la dashboard su più operazioni in corso contemporaneamente.
+
+Il meccanismo di sospensione e ripresa di un'esecuzione, e il protocollo dettagliato tra Backend e Agenti, sono discussi più avanti in questo documento.
+
+\subsubsection{Il contratto Report}
+
+Qualunque sia l'agente che l'ha prodotto, il Backend persiste ed espone sempre lo stesso tipo di oggetto: un \texttt{Report}, con un'intestazione fissa e un corpo composto da un elenco di blocchi polimorfi. È questo contratto unico, condiviso e mai specializzato per singolo agente, a permettere sia al Backend sia al Frontend di trattare il risultato di un'analisi senza dover sapere quale dei tre agenti lo abbia generato.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{backend-report-blocks.pdf}
+    \caption{Il contratto Report: intestazione fissa e blocchi polimorfi nel corpo.}
+    \label{fig:backend-report-blocks}
+\end{figure}
+
+Ogni agente riempie il corpo del Report in modo diverso: l'Agente Docs produce soprattutto una \texttt{Proposal}, cioè un diff verso il file di destinazione; l'Agente Security riempie una lista di \texttt{FindingBlock} ed eventuali \texttt{ComplexityWarningBlock}; l'Agente Changelog produce uno o più \texttt{TextBlock} o \texttt{ChangelogItemBlock}. Nessuno di questi tipi introduce un percorso di codice separato nel Backend: la persistenza, l'esposizione via API e l'esportazione in PDF trattano il corpo del Report come un array indifferenziato, delegando la sola interpretazione del contenuto a chi lo consuma.
+
+\subsubsection{Gestione degli Errori}
+
+Un'analisi può fallire per ragioni molto diverse tra loro — un timeout del modello linguistico, un token GitHub non più valido, un limite di utilizzo superato — ma il sistema le riconduce tutte a un vocabolario chiuso di codici, condiviso tra Servizio Agenti e Backend nonostante siano scritti in due linguaggi diversi. Un errore che nasce lato agente viene tradotto nel corrispondente codice del Backend nell'attraversare il confine tra i due servizi; un codice che il Backend non riconosce non viene mai propagato così com'è, ma ricondotto a un valore generico.
+
+Un normalizzatore centralizzato sul Backend traduce ogni errore in una risposta HTTP di forma sempre identica — un codice, un messaggio, eventuali dettagli di validazione — prima che raggiunga il Frontend. La stessa forma è riusata, per scelta, anche sul canale asincrono: un errore emerso a metà di una Task raggiunge il Frontend con lo stesso codice di una risposta REST, non con un messaggio libero costruito solo per l'occasione. \texttt{CREDENTIAL\_INVALID} ne è un esempio concreto: lo stesso codice viene riconosciuto sia quando GitHub rifiuta un token al salvataggio, sia quando quel token si rileva non funzionante a metà di una operazione già avviata, facendo comparire in entrambi i casi lo stesso avviso con reindirizzamento alla schermata delle credenziali.
+
+\subsection{Architettura del Servizio Agenti}
+\label{subsec:agenti}
+
+Il Servizio Agenti è un processo Python separato (FastAPI), responsabile della sola parte del sistema che ragiona: comporre un prompt, invocare il modello linguistico, ed eventualmente correggere o completare il proprio output prima di restituirlo. Comunica con il Backend soltanto attraverso i due endpoint interni già introdotti, \texttt{/internal/agent/start} e \texttt{/internal/agent/resume}: ogni chiamata è sincrona, e la risposta contiene o il risultato completo, o il motivo per cui l'esecuzione si è interrotta. Il servizio non scrive mai direttamente su GitHub, e non decide mai da sé quale credenziale usare: entrambe le responsabilità restano dove il Backend le ha già collocate.
+
+\subsubsection{Un solo scheletro, tre configurazioni}
+
+I tre agenti non sono tre implementazioni distinte che duplicano la stessa logica di orchestrazione: sono tre configurazioni diverse di un unico grafo di esecuzione, \texttt{AgentGraph}, parametrizzato su tre punti di estensione. Un \texttt{Loader} è l'adattatore che, prima ancora di comporre un prompt, recupera dal repository — sempre attraverso la stessa facade GitHub — il materiale grezzo su cui l'agente dovrà ragionare: per gli agenti Docs e Changelog carica per intero ciò che serve (rispettivamente l'albero e il contenuto dei file nell'ambito scelto, o le issue chiuse dello sprint); per l'Agente Security carica solo l'albero del repository, lasciando che sia il modello stesso a chiedere, un file alla volta, il contenuto di ciò che ritiene rilevante. Un \texttt{Profile} sa come trasformare quel materiale in un prompt e come interpretare la risposta del modello, producendo i blocchi del Report. Un \texttt{LLMProvider}, infine, sa come invocare concretamente il modello al provider Amazon Bedrock. Cambiare agente significa sostituire la coppia Loader/Profile, non riscrivere il modo in cui il grafo viene eseguito.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{agenti-architettura.pdf}
+    \caption{Un solo scheletro (\texttt{AgentGraph}), tre configurazioni intercambiabili.}
+    \label{fig:agenti-architettura}
+\end{figure}
+
+Tutte e tre le configurazioni condividono anche lo stesso adattatore verso l'esterno, \texttt{GitHubToolset}: è la controparte, lato agente, della facade di sola lettura già descritta nell'integrazione con GitHub. Ogni chiamata è firmata con lo stesso schema HMAC verificato da \texttt{InternalAuthGuard}, e non porta mai direttamente proprietario e nome del repository: viaggia solo l'identificativo della Task, dal quale il Backend risolve il contesto reale. È il meccanismo che rende impossibile, per costruzione, che un agente acceda a un repository diverso da quello della propria Task.
+
+La granularità reale è più fine di quanto suggerisca parlare di "tre agenti": ogni operazione ha il proprio \texttt{Profile}, per un totale di sette classi anziché tre. Farne convivere più d'una in un unico profilo parametrizzato avrebbe significato condizionare la costruzione del prompt e l'interpretazione della risposta sul tipo di operazione, con classi meno mirate e più difficili da testare in isolamento; con un profilo per operazione, aggiungerne una nuova significa aggiungere una classe, non modificarne una esistente. I template dei prompt seguono lo stesso principio di separazione: vivono come file esterni al codice invece che incorporati nelle classi Profile, e la logica che li carica e che estrae il JSON dalla risposta del modello è la stessa per tutti; ogni Profile si limita a indicare quale file usare per la propria operazione.
+
+\subsubsection{Il grafo di esecuzione}
+
+Ogni invocazione attraversa una sequenza fissa di fasi: caricamento del contesto tramite il Loader, composizione del prompt tramite il Profile, invocazione del modello e, quando il Profile lo prevede, uno o più cicli di chiamata a strumenti esterni prima di ottenere una risposta definitiva. L'unico agente che usa strumenti durante l'esecuzione, anziché solo in fase di caricamento del contesto, è l'Agente Security: il modello può richiedere di leggere altri file del repository mentre valuta una vulnerabilità o una violazione di policy, entro un numero massimo di cicli oltre il quale l'esecuzione viene comunque chiusa come fallita.
+
+L'output del modello non viene mai persistito così com'è: passa prima per una fase di validazione che, in caso di errore, non fallisce immediatamente ma corregge. Un output che non è JSON valido viene ripresentato al modello insieme a un prompt correttivo, fino a un numero massimo di tentativi. L'Agente Changelog, nella sua variante di changelog rivolto al business, applica lo stesso principio a un problema diverso: se il testo prodotto risulta troppo complesso secondo l'indice di leggibilità Flesch, l'agente non lo scarta, ma chiede al modello di riscriverlo in modo più semplice, spiegandogli concretamente cosa rende un testo più leggibile. Solo se anche i tentativi di correzione si esauriscono, l'esecuzione termina in un fallimento vero e proprio.
+
+\subsubsection{Sospensione e ripresa}
+
+Anche mentre attende un input, una Task resta nello stato \texttt{RUNNING}: la sospensione non introduce uno stato in più, ma una condizione interna segnalata dal campo \texttt{pendingInput}. Il campo descrive cosa manca, non lo contiene ancora: il Frontend ne legge il tipo per scegliere quale finestra proporre, mentre la risposta effettiva dell'utente — un valore vero e proprio nel caso dello Sprint ID, una conferma o un rifiuto negli altri due casi — viaggia separatamente su \texttt{POST /tasks/:id/input}, che azzera \texttt{pendingInput} e rimette in coda la Task.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{agenti-task-lifecycle.pdf}
+    \caption{Ciclo di vita della Task.}
+    \label{fig:agenti-lifecycle}
+\end{figure}
+
+L'Agente Changelog è l'unico che può richiedere questo tipo di sospensione, fino a tre volte nel corso di una singola Task. La prima non ha nulla a che fare con il grafo dell'agente, che a quel punto non è ancora stato invocato: entrambe le operazioni Changelog richiedono uno Sprint ID, ed è il Backend stesso a sospendere la Task prima ancora di avviare l'agente e a richiedere lo Sprint ID. Le altre due sospensioni avvengono invece dentro un grafo già in esecuzione. Nella prima, se lo \texttt{ChangelogLoader} trova Issue chiuse con metadati insufficienti, l'agente si sospende subito e lascia all'utente la scelta se procedere escludendole o annullare la Task. Nella seconda, prevista solo per il changelog di business, l'agente si sospende subito dopo aver completato internamente la fase tecnica, prima di passare alla fase business: l'intenzione è che l'utente possa rivedere il changelog tecnico prima di confermare. \emph{[Punto aperto: la fase tecnica non viene persistita come Report a sé stante prima di questa sospensione, poiché fa ancora parte dello stesso grafo non concluso; il riferimento pensato per permettere quella lettura non viene quindi valorizzato, e oggi la conferma avviene senza una reale anteprima.]}
+
+Le sospensioni interne al grafo sono rese possibili da un meccanismo di checkpoint di LangGraph, che salva lo stato interno del grafo su MongoDB a ogni passaggio, sulla stessa istanza usata per i dati applicativi ma in collezioni gestite interamente da LangGraph e indipendenti dal modello di dominio della Figura \ref{fig:modello-dati}. È la scrittura su MongoDB già anticipata nella vista d'insieme, che permette di riprendere un'esecuzione esattamente dal punto in cui si era fermata. In tutti e tre i casi delle sospensioni il Backend, ricevuta la risposta dell'utente, rimette la Task sulla stessa coda usata per un avvio normale; cambia solo l'endpoint con cui invoca il servizio agenti: \texttt{/internal/agent/start} se il grafo deve partire per la prima volta (Sprint ID), \texttt{/internal/agent/resume} con lo stesso \texttt{threadId} di prima se deve riprendere da un checkpoint (le altre due).
+
+\subsubsection{Analisi statica con Semgrep}
+
+Affidare la scansione di sicurezza al solo giudizio del modello linguistico espone a due rischi concreti: un tasso di falsi positivi più alto e un risultato non del tutto riproducibile a causa dell'indeterminismo degli LLM. Per questo, solo per la scansione OWASP, il Servizio Agenti affianca al giudizio del modello Semgrep, un motore di analisi statica deterministico eseguito come processo separato entro un tempo massimo. Le regole applicate combinano un insieme fisso orientato alla OWASP Top 10 con le regole specifiche per i linguaggi effettivamente presenti nel repository. Se Semgrep supera il proprio limite di tempo, l'agente non fallisce l'intera scansione ma prosegue con la sola analisi del modello, segnalandolo nel report.
+
+Ogni segnalazione di Semgrep passa comunque al giudizio del modello, che restituisce per ciascuna un verdetto — confermata, falso positivo, o da rivedere — insieme a un rimedio per quelle confermate; una segnalazione che il modello non commenta esplicitamente non viene considerata implicitamente accettata, ma resta segnata come da rivedere. Il modello resta inoltre libero di segnalare autonomamente vulnerabilità che un'analisi statica non può cogliere, come un difetto di logica applicativa, indipendentemente da cosa abbia trovato Semgrep.
+
+\subsection{Modello dei Dati Persistiti}
+\label{subsec:modello-dati}
+
+I dati applicativi persistono su MongoDB in sette collezioni, organizzate attorno a un'unica entità centrale: la Task. Ogni altra collezione o riferisce una Task, o è ciò da cui una Task viene generata.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{modello-dati.pdf}
+    \caption{Modello dei dati persistiti su MongoDB e relative relazioni.}
+    \label{fig:modello-dati}
+\end{figure}
+
+Le associazioni con l'utente proprietario, presenti su quasi ogni collezione, non sono riferimenti ma un semplice campo \texttt{userId} duplicato: una scelta deliberata, che rende ogni controllo di appartenenza una lettura indicizzata su una singola collezione invece di una \emph{join} tra due, operazione che MongoDB non offre nativamente allo stesso costo di un database relazionale.
+
+Alcuni campi, in particolare \texttt{Task.error}, \texttt{Task.pendingInput} e gran parte di \texttt{Report} (\texttt{context}, \texttt{body}, \texttt{proposal}, \texttt{error}), sono persistiti come tipo \texttt{Mixed}: Mongoose li salva così come arrivano, senza validarne la struttura interna a livello di schema. È TypeScript, non il database, a garantire che quei valori abbiano davvero la forma attesa.
+
+Due indici composti univoci vincolano a livello di database due invarianti che, altrimenti, resterebbero affidati alla sola disciplina applicativa: \texttt{ServiceCredential} ammette una sola credenziale per coppia utente/provider, e \texttt{UsageCounter} un solo contatore per coppia utente/mese solare. Un terzo indice, non univoco, su \texttt{Report(userId, generatedAt)} è ciò che rende lo storico dei report una singola lettura ordinata invece di una scansione completa della collezione.
+
+\newpage
+\section{Design Pattern Implementati}
+
+Il sistema si appoggia su un piccolo numero di design pattern scelti perché ciascuno risolve un problema concreto incontrato nel corso della progettazione. Le sottosezioni seguenti li presentano uno per uno: il problema che chiudono, dove vivono nel codice, e perché sono risultati la soluzione giusta rispetto alle alternative più semplici.
+
+\subsection{Strategy}
+
+\texttt{AgentGraph} deve eseguire tre agenti strutturalmente diversi senza duplicare, per ciascuno, la stessa logica di orchestrazione. Condizionare quella logica sul tipo di agente — un ramo per Docs, uno per Security, uno per Changelog — l'avrebbe accoppiata a ogni agente esistente e a ogni agente futuro.
+
+Il problema è chiuso da tre interfacce, \texttt{Loader}, \texttt{Profile} e \texttt{LLMProvider}, di cui \texttt{AgentGraph} riceve un'istanza dal proprio costruttore e a cui delega senza mai costruirle né conoscerne il tipo concreto. La scelta di quale coppia \texttt{Loader}/\texttt{Profile} usare, e di quale \texttt{LLMProvider}, avviene interamente fuori dal grafo, in base al codice operazione (Figura \ref{fig:agenti-architettura}).
+
+Cambiare la configurazione di un agente non richiede quindi nessuna modifica ad \texttt{AgentGraph}: passare da un provider all'altro è un cambio di configurazione, non di codice, e ogni \texttt{Profile} si può testare in isolamento iniettando un provider simulato al posto di quello reale.
+
+\subsection{Dependency Injection}
+
+Un componente che costruisce da sé le proprie dipendenze è difficile da testare in isolamento e da adattare a un ambiente diverso da quello per cui è stato scritto — un client Bedrock reale non si può sostituire con uno simulato se è il componente stesso a istanziarlo.
+
+Sul Backend la dependency injection è quella nativa di NestJS, automatica tramite costruttore. Sul Servizio Agenti, che non ha un framework equivalente, la stessa disciplina è applicata a mano: l'endpoint \texttt{/internal/agent/start} compone l'intero grafo di dipendenze prima di avviare l'esecuzione — costruisce \texttt{SASTAnalyzer} e lo passa a \texttt{SecurityLoader}, poi passa \texttt{Loader}, \texttt{Profile} e \texttt{LLMProvider} già pronti al costruttore di \texttt{AgentGraph} — senza che nessuno di questi componenti costruisca mai da solo ciò di cui ha bisogno.
+
+Il vantaggio è lo stesso su entrambi i lati: ogni componente si testa iniettando un mock al posto della dipendenza reale, e l'intero grafo delle dipendenze resta visibile e modificabile in un unico punto invece che sparso nei costruttori di ciascuna classe.
+
+\subsection{Facade}
+
+L'API REST di GitHub espone una superficie ampia e facile da usare male direttamente: paginazione da gestire a mano, forme di risposta verbose, endpoint diversi per l'albero dei file, un singolo file, un branch, un confronto tra commit, le issue. Backend e Servizio Agenti hanno bisogno solo di un piccolo sottoinsieme coerente di tutto questo.
+
+\texttt{GithubClientService} unifica le operazioni di lettura dietro metodi mirati e già semplificati nella forma del dato restituito; \texttt{GithubWriteService} fa lo stesso per la scrittura, riusando \texttt{GithubClientService} solo per le proprie letture di supporto (Figura \ref{fig:backend-github}).
+
+Nessun altro punto del sistema ha bisogno di conoscere la forma delle risposte di GitHub. La separazione tra le due classi ha anche una seconda conseguenza, non solo di comodità: rende strutturalmente impossibile che un agente aggiri il vincolo di sola lettura. Il confine passa per \texttt{InternalGithubController}, l'unico punto che gli agenti raggiungono: il suo costruttore riceve in iniezione soltanto \texttt{GithubClientService}, mai \texttt{GithubWriteService}.
+
+\subsection{Memento}
+
+L'Agente Changelog può sospendersi in attesa di una risposta umana per un tempo non prevedibile, restando comunque nello stato \texttt{RUNNING} (Figura \ref{fig:agenti-lifecycle}). Non si può tenere un worker (il \texttt{TaskProcessor}, il consumatore della coda) bloccato ad aspettare, né si può perdere il lavoro già svolto nel momento in cui l'esecuzione si ferma.
+
+Il meccanismo che rende possibile questo comportamento è il checkpoint di LangGraph (\texttt{AsyncMongoDBSaver}), che salva lo stato interno del grafo su MongoDB a ogni passaggio: è di LangGraph, non del codice scritto per questo progetto. Ciò che appartiene al progetto è tutto ciò che sta intorno a quel meccanismo. Delle tre sospensioni possibili di una Task Changelog (\S 3.5.3), solo due avvengono dentro un grafo già in esecuzione e usano davvero il checkpoint; la terza, quella per lo Sprint ID, avviene prima ancora che l'agente sia invocato e non ne ha bisogno — distinzione che il Backend rispetta scegliendo, caso per caso, se invocare \texttt{/internal/agent/start} o \texttt{/internal/agent/resume}. A questo si aggiunge il protocollo di ripresa vero e proprio: un \texttt{threadId} per ogni esecuzione, e la ripresa tramite \texttt{POST /tasks/:id/input}, che azzera \texttt{pendingInput} e reinvoca l'agente con lo stesso \texttt{threadId}.
+
+Il worker si libera subito dopo la sospensione, invece di restare bloccato, e chi salva o ripristina il checkpoint non ha mai bisogno di leggerne o interpretarne il contenuto: la stessa incapsulazione che il pattern richiede.
+
+\subsection{Adapter}
+
+Durante l'esecuzione l'agente deve poter leggere contenuti dal repository, ma non può parlare direttamente con GitHub: può raggiungere solo l'API interna del Backend, autenticata via firma HMAC.
+
+\texttt{GitHubToolset} adatta l'intera interazione con quell'API — costruzione della richiesta, firma HMAC, chiamata di rete, interpretazione della risposta — dietro un piccolo insieme di metodi locali, invocabili come funzioni ordinarie e non come chiamate HTTP (\texttt{read\_tree}, \texttt{read\_file}, \texttt{read\_issues}, \texttt{report\_progress}): tutti i dettagli del protocollo restano nascosti dentro un unico metodo privato (Figura \ref{fig:agenti-architettura}).
+
+Il resto del codice dell'agente chiama questi metodi senza sapere che dietro c'è una chiamata di rete firmata: cambiare lo schema di firma o la forma degli endpoint interni resterebbe confinato a questa sola classe.
+
+\newpage
+\section{Flusso dei dati}
+
+Le sezioni precedenti descrivono la struttura del sistema: quali componenti esistono, come sono organizzati, e quali collegamenti sono ammessi tra loro. Questa sezione mostra invece la stessa architettura in movimento, seguendo passo per passo sei scenari concreti scelti perché ciascuno mette in gioco un meccanismo diverso già introdotto, presentati nell'ordine in cui un utente li incontrerebbe realmente: la connessione della credenziale GitHub, senza la quale nessuna delle fasi successive è possibile; la creazione del contesto di analisi; l'avvio e il completamento di un'operazione nel caso generale; la lettura del repository durante l'esecuzione di un agente; la sospensione dell'Agente Changelog in attesa di una decisione umana; e infine l'esportazione di un Report in PDF.
+
+\subsection{Connessione delle credenziali}
+\label{subsec:flusso-credenziali}
+
+Il primo scenario è il primo passo che l'utente deve completare: senza una credenziale GitHub configurata, nessuna delle fasi successive può nemmeno iniziare, perché è da questa credenziale che ogni chiamata a GitHub del Backend parte.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{flusso-credenziali.pdf}
+    \caption{Connessione di una credenziale GitHub: verifica dal vivo prima della cifratura.}
+    \label{fig:flusso-credenziali}
+\end{figure}
+
+Il token non viene mai cifrato e salvato sulla fiducia: prima ancora di toccare lo schema di cifratura già descritto in \S~\ref{subsec:backend}, il Backend lo usa per interrogare GitHub e verificare che sia valido e che conceda lo scope richiesto. Solo un token che supera questo controllo dal vivo arriva a essere cifrato e persistito; uno rifiutato da GitHub non produce alcuna scrittura. Vale la pena notare cosa \emph{non} viene trattato come credenziale non valida: un errore di rete o un problema temporaneo lato GitHub restano un guasto a monte (\texttt{UPSTREAM}), non un giudizio sul token, proprio per evitare che un disservizio esterno induca l'utente a riconfigurare una credenziale che in realtà funziona.
+
+\subsection{Creazione del contesto di analisi}
+\label{subsec:flusso-contesto}
+
+Il secondo scenario riguarda il passo immediatamente successivo: prima di poter scegliere e avviare un'operazione, l'utente deve fissare su cosa quell'operazione lavorerà, cioè creare un \texttt{AnalysisContext}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{flusso-creazione-contesto.pdf}
+    \caption{Creazione del contesto di analisi.}
+    \label{fig:flusso-contesto}
+\end{figure}
+
+La richiesta attraversa una sequenza fissa di controlli, ciascuno in grado di interromperla: l'esistenza del repository e del branch indicato, l'appartenenza dell'eventuale commit specificato a quel branch, e la validità dello scope scelto rispetto ai file realmente presenti nel repository. Nulla viene persistito finché non li supera tutti. Due dettagli non sono immediatamente ovvi dal solo elenco dei controlli: il riferimento non resta puntato su un branch in movimento, ma viene risolto una volta per tutte in uno SHA di commit preciso, cosicché lo stesso contesto continui a produrre lo stesso risultato anche dopo nuovi commit sul repository; e l'albero del repository viene letto una sola volta, e quella stessa lettura serve sia a rilevare i linguaggi presenti sia a verificare che i percorsi dello scope esistano davvero, invece di interrogare due volte GitHub per due controlli che partono dallo stesso dato.
+
+\subsection{Avvio ed esecuzione di un'operazione}
+\label{subsec:flusso-avvio}
+
+Il terzo scenario segue un'operazione che non richiede né chiamate a strumenti durante l'esecuzione né sospensioni, ad esempio la generazione del README di progetto: è la forma più semplice che ogni operazione condivide, e serve da riferimento prima di introdurre le due varianti più articolate nelle sezioni successive.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{flusso-avvio-generale.pdf}
+    \caption{Avvio ed esecuzione di un'operazione nel caso generale.}
+    \label{fig:flusso-avvio}
+\end{figure}
+
+La richiesta HTTP e l'esecuzione effettiva sono due momenti separati nel tempo: \texttt{POST /tasks} restituisce le Task appena create in stato \texttt{PENDING} senza attendere che nulla venga eseguito, e solo in un momento successivo, indipendente dal ciclo della richiesta, \texttt{TaskProcessor} preleva il job dalla coda e invoca il Servizio Agenti. Da quel punto in avanti, tutta l'interazione con GitHub passa attraverso il Backend, mai attraverso una chiamata diretta dell'agente: è la stessa facade di sola lettura descritta in \S~\ref{subsec:backend}. Solo l'Agente Docs, tra i tre, fa seguire al completamento l'apertura automatica di una Pull Request; per gli altri due, il diagramma si fermerebbe un passo prima. L'ultimo tratto, dalla notifica \texttt{task.updated} alla lettura del Report, è lo stesso qualunque sia l'agente coinvolto, perché entrambi i lati trattano il risultato attraverso l'unico contratto \texttt{Report} già descritto in \S~\ref{subsec:backend}.
+
+Il diagramma precedente tratta il Backend come un unico partecipante; la Figura~\ref{fig:flusso-avvio-dettaglio} rientra in quello stesso riquadro e mostra la sequenza reale tra le sue classi interne, già introdotte in \S~\ref{subsec:backend}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{flusso-avvio-dettaglio-backend.pdf}
+    \caption{Avvio ed esecuzione di un'operazione: dettaglio delle classi interne del Backend.}
+    \label{fig:flusso-avvio-dettaglio}
+\end{figure}
+
+Il confine tra i due momenti del flusso è visibile qui in una forma che il diagramma d'insieme non può mostrare: \texttt{TasksController} e \texttt{TasksService} non chiamano mai direttamente \texttt{TaskProcessor}, né lo attendono. Lo scrivono in coda e restituiscono la risposta; è \texttt{TaskProcessor} a prelevare il job in un momento scelto da lui, non da chi lo ha accodato. La prima cosa che fa, prima ancora di invocare l'agente, è segnalare al Frontend il passaggio a \texttt{RUNNING} tramite \texttt{EventsGateway}: è per questo che quell'evento ha una fonte distinta dal successivo \texttt{COMPLETED}.
+
+Anche l'assemblaggio del Report, che il diagramma d'insieme tratta come un unico passo del Backend, si scompone qui in due classi con una responsabilità ciascuna e un ordine preciso tra loro: \texttt{ProposalPublisherService} apre la Pull Request quando l'agente ha prodotto una Proposal, e solo dopo \texttt{ReportAssemblyService} costruisce il Report, ricevendo un payload che già contiene l'URL della PR se questa è stata aperta. \texttt{AgentInvocationService} ed \texttt{EventsGateway} restano invece due classi distinte pur essendo entrambe invocate da \texttt{TaskProcessor}, perché rispondono a due domande diverse: la prima esegue l'operazione, la seconda ne comunica soltanto l'esito.
+
+\subsection{Lettura del repository durante l'esecuzione: la scansione Security}
+\label{subsec:flusso-tool-calling}
+
+Il quarto scenario mostra cosa succede quando l'esecuzione non si limita a un solo giro di caricamento del contesto, ma continua a interrogare il repository mentre è già in corso: è il comportamento esclusivo dell'Agente Security, in entrambe le proprie operazioni. A differenza degli scenari precedenti, qui le letture aggiuntive hanno due origini diverse e non vanno confuse: una parte è decisa a priori dal Loader, prima ancora che il modello veda un prompt; un'altra è decisa dal modello stesso, durante il proprio ragionamento.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{agenti-sequenza-tool-calling.pdf}
+    \caption{Le due fasi di lettura del repository durante l'esecuzione dell'Agente Security: quella deterministica del Loader e quella guidata dal modello.}
+    \label{fig:flusso-tool-calling}
+\end{figure}
+
+Dopo l'albero del repository, il \texttt{Loader} legge anche \texttt{POLICY.md} se presente, indipendentemente dall'operazione: nella scansione Policy il suo contenuto è la stessa direttiva da verificare, mentre nella scansione OWASP arricchisce semplicemente il prompt con eventuali regole aggiuntive del team. Solo per l'operazione OWASP segue poi una seconda lettura, questa volta non richiesta dal modello ma decisa interamente dal Loader: recupera il contenuto di ciascun file nello scope, fino a un numero massimo, per sottoporlo a Semgrep prima ancora di comporre il prompt. È a valle di questa fase, non prima, che il Servizio Agenti comunica il primo avanzamento della Task: il trenta per cento segnala che il contesto — compreso l'esito di Semgrep, quando presente — è pronto, non che l'esecuzione sia a un terzo del proprio percorso.
+
+Solo da qui in avanti entra in gioco il modello, ed è solo lui a decidere se leggere altro: un file alla volta, per valutare una vulnerabilità o una violazione di policy, entro il numero massimo di cicli già descritto in \S~\ref{subsec:agenti}. Ogni lettura, in entrambe le fasi, attraversa comunque la stessa facade del Backend: cambiano il momento in cui avviene e chi la richiede, mai il percorso che segue.
+
+\subsection{Sospensione e ripresa: il changelog di business}
+\label{subsec:flusso-sospensione}
+
+Il quinto scenario segue l'unico caso in cui l'esecuzione si interrompe per attendere una decisione dell'utente durante lo svolgimento del grafo: la conferma richiesta prima di avviare la fase di business del changelog, già descritta in \S~\ref{subsec:agenti}. Il diagramma mostra le due uscite possibili da quella decisione fianco a fianco.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{changelog-sequenza-sospensione.pdf}
+    \caption{Sospensione e ripresa dell'Agente Changelog.}
+    \label{fig:flusso-sospensione}
+\end{figure}
+
+La chiamata che avvia l'esecuzione resta aperta per tutta la generazione del changelog tecnico, e si conclude solo quando il grafo si sospende: è per questo che il Backend riceve un esito di sospensione, e non una risposta separata, nel momento in cui la Task passa in attesa. La risposta dell'utente, in entrambi i rami, restituisce subito un \texttt{204} senza corpo; cosa succede dopo dipende dal ramo. Un rifiuto si esaurisce interamente e sincronamente dentro quella stessa richiesta: la Task passa a \texttt{CANCELLED}, viene impostato lo stesso flag Redis di cancellazione già descritto in \S~\ref{subsec:vista-insieme}, e l'evento \texttt{task.updated} parte prima ancora che il \texttt{204} torni al Frontend. Una conferma, invece, non richiama l'agente direttamente da quella richiesta: si limita ad accodare un nuovo job, con la stessa separazione tra richiesta ed esecuzione già vista nel primo scenario di questo capitolo — è \texttt{TaskProcessor}, non il Backend che ha ricevuto la conferma, a invocare \texttt{/internal/agent/resume} quando lo preleva dalla coda.
+
+\subsection{Esportazione di un Report in PDF}
+\label{subsec:flusso-export}
+
+L'ultimo scenario chiude il ciclo aperto dal primo: un Report completato può essere esportato in PDF.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{flusso-esportazione-pdf.pdf}
+    \caption{Esportazione di un Report in PDF.}
+    \label{fig:flusso-export}
+\end{figure}
+
+Il PDF viene composto per intero in memoria prima che la risposta HTTP venga anche solo iniziata: se la generazione fallisce a metà, non è mai già stato inviato un file parziale, perché nessuno stato \texttt{200} è stato scritto finché non c'è un PDF completo da restituire. È anche l'unico scenario in cui il sistema tocca lo storage S3, dove l'artefatto generato viene caricato prima di essere restituito al Frontend. Un Report ancora in stato \texttt{FAILED} restituisce invece un \texttt{409} a corpo vuoto senza tentare alcuna composizione: non esiste un PDF sensato da generare per un'analisi che non è mai arrivata a un risultato. Questo endpoint è inoltre l'unico a non seguire il contratto d'errore condiviso descritto altrove nel documento: un fallimento nella composizione o nel caricamento restituisce un corpo fisso \texttt{\{code: EXPORT\_FAILED, message\}}, una scelta deliberata per tenere questo caso raro separato dal catalogo \texttt{error.code} che governa invece l'esecuzione delle Task.
+
+\newpage
+\section{Copertura dei requisiti}
+
+\end{document}

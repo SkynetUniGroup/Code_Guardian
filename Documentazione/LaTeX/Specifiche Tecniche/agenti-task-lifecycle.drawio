@@ -1,0 +1,71 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Ciclo di vita della Task" id="agenti-lifecycle-diagram">
+    <mxGraphModel dx="1030" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="960" pageHeight="520" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="init" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="20" width="20" x="460" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pending" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="PENDING" vertex="1">
+          <mxGeometry height="50" width="140" x="400" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="running" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="RUNNING" vertex="1">
+          <mxGeometry height="50" width="140" x="400" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="completed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" value="COMPLETED" vertex="1">
+          <mxGeometry height="50" width="140" x="160" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="failed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" value="FAILED" vertex="1">
+          <mxGeometry height="50" width="140" x="400" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="cancelled" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="CANCELLED" vertex="1">
+          <mxGeometry height="50" width="140" x="640" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="final-outer" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="24" width="24" x="458" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="final-inner" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="14" width="14" x="463" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="t1" edge="1" parent="1" source="init" style="endArrow=block;endFill=1;html=1;fontSize=10;" target="pending">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" edge="1" parent="1" source="pending" style="endArrow=block;endFill=1;html=1;fontSize=10;" target="running" value="TaskProcessor preleva il job dalla coda">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t3" edge="1" parent="1" source="pending" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;endFill=1;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;" target="cancelled" value="annullamento prima dell&#39;avvio">
+          <mxGeometry relative="1" x="-0.037" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t4" edge="1" parent="1" source="running" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;endFill=1;html=1;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;" target="completed" value="esito positivo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t5" edge="1" parent="1" source="running" style="endArrow=block;endFill=1;html=1;fontSize=10;" target="failed" value="errore o timeout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t6" edge="1" parent="1" source="running" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;endFill=1;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;" target="cancelled" value="annullamento durante l&#39;esecuzione">
+          <mxGeometry relative="1" x="-0.3684" y="15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t7" edge="1" parent="1" source="completed" style="endArrow=block;endFill=1;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" target="final-outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t8" edge="1" parent="1" source="failed" style="endArrow=block;endFill=1;html=1;fontSize=10;" target="final-outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t9" edge="1" parent="1" source="cancelled" style="endArrow=block;endFill=1;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" target="final-outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingRight=6;fontSize=10;" value="pendingInput: condizione sospensiva interna allo stato RUNNING, non un sesto stato." vertex="1">
+          <mxGeometry height="50" width="260" x="100" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="note-link" edge="1" parent="1" source="running" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" target="note">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
