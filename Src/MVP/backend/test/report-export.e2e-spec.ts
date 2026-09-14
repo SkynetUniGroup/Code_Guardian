@@ -1,53 +1,53 @@
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ConfigService } from "@nestjs/config";
 import request from "supertest";
-import { AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
+import { E2EEnvironment, waitForOutcome, startEnvironment, readyUser } from "./e2e-helpers";
 
 /**
- * TI_17 (RF.73) — esportazione del Report in PDF, archiviazione nel bucket
- * privato e restituzione con header corretti e nome file deterministico.
+ * TI_17 (RF.73) — Report PDF export, storage in the private bucket and
+ * return with correct headers and deterministic file name.
  *
- * Gira contro il MinIO di docker-compose, non contro un doppio dell'SDK: il
- * punto del test e' proprio che l'oggetto finisca davvero nel bucket, e un
- * doppio di S3Client verificherebbe soltanto che il codice chiama il metodo
- * che gli abbiamo detto di chiamare. L'archivio viene quindi riletto con un
- * client costruito qui dalla stessa configurazione dell'applicazione.
+ * Runs against the MinIO from docker-compose, not against an SDK mock: the
+ * point of the test is precisely that the object actually ends up in the
+ * bucket, and a mock of S3Client would only verify that the code calls the
+ * method we told it to call. The archive is therefore re-read with a
+ * client built here from the same configuration as the application.
  *
- * Corrispondenza PARZIALE su un punto, dichiarato invece che nascosto: RF.73
- * dice "in streaming", mentre l'implementazione compone l'intero PDF in
- * memoria e lo invia in un colpo solo con Content-Length. E' una scelta
- * deliberata e documentata in ReportsExportService (un errore a meta'
- * generazione non deve poter produrre un file troncato), ma resta una
- * divergenza dalla formulazione del requisito: qui si verifica cio' che il
- * codice fa — un PDF completo, con gli header giusti e la lunghezza
- * dichiarata — non lo streaming.
+ * PARTIAL compliance on one point, declared rather than hidden: RF.73
+ * says "streaming", while the implementation composes the entire PDF in
+ * memory and sends it in one go with Content-Length. It is a deliberate
+ * and documented choice in ReportsExportService (a mid-generation error
+ * must not be able to produce a truncated file), but it remains a
+ * divergence from the requirement wording: here we verify what the code
+ * does — a complete PDF, with the right headers and the declared length
+ * — not streaming.
  */
-describe("TI_17 (RF.73) — esportazione PDF, archivio e header", () => {
-  let ambiente: AmbienteE2E;
-  let archivio: S3Client;
+describe("TI_17 (RF.73) — PDF export, archive and headers", () => {
+  let env: E2EEnvironment;
+  let storage: S3Client;
   let bucket: string;
 
   /**
-   * Legge il corpo della risposta come byte grezzi.
+   * Reads the response body as raw bytes.
    *
-   * Senza, supertest tratterebbe application/pdf come testo e il confronto
-   * sulla lunghezza sarebbe falsato dalla codifica.
+   * Without this, supertest would treat application/pdf as text and the
+   * length comparison would be distorted by encoding.
    */
-  function parserBinario(
+  function binaryParser(
     res: NodeJS.ReadableStream & { setEncoding: (e: string) => void },
     callback: (err: Error | null, body: Buffer) => void,
   ): void {
     res.setEncoding("binary");
-    let dati = "";
+    let data = "";
     res.on("data", (chunk: string) => {
-      dati += chunk;
+      data += chunk;
     });
-    res.on("end", () => callback(null, Buffer.from(dati, "binary")));
+    res.on("end", () => callback(null, Buffer.from(data, "binary")));
   }
 
-  /** Porta una task fino al Report completato e ne restituisce l'id. */
-  async function reportCompletato(utente: { token: string; contextId: string }): Promise<string> {
-    ambiente.agente.invoke.mockResolvedValue({
+  /** Brings a task to the completed Report and returns its id. */
+  async function completedReport(user: { token: string; contextId: string }): Promise<string> {
+    env.agent.invoke.mockResolvedValue({
       status: "COMPLETED",
       payload: {
         body: [
@@ -58,43 +58,43 @@ describe("TI_17 (RF.73) — esportazione PDF, archivio e header", () => {
             filePath: "app/data/user-dao.js",
             lineStart: 12,
             lineEnd: 14,
-            description: "Query costruita per concatenazione di stringhe.",
-            remediation: { kind: "TEXT", text: "Usare query parametrizzate." },
+            description: "Query built by string concatenation.",
+            remediation: { kind: "TEXT", text: "Use parameterized queries." },
           },
         ],
-        summary: "Trovata 1 vulnerabilita.",
+        summary: "Found 1 vulnerability.",
         tokensConsumed: 350,
       },
     });
 
-    const avvio = await request(ambiente.server)
+    const start = await request(env.server)
       .post("/api/v1/tasks")
-      .set("Authorization", `Bearer ${utente.token}`)
-      .send({ contextId: utente.contextId, operations: ["SECURITY_OWASP"] })
+      .set("Authorization", `Bearer ${user.token}`)
+      .send({ contextId: user.contextId, operations: ["SECURITY_OWASP"] })
       .expect(202);
 
-    const conclusa = await attendiEsito(ambiente.taskModel, avvio.body.taskIds[0] as string);
-    expect(conclusa.status).toBe("COMPLETED");
-    return String(conclusa.reportId);
+    const completed = await waitForOutcome(env.taskModel, start.body.taskIds[0] as string);
+    expect(completed.status).toBe("COMPLETED");
+    return String(completed.reportId);
   }
 
-  /** Scarica l'esportazione, restituendo header e byte. */
-  async function esporta(token: string, reportId: string, atteso = 200) {
-    return request(ambiente.server)
+  /** Downloads the export, returning headers and bytes. */
+  async function exportReport(token: string, reportId: string, expected = 200) {
+    return request(env.server)
       .get(`/api/v1/reports/${reportId}/export?format=pdf`)
       .set("Authorization", `Bearer ${token}`)
       .buffer()
-      .parse(parserBinario as never)
-      .expect(atteso);
+      .parse(binaryParser as never)
+      .expect(expected);
   }
 
   beforeAll(async () => {
-    ambiente = await avviaAmbiente();
-    const config = ambiente.app.get(ConfigService);
+    env = await startEnvironment();
+    const config = env.app.get(ConfigService);
     bucket = config.get<string>("REPORTS_BUCKET_NAME")!;
-    // Stessa configurazione del servizio, client separato: il test legge
-    // l'archivio dall'esterno, come farebbe chiunque altro.
-    archivio = new S3Client({
+    // Same configuration as the service, separate client: the test reads
+    // the archive from the outside, as anyone else would.
+    storage = new S3Client({
       region: config.get<string>("S3_REGION"),
       endpoint: config.get<string>("S3_ENDPOINT"),
       forcePathStyle: config.get<boolean>("S3_FORCE_PATH_STYLE"),
@@ -106,139 +106,139 @@ describe("TI_17 (RF.73) — esportazione PDF, archivio e header", () => {
   }, 60_000);
 
   afterAll(async () => {
-    archivio?.destroy();
-    await ambiente?.chiudi();
+    storage?.destroy();
+    await env?.close();
   });
 
   beforeEach(() => {
-    ambiente.agente.invoke.mockReset();
-    ambiente.agente.resume.mockReset();
+    env.agent.invoke.mockReset();
+    env.agent.resume.mockReset();
   });
 
-  it("restituisce un PDF completo con gli header previsti", async () => {
-    const utente = await utentePronto(ambiente.server);
-    const reportId = await reportCompletato(utente);
+  it("returns a complete PDF with the expected headers", async () => {
+    const user = await readyUser(env.server);
+    const reportId = await completedReport(user);
 
-    const risposta = await esporta(utente.token, reportId);
-    const pdf = risposta.body as Buffer;
+    const response = await exportReport(user.token, reportId);
+    const pdf = response.body as Buffer;
 
-    expect(risposta.headers["content-type"]).toContain("application/pdf");
-    expect(risposta.headers["content-disposition"]).toBe(
+    expect(response.headers["content-type"]).toContain("application/pdf");
+    expect(response.headers["content-disposition"]).toBe(
       `attachment; filename="code-guardian-SECURITY_OWASP-${reportId}.pdf"`,
     );
-    // Il file non e' troncato: l'intestazione PDF c'e', la lunghezza
-    // dichiarata coincide con quella trasmessa e il documento e' chiuso.
+    // The file is not truncated: the PDF header is there, the declared
+    // length matches the transmitted one and the document is closed.
     expect(pdf.subarray(0, 5).toString("latin1")).toBe("%PDF-");
     expect(pdf.subarray(-6).toString("latin1")).toContain("%%EOF");
-    expect(Number(risposta.headers["content-length"])).toBe(pdf.length);
+    expect(Number(response.headers["content-length"])).toBe(pdf.length);
     expect(pdf.length).toBeGreaterThan(1000);
   }, 180_000);
 
-  it("il nome del file e' deterministico: dipende solo da operazione e id", async () => {
-    // RF.73 chiede un nome deterministico perche' due scaricamenti dello
-    // stesso Report non devono lasciare due file diversi nella cartella
-    // Download dell'utente.
-    const utente = await utentePronto(ambiente.server);
-    const reportId = await reportCompletato(utente);
+  it("the file name is deterministic: depends only on operation and id", async () => {
+    // RF.73 asks for a deterministic name because two downloads of the
+    // same Report must not leave two different files in the user's
+    // Downloads folder.
+    const user = await readyUser(env.server);
+    const reportId = await completedReport(user);
 
-    const prima = await esporta(utente.token, reportId);
-    const seconda = await esporta(utente.token, reportId);
+    const first = await exportReport(user.token, reportId);
+    const second = await exportReport(user.token, reportId);
 
-    expect(seconda.headers["content-disposition"]).toBe(prima.headers["content-disposition"]);
-    expect(prima.headers["content-disposition"]).toContain(reportId);
-    expect(prima.headers["content-disposition"]).toContain("SECURITY_OWASP");
+    expect(second.headers["content-disposition"]).toBe(first.headers["content-disposition"]);
+    expect(first.headers["content-disposition"]).toContain(reportId);
+    expect(first.headers["content-disposition"]).toContain("SECURITY_OWASP");
   }, 180_000);
 
-  it("archivia il PDF nel bucket privato, sotto l'id del Report", async () => {
-    const utente = await utentePronto(ambiente.server);
-    const reportId = await reportCompletato(utente);
+  it("archives the PDF in the private bucket, under the Report id", async () => {
+    const user = await readyUser(env.server);
+    const reportId = await completedReport(user);
 
-    const risposta = await esporta(utente.token, reportId);
+    const response = await exportReport(user.token, reportId);
 
-    const archiviato = await archivio.send(new GetObjectCommand({ Bucket: bucket, Key: reportId }));
-    expect(archiviato.ContentType).toBe("application/pdf");
+    const archived = await storage.send(new GetObjectCommand({ Bucket: bucket, Key: reportId }));
+    expect(archived.ContentType).toBe("application/pdf");
 
-    const byteArchiviati = Buffer.from(await archiviato.Body!.transformToByteArray());
-    // Stesso documento, non un segnaposto: e' l'oggetto archiviato a dover
-    // valere come copia durevole di quello consegnato.
-    expect(byteArchiviati.length).toBe((risposta.body as Buffer).length);
-    expect(byteArchiviati.subarray(0, 5).toString("latin1")).toBe("%PDF-");
+    const archivedBytes = Buffer.from(await archived.Body!.transformToByteArray());
+    // Same document, not a placeholder: the archived object must serve as
+    // a durable copy of the one delivered.
+    expect(archivedBytes.length).toBe((response.body as Buffer).length);
+    expect(archivedBytes.subarray(0, 5).toString("latin1")).toBe("%PDF-");
   }, 180_000);
 
-  it("il bucket non e' pubblico: senza credenziali l'oggetto non si legge", async () => {
-    const utente = await utentePronto(ambiente.server);
-    const reportId = await reportCompletato(utente);
-    await esporta(utente.token, reportId);
+  it("the bucket is not public: without credentials the object cannot be read", async () => {
+    const user = await readyUser(env.server);
+    const reportId = await completedReport(user);
+    await exportReport(user.token, reportId);
 
-    const config = ambiente.app.get(ConfigService);
-    const anonimo = new S3Client({
+    const config = env.app.get(ConfigService);
+    const anonymous = new S3Client({
       region: config.get<string>("S3_REGION"),
       endpoint: config.get<string>("S3_ENDPOINT"),
       forcePathStyle: config.get<boolean>("S3_FORCE_PATH_STYLE"),
-      credentials: { accessKeyId: "chiave-non-valida", secretAccessKey: "segreto-non-valido" },
+      credentials: { accessKeyId: "invalid-key", secretAccessKey: "invalid-secret" },
     });
 
     await expect(
-      anonimo.send(new GetObjectCommand({ Bucket: bucket, Key: reportId })),
+      anonymous.send(new GetObjectCommand({ Bucket: bucket, Key: reportId })),
     ).rejects.toBeDefined();
 
-    anonimo.destroy();
+    anonymous.destroy();
   }, 180_000);
 
-  it("un Report fallito non si esporta: 409 con corpo vuoto", async () => {
-    // Non c'e' niente da mettere in un PDF, e un file vuoto sarebbe peggio
-    // di un rifiuto esplicito.
-    const utente = await utentePronto(ambiente.server);
-    ambiente.agente.invoke.mockResolvedValue({
+  it("a failed Report cannot be exported: 409 with empty body", async () => {
+    // There is nothing to put in a PDF, and an empty file would be worse
+    // than an explicit refusal.
+    const user = await readyUser(env.server);
+    env.agent.invoke.mockResolvedValue({
       status: "FAILED",
       error: {
         code: "TIMEOUT",
-        message: "nessuna risposta dal modello",
+        message: "no response from the model",
         stage: "EXECUTION",
       },
     });
 
-    const avvio = await request(ambiente.server)
+    const start = await request(env.server)
       .post("/api/v1/tasks")
-      .set("Authorization", `Bearer ${utente.token}`)
-      .send({ contextId: utente.contextId, operations: ["SECURITY_OWASP"] })
+      .set("Authorization", `Bearer ${user.token}`)
+      .send({ contextId: user.contextId, operations: ["SECURITY_OWASP"] })
       .expect(202);
-    const conclusa = await attendiEsito(ambiente.taskModel, avvio.body.taskIds[0] as string);
+    const completed = await waitForOutcome(env.taskModel, start.body.taskIds[0] as string);
 
-    const risposta = await request(ambiente.server)
-      .get(`/api/v1/reports/${conclusa.reportId}/export?format=pdf`)
-      .set("Authorization", `Bearer ${utente.token}`)
+    const response = await request(env.server)
+      .get(`/api/v1/reports/${completed.reportId}/export?format=pdf`)
+      .set("Authorization", `Bearer ${user.token}`)
       .expect(409);
 
-    expect(risposta.text).toBe("");
+    expect(response.text).toBe("");
   }, 180_000);
 
-  it("il Report di un altro utente non si esporta", async () => {
-    const proprietario = await utentePronto(ambiente.server);
-    const estraneo = await utentePronto(ambiente.server);
-    const reportId = await reportCompletato(proprietario);
+  it("another user's Report cannot be exported", async () => {
+    const owner = await readyUser(env.server);
+    const stranger = await readyUser(env.server);
+    const reportId = await completedReport(owner);
 
-    await request(ambiente.server)
+    await request(env.server)
       .get(`/api/v1/reports/${reportId}/export?format=pdf`)
-      .set("Authorization", `Bearer ${estraneo.token}`)
+      .set("Authorization", `Bearer ${stranger.token}`)
       .expect(404);
   }, 180_000);
 
-  it("il formato e’ parte del contratto: senza, o con uno diverso, e’ un 400", async () => {
-    // GET /reports/:id/export?format=pdf e' cio' che il frontend chiama
-    // (api/client.ts): 'pdf' e' l'unico formato definito, e un valore diverso
-    // non deve produrre un file dal contenuto inatteso.
-    const utente = await utentePronto(ambiente.server);
-    const reportId = await reportCompletato(utente);
+  it("the format is part of the contract: without it, or with a different one, it is a 400", async () => {
+    // GET /reports/:id/export?format=pdf is what the frontend calls
+    // (api/client.ts): 'pdf' is the only defined format, and a different
+    // value must not produce a file with unexpected content.
+    const user = await readyUser(env.server);
+    const reportId = await completedReport(user);
 
-    await request(ambiente.server)
+    await request(env.server)
       .get(`/api/v1/reports/${reportId}/export`)
-      .set("Authorization", `Bearer ${utente.token}`)
+      .set("Authorization", `Bearer ${user.token}`)
       .expect(400);
 
-    await request(ambiente.server)
+    await request(env.server)
       .get(`/api/v1/reports/${reportId}/export?format=docx`)
-      .set("Authorization", `Bearer ${utente.token}`)
+      .set("Authorization", `Bearer ${user.token}`)
       .expect(400);
   }, 180_000);
 });

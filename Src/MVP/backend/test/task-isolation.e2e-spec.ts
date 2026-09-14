@@ -1,29 +1,30 @@
 import request from "supertest";
 import { TaskDocument } from "./../src/tasks/schemas/task.schema";
-import { AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
+import { E2EEnvironment, waitForOutcome, startEnvironment, readyUser } from "./e2e-helpers";
 
 /**
- * TI_11 (RF.48) — le task di uno stesso batch sono elaborate in isolamento.
+ * TI_11 (RF.48) — tasks of the same batch are processed in isolation.
  *
- * task-processor.spec.ts verifica lo stesso processore a livello di unita',
- * una task per volta e con tutto sostituito attorno. Qui la domanda e' quella
- * che l'unita' non puo' porre: quando tre task nate dalla stessa POST /tasks
- * passano per lo stesso worker, la stessa connessione a Mongo e la stessa
- * coda, il fallimento di una lascia davvero intatte le altre? Lo stato che
- * potrebbe far trapelare il guasto — il claim, il Report in assemblaggio,
- * l'errore sulla task — e' condiviso a livello di processo, non di task.
+ * task-processor.spec.ts verifies the same processor at the unit level,
+ * one task at a time and with everything around it replaced. Here the
+ * question is the one the unit test cannot ask: when three tasks born from
+ * the same POST /tasks go through the same worker, the same Mongo
+ * connection and the same queue, does the failure of one really leave
+ * the others intact? The state that could leak the failure — the claim,
+ * the Report being assembled, the error on the task — is shared at the
+ * process level, not the task level.
  *
- * L'esito atteso viene deciso per codice operazione, non per ordine di
- * arrivo: BullMQ non garantisce l'ordine, e un test che si aspettasse "la
- * seconda fallisce" sarebbe intermittente per costruzione.
+ * The expected outcome is decided by operation code, not by arrival
+ * order: BullMQ does not guarantee order, and a test expecting "the
+ * second one fails" would be intermittent by construction.
  */
-describe("TI_11 (RF.48) — isolamento fra le task dello stesso batch", () => {
-  let ambiente: AmbienteE2E;
+describe("TI_11 (RF.48) — isolation among tasks of the same batch", () => {
+  let env: E2EEnvironment;
 
-  const OPERAZIONI = ["DOCS_README", "DOCS_INLINE", "DOCS_API"] as const;
+  const OPERATIONS = ["DOCS_README", "DOCS_INLINE", "DOCS_API"] as const;
 
-  /** Risposta di un agente riuscito, riconoscibile dall'operazione. */
-  function esitoRiuscito(operazione: string) {
+  /** Response of a successful agent, recognizable by the operation. */
+  function successOutcome(operation: string) {
     return {
       status: "COMPLETED",
       payload: {
@@ -31,78 +32,79 @@ describe("TI_11 (RF.48) — isolamento fra le task dello stesso batch", () => {
           {
             kind: "TEXT",
             order: 0,
-            markdown: `Esito di ${operazione}.`,
+            markdown: `Outcome of ${operation}.`,
           },
         ],
-        summary: `Riepilogo di ${operazione}.`,
+        summary: `Summary of ${operation}.`,
         tokensConsumed: 100,
       },
     };
   }
 
-  /** Avvia il batch e attende che tutte e tre le task siano concluse. */
-  async function eseguiBatch(token: string, contextId: string): Promise<Map<string, TaskDocument>> {
-    const avvio = await request(ambiente.server)
+  /** Starts the batch and waits for all three tasks to complete. */
+  async function runBatch(token: string, contextId: string): Promise<Map<string, TaskDocument>> {
+    const start = await request(env.server)
       .post("/api/v1/tasks")
       .set("Authorization", `Bearer ${token}`)
-      .send({ contextId, operations: [...OPERAZIONI] })
+      .send({ contextId, operations: [...OPERATIONS] })
       .expect(202);
 
-    const taskIds = avvio.body.taskIds as string[];
+    const taskIds = start.body.taskIds as string[];
     expect(taskIds).toHaveLength(3);
 
-    const concluse = new Map<string, TaskDocument>();
+    const completed = new Map<string, TaskDocument>();
     for (const taskId of taskIds) {
-      const task = await attendiEsito(ambiente.taskModel, taskId);
-      concluse.set(task.operation, task);
+      const task = await waitForOutcome(env.taskModel, taskId);
+      completed.set(task.operation, task);
     }
-    return concluse;
+    return completed;
   }
 
   beforeAll(async () => {
-    ambiente = await avviaAmbiente();
+    env = await startEnvironment();
   }, 60_000);
 
   afterAll(async () => {
-    await ambiente?.chiudi();
+    await env?.close();
   });
 
   beforeEach(() => {
-    ambiente.agente.invoke.mockReset();
-    ambiente.agente.resume.mockReset();
+    env.agent.invoke.mockReset();
+    env.agent.resume.mockReset();
   });
 
-  it("il fallimento di una task non altera stato ne' esito delle altre", async () => {
-    const utente = await utentePronto(ambiente.server, "DEVELOPER");
+  it("the failure of one task does not alter the status or outcome of the others", async () => {
+    const user = await readyUser(env.server, "DEVELOPER");
 
-    // DOCS_INLINE fallisce con un errore di parsing; le altre due riescono.
-    ambiente.agente.invoke.mockImplementation((task: TaskDocument) =>
+    // DOCS_INLINE fails with a parsing error; the other two succeed.
+    env.agent.invoke.mockImplementation((task: TaskDocument) =>
       Promise.resolve(
         task.operation === "DOCS_INLINE"
           ? {
               status: "FAILED",
               error: {
                 code: "PARSING",
-                message: "risposta del modello non interpretabile",
+                message: "model response not interpretable",
                 stage: "EXECUTION",
               },
             }
-          : esitoRiuscito(task.operation),
+          : successOutcome(task.operation),
       ),
     );
 
-    const concluse = await eseguiBatch(utente.token, utente.contextId);
+    const completed = await runBatch(user.token, user.contextId);
 
-    const fallita = concluse.get("DOCS_INLINE")!;
-    expect(fallita.status).toBe("FAILED");
-    expect(fallita.error?.code).toBe("PARSING");
+    const failed = completed.get("DOCS_INLINE")!;
+    expect(failed.status).toBe("FAILED");
+    expect(failed.error?.code).toBe("PARSING");
 
-    for (const operazione of ["DOCS_README", "DOCS_API"]) {
-      const task = concluse.get(operazione)!;
-      // L'errore incluso nel confronto: se una di queste fallisse, sapere
-      // *quale* errore ha ereditato e' esattamente l'informazione che serve.
-      expect({ operazione, status: task.status, error: task.error }).toEqual({
-        operazione,
+    for (const operation of ["DOCS_README", "DOCS_API"]) {
+      const task = completed.get(operation)!;
+      // The error included in the comparison: if one of these failed,
+      // knowing *which* error it inherited is exactly the information
+      // that matters.
+      expect({ operation, status: task.status, error: task.error }).toEqual({
+        operation,
         status: "COMPLETED",
         error: null,
       });
@@ -110,110 +112,113 @@ describe("TI_11 (RF.48) — isolamento fra le task dello stesso batch", () => {
     }
   }, 180_000);
 
-  it("ogni task del batch ha un Report proprio, col contenuto della propria operazione", async () => {
-    // Il modo in cui l'isolamento si romperebbe senza che lo stato lo mostri:
-    // tre task COMPLETED che puntano tutte allo stesso Report, o a Report col
-    // contenuto di un'altra operazione.
-    const utente = await utentePronto(ambiente.server, "DEVELOPER");
-    ambiente.agente.invoke.mockImplementation((task: TaskDocument) =>
-      Promise.resolve(esitoRiuscito(task.operation)),
+  it("each task in the batch has its own Report, with the content of its own operation", async () => {
+    // The way isolation would break without the state showing it:
+    // three COMPLETED tasks all pointing to the same Report, or to
+    // Reports with the content of another operation.
+    const user = await readyUser(env.server, "DEVELOPER");
+    env.agent.invoke.mockImplementation((task: TaskDocument) =>
+      Promise.resolve(successOutcome(task.operation)),
     );
 
-    const concluse = await eseguiBatch(utente.token, utente.contextId);
+    const completed = await runBatch(user.token, user.contextId);
 
     const reportIds = new Set<string>();
-    for (const operazione of OPERAZIONI) {
-      const task = concluse.get(operazione)!;
+    for (const operation of OPERATIONS) {
+      const task = completed.get(operation)!;
       expect(task.status).toBe("COMPLETED");
       reportIds.add(String(task.reportId));
 
-      const letto = await request(ambiente.server)
+      const read = await request(env.server)
         .get(`/api/v1/reports/${task.reportId}`)
-        .set("Authorization", `Bearer ${utente.token}`)
+        .set("Authorization", `Bearer ${user.token}`)
         .expect(200);
 
-      expect(letto.body.operation).toBe(operazione);
-      expect(letto.body.summary).toBe(`Riepilogo di ${operazione}.`);
+      expect(read.body.operation).toBe(operation);
+      expect(read.body.summary).toBe(`Summary of ${operation}.`);
     }
     expect(reportIds.size).toBe(3);
   }, 180_000);
 
-  it("un'eccezione sollevata durante una task non travolge le altre", async () => {
-    // Diverso dal caso sopra: qui l'agente non risponde "FAILED", esplode.
-    // E' il percorso del catch di TaskProcessor, quello in cui un guasto puo'
-    // davvero uscire dai confini della singola task.
-    const utente = await utentePronto(ambiente.server, "DEVELOPER");
-    ambiente.agente.invoke.mockImplementation((task: TaskDocument) =>
+  it("an exception thrown during one task does not overwhelm the others", async () => {
+    // Different from the case above: here the agent does not respond
+    // "FAILED", it blows up. This is the catch path of TaskProcessor, the
+    // one in which a failure can truly escape the boundaries of a single
+    // task.
+    const user = await readyUser(env.server, "DEVELOPER");
+    env.agent.invoke.mockImplementation((task: TaskDocument) =>
       task.operation === "DOCS_API"
-        ? Promise.reject(new Error("il servizio agenti ha chiuso la connessione"))
-        : Promise.resolve(esitoRiuscito(task.operation)),
+        ? Promise.reject(new Error("the agent service closed the connection"))
+        : Promise.resolve(successOutcome(task.operation)),
     );
 
-    const concluse = await eseguiBatch(utente.token, utente.contextId);
+    const completed = await runBatch(user.token, user.contextId);
 
-    expect(concluse.get("DOCS_API")!.status).toBe("FAILED");
-    expect(concluse.get("DOCS_README")!.status).toBe("COMPLETED");
-    expect(concluse.get("DOCS_INLINE")!.status).toBe("COMPLETED");
+    expect(completed.get("DOCS_API")!.status).toBe("FAILED");
+    expect(completed.get("DOCS_README")!.status).toBe("COMPLETED");
+    expect(completed.get("DOCS_INLINE")!.status).toBe("COMPLETED");
   }, 180_000);
 
-  it("anche una task fallita lascia un Report leggibile, non un buco", async () => {
-    // RF.48 riguarda le altre task, ma la task fallita non deve sparire: il
-    // suo Report FAILED e' cio' che distingue "fallita" da "mai eseguita".
-    const utente = await utentePronto(ambiente.server, "DEVELOPER");
-    ambiente.agente.invoke.mockImplementation((task: TaskDocument) =>
+  it("even a failed task leaves a readable Report, not a hole", async () => {
+    // RF.48 concerns the other tasks, but the failed task must not
+    // disappear: its FAILED Report is what distinguishes "failed" from
+    // "never executed".
+    const user = await readyUser(env.server, "DEVELOPER");
+    env.agent.invoke.mockImplementation((task: TaskDocument) =>
       Promise.resolve(
         task.operation === "DOCS_INLINE"
           ? {
               status: "FAILED",
               error: {
                 code: "TIMEOUT",
-                message: "nessuna risposta dal modello",
+                message: "no response from the model",
                 stage: "EXECUTION",
               },
             }
-          : esitoRiuscito(task.operation),
+          : successOutcome(task.operation),
       ),
     );
 
-    const concluse = await eseguiBatch(utente.token, utente.contextId);
-    const fallita = concluse.get("DOCS_INLINE")!;
+    const completed = await runBatch(user.token, user.contextId);
+    const failed = completed.get("DOCS_INLINE")!;
 
-    expect(fallita.reportId).toBeTruthy();
-    const letto = await request(ambiente.server)
-      .get(`/api/v1/reports/${fallita.reportId}`)
-      .set("Authorization", `Bearer ${utente.token}`)
+    expect(failed.reportId).toBeTruthy();
+    const read = await request(env.server)
+      .get(`/api/v1/reports/${failed.reportId}`)
+      .set("Authorization", `Bearer ${user.token}`)
       .expect(200);
 
-    expect(letto.body.status).toBe("FAILED");
-    expect(letto.body.operation).toBe("DOCS_INLINE");
+    expect(read.body.status).toBe("FAILED");
+    expect(read.body.operation).toBe("DOCS_INLINE");
   }, 180_000);
 
-  it("le task del batch restano dello stesso batch, e nessuna ne trascina un'altra", async () => {
-    // Il batchId e' la sola cosa che le tre condividono per progettazione:
-    // e' bene che resti condiviso, ed e' bene che sia l'unica.
-    const utente = await utentePronto(ambiente.server, "DEVELOPER");
-    ambiente.agente.invoke.mockImplementation((task: TaskDocument) =>
+  it("the batch tasks stay of the same batch, and none drags another", async () => {
+    // The batchId is the only thing the three share by design:
+    // it is good that it stays shared, and it is good that it is the only
+    // thing.
+    const user = await readyUser(env.server, "DEVELOPER");
+    env.agent.invoke.mockImplementation((task: TaskDocument) =>
       Promise.resolve(
         task.operation === "DOCS_README"
           ? {
               status: "FAILED",
               error: {
                 code: "UPSTREAM",
-                message: "il servizio agenti ha risposto 502",
+                message: "the agent service responded 502",
                 stage: "EXECUTION",
               },
             }
-          : esitoRiuscito(task.operation),
+          : successOutcome(task.operation),
       ),
     );
 
-    const concluse = await eseguiBatch(utente.token, utente.contextId);
+    const completed = await runBatch(user.token, user.contextId);
 
-    const batchIds = new Set([...concluse.values()].map((t) => t.batchId));
+    const batchIds = new Set([...completed.values()].map((t) => t.batchId));
     expect(batchIds.size).toBe(1);
 
-    const esiti = [...concluse.values()].map((t) => t.status).sort();
-    expect(esiti).toEqual(["COMPLETED", "COMPLETED", "FAILED"]);
-    expect(ambiente.agente.invoke).toHaveBeenCalledTimes(3);
+    const outcomes = [...completed.values()].map((t) => t.status).sort();
+    expect(outcomes).toEqual(["COMPLETED", "COMPLETED", "FAILED"]);
+    expect(env.agent.invoke).toHaveBeenCalledTimes(3);
   }, 180_000);
 });
