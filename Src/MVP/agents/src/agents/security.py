@@ -1,9 +1,9 @@
-"""Security Agent -- operazioni SECURITY_OWASP e SECURITY_POLICY.
+"""Security Agent -- SECURITY_OWASP and SECURITY_POLICY operations.
 
-Analizza il codice cercando vulnerabilita' OWASP Top 10 e violazioni di policy.
-Per SECURITY_OWASP la ricerca e' in due fasi: prima Semgrep (deterministico,
-richiamo alto), poi l'LLM che giudica ogni candidato e cerca cio' che una
-regola statica non vede.
+Analyzes code for OWASP Top 10 vulnerabilities and policy violations.
+For SECURITY_OWASP the search is in two phases: first Semgrep (deterministic,
+high recall), then the LLM that judges each candidate and looks for what a
+static rule cannot see.
 """
 
 import logging
@@ -25,49 +25,49 @@ from ._base import extract_json, load_prompt_template, render_prompt
 
 logger = logging.getLogger(__name__)
 
-# Estensioni per cui esiste un ruleset Semgrep in sast_analyzer: tenerle
-# allineate evita di scaricare file che poi nessuna regola guarderebbe.
+# Extensions for which a Semgrep ruleset exists in sast_analyzer: keeping
+# them aligned avoids downloading files that no rule would then inspect.
 _SUPPORTED_EXTS = (".ts", ".js", ".jsx", ".tsx", ".py", ".java", ".go", ".rb")
 
 
 
-def _normalizza_percorso(path: str) -> str:
-    """Riduce un percorso alla forma con cui viene confrontato.
+def _normalize_path(path: str) -> str:
+    """Reduces a path to the form used for comparison.
 
-    Il modello riscrive volentieri lo stesso file come './src/a.js',
-    'src\a.js' o con una barra iniziale: sono lo stesso file, e scartarli
-    come fuori ambito sarebbe un falso negativo.
+    The model happily rewrites the same file as './src/a.js',
+    'src\a.js' or with a leading slash: they are the same file, and
+    discarding them as out of scope would be a false negative.
     """
     return path.replace("\\", "/").lstrip("./").lstrip("/")
 
 
 def _only_in_scope(blocks: list[FindingBlock], ctx: dict | None) -> list[FindingBlock]:
-    """Scarta i riscontri su file che non erano nell'ambito richiesto (RF.30).
+    """Discards findings on files that were not in the requested scope (RF.30).
 
-    Il modello riceve l'elenco dei file da esaminare, ma nulla gli impedisce
-    di segnalare vulnerabilita' su percorsi che non gli sono mai stati dati:
-    file esclusi dall'ambito, oppure inventati di sana pianta. Riportarli
-    significherebbe attribuire all'utente riscontri su codice che non ha
-    chiesto di analizzare e che l'agente non ha letto.
+    The model receives the list of files to examine, but nothing prevents it
+    from reporting vulnerabilities on paths it was never given: files
+    excluded from the scope, or invented out of thin air. Reporting them
+    would mean attributing to the user findings on code they did not ask to
+    analyze and that the agent has not read.
 
-    Senza 'scope_files' nel contesto -- un chiamante che passa un ctx vuoto --
-    non c'e' nulla con cui confrontare e i blocchi passano invariati.
+    Without 'scope_files' in the context -- a caller passing an empty ctx --
+    there is nothing to compare against and the blocks pass through unchanged.
     """
     scope = (ctx or {}).get("scope_files")
     if not scope:
         return blocks
 
-    ammessi = {_normalizza_percorso(p) for p in scope}
-    return [b for b in blocks if _normalizza_percorso(b.filePath) in ammessi]
+    allowed = {_normalize_path(p) for p in scope}
+    return [b for b in blocks if _normalize_path(b.filePath) in allowed]
 
 
 def _most_critical_first(blocks: list[FindingBlock]) -> list[FindingBlock]:
-    """Riordina i riscontri dal piu' al meno critico (RF.61).
+    """Reorders findings from most to least critical (RF.61).
 
-    L'ordinamento e' stabile: a parita' di gravita' resta l'ordine in cui il
-    modello li ha prodotti, che e' l'unico criterio secondario disponibile.
-    Una gravita' che non compare in SEVERITY_ORDER finisce in fondo invece
-    di far fallire l'ordinamento.
+    The sort is stable: at equal severity the order in which the model
+    produced them is preserved, which is the only secondary criterion
+    available. A severity not present in SEVERITY_ORDER ends up at the
+    bottom instead of causing the sort to fail.
     """
     return sorted(
         blocks,
@@ -77,11 +77,11 @@ def _most_critical_first(blocks: list[FindingBlock]) -> list[FindingBlock]:
 
 
 def _renumbered(blocks: list[FindingBlock], start: int = 0) -> list[FindingBlock]:
-    """Rinumera 'order' dopo filtro e riordino.
+    """Renumbers 'order' after filtering and reordering.
 
-    'order' e' la posizione con cui il blocco viene reso a schermo: lasciarlo
-    al valore di arrivo dopo aver scartato o spostato dei riscontri
-    produrrebbe buchi e numerazioni incoerenti con l'ordine effettivo.
+    'order' is the position with which the block is rendered on screen:
+    leaving it at the arrival value after discarding or moving findings
+    would produce gaps and numbering inconsistent with the actual order.
     """
     return [b.model_copy(update={"order": start + i}) for i, b in enumerate(blocks)]
 
@@ -112,7 +112,8 @@ class ContextResourceInvalidError(Exception):
         super().__init__(message)
 
 
-class SecurityLoader:
+class SecurityLoader
+:
     """Loads the context (code and policy) via the Facade."""
 
     def __init__(
@@ -122,10 +123,10 @@ class SecurityLoader:
 
         Args:
             operation (str): The operation code. Defaults to 'SECURITY_OWASP'.
-            sast_analyzer (SASTAnalyzer | None): Analizzatore statico da usare
-                prima dell'LLM. Iniettato invece che costruito qui per poterlo
-                sostituire nei test e per lasciare a main.py l'unica decisione
-                su se la funzionalita' e' attiva.
+            sast_analyzer (SASTAnalyzer | None): Static analyzer to use before
+                the LLM. Injected rather than constructed here so it can be
+                replaced in tests and to leave main.py the sole decision on
+                whether the feature is active.
         """
         self.operation = operation
         self._sast = sast_analyzer
@@ -164,7 +165,8 @@ class SecurityLoader:
         for n in nodes:
             if n["type"] == "file" and n["path"].endswith(_SUPPORTED_EXTS):
                 if scope_type == "FULL_REPOSITORY":
-                    files_to_scan.append(n["path"])
+                  
+  files_to_scan.append(n["path"])
                 else:
                     if any(n["path"].startswith(p) for p in paths):
                         files_to_scan.append(n["path"])
@@ -202,9 +204,9 @@ class SecurityLoader:
         return {
             "policy": policy_content,
             "files": tree_str,
-            # Duplica l'elenco che tree_str gia' rende in forma leggibile
-            # per il prompt: questo serve a parse_output per scartare i
-            # riscontri su percorsi fuori dall'ambito richiesto (RF.30).
+            # Duplicates the list that tree_str already renders in readable form
+            # for the prompt: this is used by parse_output to discard
+            # findings on paths outside the requested scope (RF.30).
             "scope_files": files_to_scan,
             "sast_section": sast_section,
             "sast_findings": sast_findings,
@@ -215,36 +217,37 @@ class SecurityLoader:
         self,
         toolset: GitHubToolset,
         owner: str,
-        repo: str,
+        re
+po: str,
         sha: str,
         files_to_scan: list[str],
     ) -> tuple[list[SastFindingBlock], SastSummaryBlock | None, str]:
-        """Esegue la scansione statica, se prevista per questa operazione.
+        """Runs the static scan, if applicable for this operation.
 
-        Solo per SECURITY_OWASP: SECURITY_POLICY verifica le regole scritte nel
-        POLICY.md del repository, che nessun ruleset generico conosce.
+        Only for SECURITY_OWASP: SECURITY_POLICY checks the rules written in
+        the repository's POLICY.md, which no generic ruleset knows.
 
         Args:
-            toolset (GitHubToolset): Facade verso il backend.
-            owner (str): Proprietario del repository.
-            repo (str): Nome del repository.
-            sha (str): Commit a cui e' ancorato il contesto.
-            files_to_scan (list[str]): Percorsi dei file nello scope.
+            toolset (GitHubToolset): Facade towards the backend.
+            owner (str): Repository owner.
+            repo (str): Repository name.
+            sha (str): The commit the context is anchored to.
+            files_to_scan (list[str]): Paths of the files in scope.
 
         Returns:
-            tuple: I finding, il riepilogo (None se il motore non e' stato
-            eseguibile) e la sezione di prompt da sottoporre all'LLM.
+            tuple: The findings, the summary (None if the engine was not
+            executable) and the prompt section to submit to the LLM.
         """
         if not (self._sast and self.operation == "SECURITY_OWASP"):
             return [], None, ""
 
-        # Ogni file e' un giro HTTP verso la facade: senza tetto, su un
-        # repository grande la sola raccolta esaurirebbe il budget
-        # dell'operazione prima ancora di interrogare il modello.
+        # Each file is an HTTP round-trip to the facade: without a cap, on a
+        # large repository the collection alone would exhaust the operation
+        # budget before even querying the model.
         selected = files_to_scan[: settings.sast_max_files]
         if len(files_to_scan) > len(selected):
             logger.warning(
-                "SAST limitato ai primi %d file su %d (SAST_MAX_FILES)",
+                "SAST limited to first %d files out of %d (SAST_MAX_FILES)",
                 len(selected),
                 len(files_to_scan),
             )
@@ -253,22 +256,23 @@ class SecurityLoader:
         for path in selected:
             try:
                 resp = await toolset.read_file(owner, repo, sha, path)
-            except Exception as exc:  # noqa: BLE001 - un file illeggibile non ferma la scansione
-                logger.warning("SAST: impossibile leggere %s (%s)", path, exc)
+            except Exception as exc:  # noqa: BLE001 - an unreadable file does not stop the scan
+                logger.warning("SAST: unable to read %s (%s)", path, exc)
                 continue
             content = resp.get("content", "")
             if content:
                 file_contents[path] = content
 
         findings, summary = await self._sast.analyze(file_contents)
-        if summary is None:
-            # Motore non disponibile: nessuna sezione SAST, ne' nel prompt ne'
-            # nel report. Un riepilogo a zero si leggerebbe come "nessuna
-            # vulnerabilita'" invece che "analisi non eseguita".
+        if summa
+ry is None:
+            # Engine not available: no SAST section, neither in the prompt nor
+            # in the report. A zero summary would read as "no vulnerabilities"
+            # instead of "analysis not performed".
             return [], None, ""
 
         logger.info(
-            "SAST completato: %d finding (esclusi=%d, timeout=%s)",
+            "SAST completed: %d findings (excluded=%d, timedOut=%s)",
             summary.totalFindings,
             summary.cappedFindings,
             summary.timedOut,
@@ -294,10 +298,10 @@ class OwaspScanProfile:
             Tuple[str, str]: The generated prompts.
         """
         template_data = load_prompt_template("security", "owasp_scan")
-        # `sast` e' una variabile a se' e non un'aggiunta in testa a `files`:
-        # il template la colloca dove serve e, soprattutto, spiega al modello
-        # che quella sezione va giudicata (sast_verdicts) e non solo letta.
-        # Vuota quando la scansione non e' stata eseguita.
+        # 'sast' is a standalone variable, not a prepend to 'files':
+        # the template places it where needed and, most importantly, tells
+        # the model that this section must be judged (sast_verdicts) not
+        # just read. Empty when the scan was not performed.
         return render_prompt(
             template_data,
             policy=ctx["policy"],
@@ -308,16 +312,16 @@ class OwaspScanProfile:
     def parse_output(
         self, raw: str, ctx: dict | None = None
     ) -> tuple[list[Block], Proposal | None]:
-        """Interpreta l'output del modello.
+        """Interprets the model output.
 
-        Produce tre gruppi di blocchi: i finding di Semgrep con il verdetto che
-        il modello ha dato a ciascuno, il riepilogo aggiornato della scansione,
-        e i finding che il modello ha trovato per conto proprio.
+        Produces three groups of blocks: the Semgrep findings with the verdict
+        the model gave each one, the updated scan summary, and the findings
+        the model found on its own.
 
         Args:
             raw (str): The raw string output from the model.
-            ctx (dict, optional): Il contesto caricato, da cui si recuperano i
-                finding SAST prodotti prima dell'invocazione.
+            ctx (dict, optional): The loaded context, from which the SAST
+                findings produced before the invocation are retrieved.
 
         Returns:
             Tuple[List[Block], Optional[Proposal]]: The parsed blocks and an optional proposal.
@@ -326,10 +330,10 @@ class OwaspScanProfile:
         ctx = ctx or {}
         blocks: list[Block] = self._apply_sast_verdicts(data, ctx)
         order_offset = len(blocks)
-        # I riscontri del modello si raccolgono a parte: filtro d'ambito e
-        # riordino per gravita' riguardano solo loro, mentre i blocchi SAST
-        # restano in testa con la numerazione che gia' hanno.
-        trovati: list[FindingBlock] = []
+        # The model's findings are collected separately: scope filtering and
+        # severity reordering apply only to them, while the SAST blocks
+        # stay at the front with the numbering they already have.
+        found: list[FindingBlock] = []
 
         for order, item in enumerate(data.get("findings", [])):
             rem_data = item.get("remediation", {})
@@ -351,16 +355,17 @@ class OwaspScanProfile:
             else:
                 remediation = {"kind": "TEXT", "text": str(rem_data)}
 
-            # INFO non viene piu' degradato a LOW: il dominio condiviso di
-            # Severity lo prevede (shared/src/types.ts), e appiattirlo faceva
-            # sparire la distinzione fra "segnalazione" e "problema minore".
+            # INFO is no longer downgraded to LOW: the shared Severity domain
+            # includes it (shared/src/types.ts), and flattening it would
+            # erase the distinction between "informational" and "minor issue".
             raw_severity = str(item.get("severity", "MEDIUM")).upper()
 
             end_line = item.get("end_line")
 
-            trovati.append(
+            found.append(
                 FindingBlock(
-                    order=order_offset + order,
+          
+          order=order_offset + order,
                     category=str(item.get("category", "Uncategorized")),
                     severity=raw_severity,
                     filePath=str(item.get("file", "unknown")),
@@ -371,27 +376,27 @@ class OwaspScanProfile:
                 )
             )
 
-        trovati = _only_in_scope(trovati, ctx)
-        trovati = _most_critical_first(trovati)
-        return blocks + _renumbered(trovati, order_offset), None
+        found = _only_in_scope(found, ctx)
+        found = _most_critical_first(found)
+        return blocks + _renumbered(found, order_offset), None
 
     @staticmethod
     def _apply_sast_verdicts(data: dict, ctx: dict) -> list[Block]:
-        """Applica ai finding di Semgrep il giudizio espresso dal modello.
+        """Applies the model's verdict to the Semgrep findings.
 
-        Il modello risponde con un array `sast_verdicts`, ciascuno riferito a un
-        finding tramite `rule_id` **e** posizione. Il solo rule_id non basta:
-        la stessa regola puo' essere violata in piu' punti, e appaiare per
-        regola assegnerebbe a tutte le occorrenze il verdetto dato a una sola.
-        Un finding che il modello non nomina resta NEEDS_REVIEW, che e' la
-        risposta onesta: nessuno l'ha guardato.
+        The model responds with a `sast_verdicts` array, each referring to a
+        finding by `rule_id` **and** position. The rule_id alone is not
+        enough: the same rule can be violated in multiple places, and
+        matching by rule would assign to all occurrences the verdict given
+        to just one. A finding the model does not name stays NEEDS_REVIEW,
+        which is the honest answer: nobody looked at it.
 
         Args:
-            data (dict): L'output del modello, gia' decodificato.
-            ctx (dict): Il contesto caricato, con i finding e il riepilogo SAST.
+            data (dict): The model output, already decoded.
+            ctx (dict): The loaded context, with the SAST findings and summary.
 
         Returns:
-            list[Block]: I finding SAST aggiornati piu' il riepilogo.
+            list[Block]: The updated SAST findings plus the summary.
         """
         findings: list[SastFindingBlock] = ctx.get("sast_findings") or []
         summary: SastSummaryBlock | None = ctx.get("sast_summary")
@@ -404,7 +409,8 @@ class OwaspScanProfile:
             rule_id = str(item.get("rule_id", ""))
             if not rule_id:
                 continue
-            verdict = str(item.get("verdict", "NEEDS_REVIEW")).upper()
+    
+        verdict = str(item.get("verdict", "NEEDS_REVIEW")).upper()
             if verdict not in ("CONFIRMED", "FALSE_POSITIVE", "NEEDS_REVIEW"):
                 verdict = "NEEDS_REVIEW"
             remediation = item.get("remediation")
@@ -417,8 +423,8 @@ class OwaspScanProfile:
                     by_key[(rule_id, file_path, int(line))] = (verdict, remediation)
                 except (TypeError, ValueError):
                     pass
-            # Ripiego per quando il modello riporta solo la regola: si applica
-            # unicamente se quella regola compare una volta sola.
+            # Fallback for when the model reports only the rule: applies
+            # only if that rule appears exactly once.
             by_rule.setdefault(rule_id, (verdict, remediation))
 
         rule_counts: dict[str, int] = {}
@@ -435,7 +441,7 @@ class OwaspScanProfile:
                 finding.verdict, remediation = match  # type: ignore[assignment]
                 if remediation:
                     finding.llmRemediation = remediation
-            # Posizione 0 e' del riepilogo, che viene anteposto qui sotto.
+            # Position 0 is for the summary, which is prepended below.
             finding.order = position + 1
             blocks.append(finding)
 
@@ -444,11 +450,12 @@ class OwaspScanProfile:
                 "order": 0,
                 "confirmedFindings": sum(1 for f in findings if f.verdict == "CONFIRMED"),
                 "falsePositives": sum(1 for f in findings if f.verdict == "FALSE_POSITIVE"),
-                "needsReview": sum(1 for f in findings if f.verdict == "NEEDS_REVIEW"),
+                "needsReview": sum(1 for f in 
+findings if f.verdict == "NEEDS_REVIEW"),
             }
         )
-        # Il riepilogo va in testa al report: e' il blocco che dice se la lista
-        # che segue e' completa.
+        # The summary goes at the top of the report: it is the block that says
+        # whether the list that follows is complete.
         return [updated, *blocks]
 
 
@@ -499,7 +506,8 @@ class SecurityPolicyProfile:
                         "code": rem_data.get("code", ""),
                     }
                 else:
-                    text_fallback = rem_data.get("text", "No remediation provided")
+                    text_fallback = rem_data.get("text", "No remediation pr
+ovided")
                     remediation = {
                         "kind": "TEXT",
                         "text": rem_data.get("markdown", text_fallback),
@@ -524,4 +532,5 @@ class SecurityPolicyProfile:
                 )
             )
         return blocks, None
+
 
