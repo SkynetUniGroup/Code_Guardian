@@ -1,33 +1,33 @@
-# Code Guardian -- Infrastruttura AWS (MVP)
+# Code Guardian -- AWS Infrastructure (MVP)
 
-Infrastruttura AWS come codice (AWS CDK v2, TypeScript) per l'MVP di Code
-Guardian, regione **eu-south-1** (Milano). Implementa la Parte IV-V del
-documento di progettazione: stessa topologia di rete, stessi Security Group,
-stesso dimensionamento ECS, stesse decisioni architetturali.
+AWS infrastructure as code (AWS CDK v2, TypeScript) for the Code Guardian
+MVP, region **eu-south-1** (Milan). It implements Parts IV-V of the design
+document: same network topology, same Security Groups, same ECS sizing,
+same architectural decisions.
 
-Le immagini Docker di `backend` e `agents` sono quelle validate nel PoC:
-questa infrastruttura non richiede modifiche al codice applicativo, solo
-variabili d'ambiente e permessi IAM al posto delle chiavi statiche del PoC.
+The Docker images for `backend` and `agents` are the ones validated in the
+PoC: this infrastructure requires no changes to the application code, only
+environment variables and IAM permissions in place of the PoC's static
+keys.
 
-Due particolarità di questa infrastruttura, per chi la legge per la prima
-volta:
+Two peculiarities of this infrastructure, for first-time readers:
 
-- Il bucket frontend statico nasce in `cloudfront-stack.ts`, non in
-  `storage-stack.ts` insieme a quello degli artefatti -- tenerlo separato
-  dalla distribuzione CloudFront che lo serve creerebbe una dipendenza
-  circolare nota tra i due stack.
-- `CodeGuardian-Budget` è l'unico stack che deploya in **us-east-1** anziché
-  eu-south-1: `AWS::Budgets::Budget` esiste come risorsa CloudFormation solo
-  lì, essendo AWS Budgets un servizio globale.
+- The static frontend bucket is created in `cloudfront-stack.ts`, not in
+  `storage-stack.ts` alongside the artifacts bucket -- keeping it separate
+  from the CloudFront distribution that serves it would create a known
+  circular dependency between the two stacks.
+- `CodeGuardian-Budget` is the only stack that deploys to **us-east-1**
+  instead of eu-south-1: `AWS::Budgets::Budget` exists as a CloudFormation
+  resource only there, since AWS Budgets is a global service.
 
-## Prerequisiti
+## Prerequisites
 
-1. Node.js ≥ 20, AWS CLI configurato con credenziali sull'account target.
-2. Attività manuali propedeutiche: vedi **`RUNBOOK.md`** (richiesta accesso
-   Bedrock, chiavi Atlas, secrets GitHub Actions, conferma SNS).
-3. Aggiornare `cdk.json` (`context`) con i valori reali del progetto:
-   `atlasPrivateEndpointServiceName`, `alertEmail`, `githubOrg`/`githubRepo`,
-   `monthlyBudgetUsd`.
+1. Node.js >= 20, AWS CLI configured with credentials for the target account.
+2. Manual prerequisite activities: see **`RUNBOOK.md`** (Bedrock access
+   request, Atlas keys, GitHub Actions secrets, SNS confirmation).
+3. Update `cdk.json` (`context`) with the actual project values:
+   `atlasPrivateEndpointServiceName`, `alertEmail`,
+   `githubOrg`/`githubRepo`, `monthlyBudgetUsd`.
 
 ## Quick start
 
@@ -35,13 +35,13 @@ volta:
 npm install
 aws login
 npx cdk bootstrap aws://<ACCOUNT_ID>/eu-south-1
-npx cdk bootstrap aws://<ACCOUNT_ID>/us-east-1  # solo per CodeGuardian-Budget
-npm run synth      # verifica che tutti gli stack sintetizzino correttamente
-npm run deploy:all # oppure uno stack alla volta, vedi package.json "scripts"
+npx cdk bootstrap aws://<ACCOUNT_ID>/us-east-1  # only for CodeGuardian-Budget
+npm run synth      # verify that all stacks synthesize correctly
+npm run deploy:all # or one stack at a time, see package.json "scripts"
 ```
 
-Deploy incrementale nell'ordine di dipendenza tecnica (equivalente a
-`deploy:all`, utile per isolare un errore in una fase specifica):
+Incremental deploy in the technical dependency order (equivalent to
+`deploy:all`, useful for isolating an error in a specific stage):
 
 ```bash
 npm run deploy:network
@@ -51,77 +51,77 @@ npm run deploy:storage
 npm run deploy:security-groups
 npm run deploy:vpc-endpoints
 npm run deploy:data
-npm run deploy:atlas          # richiede --context atlasPrivateEndpointServiceName=<...>, vedi RUNBOOK.md
+npm run deploy:atlas          # requires --context atlasPrivateEndpointServiceName=<...>, see RUNBOOK.md
 npm run deploy:compute
 npm run deploy:cloudfront
 npm run deploy:observability
-npm run deploy:budget         # deploya in us-east-1, richiede il bootstrap lì
+npm run deploy:budget         # deploys to us-east-1, requires bootstrap there
 ```
 
-Dopo il primo deploy completo, seguire i punti 4 e 5 del `RUNBOOK.md`
-(conferma sottoscrizione email SNS, primo push immagini ECR) prima di
-considerare l'ambiente operativo.
+After the first complete deploy, follow steps 4 and 5 in `RUNBOOK.md`
+(confirm SNS email subscription, first push of ECR images) before
+considering the environment operational.
 
-## Struttura
+## Structure
 
 ```
-bin/codeguardian.ts          -- entry point CDK, wiring tra gli stack
-lib/config.ts                -- costanti condivise (CIDR, porte, sizing...)
-lib/network-stack.ts          -- VPC, subnet, IGW, NAT
-lib/security-groups-stack.ts  -- Security Group (pattern anti-ciclo)
+bin/codeguardian.ts          -- CDK entry point, wiring between stacks
+lib/config.ts                -- shared constants (CIDRs, ports, sizing...)
+lib/network-stack.ts          -- VPC, subnets, IGW, NAT
+lib/security-groups-stack.ts  -- Security Groups (anti-cycle pattern)
 lib/vpc-endpoints-stack.ts    -- VPC Endpoints Gateway + Interface
 lib/kms-secrets-stack.ts      -- KMS, Secrets Manager, Parameter Store
-lib/storage-stack.ts          -- Bucket S3 artefatti
+lib/storage-stack.ts          -- S3 artifacts bucket
 lib/data-stack.ts             -- ElastiCache Redis
-lib/atlas-stack.ts            -- MongoDB Atlas, lato AWS del PrivateLink (project/cluster gestiti a mano)
-lib/cicd-identity-stack.ts    -- ECR + ruolo CI/CD (GitHub OIDC)
+lib/atlas-stack.ts            -- MongoDB Atlas, AWS side of PrivateLink (project/cluster managed manually)
+lib/cicd-identity-stack.ts    -- ECR + CI/CD role (GitHub OIDC)
 lib/compute-stack.ts          -- ECS Fargate, Task Def, IAM, Cloud Map, ALB
-lib/cloudfront-stack.ts       -- Bucket S3 frontend + CloudFront + OAC + routing SPA
-lib/observability-stack.ts    -- SNS, allarmi CloudWatch
+lib/cloudfront-stack.ts       -- Frontend S3 bucket + CloudFront + OAC + SPA routing
+lib/observability-stack.ts    -- SNS, CloudWatch alarms
 lib/budget-stack.ts           -- AWS Budgets (us-east-1)
-.github/workflows/deploy.yml  -- pipeline CI/CD
-RUNBOOK.md                    -- attività manuali (Bedrock, Atlas, SNS...)
+.github/workflows/deploy.yml  -- CI/CD pipeline
+RUNBOOK.md                    -- manual activities (Bedrock, Atlas, SNS...)
 ```
 
-## Pipeline CI/CD
+## CI/CD pipeline
 
-`.github/workflows/deploy.yml` gira in due modalità:
+`.github/workflows/deploy.yml` runs in two modes:
 
-- **Pull request**: solo typecheck del codice CDK (`tsc --noEmit`) e build
-  Docker locale delle due immagini, come smoke test. Nessuna credenziale AWS
-  coinvolta.
-- **Push su `main`**: build + push immagini su ECR, `cdk synth` come gate
-  pre-deploy, poi deploy dello stack Compute e del frontend.
+- **Pull request**: only CDK code typecheck (`tsc --noEmit`) and local
+  Docker build of the two images, as a smoke test. No AWS credentials
+  involved.
+- **Push to `main`**: build + push images to ECR, `cdk synth` as a
+  pre-deploy gate, then deploy of the Compute stack and the frontend.
 
-Il trust policy OIDC del ruolo `codeguardian-ci-role` accetta token da
-qualunque branch/ref del repository; è il workflow stesso, con delle
-condizioni `if` sui singoli step, a restringere l'uso delle credenziali AWS
-al solo push su `main`. Volendo un limite anche a livello di trust policy, si
-può aggiungere una condizione `StringLike` sul claim `sub` in
+The OIDC trust policy of the `codeguardian-ci-role` accepts tokens from
+any branch/ref of the repository; it is the workflow itself, with `if`
+conditions on individual steps, that restricts the use of AWS credentials
+to pushes on `main` only. If you want a restriction at the trust policy
+level too, you can add a `StringLike` condition on the `sub` claim in
 `cicd-identity-stack.ts`.
 
 ## Debug (ECS Exec)
 
-I servizi `backend` e `agents` hanno `enableExecuteCommand: true`: l'accesso
-shell ai container per il debug passa da AWS Systems Manager Session
-Manager, senza bastion host né chiavi SSH:
+The `backend` and `agents` services have `enableExecuteCommand: true`:
+shell access to containers for debugging goes through AWS Systems Manager
+Session Manager, without a bastion host or SSH keys:
 
 ```bash
-aws ecs execute-command --cluster codeguardian-cluster --task <TASK_ID> \
+aws ecs execute-command --cluster codeguardian-cluster --task <TASK_ID> \\
   --container backend --interactive --command "/bin/sh"
 ```
 
-## Integrazione con frontend/backend/agenti
+## Integration with frontend/backend/agents
 
-- **Frontend**: build Vite con `VITE_API_BASE_URL=/api/v1` (path relativo,
-  Same-Origin dietro CloudFront -- nessuna configurazione CORS), sync sul
-  bucket frontend (output `FrontendBucketName` di `CodeGuardian-CloudFront`),
-  invalidazione via lo stesso stack (output `DistributionId`).
-- **Backend**: legge `MONGO_URI`, `JWT_SECRET`, `CREDENTIAL_MASTER_KEY`,
-  `INTERNAL_SHARED_SECRET`, `REDIS_URL` da variabili d'ambiente (iniettate da
-  ECS via Secrets Manager/Parameter Store) -- nessun cambio di codice
-  richiesto rispetto al PoC.
-- **Agenti**: legge `INTERNAL_SHARED_SECRET`, `BACKEND_BASE_URL`
+- **Frontend**: Vite build with `VITE_API_BASE_URL=/api/v1` (relative path,
+  Same-Origin behind CloudFront -- no CORS configuration), sync to the
+  frontend bucket (`FrontendBucketName` output of `CodeGuardian-CloudFront`),
+  invalidation via the same stack (`DistributionId` output).
+- **Backend**: reads `MONGO_URI`, `JWT_SECRET`, `CREDENTIAL_MASTER_KEY`,
+  `INTERNAL_SHARED_SECRET`, `REDIS_URL` from environment variables
+  (injected by ECS via Secrets Manager/Parameter Store) -- no code changes
+  required compared to the PoC.
+- **Agents**: reads `INTERNAL_SHARED_SECRET`, `BACKEND_BASE_URL`
   (`http://backend.codeguardian.local:3000`), `LLM_PROVIDER=bedrock`;
-  invoca Bedrock tramite il Task Role (nessuna chiave API), scope limitato
-  alla famiglia Qwen3 in eu-south-1.
+  invokes Bedrock through the Task Role (no API keys), scope limited to
+  the Qwen3 family in eu-south-1.
