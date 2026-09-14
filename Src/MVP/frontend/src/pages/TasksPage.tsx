@@ -12,7 +12,7 @@ import type { TaskDto, TaskEntry } from "../types";
 import { OPERATION_LABELS } from "../types";
 
 /**
- * TasksPage — /tasks
+ * TasksPage Ã¢ÂÂ /tasks
  *
  * Displays all known tasks with real-time status from the tasksStore,
  * which is kept up-to-date by the WebSocket hook running in AppShell.
@@ -30,8 +30,8 @@ import { OPERATION_LABELS } from "../types";
 /**
  * Which modal is open and on which task. The payload depends on `kind`, so
  * it is a discriminated union, not `any`: it is the same shape that PendingInput
- * ha nello store, e tenerla tipizzata evita che una modale legga un campo che
- * per quel kind non esiste.
+ * has in the store, and keeping it typed prevents a modal from reading a field
+ * that does not exist for that kind.
  */
 type ModalRequest =
   | { kind: "SPRINT_ID" }
@@ -47,6 +47,7 @@ type ActiveModal = ModalRequest & { taskId: string };
 export function TasksPage() {
   const tasks_map = useTasksStore((s) => s.tasks);
 
+
   const load_tasks = useTasksStore((s) => s.loadTasks);
   const cancel_task = useTasksStore((s) => s.cancel);
   const current_batch_id = useTasksStore((s) => s.currentBatchId);
@@ -54,7 +55,7 @@ export function TasksPage() {
   const [initial_loading, setInitialLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
 
-  // Modal state — tracks which task's modal is open and its kind.
+  // Modal state Ã¢ÂÀ tracks which task's modal is open and its kind.
   const [active_modal, setActiveModal] = useState<ActiveModal | null>(null);
 
   // Fetch initial task list on mount.
@@ -72,8 +73,8 @@ export function TasksPage() {
           currentStage: t.currentStage ?? null,
           reportId: t.reportId ?? null,
           error: t.error ?? null,
-          // pendingInput e' persistito sul Task, non solo trasmesso via
-          // WebSocket: azzerarlo qui faceva sparire il pulsante della modale a
+          // pendingInput is persisted on the Task, not just transmitted via
+          // WebSocket: resetting it here made the modal button disappear on
           // every refresh, leaving the task waiting for a response that
           // the user could no longer provide.
           pendingInput: t.pendingInput ?? null,
@@ -97,7 +98,8 @@ export function TasksPage() {
       cancel_task(task_id);
     } catch {
       // Error is surfaced by the task status card if
- the WS confirms failure.
+ the WS conf
+irms failure.
     } finally {
       setCancelling(null);
     }
@@ -123,7 +125,7 @@ export function TasksPage() {
     return (
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Spinner size="sm" />
-        Loading tasks…
+        Loading tasksÃ¢ÂÂ¦
       </div>
     );
   }
@@ -141,7 +143,7 @@ export function TasksPage() {
           <Link to="/run" className="text-[#2277cc] hover:underline">
             Start an operation
           </Link>{" "}
-          per cominciare.
+          to get started.
         </div>
       ) : (
         <ul className="flex flex-col gap-3">
@@ -165,7 +167,8 @@ export function TasksPage() {
 
       {active_modal?.kind === "INCOMPLET
 E_TASKS" && (
-        <IncompleteTasksModal
+        <Incomplete
+TasksModal
           taskId={active_modal.taskId}
           taskIds={active_modal.taskIds}
           onClose={() => setActiveModal(null)}
@@ -185,7 +188,7 @@ E_TASKS" && (
 }
 
 // ---------------------------------------------------------------------------
-// TaskCard — internal component
+// TaskCard Ã¢ÂÂ internal component
 // ---------------------------------------------------------------------------
 
 interface TaskCardProps {
@@ -201,8 +204,8 @@ interface TaskCardProps {
  */
 function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps) {
   const can_cancel = task.status === "PENDING" || task.status === "RUNNING";
-  // Estratto in una const: TypeScript non mantiene il narrowing di
-  // task.pendingInput dentro le callback onClick qui sotto.
+  // Extracted into a const: TypeScript does not preserve the narrowing of
+  // task.pendingInput inside the onClick callbacks below.
   const pending = task.pendingInput;
 
   return (
@@ -220,7 +223,8 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
 
       {/* Progress bar (only for running tasks
 ) */}
-      {task.status === "RUNNING" && (
+      {task.status === "RU
+NNING" && (
         <ProgressBar value={task.progressPercent} stage={task.currentStage} className="mb-3" />
       )}
 
@@ -229,7 +233,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
         <div className="mb-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-[#cc2222]">
           <span className="font-semibold">{task.error.code}:</span> {task.error.message}
           {task.error.stage && (
-            <span className="ml-1 text-red-400">(fase: {task.error.stage})</span>
+            <span className="ml-1 text-red-400">(stage: {task.error.stage})</span>
           )}
         </div>
       )}
@@ -258,7 +262,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
             }
             className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#c98f00] transition"
           >
-            Task incompleti — decidi
+            Incomplete tasks â decide
           </button>
         )}
 
@@ -274,7 +278,8 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
             }
             className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white
  hover:bg-[#c98f00] transition"
-          >
+   
+       >
             Review the technical changelog
           </button>
         )}
@@ -299,10 +304,12 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
             className="ml-auto flex items-center gap-1.5 rounded border border-[#cc2222] px-3 py-1.5 text-xs font-medium text-[#cc2222] hover:bg-red-50 transition disabled:opacity-50"
           >
             {cancelling && <Spinner size="sm" className="text-[#cc2222]" />}
-            Annulla
+            Cancel
           </button>
         )}
       </div>
     </li>
   );
 }
+
+ 
