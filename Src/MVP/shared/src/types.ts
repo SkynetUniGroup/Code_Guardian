@@ -19,7 +19,7 @@ export interface UserProfileDto {
 }
 
 export interface AuthTokenDto {
-  accessToken: string; // JWT HS256, espires in 8h
+  accessToken: string; // JWT HS256, expires in 8h
 }
 
 export interface LoginDto {
@@ -49,9 +49,10 @@ export const OPERATION_CODES: OperationCode[] = [
 
 export type AgentName = "DOCS" | "SECURITY" | "CHANGELOG";
 
-// Cosa restituisce GET /operations: le sole operazioni consentite al ruolo di
-// chi chiama, gia' filtrate dal backend. È la fonte di verità su quali
-// operazioni esistono e chi può lanciarle — il frontend non la duplica.
+// What GET /operations returns: only the operations permitted for the role of
+// the caller, already filtered by the backend. It is the source of truth on
+// which operations exist and who can launch them — the frontend does not
+// duplicate it.
 export interface OperationDescriptorDto {
   code: OperationCode;
   displayName: string;
@@ -74,18 +75,18 @@ export interface TaskError {
 export type PendingInput =
   | { kind: "SPRINT_ID" }
   | { kind: "INCOMPLETE_TASKS"; taskIds: string[] }
-  // Il changelog tecnico viaggia come testo, non come id di un Report.
+  // The technical changelog travels as text, not as a Report id.
   //
-  // Qui c'era `technicalReportId`, e non poteva funzionare: CHANGELOG_BUSINESS
-  // e' un solo Task che fa due fasi dentro lo stesso grafo dell'agente, e il
-  // Report nasce solo alla fine. Nell'istante in cui si chiede la conferma un
-  // Report tecnico non esiste, quindi non c'e' nessun id da mandare —
-  // l'interfaccia ci costruiva sopra un link verso `/reports/`.
+  // Here there was `technicalReportId`, and it could not work: CHANGELOG_BUSINESS
+  // is a single Task that does two phases inside the same agent graph, and the
+  // Report is born only at the end. At the moment confirmation is requested a
+  // technical Report does not exist, so there is no id to send — the
+  // interface used to build a link to `/reports/` on top of it.
   | {
       kind: "BUSINESS_CONFIRMATION";
-      /** Il changelog tecnico appena prodotto, in Markdown. */
+      /** The technical changelog just produced, in Markdown. */
       technicalChangelog: string;
-      /** Vero se il testo e' stato tagliato perche' troppo lungo. */
+      /** True if the text was truncated because it was too long. */
       technicalChangelogTruncated: boolean;
     }
   | null;
@@ -116,9 +117,9 @@ export interface TaskDto {
 export type ReportStatus = "COMPLETED" | "FAILED";
 export type Severity = "INFO" | "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
-// Nota: Task usa `code`, Report usa `kind` per lo stesso dominio di valori.
-// Divergenza voluta e mantenuta (§11.2): sono due documenti diversi, e il
-// frontend legge già `error.code` sul Task per nome.
+// Note: Task uses `code`, Report uses `kind` for the same value domain.
+// Deliberate divergence, kept (§11.2): they are two different documents, and
+// the frontend already reads `error.code` on the Task by name.
 export interface ReportError {
   kind: string;
   message: string;
@@ -135,18 +136,18 @@ export interface ReportContext {
   paths: string[];
 }
 
-// Esito negativo dell'apertura della Pull Request.
+// Negative outcome of opening the Pull Request.
 //
-// Sta accanto al diff e non al posto suo: quando la pubblicazione fallisce il
-// lavoro dell'agente e' comunque completo, e buttarlo via per un problema di
-// permessi su GitHub significherebbe far ripagare all'utente un'analisi
-// riuscita. Il diff resta quindi nel Report, applicabile a mano, e questo
-// campo dice perche' il collegamento alla PR non c'e'.
+// It sits next to the diff and not in place of it: when publishing fails the
+// agent's work is still complete, and discarding it over a GitHub permissions
+// issue would mean making the user pay again for a successful analysis. The
+// diff therefore stays in the Report, applicable by hand, and this field
+// says why the PR link is not there.
 //
-// Stessa forma di ReportError (`kind` + `message`) perche' e' lo stesso
-// dominio di valori: `kind` e' sempre uno degli ErrorKind, in pratica
-// PR_CREATION_FAILED quando e' GitHub a rifiutare e CREDENTIAL_INVALID quando
-// manca o non vale il token.
+// Same shape as ReportError (`kind` + `message`) because it is the same
+// value domain: `kind` is always one of the ErrorKind values, in practice
+// PR_CREATION_FAILED when GitHub rejects and CREDENTIAL_INVALID when the
+// token is missing or invalid.
 export interface ProposalPublishError {
   kind: string;
   message: string;
@@ -157,10 +158,10 @@ export interface Proposal {
   diffUnified: string;
   language: string;
   pullRequestUrl: string | null;
-  // Opzionale perche' la Proposal nasce dall'agente, che non sa nulla della
-  // pubblicazione: e' il backend a valorizzare l'uno o l'altro di questi due
-  // campi subito prima dell'assemblaggio del Report. Assente o null = nessun
-  // fallimento da segnalare.
+  // Optional because the Proposal is born from the agent, which knows nothing
+  // about publishing: it is the backend that populates one or the other of
+  // these two fields right before Report assembly. Absent or null = no
+  // failure to report.
   pullRequestError?: ProposalPublishError | null;
 }
 
@@ -172,14 +173,14 @@ export interface ReportDto {
   title: string;
   summary: string | null;
   generatedAt: string;
-  // Tempo macchina accumulato dagli invii all'agent (nessuna attesa in coda o
-  // di input umano). Nome allineato al campo persistito su Report.
+  // Machine time accumulated from agent invocations (no queue wait or
+  // human input wait). Name aligned with the persisted field on Report.
   durationMs: number | null;
   tokensConsumed: number;
   context: ReportContext;
   body: Block[];
   proposal?: Proposal;
-  // Proiezione read-only del pendingInput del Task proprietario.
+  // Read-only projection of the owning Task's pendingInput.
   pendingAction: PendingInput;
   error?: ReportError;
 }
@@ -193,9 +194,9 @@ export interface ReportSummaryDto {
   durationMs: number | null;
 }
 
-// `order` è emesso dagli agent Python per rendere deterministico l'ordine dei
-// blocchi in un report; opzionale perché un blocco costruito dal backend (o da
-// un agent più vecchio) resta valido senza.
+// `order` is emitted by the Python agents to make the order of blocks in a
+// report deterministic; optional because a block built by the backend (or by
+// an older agent) remains valid without it.
 export interface TextBlock {
   kind: "TEXT";
   order?: number;
@@ -247,44 +248,44 @@ export interface ChangelogItemBlock {
   detail: string;
 }
 
-// ─────────────────────────── Blocchi SAST (Semgrep) ───────────────────────────
+// ─────────────────────────── SAST Blocks (Semgrep) ───────────────────────────
 //
-// Prodotti dalla fase di analisi statica che precede l'LLM in SECURITY_OWASP:
-// Semgrep trova i candidati, l'LLM li giudica uno per uno. Restano blocchi
-// distinti dai FindingBlock proprio perché la loro provenienza è diversa — una
-// regola deterministica, non il modello — e quell'informazione (quale regola,
-// quale categoria OWASP, quale CWE, e cosa ne ha detto l'LLM) è il motivo per
-// cui un revisore si fida o no del risultato.
+// Produced by the static analysis phase that precedes the LLM in SECURITY_OWASP:
+// Semgrep finds the candidates, the LLM judges them one by one. They remain
+// distinct blocks from FindingBlock precisely because their source is
+// different — a deterministic rule, not the model — and that information
+// (which rule, which OWASP category, which CWE, and what the LLM said about it)
+// is the reason a reviewer trusts the result or not.
 
-/** Cosa ha detto l'LLM di un finding sollevato da Semgrep. */
+/** What the LLM said about a finding raised by Semgrep. */
 export type SastVerdict = "CONFIRMED" | "FALSE_POSITIVE" | "NEEDS_REVIEW";
 
-/** Severità nativa di Semgrep, conservata per confronto con una scansione grezza. */
+/** Native Semgrep severity, kept for comparison with a raw scan. */
 export type SastRuleSeverity = "ERROR" | "WARNING" | "INFO";
 
 export interface SastFindingBlock {
   kind: "SAST_FINDING";
   order?: number;
-  /** Identificativo della regola Semgrep che ha prodotto il finding. */
+  /** Identifier of the Semgrep rule that produced the finding. */
   ruleId: string;
-  /** Categoria OWASP dai metadati della regola, "OWASP-UNKNOWN" se assente. */
+  /** OWASP category from the rule metadata, "OWASP-UNKNOWN" if absent. */
   owaspCategory: string;
   cwe?: string;
   /**
-   * Severità nel dominio condiviso, così che filtro e badge del frontend
-   * funzionino su questi blocchi come su tutti gli altri. Derivata da
+   * Severity in the shared domain, so that the frontend filter and badge
+   * work on these blocks as on all the others. Derived from
    * `ruleSeverity` (ERROR→HIGH, WARNING→MEDIUM, INFO→INFO).
    */
   severity: Severity;
-  /** Severità così come l'ha emessa Semgrep, senza rimappature. */
+  /** Severity as emitted by Semgrep, without remapping. */
   ruleSeverity: SastRuleSeverity;
   filePath: string;
   lineStart: number;
   message: string;
-  /** Estratto del codice incriminato, troncato dall'analizzatore. */
+  /** Excerpt of the offending code, truncated by the analyser. */
   codeSnippet?: string;
   verdict: SastVerdict;
-  /** Rimedio suggerito dall'LLM in fase di giudizio; assente se non l'ha dato. */
+  /** Remediation suggested by the LLM during judgement; absent if not given. */
   llmRemediation?: string;
 }
 
@@ -295,11 +296,11 @@ export interface SastSummaryBlock {
   confirmedFindings: number;
   falsePositives: number;
   needsReview: number;
-  /** Finding esclusi dal tetto di quelli sottoposti all'LLM. */
+  /** Findings excluded by the cap on those submitted to the LLM. */
   cappedFindings: number;
   scannedFiles: number;
   durationMs: number;
-  /** True se Semgrep ha superato il proprio timeout: risultati parziali. */
+  /** True if Semgrep exceeded its own timeout: partial results. */
   timedOut: boolean;
 }
 
@@ -329,19 +330,19 @@ export interface AnalysisContextDto {
   branch: string;
   resolvedSha: string;
   scopeType: ScopeType;
-  // Solo i linguaggi che gli agenti sanno analizzare, ordinati per numero di
-  // file decrescente.
+  // Only the languages the agents can analyse, sorted by descending file
+  // count.
   detectedLanguages: string[];
-  // RF.24: i linguaggi di programmazione presenti che gli agenti *non* sanno
-  // analizzare, stesso ordinamento. Vuoto non vuol dire "repository vuoto":
-  // per quello c'e' estimatedFileCount.
+  // RF.24: programming languages present that the agents *cannot* analyse,
+  // same ordering. Empty does not mean "empty repository": for that there
+  // is estimatedFileCount.
   unsupportedLanguages: string[];
-  // Il linguaggio con piu' file, supportato o meno; null se non c'e' codice.
+  // The language with the most files, supported or not; null if there is no code.
   predominantLanguage: string | null;
-  // RV.7/RF.24: avviso non bloccante, vero quando il linguaggio predominante
-  // non e' fra quelli supportati. Ricavato dal backend dai due campi qui sopra
-  // e non memorizzato, cosi' come nonEnglishReadmeDetected e' l'avviso
-  // corrispondente per RV.8.
+  // RV.7/RF.24: non-blocking warning, true when the predominant language
+  // is not among the supported ones. Derived by the backend from the two
+  // fields above and not stored, just as nonEnglishReadmeDetected is the
+  // corresponding warning for RV.8.
   unsupportedLanguageWarning: boolean;
   estimatedFileCount: number;
   nonEnglishReadmeDetected: boolean;
@@ -392,8 +393,8 @@ export interface TaskInputRequiredEvent {
   taskId: string;
   kind: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION";
   taskIds?: string[];
-  // Il changelog tecnico da rivedere prima della fase business, come testo.
-  // Non un id: vedi il commento su PendingInput qui sopra.
+  // The technical changelog to review before the business phase, as text.
+  // Not an id: see the comment on PendingInput above.
   technicalChangelog?: string;
   technicalChangelogTruncated?: boolean;
 }
@@ -416,11 +417,11 @@ export interface RepositorySummary {
 // TEMPLATE README (RF.79-RF.81)
 
 /**
- * Lo stato del template README di un utente, come lo vede l'interfaccia.
+ * The state of a user's README template, as seen by the interface.
  *
- * `active: false` non e' un errore: e' il caso normale di chi non ha mai
- * caricato nulla e sta usando il modello di default dell'Agente Docs. RF.81
- * lo definisce anche come lo stato in cui si torna dopo una rimozione.
+ * `active: false` is not an error: it is the normal case for someone who has
+ * never uploaded anything and is using the Docs Agent's default model. RF.81
+ * also defines it as the state returned to after a removal.
  */
 export interface ReadmeTemplateDto {
   active: boolean;
