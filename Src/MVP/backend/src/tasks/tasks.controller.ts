@@ -46,6 +46,45 @@ export class TasksController {
   // different agents, so the permission check is per-operation, inside
   // TasksService, not a single role gate on the whole endpoint.
   @Post()
+/**
+ * @swagger
+ * /tasks:
+ *   post:
+ *     summary: Accoda un batch di operazioni su un contesto
+ *     description: 202 e non 201: i Task sono accodati, non eseguiti. Il permesso e' verificato per singola operazione, non sull'endpoint.
+ *     operationId: create
+ *     responses:
+ *       202:
+ *         description: Task batch created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CreateTaskBatchResponse'
+ *       400:
+ *         description: Corpo non valido o elenco vuoto
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       403:
+ *         description: Il ruolo di chi chiama non consente una delle operazioni richieste
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Contesto inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({
     summary: "Accoda un batch di operazioni su un contesto",
@@ -74,6 +113,28 @@ export class TasksController {
   }
 
   @Get()
+/**
+ * @swagger
+ * /tasks:
+ *   get:
+ *     summary: I Task di chi chiama, dal piu' recente
+ *     operationId: findAll
+ *     responses:
+ *       200:
+ *         description: Lista di task per l'utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/TaskResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({ summary: "I Task di chi chiama, dal piu' recente" })
   @ApiOkResponse({ type: [TaskResponse] })
   @ApiUnauthorizedResponse({ type: ApiErrorResponse })
@@ -82,6 +143,39 @@ export class TasksController {
   }
 
   @Get(":id")
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   get:
+ *     summary: Un Task: stato, avanzamento, errore, input atteso
+ *     operationId: findOne
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id del Task.
+ *     responses:
+ *       200:
+ *         description: Detailed task information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TaskResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Task inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({ summary: "Un Task: stato, avanzamento, errore, input atteso" })
   @ApiParam({ name: "id", description: "Id del Task." })
   @ApiOkResponse({ type: TaskResponse })
@@ -95,6 +189,42 @@ export class TasksController {
   }
 
   @Post(":id/cancel")
+/**
+ * @swagger
+ * /tasks/{id}/cancel:
+ *   post:
+ *     summary: Annulla un Task
+ *     description: Ammesso solo da PENDING o RUNNING: da uno stato terminale e' un 409.
+ *     operationId: cancel
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id del Task.
+ *     responses:
+ *       204:
+ *         description: No content returned
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Task inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       409:
+ *         description: Il Task ha gia' raggiunto uno stato terminale
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: "Annulla un Task",
@@ -120,6 +250,48 @@ export class TasksController {
   // them as a single discriminated union (PendingInput/SubmitInputDto),
   // rather than three near-duplicate routes.
   @Post(":id/input")
+/**
+ * @swagger
+ * /tasks/{id}/input:
+ *   post:
+ *     summary: Risponde all'input che il Task sta aspettando
+ *     description: Un solo endpoint per i tre kind, come nell'unione discriminata gia' usata dal frontend. Il kind inviato deve combaciare con quello atteso.
+ *     operationId: submitInput
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id del Task.
+ *     responses:
+ *       204:
+ *         description: No content returned
+ *       400:
+ *         description: Corpo non valido per il kind indicato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Task inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       409:
+ *         description: Il Task non sta aspettando quell'input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: "Risponde all'input che il Task sta aspettando",
