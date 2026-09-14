@@ -1,3 +1,3 @@
 # RUNBOOK -- Manual activities (not automatable in CDK)
 
-Test push.
+These activities have no reliable CloudFormation/CDK equivalent.
