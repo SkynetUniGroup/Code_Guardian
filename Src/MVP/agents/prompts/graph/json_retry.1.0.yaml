@@ -1,0 +1,12 @@
+id: json_retry
+version: "1.0"
+required_vars:
+  - dettagli
+# Message with which the graph asks the model to recompose an output that is
+# not valid JSON. Like readability_retry this lives here and not in graph.py:
+# the model reads it, so it is a prompt, and RQ.4/MPD_14 want prompts kept out
+# of modules even when they are short -- length does not change the nature of it.
+system_prompt: |
+  Your output generated a JSON decoding error. Fix the formatting and return
+  ONLY the valid JSON. Pay attention to escape characters.
+  Details: {dettagli}

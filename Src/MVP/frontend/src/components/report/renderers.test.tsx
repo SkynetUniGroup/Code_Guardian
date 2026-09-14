@@ -1,0 +1,199 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it } from "vitest";
+import type { FindingBlock, PolicyViolationBlock, Proposal, Severity } from "../../types";
+import { FindingBlockRenderer } from "./FindingBlockRenderer";
+import { PolicyViolationRenderer } from "./PolicyViolationRenderer";
+import { ProposalRenderer } from "./ProposalRenderer";
+import { TextBlockRenderer } from "./TextBlockRenderer";
+
+function finding(over: Partial<FindingBlock> = {}): FindingBlock {
+  return {
+    kind: "FINDING",
+    order: 1,
+    category: "A03:2021 – Injection",
+    severity: "CRITICAL",
+    filePath: "app/data/user-dao.js",
+    lineStart: 42,
+    lineEnd: 45,
+    description: "Query costruita per concatenazione di stringhe.",
+    remediation: { kind: "TEXT", text: "Usare query parametrizzate." },
+    ...over,
+  };
+}
+
+function violazione(over: Partial<PolicyViolationBlock> = {}): PolicyViolationBlock {
+  return {
+    kind: "POLICY_VIOLATION",
+    order: 1,
+    ruleId: "POL-007",
+    ruleText: "Vietato loggare dati personali",
+    filePath: "src/logger.ts",
+    explanation: "Il logger stampa l'email utente.",
+    severity: "MEDIUM",
+    remediation: { kind: "TEXT", text: "Rimuovere il campo email dal log." },
+    ...over,
+  };
+}
+
+const PROPOSTA: Proposal = {
+  targetPath: "src/utils/date.ts",
+  diffUnified: "--- a/src/utils/date.ts\n+++ b/src/utils/date.ts\n+/** Formatta una data. */",
+  language: "typescript",
+  pullRequestUrl: null,
+};
+
+describe("TextBlockRenderer", () => {
+  it("renderizza un titolo Markdown come vero heading, non come testo letterale", () => {
+    render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown: "## Sintesi" }} />);
+    expect(screen.getByRole("heading", { level: 2, name: "Sintesi" })).toBeInTheDocument();
+    expect(screen.queryByText("## Sintesi")).not.toBeInTheDocument();
+  });
+
+  it("renderizza un elenco puntato Markdown come lista", () => {
+    const markdown = "- Prima voce\n- Seconda voce";
+    render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown }} />);
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(2);
+  });
+
+  it("renderizza un link Markdown come vero elemento <a>", () => {
+    const markdown = "Vedi [#42](https://github.com/org/repo/issues/42)";
+    render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown }} />);
+    expect(screen.getByRole("link", { name: "#42" })).toHaveAttribute(
+      "href", "https://github.com/org/repo/issues/42",
+    );
+  });
+});
+
+describe("FindingBlockRenderer", () => {
+  it("mostra sempre categoria, gravita' e posizione nel codice", () => {
+    render(<FindingBlockRenderer block={finding()} />);
+
+    expect(screen.getByText("A03:2021 – Injection")).toBeInTheDocument();
+    expect(screen.getByText("Critico")).toBeInTheDocument();
+    expect(screen.getByText("app/data/user-dao.js · righe 42–45")).toBeInTheDocument();
+  });
+
+  it("tiene chiusi i dettagli finche' non vengono richiesti", () => {
+    render(<FindingBlockRenderer block={finding()} />);
+
+    expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByText("Query costruita per concatenazione di stringhe."),
+    ).not.toBeInTheDocument();
+  });
+
+  it("espande spiegazione e rimedio suggerito al click", async () => {
+    render(<FindingBlockRenderer block={finding()} />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button"));
+
+    expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Query costruita per concatenazione di stringhe.")).toBeInTheDocument();
+    expect(screen.getByText("Usare query parametrizzate.")).toBeInTheDocument();
+  });
+
+  it("richiude i dettagli a un secondo click", async () => {
+    render(<FindingBlockRenderer block={finding()} />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button"));
+
+    expect(screen.queryByText("Usare query parametrizzate.")).not.toBeInTheDocument();
+  });
+
+  const GRAVITA: [Severity, string][] = [
+    ["CRITICAL", "Critico"],
+    ["HIGH", "Alto"],
+    ["MEDIUM", "Medio"],
+    ["LOW", "Basso"],
+    ["INFO", "Info"],
+  ];
+
+  it.each(GRAVITA)('etichetta la gravita\' %s come "%s"', (severity, etichetta) => {
+    render(<FindingBlockRenderer block={finding({ severity })} />);
+
+    expect(screen.getByText(etichetta)).toBeInTheDocument();
+  });
+});
+
+describe("PolicyViolationRenderer", () => {
+  it("mostra regola infranta e file interessato", () => {
+    render(<PolicyViolationRenderer block={violazione()} />);
+
+    expect(screen.getByText("POL-007")).toBeInTheDocument();
+    expect(screen.getByText("Vietato loggare dati personali")).toBeInTheDocument();
+    expect(screen.getByText("src/logger.ts")).toBeInTheDocument();
+  });
+
+  it("espande spiegazione e rimedio al click", async () => {
+    render(<PolicyViolationRenderer block={violazione()} />);
+    const user = userEvent.setup();
+    expect(screen.queryByText("Il logger stampa l'email utente.")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button"));
+
+    expect(screen.getByText("Il logger stampa l'email utente.")).toBeInTheDocument();
+    expect(screen.getByText("Rimuovere il campo email dal log.")).toBeInTheDocument();
+  });
+
+  it("richiude i dettagli a un secondo click", async () => {
+    render(<PolicyViolationRenderer block={violazione()} />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button"));
+
+    expect(screen.queryByText("Rimuovere il campo email dal log.")).not.toBeInTheDocument();
+  });
+});
+
+describe("ProposalRenderer", () => {
+  it("mostra il file oggetto della proposta", () => {
+    render(<ProposalRenderer proposal={PROPOSTA} />);
+
+    expect(screen.getByText("src/utils/date.ts")).toBeInTheDocument();
+  });
+
+  it("tiene nascosto il diff finche' non viene richiesto", () => {
+    render(<ProposalRenderer proposal={PROPOSTA} />);
+
+    expect(screen.getByRole("button", { name: /Mostra diff/ })).toBeInTheDocument();
+    expect(screen.queryByText(/\+\/\*\* Formatta una data/)).not.toBeInTheDocument();
+  });
+
+  it("mostra e poi nasconde il diff, cambiando l'etichetta del comando", async () => {
+    render(<ProposalRenderer proposal={PROPOSTA} />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button", { name: /Mostra diff/ }));
+    expect(screen.getByText(/Formatta una data/)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Nascondi diff/ }));
+    expect(screen.queryByText(/Formatta una data/)).not.toBeInTheDocument();
+  });
+
+  it("espone il collegamento alla Pull Request quando l'agente l'ha aperta", () => {
+    render(
+      <ProposalRenderer
+        proposal={{ ...PROPOSTA, pullRequestUrl: "https://github.com/o/r/pull/7" }}
+      />,
+    );
+
+    const collegamento = screen.getByRole("link", { name: /Vedi PR/ });
+    expect(collegamento).toHaveAttribute("href", "https://github.com/o/r/pull/7");
+    expect(collegamento).toHaveAttribute("target", "_blank");
+    // rel=noreferrer: la pagina di destinazione non deve poter manipolare
+    // la finestra di origine.
+    expect(collegamento).toHaveAttribute("rel", "noreferrer");
+  });
+
+  it("senza Pull Request aperta non mostra alcun collegamento", () => {
+    render(<ProposalRenderer proposal={PROPOSTA} />);
+
+    expect(screen.queryByRole("link", { name: /Vedi PR/ })).not.toBeInTheDocument();
+  });
+});

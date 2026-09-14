@@ -1,4 +1,4 @@
-import { cn } from '../../lib/utils';
+import { cn } from "../../lib/utils";
 
 interface ErrorStateProps {
   /** Primary error message shown to the user. */
@@ -25,7 +25,7 @@ export function ErrorState({ message, action, className }: ErrorStateProps) {
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center gap-4 rounded-lg border border-red-200 bg-red-50 p-8 text-center',
+        "flex flex-col items-center justify-center gap-4 rounded-lg border border-red-200 bg-red-50 p-8 text-center",
         className,
       )}
     >

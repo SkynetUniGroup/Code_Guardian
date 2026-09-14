@@ -1,9 +1,19 @@
-import { useState } from 'react';
-import type { Proposal } from '../../types';
+import { useState } from "react";
+import type { Proposal } from "../../types";
 
 interface ProposalRendererProps {
   proposal: Proposal;
 }
+
+// The ErrorKind values that can come from ProposalPublisherService, rendered in
+// English. A map and not a switch because the only unhandled case — a new kind
+// added on the backend side — must be able to pass through as-is instead of
+// showing an empty string.
+const PUBLISH_ERROR_LABELS: Record<string, string> = {
+  PR_CREATION_FAILED: "GitHub rejected the request",
+  CREDENTIAL_INVALID: "GitHub credential invalid or lacking permissions",
+  UPSTREAM: "service unreachable",
+};
 
 /**
  * Renders the Proposal section of a Docs agent report.
@@ -11,10 +21,16 @@ interface ProposalRendererProps {
  * A Proposal contains:
  *  - The target file path
  *  - A unified diff of the proposed code changes
- *  - An optional PR URL (populated after the PR is opened by the agent)
+ *  - An optional PR URL (populated by the backend after the PR is opened)
+ *  - An optional publish error, when opening the PR failed
  *
  * The diff is displayed in a collapsible code block. The PR link is the
  * primary call-to-action element when present.
+ *
+ * When the PR was not opened, the absence of the button is not enough: without
+ * saying so it looks like the operation did not involve a PR, when instead it
+ * was attempted and failed. The warning banner explains why and directs the
+ * user to the diff below, which remains applicable by hand.
  */
 export function ProposalRenderer({ proposal }: ProposalRendererProps) {
   const [diff_visible, setDiffVisible] = useState(false);
@@ -45,9 +61,9 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
         </div>
 
         {/* PR link — primary action when available */}
-        {proposal.prUrl && (
+        {proposal.pullRequestUrl && (
           <a
-            href={proposal.prUrl}
+            href={proposal.pullRequestUrl}
             target="_blank"
             rel="noreferrer"
             className="shrink-0 flex items-center gap-1.5 rounded bg-[#2a8a2a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1e6b1e] transition"
@@ -56,18 +72,35 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
             <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
             </svg>
-            Vedi PR
+            View PR
           </a>
         )}
       </div>
 
+      {/* PR opening failed: the diff remains, the link does not. */}
+      {proposal.pullRequestError && (
+        <div className="border-b border-[#cccccc] bg-amber-50 px-4 py-2.5 text-xs text-[#8a5a00]">
+          <p className="font-medium">
+            It was not possible to open the Pull Request (
+            {PUBLISH_ERROR_LABELS[proposal.pullRequestError.kind] ?? proposal.pullRequestError.kind}
+            )
+          </p>
+          <p className="mt-0.5 text-[#8a5a00]/80">{proposal.pullRequestError.message}</p>
+          <p className="mt-1">
+            The proposed change is still available below: you can apply it manually to the file{" "}
+            <span className="font-mono">{proposal.targetPath}</span>.
+          </p>
+        </div>
+      )}
+
       {/* Toggle diff preview */}
       <button
+        type="button"
         className="flex w-full items-center gap-2 px-4 py-2 text-left text-xs text-gray-500 hover:bg-gray-50 transition border-b border-[#cccccc]"
         onClick={() => setDiffVisible((v) => !v)}
       >
         <svg
-          className={`h-3.5 w-3.5 transition-transform ${diff_visible ? 'rotate-180' : ''}`}
+          className={`h-3.5 w-3.5 transition-transform ${diff_visible ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -76,7 +109,7 @@ export function ProposalRenderer({ proposal }: ProposalRendererProps) {
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
-        {diff_visible ? 'Nascondi' : 'Mostra'} diff
+        {diff_visible ? "Hide" : "Show"} diff
       </button>
 
       {/* Unified diff */}

@@ -1,6 +1,6 @@
-import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { routeTree } from './routeTree.gen';
-import { useSessionStore } from './stores/sessionStore';
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+import { useSessionStore } from "./stores/sessionStore";
 
 /**
  * Router instance.
@@ -15,12 +15,15 @@ import { useSessionStore } from './stores/sessionStore';
  */
 const router = createRouter({
   routeTree,
+  // biome-ignore lint/style/noNonNullAssertion: TanStack Router convention
+  // to initialise context with a placeholder replaced at runtime
+  // by RouterProvider (see the Router component below).
   context: { session: null! },
-  defaultPreload: 'intent',
+  defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   defaultErrorComponent: ({ error }) => (
     <div className="flex items-center justify-center min-h-screen text-sm text-red-600 p-4">
-      Errore inatteso: {error.message}
+      Unexpected error: {error instanceof Error ? error.message : String(error)}
     </div>
   ),
 });

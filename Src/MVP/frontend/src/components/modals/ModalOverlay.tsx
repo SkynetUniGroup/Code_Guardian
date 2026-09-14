@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+import { type ReactNode, useEffect } from "react";
 
 interface ModalOverlayProps {
   /** Whether the modal is visible. */
@@ -26,10 +26,10 @@ export function ModalOverlay({ open, onClose, children, title }: ModalOverlayPro
   useEffect(() => {
     if (!open) return;
     const handle_keydown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    document.addEventListener('keydown', handle_keydown);
-    return () => document.removeEventListener('keydown', handle_keydown);
+    document.addEventListener("keydown", handle_keydown);
+    return () => document.removeEventListener("keydown", handle_keydown);
   }, [open, onClose]);
 
   if (!open) return null;
@@ -42,11 +42,7 @@ export function ModalOverlay({ open, onClose, children, title }: ModalOverlayPro
       aria-label={title}
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
 
       {/* Dialog card */}
       <div className="relative z-10 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">

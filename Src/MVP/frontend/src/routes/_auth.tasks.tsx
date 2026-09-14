@@ -1,6 +1,6 @@
-import { createRoute } from '@tanstack/react-router';
-import { authRoute } from './_auth';
-import { TasksPage } from '../pages/TasksPage';
+import { createRoute } from "@tanstack/react-router";
+import { TasksPage } from "../pages/TasksPage";
+import { authRoute } from "./_auth";
 
 /**
  * Tasks route — /tasks (authenticated, no credentials guard)
@@ -10,6 +10,6 @@ import { TasksPage } from '../pages/TasksPage';
  */
 export const tasksRoute = createRoute({
   getParentRoute: () => authRoute,
-  path: '/tasks',
+  path: "/tasks",
   component: TasksPage,
 });

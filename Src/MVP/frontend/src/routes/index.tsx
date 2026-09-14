@@ -1,5 +1,5 @@
-import { createRoute, redirect } from '@tanstack/react-router';
-import { rootRoute } from './root';
+import { createRoute, redirect } from "@tanstack/react-router";
+import { rootRoute } from "./root";
 
 /**
  * Index route — /
@@ -12,11 +12,11 @@ import { rootRoute } from './root';
  */
 export const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: "/",
   beforeLoad: ({ context }) => {
     if (context.session.isAuthenticated()) {
-      throw redirect({ to: '/run' });
+      throw redirect({ to: "/run" });
     }
-    throw redirect({ to: '/login' });
+    throw redirect({ to: "/login" });
   },
 });

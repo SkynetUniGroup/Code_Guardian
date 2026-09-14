@@ -1,6 +1,6 @@
-import { createRoute, redirect } from '@tanstack/react-router';
-import { authRoute } from './_auth';
-import { SelectPage } from '../pages/SelectPage';
+import { createRoute, redirect } from "@tanstack/react-router";
+import { SelectPage } from "../pages/SelectPage";
+import { authRoute } from "./_auth";
 
 /**
  * Select route — /select (authenticated + credentials required)
@@ -11,11 +11,11 @@ import { SelectPage } from '../pages/SelectPage';
  */
 export const selectRoute = createRoute({
   getParentRoute: () => authRoute,
-  path: '/select',
+  path: "/select",
   beforeLoad: ({ context }) => {
     const status = context.session.credentialsStatus;
-    if (status === 'missing' || status === 'invalid') {
-      throw redirect({ to: '/credentials' });
+    if (status === "MISSING" || status === "INVALID") {
+      throw redirect({ to: "/credentials" });
     }
   },
   component: SelectPage,

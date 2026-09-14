@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { Report, Task, OperationCode, ReportStatus } from '../types';
+import { create } from "zustand";
+import { OperationCode, type Report, type TaskEntry } from "../types";
 
 interface AnalysisContext {
   id: string;
@@ -11,7 +11,7 @@ interface AnalysisContext {
 
 interface AppState {
   contexts: AnalysisContext[];
-  tasks: Task[];
+  tasks: TaskEntry[];
   reports: Record<string, Report>;
   currentTaskId: string | null;
   websocketConnected: boolean;
@@ -26,9 +26,9 @@ interface AppState {
 
 interface AppActions {
   addContext: (context: AnalysisContext) => void;
-  setTasks: (tasks: Task[]) => void;
-  addTask: (task: Task) => void;
-  updateTask: (taskId: string, updates: Partial<Task>) => void;
+  setTasks: (tasks: TaskEntry[]) => void;
+  addTask: (task: TaskEntry) => void;
+  updateTask: (taskId: string, updates: Partial<TaskEntry>) => void;
   setCurrentTask: (taskId: string | null) => void;
   addReport: (report: Report) => void;
   setWebSocketConnected: (connected: boolean) => void;
@@ -45,39 +45,41 @@ export const useAppStore = create<AppStore>((set) => ({
   reports: {},
   currentTaskId: null,
   websocketConnected: false,
-  // Non deriva da un JWT eventualmente presente: il JWT del login silenzioso
-  // non implica che il PAT GitHub sia stato salvato. Si riparte sempre dalla
-  // schermata di setup, che è l'unica a impostarlo a true (dopo il salvataggio
-  // riuscito della credenziale GitHub).
+  // Does not derive from a possibly present JWT: the JWT from the silent login
+  // does not imply that the GitHub PAT has been saved. It always starts from
+  // the setup screen, which is the only one that sets it to true (after the
+  // successful save of the GitHub credential).
   isConfigured: false,
   formData: null,
 
   // Actions
-  addContext: (context) => set((state) => ({
-    contexts: [...state.contexts, context]
-  })),
+  addContext: (context) =>
+    set((state) => ({
+      contexts: [...state.contexts, context],
+    })),
 
   setTasks: (tasks) => set({ tasks }),
 
-  addTask: (task) => set((state) => ({
-    tasks: [...state.tasks, task]
-  })),
+  addTask: (task) =>
+    set((state) => ({
+      tasks: [...state.tasks, task],
+    })),
 
-  updateTask: (taskId, updates) => set((state) => ({
-    tasks: state.tasks.map(t =>
-      t.id === taskId ? { ...t, ...updates } : t
-    )
-  })),
+  updateTask: (taskId, updates) =>
+    set((state) => ({
+      tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, ...updates } : t)),
+    })),
 
   setCurrentTask: (taskId) => set({ currentTaskId: taskId }),
 
-  addReport: (report) => set((state) => ({
-    reports: { ...state.reports, [report.id]: report }
-  })),
+  addReport: (report) =>
+    set((state) => ({
+      reports: { ...state.reports, [report.id]: report },
+    })),
 
   setWebSocketConnected: (connected) => set({ websocketConnected: connected }),
 
   setConfigured: (status) => set({ isConfigured: status }),
-  
+
   setFormData: (data) => set({ formData: data }),
 }));
