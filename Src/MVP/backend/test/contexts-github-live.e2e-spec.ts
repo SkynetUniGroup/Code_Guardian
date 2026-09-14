@@ -1,73 +1,72 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import request from "supertest";
-import { AmbienteE2E, avviaAmbiente, utenteAutenticato } from "./e2e-helpers";
+import { E2EEnvironment, startEnvironment, authenticatedUser } from "./e2e-helpers";
 
 /**
- * TI_06 (RF.19, 20, 22, 25, 30, RV.3) — validazione del contesto contro un
- * repository GitHub reale.
+ * TI_06 (RF.19, 20, 22, 25, 30, RV.3) — context validation against a
+ * real GitHub repository.
  *
- * L'unico test di questa suite che parla davvero con GitHub. Tutti gli altri
- * sostituiscono quel confine, ed e' giusto cosi': qui invece il confine *e'*
- * l'oggetto della verifica. Un doppio di GithubClientService direbbe solo
- * che il servizio si comporta come il doppio che gli abbiamo scritto
- * attorno, e non intercetterebbe mai il caso che TI_06 esiste per
- * intercettare — una risposta reale di GitHub diversa da quella che ci
- * aspettavamo.
+ * The only test in this suite that actually talks to GitHub. All the others
+ * replace that boundary, and rightly so: here instead the boundary *is*
+ * the subject of the verification. A mock of GithubClientService would only
+ * say that the service behaves like the mock we wrote around it, and would
+ * never catch the case that TI_06 exists to catch — a real GitHub response
+ * different from what we expected.
  *
- * Si salta da solo senza un token: `E2E_GITHUB_PAT` sta in `Src/MVP/.env`
- * (gia' usato dalla suite Playwright) e viene letto da li', perche' Jest non
- * carica quel file. Nessuna scrittura, nessun consumo di credito: solo
- * chiamate di lettura all'API pubblica, sullo stesso repository che le
- * fixture degli altri test gia' nominano.
+ * It self-skips without a token: `E2E_GITHUB_PAT` is in `Src/MVP/.env`
+ * (already used by the Playwright suite) and is read from there, because
+ * Jest does not load that file. No writes, no credit consumption: only
+ * read calls to the public API, on the same repository that the fixtures
+ * of the other tests already name.
  *
- * Il repository e' configurabile con E2E_REPO_URL / E2E_REPO_BRANCH per il
- * giorno in cui il Proponente ne mettera' a disposizione uno proprio.
+ * The repository is configurable with E2E_REPO_URL / E2E_REPO_BRANCH for
+ * when the Proponent will provide one of their own.
  */
 
-/** Legge una variabile da Src/MVP/.env, che Jest non carica da solo. */
-function daEnvDelMonorepo(chiave: string): string | undefined {
-  if (process.env[chiave]) return process.env[chiave];
+/** Reads a variable from Src/MVP/.env, which Jest does not load on its own. */
+function fromMonorepoEnv(key: string): string | undefined {
+  if (process.env[key]) return process.env[key];
   try {
-    const contenuto = readFileSync(resolve(__dirname, "..", "..", ".env"), "utf8");
-    const riga = contenuto.split("\n").find((r) => r.trim().startsWith(`${chiave}=`));
-    return riga?.slice(riga.indexOf("=") + 1).trim() || undefined;
+    const content = readFileSync(resolve(__dirname, "..", "..", ".env"), "utf8");
+    const line = content.split("\n").find((r) => r.trim().startsWith(`${key}=`));
+    return line?.slice(line.indexOf("=") + 1).trim() || undefined;
   } catch {
     return undefined;
   }
 }
 
-const PAT = daEnvDelMonorepo("E2E_GITHUB_PAT");
+const PAT = fromMonorepoEnv("E2E_GITHUB_PAT");
 const URL_REPO = process.env.E2E_REPO_URL ?? "https://github.com/OWASP/NodeGoat";
-const RAMO = process.env.E2E_REPO_BRANCH ?? "master";
+const BRANCH = process.env.E2E_REPO_BRANCH ?? "master";
 
-const descrivi = PAT ? describe : describe.skip;
+const describeIf = PAT ? describe : describe.skip;
 
-descrivi("TI_06 (RF.19,20,22,25,30, RV.3) — validazione del contesto su GitHub reale", () => {
-  let ambiente: AmbienteE2E;
+describeIf("TI_06 (RF.19,20,22,25,30, RV.3) — context validation on real GitHub", () => {
+  let env: E2EEnvironment;
   let token: string;
 
-  /** POST /contexts col corpo indicato, restituendo la risposta grezza. */
-  function creaContesto(corpo: Record<string, unknown>) {
-    return request(ambiente.server)
+  /** POST /contexts with the given body, returning the raw response. */
+  function createContext(body: Record<string, unknown>) {
+    return request(env.server)
       .post("/api/v1/contexts")
       .set("Authorization", `Bearer ${token}`)
-      .send(corpo);
+      .send(body);
   }
 
   beforeAll(async () => {
-    // GithubClientService non e' sostituito: e' l'intero punto del test.
-    // Il servizio agenti resta un doppio — TI_06 finisce a POST /contexts e
-    // non avvia nessuna operazione.
-    ambiente = await avviaAmbiente({ conGithubReale: true });
+    // GithubClientService is not replaced: that is the whole point of the test.
+    // The agent service remains a mock — TI_06 ends at POST /contexts and
+    // does not start any operation.
+    env = await startEnvironment({ withRealGithub: true });
 
-    const utente = await utenteAutenticato(ambiente.server, "DEVELOPER");
-    token = utente.token;
+    const user = await authenticatedUser(env.server, "DEVELOPER");
+    token = user.token;
 
-    // La credenziale viene verificata contro GitHub prima di essere
-    // salvata: se il PAT e' scaduto il test fallisce qui, con un messaggio
-    // che dice esattamente questo invece di un errore piu' avanti.
-    await request(ambiente.server)
+    // The credential is verified against GitHub before being saved:
+    // if the PAT is expired the test fails here, with a message that says
+    // exactly that instead of an error further down.
+    await request(env.server)
       .post("/api/v1/credentials")
       .set("Authorization", `Bearer ${token}`)
       .send({ provider: "GITHUB", token: PAT })
@@ -75,102 +74,102 @@ descrivi("TI_06 (RF.19,20,22,25,30, RV.3) — validazione del contesto su GitHub
   }, 120_000);
 
   afterAll(async () => {
-    await ambiente?.chiudi();
+    await env?.close();
   });
 
-  it("percorso di successo: ancora il contesto a uno SHA reale e conta i file", async () => {
-    const risposta = await creaContesto({
+  it("success path: anchors the context to a real SHA and counts the files", async () => {
+    const response = await createContext({
       repoUrl: URL_REPO,
-      branch: RAMO,
+      branch: BRANCH,
       scopeType: "FULL_REPOSITORY",
     }).expect(201);
 
-    // Uno SHA vero, non un segnaposto: e' cio' che rende riproducibile il
-    // Report anche dopo nuovi commit sul ramo (RF.17).
-    expect(risposta.body.resolvedSha).toMatch(/^[0-9a-f]{40}$/);
-    expect(risposta.body.branch).toBe(RAMO);
-    expect(risposta.body.isPrivate).toBe(false);
-    expect(risposta.body.estimatedFileCount).toBeGreaterThan(0);
-    expect(risposta.body.detectedLanguages.length).toBeGreaterThan(0);
+    // A real SHA, not a placeholder: this is what makes the Report
+    // reproducible even after new commits on the branch (RF.17).
+    expect(response.body.resolvedSha).toMatch(/^[0-9a-f]{40}$/);
+    expect(response.body.branch).toBe(BRANCH);
+    expect(response.body.isPrivate).toBe(false);
+    expect(response.body.estimatedFileCount).toBeGreaterThan(0);
+    expect(response.body.detectedLanguages.length).toBeGreaterThan(0);
   }, 120_000);
 
-  it("passo 3 (RF.20, RV.3) — un repository inesistente o non visibile e' un 404", async () => {
-    // GitHub restituisce lo stesso 404 per "non esiste" e per "esiste ma
-    // questo token non lo vede": i due casi non sono distinguibili dall'API,
-    // ed e' la ragione per cui RepoResolverService li unisce in un solo
-    // messaggio. Questo test verifica proprio quel comportamento sul campo.
-    const risposta = await creaContesto({
-      repoUrl: "https://github.com/SkynetUniGroup/repository-che-non-esiste-ti06",
+  it("step 3 (RF.20, RV.3) — a non-existent or non-visible repository is a 404", async () => {
+    // GitHub returns the same 404 for "does not exist" and for "exists but
+    // this token cannot see it": the two cases are not distinguishable from
+    // the API, and that is why RepoResolverService merges them into a single
+    // message. This test verifies exactly that behavior in the field.
+    const response = await createContext({
+      repoUrl: "https://github.com/SkynetUniGroup/repository-that-does-not-exist-ti06",
       branch: "main",
       scopeType: "FULL_REPOSITORY",
     }).expect(404);
 
-    expect(risposta.body.code).toBe("NOT_FOUND");
+    expect(response.body.code).toBe("NOT_FOUND");
   }, 120_000);
 
-  it("passo 4 (RF.21) — un branch inesistente e' un 404, e lo dice", async () => {
-    const risposta = await creaContesto({
+  it("step 4 (RF.21) — a non-existent branch is a 404, and it says so", async () => {
+    const response = await createContext({
       repoUrl: URL_REPO,
-      branch: "ramo-che-non-esiste-ti06",
+      branch: "branch-that-does-not-exist-ti06",
       scopeType: "FULL_REPOSITORY",
     }).expect(404);
 
-    expect(risposta.body.message).toContain("ramo-che-non-esiste-ti06");
+    expect(response.body.message).toContain("branch-that-does-not-exist-ti06");
   }, 120_000);
 
-  it("passo 5 (RF.22) — un commit del ramo e' accettato come ancoraggio", async () => {
-    // Prima si ricava la testa reale del ramo, poi la si rimanda indietro
-    // come commitSha: e' il caso "identical" di compareCommits, che deve
-    // passare.
-    const primo = await creaContesto({
+  it("step 5 (RF.22) — a commit on the branch is accepted as anchoring", async () => {
+    // First retrieve the real head of the branch, then send it back as
+    // commitSha: this is the "identical" case of compareCommits, which
+    // must pass.
+    const first = await createContext({
       repoUrl: URL_REPO,
-      branch: RAMO,
+      branch: BRANCH,
       scopeType: "FULL_REPOSITORY",
     }).expect(201);
 
-    const risposta = await creaContesto({
+    const response = await createContext({
       repoUrl: URL_REPO,
-      branch: RAMO,
-      commitSha: primo.body.resolvedSha,
+      branch: BRANCH,
+      commitSha: first.body.resolvedSha,
       scopeType: "FULL_REPOSITORY",
     }).expect(201);
 
-    expect(risposta.body.resolvedSha).toBe(primo.body.resolvedSha);
+    expect(response.body.resolvedSha).toBe(first.body.resolvedSha);
   }, 120_000);
 
-  it("passo 9 (RF.30) — un percorso assente dall'albero reale e' respinto", async () => {
-    const risposta = await creaContesto({
+  it("step 9 (RF.30) — a path absent from the real tree is rejected", async () => {
+    const response = await createContext({
       repoUrl: URL_REPO,
-      branch: RAMO,
+      branch: BRANCH,
       scopeType: "FILES",
-      paths: ["questo/percorso/non/esiste-ti06.ts"],
+      paths: ["this/path/does/not/exist-ti06.ts"],
     }).expect(400);
 
-    expect(risposta.body.code).toBe("VALIDATION_ERROR");
+    expect(response.body.code).toBe("VALIDATION_ERROR");
   }, 120_000);
 
-  it("passo 9 (RF.30) — un percorso presente nell'albero reale e' accettato", async () => {
-    // Il controllo positivo dello stesso passo: senza, "respinge tutto"
-    // soddisfarebbe il test precedente.
-    const albero = await request(ambiente.server)
+  it("step 9 (RF.30) — a path present in the real tree is accepted", async () => {
+    // The positive control of the same step: without it, "rejects everything"
+    // would satisfy the previous test.
+    const tree = await request(env.server)
       .get("/api/v1/repositories/tree")
-      .query({ repoUrl: URL_REPO, branch: RAMO })
+      .query({ repoUrl: URL_REPO, branch: BRANCH })
       .set("Authorization", `Bearer ${token}`)
       .expect(200);
 
-    const primoFile = (albero.body.entries as { type: string; path: string }[]).find(
+    const firstFile = (tree.body.entries as { type: string; path: string }[]).find(
       (n) => n.type === "file",
     );
-    expect(primoFile).toBeDefined();
+    expect(firstFile).toBeDefined();
 
-    const risposta = await creaContesto({
+    const response = await createContext({
       repoUrl: URL_REPO,
-      branch: RAMO,
+      branch: BRANCH,
       scopeType: "FILES",
-      paths: [primoFile.path],
+      paths: [firstFile.path],
     }).expect(201);
 
-    expect(risposta.body.scopeType).toBe("FILES");
-    expect(risposta.body.estimatedFileCount).toBe(1);
+    expect(response.body.scopeType).toBe("FILES");
+    expect(response.body.estimatedFileCount).toBe(1);
   }, 120_000);
 });
