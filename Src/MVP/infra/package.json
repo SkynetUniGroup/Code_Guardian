@@ -2,7 +2,7 @@
   "name": "infra",
   "version": "1.0.0",
   "private": true,
-  "description": "Infrastruttura AWS (MVP) per Code Guardian -- AWS CDK v2 (TypeScript), regione eu-south-1",
+  "description": "AWS infrastructure (MVP) for Code Guardian -- AWS CDK v2 (TypeScript), region eu-south-1",
   "bin": {
     "codeguardian-infra": "bin/codeguardian.ts"
   },
