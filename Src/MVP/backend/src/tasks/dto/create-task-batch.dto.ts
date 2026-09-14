@@ -11,14 +11,14 @@ import { ArrayNotEmpty, IsArray, IsIn, IsMongoId } from "class-validator";
 // same valid code twice" isn't a validation failure, it's a normalization
 // step the service performs before the checks in §7.3 run.
 export class CreateTaskBatchDto implements CreateTaskBatchDtoInterface {
-  @ApiProperty({ type: String, description: "Id di un AnalysisContext creato con POST /contexts." })
+  @ApiProperty({ type: String, description: "Id of an AnalysisContext created with POST /contexts." })
   @IsMongoId()
   contextId!: string;
 
   @ApiProperty({
     enum: OPERATION_CODES,
     isArray: true,
-    description: "Almeno una. I duplicati sono rimossi dal servizio, non rifiutati.",
+    description: "At least one. Duplicates are removed by the service, not rejected.",
   })
   @IsArray()
   @ArrayNotEmpty()

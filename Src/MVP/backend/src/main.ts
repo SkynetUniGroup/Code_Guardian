@@ -31,9 +31,9 @@ async function bootstrap() {
     origin: config.get<string>("CORS_ORIGIN"),
   });
 
-  // SWAGGER_CONFIG e' definita altrove ed e' la stessa che usano i test sul
-  // documento: titolo, versione e schema di autenticazione devono coincidere
-  // nei due percorsi.
+  // SWAGGER_CONFIG is defined elsewhere and is the same one the tests on the
+  // document use: title, version and authentication scheme must match across
+  // the two paths.
   const document = SwaggerModule.createDocument(app, SWAGGER_CONFIG);
   SwaggerModule.setup("api/docs", app, document);
 

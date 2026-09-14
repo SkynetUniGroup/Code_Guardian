@@ -1,9 +1,9 @@
-# La fonte di verita' delle dipendenze e' pyproject.toml.
+# The source of truth for dependencies is pyproject.toml.
 #
-# Questo file resta perche' i workflow di CI installano con
-# `pip install -r requirements.txt` e la cache pip e' chiavata sul suo
-# hash. Prima conteneva solo pylint e black: ne' pytest ne' fastapi,
-# langgraph, motor... — cioe' i passi successivi di CI (`python -m pylint`,
-# `python -m pytest`) partivano su un ambiente in cui il codice sotto esame
-# non era nemmeno importabile.
+# This file remains because the CI workflows install with
+# `pip install -r requirements.txt` and the pip cache is keyed on its
+# hash. It previously contained only pylint and black: neither pytest nor
+# fastapi, langgraph, motor... — so the subsequent CI steps (`python -m pylint`,
+# `python -m pytest`) ran in an environment where the code under test
+# was not even importable.
 -e .[dev]

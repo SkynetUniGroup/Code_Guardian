@@ -50,11 +50,12 @@ export function useWebSocket(): void {
     /**
      * Resyncs all tasks from the REST API.
      * Called on successful WebSocket reconnect to recover events that were
-     * emitted by the server while the client was disconnected.
+     * emitted by the server while the client was disco
+nnected.
      */
     async function resync_tasks(): Promise<void> {
       try {
-        // GET /tasks risponde con un array nudo (TaskDto[]).
+        // GET /tasks responds with a bare array (TaskDto[]).
         const response = await apiClient.get<TaskDto[]>("/tasks");
         // Map the raw backend DTO to the local TaskEntry shape.
         const tasks = response.data.map((t) => ({
@@ -66,9 +67,9 @@ export function useWebSocket(): void {
           currentStage: t.currentStage ?? null,
           reportId: t.reportId ?? null,
           error: t.error ?? null,
-          // pendingInput e' persistito sul Task: dopo una disconnessione e'
-          // proprio questa GET a recuperarlo, perche' l'evento WS che lo
-          // annunciava e' gia' passato e non viene ritrasmesso.
+          // pendingInput is persisted on the Task: after a disconnection it
+          // is exactly this GET that recovers it, because the WS event that
+          // announced it has already passed and is not retransmitted.
           pendingInput: t.pendingInput ?? null,
         }));
         loadTasks(tasks);
@@ -105,7 +106,8 @@ export function useWebSocket(): void {
 
     /**
      * task.updated — top-level status change.
-     * Fired when a task moves between PENDING / RUNNING / COMPLETED / CANCELLED.
+     * Fired when a task moves between PENDING / RUNNING / COMPLETED / CANCELL
+ED.
      */
     socket.on("task.updated", (event: TaskUpdatedEvent) => {
       upsertFromUpdated(event);
@@ -169,7 +171,8 @@ export function useWebSocket(): void {
     upsertFromProgress,
     applyInputRequired,
     upsertFromUpdated,
-    markCredentialsInvalid,
+    markCredentialsInv
+alid,
     loadTasks,
     applyFailed,
   ]); // Re-run when the token changes (login / logout).

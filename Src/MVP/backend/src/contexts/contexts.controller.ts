@@ -25,22 +25,22 @@ export class ContextsController {
 
   @Post()
   @ApiOperation({
-    summary: "Crea un contesto di analisi",
+    summary: "Create an analysis context",
     description:
-      "Risolve il riferimento in uno SHA (RF.17), rileva i linguaggi (RF.24) e fissa lo scope. E' il primo passo di ogni operazione.",
+      "Resolves the reference to a SHA (RF.17), detects languages (RF.24) and sets the scope. It is the first step of every operation.",
   })
   @ApiCreatedResponse({ type: AnalysisContextResponse })
   @ApiBadRequestResponse({
-    description: "Corpo non valido, o scope incoerente con scopeType (RF.29).",
+    description: "Invalid body, or scope inconsistent with scopeType (RF.29).",
     type: ApiErrorResponse,
   })
   @ApiUnauthorizedResponse({ type: ApiErrorResponse })
   @ApiNotFoundResponse({
-    description: "Repository non raggiungibile con la credenziale salvata, o branch inesistente.",
+    description: "Repository unreachable with the saved credential, or non-existent branch.",
     type: ApiErrorResponse,
   })
   @ApiUnprocessableEntityResponse({
-    description: "Il commit indicato non appartiene al branch indicato (RF.17).",
+    description: "The indicated commit does not belong to the indicated branch (RF.17).",
     type: ApiErrorResponse,
   })
   create(

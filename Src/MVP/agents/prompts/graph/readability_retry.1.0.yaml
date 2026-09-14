@@ -2,10 +2,10 @@ id: readability_retry
 version: "1.0"
 required_vars:
   - dettagli
-# Messaggio con cui il grafo chiede al modello di riscrivere un changelog
-# business bocciato dall'indice di leggibilita' (RQ.7). Sta qui e non in
-# graph.py perche' e' un prompt a tutti gli effetti -- lo legge il modello,
-# non un umano -- e RQ.4/MPD_14 vogliono i prompt fuori dai moduli.
+# Message with which the graph asks the model to rewrite a business changelog
+# rejected by the readability index (RQ.7). It lives here and not in graph.py
+# because it is a prompt in every sense -- the model reads it, not a human --
+# and RQ.4/MPD_14 want prompts kept out of modules.
 system_prompt: |
   Your text was scored with the Flesch Reading Ease index and came out too low.
   Details: {dettagli}

@@ -2,10 +2,10 @@ id: json_retry
 version: "1.0"
 required_vars:
   - dettagli
-# Messaggio con cui il grafo chiede al modello di ricomporre un output che non
-# e' JSON valido. Come readability_retry sta qui e non in graph.py: lo legge il
-# modello, quindi e' un prompt, e RQ.4/MPD_14 li vogliono fuori dai moduli
-# anche quando sono corti -- la lunghezza non cambia la natura della cosa.
+# Message with which the graph asks the model to recompose an output that is
+# not valid JSON. Like readability_retry this lives here and not in graph.py:
+# the model reads it, so it is a prompt, and RQ.4/MPD_14 want prompts kept out
+# of modules even when they are short -- length does not change the nature of it.
 system_prompt: |
   Your output generated a JSON decoding error. Fix the formatting and return
   ONLY the valid JSON. Pay attention to escape characters.

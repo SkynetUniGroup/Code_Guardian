@@ -1,7 +1,7 @@
 import type { FrancFn } from "./franc.provider";
 
-// RV.8: "un controllo leggero (una libreria di rilevamento lingua, non il
-// modello)" on an excerpt of the README — this is that check.
+// RV.8: "a lightweight check (a language detection library, not the model)"
+// on an excerpt of the README — this is that check.
 const EXCERPT_LENGTH = 1000;
 
 // Below this length, franc's own guidance is that detection is unreliable —

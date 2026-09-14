@@ -11,7 +11,7 @@ export class CreateContextDto implements CreateContextDtoInterface {
   @ApiProperty({
     type: String,
     example: "https://github.com/SkynetUniGroup/Code_Guardian",
-    description: "URL di un repository GitHub, nella forma https://github.com/:owner/:repo",
+    description: "URL of a GitHub repository, in the form https://github.com/:owner/:repo",
   })
   @Matches(GITHUB_REPO_URL_REGEX, {
     message: "repoUrl must be a GitHub repository URL (https://github.com/:owner/:repo)",
@@ -28,7 +28,7 @@ export class CreateContextDto implements CreateContextDtoInterface {
 
   @ApiPropertyOptional({
     type: String,
-    description: "Se omesso, l'analisi si ancora all'HEAD corrente del branch (RF.17).",
+    description: "If omitted, the analysis anchors to the current HEAD of the branch (RF.17).",
   })
   @IsOptional()
   @IsString()
@@ -46,7 +46,7 @@ export class CreateContextDto implements CreateContextDtoInterface {
   @ApiPropertyOptional({
     type: [String],
     description:
-      "Obbligatorio per FILES e DIRECTORIES, da omettere per FULL_REPOSITORY: la regola incrociata e' verificata da ContextsService (RF.29), non qui.",
+      "Required for FILES and DIRECTORIES, to be omitted for FULL_REPOSITORY: the cross-field rule is verified by ContextsService (RF.29), not here.",
   })
   @IsOptional()
   @IsArray()
