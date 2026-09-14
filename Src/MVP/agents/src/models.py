@@ -89,7 +89,8 @@ class RemediationSnippet(_Immutable):
 
 
 class RemediationText(_Immutable):
-    """Represents a textual description for remediation."""
+    """Repr
+esents a textual description for remediation."""
 
     kind: Literal["TEXT"] = "TEXT"
     text: str
@@ -139,7 +140,7 @@ class ComplexityWarningBlock(_Immutable):
     filePath: str
     lineStart: int
     lineEnd: int
-    # Name aligned with the shared contract (shared/src/types.ts): was `reason`,
+    # Name aligned with the shared contract (shared/src/types.ts): it was `reason`,
     # but the frontend and the PDF composer read `explanation` on this block
     # exactly as on PolicyViolationBlock.
     explanation: str
@@ -162,7 +163,8 @@ SastRuleSeverity = Literal["ERROR", "WARNING", "INFO"]
 
 # Semgrep has its own severity vocabulary (three levels) different from the
 # report's (five). Both are kept: `severity` to make the frontend filter
-# and badge work as on every other block, `ruleSeverity` to still be able
+
+# and badge work like on every other block, `ruleSeverity` to still be able
 # to compare the report with a raw Semgrep scan.
 SEMGREP_SEVERITY_MAP: dict[str, Severity] = {
     "ERROR": "HIGH",
@@ -175,8 +177,8 @@ class SastFindingBlock(BaseModel):
     """A finding raised by static analysis (Semgrep).
 
     Not `_Immutable` like the other blocks on purpose: `verdict` and
-    `llmRemediation` are assigned *after* construction, when the LLM
-    has judged the finding (OwaspScanProfile.parse_output).
+    `llmRemediation` are assigned *after* construction, when the LLM has
+    judged the finding (OwaspScanProfile.parse_output).
     """
 
     kind: Literal["SAST_FINDING"] = "SAST_FINDING"
@@ -239,6 +241,7 @@ class PendingAction(BaseModel):
     kind: Literal["BUSINESS_CONFIRMATION"]
     taskId: str
     actions: list[Literal["PROCEED", "CANCEL"]]
+
 
 
 # --- Main Envelope ---
@@ -307,14 +310,14 @@ class PendingInputBusinessConfirmation(BaseModel):
     kind: Literal["BUSINESS_CONFIRMATION"]
     # The technical changelog just produced, as Markdown text.
     #
-    # This used to be `technicalReportId`, with a note that NestJS would
-    # fill it after persisting the report. That could not happen: at that
-    # point the technical Report does not exist yet, because the two
-    # phases live inside a single Task and the Report is born at the end.
-    # The text is sent instead, which is already available.
+    # Here there was `technicalReportId`, with the note that NestJS would
+    # fill it after persisting the report. It could never happen: at that
+    # point the technical Report does not exist yet, because the two phases
+    # live inside a single Task and the Report is born at the end. The text
+    # is sent instead, which is actually available.
     technicalChangelog: str = ""
-    # True when the text was truncated at the cap: the interface needs this
-    # to say so, rather than letting it appear that the changelog ends there.
+    # True when the text was truncated at the cap: the interface needs it
+    # to say so, rather than making it look like the changelog ends there.
     technicalChangelogTruncated: bool = False
 
 
@@ -332,15 +335,15 @@ class AgentStepResult(BaseModel):
     status: Literal["interrupted", "completed", "failed"]
     pendingInput: PendingInput | None = None
     # Run payload for the backend (AgentRunPayload): body, proposal, summary,
-    # tokensConsumed. NOT the full Report: title, context and status are
-    # composed by the backend, which is the only one that knows them reliably.
+    # tokensConsumed. NOT the full Report: title, context, and status are
+    # composed by the backend, which is the only one to know them reliably.
     result: dict | None = None
     # Human-readable failure message.
     error: str | None = None
     # Failure classification (ErrorKind on the Python side). Separate from
-    # `error` because the backend maps it to its own error.code catalog:
-    # passing it the message instead of the category sent every failure to
-    # UPSTREAM.
+    # `error` because the backend maps it to its own error.code catalogue:
+    # passing it the message instead of the category made every failure
+    # end up on UPSTREAM.
     errorKind: str | None = None
 
 
@@ -362,6 +365,6 @@ class ResumeAgentRequest(BaseModel):
     inputValue: Any
     # Optional: on a resume the agent state (toolset included) is
     # restored from the LangGraph checkpoint, so the backend has no reason
-    # to resend it. Required as it was, it caused every resume to fail with 422.
+    # to send it. Required as it was, it made every resume fail with 422.
 
     userId: str | None = None

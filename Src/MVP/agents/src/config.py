@@ -41,7 +41,8 @@ class Settings(BaseSettings):
         llm_model_security (str): Default model for security operations.
         aws_region (str): AWS region for Bedrock.
         max_output_tokens (int): Maximum tokens for LLM output.
-        max_scope_chars (int): Maximum characters for prompt context.
+        max_scope_chars (int): Maximum characters f
+or prompt context.
         changelog_min_readability (float): Minimum readability score for changelog.
         security_max_output_tokens (int): Maximum tokens for security operations.
         max_tool_rounds (int): Maximum number of tool rounds.
@@ -66,8 +67,8 @@ class Settings(BaseSettings):
     internal_shared_secret: str = Field(default="", alias="INTERNAL_SHARED_SECRET")
     backend_base_url: str = Field(default="http://backend:3000", alias="BACKEND_BASE_URL")
     # The backend mounts all routes under a global prefix
-    # (main.ts: app.setGlobalPrefix("api/v1")), /internal/* included. The value
-    # goes into both the called URL and the HMAC-signed message, because
+    # (main.ts: app.setGlobalPrefix("api/v1")), including /internal/*. The
+    # value enters both the called URL and the HMAC-signed message, because
     # InternalAuthGuard signs request.path, which includes the prefix.
     backend_api_prefix: str = Field(default="/api/v1", alias="BACKEND_API_PREFIX")
     prompts_dir: str = Field(default="/app/prompts", alias="PROMPTS_DIR")
@@ -80,7 +81,8 @@ class Settings(BaseSettings):
     llm_api_key: str = Field(default="", alias="LLM_API_KEY")
 
     # Typical OpenAI-compatible endpoint for DashScope/Qwen
-    llm_base_url: str = Field(
+    llm_base_
+url: str = Field(
         default="https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
         alias="LLM_BASE_URL",
     )
@@ -122,27 +124,27 @@ class Settings(BaseSettings):
     redis_url: str = Field(default="redis://redis:6379", alias="REDIS_URL")
 
     # ─────────────────── Static analysis (Semgrep) ───────────────────
-    # Deterministic phase that precedes the LLM in SECURITY_OWASP: Semgrep finds
-    # the candidates, the model judges them one by one.
+    # Deterministic phase that precedes the LLM in SECURITY_OWASP: Semgrep
+    # finds the candidates, the model judges them one by one.
     enable_sast_semgrep: bool = Field(default=True, alias="ENABLE_SAST_SEMGREP")
-    # Cap on the scanning time alone. Must sit comfortably below the
-    # operation budget (SECURITY_OWASP: 180s), because after the scan
-    # the slowest part still remains, namely the model invocation.
+    # Cap on the scan time only. Must sit comfortably below the operation
+    # budget (SECURITY_OWASP: 180s), because after the scan there is still
+    # the slower part to do, namely the model invocation.
     semgrep_timeout_s: int = Field(default=120, alias="SEMGREP_TIMEOUT_S")
-    # How many findings are submitted to the model. Findings above this
-    # threshold remain counted in the summary but without a verdict: it is a
-    # cost and context-window limit, not an analysis limit.
+    # How many findings are submitted to the model. Findings beyond this
+    # threshold remain counted in the summary but without a verdict: it is
+    # a cost and context-window limit, not an analysis limit.
     sast_max_findings_llm: int = Field(default=40, alias="SAST_MAX_FINDINGS_LLM")
     # How many files at most are downloaded for scanning. Each file is
-    # an HTTP call to the backend facade (and an AccessLog line, and a
-    # GitHub call): on a large repository, without a cap, the collection
-    # alone would blow the operation budget before even starting.
+    # an HTTP call to the backend facade (and a line of AccessLog, and a
+    # call to GitHub): on a large repository, without a cap, the mere
+    # collection would exceed the operation budget before even starting.
     sast_max_files: int = Field(default=200, alias="SAST_MAX_FILES")
 
     # ─────────────────────────── SonarQube ───────────────────────────
     # Disabled by default: requires a SonarQube/SonarCloud instance and
-    # per-project credentials, which in the MVP have no place to be
-    # stored yet (the backend only accepts the GITHUB provider).
+    # per-project credentials, which in the MVP do not yet have a place to
+    # be saved (the backend only accepts the GITHUB provider).
     enable_sonarqube: bool = Field(default=False, alias="ENABLE_SONARQUBE")
     sonar_cache_ttl_s: int = Field(default=86400, alias="SONAR_CACHE_TTL_S")
 
@@ -162,7 +164,8 @@ class Settings(BaseSettings):
         if self.llm_provider.lower() == "bedrock":
             return ""
 
-        if not self.llm_api_key:
+        if not se
+lf.llm_api_key:
             raise RuntimeError("LLM_API_KEY not configured. Required for ManagedAPIProvider.")
         return self.llm_api_key
 

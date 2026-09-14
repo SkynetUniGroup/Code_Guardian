@@ -1,8 +1,8 @@
 """Reading quality metrics from a SonarQube/SonarCloud instance.
 
 The metrics are computed by SonarQube at the time of its own analysis, not by
-us: here the result is read for a project at a given commit and cached,
-because for the same commit it never changes again.
+us: here we read the result for a project at a given commit and cache it,
+because it is data that for the same commit never changes again.
 """
 
 from __future__ import annotations
@@ -39,8 +39,8 @@ _REDIS_PREFIX = "sonarqube"
 _HTTP_TIMEOUT_S = 30.0
 
 # How many entries to show when no modified file appears among the metrics:
-# an excerpt is better than an empty section, but without pouring the
-# metrics of an entire repository into the prompt.
+# better an excerpt than an empty section, but without pouring the metrics of
+# an entire repository into the prompt.
 _PROMPT_FALLBACK_LIMIT = 20
 
 
@@ -48,12 +48,12 @@ def cache_key(project_key: str, commit_sha: str) -> str:
     """Composes the Redis cache key for a commit's metrics.
 
     A module-level function, not a private method of the service, because
-    the cache-invalidation endpoint also uses it: two points writing the
-    same format by hand would diverge without anyone noticing, and the
-    invalidation would fail silently.
+    the endpoint that invalidates the cache also uses it: two points
+    writing the same format by hand would diverge without anything noticing,
+    and the invalidation would fail silently.
 
     Args:
-        project_key (str): Project key on SonarQube.
+        project_key (str): SonarQube project key.
         commit_sha (str): Reference commit.
 
     Returns:
@@ -69,16 +69,17 @@ class SonarQubeCredentials:
         self,
         instance_url: str,
         project_key: str,
-        token: str,
+       
+ token: str,
         organization_key: str | None = None,
     ) -> None:
-        """Initializes the credentials.
+        """Initialises the credentials.
 
         Args:
             instance_url (str): URL of the SonarQube or SonarCloud instance.
             project_key (str): Project key.
             token (str): Access token.
-            organization_key (str | None): Organization, required by SonarCloud.
+            organization_key (str | None): Organisation, required by SonarCloud.
         """
         self.instance_url = instance_url.rstrip("/")
         self.project_key = project_key
@@ -87,7 +88,7 @@ class SonarQubeCredentials:
 
     @classmethod
     def from_dict(cls, data: dict) -> SonarQubeCredentials:
-        """Builds the credentials from the wire format.
+        """Builds the credentials from the form in which they travel over the wire.
 
         Args:
             data (dict): Object with instanceUrl, projectKey, token and
@@ -108,7 +109,7 @@ class SonarQubeService:
     """Reads a project's metrics, with Redis caching."""
 
     def __init__(self, redis_client: aioredis.Redis) -> None:
-        """Initializes the service.
+        """Initialises the service.
 
         Args:
             redis_client (aioredis.Redis): Connection used for caching.
@@ -118,11 +119,11 @@ class SonarQubeService:
     async def get_metrics(
         self, credentials: SonarQubeCredentials, commit_sha: str
     ) -> dict[str, Any]:
-        """Returns metrics per file, from cache when possible.
+        """Returns per-file metrics, from cache when possible.
 
         The cache is safe by construction: the key contains the commit, and
-        the metrics of a commit never change again. The TTL only prevents
-        keeping forever the data of commits no one will look at again.
+        a commit's metrics never change again. The TTL only serves to avoid
+        keeping data for commits nobody will ever look at again.
 
         Args:
             credentials (SonarQubeCredentials): Access to the project.
@@ -154,10 +155,10 @@ class SonarQubeService:
             credentials (SonarQubeCredentials): Access to the project.
 
         Returns:
-            dict[str, Any]: Metrics per file.
+            dict[str, Any]: Per-file metrics.
 
         Raises:
-            ValueError: Token rejected or project not found -- two cases that
+            ValueError: Token rejected or non-existent project — two cases
                 the caller must be able to distinguish from an instance failure.
             httpx.HTTPStatusError: For any other error code.
         """
@@ -179,7 +180,8 @@ class SonarQubeService:
 
         if response.status_code == 401:
             raise ValueError("SonarQube authentication failed: check the token")
-        if response.status_code == 404:
+        if response.stat
+us_code == 404:
             raise ValueError(f"SonarQube project not found: {credentials.project_key}")
         response.raise_for_status()
 
@@ -190,11 +192,11 @@ class SonarQubeService:
         """Flattens the response into a path -> metrics map.
 
         Args:
-            payload (dict): Response of /api/measures/component_tree.
+            payload (dict): Response from /api/measures/component_tree.
 
         Returns:
             dict[str, Any]: Numeric metrics per file; files without any
-            measurement are omitted.
+            measure are omitted.
         """
         result: dict[str, Any] = {}
         for component in payload.get("components", []):
@@ -215,7 +217,7 @@ class SonarQubeService:
 
     @staticmethod
     def format_for_prompt(metrics_by_file: dict[str, Any], changed_files: list[str]) -> str:
-        """Renders the metrics in the prompt section for the agent.
+        """Renders the metrics into the prompt section for the agent.
 
         Args:
             metrics_by_file (dict[str, Any]): Metrics per file.
@@ -233,7 +235,8 @@ class SonarQubeService:
             if any(changed in path for changed in changed_files)
         }
         if not relevant:
-            relevant = dict(list(metrics_by_file.items())[:_PROMPT_FALLBACK_LIMIT])
+            relevant = dict(list(metr
+ics_by_file.items())[:_PROMPT_FALLBACK_LIMIT])
 
         lines: list[str] = ["### SonarQube metrics for files under analysis\n"]
         for path, metrics in relevant.items():
