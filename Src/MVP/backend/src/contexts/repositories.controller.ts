@@ -31,6 +31,34 @@ export class RepositoriesController {
   constructor(private readonly repositoriesService: RepositoriesService) {}
 
   @Get()
+/**
+ * @swagger
+ * /repositories:
+ *   get:
+ *     summary: I repository visibili alla credenziale GitHub di chi chiama
+ *     operationId: list
+ *     responses:
+ *       200:
+ *         description: Repository list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/RepositorySummaryResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Nessuna credenziale GitHub salvata per questo utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({
     summary: "I repository visibili alla credenziale GitHub di chi chiama",
   })
@@ -45,6 +73,32 @@ export class RepositoriesController {
   }
 
   @Get("refs")
+/**
+ * @swagger
+ * /repositories/refs:
+ *   get:
+ *     summary: Branch e tag di un repository
+ *     operationId: refs
+ *     responses:
+ *       200:
+ *         description: Ref details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RefSummaryResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Credenziale GitHub assente, oppure repository non raggiungibile con quella salvata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({ summary: "Branch e tag di un repository" })
   @ApiOkResponse({ type: RefSummaryResponse })
   @ApiUnauthorizedResponse({ type: ApiErrorResponse })
@@ -61,6 +115,33 @@ export class RepositoriesController {
   }
 
   @Get("tree")
+/**
+ * @swagger
+ * /repositories/tree:
+ *   get:
+ *     summary: L'albero dei file a un dato riferimento
+ *     description: Con commitSha omesso si usa l'HEAD corrente del branch.
+ *     operationId: tree
+ *     responses:
+ *       200:
+ *         description: File tree
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RepositoryTreeResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Credenziale GitHub assente, oppure repository o riferimento non raggiungibili
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({
     summary: "L'albero dei file a un dato riferimento",
     description: "Con commitSha omesso si usa l'HEAD corrente del branch.",

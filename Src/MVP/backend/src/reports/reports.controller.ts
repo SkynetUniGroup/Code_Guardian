@@ -54,6 +54,46 @@ export class ReportsController {
   ) {}
 
   @Get()
+/**
+ * @swagger
+ * /reports:
+ *   get:
+ *     summary: I report di chi chiama
+ *     description: Forma ridotta: senza corpo, proposta o errore, per non trascinare un Block[] intero per riga di elenco.
+ *     operationId: findAll
+ *     parameters:
+ *       - in: query
+ *         name: operation
+ *         enum: 
+ *         description: Filter by operation code
+ *       - in: query
+ *         name: from
+ *         description: ISO 8601, estremo inferiore su generatedAt
+ *       - in: query
+ *         name: to
+ *         description: ISO 8601, estremo superiore su generatedAt
+ *     responses:
+ *       200:
+ *         description: List of report summaries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ReportSummaryResponse'
+ *       400:
+ *         description: Filtri non validi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({
     summary: "I report di chi chiama",
     description:
@@ -81,6 +121,39 @@ export class ReportsController {
   }
 
   @Get(":id")
+/**
+ * @swagger
+ * /reports/{id}:
+ *   get:
+ *     summary: Un report per intero
+ *     operationId: findOne
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id del report.
+ *     responses:
+ *       200:
+ *         description: Full report details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ReportResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Report inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({ summary: "Un report per intero" })
   @ApiParam({ name: "id", description: "Id del report." })
   @ApiOkResponse({ type: ReportResponse })
@@ -94,6 +167,35 @@ export class ReportsController {
   }
 
   @Delete(":id")
+/**
+ * @swagger
+ * /reports/{id}:
+ *   delete:
+ *     summary: Elimina un report
+ *     operationId: remove
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id del report.
+ *     responses:
+ *       204:
+ *         description: No content returned
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Report inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Elimina un report" })
   @ApiParam({ name: "id", description: "Id del report." })
@@ -113,6 +215,59 @@ export class ReportsController {
   // every other route on this controller does. See ReportsExportService for
   // why.
   @Get(":id/export")
+/**
+ * @swagger
+ * /reports/{id}/export:
+ *   get:
+ *     summary: Esporta un report in PDF
+ *     description: Il parametro `format` e' obbligatorio: senza, la richiesta e' un 400.
+ *     operationId: export
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id del report.
+ *       - in: query
+ *         name: format
+ *         required: true
+ *         enum: 
+ *           - pdf
+ *         description: Oggi 'pdf' e' l'unico valore ammesso.
+ *     responses:
+ *       200:
+ *         description: Il PDF del report.
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: format mancante o diverso da 'pdf'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Report inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       409:
+ *         description: Report non ancora esportabile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({
     summary: "Esporta un report in PDF",
     description: "Il parametro `format` e' obbligatorio: senza, la richiesta e' un 400.",

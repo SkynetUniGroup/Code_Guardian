@@ -44,6 +44,39 @@ export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
   @Post()
+/**
+ * @swagger
+ * /credentials:
+ *   post:
+ *     summary: Salva un Personal Access Token
+ *     description: Il token e' validato contro il provider prima di essere cifrato e salvato.
+ *     operationId: create
+ *     responses:
+ *       201:
+ *         description: Credential saved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ServiceCredentialResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       400:
+ *         description: Corpo non valido, oppure token rifiutato da GitHub o privo dello scope `repo` (code CREDENTIAL_INVALID)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       403:
+ *         description: Only Developers can configure a SonarQube credential
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: "Salva un Personal Access Token",
@@ -71,6 +104,29 @@ export class CredentialsController {
   }
 
   @Get()
+/**
+ * @swagger
+ * /credentials:
+ *   get:
+ *     summary: Le credenziali salvate
+ *     description: Il token non compare mai nella risposta.
+ *     operationId: list
+ *     responses:
+ *       200:
+ *         description: Stored credentials list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ServiceCredentialResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @ApiOperation({
     summary: "Le credenziali salvate",
     description: "Il token non compare mai nella risposta.",
@@ -82,6 +138,35 @@ export class CredentialsController {
   }
 
   @Delete(":id")
+/**
+ * @swagger
+ * /credentials/{id}:
+ *   delete:
+ *     summary: Elimina una credenziale
+ *     operationId: remove
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id della credenziale.
+ *     responses:
+ *       204:
+ *         description: No content returned
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Credenziale inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Elimina una credenziale" })
   @ApiParam({ name: "id", description: "Id della credenziale." })
@@ -96,6 +181,45 @@ export class CredentialsController {
   }
 
   @Post(":id/validate")
+/**
+ * @swagger
+ * /credentials/{id}/validate:
+ *   post:
+ *     summary: Riverifica una credenziale contro il provider
+ *     operationId: revalidate
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id della credenziale.
+ *     responses:
+ *       200:
+ *         description: Validated credential info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ServiceCredentialResponse'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       404:
+ *         description: Credenziale inesistente o di un altro utente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ *       400:
+ *         description: Il provider non riconosce piu' il token (code CREDENTIAL_INVALID)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Riverifica una credenziale contro il provider" })
   @ApiParam({ name: "id", description: "Id della credenziale." })

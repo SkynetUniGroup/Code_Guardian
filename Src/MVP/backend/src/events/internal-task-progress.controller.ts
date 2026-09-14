@@ -32,6 +32,23 @@ export class InternalTaskProgressController {
   ) {}
 
   @Post(":id/progress")
+/**
+ * @swagger
+ * /internal/tasks/{id}/progress:
+ *   post:
+ *     summary: Updates the progress of a task
+ *     operationId: progress
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Task ID
+ *     responses:
+ *       204:
+ *         description: No response body. Task progress updated successfully.
+ */
   @HttpCode(HttpStatus.NO_CONTENT)
   async progress(@Param("id") id: string, @Body() dto: TaskProgressCallbackDto): Promise<void> {
     // The pre-update document is enough: userId never changes, and we only

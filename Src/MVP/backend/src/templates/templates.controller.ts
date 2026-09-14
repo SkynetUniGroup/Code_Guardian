@@ -32,6 +32,20 @@ export class TemplatesController {
   constructor(private readonly templatesService: TemplatesService) {}
 
   @Put()
+/**
+ * @swagger
+ * /templates/readme:
+ *   put:
+ *     summary: Save a README template
+ *     operationId: save
+ *     responses:
+ *       200:
+ *         description: README template saved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ReadmeTemplateDto'
+ */
   @HttpCode(HttpStatus.OK)
   save(
     @CurrentUser("userId") userId: string,
@@ -41,11 +55,35 @@ export class TemplatesController {
   }
 
   @Get()
+/**
+ * @swagger
+ * /templates/readme:
+ *   get:
+ *     summary: Retrieve the README template
+ *     operationId: find
+ *     responses:
+ *       200:
+ *         description: Retrieved README template
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ReadmeTemplateDto'
+ */
   find(@CurrentUser("userId") userId: string): Promise<ReadmeTemplateDto> {
     return this.templatesService.find(userId);
   }
 
   @Delete()
+/**
+ * @swagger
+ * /templates/readme:
+ *   delete:
+ *     summary: Remove the README template
+ *     operationId: remove
+ *     responses:
+ *       204:
+ *         description: No content returned
+ */
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser("userId") userId: string): Promise<void> {
     return this.templatesService.remove(userId);
