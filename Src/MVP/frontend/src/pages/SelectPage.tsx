@@ -47,7 +47,8 @@ function fieldErrorFromApiError(err: unknown): Record<string, string> {
 export function SelectPage() {
   const navigate = useNavigate();
   const setContext = useSelectionStore((s) => s.setContext);
-  const setFormContext = useSelectionStore((s) => s.setFormContext);
+  const setFormContext = useSelectionStore((s
+) => s.setFormContext);
   const formContext = useSelectionStore((s) => s.formContext);
 
   // Repository list state
@@ -82,14 +83,14 @@ export function SelectPage() {
   useEffect(() => {
     async function fetch_repos() {
       try {
-        // GET /repositories risponde con un array nudo (RepositorySummary[]),
-        // non con un oggetto {repositories: [...]}: leggere .repositories dava
-        // undefined e la pagina finiva sempre nello stato d'errore.
+        // GET /repositories returns a raw array (RepositorySummary[]),
+        // not an object {repositories: [...]}: reading .repositories returned
+        // undefined and the page always ended up in the error state.
         const response = await apiClient.get<RepositorySummary[]>("/repositories");
         setRepos(response.data);
       } catch {
         setReposError(
-          "Impossibile caricare i repository. Verifica che le credenziali GitHub siano valide.",
+          "Unable to load repositories. Verify that the GitHub credentials are valid.",
         );
       } finally {
         setReposLoading(false);
@@ -98,7 +99,8 @@ export function SelectPage() {
     fetch_repos();
   }, []);
 
-  // When the user selects a repo, pre-fill the ref with its default branch.
+  // When the u
+ser selects a repo, pre-fill the ref with its default branch.
   function handle_repo_change(owner_name: string) {
     const repo = repos.find((r) => `${r.owner}/${r.name}` === owner_name) ?? null;
     setSelectedRepo(repo);
@@ -116,16 +118,16 @@ export function SelectPage() {
     const next: Record<string, string> = {};
     const manual_url = manual_repo_url.trim();
     if (!selected_repo && !manual_url) {
-      next.repo = "Seleziona un repository o incolla l'URL di un repository pubblico";
+      next.repo = "Select a repository or paste the URL of a public repository";
     } else if (manual_url && !GITHUB_REPO_URL_REGEX.test(manual_url)) {
-      next.repo_url = "URL non valido (https://github.com/owner/repo)";
+      next.repo_url = "Invalid URL (https://github.com/owner/repo)";
     }
-    if (!ref.trim()) next.ref = "Inserisci il branch";
+    if (!ref.trim()) next.ref = "Enter the branch";
     if (commit_sha.trim() && !/^[0-9a-f]{7,40}$/i.test(commit_sha.trim())) {
       next.commit_sha = "Il commit SHA deve essere esadecimale (7-40 caratteri)";
     }
     if (scope_type !== "FULL_REPOSITORY" && !paths_text.trim()) {
-      next.paths = "Inserisci almeno un percorso";
+      next.paths = "Enter at least one path";
     }
     setFormErrors(next);
     return Object.keys(next).length === 0;
@@ -151,9 +153,10 @@ export function SelectPage() {
     const dto: CreateContextDto = {
       repoUrl: repo_url,
       branch: ref.trim(),
-      // Se assente, il backend ancora il contesto alla HEAD del branch (RF.17).
-      // Il campo esisteva nel DTO ma nessuno lo compilava: il pinning su un
-      // commit specifico (RF.22) era irraggiungibile dall'interfaccia.
+      // If absent, the backend anchors the context to the branch HEAD (RF.17).
+      // The field existed in the DTO but nobody filled it: pinning to a
+      // comm
+it specifico (RF.22) era irraggiungibile dall'interfaccia.
       ...(commit_sha.trim() ? { commitSha: commit_sha.trim() } : {}),
       scopeType: scope_type,
       ...(paths_array.length > 0 ? { paths: paths_array } : {}),
@@ -180,7 +183,7 @@ export function SelectPage() {
         setFormErrors((p) => ({ ...p, ...field_errors }));
       } else {
         setSubmitError(
-          apiErrorMessage(err, "Impossibile salvare il contesto. Verifica i parametri e riprova."),
+          apiErrorMessage(err, "Unable to save the context. Verify the parameters and try again."),
         );
       }
     } finally {
@@ -194,7 +197,7 @@ export function SelectPage() {
     return (
       <div className="flex items-center gap-2 text-gray-500 text-sm">
         <Spinner size="sm" />
-        Caricamento repository…
+        Loading repositories…
       </div>
     );
   }
@@ -209,7 +212,7 @@ export function SelectPage() {
             onClick={() => window.location.reload()}
             className="rounded border border-[#cccccc] px-3 py-1.5 text-sm text-[#2a2a2a] hover:bg-gray-50"
           >
-            Riprova
+            Try again
           </button>
         }
       />
@@ -221,9 +224,10 @@ export function SelectPage() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <h1 className="mb-1 text-lg font-semibold text-[#2a2a2a]">Seleziona Repository</h1>
+      <h1 className="mb-1 text-lg font-semibold text-[#2a2a2a]">Select Repository</h1>
+
       <p className="mb-6 text-sm text-gray-400">
-        Configura il contesto di analisi: scegli il repository, il branch e il tipo di scope.
+        Configure the analysis context: choose the repository, branch, and scope type.
       </p>
 
       {submit_error && (
@@ -236,7 +240,7 @@ export function SelectPage() {
         {/* Repository selector */}
         <div className="flex flex-col gap-1">
           <label htmlFor="repo-select" className="text-sm font-medium text-[#2a2a2a]">
-            Seleziona repository 
+            Select repository 
           </label>
           <select
             id="repo-select"
@@ -248,7 +252,7 @@ export function SelectPage() {
             disabled={!!manual_repo_url.trim()}
             className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
           >
-            <option value="">-- Seleziona un repository --</option>
+            <option value="">-- Select a repository --</option>
             {repos.map((r) => (
               <option key={`${r.owner}/${r.name}`} value={`${r.owner}/${r.name}`}>
                 {r.owner}/{r.name} {r.isPrivate ? "🔒" : ""}
@@ -260,11 +264,12 @@ export function SelectPage() {
 
         {/* Manual repository URL — for public repos not owned/collaborated by the connected GitHub account */}
         <ValidatedField
-          label="Oppure incolla l'URL di un repository pubblico"
+          label="Or paste the URL of a public repository"
           placeholder="https://github.com/owner/repo"
           value={manual_repo_url}
           onChange={(e) => {
-            handle_manual_repo_url_change(e.target.value);
+            handle_manual_re
+po_url_change(e.target.value);
             setFormErrors((p) => ({ ...p, repo: "", repo_url: "" }));
           }}
           disabled={!!selected_repo}
@@ -287,8 +292,8 @@ export function SelectPage() {
         {/* Commit SHA (opzionale) */}
         <div className="flex flex-col gap-1">
           <ValidatedField
-            label="Commit SHA (opzionale)"
-            placeholder="lascia vuoto per l'ultimo commit del branch"
+            label="Commit SHA (optional)"
+            placeholder="leave empty for the latest commit on the branch"
             value={commit_sha}
             onChange={(e) => {
               setCommitSha(e.target.value);
@@ -297,15 +302,15 @@ export function SelectPage() {
             error={form_errors.commit_sha}
           />
           <p className="text-xs text-gray-400">
-            Ancora l'analisi a un commit preciso, così il report resta riproducibile anche dopo
-            nuovi commit sul branch.
+            Pin the analysis to a specific commit, so the report stays reproducible even after
+            new commits on the branch.
           </p>
         </div>
 
         {/* Scope type selector */}
         <div className="flex flex-col gap-1">
           <label htmlFor="scope-type" className="text-sm font-medium text-[#2a2a2a]">
-            Tipo di scope
+            Scope type
           </label>
           <select
             id="scope-type"
@@ -317,15 +322,16 @@ export function SelectPage() {
             }}
             className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20"
           >
-            <option value="FULL_REPOSITORY">Repository completo</option>
+            <option value="FU
+LL_REPOSITORY">Full repository</option>
             <option value="FILES">File specifici</option>
-            <option value="DIRECTORIES">Directory specifiche</option>
+            <option value="DIRECTORIES">Specific directories</option>
           </select>
           <p className="text-xs text-gray-400">
             {scope_type === "FULL_REPOSITORY" &&
-              "Tutti i file del repository verranno inclusi nell'analisi."}
+              "All files in the repository will be included in the analysis."}
             {scope_type === "FILES" && "Specifica i file esatti da analizzare (uno per riga)."}
-            {scope_type === "DIRECTORIES" && "Specifica le directory da analizzare (una per riga)."}
+            {scope_type === "DIRECTORIES" && "Specify the directories to analyze (one per line)."}
           </p>
         </div>
 
@@ -333,7 +339,7 @@ export function SelectPage() {
         {requires_paths && (
           <div className="flex flex-col gap-1">
             <label htmlFor="paths-input" className="text-sm font-medium text-[#2a2a2a]">
-              {scope_type === "FILES" ? "File da analizzare" : "Directory da analizzare"}
+              {scope_type === "FILES" ? "Files to analyze" : "Directories to analyze"}
             </label>
             <textarea
               id="paths-input"
@@ -351,7 +357,7 @@ export function SelectPage() {
               className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm font-mono text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20 resize-y"
             />
             <p className="text-xs text-gray-400">
-              Un percorso per riga, relativo alla radice del repository.
+              One path per line, relative to the repository root.
             </p>
             {form_errors.paths && (
               <span className="text-xs text-[#cc2222]">{form_errors.paths}</span>
@@ -362,10 +368,11 @@ export function SelectPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-200 transition disabled:opacity-60"
+        
+  className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-200 transition disabled:opacity-60"
         >
           {submitting && <Spinner size="sm" className="text-white" />}
-          Salva contesto e vai ad Avvia
+          Save context and go to Start
         </button>
       </form>
     </div>

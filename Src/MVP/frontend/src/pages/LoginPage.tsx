@@ -18,9 +18,9 @@ export function LoginPage() {
 
   function validate(): boolean {
     const next: typeof errors = {};
-    if (!email.trim()) next.email = "Inserisci la tua email";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Email non valida";
-    if (!password) next.password = "Inserisci la password";
+    if (!email.trim()) next.email = "Enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Invalid email";
+    if (!password) next.password = "Enter your password";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -34,22 +34,23 @@ export function LoginPage() {
     try {
       const tokenResponse = await apiClient.post<AuthTokenDto>("/auth/login", dto);
       const accessToken = tokenResponse.data.accessToken;
-      // L'header Authorization lo mette l'interceptor leggendo il token dallo
+      // The Authorization header is set by the interceptor reading the token from
       // store, che pero' viene popolato solo da login() qui sotto: senza
-      // passare il token a mano, questa GET partiva senza header e tornava
-      // 401 — il login andava a buon fine e l'utente vedeva "credenziali non
+      // the store. Passing the token manually, this GET went out without a header and returned
+      // 401 — the login succeeded but the user saw "invalid credentials"
       // corrette".
       const userResponse = await apiClient.get<UserProfileDto>("/auth/me", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      login(userResponse.data, accessToken);
+      login(us
+erResponse.data, accessToken);
       navigate({ to: "/select" });
     } catch (err: unknown) {
       const { status } = toApiError(err);
       if (status === 401 || status === 403) {
-        setErrors({ global: "Email o password non corretti." });
+        setErrors({ global: "Incorrect email or password." });
       } else {
-        setErrors({ global: "Errore di rete. Riprova più tardi." });
+        setErrors({ global: "Network error. Try again later." });
       }
     } finally {
       setLoading(false);
@@ -60,7 +61,7 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm rounded-lg border border-[#cccccc] bg-white p-8 shadow-sm">
         <h1 className="mb-1 text-xl font-bold text-[#2a2a2a]">Code Guardian</h1>
-        <p className="mb-6 text-sm text-gray-500">Accedi al tuo account</p>
+        <p className="mb-6 text-sm text-gray-500">Sign in to your account</p>
 
         {errors.global && (
           <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-[#cc2222]">
@@ -73,7 +74,7 @@ export function LoginPage() {
             label="Email"
             type="email"
             autoComplete="email"
-            placeholder="nome@azienda.it"
+            placeholder="name@company.com"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -96,7 +97,8 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#111] transition disabled:opacity-60"
+            className="mt-2 flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#
+111] transition disabled:opacity-60"
           >
             {loading && <Spinner size="sm" className="text-white" />}
             Accedi
@@ -104,7 +106,7 @@ export function LoginPage() {
         </form>
 
         <p className="mt-4 text-center text-xs text-gray-500">
-          Non hai un account?{" "}
+          Don't have an account?{" "}
           <Link to="/register" className="text-[#2277cc] hover:underline">
             Registrati
           </Link>

@@ -10,29 +10,29 @@ import type { CreateCredentialDto, ServiceCredentialDto } from "../types";
 /**
  * CredentialsPage — /credentials
  *
- * Gestisce le credenziali di servizio dell'utente.
+ * Manages the user's service credentials.
  *
- *  - **GitHub PAT** (`provider: "GITHUB"`): obbligatorio. Senza, /select e /run
- *    non sono raggiungibili — il guard sta su `beforeLoad` della rotta e lo
- *    stato vive in `sessionStore.credentialsStatus`.
- *  - **SonarQube** (`provider: "SONARQUBE"`): opzionale. Se presente, le
- *    operazioni DOCS_* arricchiscono il prompt con le metriche di qualità del
- *    progetto; se assente o irraggiungibile, l'operazione gira comunque. Non
- *    tocca i guard di rotta e non entra nello store.
+ *  - **GitHub PAT** (`provider: "GITHUB"`): required. Without it, /select and /run
+ *    are unreachable — the guard is on the route's `beforeLoad` and the
+ *    state lives in `sessionStore.credentialsStatus`.
+ *  - **SonarQube** (`provider: "SONARQUBE"`): optional. If present, DOCS_*
+ *    operations enrich the prompt with the project's quality metrics; if
+ *    absent or unreachable, the operation still runs. It does not affect
+ *    route guards and does not enter the store.
  *
- * La chiave del modello LLM NON è una credenziale utente: è configurazione del
- * servizio agenti (LLM_API_KEY / IAM Task Role), quindi non si chiede qui.
+ * The LLM model key is NOT a user credential: it is configuration of the
+ * agent service (LLM_API_KEY / IAM Task Role), so it is not requested here.
  *
- * Contratto:
+ * Contract:
  *  - GET    /credentials                → ServiceCredentialDto[]
  *  - POST   /credentials {provider, ...} → 201 ServiceCredentialDto.
- *    Il backend verifica la credenziale viva contro il provider *prima* di
- *    salvarla (RF.13–RF.14): un token rifiutato torna 400 CREDENTIAL_INVALID e
- *    non viene persistito.
- *  - POST   /credentials/:id/validate   → ri-verifica una credenziale salvata
- *  - DELETE /credentials/:id            → revoca locale
+ *    The backend verifies the credential live against the provider *before*
+ *    saving it (RF.13–RF.14): a rejected token returns 400 CREDENTIAL_INVALID
+ *    and is not persisted.
+ *  - POST   /credentials/:id/validate   → re-validates a saved credential
+ *  - DELETE /credentials/:id            → local revocation
  *
- * I segreti non restano mai nel browser dopo l'invio: i campi vengono svuotati.
+ * Secrets never remain in the browser after submission: the fields are cleared.
  */
 const GITHUB_PROVIDER = "GITHUB";
 const SONARQUBE_PROVIDER = "SONARQUBE";
@@ -54,7 +54,7 @@ export function CredentialsPage() {
   const [sonar_credential, setSonarCredential] = useState<ServiceCredentialDto | null>(null);
 
   useEffect(() => {
-    /** GET /credentials → array nudo di ServiceCredentialDto. */
+    /** GET /credentials → raw array of ServiceCredentialDto. */
     async function fetch_status() {
       try {
         const response = await apiClient.get<ServiceCredentialDto[]>("/credentials");
@@ -63,9 +63,9 @@ export function CredentialsPage() {
         setSonarCredential(response.data.find((c) => c.provider === SONARQUBE_PROVIDER) ?? null);
         set_status(github ? "CONNECTED" : "MISSING");
       } catch {
-        // Una GET fallita non dice che la credenziale manca, solo che non
-        // siamo riusciti a leggerla: non si declassa lo stato a MISSING, che
-        // farebbe scattare i guard di rotta su un'informazione non verificata.
+        // A failed GET does not mean the credential is missing, only that we
+        // could not read it: the status is not downgraded to MISSING, which
+        // would trigger route guards on unverified information.
         set_status("UNKNOWN");
       } finally {
         setFetchLoading(false);
@@ -75,15 +75,15 @@ export function CredentialsPage() {
   }, [set_status]);
 
   /**
-   * Validazione client minima: il formato dei PAT GitHub è cambiato nel tempo
-   * (classici a 40 hex, `ghp_`, fine-grained `github_pat_`), quindi si
-   * controlla solo che il campo non sia vuoto — esattamente come fa il DTO
-   * lato backend. Se il token funziona davvero lo dice GitHub, non un regex.
+   * Minimal client-side validation: the GitHub PAT format has changed over time
+   * (classic 40-char hex, `ghp_`, fine-grained `github_pat_`), so we only
+   * check that the field is not empty — exactly as the backend DTO does.
+   * Whether the token actually works is told by GitHub, not a regex.
    */
   function validate(): boolean {
     const next: typeof errors = {};
     if (!github_pat.trim()) {
-      next.github_pat = "Inserisci il GitHub Personal Access Token";
+      next.github_pat = "Enter your GitHub Personal Access Token";
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -107,17 +107,17 @@ export function CredentialsPage() {
       setGithubCredential(response.data);
       set_status("CONNECTED");
       setGithubPat("");
-      setSuccess("Credenziale salvata e verificata. Puoi procedere a scegliere un repository.");
+      setSuccess("Credential saved and verified. You can proceed to select a repository.");
     } catch (err: unknown) {
       const { code } = toApiError(err);
       if (code === "CREDENTIAL_INVALID") {
         set_status("INVALID");
         setErrors({
-          global: apiErrorMessage(err, "GitHub ha rifiutato questo token."),
+          global: apiErrorMessage(err, "GitHub rejected this token."),
         });
       } else {
         setErrors({
-          global: apiErrorMessage(err, "Errore durante il salvataggio. Riprova più tardi."),
+          global: apiErrorMessage(err, "Error during save. Try again later."),
         });
       }
     } finally {
@@ -125,7 +125,7 @@ export function CredentialsPage() {
     }
   }
 
-  /** "Verifica di nuovo" — POST /credentials/:id/validate (§4.2). */
+  /** "Verify again" — POST /credentials/:id/validate (§4.2). */
   async function handle_revalidate() {
     if (!github_credential) return;
     setRevalidating(true);
@@ -137,11 +137,11 @@ export function CredentialsPage() {
       );
       setGithubCredential(response.data);
       set_status("CONNECTED");
-      setSuccess("La credenziale è ancora valida.");
+      setSuccess("The credential is still valid.");
     } catch (err: unknown) {
       set_status("INVALID");
       setErrors({
-        global: apiErrorMessage(err, "La credenziale non è più valida: inseriscine una nuova."),
+        global: apiErrorMessage(err, "The credential is no longer valid: enter a new one."),
       });
     } finally {
       setRevalidating(false);
@@ -149,8 +149,8 @@ export function CredentialsPage() {
   }
 
   /**
-   * Revoca locale: rimuove il token cifrato dal nostro database, non lo revoca
-   * su GitHub — quella resta un'azione dell'utente sul proprio account (§4.1).
+   * Local revocation: removes the encrypted token from our database, does not
+   * revoke it on GitHub — that remains a user action on their account (§4.1).
    */
   async function handle_remove() {
     if (!github_credential) return;
@@ -161,9 +161,9 @@ export function CredentialsPage() {
       await apiClient.delete(`/credentials/${github_credential.id}`);
       setGithubCredential(null);
       set_status("MISSING");
-      setSuccess("Credenziale rimossa da Code Guardian. Su GitHub resta attiva: revocala da lì.");
+      setSuccess("Credential removed from Code Guardian. It remains active on GitHub: revoke it there.");
     } catch (err: unknown) {
-      setErrors({ global: apiErrorMessage(err, "Impossibile rimuovere la credenziale.") });
+      setErrors({ global: apiErrorMessage(err, "Unable to remove the credential.") });
     } finally {
       setRemoving(false);
     }
@@ -171,7 +171,7 @@ export function CredentialsPage() {
 
   function format_date(iso: string | null): string {
     if (!iso) return "—";
-    return new Date(iso).toLocaleString("it-IT", {
+    return new Date(iso).toLocaleString("en-US", {
       dateStyle: "short",
       timeStyle: "short",
     });
@@ -181,17 +181,17 @@ export function CredentialsPage() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <h1 className="mb-1 text-lg font-semibold text-[#2a2a2a]">Credenziali</h1>
+      <h1 className="mb-1 text-lg font-semibold text-[#2a2a2a]">Credentials</h1>
       <p className="mb-6 text-sm text-gray-400">
-        I token vengono cifrati e salvati sul server. Non vengono mai restituiti al browser dopo il
-        salvataggio.
+        Tokens are encrypted and stored on the server. They are never returned to the browser after
+        saving.
       </p>
 
-      {/* Stato corrente */}
+      {/* Current status */}
       {!fetch_loading && (
         <div className="mb-6 rounded-lg border border-[#cccccc] bg-gray-50 px-4 py-3">
           <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Stato credenziali
+            Credential status
           </p>
           <div className="mb-1 flex items-center gap-2">
             <span className="text-sm text-gray-500">GitHub PAT:</span>
@@ -201,17 +201,17 @@ export function CredentialsPage() {
               <StatusBadge status="PENDING" />
             )}
             <span className="text-xs text-gray-400">
-              {credentials_status === "CONNECTED" && "Connessa e valida"}
-              {credentials_status === "INVALID" && "Non valida – aggiornala"}
-              {credentials_status === "MISSING" && "Non configurata"}
-              {credentials_status === "UNKNOWN" && "Stato non verificabile"}
+              {credentials_status === "CONNECTED" && "Connected and valid"}
+              {credentials_status === "INVALID" && "Invalid – update it"}
+              {credentials_status === "MISSING" && "Not configured"}
+              {credentials_status === "UNKNOWN" && "Status unverifiable"}
             </span>
           </div>
 
           {github_credential && (
             <>
               <p className="text-xs text-gray-400">
-                Ultima validazione: {format_date(github_credential.connectedAt)}
+                Last validation: {format_date(github_credential.connectedAt)}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
@@ -221,7 +221,7 @@ export function CredentialsPage() {
                   className="flex items-center gap-1.5 rounded border border-[#cccccc] px-3 py-1.5 text-xs text-[#2a2a2a] transition hover:bg-white disabled:opacity-50"
                 >
                   {revalidating && <Spinner size="sm" />}
-                  Verifica di nuovo
+                  Verify again
                 </button>
                 <button
                   type="button"
@@ -230,7 +230,7 @@ export function CredentialsPage() {
                   className="flex items-center gap-1.5 rounded border border-[#cc2222] px-3 py-1.5 text-xs text-[#cc2222] transition hover:bg-red-50 disabled:opacity-50"
                 >
                   {removing && <Spinner size="sm" className="text-[#cc2222]" />}
-                  Disconnetti
+                  Disconnect
                 </button>
               </div>
             </>
@@ -255,7 +255,7 @@ export function CredentialsPage() {
           <ValidatedField
             label={
               github_credential
-                ? "Sostituisci il GitHub Personal Access Token"
+                ? "Replace GitHub Personal Access Token"
                 : "GitHub Personal Access Token"
             }
             type="password"
@@ -269,8 +269,8 @@ export function CredentialsPage() {
             error={errors.github_pat}
           />
           <p className="mt-1 text-xs text-gray-400">
-            Serve lo scope <code className="font-mono">repo</code> (un token fine-grained va bene se
-            dà accesso ai repository da analizzare). Generane uno su{" "}
+            Requires the <code className="font-mono">repo</code> scope (a fine-grained token is fine if it
+            grants access to the repositories to analyze). Generate one at{" "}
             <a
               href="https://github.com/settings/tokens"
               target="_blank"
@@ -288,7 +288,7 @@ export function CredentialsPage() {
           className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#111] disabled:opacity-60"
         >
           {saving && <Spinner size="sm" className="text-white" />}
-          {saving ? "Verifica in corso…" : "Salva e verifica"}
+          {saving ? "Verifying…" : "Save and verify"}
         </button>
       </form>
 
@@ -304,12 +304,12 @@ export function CredentialsPage() {
 }
 
 /**
- * Riquadro SonarQube — provider opzionale.
+ * SonarQube card — optional provider.
  *
- * Tiene il proprio stato locale e non tocca `sessionStore`: una credenziale
- * SonarQube mancante o non valida non deve mai bloccare una rotta. Il testo di
- * stato è volutamente diverso da quello di GitHub ("Progetto collegato" vs
- * "Connessa e valida") così gli spec e2e possono distinguere i due riquadri.
+ * Holds its own local state and does not touch `sessionStore`: a missing or
+ * invalid SonarQube credential must never block a route. The status text is
+ * intentionally different from GitHub's ("Project linked" vs
+ * "Connected and valid") so e2e specs can distinguish the two cards.
  */
 function SonarqubeCredentialCard({
   credential,
@@ -335,9 +335,9 @@ function SonarqubeCredentialCard({
 
   function validate(): boolean {
     const next: Record<string, string> = {};
-    if (!instanceUrl.trim()) next.instanceUrl = "Inserisci l'URL dell'istanza";
-    if (!projectKey.trim()) next.projectKey = "Inserisci la chiave del progetto";
-    if (!token.trim()) next.token = "Inserisci il token SonarQube";
+    if (!instanceUrl.trim()) next.instanceUrl = "Enter the instance URL";
+    if (!projectKey.trim()) next.projectKey = "Enter the project key";
+    if (!token.trim()) next.token = "Enter the SonarQube token";
     setFieldErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -363,15 +363,15 @@ function SonarqubeCredentialCard({
       const response = await apiClient.post<ServiceCredentialDto>("/credentials", dto);
       onChange(response.data);
       setToken("");
-      setNotice("Progetto SonarQube collegato. Le operazioni DOCS useranno le sue metriche.");
+      setNotice("SonarQube project linked. DOCS operations will use its metrics.");
     } catch (err: unknown) {
       const { code } = toApiError(err);
       setGlobalError(
         apiErrorMessage(
           err,
           code === "CREDENTIAL_INVALID"
-            ? "SonarQube ha rifiutato queste credenziali."
-            : "Errore durante il salvataggio. Riprova più tardi.",
+            ? "SonarQube rejected these credentials."
+            : "Error during save. Try again later.",
         ),
       );
     } finally {
@@ -389,10 +389,10 @@ function SonarqubeCredentialCard({
         `/credentials/${credential.id}/validate`,
       );
       onChange(response.data);
-      setNotice("Le credenziali SonarQube sono ancora valide.");
+      setNotice("SonarQube credentials are still valid.");
     } catch (err: unknown) {
       setGlobalError(
-        apiErrorMessage(err, "Le credenziali SonarQube non sono più valide: aggiornale."),
+        apiErrorMessage(err, "SonarQube credentials are no longer valid: update them."),
       );
     } finally {
       setRevalidating(false);
@@ -407,9 +407,9 @@ function SonarqubeCredentialCard({
     try {
       await apiClient.delete(`/credentials/${credential.id}`);
       onChange(null);
-      setNotice("Progetto SonarQube scollegato. Le operazioni DOCS proseguono senza metriche.");
+      setNotice("SonarQube project unlinked. DOCS operations continue without metrics.");
     } catch (err: unknown) {
-      setGlobalError(apiErrorMessage(err, "Impossibile scollegare il progetto."));
+      setGlobalError(apiErrorMessage(err, "Unable to unlink the project."));
     } finally {
       setRemoving(false);
     }
@@ -419,17 +419,17 @@ function SonarqubeCredentialCard({
     <section className="mt-10 border-t border-[#e5e5e5] pt-8">
       <h2 className="mb-1 text-base font-semibold text-[#2a2a2a]">SonarQube / SonarCloud</h2>
       <p className="mb-4 text-sm text-gray-400">
-        Opzionale. Collega un progetto per far entrare le sue metriche di qualità (complessità, code
-        smell, hotspot) nei prompt delle operazioni di documentazione. Se non lo colleghi, o se
-        l'istanza è irraggiungibile, le operazioni girano comunque.
+        Optional. Link a project to bring its quality metrics (complexity, code
+        smell, hotspot) into the documentation operation prompts. If you don't link one, or if
+        the instance is unreachable, operations still run.
       </p>
 
       <div className="mb-4 rounded-lg border border-[#cccccc] bg-gray-50 px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Progetto:</span>
+          <span className="text-sm text-gray-500">Project:</span>
           <StatusBadge status={credential ? "COMPLETED" : "PENDING"} />
           <span className="text-xs text-gray-400">
-            {credential ? "Progetto collegato" : "Nessun progetto SonarQube"}
+            {credential ? "Project linked" : "No SonarQube project"}
           </span>
         </div>
         {credential && (
@@ -445,7 +445,7 @@ function SonarqubeCredentialCard({
                 className="flex items-center gap-1.5 rounded border border-[#cccccc] px-3 py-1.5 text-xs text-[#2a2a2a] transition hover:bg-white disabled:opacity-50"
               >
                 {revalidating && <Spinner size="sm" />}
-                Verifica di nuovo
+                Verify again
               </button>
               <button
                 type="button"
@@ -474,7 +474,7 @@ function SonarqubeCredentialCard({
 
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
         <ValidatedField
-          label="URL istanza SonarQube"
+          label="SonarQube instance URL"
           type="url"
           autoComplete="off"
           placeholder="https://sonarcloud.io"
@@ -486,7 +486,7 @@ function SonarqubeCredentialCard({
           error={fieldErrors.instanceUrl}
         />
         <ValidatedField
-          label="Chiave progetto"
+          label="Project key"
           type="text"
           autoComplete="off"
           placeholder="mia-org_mio-progetto"
@@ -498,7 +498,7 @@ function SonarqubeCredentialCard({
           error={fieldErrors.projectKey}
         />
         <ValidatedField
-          label="Organizzazione (solo SonarCloud)"
+          label="Organization (SonarCloud only)"
           type="text"
           autoComplete="off"
           placeholder="mia-org"
@@ -507,7 +507,7 @@ function SonarqubeCredentialCard({
         />
         <div>
           <ValidatedField
-            label={credential ? "Sostituisci il token SonarQube" : "Token SonarQube"}
+            label={credential ? "Replace SonarQube token" : "SonarQube token"}
             type="password"
             autoComplete="off"
             placeholder="squ_xxxxxxxxxxxx"
@@ -519,7 +519,7 @@ function SonarqubeCredentialCard({
             error={fieldErrors.token}
           />
           <p className="mt-1 text-xs text-gray-400">
-            Un token utente con accesso in lettura al progetto. Basta il permesso «Browse».
+            A user token with read access to the project. The "Browse" permission is sufficient.
           </p>
         </div>
 
@@ -529,7 +529,7 @@ function SonarqubeCredentialCard({
           className="flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#111] disabled:opacity-60"
         >
           {saving && <Spinner size="sm" className="text-white" />}
-          {saving ? "Verifica in corso…" : "Collega progetto"}
+          {saving ? "Verifica in corso…" : "Link project"}
         </button>
       </form>
     </section>

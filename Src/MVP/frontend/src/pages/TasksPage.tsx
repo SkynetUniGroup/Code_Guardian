@@ -28,8 +28,8 @@ import { OPERATION_LABELS } from "../types";
  *  - COMPLETED tasks with a reportId show a link to the report.
  */
 /**
- * Quale modale è aperta e su quale task. Il payload dipende dal `kind`, quindi
- * è una union discriminata e non un `any`: è la stessa forma che PendingInput
+ * Which modal is open and on which task. The payload depends on `kind`, so
+ * it is a discriminated union, not `any`: it is the same shape that PendingInput
  * ha nello store, e tenerla tipizzata evita che una modale legga un campo che
  * per quel kind non esiste.
  */
@@ -46,6 +46,7 @@ type ActiveModal = ModalRequest & { taskId: string };
 
 export function TasksPage() {
   const tasks_map = useTasksStore((s) => s.tasks);
+
   const load_tasks = useTasksStore((s) => s.loadTasks);
   const cancel_task = useTasksStore((s) => s.cancel);
   const current_batch_id = useTasksStore((s) => s.currentBatchId);
@@ -60,7 +61,7 @@ export function TasksPage() {
   useEffect(() => {
     async function fetch_initial() {
       try {
-        // GET /tasks risponde con un array nudo (TaskDto[]).
+        // GET /tasks returns a raw array (TaskDto[]).
         const response = await apiClient.get<TaskDto[]>("/tasks");
         const mapped: TaskEntry[] = response.data.map((t) => ({
           id: t.id,
@@ -73,8 +74,8 @@ export function TasksPage() {
           error: t.error ?? null,
           // pendingInput e' persistito sul Task, non solo trasmesso via
           // WebSocket: azzerarlo qui faceva sparire il pulsante della modale a
-          // ogni refresh, lasciando il task in attesa di una risposta che
-          // l'utente non aveva piu' modo di dare.
+          // every refresh, leaving the task waiting for a response that
+          // the user could no longer provide.
           pendingInput: t.pendingInput ?? null,
         }));
         load_tasks(mapped);
@@ -95,7 +96,8 @@ export function TasksPage() {
       await apiClient.post(`/tasks/${task_id}/cancel`);
       cancel_task(task_id);
     } catch {
-      // Error is surfaced by the task status card if the WS confirms failure.
+      // Error is surfaced by the task status card if
+ the WS confirms failure.
     } finally {
       setCancelling(null);
     }
@@ -121,7 +123,7 @@ export function TasksPage() {
     return (
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Spinner size="sm" />
-        Caricamento task…
+        Loading tasks…
       </div>
     );
   }
@@ -130,14 +132,14 @@ export function TasksPage() {
     <div className="mx-auto max-w-3xl">
       <h1 className="mb-1 text-lg font-semibold text-[#2a2a2a]">Task</h1>
       <p className="mb-6 text-sm text-gray-400">
-        Monitoraggio delle operazioni in esecuzione e completate.
+        Monitoring running and completed operations.
       </p>
 
       {task_list.length === 0 ? (
         <div className="rounded-lg border border-dashed border-[#cccccc] p-10 text-center text-sm text-gray-400">
-          Nessun task trovato.{" "}
+          No tasks found.{" "}
           <Link to="/run" className="text-[#2277cc] hover:underline">
-            Avvia un'operazione
+            Start an operation
           </Link>{" "}
           per cominciare.
         </div>
@@ -161,7 +163,8 @@ export function TasksPage() {
         <SprintIdModal taskId={active_modal.taskId} onClose={() => setActiveModal(null)} />
       )}
 
-      {active_modal?.kind === "INCOMPLETE_TASKS" && (
+      {active_modal?.kind === "INCOMPLET
+E_TASKS" && (
         <IncompleteTasksModal
           taskId={active_modal.taskId}
           taskIds={active_modal.taskIds}
@@ -215,7 +218,8 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
         <StatusBadge status={task.status} className="shrink-0" />
       </div>
 
-      {/* Progress bar (only for running tasks) */}
+      {/* Progress bar (only for running tasks
+) */}
       {task.status === "RUNNING" && (
         <ProgressBar value={task.progressPercent} stage={task.currentStage} className="mb-3" />
       )}
@@ -239,7 +243,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
             onClick={() => on_open_modal({ kind: "SPRINT_ID" })}
             className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#c98f00] transition"
           >
-            Inserisci Sprint ID
+            Enter Sprint ID
           </button>
         )}
 
@@ -268,9 +272,10 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
                 technicalChangelogTruncated: pending.technicalChangelogTruncated,
               })
             }
-            className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#c98f00] transition"
+            className="rounded bg-[#f0ad00] px-3 py-1.5 text-xs font-medium text-white
+ hover:bg-[#c98f00] transition"
           >
-            Rivedi il changelog tecnico
+            Review the technical changelog
           </button>
         )}
 
@@ -281,7 +286,7 @@ function TaskCard({ task, cancelling, on_cancel, on_open_modal }: TaskCardProps)
             params={{ id: task.reportId }}
             className="rounded bg-[#2277cc] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1a5fa8] transition"
           >
-            Vedi report
+            View report
           </Link>
         )}
 

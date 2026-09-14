@@ -12,9 +12,9 @@ import type { CreateTaskBatchDto, OperationCode, OperationDescriptorDto } from "
 /**
  * RunPage — /run
  *
- * Mostra le operazioni disponibili all'utente leggendole da GET /operations:
- * è il backend (AgentRegistry) a filtrarle per ruolo, ed è sempre il backend a
- * rifiutare con 403 un'operazione non consentita. Una tabella ruolo→operazioni
+ * Shows the operations available to the user by reading them from GET /operations:
+ * it is the backend (AgentRegistry) that filters them by role, and it is always the backend that
+ * rejects with 403 an unauthorized operation. A role→operations table
  * replicata qui poteva solo divergere da quella applicata davvero.
  *
  * This page reads the analysis context set by /select from the selectionStore.
@@ -40,13 +40,14 @@ export function RunPage() {
   const [ops_loading, setOpsLoading] = useState(true);
   const [ops_error, setOpsError] = useState("");
 
-  useEffect(() => {
+  
+useEffect(() => {
     async function fetch_operations() {
       try {
         const response = await apiClient.get<OperationDescriptorDto[]>("/operations");
         setAvailableOps(response.data);
       } catch {
-        setOpsError("Impossibile caricare le operazioni disponibili. Riprova più tardi.");
+        setOpsError("Unable to load available operations. Try again later.");
       } finally {
         setOpsLoading(false);
       }
@@ -90,14 +91,14 @@ export function RunPage() {
       if (status === 429) {
         // USAGE_LIMIT_EXCEEDED (RF.66): il backend risponde 429, non 402.
         setLaunchError(
-          message ?? "Hai raggiunto il limite mensile di operazioni; riprova il mese prossimo.",
+          message ?? "You have reached the monthly operation limit; try again next month.",
         );
       } else if (status === 403) {
-        setLaunchError("Il tuo ruolo non è abilitato a una delle operazioni selezionate.");
+        setLaunchError("Your role is not enabled for one of the selected operations.");
       } else if (status === 404) {
-        setLaunchError("Contesto non trovato. Torna a Repository e ricrea il contesto di analisi.");
+        setLaunchError("Context not found. Go back to Repository and recreate the analysis context.");
       } else {
-        setLaunchError("Errore durante l'avvio delle operazioni. Riprova.");
+        setLaunchError("Error starting operations. Try again.");
       }
     } finally {
       setLaunching(false);
@@ -106,18 +107,19 @@ export function RunPage() {
 
   // ---- Render ----
 
-  // Guard: if no context has been selected, show a prompt to go to /select.
+  // Guard: if no context has been selected, show a prompt to go to /select
+.
   if (!contextId || !context) {
     return (
       <ErrorState
-        message="Nessun contesto configurato. Vai su Repository per selezionare un repository e configurare l'analisi."
+        message="No context configured. Go to Repository to select a repository and configure the analysis."
         action={
           <button
             type="button"
             onClick={() => navigate({ to: "/select" })}
             className="rounded bg-[#2277cc] px-3 py-1.5 text-sm text-white hover:bg-[#1a5fa8]"
           >
-            Vai a Repository
+            Go to Repository
           </button>
         }
       />
@@ -126,9 +128,9 @@ export function RunPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-1 text-lg font-semibold text-[#2a2a2a]">Avvia Operazioni</h1>
+      <h1 className="mb-1 text-lg font-semibold text-[#2a2a2a]">Start Operations</h1>
       <p className="mb-6 text-sm text-gray-400">
-        Seleziona una o più operazioni da avviare sul contesto corrente.
+        Select one or more operations to start on the current context.
       </p>
 
       {/* Context summary — shows which repo and scope is currently active */}
@@ -151,24 +153,25 @@ export function RunPage() {
           {" · "}
           {context.estimatedFileCount} file stimati
         </p>
-        {/* RV.8: avviso non bloccante calcolato dal backend alla creazione del
+        {/* RV.8: non-blocking warning computed by the backend at context creation.
             contesto. Il campo arrivava nel DTO con un TODO e non veniva mai
-            mostrato, quindi l'utente non sapeva che la documentazione generata
+            displayed, so the user did not know that the generated documentation
             poteva risentire di un README in un'altra lingua. */}
         {context.nonEnglishReadmeDetected && (
-          <p className="mt-2 rounded border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
-            Il README di questo repository non sembra in inglese: gli agenti lavorano meglio su
+          <p className="mt-2 rounded bor
+der border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
+            This repository's README does not appear to be in English: agents work better on
             contenuti in inglese, i risultati potrebbero essere meno accurati.
           </p>
         )}
-        {/* RF.24: stesso trattamento di RV.8 qui sopra — avviso non bloccante,
+        {/* RF.24: same treatment as RV.8 above — non-blocking warning,
             calcolato dal backend alla creazione del contesto. Compare quando il
             linguaggio predominante non e' fra i tre supportati: e' il caso in
-            cui l'analisi vedrebbe una frazione minima del repository, e senza
-            dirlo un report quasi vuoto sembrerebbe un repository quasi pulito. */}
+            where the analysis would see a minimal fraction of the repository, and without
+            saying it a nearly empty report would look like a nearly clean repository. */}
         {context.unsupportedLanguageWarning && (
           <p className="mt-2 rounded border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-[#8a5a00]">
-            Questo repository è scritto principalmente in{" "}
+            This repository is primarily written in{" "}
             <span className="font-medium">{context.predominantLanguage}</span>, che gli agenti non
             sanno analizzare: verranno esaminati solo i file TypeScript, JavaScript e Python
             {context.detectedLanguages.length === 0 ? ", che qui non risultano presenti" : ""}.
@@ -199,14 +202,15 @@ export function RunPage() {
 
       {ops_loading && (
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Spinner size="sm" />
-          Caricamento operazioni…
+          <Spinner size
+="sm" />
+          Loading operations…
         </div>
       )}
 
       {/* Operation cards — multi-select */}
       <p className="mb-3 text-sm font-medium text-[#2a2a2a]">
-        Operazioni <span className="font-normal text-gray-400">(puoi selezionarne più di una)</span>
+        Operations <span className="font-normal text-gray-400">(you can select more than one)</span>
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {available_ops.map((op) => {
@@ -224,23 +228,24 @@ export function RunPage() {
                   : "border-[#cccccc] bg-white hover:border-[#2277cc]/50 hover:bg-gray-50",
               ].join(" ")}
             >
-              {/* Agente che esegue l'operazione (DOCS, SECURITY, CHANGELOG) */}
+              {/* Agent executing the operation (DOCS, SECURITY, CHANGELOG) */}
               <span className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
                 {op.agent}
               </span>
-              {/* L'etichetta italiana, la stessa che usano TasksPage, ReportsPage
+              {/* The Italian label, the same one used by TasksPage, ReportsPage
                   e ReportDetailPage: il displayName che arriva da GET /operations
-                  e' in inglese, e qui l'utente sceglieva "OWASP Top 10
-                  vulnerability scan" per poi ritrovarselo ovunque come "Analisi
-                  Sicurezza OWASP". Il displayName resta il ripiego se un giorno
-                  il backend introduce un codice che la mappa non conosce. */}
+                  is in English, and here the user chose "OWASP Top 10
+                  vulnerability scan" only to find it everywhere as "Security
+                  OWASP Analysis". The displayName remains the fallback if one day
+                  the backend introduces a code that the map does not know. */}
               <span className="block text-sm font-medium text-[#2a2a2a]">
                 {OPERATION_LABELS[op.code] ?? op.displayName}
               </span>
               <span className="mt-1 block text-xs leading-relaxed text-gray-500">
                 {op.description}
               </span>
-              {/* Visual selected indicator */}
+              {/* Visual selected indicator */
+}
               {is_selected && (
                 <span className="mt-2 inline-block rounded-full bg-[#2277cc] px-2 py-0.5 text-[10px] font-semibold text-white">
                   Selezionata
@@ -267,10 +272,10 @@ export function RunPage() {
       >
         {launching && <Spinner size="sm" className="text-white" />}
         {selected_ops.size === 0
-          ? "Seleziona almeno un'operazione"
+          ? "Select at least one operation"
           : selected_ops.size === 1
-            ? "Avvia operazione"
-            : `Avvia ${selected_ops.size} operazioni`}
+            ? "Start operation"
+            : `Start ${selected_ops.size} operations`}
       </button>
     </div>
   );

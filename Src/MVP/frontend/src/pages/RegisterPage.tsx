@@ -42,16 +42,17 @@ export function RegisterPage() {
   /** Client-side validation before the API call. */
   function validate(): boolean {
     const next: Record<string, string> = {};
-    if (!first_name.trim()) next.first_name = "Inserisci il nome";
-    if (!last_name.trim()) next.last_name = "Inserisci il cognome";
-    if (!email.trim()) next.email = "Inserisci la email";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Email non valida";
+    if (!first_name.trim()) next.first_name = "Enter your first name";
+    if (!last_name.trim()) next.last_name = "Enter your last name";
+    if (!email.trim()) next.email = "Enter your email";
+    else if (!/^[^\s@]+@[^\s@
+]+\.[^\s@]+$/.test(email)) next.email = "Invalid email";
     if (password.length < 8) {
-      next.password = "La password deve essere di almeno 8 caratteri";
+      next.password = "Password must be at least 8 characters long";
     } else if (!PASSWORD_REGEX.test(password)) {
-      next.password = "La password deve contenere almeno una lettera e un numero";
+      next.password = "Password must contain at least one letter and one number";
     }
-    if (password !== confirm_password) next.confirm_password = "Le password non coincidono";
+    if (password !== confirm_password) next.confirm_password = "Passwords do not match";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -83,11 +84,11 @@ export function RegisterPage() {
       const password_detail = details?.find((d) => /password/i.test(d));
 
       if (status === 409) {
-        setErrors({ global: "Esiste già un account con questa email." });
+        setErrors({ global: "An account with this email already exists." });
       } else if (code === "VALIDATION_ERROR" && password_detail) {
         setErrors({ password: "La password deve contenere almeno una lettera e un numero" });
       } else {
-        setErrors({ global: "Errore durante la registrazione. Riprova." });
+        setErrors({ global: "Error during registration. Try again." });
       }
     } finally {
       setLoading(false);
@@ -96,9 +97,10 @@ export function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm rounded-lg border border-[#cccccc] bg-gray-50 p-8 shadow-sm">
+      <div className="w-full max-w-sm rounded-lg border border-[#cccccc] bg-gra
+y-50 p-8 shadow-sm">
         <h1 className="mb-1 text-xl font-bold text-[#2a2a2a]">Code Guardian</h1>
-        <p className="mb-6 text-sm text-gray-400">Crea il tuo account</p>
+        <p className="mb-6 text-sm text-gray-400">Create your account</p>
 
         {errors.global && (
           <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-[#cc2222]">
@@ -110,7 +112,7 @@ export function RegisterPage() {
           {/* Name row */}
           <div className="flex gap-3">
             <ValidatedField
-              label="Nome"
+              label="First name"
               placeholder="Marco"
               value={first_name}
               onChange={(e) => {
@@ -121,7 +123,7 @@ export function RegisterPage() {
               containerClassName="flex-1"
             />
             <ValidatedField
-              label="Cognome"
+              label="Last name"
               placeholder="Rossi"
               value={last_name}
               onChange={(e) => {
@@ -137,7 +139,7 @@ export function RegisterPage() {
             label="Email"
             type="email"
             autoComplete="email"
-            placeholder="nome@azienda.it"
+            placeholder="name@company.com"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -154,7 +156,8 @@ export function RegisterPage() {
             <select
               id="role-select"
               value={role}
-              onChange={(e) => setRole(e.target.value as UserRole)}
+              onChange={(e) => setRole(e.target.value as U
+serRole)}
               className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20"
             >
               {ROLE_OPTIONS.map(({ value, label }) => (
@@ -170,7 +173,7 @@ export function RegisterPage() {
               label="Password"
               type="password"
               autoComplete="new-password"
-              placeholder="Inserisci Password"
+              placeholder="Enter password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -179,15 +182,15 @@ export function RegisterPage() {
               error={errors.password}
             />
             <p className="text-xs text-gray-400">
-              Almeno 8 caratteri, con almeno una lettera e un numero.
+              At least 8 characters, with at least one letter and one number.
             </p>
           </div>
 
           <ValidatedField
-            label="Conferma Password"
+            label="Confirm password"
             type="password"
             autoComplete="new-password"
-            placeholder="Ripeti la password"
+            placeholder="Repeat password"
             value={confirm_password}
             onChange={(e) => {
               setConfirmPassword(e.target.value);
@@ -207,8 +210,9 @@ export function RegisterPage() {
         </form>
 
         <p className="mt-4 text-center text-xs text-gray-500">
-          Hai già un account?{" "}
-          <Link to="/login" className="text-[#2277cc] hover:underline">
+          Already have an account?{" "}
+          <Link to="/login" c
+lassName="text-[#2277cc] hover:underline">
             Accedi
           </Link>
         </p>

@@ -53,7 +53,7 @@ export function ReportDetailPage() {
         const response = await apiClient.get<Report>(`/reports/${id}`);
         setReport(response.data);
       } catch {
-        setError("Impossibile caricare il report. Potrebbe essere stato eliminato.");
+        setError("Unable to load the report. It may have been deleted.");
       } finally {
         setLoading(false);
       }
@@ -83,7 +83,7 @@ export function ReportDetailPage() {
       document.body.removeChild(anchor);
       URL.revokeObjectURL(url);
     } catch {
-      setPdfError("Errore durante il download del PDF. Riprova.");
+      setPdfError("Error downloading the PDF. Try again.");
     } finally {
       setPdfLoading(false);
     }
@@ -95,7 +95,7 @@ export function ReportDetailPage() {
     return (
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Spinner size="sm" />
-        Caricamento report…
+        Loading report…
       </div>
     );
   }
@@ -103,13 +103,13 @@ export function ReportDetailPage() {
   if (error || !report) {
     return (
       <ErrorState
-        message={error || "Report non trovato."}
+        message={error || "Report not found."}
         action={
           <Link
             to="/reports"
             className="rounded bg-[#2277cc] px-3 py-1.5 text-sm text-white hover:bg-[#1a5fa8]"
           >
-            Torna ai report
+            Back to reports
           </Link>
         }
       />
@@ -123,13 +123,13 @@ export function ReportDetailPage() {
    */
   const filtered_blocks: Block[] = [...report.body]
     // Ordinamento per `order`, il campo che gli agent Python valorizzano per
-    // fissare la sequenza dei blocchi. Il commento qui sopra lo prometteva già,
-    // l'ordinamento non c'era: i blocchi uscivano nell'ordine di array.
+    // fix the block sequence. The comment above already promised this,
+    // but the sorting was missing: blocks came out in array order.
     // I blocchi senza `order` restano in coda, nel loro ordine originale.
     .sort((a, b) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER))
     .filter((block) => {
       if (severity_filter === "all") return true;
-      // Finding e violazioni di policy hanno entrambi una severità: il filtro
+      // Findings and policy violations both have a severity: the filter
       // vale per entrambi (prima le violazioni passavano sempre).
       if (
         block.kind === "FINDING" ||
@@ -138,13 +138,13 @@ export function ReportDetailPage() {
       ) {
         return block.severity === severity_filter;
       }
-      // Il riepilogo SAST descrive l'intera scansione, non un singolo finding:
-      // filtrarlo via lascerebbe una lista ristretta senza il contesto che dice
-      // se è completa.
+      // The SAST summary describes the entire scan, not a single finding:
+      // filtering it out would leave a reduced list without the context that says
+      // whether it is complete.
       if (block.kind === "SAST_SUMMARY") return true;
       if (block.kind === "COMPLEXITY_WARNING") return severity_filter === "INFO";
-      // TEXT e CHANGELOG_ITEM non hanno severità: restano sempre visibili,
-      // altrimenti filtrare svuoterebbe un changelog invece di restringerlo.
+      // TEXT and CHANGELOG_ITEM have no severity: they always remain visible,
+      // otherwise filtering would empty a changelog instead of narrowing it.
       return true;
     });
 
@@ -154,7 +154,7 @@ export function ReportDetailPage() {
   );
 
   const severity_options: Array<{ value: Severity | "all"; label: string }> = [
-    { value: "all", label: "Tutti" },
+    { value: "all", label: "All" },
     { value: "CRITICAL", label: "Critico" },
     { value: "HIGH", label: "Alto" },
     { value: "MEDIUM", label: "Medio" },
@@ -168,14 +168,14 @@ export function ReportDetailPage() {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <Link to="/reports" className="mb-2 block text-xs text-[#2277cc] hover:underline">
-            ← Torna ai report
+            ← Back to reports
           </Link>
           <h1 className="text-lg font-semibold text-[#2a2a2a]">
             {OPERATION_LABELS[report.operation] ?? report.operation}
           </h1>
           <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
             <StatusBadge status={report.status} />
-            <span>{new Date(report.generatedAt).toLocaleString("it-IT")}</span>
+            <span>{new Date(report.generatedAt).toLocaleString("en-US")}</span>
             {report.durationMs !== null && <span>{(report.durationMs / 1000).toFixed(1)}s</span>}
           </div>
         </div>
@@ -185,7 +185,7 @@ export function ReportDetailPage() {
           type="button"
           onClick={handle_pdf_export}
           disabled={pdf_loading}
-          title="Esporta in PDF"
+          title="Export to PDF"
           className="flex shrink-0 items-center gap-2 rounded border border-[#cccccc] px-3 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
         >
           {pdf_loading ? (
@@ -206,7 +206,7 @@ export function ReportDetailPage() {
               />
             </svg>
           )}
-          Esporta PDF
+          Export PDF
         </button>
       </div>
 
@@ -216,14 +216,14 @@ export function ReportDetailPage() {
         </div>
       )}
 
-      {/* Errore di un report FAILED: c'era nel DTO ma non veniva mostrato,
-          quindi un'operazione fallita apriva una pagina vuota senza spiegazioni. */}
+      {/* Error of a FAILED report: it was in the DTO but was not displayed,
+          so a failed operation opened an empty page without explanations. */}
       {report.status === "FAILED" && report.error && (
         <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-[#cc2222]">
           <p className="font-semibold">{report.error.kind}</p>
           <p className="mt-1">{report.error.message}</p>
           {report.error.stage && (
-            <p className="mt-1 text-xs text-red-400">Fase: {report.error.stage}</p>
+            <p className="mt-1 text-xs text-red-400">Stage: {report.error.stage}</p>
           )}
         </div>
       )}
@@ -238,7 +238,7 @@ export function ReportDetailPage() {
       {/* Severity filter (only for security/policy reports) */}
       {has_findings && (
         <div className="mb-4 flex flex-wrap items-center gap-1">
-          <span className="text-xs font-medium text-gray-500 mr-1">Filtra per severità:</span>
+          <span className="text-xs font-medium text-gray-500 mr-1">Filter by severity:</span>
           {severity_options.map(({ value, label }) => (
             <button
               type="button"
@@ -303,7 +303,7 @@ export function ReportDetailPage() {
       {/* Proposal section (Docs agent) */}
       {report.proposal && (
         <div className="mt-6">
-          <h2 className="mb-3 text-sm font-semibold text-[#2a2a2a]">Proposta di modifica</h2>
+          <h2 className="mb-3 text-sm font-semibold text-[#2a2a2a]">Modification proposal</h2>
           <ProposalRenderer proposal={report.proposal} />
         </div>
       )}
@@ -311,7 +311,7 @@ export function ReportDetailPage() {
       {/* Empty state after filtering */}
       {filtered_blocks.length === 0 && (
         <p className="text-sm text-gray-400 text-center py-8">
-          Nessun elemento per il filtro selezionato.
+          No items for the selected filter.
         </p>
       )}
     </div>
