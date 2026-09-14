@@ -13,6 +13,7 @@ beforeEach(() => {
 
 const makeTask = (overrides: Partial<TaskEntry> = {}): TaskEntry => ({
   id: "task-1",
+  batchId: null,
   operation: "SECURITY_OWASP",
   status: "PENDING",
   progressPercent: 0,
@@ -105,12 +106,24 @@ describe("useAppStore", () => {
     const reportA: Report = {
       id: "report-a",
       taskId: "t",
-      agentId: "a",
       operation: "SECURITY_OWASP",
       status: "COMPLETED",
       title: "Report A",
-      body: [],
+      summary: null,
       generatedAt: "2026-01-01T00:00:00Z",
+      durationMs: null,
+      tokensConsumed: 0,
+      context: {
+        repoOwner: "",
+        repoName: "",
+        repoUrl: "",
+        branch: "",
+        resolvedSha: "",
+        scopeType: "FULL_REPOSITORY",
+        paths: [],
+      },
+      body: [],
+      pendingAction: null,
     };
     const reportB: Report = { ...reportA, id: "report-b" };
 
@@ -125,12 +138,24 @@ describe("useAppStore", () => {
     const v1: Report = {
       id: "report-a",
       taskId: "t",
-      agentId: "a",
       operation: "SECURITY_OWASP",
       status: "FAILED",
       title: "Report A",
-      body: [],
+      summary: null,
       generatedAt: "2026-01-01T00:00:00Z",
+      durationMs: null,
+      tokensConsumed: 0,
+      context: {
+        repoOwner: "",
+        repoName: "",
+        repoUrl: "",
+        branch: "",
+        resolvedSha: "",
+        scopeType: "FULL_REPOSITORY",
+        paths: [],
+      },
+      body: [],
+      pendingAction: null,
     };
     const v2: Report = { ...v1, status: "COMPLETED" };
 
