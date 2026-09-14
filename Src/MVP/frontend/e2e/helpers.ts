@@ -1,31 +1,30 @@
 import { expect, type Page } from "@playwright/test";
 
 /**
- * Utilita' condivise dagli spec end-to-end.
+ * Shared utilities for the end-to-end specs.
  *
- * Tutto quello che sta qui parla all'interfaccia reale dell'MVP: rotte
- * `/register`, `/login`, `/credentials`, `/select`, `/run`, `/tasks`,
- * `/reports`. Gli spec precedenti pilotavano l'interfaccia del PoC — una
- * schermata `/setup` con un campo "owner" e un pulsante "Salva e Inizia" — che
- * l'MVP non espone piu' da quando la selezione del repository e' passata a un
- * elenco a discesa e la configurazione iniziale a una pagina credenziali
- * autenticata.
+ * Everything here talks to the real MVP interface: routes `/register`,
+ * `/login`, `/credentials`, `/select`, `/run`, `/tasks`, `/reports`. The
+ * previous specs drove the PoC interface â a `/setup` screen with an "owner"
+ * field and a "Save and Start" button â which the MVP no longer exposes since
+ * repository selection moved to a dropdown and initial configuration to an
+ * authenticated credentials page.
  */
 
-/** Il PAT usato dagli spec che raggiungono davvero GitHub. */
+/** The PAT used by specs that actually reach GitHub. */
 export const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
 
 export const SKIP_REASON =
-  "E2E_GITHUB_PAT non impostato nel .env alla radice del monorepo — vedi e2e/README.md";
+  "E2E_GITHUB_PAT not set in the .env at the monorepo root â see e2e/README.md";
 
 /**
- * Un'email mai vista prima.
+ * An email never seen before.
  *
- * Serve perche' la registrazione e' idempotente solo nel senso sbagliato: al
- * secondo tentativo con la stessa email il backend risponde 409 e lo spec
- * fallirebbe alla seconda esecuzione. Il timestamp piu' il contatore rendono
- * l'email unica anche fra due test dello stesso file, che girano nello stesso
- * millisecondo.
+ * Needed because registration is idempotent only in the wrong sense: on the
+ * second attempt with the same email the backend responds 409 and the spec
+ * would fail on the second run. The timestamp plus the counter make the email
+ * unique even between two tests in the same file, which run in the same
+ * millisecond.
  */
 let account_counter = 0;
 export function freshEmail(prefix = "e2e"): string {
@@ -41,46 +40,45 @@ export interface Account {
 }
 
 /**
- * Registra un nuovo utente e lo lascia autenticato su /credentials.
+ * Registers a new user and leaves them authenticated on /credentials.
  *
- * La registrazione fa da sola anche il login (RegisterPage chiama /auth/login
- * subito dopo /auth/register) e porta a /credentials: e' li' che si arriva, non
- * su /run, perche' senza una credenziale GitHub le rotte operative rimandano
- * indietro.
+ * Registration also performs the login (RegisterPage calls /auth/login right
+ * after /auth/register) and lands on /credentials: that is where you end up,
+ * not on /run, because without a GitHub credential the operational routes
+ * redirect back.
  */
 export async function registerAndLogin(page: Page, role = "Developer"): Promise<Account> {
   const account: Account = { email: freshEmail(), password: PASSWORD };
 
   await page.goto("/register");
-  await page.getByLabel("Nome", { exact: true }).fill("E2E");
-  await page.getByLabel("Cognome").fill("Test");
+  await page.getByLabel("First name", { exact: true }).fill("E2E");
+  await page.getByLabel("Last name").fill("Test");
   await page.getByLabel("Email").fill(account.email);
-  await page.getByLabel("Ruolo").selectOption({ label: role });
+  await page.getByLabel("Role").selectOption({ label: role });
   await page.getByLabel("Password", { exact: true }).fill(account.password);
-  await page.getByLabel("Conferma Password").fill(account.password);
-  await page.getByRole("button", { name: "Registrati" }).click();
+  await page.getByLabel("Confirm password").fill(account.password);
+  await page.getByRole("button", { name: "Register" }).click();
 
   await expect(page).toHaveURL(/\/credentials$/);
   return account;
 }
 
 /**
- * Salva il PAT e aspetta che il backend lo abbia validato contro GitHub.
+ * Saves the PAT and waits for the backend to validate it against GitHub.
  *
- * A differenza del PoC il salvataggio non e' piu' una scrittura cieca: il
- * pulsante si chiama "Salva e verifica" e la credenziale viene provata contro
- * le API di GitHub prima di essere accettata. Un token finto qui non passa —
- * ed e' il motivo per cui ogni spec che arriva oltre questo punto richiede
- * E2E_GITHUB_PAT.
+ * Unlike the PoC, saving is no longer a blind write: the button is called
+ * "Save and verify" and the credential is tested against the GitHub APIs
+ * before being accepted. A fake token does not pass here â and that is why
+ * every spec that goes beyond this point requires E2E_GITHUB_PAT.
  */
 export async function saveGithubPat(page: Page, token: string): Promise<void> {
   await page.goto("/credentials");
   await page.getByLabel(/GitHub Personal Access Token/).fill(token);
-  await page.getByRole("button", { name: "Salva e verifica" }).click();
-  await expect(page.getByText("Connessa e valida")).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: "Save and verify" }).click();
+  await expect(page.getByText("Connected and valid")).toBeVisible({ timeout: 30_000 });
 }
 
-/** Registrazione piu' credenziale valida: la precondizione di quasi tutti gli spec. */
+/** Registration plus valid credential: the precondition of almost every spec. */
 export async function signedInWithCredentials(page: Page, role?: string): Promise<Account> {
   const account = await registerAndLogin(page, role);
   await saveGithubPat(page, GITHUB_PAT as string);
@@ -88,71 +86,69 @@ export async function signedInWithCredentials(page: Page, role?: string): Promis
 }
 
 export interface ContextOptions {
-  /** Come compare nell'elenco a discesa: "owner/nome". */
+  /** As it appears in the dropdown: "owner/name". */
   repo: string;
   branch: string;
   commitSha?: string;
-  scope?: "Repository completo" | "File specifici" | "Directory specifiche";
-  /** Un percorso per riga, come nel textarea. */
+  scope?: "Full repository" | "Specific files" | "Specific directories";
+  /** One path per line, as in the textarea. */
   paths?: string[];
 }
 
 /**
- * Compila il modulo di /select e lo invia.
+ * Fills in the /select form and submits it.
  *
- * Non asserisce l'esito: alcuni spec si aspettano di arrivare su /run, altri di
- * restare su /select con un errore. Distinguere le due cose e' compito del
- * chiamante.
+ * Does not assert the outcome: some specs expect to land on /run, others to
+ * stay on /select with an error. Distinguishing the two is the caller's job.
  */
 export async function submitContext(page: Page, options: ContextOptions): Promise<void> {
   await page.goto("/select");
 
   const repositories = page.getByLabel("Repository");
   await expect(repositories).toBeEnabled({ timeout: 30_000 });
-  // Per valore e non per etichetta: l'etichetta di un repository privato porta
-  // in coda un lucchetto, quindi non coincide con "owner/nome". Il valore, si'.
+  // By value and not by label: the label of a private repository has a
+  // trailing lock icon, so it does not match "owner/name". The value does.
   await repositories.selectOption(options.repo);
 
   await page.getByLabel("Branch").fill(options.branch);
   if (options.commitSha !== undefined) {
-    await page.getByLabel("Commit SHA (opzionale)").fill(options.commitSha);
+    await page.getByLabel("Commit SHA (optional)").fill(options.commitSha);
   }
   if (options.scope) {
-    await page.getByLabel("Tipo di scope").selectOption({ label: options.scope });
+    await page.getByLabel("Scope type").selectOption({ label: options.scope });
   }
   if (options.paths) {
     const label =
-      options.scope === "File specifici" ? "File da analizzare" : "Directory da analizzare";
+      options.scope === "Specific files" ? "Files to analyze" : "Directories to analyze";
     await page.getByLabel(label).fill(options.paths.join("\n"));
   }
 
-  await page.getByRole("button", { name: "Salva contesto e vai ad Avvia" }).click();
+  await page.getByRole("button", { name: "Save context and go to Start" }).click();
 }
 
-/** Seleziona una o piu' operazioni su /run e le avvia. */
+/** Selects one or more operations on /run and launches them. */
 export async function launchOperations(page: Page, operations: string[]): Promise<void> {
   await expect(page).toHaveURL(/\/run$/);
   for (const operation of operations) {
     await page.getByRole("button", { name: operation, exact: false }).first().click();
   }
   const label =
-    operations.length === 1 ? "Avvia operazione" : `Avvia ${operations.length} operazioni`;
+    operations.length === 1 ? "Start operation" : `Start ${operations.length} operations`;
   await page.getByRole("button", { name: label }).click();
   await expect(page).toHaveURL(/\/tasks$/);
 }
 
 /**
- * Aspetta che il Task in cima all'elenco raggiunga uno stato terminale e lo
- * restituisce.
+ * Waits for the Task at the top of the list to reach a terminal state and
+ * returns it.
  *
- * L'attesa e' sull'etichetta di stato e non su una chiamata di rete perche' e'
- * quello che vede l'utente: l'avanzamento arriva via WebSocket, e un test che
- * interrogasse l'API direttamente non verificherebbe che l'interfaccia si
- * aggiorni davvero.
+ * The wait is on the status label and not on a network call because that is
+ * what the user sees: progress arrives via WebSocket, and a test that queried
+ * the API directly would not verify that the interface actually updates.
  */
 export async function waitForTerminalState(page: Page, timeout = 6 * 60_000): Promise<string> {
   const card = page.getByRole("listitem").first();
-  const terminal = card.getByText(/^(Completato|Fallito|Annullato)$/i);
+  const terminal = card.getByText(/^(Completed|Failed|Cancelled)$/i);
   await expect(terminal).toBeVisible({ timeout });
   return ((await terminal.textContent()) ?? "").trim();
 }
