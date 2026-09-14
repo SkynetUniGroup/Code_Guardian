@@ -1,120 +1,121 @@
-# Code Guardian — analisi: cosa completare, come testare, stato del codice
+# Code Guardian — Analysis: What to Complete, How to Test, Code Status
 
-_Analisi della cartella `MVP` a fronte del documento `DA-TESTARE-code-guardian.md`._
-_Data: 9 settembre 2026._
-
----
-
-## 0. Prima di tutto: la cartella non è un checkout git
-
-`C:\Users\samue\Desktop\MVP` **non è un repository git** (`.git` assente) e **non contiene `.github/`**.
-Il documento `DA-TESTARE` ragiona in termini di rami e di workflow CI
-(`pr-check.yml`, `release.yml`): qui non ci sono. Conseguenze pratiche:
-
-- non puoi verificare "8 commit sopra `develop`", né i punti §5.1 / §5.2 (merge con la PR #396,
-  pytest che esce con codice 5 in CI): riguardano la CI, non il codice che hai in mano;
-- alcune discrepanze minori tra doc e codice sono già state chiuse in questo snapshot
-  (es. `agents/tests/integration/` **contiene già** `test_smoke.py`, quindi pytest non esce più con 5);
-- se ti serve lavorare sui rami/PR, chiedi un clone vero del repo.
-
-Quello che **puoi** fare qui è tutto il resto: avviare lo stack, eseguire le analisi vere,
-far girare le suite di test locali, e chiudere i difetti aperti.
+_Analysis of the `MVP` folder against the `DA-TESTARE-code-guardian.md` document._
+_Date: September 9, 2026._
 
 ---
 
-## 1. Stato dell'ambiente su questa macchina (blocchi da risolvere)
+## 0. First: This Folder Is Not a Git Checkout
 
-| Strumento | Richiesto | Presente | Azione |
+`C:\Users\samue\Desktop\MVP` **is not a Git repository** (`.git` is missing) and **does not contain `.github/`**.
+The `DA-TESTARE` document reasons in terms of branches and CI workflow
+(`pr-check.yml`, `release.yml`): these are not present here. Practical consequences:
+
+- You cannot verify "8 commits above `develop`", nor points §5.1 / §5.2 (merge with PR #396,
+  pytest exiting with code 5 in CI): these concern CI, not the code you have at hand;
+- Some minor discrepancies between documentation and code have already been resolved in this snapshot
+  (e.g., `agents/tests/integration/` **already contains** `test_smoke.py`, so pytest no longer exits with 5);
+- If you need to work on branches/PRs, request a real clone of the repository.
+
+What you **can** do here is everything else: start the stack, run actual analyses,
+run local test suites, and close open issues.
+
+---
+
+## 1. Environment Status on This Machine (Blockers to Resolve)
+
+| Tool | Required | Present | Action |
 |---|---|---|---|
-| Node | `^26.8.1` (`package.json` → `devEngines`) | **v24.20.0** | Installa Node 26. Con Node 24 `npm`/`npx` nella cartella escono subito con `EBADDEVENGINES`. |
-| pnpm | workspace pnpm | **assente** | `npm i -g pnpm@10` (eseguito da una cartella neutra, non da `MVP`). |
-| Python | `>=3.12`, target `py312` | **3.14.7** | Le dipendenze degli agenti (`semgrep`, `langgraph-checkpoint-mongodb<0.3`) non sono garantite su 3.14. Usa un venv **3.12**, oppure gira gli agenti solo in Docker. |
+| Node | `^26.8.1` (`package.json` → `devEngines`) | **v24.20.0** | Install Node 26. With Node 24, `npm`/`npx` in the folder exit immediately with `EBADDEVENGINES`. |
+| pnpm | workspace pnpm | **missing** | `npm i -g pnpm@10` (run from a neutral folder, not from `MVP`). |
+| Python | `>=3.12`, target `py312` | **3.14.7** | Agent dependencies (`semgrep`, `langgraph-checkpoint-mongodb<0.3`) are not guaranteed on 3.14. Use a **3.12** venv, or run agents only in Docker. |
 | Docker | Compose v2 | **29.6.2 / Compose v5.3.1** | OK. |
 
-`engine-strict=true` in `.pnpmrc`: se un pacchetto dichiara `engines.node`, `pnpm install`
-si ferma. Con Node 26 il problema sparisce; in alternativa `pnpm install --config.engine-strict=false`.
+`engine-strict=true` in `.pnpmrc`: if a package declares `engines.node`, `pnpm install`
+stops. With Node 26, this problem disappears; alternatively, `pnpm install --config.engine-strict=false`.
 
-**Raccomandazione:** installa Node 26 e usa un venv Python 3.12. È la strada che sblocca sia i
-test locali sia gli spec Playwright. Docker copre comunque l'esecuzione runtime.
+**Recommendation:**
+Install Node 26 and use a Python 3.12 venv. This is the path that unlocks both
+local tests and Playwright specs. Docker covers runtime execution regardless.
 
 ---
 
-## 2. Cosa fare per completare e testare — in ordine
+## 2. What to Do to Complete and Test — In Order
 
-### Passo 1 — Accendere lo stack
+### Step 1 — Start the Stack
 
 ```bash
 cd C:\Users\samue\Desktop\MVP
 cp .env.example .env
 ```
 
-Genera i tre segreti (Joi pretende ≥16 caratteri — vedi `backend/src/config/env.validation.ts`):
+Generate the three secrets (Joi requires >=16 characters — see `backend/src/config/env.validation.ts`):
 
 ```bash
 node -e "['JWT_SECRET','CREDENTIAL_MASTER_KEY','INTERNAL_SHARED_SECRET'].forEach(k=>console.log(k+'='+require('crypto').randomBytes(32).toString('hex')))"
 ```
 
-Incollali nel `.env`, poi imposta una `LLM_API_KEY` reale coerente con `LLM_PROVIDER`
-(di default `managed` con endpoint DashScope/Qwen; per un'API OpenAI-compatibile lascia
-`LLM_PROVIDER` a un valore qualsiasi diverso da `bedrock` e imposta `LLM_BASE_URL`).
+Paste them into `.env`, then set a real `LLM_API_KEY` consistent with `LLM_PROVIDER`
+(default is `managed` with DashScope/Qwen endpoint; for an OpenAI-compatible API, leave
+`LLM_PROVIDER` as any value other than `bedrock` and set `LLM_BASE_URL`).
 
 ```bash
 docker compose up -d --build
 ```
 
-Verifica: frontend `http://localhost:5173`, API `http://localhost:3000/api/v1`,
-OpenAPI `http://localhost:3000/api/docs`. Gli agenti non hanno porta sull'host:
+Verify: frontend at `http://localhost:5173`, API at `http://localhost:3000/api/v1`,
+OpenAPI at `http://localhost:3000/api/docs`. Agents have no port on the host:
 
 ```bash
 docker compose exec -T backend curl -s http://agents:8000/health
 ```
 
-Attenzione ai due nomi quasi uguali: `MONGODB_URI` (backend) vs `MONGO_URI` (agenti). Stesso DB.
+Note the two nearly identical names: `MONGODB_URI` (backend) vs `MONGO_URI` (agents). Same database.
 
-### Passo 2 — Percorrere un'analisi completa (è LA cosa che manca)
+### Step 2 — Run a Complete Analysis (This Is What Is Missing)
 
-Questa catena non è mai stata attraversata:
+This chain has never been fully traversed:
 
 ```
-POST /contexts → POST /tasks → coda BullMQ → TaskProcessor
-  → chiamata HMAC agli agents → LangGraph → LLM
-  → callback HMAC su /internal/tasks/:id/progress → WebSocket
-  → assemblaggio Report → apertura PR → export PDF su MinIO
+POST /contexts → POST /tasks → BullMQ queue → TaskProcessor
+  → HMAC call to agents → LangGraph → LLM
+  → HMAC callback on /internal/tasks/:id/progress → WebSocket
+  → Report assembly → PR opening → PDF export to MinIO
 ```
 
-Procedura, dal caso più corto:
+Procedure, starting with the shortest case:
 
-1. `/register` → `/credentials`: salva un PAT GitHub (basta sola lettura su repo pubblici).
-   Deve comparire «Connessa e valida»: quel passo valida il token contro GitHub.
-2. `/select`: repo pubblico piccolo, **una sola directory**
-   (es. `OWASP/NodeGoat`, branch `master`, dir `app/routes`).
-3. `/run`: lancia **`DOCS_INLINE`** (operazione più breve, timeout 90s).
-4. `/tasks`: l'avanzamento deve muoversi **da solo**, senza ricaricare. Se resta fermo mentre
-   il task avanza → problema nel WebSocket, non nell'agente.
-5. `/reports`: apri il report, controlla che ci sia la proposta di modifica con il diff,
-   prova l'export PDF.
+1. `/register` → `/credentials`: save a GitHub PAT (read-only on public repos is sufficient).
+   "Connected and valid" must appear: this step validates the token against GitHub.
+2. `/select`: small public repo, **a single directory**
+   (e.g., `OWASP/NodeGoat`, branch `master`, dir `app/routes`).
+3. `/run`: launch **`DOCS_INLINE`** (shortest operation, 90s timeout).
+4. `/tasks`: progress must move **on its own**, without reloading. If it stays still while
+   the task advances → WebSocket problem, not agent problem.
+5. `/reports`: open the report, verify the modification proposal with diff is present,
+   try PDF export.
 
-Log utili se si rompe:
+Useful logs if it breaks:
 
 ```bash
 docker compose logs -f backend
 docker compose logs -f agents
 ```
 
-Poi, in ordine di complessità: `SECURITY_OWASP` (esercita Semgrep + triage LLM),
-`SECURITY_POLICY` (con e senza `POLICY.md`), `CHANGELOG_TECHNICAL` (lettura Issue + sospensione
-con richiesta input).
+Then, in order of complexity: `SECURITY_OWASP` (exercises Semgrep + LLM triage),
+`SECURITY_POLICY` (with and without `POLICY.md`), `CHANGELOG_TECHNICAL` (read Issue + suspension
+with input request).
 
-**I due punti più fragili della catena:**
-- **callback HMAC di ritorno.** Verificato staticamente: `backend` firma
-  `timestamp:method:request.path:bodyHash` (`internal-auth.guard.ts:40`) e gli agenti firmano
-  `f"{api_prefix}{endpoint}"` (`github_toolset.py:59`). I prefissi **concordano** (`/api/v1`
-  in `.env` e in `docker-compose.yml`). Sulla carta è a posto; va comunque visto girare.
-- **WebSocket.** Nessun client reale l'ha mai aperto. Il passo 4 è il test.
+**The two most fragile points in the chain:**
+- **Return HMAC callback.** Statically verified: `backend` signs
+  `timestamp:method:request.path:bodyHash` (`internal-auth.guard.ts:40`) and agents sign
+  `f"{api_prefix}{endpoint}"` (`github_toolset.py:59`). The prefixes **match** (`/api/v1`
+  in `.env` and in `docker-compose.yml`). On paper it is correct; it still needs to be seen running.
+- **WebSocket.** No real client has ever opened it. Step 4 is the test.
 
-### Passo 3 — Spec Playwright (riscritti, mai eseguiti)
+### Step 3 — Playwright Specs (Rewritten, Never Executed)
 
-Con Node 26 installato:
+With Node 26 installed:
 
 ```bash
 cd C:\Users\samue\Desktop\MVP
@@ -124,31 +125,30 @@ npx playwright install
 npx playwright test --project=chromium --grep-invert @agent
 ```
 
-`--grep-invert @agent` esclude i casi che avviano un agente vero (niente chiamate LLM): è il
-giro per stanare i selettori sbagliati. Poi togli il filtro e aggiungi `--project=firefox`
-e `--project=msedge`.
+`--grep-invert @agent` excludes cases that start a real agent (no LLM calls): this is
+a way to catch wrong selectors. Then remove the filter and add `--project=firefox`
+and `--project=msedge`.
 
-Su Windows resta nota l'anomalia `browserType.launch: spawn UNKNOWN` per Firefox
-(non è un difetto del prodotto: riprova su un'altra macchina o su un runner CI).
-Prerequisiti in `frontend/e2e/README.md`.
+On Windows, the anomaly `browserType.launch: spawn UNKNOWN` for Firefox remains
+(it is not a product defect: retry on another machine or on a CI runner).
+Prerequisites in `frontend/e2e/README.md`.
 
-### Passo 4 — Test di integrazione backend (mai eseguiti)
+### Step 4 — Backend Integration Tests (Never Executed)
 
 ```bash
 cd C:\Users\samue\Desktop\MVP
 pnpm test:integration
 ```
 
-Alza `docker-compose.test.yml` (porte 27018 / 6380 / 9002), esegue, smonta.
-**Si auto-saltano in silenzio** se Mongo/Redis di test non rispondono → «verde» può voler
-dire «saltato»: controlla sempre il conteggio.
-**Spegni lo stack di sviluppo prima**: un backend acceso sullo stesso Redis consuma i job
-dei test e produce fallimenti fantasma.
+Starts `docker-compose.test.yml` (ports 27018 / 6380 / 9002), runs, tears down.
+**They auto-skip silently** if test Mongo/Redis do not respond → "green" can mean "skipped": always check the count.
+**Turn off the development stack first**: a running backend on the same Redis consumes test jobs
+and produces phantom failures.
 
-### Passo 5 — Le verifiche già esistenti (baseline verde)
+### Step 5 — Existing Verifications (Green Baseline)
 
 ```bash
-pnpm -r run test        # attesi: 356 backend, 10 frontend
+pnpm -r run test        # expected: 356 backend, 10 frontend
 pnpm --filter frontend typecheck:e2e
 pnpm lint               # biome
 pnpm -r run build
@@ -161,174 +161,172 @@ cd agents
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e ".[dev]"
-python -m pytest        # attesi: 35 (+1 smoke)
+python -m pytest        # expected: 35 (+1 smoke)
 deactivate
 ```
 
 ---
 
-## 3. Revisione del codice — cosa ho controllato
+## 3. Code Review — What Was Checked
 
-**Impressione generale:** codice curato, ben commentato sul _perché_ delle scelte,
-separazione delle responsabilità chiara. Nessun problema strutturale trovato nella lettura.
+**General Impression:** Well-crafted code, well-commented on the _why_ of choices,
+clear separation of responsibilities. No structural issues found during reading.
 
-Punti verificati staticamente:
+Points verified statically:
 
-- **Firma HMAC bidirezionale** (`internal-auth.guard.ts`, `github_toolset.py`): coerente,
-  prefisso `/api/v1` allineato tra `.env` e `docker-compose.yml`. Timing-safe compare presente.
-  Finestra anti-replay 30s.
-- **Cifratura credenziali** (`credential-cipher.service.ts`): AES-256-GCM, HKDF con salt per
-  record, master key mai riusata. Cifra una stringa arbitraria → adatta anche a un blob JSON.
-- **`docker-compose.yml`**: rete `codeguardian-net` esplicita su tutti i servizi, override
-  hostname corretti, healthcheck su tutti, `depends_on` con condizioni. Corretto.
-- **Percorso SonarQube**: vedi §4 — non è un bug, è una feature incompleta **solo lato
-  backend/frontend**; gli agenti sono già pronti.
+- **Bidirectional HMAC signing** (`internal-auth.guard.ts`, `github_toolset.py`): consistent,
+  `/api/v1` prefix aligned between `.env` and `docker-compose.yml`. Timing-safe compare present.
+  Anti-replay window: 30s.
+- **Credential encryption** (`credential-cipher.service.ts`): AES-256-GCM, HKDF with salt per
+  record, master key never reused. Encrypts an arbitrary string → suitable for a JSON blob too.
+- **`docker-compose.yml`**: explicit `codeguardian-net` network on all services, correct hostname
+  overrides, healthchecks on all, `depends_on` with conditions. Correct.
+- **SonarQube path**: see §4 — not a bug, but an incomplete feature **only on the
+  backend/frontend side**; agents are already ready.
 
-Difetti aperti confermati (come da `DA-TESTARE` §4 — **non sono regressioni**):
+Confirmed open defects (as per `DA-TESTARE` §4 — **not regressions**):
 
-| Cosa | Dove | Effetto |
+| What | Where | Effect |
 |---|---|---|
-| Sprint non selezionabile (RF.98) | `agents/src/agents/changelog.py:51,61` | Nessuno solleva l'interrupt `SPRINT_ID`: il changelog gira sempre su `"Current Sprint"`. Frontend/backend/modelli sono pronti. |
-| `technicalReportId` sempre `null` | `agents/src/graph.py:669` | Scritto letteralmente `None` nell'interrupt `BUSINESS_CONFIRMATION`. |
-| ~~SonarQube inerte~~ | backend + frontend | **Risolto** in questa sessione — vedi §4. |
-| Nessun recupero task bloccati | `backend/src/tasks/task-processor.ts` | Un task `RUNNING` con claim scaduto non lo recupera nessuno. |
-| `ruff format` | `agents/src/` | ~11/15 file verrebbero riformattati. Non blocca la CI (`ruff check`), ma rende rosso `npm run lint` in `agents/`. Da fare in un commit dedicato di sola formattazione. |
+| Sprint not selectable (RF.98) | `agents/src/agents/changelog.py:51,61` | No one raises the `SPRINT_ID` interrupt: changelog always runs on `"Current Sprint"`. Frontend/backend/models are ready. |
+| `technicalReportId` always `null` | `agents/src/graph.py:669` | Literally written as `None` in the `BUSINESS_CONFIRMATION` interrupt. |
+| ~~SonarQube inert~~ | backend + frontend | **Resolved** in this session — see §4. |
+| No recovery of stuck tasks | `backend/src/tasks/task-processor.ts` | A `RUNNING` task with expired claim is not recovered by anyone. |
+| `ruff format` | `agents/src/` | ~11/15 files would be reformatted. Does not block CI (`ruff check`), but makes `npm run lint` in `agents/` fail. To be done in a dedicated formatting-only commit. |
 
-**Suite di test eseguite su questa macchina (Node 24, senza Docker):**
+**Test suites executed on this machine (Node 24, without Docker):**
 
-- `pnpm -r run test` (baseline, prima delle modifiche) → **backend 356/356**, **frontend 10/10**,
-  `infra` nessun test. Coincide con gli attesi del documento.
-- Dopo l'implementazione SonarQube (§4): **backend 373/373**, frontend 10/10, `pnpm lint` pulito,
+- `pnpm -r run test` (baseline, before changes) → **backend 356/356**, **frontend 10/10**,
+  `infra` no tests. Matches the expected numbers in the document.
+- After SonarQube implementation (§4): **backend 373/373**, frontend 10/10, `pnpm lint` clean,
   build backend + frontend + shared OK.
-- Le righe `Error: pdfkit exploded` / `bucket unreachable` nel log sono **fixture volute**
-  (test del percorso di errore dell'export PDF): le suite restano verdi.
-- Python (35) non eseguito qui: richiede il venv 3.12 (vedi §1).
-- `pnpm lint` / `pnpm build` non ri-eseguiti: il documento li dà verdi e non ho toccato codice.
+- Lines `Error: pdfkit exploded` / `bucket unreachable` in logs are **intentional fixtures**
+  (error path test for PDF export): suites remain green.
+- Python (35) not executed here: requires venv 3.12 (see §1).
+- `pnpm lint` / `pnpm build` not re-executed: the document gives them as green and no code was touched.
 
 ---
 
-## 4. SonarQube — RISOLTO in questa sessione
+## 4. SonarQube — RESOLVED in This Session
 
-### 4.0 Cosa è stato fatto
+### 4.0 What Was Done
 
-Il provider `SONARQUBE` è ora un percorso completo: backend + frontend + wiring
-agli agenti. File toccati:
+The `SONARQUBE` provider is now a complete path: backend + frontend + wiring
+to agents. Files touched:
 
-| File | Modifica |
+| File | Change |
 |---|---|
-| `backend/src/credentials/supported-providers.ts` | Aggiunto `"SONARQUBE"` + costanti `GITHUB_PROVIDER` / `SONARQUBE_PROVIDER`. |
-| `backend/src/credentials/dto/create-credential.dto.ts` | Campi `instanceUrl` / `projectKey` / `organizationKey`, obbligatori **solo** se `provider === "SONARQUBE"` (`@ValidateIf`). Il corpo GITHUB resta `{provider, token}`. |
-| `backend/src/sonarqube/sonarqube-client.service.ts` (nuovo) | Verifica read-only: `GET /api/authentication/validate` per il token, `GET /api/components/show` per l'accesso al progetto. Token rifiutato / progetto invisibile → `AppException("CREDENTIAL_INVALID")`; guasti di rete / 5xx → propagati (→ UPSTREAM), mai scambiati per credenziale errata. |
-| `backend/src/sonarqube/sonarqube.module.ts` (nuovo) | Modulo che espone il client. |
-| `backend/src/credentials/credentials.service.ts` | `create` / `revalidate` fanno dispatch sul provider. Per SONARQUBE il bundle `{instanceUrl, projectKey, token, organizationKey?}` è cifrato come **un solo blob JSON** (stesso cipher, nessuna migrazione schema). Nuovo `getDecryptedSonarqubeCredential(userId)` → l'oggetto parsato, o `null` (è opzionale). |
-| `backend/src/credentials/credentials.module.ts` | Importa `SonarqubeModule`. |
-| `backend/src/tasks/agent-client.types.ts` | `payload.sonarqube_credentials?` nel corpo di `/internal/agent/start`. |
-| `backend/src/tasks/agent-invocation.service.ts` | Per le operazioni `DOCS_*`, se l'utente ha una credenziale SONARQUBE, la decifra e la mette nel payload. Ogni errore qui è ingoiato: il task parte comunque. |
-| `backend/src/common/openapi/api-schemas.ts` | `provider` documentato con l'enum completo. |
-| `shared/src/types.ts` | `CreateCredentialDto` con i campi opzionali. |
-| `frontend/src/pages/CredentialsPage.tsx` | Nuovo riquadro «SonarQube / SonarCloud» (URL istanza, chiave progetto, organizzazione opzionale, token). Non tocca i guard di rotta né lo store: una credenziale SonarQube mancante non blocca niente. |
-| `.env.example`, `docker-compose.yml` | `ENABLE_SONARQUBE=true` di default (la funzionalità ora esiste davvero). |
+| `backend/src/credentials/supported-providers.ts` | Added `"SONARQUBE"` + constants `GITHUB_PROVIDER` / `SONARQUBE_PROVIDER`. |
+| `backend/src/credentials/dto/create-credential.dto.ts` | Fields `instanceUrl` / `projectKey` / `organizationKey`, required **only** if `provider === "SONARQUBE"` (`@ValidateIf`). The GITHUB body remains `{provider, token}`. |
+| `backend/src/sonarqube/sonarqube-client.service.ts` (new) | Read-only check: `GET /api/authentication/validate` for the token, `GET /api/components/show` for project access. Rejected token / invisible project → `AppException("CREDENTIAL_INVALID")`; network failures / 5xx → propagated (→ UPSTREAM), never swapped for wrong credentials. |
+| `backend/src/sonarqube/sonarqube.module.ts` (new) | Module exposing the client. |
+| `backend/src/credentials/credentials.service.ts` | `create` / `revalidate` dispatch on provider. For SONARQUBE, the bundle `{instanceUrl, projectKey, token, organizationKey?}` is encrypted as **a single JSON blob** (same cipher, no schema migration). New `getDecryptedSonarqubeCredential(userId)` → parsed object, or `null` (it is optional). |
+| `backend/src/credentials/credentials.module.ts` | Imports `SonarqubeModule`. |
+| `backend/src/tasks/agent-client.types.ts` | `payload.sonarqube_credentials?` in the body of `/internal/agent/start`. |
+| `backend/src/tasks/agent-invocation.service.ts` | For `DOCS_*` operations, if the user has a SONARQUBE credential, it decrypts and puts it in the payload. Any error here is swallowed: the task starts anyway. |
+| `backend/src/common/openapi/api-schemas.ts` | `provider` documented with the full enum. |
+| `shared/src/types.ts` | `CreateCredentialDto` with optional fields. |
+| `frontend/src/pages/CredentialsPage.tsx` | New "SonarQube / SonarCloud" panel (instance URL, project key, optional organization, token). Does not touch route guards or store: a missing SonarQube credential does not block anything. |
+| `.env.example`, `docker-compose.yml` | `ENABLE_SONARQUBE=true` by default (the feature now really exists). |
 
-**Test:** +17 test backend (`credentials.service.spec.ts`, nuovo
+**Tests:** +17 backend tests (`credentials.service.spec.ts`, new
 `sonarqube-client.service.spec.ts`, `agent-invocation.service.spec.ts`).
-Tutte le suite verdi dopo le modifiche: **backend 373/373**, frontend 10/10,
-`pnpm lint` pulito, build backend + frontend + shared OK.
+All suites green after changes: **backend 373/373**, frontend 10/10,
+`pnpm lint` clean, build backend + frontend + shared OK.
 
-Gli agenti erano **già pronti** (`agents/src/agents/docs.py` legge
+Agents were **already ready** (`agents/src/agents/docs.py` reads
 `agent_payload["sonarqube_credentials"]`, `agents/src/sonarqube_service.py`
-legge le metriche e le mette in cache): non è stato toccato nulla lato Python.
+reads metrics and caches them): nothing was touched on the Python side.
 
-### 4.1 Come testarlo
+### 4.1 How to Test It
 
-1. Serve un'istanza **SonarQube** self-hosted o un progetto **SonarCloud**
-   già analizzato, con un token utente che abbia il permesso «Browse» sul progetto.
-2. Stack su con `ENABLE_SONARQUBE=true` (ora default nel `.env.example`).
-3. `/credentials` → riquadro «SonarQube / SonarCloud»: inserisci URL istanza
-   (es. `https://sonarcloud.io`), chiave progetto, organizzazione (solo SonarCloud), token.
-   → deve comparire «Progetto collegato». Un token/chiave errati tornano 400 senza salvare.
-4. Lancia un'operazione **`DOCS_INLINE`** o `DOCS_README` sullo stesso repo/progetto.
-5. Nei log degli agenti (`docker compose logs -f agents`) deve comparire
-   `Metriche SonarQube lette e messe in cache: progetto=... commit=...`; il prompt
-   inviato all'LLM contiene la sezione `### Metriche SonarQube per i file in analisi`.
-6. Prova anche il degrado: token valido ma istanza spenta → l'operazione DOCS
-   deve completare comunque, senza metriche (warning `Metriche SonarQube non disponibili`).
+1. A **self-hosted SonarQube** instance or an already analyzed **SonarCloud**
+   project is needed, with a user token that has "Browse" permission on the project.
+2. Start the stack with `ENABLE_SONARQUBE=true` (now default in `.env.example`).
+3. `/credentials` → "SonarQube / SonarCloud" panel: enter instance URL
+   (e.g., `https://sonarcloud.io`), project key, organization (SonarCloud only), token.
+   → must show "Connected project". An incorrect token/key returns 400 without saving.
+4. Launch a **`DOCS_INLINE`** or `DOCS_README` operation on the same repo/project.
+5. In agent logs (`docker compose logs -f agents`), `SonarQube metrics read and cached: project=... commit=...` must appear; the prompt
+   sent to the LLM contains the `### SonarQube Metrics for files under analysis` section.
+6. Also test degradation: valid token but instance down → the DOCS operation must complete anyway, without metrics (warning `SonarQube metrics unavailable`).
 
-### 4.2 Note di design
+### 4.2 Design Notes
 
-- Solo `token` è un vero segreto, ma si cifra l'intero bundle JSON per non
-  aprire un secondo formato di record.
-- SonarQube resta **opzionale ovunque**: `CredentialBanner` e i guard di
-  `/select` / `/run` continuano a guardare solo GITHUB.
-- La verifica del progetto (`components/show`) serve perché
-  `authentication/validate` passa per qualsiasi token accettato, anche uno
-  senza accesso a quel progetto.
+- Only `token` is a real secret, but the entire JSON bundle is encrypted to avoid
+  introducing a second record format.
+- SonarQube remains **optional everywhere**: `CredentialBanner` and route guards
+  for `/select` / `/run` continue to check only GITHUB.
+- Project verification (`components/show`) is needed because
+  `authentication/validate` passes for any accepted token, even one
+  without access to that project.
 
-<details><summary>Diagnosi originale (prima della correzione)</summary>
+<details><summary>Original Diagnosis (Before Fix)</summary>
 
-### Il problema, con precisione
+### The Problem, Precisely
 
-Non sono "credenziali sbagliate": **il percorso per fornirle non esiste sul backend**.
+It is not "wrong credentials": **the path to provide them does not exist on the backend**.
 
-Lo stato reale, componente per componente:
+The real state, component by component:
 
-- **Agenti — già pronti.** `agents/src/sonarqube_service.py` (lettura metriche + cache Redis),
-  le rotte `/internal/sonarqube/*` in `main.py`, e — soprattutto —
-  `agents/src/agents/docs.py:67-98` che legge `agent_payload["sonarqube_credentials"]`
-  (`{instanceUrl, projectKey, token, organizationKey?}`), chiama `get_metrics(...)` e inserisce
-  le metriche nel prompt (`_with_sonarqube`). Con degrado silenzioso se qualcosa non va.
-- **Config — spento.** `ENABLE_SONARQUBE=false` in `.env.example` e in `docker-compose.yml`.
-  Con `false`, `main.py` non costruisce nemmeno il servizio (`sonar_service = None`).
-- **Backend — manca tutto il pezzo a monte:**
+- **Agents — already ready.** `agents/src/sonarqube_service.py` (read metrics + Redis cache),
+  routes `/internal/sonarqube/*` in `main.py`, and — above all —
+  `agents/src/agents/docs.py:67-98` which reads `agent_payload["sonarqube_credentials"]`
+  (`{instanceUrl, projectKey, token, organizationKey?}`), calls `get_metrics(...)` and inserts
+  metrics into the prompt (`_with_sonarqube`). With silent degradation if something goes wrong.
+- **Config — off.** `ENABLE_SONARQUBE=false` in `.env.example` and in `docker-compose.yml`.
+  With `false`, `main.py` does not even build the service (`sonar_service = None`).
+- **Backend — everything upstream is missing:**
   - `backend/src/credentials/supported-providers.ts` → `SUPPORTED_PROVIDERS = ["GITHUB"]`.
-    Non si può nemmeno **salvare** una credenziale SonarQube.
-  - `CreateCredentialDto` accetta solo `{provider, token}`; una credenziale Sonar ne ha 3-4 campi.
-  - `CredentialsService.create()` chiama `verifyGithubToken()` in modo incondizionato: nessun
-    dispatch per provider.
-  - `agent-invocation.service.ts` costruisce il `payload` per `/internal/agent/start` **senza**
-    la chiave `sonarqube_credentials`. Anche salvando le credenziali, non arriverebbero all'agente.
-- **Frontend — GitHub-only.** `CredentialsPage.tsx` ha un solo campo (PAT GitHub).
+    You cannot even **save** a SonarQube credential.
+  - `CreateCredentialDto` only accepts `{provider, token}`; a SonarQube credential has 3-4 fields.
+  - `CredentialsService.create()` calls `verifyGithubToken()` unconditionally: no
+    dispatch by provider.
+  - `agent-invocation.service.ts` builds the `payload` for `/internal/agent/start` **without**
+    the `sonarqube_credentials` key. Even saving credentials, they would not reach the agent.
+- **Frontend — GitHub-only.** `CredentialsPage.tsx` has only one field (GitHub PAT).
 
-Quindi: `grep -i sonarqube backend/src` non trova nulla — esattamente come annota il documento.
+Therefore: `grep -i sonarqube backend/src` finds nothing — exactly as the document notes.
 
-### Come risolverlo (piano, ~8-10 file, backend + frontend)
+### How to Fix It (Plan, ~8-10 files, backend + frontend)
 
-1. **`supported-providers.ts`** — aggiungi `"SONARQUBE"`.
-2. **DTO** (`create-credential.dto.ts` + `@codeguardian/shared`) — campi opzionali
-   `instanceUrl`, `projectKey`, `organizationKey`; validazione condizionata al provider
-   (per `SONARQUBE` sono obbligatori `instanceUrl`+`projectKey`+`token`).
-3. **Storage** — nessuna migrazione schema: per `SONARQUBE` si cifra
-   `JSON.stringify({instanceUrl, projectKey, token, organizationKey})` come blob singolo
-   (il cipher già lo permette). Per `GITHUB` resta la stringa nuda.
-4. **Verifica per provider** — nuovo `SonarqubeClientService` che chiama
-   `GET {instanceUrl}/api/authentication/validate` (auth: token come username) e controlla
-   `{valid: true}`. `CredentialsService.create()`/`revalidate()` fanno dispatch su `dto.provider`.
-5. **`getDecryptedCredential()`** — variante di `getDecryptedToken()` che per Sonar restituisce
-   l'oggetto parsato.
-6. **`agent-invocation.service.ts`** — quando l'operazione è `DOCS_*` e l'utente ha una
-   credenziale `SONARQUBE`, decifra e aggiungi `payload.sonarqube_credentials = {...}`.
-   Gli agenti la consumano già senza modifiche.
-7. **Config** — `ENABLE_SONARQUBE=true` per il servizio `agents` in `docker-compose.yml`/`.env`.
-8. **Frontend** — sezione SonarQube in `CredentialsPage.tsx` (URL istanza, project key, token,
-   organizzazione opzionale per SonarCloud); `types.ts`; eventuale badge nello store.
-9. **OpenAPI** (`common/openapi/api-schemas.ts`) + **test**: `credentials.service.spec.ts`,
-   `agent-invocation.service.spec.ts`, spec frontend.
+1. **`supported-providers.ts`** — add `"SONARQUBE"`.
+2. **DTO** (`create-credential.dto.ts` + `@codeguardian/shared`) — optional fields
+   `instanceUrl`, `projectKey`, `organizationKey`; validation conditional on provider
+   (for `SONARQUBE`, `instanceUrl`+`projectKey`+`token` are required).
+3. **Storage** — no schema migration: for `SONARQUBE`, encrypt
+   `JSON.stringify({instanceUrl, projectKey, token, organizationKey})` as a single blob
+   (the cipher already allows it). For `GITHUB`, it remains a plain string.
+4. **Verification by provider** — new `SonarqubeClientService` that calls
+   `GET {instanceUrl}/api/authentication/validate` (auth: token as username) and checks
+   `{valid: true}`. `CredentialsService.create()`/`revalidate()` dispatch on `dto.provider`.
+5. **`getDecryptedCredential()`** — variant of `getDecryptedToken()` that for SonarQube returns
+   the parsed object.
+6. **`agent-invocation.service.ts`** — when the operation is `DOCS_*`, and the user has a
+   `SONARQUBE` credential, decrypt and add `payload.sonarqube_credentials = {...}`.
+   Agents already consume it without changes.
+7. **Config** — `ENABLE_SONARQUBE=true` for the `agents` service in `docker-compose.yml`/`.env`.
+8. **Frontend** — SonarQube section in `CredentialsPage.tsx` (instance URL, project key, token,
+   optional organization for SonarCloud); `types.ts`; optional badge in store.
+9. **OpenAPI** (`common/openapi/api-schemas.ts`) + **tests**: `credentials.service.spec.ts`,
+   `agent-invocation.service.spec.ts`, frontend specs.
 
-### Cosa serve per testarlo davvero
+### What Is Needed to Really Test It
 
-Un'istanza **SonarQube** raggiungibile (o un progetto **SonarCloud**) con un progetto già
-analizzato e un token. Senza, si arriva solo fino alla validazione fallita.
+A reachable **SonarQube** instance (or a **SonarCloud** project) with an already
+analyzed project and a token. Without it, you only get to the failed validation.
 
-### Alternativa minima
+### Minimal Alternative
 
-Se SonarQube è fuori dallo scope dell'MVP: lasciarlo `false` e **documentarlo come non
-implementato** (una riga nel README + un test che verifica il degrado silenzioso). Zero rischio.
+If SonarQube is out of MVP scope: leave it `false` and **document it as not
+implemented** (one line in README + a test that verifies silent degradation). Zero risk.
 
 </details>
 
 ---
 
-## 5. In una riga
+## 5. In One Line
 
-Il prossimo passo non è scrivere codice: è **eseguire un'analisi completa** (`DOCS_INLINE`,
-scope minimo, credenziali vere) con lo stack acceso — SonarQube incluso, ora che il
-percorso c'è (§4.1).
+The next step is not writing code: it is **running a complete analysis** (`DOCS_INLINE`,
+minimal scope, real credentials) with the stack running — SonarQube included, now that the
+path exists (§4.1).
