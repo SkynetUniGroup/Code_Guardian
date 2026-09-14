@@ -54,38 +54,38 @@ async def lifespan(app: FastAPI):
     """Manages the lifespan of the FastAPI application."""
     global mongo_client, checkpointer, redis_client, sonar_service
 
-    # Client async di pymongo, non motor.
+    # Async pymongo client, not motor.
     #
-    # AsyncMongoDBSaver chiama `client.append_metadata()` nel proprio
-    # costruttore — un metodo che esiste su AsyncMongoClient (da pymongo 4.14)
-    # e non su AsyncIOMotorClient. Con motor l'attributo veniva interpretato
-    # come nome di un database e il servizio moriva all'avvio con
+    # AsyncMongoDBSaver calls `client.append_metadata()` in its own
+    # constructor -- a method that exists on AsyncMongoClient (since pymongo
+    # 4.14) and not on AsyncIOMotorClient. With motor the attribute was
+    # interpreted as a database name and the service died at startup with
     # "MotorDatabase object is not callable".
     #
-    # Non e' un ripiego: motor e' deprecato da MongoDB proprio in favore
-    # dell'API async di pymongo, che e' quella che la libreria si aspetta.
+    # This is not a fallback: motor is deprecated by MongoDB in favor of
+    # pymongo's async API, which is what the library expects.
     mongo_client = AsyncMongoClient(settings.mongo_uri)
     checkpointer = AsyncMongoDBSaver(mongo_client, db_name="codeguardian")
 
-    # Connessione Redis di servizio, usata dalla cache SonarQube. Il grafo
-    # apre invece una propria connessione per ogni step (vedi
-    # AgentGraph.execute_step): la sua vita e' quella dell'invocazione, non
-    # quella del processo.
+    # Service Redis connection, used by the SonarQube cache. The graph
+    # opens its own connection per step instead (see
+    # AgentGraph.execute_step): its lifetime is that of the invocation,
+    # not that of the process.
     redis_client = aioredis.from_url(settings.redis_url, decode_responses=True)
     if settings.enable_sonarqube:
         sonar_service = SonarQubeService(redis_client)
 
     logger.info(
-        "Servizio avviato — SAST=%s SonarQube=%s",
+        "Service started -- SAST=%s SonarQube=%s",
         settings.enable_sast_semgrep,
         settings.enable_sonarqube,
     )
 
     yield
 
-    # await: su AsyncMongoClient close() e' una coroutine, mentre su motor era
-    # sincrona. Senza, la chiusura resterebbe una coroutine mai attesa e la
-    # connessione non verrebbe rilasciata.
+    # await: on AsyncMongoClient close() is a coroutine, while on motor it
+    # was synchronous. Without it, the close would remain an un-awaited
+    # coroutine and the connection would not be released.
     await mongo_client.close()
     if redis_client:
         await redis_client.aclose()
@@ -99,7 +99,7 @@ async def health_check():
     """Provides a health check endpoint for the API.
 
     Returns:
-        dict: Lo stato, il provider LLM e le funzionalita' opzionali attive.
+        dict: The status, the LLM provider, and the active optional features.
     """
     return {
         "status": "ok",
@@ -124,8 +124,8 @@ def get_agent_components(op_code: str):
         ValueError: If the operation code is not supported.
     """
     if op_code.startswith("DOCS"):
-        # `sonar_service` e' None quando ENABLE_SONARQUBE e' false (vedi il
-        # lifespan): il loader se ne accorge e prosegue senza metriche.
+        # `sonar_service` is None when ENABLE_SONARQUBE is false (see the
+        # lifespan): the loader notices and proceeds without metrics.
         loader = DocsLoader(operation=op_code, sonarqube_service=sonar_service)
         if op_code == "DOCS_API":
             profile = DocsApiProfile()
@@ -134,9 +134,10 @@ def get_agent_components(op_code: str):
         else:
             profile = DocsInlineProfile()
     elif op_code.startswith("SECURITY"):
-        # L'analizzatore viene costruito qui e non dentro il loader: e' l'unico
-        # punto in cui si decide se la funzionalita' e' attiva, e passarlo come
-        # dipendenza rende il loader verificabile senza Semgrep installato.
+        # The analyzer is constructed here and not inside the loader: this
+        # is the only point where it is decided whether the feature is
+        # active, and passing it as a dependency makes the loader testable
+        # without Semgrep installed.
         sast = SASTAnalyzer() if settings.enable_sast_semgrep else None
         loader = SecurityLoader(operation=op_code, sast_analyzer=sast)
         profile = (
@@ -197,9 +198,9 @@ async def start_agent(request: StartAgentRequest):
     except Exception as e:
         return AgentStepResult(status="failed", error=f"Malformed ContextRef: {e!s}")
 
-    # Il toolset non entra nello stato: lo ricostruisce AgentGraph a ogni nodo
-    # a partire da user_id e task_id, cosi' il segreto HMAC che porta con se'
-    # non finisce nei checkpoint su MongoDB. Vedi AgentState.
+    # The toolset does not enter the state: AgentGraph reconstructs it at
+    # every node from user_id and task_id, so the HMAC secret it carries
+    # does not end up in the MongoDB checkpoints. See AgentState.
     initial_state = AgentState(
         user_id=user_id,
         task_id=request.taskId,
@@ -255,22 +256,22 @@ async def resume_agent(request: ResumeAgentRequest):
 # ---------------------------------------------------------------------------
 # SonarQube
 #
-# Sotto /internal come le rotte dell'agente, per una ragione precisa: accettano
-# un token SonarQube nel corpo della richiesta e non hanno autenticazione
-# propria. Reggono solo perche' questo servizio non e' esposto all'host
-# (docker-compose: `agents` non pubblica porte) ed e' raggiungibile unicamente
-# dall'interno della rete Docker. Il prefisso lo rende esplicito invece di
-# lasciarlo dedurre.
+# Under /internal like the agent routes, for a precise reason: they accept
+# a SonarQube token in the request body and have no authentication of their
+# own. They hold only because this service is not exposed to the host
+# (docker-compose: `agents` publishes no ports) and is reachable only
+# from inside the Docker network. The prefix makes it explicit instead of
+# leaving it to be inferred.
 #
-# Nessun agente le chiama ancora: manca il pezzo a monte, cioe' un posto dove
-# salvare le credenziali SonarQube per progetto (il backend accetta oggi il solo
-# provider GITHUB). Finche' non c'e', queste rotte servono a verificare la
-# connessione a un'istanza e a gestirne la cache.
+# No agent calls them yet: the upstream piece is missing, i.e. a place to
+# store SonarQube credentials per project (the backend currently accepts
+# only the GITHUB provider). Until that exists, these routes serve to
+# verify the connection to an instance and manage its cache.
 # ---------------------------------------------------------------------------
 
 
 class SonarQubeMetricsRequest(BaseModel):
-    """Corpo di POST /internal/sonarqube/metrics."""
+    """Body of POST /internal/sonarqube/metrics."""
 
     projectKey: str
     commitSha: str
@@ -280,56 +281,56 @@ class SonarQubeMetricsRequest(BaseModel):
 
 
 class SonarCacheInvalidateRequest(BaseModel):
-    """Corpo di DELETE /internal/sonarqube/cache."""
+    """Body of DELETE /internal/sonarqube/cache."""
 
     projectKey: str
     commitSha: str
 
 
 def _require_sonar() -> SonarQubeService:
-    """Restituisce il servizio SonarQube, o spiega perche' non c'e'.
+    """Returns the SonarQube service, or explains why it is not available.
 
     Returns:
-        SonarQubeService: Il servizio inizializzato all'avvio.
+        SonarQubeService: The service initialized at startup.
 
     Raises:
-        HTTPException: 503 se la funzionalita' e' disattivata.
+        HTTPException: 503 if the feature is disabled.
     """
     if sonar_service is None:
         raise HTTPException(
             status_code=503,
-            detail="SonarQube non attivo: imposta ENABLE_SONARQUBE=true e riavvia il servizio.",
+            detail="SonarQube not active: set ENABLE_SONARQUBE=true and restart the service.",
         )
     return sonar_service
 
 
 def _require_redis() -> aioredis.Redis:
-    """Restituisce il client Redis di servizio.
+    """Returns the service Redis client.
 
     Returns:
-        aioredis.Redis: Il client aperto all'avvio.
+        aioredis.Redis: The client opened at startup.
 
     Raises:
-        HTTPException: 503 se la connessione non e' disponibile.
+        HTTPException: 503 if the connection is not available.
     """
     if redis_client is None:
-        raise HTTPException(status_code=503, detail="Redis non disponibile")
+        raise HTTPException(status_code=503, detail="Redis not available")
     return redis_client
 
 
 @app.post("/internal/sonarqube/metrics")
 async def sonarqube_metrics(request: SonarQubeMetricsRequest):
-    """Legge le metriche di qualita' di un progetto a un dato commit.
+    """Reads the quality metrics of a project at a given commit.
 
     Args:
-        request (SonarQubeMetricsRequest): Progetto, commit e credenziali.
+        request (SonarQubeMetricsRequest): Project, commit, and credentials.
 
     Returns:
-        dict: Le metriche per file, dalla cache quando disponibili.
+        dict: Metrics per file, from cache when available.
 
     Raises:
-        HTTPException: 400 se le credenziali o il progetto non sono validi,
-            502 per un errore dell'istanza SonarQube.
+        HTTPException: 400 if the credentials or project are invalid,
+            502 for a SonarQube instance error.
     """
     service = _require_sonar()
     credentials = SonarQubeCredentials(
@@ -341,12 +342,12 @@ async def sonarqube_metrics(request: SonarQubeMetricsRequest):
     try:
         metrics = await service.get_metrics(credentials, request.commitSha)
     except ValueError as exc:
-        # Token rifiutato o progetto inesistente: e' un problema di richiesta,
-        # non dell'istanza remota.
+        # Token rejected or project not found: it is a request problem,
+        # not a remote instance problem.
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except Exception as exc:  # noqa: BLE001 - qualunque altro guasto e' upstream
-        logger.exception("Errore upstream di SonarQube")
-        raise HTTPException(status_code=502, detail="Errore upstream di SonarQube") from exc
+    except Exception as exc:  # noqa: BLE001 - any other failure is upstream
+        logger.exception("SonarQube upstream error")
+        raise HTTPException(status_code=502, detail="SonarQube upstream error") from exc
 
     return {
         "projectKey": request.projectKey,
@@ -357,13 +358,13 @@ async def sonarqube_metrics(request: SonarQubeMetricsRequest):
 
 @app.delete("/internal/sonarqube/cache")
 async def sonarqube_cache_invalidate(request: SonarCacheInvalidateRequest):
-    """Invalida la cache delle metriche per un progetto e un commit.
+    """Invalidates the metrics cache for a project and a commit.
 
     Args:
-        request (SonarCacheInvalidateRequest): Progetto e commit.
+        request (SonarCacheInvalidateRequest): Project and commit.
 
     Returns:
-        dict: Se la chiave esisteva e quale chiave e' stata rimossa.
+        dict: Whether the key existed and which key was removed.
     """
     redis = _require_redis()
     key = cache_key(request.projectKey, request.commitSha)
@@ -373,19 +374,19 @@ async def sonarqube_cache_invalidate(request: SonarCacheInvalidateRequest):
 
 @app.get("/internal/sonarqube/cache/status")
 async def sonarqube_cache_status(projectKey: str, commitSha: str):
-    """Dice se le metriche di un commit sono in cache e per quanto ancora.
+    """Reports whether the metrics for a commit are in cache and for how long.
 
     Args:
-        projectKey (str): Chiave del progetto SonarQube.
-        commitSha (str): Commit di riferimento.
+        projectKey (str): SonarQube project key.
+        commitSha (str): Reference commit.
 
     Returns:
-        dict: Stato della cache e TTL residuo.
+        dict: Cache status and remaining TTL.
     """
     redis = _require_redis()
     key = cache_key(projectKey, commitSha)
     ttl = await redis.ttl(key)
-    # ttl == -2 significa "chiave inesistente"; -1 "senza scadenza".
+    # ttl == -2 means "key does not exist"; -1 "no expiration".
     cached = ttl != -2
     return {
         "projectKey": projectKey,
