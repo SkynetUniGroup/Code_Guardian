@@ -1,3 +1,4 @@
+import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -14,6 +15,11 @@ import { defineConfig } from "vite";
  */
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@codeguardian/shared": path.resolve(__dirname, "../shared/src"),
+    },
+  },
 
   // ---- Development server ----
   server: {
@@ -71,11 +77,26 @@ export default defineConfig(({ mode }) => ({
         /**
          * Split vendor code into a separate chunk so the browser can cache
          * React, TanStack Router, etc. independently from application code.
+         *
+         * Forma a funzione, non a oggetto: Vite 8 usa Rolldown, che accetta
+         * solo la variante funzione. Con la mappa `{vendor: [...]}` che
+         * funzionava su Rollup, il build falliva con
+         * "manualChunks is not a function".
          */
-        manualChunks: (id: string) => {
-          if (/node_modules\/(react|react-dom|@tanstack\/react-router)/.test(id)) return "vendor";
-          if (/node_modules\/zustand/.test(id)) return "state";
-          if (/node_modules\/(axios|socket\.io-client)/.test(id)) return "network";
+        manualChunks(id: string) {
+          if (!id.includes("node_modules")) {
+            return undefined;
+          }
+          if (/[\\/]node_modules[\\/](react|react-dom|@tanstack)[\\/]/.test(id)) {
+            return "vendor";
+          }
+          if (/[\\/]node_modules[\\/]zustand[\\/]/.test(id)) {
+            return "state";
+          }
+          if (/[\\/]node_modules[\\/](axios|socket\.io-client|engine\.io-client)[\\/]/.test(id)) {
+            return "network";
+          }
+          return undefined;
         },
       },
     },

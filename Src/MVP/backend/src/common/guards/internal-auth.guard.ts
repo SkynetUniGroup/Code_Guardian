@@ -1,3 +1,4 @@
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import {
   type CanActivate,
   type ExecutionContext,
@@ -6,7 +7,6 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { createHash, createHmac, timingSafeEqual } from "crypto";
 import type { Request } from "express";
 
 // Authenticates every /internal/* request from the agent service — a

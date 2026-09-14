@@ -4,34 +4,32 @@ Reads issues from GitHub, discards invalid ones, and generates a technical chang
 """
 
 import re
-from typing import Any, List, Optional, Tuple
+from typing import Any
 
 from langgraph.types import interrupt
 
-from ..github_toolset import GitHubToolset
-from ..graph import AgentCancelled
-from ..models import Block, ChangelogItemBlock, Proposal, TextBlock
 from ..config import settings
+from ..github_toolset import GitHubToolset
+from ..graph import AgentCancelled, resume_action
+from ..models import Block, ChangelogItemBlock, Proposal, TextBlock
 from ._base import load_prompt_template, render_prompt
 
+class SprintNotFoundError(Exception):
+    """Raised when the requested Sprint ID matches no milestone in the repository.
 
-class ReadabilityTooLowError(Exception):
-    """Specific exception mapped to ErrorKind.READABILITY_TOO_LOW."""
+    Mapped to ErrorKind.CONTEXT_RESOURCE_INVALID by the graph's error node,
+    the same way ContextResourceInvalidError works in agents/security.py.
+    """
 
     def __init__(self, message: str):
-        """Initializes the exception.
-
-        Args:
-            message (str): The error message.
-        """
-        self.error_type = 'READABILITY_TOO_LOW'
+        self.error_type = "CONTEXT_RESOURCE_INVALID"
         super().__init__(message)
 
 
 class ChangelogLoader:
     """Loads issues from GitHub, filters invalid ones, and prepares the changelog context."""
 
-    def __init__(self, operation: str = 'CHANGELOG_TECHNICAL'):
+    def __init__(self, operation: str = "CHANGELOG_TECHNICAL"):
         """Initializes the loader.
 
         Args:
@@ -40,7 +38,10 @@ class ChangelogLoader:
         self.operation = operation
 
     async def load(
-        self, context_ref: Any, toolset: GitHubToolset, agent_payload: dict = None
+        self,
+        context_ref: Any,
+        toolset: GitHubToolset,
+        agent_payload: dict | None = None,
     ) -> dict:
         """Loads the context for the changelog agent.
 
@@ -58,28 +59,39 @@ class ChangelogLoader:
         """
         if agent_payload is None:
             agent_payload = {}
-        sprint_id = agent_payload.get('sprintId', 'Current Sprint')
+        sprint_id = agent_payload.get("sprintId", "Current Sprint")
 
         issues_response = await toolset.read_issues(
-            context_ref.repoOwner, context_ref.repoName, {'state': 'closed'}
+            context_ref.repoOwner, context_ref.repoName, {"state": "closed"}
         )
-        issues = issues_response.get('issues', [])
+        issues = issues_response.get("issues", [])
+
+        if sprint_id != "Current Sprint":
+            known_milestones = {
+                issue.get("milestone") for issue in issues if issue.get("milestone")
+            }
+            if sprint_id not in known_milestones:
+                raise SprintNotFoundError(
+                    f"Sprint ID '{sprint_id}' does not match any milestone found "
+                    "among the closed issues of this repository. Check the value "
+                    "and try again."
+                )
 
         kept_tasks, excluded_tasks, insufficient_ids = [], [], []
 
         for issue in issues:
-            if sprint_id != 'Current Sprint' and issue.get('milestone') != sprint_id:
+            if sprint_id != "Current Sprint" and issue.get("milestone") != sprint_id:
                 continue
 
-            issue_num = str(issue.get('number'))
-            if not issue.get('hasSufficientMetadata', True):
+            issue_num = str(issue.get("number"))
+            if not issue.get("hasSufficientMetadata", True):
                 excluded_tasks.append(f'#{issue_num} {issue.get("title")}')
                 insufficient_ids.append(issue_num)
             else:
-                labels = issue.get('labels', '')
+                labels = issue.get("labels", "")
                 url = (
-                    f'https://github.com/{context_ref.repoOwner}/'
-                    f'{context_ref.repoName}/issues/{issue_num}'
+                    f"https://github.com/{context_ref.repoOwner}/"
+                    f"{context_ref.repoName}/issues/{issue_num}"
                 )
                 kept_tasks.append(
                     f'- [#{issue_num}]({url}) {issue.get("title")} (Labels: {labels})'
@@ -87,33 +99,34 @@ class ChangelogLoader:
 
         # Interactive suspension
         if insufficient_ids:
-            action = interrupt({
-                'kind': 'INCOMPLETE_TASKS',
-                'taskIds': insufficient_ids
-            })
-            
-            if action == 'CANCEL':
-                # NOTE: According to MVP specs, NestJS handles user cancellation 
-                # by terminating the task without resuming the graph. This branch is defensive 
+            action = resume_action(
+                interrupt({"kind": "INCOMPLETE_TASKS", "taskIds": insufficient_ids})
+            )
+
+            if action == "CANCEL":
+                # NOTE: According to MVP specs, NestJS handles user cancellation
+                # by terminating the task without resuming the graph. This branch is defensive
                 # and guarantees graceful abortion during tests, debug, or manual API usage.
-                raise AgentCancelled(stage='INCOMPLETE_TASKS')
+                raise AgentCancelled(stage="INCOMPLETE_TASKS")
 
         return {
-            'sprint_id': sprint_id,
-            'tasks_formatted': '\n'.join(kept_tasks) if kept_tasks else 'No valid issues.',
-            'excluded_tasks': excluded_tasks,
-            'phase': 'TECHNICAL'
+            "sprint_id": sprint_id,
+            "tasks_formatted": (
+                "\n".join(kept_tasks) if kept_tasks else "No valid issues."
+            ),
+            "excluded_tasks": excluded_tasks,
+            "phase": "TECHNICAL",
         }
 
 
 class ChangelogTechnicalProfile:
     """Handles the prompt generation and parsing for the Technical Changelog."""
 
-    agent = 'changelog'
-    operation = 'CHANGELOG_TECHNICAL'
+    agent = "changelog"
+    operation = "CHANGELOG_TECHNICAL"
     uses_tools = False
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the prompt using the context data.
 
         Args:
@@ -122,14 +135,12 @@ class ChangelogTechnicalProfile:
         Returns:
             Tuple[str, str]: The system and user prompts.
         """
-        template_data = load_prompt_template('changelog', 'changelog_tech')
+        template_data = load_prompt_template("changelog", "changelog_tech")
         return render_prompt(
-            template_data,
-            sprint_id=ctx['sprint_id'],
-            tasks=ctx['tasks_formatted']
+            template_data, sprint_id=ctx["sprint_id"], tasks=ctx["tasks_formatted"]
         )
 
-    def parse_output(self, raw: str, ctx: dict) -> Tuple[List[Block], Optional[Proposal]]:
+    def parse_output(self, raw: str, ctx: dict) -> tuple[list[Block], Proposal | None]:
         """Parses the raw output from the model into structured blocks.
 
         Args:
@@ -140,18 +151,18 @@ class ChangelogTechnicalProfile:
             Tuple[List[Block], Optional[Proposal]]: A tuple containing the list of blocks
                 and an optional proposal.
         """
-        blocks: List[Block] = [TextBlock(order=0, markdown=raw.strip())]
-        excluded = ctx.get('excluded_tasks', [])
-        
+        blocks: list[Block] = [TextBlock(order=0, markdown=raw.strip())]
+        excluded = ctx.get("excluded_tasks", [])
+
         if excluded:
             for idx, exc in enumerate(excluded):
-                issue_ref = exc.split()[0] if exc.startswith('#') else f'Task {idx}'
+                issue_ref = exc.split()[0] if exc.startswith("#") else f"Task {idx}"
                 blocks.append(
                     ChangelogItemBlock(
                         order=idx + 1,
                         issueRef=issue_ref,
                         title=exc,
-                        detail='Excluded from changelog due to insufficient metadata.'
+                        detail="Excluded from changelog due to insufficient metadata.",
                     )
                 )
         return blocks, None
@@ -160,11 +171,11 @@ class ChangelogTechnicalProfile:
 class ChangelogBusinessProfile:
     """Handles the prompt generation and parsing for the Business Changelog."""
 
-    agent = 'changelog'
-    operation = 'CHANGELOG_BUSINESS'
+    agent = "changelog"
+    operation = "CHANGELOG_BUSINESS"
     uses_tools = False
 
-    def build_prompt(self, ctx: dict) -> Tuple[str, str]:
+    def build_prompt(self, ctx: dict) -> tuple[str, str]:
         """Builds the prompt depending on the current phase (TECHNICAL or BUSINESS).
 
         Args:
@@ -173,25 +184,25 @@ class ChangelogBusinessProfile:
         Returns:
             Tuple[str, str]: The system and user prompts.
         """
-        phase = ctx.get('phase', 'TECHNICAL')
+        phase = ctx.get("phase", "TECHNICAL")
 
-        if phase == 'TECHNICAL':
-            template_data = load_prompt_template('changelog', 'changelog_tech')
+        if phase == "TECHNICAL":
+            template_data = load_prompt_template("changelog", "changelog_tech")
             return render_prompt(
                 template_data,
-                sprint_id=ctx.get('sprint_id', 'Current Sprint'),
-                tasks=ctx.get('tasks_formatted', 'No valid issues.')
+                sprint_id=ctx.get("sprint_id", "Current Sprint"),
+                tasks=ctx.get("tasks_formatted", "No valid issues."),
             )
         else:
-            template_data = load_prompt_template('changelog', 'changelog_biz')
+            template_data = load_prompt_template("changelog", "changelog_biz")
             return render_prompt(
                 template_data,
-                technical_changelog=ctx.get('technical_text', ''),
+                technical_changelog=ctx.get("technical_text", ""),
             )
 
     def parse_output(
         self, raw: str, ctx: dict
-    ) -> Tuple[List[Block], Optional[Proposal], bool]:
+    ) -> tuple[list[Block], Proposal | None, bool]:
         """Parses the output and handles the multi-phase business changelog generation.
 
         Args:
@@ -206,25 +217,25 @@ class ChangelogBusinessProfile:
             AgentCancelled: If the user cancels the confirmation phase.
             ValueError: If the readability score is too low, triggering a retry.
         """
-        if ctx.get('phase', 'TECHNICAL') == 'TECHNICAL':
+        if ctx.get("phase", "TECHNICAL") == "TECHNICAL":
             # Phase 1: Parse the technical output
-            blocks: List[Block] = [TextBlock(order=0, markdown=raw.strip())]
+            blocks: list[Block] = [TextBlock(order=0, markdown=raw.strip())]
 
-            excluded = ctx.get('excluded_tasks', [])
+            excluded = ctx.get("excluded_tasks", [])
             if excluded:
                 for idx, exc in enumerate(excluded):
-                    issue_ref = exc.split()[0] if exc.startswith('#') else f'Task {idx}'
+                    issue_ref = exc.split()[0] if exc.startswith("#") else f"Task {idx}"
                     blocks.append(
                         ChangelogItemBlock(
                             order=idx + 1,
                             issueRef=issue_ref,
                             title=exc,
-                            detail='Excluded from changelog due to insufficient metadata.'
+                            detail="Excluded from changelog due to insufficient metadata.",
                         )
                     )
 
-            ctx['technical_text'] = raw.strip()
-            ctx['phase'] = 'BUSINESS'
+            ctx["technical_text"] = raw.strip()
+            ctx["phase"] = "BUSINESS"
 
             # Phase 2: Return True to indicate the need for the next phase
             return blocks, None, True
@@ -236,7 +247,7 @@ class ChangelogBusinessProfile:
 
             if score < TARGET_SCORE:
                 raise ValueError(
-                    f'READABILITY_RETRY: Score {score:.1f} is too low (Target: {TARGET_SCORE}).'
+                    f"READABILITY_RETRY: Score {score:.1f} is too low (Target: {TARGET_SCORE})."
                 )
 
             blocks = [TextBlock(order=1, markdown=raw.strip())]
@@ -257,23 +268,49 @@ def calculate_flesch_reading_ease(text: str) -> float:
     if not text.strip():
         return 0.0
 
-    # Clean Markdown to avoid altering the count
-    clean_text = re.sub(r'[*_#`>\-\[\]()]+', ' ', text)
+    # I collegamenti alle issue sono contenuto obbligatorio -- il prompt
+    # impone di conservarli parola per parola -- ma non sono prosa, e la
+    # formula li conta come parole: un URL vale un'unica parola da una
+    # quindicina di gruppi vocalici, e ne bastano tre per portare sotto zero
+    # un testo che senza di essi passerebbe con margine. Del collegamento si
+    # tiene il testo visibile, che l'utente legge davvero, e si butta la
+    # destinazione, che non legge nessuno.
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"https?://\S+", " ", text)
 
-    # Sentence count (approximated by strong punctuation)
-    sentences = len(re.split(r'[.!?]+', clean_text)) - 1
-    sentences = max(1, sentences)
+    # Clean Markdown to avoid altering the count
+    clean_text = re.sub(r"[*_#`>\-\[\]()]+", " ", text)
+
+    # Conteggio delle frasi. La sola punteggiatura forte non basta: un
+    # changelog e' fatto di elenchi puntati e di intestazioni, e quasi
+    # nessuna voce finisce col punto. Contandola da sola, l'intero
+    # documento risulta un'unica frase da decine di parole, e il termine
+    # parole-per-frase vale allora quaranta punti di penalita' su cento:
+    # un elenco scritto benissimo non raggiungerebbe mai la soglia. Ogni
+    # riga non vuota vale almeno una frase, che e' come la legge chi
+    # riceve le note di rilascio.
+    per_punteggiatura = len(re.split(r"[.!?]+", clean_text)) - 1
+    per_riga = len([riga for riga in clean_text.splitlines() if riga.strip()])
+    sentences = max(1, per_punteggiatura, per_riga)
 
     # Word count
     words = clean_text.split()
     num_words = max(1, len(words))
 
-    # Heuristic syllable count (based on vowel groups, flexible for ITA/ENG)
-    vowels = 'aeiouyàèéìíòóùú'
+    # Conteggio euristico delle sillabe, per gruppi di vocali. La formula
+    # qui sopra ha le costanti di Flesch, che sono tarate sull'inglese: e
+    # in inglese la 'e' finale quasi sempre non si pronuncia. Contandola,
+    # 'time' vale due sillabe invece di una e 'improved' tre invece di
+    # due; su un testo intero sono trenta punti d'indice buttati, e un
+    # changelog scritto in inglese piano non arrivava mai alla soglia.
+    # Restano escluse le uscite in -le, -ee, -ie, dove la 'e' si sente.
+    vowels = "aeiouyàèéìíòóùú"
     syllables = 0
     for word in words:
-        word = word.lower()
-        word_syllables = len(re.findall(f'[{vowels}]+', word))
+        word = word.lower().strip(".,;:!?'\"")
+        word_syllables = len(re.findall(f"[{vowels}]+", word))
+        if word.endswith("e") and not word.endswith(("le", "ee", "ie")) and word_syllables > 1:
+            word_syllables -= 1
         syllables += max(1, word_syllables)
 
     # Standard Flesch formula

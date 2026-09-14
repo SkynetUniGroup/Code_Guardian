@@ -1,11 +1,15 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "javascript": {
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
-    }
+    },
+  "$schema": "https://biomejs.dev/schemas/2.5.12/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
   },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -19,6 +23,11 @@
       "correctness": {
         "noUnusedVariables": "error"
       }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
   },
   "files": {

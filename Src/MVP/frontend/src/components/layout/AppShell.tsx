@@ -23,6 +23,8 @@ export function AppShell() {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const current = routerState.location.pathname;
+  const visible_links =
+    user?.role === "DEVELOPER" ? NAV_LINKS : NAV_LINKS.filter(({ path }) => path !== "/template");
 
   function handle_logout() {
     logout();
@@ -45,8 +47,8 @@ export function AppShell() {
 
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="flex flex-col gap-0.5 px-2">
-              {NAV_LINKS.map(({ label, path }) => {
-                const is_active = current === path || current.startsWith(path + "/");
+              {visible_links.map(({ label, path }) => {
+                const is_active = current === path || current.startsWith(`${path}/`);
                 return (
                   <li key={path}>
                     <Link

@@ -12,6 +12,7 @@ export interface ReportSummaryDto {
   status: ReportStatus;
   title: string;
   generatedAt: string;
+  durationMs: number | null;
 }
 
 export function toReportSummaryDto(report: ReportDocument): ReportSummaryDto {
@@ -21,5 +22,6 @@ export function toReportSummaryDto(report: ReportDocument): ReportSummaryDto {
     status: report.status,
     title: report.title,
     generatedAt: report.generatedAt.toISOString(),
+    durationMs: report.durationMs,
   };
 }

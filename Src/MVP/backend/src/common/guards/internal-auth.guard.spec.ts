@@ -1,6 +1,7 @@
-import { type ExecutionContext, UnauthorizedException } from "@nestjs/common";
-import type { ConfigService } from "@nestjs/config";
+import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { createHash, createHmac } from "crypto";
+import { type Mock, vi } from "vitest";
 import { InternalAuthGuard } from "./internal-auth.guard";
 
 const SECRET = "test-only-internal-shared-secret";
@@ -26,11 +27,11 @@ function makeContext(request: {
 
 describe("InternalAuthGuard", () => {
   let guard: InternalAuthGuard;
-  let config: { get: jest.Mock };
+  let config: { get: Mock };
 
   beforeEach(() => {
     config = {
-      get: jest.fn((key: string) => {
+      get: vi.fn((key: string) => {
         if (key === "INTERNAL_SHARED_SECRET") return SECRET;
         if (key === "HMAC_WINDOW_S") return 30;
         return undefined;

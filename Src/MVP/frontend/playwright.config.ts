@@ -18,7 +18,7 @@ try {
  * Redis), non contro mock. A differenza dei test di unita' Vitest, questi
  * NON avviano un proprio server: presuppongono che lo stack sia gia' in
  * esecuzione (`docker compose up -d`) su http://localhost:5173 — vedi
- * TESTING.md per l'elenco dei test e cosa richiede ciascuno (alcuni
+ * e2e/README.md per l'elenco dei test e cosa richiede ciascuno (alcuni
  * flussi, quelli che avviano un vero agente, richiedono anche un GitHub
  * PAT e una LLM_API_KEY reali in .env).
  */
@@ -38,5 +38,23 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  // RV.5 — compatibilita' cross-browser. Con un solo project dichiarato il
+  // requisito era inverificabile per costruzione: la suite girava tre volte
+  // sullo stesso motore.
+  //
+  // I casi marcati @agent girano solo su Chromium. Non e' una scorciatoia:
+  // avviano un agente vero, con chiamate reali a GitHub e all'LLM, e ripeterli
+  // su tre browser costa tre analisi complete per verificare una cosa che con
+  // il browser non c'entra. Quello che RV.5 chiede — che l'interfaccia si
+  // comporti allo stesso modo altrove — lo verificano gli altri casi, che sono
+  // anche quelli che toccano moduli, form, redirect e WebSocket.
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "firefox", use: { ...devices["Desktop Firefox"] }, grepInvert: /@agent/ },
+    {
+      name: "edge",
+      use: { ...devices["Desktop Edge"], channel: "msedge" },
+      grepInvert: /@agent/,
+    },
+  ],
 });

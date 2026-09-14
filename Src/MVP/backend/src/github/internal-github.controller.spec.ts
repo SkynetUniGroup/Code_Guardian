@@ -1,6 +1,7 @@
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
+import { type Mock, vi } from "vitest";
 import { InternalAuthGuard } from "../common/guards/internal-auth.guard";
 import { GithubClientService } from "./github-client.service";
 import { InternalGithubController } from "./internal-github.controller";
@@ -9,14 +10,14 @@ import { AccessLog } from "./schemas/access-log.schema";
 
 describe("InternalGithubController", () => {
   let controller: InternalGithubController;
-  let resolver: { resolve: jest.Mock };
+  let resolver: { resolve: Mock };
   let github: {
-    getTree: jest.Mock;
-    getFileContent: jest.Mock;
-    listIssues: jest.Mock;
-    getIssueDetail: jest.Mock;
+    getTree: Mock;
+    getFileContent: Mock;
+    listIssues: Mock;
+    getIssueDetail: Mock;
   };
-  let accessLogModel: { create: jest.Mock };
+  let accessLogModel: { create: Mock };
 
   // A real 24-hex-char id: logAccess constructs a genuine Types.ObjectId
   // from this (not mocked), unlike the resolver's `taskId` param elsewhere,
@@ -32,14 +33,14 @@ describe("InternalGithubController", () => {
   };
 
   beforeEach(async () => {
-    resolver = { resolve: jest.fn().mockResolvedValue(resolved) };
+    resolver = { resolve: vi.fn().mockResolvedValue(resolved) };
     github = {
-      getTree: jest.fn(),
-      getFileContent: jest.fn(),
-      listIssues: jest.fn(),
-      getIssueDetail: jest.fn(),
+      getTree: vi.fn(),
+      getFileContent: vi.fn(),
+      listIssues: vi.fn(),
+      getIssueDetail: vi.fn(),
     };
-    accessLogModel = { create: jest.fn().mockResolvedValue(undefined) };
+    accessLogModel = { create: vi.fn().mockResolvedValue(undefined) };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [InternalGithubController],

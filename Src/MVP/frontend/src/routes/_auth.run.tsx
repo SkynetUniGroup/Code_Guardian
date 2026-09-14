@@ -13,7 +13,7 @@ export const runRoute = createRoute({
   path: "/run",
   beforeLoad: ({ context }) => {
     const status = context.session.credentialsStatus;
-    if (status === "missing" || status === "invalid") {
+    if (status === "MISSING" || status === "INVALID") {
       throw redirect({ to: "/credentials" });
     }
   },

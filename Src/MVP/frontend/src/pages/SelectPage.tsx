@@ -1,11 +1,34 @@
 import { useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useEffect, useState } from "react";
 import { apiClient } from "../api/client";
+import { apiErrorMessage, toApiError } from "../api/errors";
 import { ErrorState } from "../components/shared/ErrorState";
 import { Spinner } from "../components/shared/Spinner";
 import { ValidatedField } from "../components/shared/ValidatedField";
 import { useSelectionStore } from "../stores/selectionStore";
-import type { AnalysisContextDto, CreateContextDto, Repository } from "../types";
+import type { AnalysisContextDto, CreateContextDto, RepositorySummary } from "../types";
+
+
+const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
+
+function fieldErrorFromApiError(err: unknown): Record<string, string> {
+  const { code, message } = toApiError(err);
+  if (!message) return {};
+
+  if (code === "CONTEXT_RESOURCE_MISSING" && /branch/i.test(message)) {
+    return { ref: message };
+  }
+  if (code === "CONTEXT_RESOURCE_MISSING" && /path/i.test(message)) {
+    return { paths: message };
+  }
+  if (code === "CONTEXT_RESOURCE_INVALID" && /commit/i.test(message)) {
+    return { commit_sha: message };
+  }
+  if (code === "CONTEXT_RESOURCE_INVALID" && /path/i.test(message)) {
+    return { paths: message };
+  }
+  return {};
+}
 
 /**
  * SelectPage — /select
@@ -24,27 +47,46 @@ import type { AnalysisContextDto, CreateContextDto, Repository } from "../types"
 export function SelectPage() {
   const navigate = useNavigate();
   const setContext = useSelectionStore((s) => s.setContext);
+  const setFormContext = useSelectionStore((s) => s.setFormContext);
+  const formContext = useSelectionStore((s) => s.formContext);
 
   // Repository list state
-  const [repos, setRepos] = useState<Repository[]>([]);
+  const [repos, setRepos] = useState<RepositorySummary[]>([]);
   const [repos_loading, setReposLoading] = useState(true);
   const [repos_error, setReposError] = useState("");
 
   // Form state
-  const [selected_repo, setSelectedRepo] = useState<Repository | null>(null);
+  const [selected_repo, setSelectedRepo] = useState<RepositorySummary | null>(null);
+  const [manual_repo_url, setManualRepoUrl] = useState("");
   const [ref, setRef] = useState("");
+  const [commit_sha, setCommitSha] = useState("");
   const [scope_type, setScopeType] = useState<CreateContextDto["scopeType"]>("FULL_REPOSITORY");
   const [paths_text, setPathsText] = useState("");
   const [form_errors, setFormErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submit_error, setSubmitError] = useState("");
 
+  // Pre-fill form from formContext when it exists
+  useEffect(() => {
+    if (formContext) {
+      setSelectedRepo(formContext.selected_repo);
+      setManualRepoUrl(formContext.manual_repo_url);
+      setRef(formContext.ref);
+      setCommitSha(formContext.commit_sha);
+      setScopeType(formContext.scope_type as CreateContextDto["scopeType"]);
+      setPathsText(formContext.paths_text);
+    }
+  }, [formContext]);
+
   // Fetch repositories on mount.
   useEffect(() => {
     async function fetch_repos() {
       try {
-        const response = await apiClient.get<{ repositories: Repository[] }>("/repositories");
-        setRepos(response.data.repositories);
+        // GET /repositories risponde con un array nudo (RepositorySummary[]),
+        // non con un oggetto {repositories: [...]}: leggere .repositories dava
+        // undefined e la pagina finiva sempre nello stato d'errore.
+        const response = await apiClient.get<RepositorySummary[]>("/repositories");
+        setRepos(response.data);
       } catch {
         setReposError(
           "Impossibile caricare i repository. Verifica che le credenziali GitHub siano valide.",
@@ -60,24 +102,39 @@ export function SelectPage() {
   function handle_repo_change(owner_name: string) {
     const repo = repos.find((r) => `${r.owner}/${r.name}` === owner_name) ?? null;
     setSelectedRepo(repo);
+    setManualRepoUrl("");
     setRef(repo?.defaultBranch ?? "");
+  }
+
+  function handle_manual_repo_url_change(value: string) {
+    setManualRepoUrl(value);
+    if (value.trim()) setSelectedRepo(null);
   }
 
   /** Client-side validation. */
   function validate(): boolean {
     const next: Record<string, string> = {};
-    if (!selected_repo) next.repo = "Seleziona un repository";
-    if (!ref.trim()) next.ref = "Inserisci il branch o il commit SHA";
+    const manual_url = manual_repo_url.trim();
+    if (!selected_repo && !manual_url) {
+      next.repo = "Seleziona un repository o incolla l'URL di un repository pubblico";
+    } else if (manual_url && !GITHUB_REPO_URL_REGEX.test(manual_url)) {
+      next.repo_url = "URL non valido (https://github.com/owner/repo)";
+    }
+    if (!ref.trim()) next.ref = "Inserisci il branch";
+    if (commit_sha.trim() && !/^[0-9a-f]{7,40}$/i.test(commit_sha.trim())) {
+      next.commit_sha = "Il commit SHA deve essere esadecimale (7-40 caratteri)";
+    }
     if (scope_type !== "FULL_REPOSITORY" && !paths_text.trim()) {
       next.paths = "Inserisci almeno un percorso";
     }
     setFormErrors(next);
     return Object.keys(next).length === 0;
   }
+  
 
   async function handle_submit(e: FormEvent) {
     e.preventDefault();
-    if (!validate() || !selected_repo) return;
+    if (!validate()) return;
 
     setSubmitting(true);
     setSubmitError("");
@@ -88,10 +145,16 @@ export function SelectPage() {
       .map((s) => s.trim())
       .filter(Boolean);
 
+    const repo_url =
+      manual_repo_url.trim() || `https://github.com/${selected_repo?.owner}/${selected_repo?.name}`;
+
     const dto: CreateContextDto = {
-      repoOwner: selected_repo.owner,
-      repoName: selected_repo.name,
-      ref: ref.trim(),
+      repoUrl: repo_url,
+      branch: ref.trim(),
+      // Se assente, il backend ancora il contesto alla HEAD del branch (RF.17).
+      // Il campo esisteva nel DTO ma nessuno lo compilava: il pinning su un
+      // commit specifico (RF.22) era irraggiungibile dall'interfaccia.
+      ...(commit_sha.trim() ? { commitSha: commit_sha.trim() } : {}),
       scopeType: scope_type,
       ...(paths_array.length > 0 ? { paths: paths_array } : {}),
     };
@@ -101,9 +164,25 @@ export function SelectPage() {
       // Store the full context DTO so /run can read repo metadata without
       // an additional API round-trip.
       setContext(response.data);
+      // Store form context for repopulating the form on return visits
+      setFormContext({
+        manual_repo_url,
+        selected_repo,
+        ref,
+        commit_sha,
+        scope_type,
+        paths_text,
+      });
       navigate({ to: "/run" });
-    } catch {
-      setSubmitError("Impossibile salvare il contesto. Verifica i parametri e riprova.");
+    } catch (err) {
+      const field_errors = fieldErrorFromApiError(err);
+      if (Object.keys(field_errors).length > 0) {
+        setFormErrors((p) => ({ ...p, ...field_errors }));
+      } else {
+        setSubmitError(
+          apiErrorMessage(err, "Impossibile salvare il contesto. Verifica i parametri e riprova."),
+        );
+      }
     } finally {
       setSubmitting(false);
     }
@@ -157,7 +236,7 @@ export function SelectPage() {
         {/* Repository selector */}
         <div className="flex flex-col gap-1">
           <label htmlFor="repo-select" className="text-sm font-medium text-[#2a2a2a]">
-            Repository
+            Seleziona repository 
           </label>
           <select
             id="repo-select"
@@ -166,21 +245,36 @@ export function SelectPage() {
               handle_repo_change(e.target.value);
               setFormErrors((p) => ({ ...p, repo: "" }));
             }}
-            className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20"
+            disabled={!!manual_repo_url.trim()}
+            className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
           >
             <option value="">-- Seleziona un repository --</option>
             {repos.map((r) => (
               <option key={`${r.owner}/${r.name}`} value={`${r.owner}/${r.name}`}>
-                {r.owner}/{r.name} {r.private ? "🔒" : ""}
+                {r.owner}/{r.name} {r.isPrivate ? "🔒" : ""}
               </option>
             ))}
           </select>
           {form_errors.repo && <span className="text-xs text-[#cc2222]">{form_errors.repo}</span>}
         </div>
 
-        {/* Branch / ref */}
+        {/* Manual repository URL — for public repos not owned/collaborated by the connected GitHub account */}
         <ValidatedField
-          label="Branch o Commit SHA"
+          label="Oppure incolla l'URL di un repository pubblico"
+          placeholder="https://github.com/owner/repo"
+          value={manual_repo_url}
+          onChange={(e) => {
+            handle_manual_repo_url_change(e.target.value);
+            setFormErrors((p) => ({ ...p, repo: "", repo_url: "" }));
+          }}
+          disabled={!!selected_repo}
+          error={form_errors.repo_url}  
+          className="disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+        />
+
+        {/* Branch */}
+        <ValidatedField
+          label="Branch"
           placeholder="main"
           value={ref}
           onChange={(e) => {
@@ -189,6 +283,24 @@ export function SelectPage() {
           }}
           error={form_errors.ref}
         />
+
+        {/* Commit SHA (opzionale) */}
+        <div className="flex flex-col gap-1">
+          <ValidatedField
+            label="Commit SHA (opzionale)"
+            placeholder="lascia vuoto per l'ultimo commit del branch"
+            value={commit_sha}
+            onChange={(e) => {
+              setCommitSha(e.target.value);
+              setFormErrors((p) => ({ ...p, commit_sha: "" }));
+            }}
+            error={form_errors.commit_sha}
+          />
+          <p className="text-xs text-gray-400">
+            Ancora l'analisi a un commit preciso, così il report resta riproducibile anche dopo
+            nuovi commit sul branch.
+          </p>
+        </div>
 
         {/* Scope type selector */}
         <div className="flex flex-col gap-1">

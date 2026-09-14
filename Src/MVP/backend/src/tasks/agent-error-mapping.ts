@@ -14,5 +14,9 @@ const MAP: Record<string, ErrorKind> = {
 };
 
 export function mapAgentErrorKind(value: string | undefined): ErrorKind {
-  return (value && MAP[value]) || "UPSTREAM";
+  const mapped = value && MAP[value];
+  if (!mapped && value) {
+    console.warn(`[AgentErrorMapping] Unknown error kind: "${value}"`);
+  }
+  return mapped || "UPSTREAM";
 }

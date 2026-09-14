@@ -2,6 +2,7 @@ import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
+import { RedisModule } from "@nestjs-modules/ioredis";
 import { AuthModule } from "./auth/auth.module";
 import { envValidationSchema } from "./config/env.validation";
 import { ContextsModule } from "./contexts/contexts.module";
@@ -27,10 +28,27 @@ import { TemplatesModule } from "./templates/templates.module";
       }),
       inject: [ConfigService],
     }),
+    // Registrato qui e non dentro GithubModule: la connessione Redis serve a
+    // due consumatori indipendenti — la cache delle letture GitHub e il flag di
+    // cancellazione dei task — e tenerla dentro il modulo di uno dei due
+    // rendeva l'altro dipendente da quel modulo per una risorsa che non gli
+    // appartiene. forRootAsync registra il provider come globale.
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        type: "single",
+        url: config.get<string>("REDIS_URL"),
+      }),
+      inject: [ConfigService],
+    }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => {
-        const redisUrl = new URL(config.get<string>("REDIS_URL")!);
+        const redisUrlStr = config.get<string>("REDIS_URL");
+        if (!redisUrlStr) {
+          throw new Error("REDIS_URL is required");
+        }
+        const redisUrl = new URL(redisUrlStr);
         return {
           connection: {
             host: redisUrl.hostname,

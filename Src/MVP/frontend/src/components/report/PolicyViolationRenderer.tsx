@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { PolicyViolationBlock } from "../../types";
+import { SeverityBadge } from "../shared/SeverityBadge";
 
 interface PolicyViolationRendererProps {
   block: PolicyViolationBlock;
@@ -30,6 +31,7 @@ export function PolicyViolationRenderer({ block }: PolicyViolationRendererProps)
         </span>
 
         <div className="flex-1 min-w-0">
+          <SeverityBadge severity={block.severity} className="mb-1" />
           <span className="block text-sm font-semibold text-[#2a2a2a] truncate">
             {block.ruleText}
           </span>
@@ -58,7 +60,11 @@ export function PolicyViolationRenderer({ block }: PolicyViolationRendererProps)
           </div>
           <div className="pt-3">
             <span className="text-xs font-semibold uppercase text-gray-500">Rimedio</span>
-            <p className="mt-1 text-sm text-[#2a2a2a] leading-relaxed">{block.remediation}</p>
+            <p className="mt-1 text-sm text-[#2a2a2a] leading-relaxed">
+              {block.remediation.kind === "SNIPPET"
+                ? block.remediation.code
+                : block.remediation.text}
+            </p>
           </div>
         </div>
       )}

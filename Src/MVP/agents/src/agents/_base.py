@@ -12,7 +12,9 @@ import yaml
 from ..config import settings
 
 
-def load_prompt_template(agent_name: str, template_id: str, version: str = '1.0') -> dict:
+def load_prompt_template(
+    agent_name: str, template_id: str, version: str = "1.0"
+) -> dict:
     """Loads an isolated YAML prompt from the filesystem.
 
     Args:
@@ -26,13 +28,13 @@ def load_prompt_template(agent_name: str, template_id: str, version: str = '1.0'
     Raises:
         FileNotFoundError: If the template file does not exist.
     """
-    filename = f'{template_id}.{version}.yaml'
+    filename = f"{template_id}.{version}.yaml"
     filepath = Path(settings.prompts_dir) / agent_name / filename
 
     if not filepath.exists():
-        raise FileNotFoundError(f'Template not found: {filepath}')
+        raise FileNotFoundError(f"Template not found: {filepath}")
 
-    with open(filepath, 'r', encoding='utf-8') as f:
+    with open(filepath, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -49,32 +51,32 @@ def render_prompt(template_data: dict, **kwargs) -> tuple[str, str]:
     Raises:
         ValueError: If a required variable is missing.
     """
-    if 'body' in template_data:
-        system_text = template_data.get('body', '')
-        user_text = 'Proceed with the processing.'
+    if "body" in template_data:
+        system_text = template_data.get("body", "")
+        user_text = "Proceed with the processing."
     else:
-        system_text = template_data.get('system_prompt', '')
-        user_text = template_data.get('user_prompt', '')
+        system_text = template_data.get("system_prompt", "")
+        user_text = template_data.get("user_prompt", "")
 
-    for var in template_data.get('required_vars', []):
+    for var in template_data.get("required_vars", []):
         if var not in kwargs:
-            raise ValueError(f'Missing required variable for prompt: {var}')
+            raise ValueError(f"Missing required variable for prompt: {var}")
 
         val = str(kwargs[var])
-        system_text = system_text.replace(f'{{{var}}}', val)
-        user_text = user_text.replace(f'{{{var}}}', val)
+        system_text = system_text.replace(f"{{{var}}}", val)
+        user_text = user_text.replace(f"{{{var}}}", val)
 
-    output_contract = template_data.get('output_contract', '')
+    output_contract = template_data.get("output_contract", "")
     if output_contract:
-        system_text = f'{system_text}\n\n[OUTPUT RULES]\n{output_contract}'
+        system_text = f"{system_text}\n\n[OUTPUT RULES]\n{output_contract}"
 
-    for var in template_data.get('required_vars', []):
+    for var in template_data.get("required_vars", []):
         if var not in kwargs:
-            raise ValueError(f'Missing required variable for prompt: {var}')
+            raise ValueError(f"Missing required variable for prompt: {var}")
 
         val = str(kwargs[var])
-        system_text = system_text.replace(f'{{{var}}}', val)
-        user_text = user_text.replace(f'{{{var}}}', val)
+        system_text = system_text.replace(f"{{{var}}}", val)
+        user_text = user_text.replace(f"{{{var}}}", val)
 
     return system_text, user_text
 
@@ -93,7 +95,7 @@ def extract_json(raw: str) -> dict:
     """
     text = raw.strip()
 
-    match = re.search(r'\{.*\}', text, re.DOTALL)
+    match = re.search(r"\{.*\}", text, re.DOTALL)
     if match:
         text = match.group(0)
 
@@ -102,10 +104,10 @@ def extract_json(raw: str) -> dict:
     except json.JSONDecodeError as e:
         # Fallback to handle literal newlines that break JSON parsing
         try:
-            clean_text = text.replace('\n', '\\n').replace('\r', '')
+            clean_text = text.replace("\n", "\\n").replace("\r", "")
             return json.loads(clean_text)
         except Exception:
             raise ValueError(
-                f'Unable to parse model response as valid JSON: truncated or malformed.\n'
-                f'Error details: {str(e)}'
+                f"Unable to parse model response as valid JSON: truncated or malformed.\n"
+                f"Error details: {e!s}"
             )

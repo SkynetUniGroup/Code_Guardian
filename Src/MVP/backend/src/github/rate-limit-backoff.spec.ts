@@ -1,8 +1,9 @@
+import { vi } from "vitest";
 import { backoffIfRateLimited } from "./rate-limit-backoff";
 
 describe("backoffIfRateLimited", () => {
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("does not wait when the remaining quota is comfortably above the threshold", async () => {
@@ -18,8 +19,8 @@ describe("backoffIfRateLimited", () => {
   });
 
   it("waits before returning when the remaining quota is low", async () => {
-    jest.useFakeTimers();
-    const onBackoff = jest.fn();
+    vi.useFakeTimers();
+    const onBackoff = vi.fn();
     const call = backoffIfRateLimited({ "x-ratelimit-remaining": "3" }, onBackoff);
 
     let resolved = false;
@@ -31,7 +32,7 @@ describe("backoffIfRateLimited", () => {
     expect(resolved).toBe(false); // still waiting, hasn't slept yet
     expect(onBackoff).toHaveBeenCalledWith(3);
 
-    jest.advanceTimersByTime(2000);
+    vi.advanceTimersByTime(2000);
     await call;
     expect(resolved).toBe(true);
   });

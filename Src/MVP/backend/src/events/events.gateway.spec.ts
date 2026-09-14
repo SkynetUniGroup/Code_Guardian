@@ -1,17 +1,18 @@
+import { type Mock, vi } from "vitest";
 import { EventsGateway } from "./events.gateway";
 
 function makeClient(token?: string) {
   return {
     handshake: { auth: token ? { token } : {} },
-    join: jest.fn(),
-    disconnect: jest.fn(),
+    join: vi.fn(),
+    disconnect: vi.fn(),
   };
 }
 
 describe("EventsGateway", () => {
   describe("handleConnection", () => {
     it("disconnects a client that sends no token", () => {
-      const jwt = { verify: jest.fn() };
+      const jwt = { verify: vi.fn() };
       const gateway = new EventsGateway(jwt as never);
       const client = makeClient(undefined);
 
@@ -24,7 +25,7 @@ describe("EventsGateway", () => {
 
     it("disconnects a client whose token fails verification", () => {
       const jwt = {
-        verify: jest.fn(() => {
+        verify: vi.fn(() => {
           throw new Error("invalid signature");
         }),
       };
@@ -38,7 +39,7 @@ describe("EventsGateway", () => {
     });
 
     it("joins a per-user room when the token verifies", () => {
-      const jwt = { verify: jest.fn(() => ({ sub: "user-42" })) };
+      const jwt = { verify: vi.fn(() => ({ sub: "user-42" })) };
       const gateway = new EventsGateway(jwt as never);
       const client = makeClient("good-token");
 
@@ -51,7 +52,7 @@ describe("EventsGateway", () => {
 
   describe("emit methods", () => {
     it("emitTaskProgress targets the caller-supplied user room with the exact event contract", () => {
-      const server = { to: jest.fn().mockReturnThis(), emit: jest.fn() };
+      const server = { to: vi.fn().mockReturnThis(), emit: vi.fn() };
       const gateway = new EventsGateway({} as never);
       (gateway as unknown as { server: typeof server }).server = server;
 
@@ -66,14 +67,14 @@ describe("EventsGateway", () => {
     });
 
     describe("emitTaskInputRequired", () => {
-      function emit(server: { to: jest.Mock; emit: jest.Mock }) {
+      function emit(server: { to: Mock; emit: Mock }) {
         const gateway = new EventsGateway({} as never);
         (gateway as unknown as { server: typeof server }).server = server;
         return gateway;
       }
 
       it("flattens the SPRINT_ID variant with no extra fields", () => {
-        const server = { to: jest.fn().mockReturnThis(), emit: jest.fn() };
+        const server = { to: vi.fn().mockReturnThis(), emit: vi.fn() };
         emit(server).emitTaskInputRequired("user-1", "task-1", {
           kind: "SPRINT_ID",
         });
@@ -83,12 +84,13 @@ describe("EventsGateway", () => {
           taskId: "task-1",
           kind: "SPRINT_ID",
           taskIds: undefined,
-          technicalReportId: undefined,
+          technicalChangelog: undefined,
+          technicalChangelogTruncated: undefined,
         });
       });
 
       it("flattens the INCOMPLETE_TASKS variant, carrying taskIds", () => {
-        const server = { to: jest.fn().mockReturnThis(), emit: jest.fn() };
+        const server = { to: vi.fn().mockReturnThis(), emit: vi.fn() };
         emit(server).emitTaskInputRequired("user-1", "task-1", {
           kind: "INCOMPLETE_TASKS",
           taskIds: ["issue-1", "issue-2"],
@@ -98,24 +100,28 @@ describe("EventsGateway", () => {
           taskId: "task-1",
           kind: "INCOMPLETE_TASKS",
           taskIds: ["issue-1", "issue-2"],
-          technicalReportId: undefined,
+          technicalChangelog: undefined,
+          technicalChangelogTruncated: undefined,
         });
       });
 
-      // Named technicalReportId, not reportId as in Progettazione Frontend
-      // Table 6 — see the comment on emitTaskInputRequired for why.
-      it("flattens the BUSINESS_CONFIRMATION variant as technicalReportId, not reportId", () => {
-        const server = { to: jest.fn().mockReturnThis(), emit: jest.fn() };
+      // Il changelog tecnico viaggia come testo, non come id: quando si chiede
+      // la conferma il Report non esiste ancora (le due fasi stanno dentro un
+      // solo Task). Vedi il commento su emitTaskInputRequired.
+      it("flattens the BUSINESS_CONFIRMATION variant carrying the technical changelog text", () => {
+        const server = { to: vi.fn().mockReturnThis(), emit: vi.fn() };
         emit(server).emitTaskInputRequired("user-1", "task-1", {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: "report-99",
+          technicalChangelog: "## Sprint 3\n\n- #12 login",
+          technicalChangelogTruncated: false,
         });
 
         expect(server.emit).toHaveBeenCalledWith("task.inputRequired", {
           taskId: "task-1",
           kind: "BUSINESS_CONFIRMATION",
           taskIds: undefined,
-          technicalReportId: "report-99",
+          technicalChangelog: "## Sprint 3\n\n- #12 login",
+          technicalChangelogTruncated: false,
         });
       });
     });

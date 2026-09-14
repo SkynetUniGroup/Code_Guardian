@@ -1,7 +1,9 @@
 import { NotFoundException } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
 import { GithubClientService } from "../github/github-client.service";
+import { SonarqubeClientService } from "../sonarqube/sonarqube-client.service";
 import { CredentialCipherService } from "./credential-cipher.service";
 import { CredentialsService } from "./credentials.service";
 import { ServiceCredential } from "./schemas/service-credential.schema";
@@ -9,33 +11,35 @@ import { ServiceCredential } from "./schemas/service-credential.schema";
 describe("CredentialsService", () => {
   let service: CredentialsService;
   let model: {
-    findOneAndUpdate: jest.Mock;
-    find: jest.Mock;
-    findOneAndDelete: jest.Mock;
-    findOne: jest.Mock;
-    exists: jest.Mock;
+    findOneAndUpdate: Mock;
+    find: Mock;
+    findOneAndDelete: Mock;
+    findOne: Mock;
+    exists: Mock;
   };
-  let cipher: { encrypt: jest.Mock; decrypt: jest.Mock };
-  let github: { verifyToken: jest.Mock };
+  let cipher: { encrypt: Mock; decrypt: Mock };
+  let sonarqube: { verifyProjectAccess: Mock };
+  let github: { verifyToken: Mock };
 
   beforeEach(async () => {
     model = {
-      findOneAndUpdate: jest.fn(),
-      find: jest.fn(),
-      findOneAndDelete: jest.fn(),
-      findOne: jest.fn(),
-      exists: jest.fn(),
+      findOneAndUpdate: vi.fn(),
+      find: vi.fn(),
+      findOneAndDelete: vi.fn(),
+      findOne: vi.fn(),
+      exists: vi.fn(),
     };
     cipher = {
-      encrypt: jest.fn().mockReturnValue({
+      encrypt: vi.fn().mockReturnValue({
         ciphertext: Buffer.from("c"),
         iv: Buffer.from("i"),
         salt: Buffer.from("s"),
         authTag: Buffer.from("a"),
       }),
-      decrypt: jest.fn().mockReturnValue("ghp_decrypted"),
+      decrypt: vi.fn().mockReturnValue("ghp_decrypted"),
     };
-    github = { verifyToken: jest.fn() };
+    sonarqube = { verifyProjectAccess: vi.fn().mockResolvedValue(undefined) };
+    github = { verifyToken: vi.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -43,6 +47,11 @@ describe("CredentialsService", () => {
         { provide: getModelToken(ServiceCredential.name), useValue: model },
         { provide: CredentialCipherService, useValue: cipher },
         { provide: GithubClientService, useValue: github },
+        // Questa base gestisce anche le credenziali SonarQube, e il servizio
+        // ne dipende: senza il provider il modulo di test non si compila
+        // nemmeno. I test qui riguardano il ramo GITHUB, quindi basta che
+        // la verifica del progetto non faccia nulla.
+        { provide: SonarqubeClientService, useValue: sonarqube },
       ],
     }).compile();
 
@@ -73,7 +82,7 @@ describe("CredentialsService", () => {
       expect(filter).toEqual({ userId: "user1", provider: "GITHUB" });
       expect(update.ciphertext).toEqual(Buffer.from("c"));
       expect(update.connectedAt).toBeInstanceOf(Date);
-      expect(options).toEqual({ upsert: true, new: true });
+      expect(options).toEqual({ upsert: true, returnDocument: "after" });
 
       expect(result).toEqual({
         id: "cred1",
@@ -165,7 +174,7 @@ describe("CredentialsService", () => {
         _id: "cred1",
         provider: "GITHUB",
         connectedAt: new Date("2026-01-01T00:00:00.000Z"),
-        save: jest.fn().mockResolvedValue(undefined),
+        save: vi.fn().mockResolvedValue(undefined),
       };
       model.findOne.mockResolvedValue(stored);
       github.verifyToken.mockResolvedValue({ scopes: ["repo"] });
@@ -182,7 +191,7 @@ describe("CredentialsService", () => {
         _id: "cred1",
         provider: "GITHUB",
         connectedAt: new Date("2026-01-01T00:00:00.000Z"),
-        save: jest.fn(),
+        save: vi.fn(),
       };
       model.findOne.mockResolvedValue(stored);
       github.verifyToken.mockRejectedValue({ status: 401 });

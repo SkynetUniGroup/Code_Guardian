@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsIn, IsString, ValidateIf } from "class-validator";
 
 // Body of POST /tasks/:id/input (BE-17). Mirrors PendingInput's three kinds
@@ -7,11 +8,16 @@ import { IsIn, IsString, ValidateIf } from "class-validator";
 // standard way to keep the "which fields matter" rule attached to the field
 // it governs instead of a hand-written validator.
 export class SubmitInputDto {
+  @ApiProperty({ enum: ["SPRINT_ID", "INCOMPLETE_TASKS", "BUSINESS_CONFIRMATION"] })
   @IsIn(["SPRINT_ID", "INCOMPLETE_TASKS", "BUSINESS_CONFIRMATION"])
-  kind: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION";
+  kind!: "SPRINT_ID" | "INCOMPLETE_TASKS" | "BUSINESS_CONFIRMATION";
 
   // Only meaningful — and only validated — when kind is SPRINT_ID: the
   // value itself, not a yes/no confirmation.
+  @ApiPropertyOptional({
+    type: String,
+    description: "Obbligatorio se e solo se kind vale SPRINT_ID.",
+  })
   @ValidateIf((dto: SubmitInputDto) => dto.kind === "SPRINT_ID")
   @IsString()
   sprintId?: string;
@@ -19,6 +25,10 @@ export class SubmitInputDto {
   // Only meaningful — and only validated — for the two resume kinds
   // (INCOMPLETE_TASKS, BUSINESS_CONFIRMATION): a plain confirmation, never
   // present alongside SPRINT_ID.
+  @ApiPropertyOptional({
+    enum: ["PROCEED", "CANCEL"],
+    description: "Obbligatorio per INCOMPLETE_TASKS e BUSINESS_CONFIRMATION.",
+  })
   @ValidateIf(
     (dto: SubmitInputDto) =>
       dto.kind === "INCOMPLETE_TASKS" || dto.kind === "BUSINESS_CONFIRMATION",

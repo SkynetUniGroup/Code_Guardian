@@ -5,7 +5,7 @@ and provides support for AWS Bedrock (currently disabled due to missing AWS cred
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any
 
 import botocore.exceptions
 from langchain_aws import ChatBedrockConverse
@@ -19,7 +19,7 @@ class RateLimitError(Exception):
     """Exception mapped to ErrorKind.RATE_LIMITED."""
 
     def __init__(self, message: str):
-        self.error_type = 'RATE_LIMITED'
+        self.error_type = "RATE_LIMITED"
         super().__init__(message)
 
 
@@ -28,7 +28,7 @@ class LLMProvider(ABC):
 
     @abstractmethod
     async def invoke_agent(
-        self, messages: List[BaseMessage], tools: List[Any], timeout_s: int
+        self, messages: list[BaseMessage], tools: list[Any], timeout_s: int
     ) -> BaseMessage:
         """Invokes the model passing the message history and available tools.
 
@@ -40,7 +40,6 @@ class LLMProvider(ABC):
         Returns:
             BaseMessage: The response from the model.
         """
-        pass
 
     @abstractmethod
     async def complete(self, prompt: str, timeout_s: int) -> str:
@@ -53,7 +52,6 @@ class LLMProvider(ABC):
         Returns:
             str: The raw text response.
         """
-        pass
 
 
 class ManagedAPIProvider(LLMProvider):
@@ -62,42 +60,48 @@ class ManagedAPIProvider(LLMProvider):
     def __init__(
         self,
         model: str,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None
+        temperature: float | None = None,
+        max_tokens: int | None = None,
     ):
         api_key = settings.require_llm_key()
 
         kwargs: dict = {
-            'api_key': api_key,
-            'base_url': settings.llm_base_url,
-            'model': model,
-            'max_tokens': max_tokens or settings.max_output_tokens,
+            "api_key": api_key,
+            "base_url": settings.llm_base_url,
+            "model": model,
+            "max_tokens": max_tokens or settings.max_output_tokens,
         }
         if temperature is not None:
-            kwargs['temperature'] = temperature
+            kwargs["temperature"] = temperature
 
         self.llm = ChatOpenAI(**kwargs)
 
     async def invoke_agent(
-        self, messages: List[BaseMessage], tools: List[Any], timeout_s: int
+        self, messages: list[BaseMessage], tools: list[Any], timeout_s: int
     ) -> BaseMessage:
         """Invokes the managed API model with tools and timeout."""
         llm_with_tools = self.llm.bind_tools(tools)
         try:
             return await llm_with_tools.ainvoke(messages, timeout=timeout_s)
         except Exception as exc:
-            if 'RateLimitError' in str(type(exc)) or '429' in str(exc):
-                raise RateLimitError(f'Managed API rate limit exceeded: {str(exc)}') from exc
+            if "RateLimitError" in str(type(exc)) or "429" in str(exc):
+                raise RateLimitError(
+                    f"Managed API rate limit exceeded: {exc!s}"
+                ) from exc
             raise
 
     async def complete(self, prompt: str, timeout_s: int) -> str:
         """Completes a single text prompt using the managed API model."""
         try:
-            response = await self.llm.ainvoke([HumanMessage(content=prompt)], timeout=timeout_s)
+            response = await self.llm.ainvoke(
+                [HumanMessage(content=prompt)], timeout=timeout_s
+            )
             return str(response.content)
         except Exception as exc:
-            if 'RateLimitError' in str(type(exc)) or '429' in str(exc):
-                raise RateLimitError(f'Managed API rate limit exceeded: {str(exc)}') from exc
+            if "RateLimitError" in str(type(exc)) or "429" in str(exc):
+                raise RateLimitError(
+                    f"Managed API rate limit exceeded: {exc!s}"
+                ) from exc
             raise
 
 
@@ -107,28 +111,28 @@ class BedrockProvider(LLMProvider):
     def __init__(
         self,
         model: str,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None
+        temperature: float | None = None,
+        max_tokens: int | None = None,
     ):
         kwargs: dict = {
-            'region_name': settings.aws_region,
-            'model_id': model,
-            'max_tokens': max_tokens or settings.max_output_tokens,
+            "region_name": settings.aws_region,
+            "model_id": model,
+            "max_tokens": max_tokens or settings.max_output_tokens,
         }
         if temperature is not None:
-            kwargs['temperature'] = temperature
+            kwargs["temperature"] = temperature
 
         self.llm = ChatBedrockConverse(**kwargs)
 
     async def invoke_agent(
-        self, messages: List[BaseMessage], tools: List[Any], timeout_s: int
+        self, messages: list[BaseMessage], tools: list[Any], timeout_s: int
     ) -> BaseMessage:
         """Invokes the AWS Bedrock model with tools and timeout."""
         llm_with_tools = self.llm.bind_tools(tools) if tools else self.llm
         try:
             # Bedrock handles the timeout at the boto3 internal HTTP client level,
             # but we still pass the configuration to langchain.
-            return await llm_with_tools.ainvoke(messages, config={'timeout': timeout_s})
+            return await llm_with_tools.ainvoke(messages, config={"timeout": timeout_s})
         except Exception as exc:
             self._handle_bedrock_exceptions(exc)
 
@@ -136,7 +140,7 @@ class BedrockProvider(LLMProvider):
         """Completes a single text prompt using the AWS Bedrock model."""
         try:
             response = await self.llm.ainvoke(
-                [HumanMessage(content=prompt)], config={'timeout': timeout_s}
+                [HumanMessage(content=prompt)], config={"timeout": timeout_s}
             )
             return str(response.content)
         except Exception as exc:
@@ -147,18 +151,20 @@ class BedrockProvider(LLMProvider):
         error_msg = str(exc)
 
         if isinstance(exc, botocore.exceptions.ClientError):
-            error_code = exc.response.get('Error', {}).get('Code', 'Unknown')
-            if error_code == 'ValidationException' and 'is not supported' in error_msg:
+            error_code = exc.response.get("Error", {}).get("Code", "Unknown")
+            if error_code == "ValidationException" and "is not supported" in error_msg:
                 # Keep existing ValidationException logic
                 pass
-            elif error_code == 'ThrottlingException':
-                raise RateLimitError(f'AWS Bedrock API rate limit exceeded: {error_msg}') from exc
+            elif error_code == "ThrottlingException":
+                raise RateLimitError(
+                    f"AWS Bedrock API rate limit exceeded: {error_msg}"
+                ) from exc
 
-        raise RuntimeError(f'AWS Bedrock invocation failed: {error_msg}') from exc
+        raise RuntimeError(f"AWS Bedrock invocation failed: {error_msg}") from exc
 
 
 def get_llm_provider(
-    model: str, temperature: Optional[float] = None, max_tokens: Optional[int] = None
+    model: str, temperature: float | None = None, max_tokens: int | None = None
 ) -> LLMProvider:
     """Factory to instantiate the correct provider based on configuration.
 
@@ -170,7 +176,11 @@ def get_llm_provider(
     Returns:
         LLMProvider: The instantiated LLM provider.
     """
-    if settings.llm_provider.lower() == 'bedrock':
-        return BedrockProvider(model=model, temperature=temperature, max_tokens=max_tokens)
+    if settings.llm_provider.lower() == "bedrock":
+        return BedrockProvider(
+            model=model, temperature=temperature, max_tokens=max_tokens
+        )
 
-    return ManagedAPIProvider(model=model, temperature=temperature, max_tokens=max_tokens)
+    return ManagedAPIProvider(
+        model=model, temperature=temperature, max_tokens=max_tokens
+    )

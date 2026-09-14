@@ -303,6 +303,71 @@ async def test_await_confirmation_asks_for_a_business_confirmation(monkeypatch):
     assert ricevuto['kind'] == 'BUSINESS_CONFIRMATION'
 
 
+@pytest.mark.asyncio
+async def test_await_confirmation_carries_the_technical_changelog(monkeypatch):
+    """La sospensione porta con se' il changelog tecnico da far leggere.
+
+    Prima mandava `technicalReportId: None`: un id verso un Report che in quel
+    momento non esiste ancora, perche' le due fasi stanno dentro un solo Task e
+    il Report nasce alla fine. L'interfaccia ci costruiva sopra un link a
+    `/reports/`, che apriva una scheda nuova e finiva sulla pagina di accesso.
+    """
+    ricevuto = {}
+    monkeypatch.setattr(
+        graph_module, 'interrupt', lambda payload: ricevuto.update(payload) or 'PROCEED'
+    )
+    grafo = build_graph()
+
+    await grafo._node_await_confirmation(
+        build_state(loaded_context={'technical_text': '## Sprint 3\n\n- #12 login'})
+    )
+
+    assert ricevuto['technicalChangelog'] == '## Sprint 3\n\n- #12 login'
+    assert ricevuto['technicalChangelogTruncated'] is False
+
+
+@pytest.mark.asyncio
+async def test_await_confirmation_survives_a_missing_technical_text(monkeypatch):
+    """Senza testo tecnico la sospensione avviene lo stesso, con campo vuoto.
+
+    Il nodo e' raggiungibile solo dopo la fase tecnica, quindi il testo
+    dovrebbe esserci sempre; ma un contesto vuoto non deve far fallire
+    un'operazione che per il resto e' andata a buon fine.
+    """
+    ricevuto = {}
+    monkeypatch.setattr(
+        graph_module, 'interrupt', lambda payload: ricevuto.update(payload) or 'PROCEED'
+    )
+    grafo = build_graph()
+
+    await grafo._node_await_confirmation(build_state(loaded_context=None))
+
+    assert ricevuto['technicalChangelog'] == ''
+
+
+@pytest.mark.asyncio
+async def test_await_confirmation_truncates_an_oversized_changelog(monkeypatch):
+    """Oltre il tetto il testo viene tagliato, e lo dichiara.
+
+    Il testo attraversa il pendingInput: finisce su MongoDB dentro il Task e
+    passa per un evento WebSocket. Senza tetto, uno sprint molto grande
+    gonfierebbe entrambi.
+    """
+    ricevuto = {}
+    monkeypatch.setattr(
+        graph_module, 'interrupt', lambda payload: ricevuto.update(payload) or 'PROCEED'
+    )
+    grafo = build_graph()
+    limite = graph_module.AgentGraph._TECHNICAL_PREVIEW_MAX_CHARS
+
+    await grafo._node_await_confirmation(
+        build_state(loaded_context={'technical_text': 'x' * (limite + 500)})
+    )
+
+    assert len(ricevuto['technicalChangelog']) == limite
+    assert ricevuto['technicalChangelogTruncated'] is True
+
+
 # --- Riepiloghi del report --------------------------------------------------
 
 @pytest.mark.asyncio
@@ -355,3 +420,28 @@ async def test_report_refuses_an_operation_outside_the_shared_contract():
 
     assert 'report' not in result
     assert 'error' in result
+
+
+@pytest.mark.asyncio
+async def test_carica_contesto_lascia_risalire_la_pausa_per_le_issue_incomplete():
+    """Una pausa richiesta dal loader non deve diventare un errore.
+
+    Il loader del Changelog chiama `interrupt()` quando incontra issue senza
+    metadati sufficienti: LangGraph la propaga come GraphInterrupt, che essendo
+    una Exception finiva nel `except Exception` del nodo e veniva convertita in
+    {"error": ...}. La task moriva allora con UPSTREAM e il payload della pausa
+    come messaggio, invece di sospendersi e attendere la risposta dell'utente.
+    """
+    from langgraph.errors import GraphInterrupt
+
+    pausa = GraphInterrupt(())
+    grafo = AgentGraph(
+        loader=FakeLoader(error=pausa),
+        profile=FakeProfile(),
+        provider=FakeProvider(),
+        timeout_s=90,
+    )
+    grafo._current_redis_client = FakeRedis()
+
+    with pytest.raises(GraphInterrupt):
+        await grafo._node_carica_contesto(build_state())

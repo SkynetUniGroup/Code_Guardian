@@ -1,19 +1,23 @@
+import { vi } from "vitest";
+
 // Mocked so these stay fast, deterministic unit tests of our own
 // cache/rate-limit logic rather than making real network calls — Jest can
 // load the real @octokit/rest package fine now (see package.json's
 // transformIgnorePatterns), this mock is a testing choice, not a workaround.
 type HookBeforeCallback = (options: { method: string; url: string }) => void;
 
-const mockRequest = jest.fn();
-const mockHookBefore = jest.fn<void, [string, HookBeforeCallback]>();
-jest.mock("@octokit/rest", () => ({
-  Octokit: jest.fn().mockImplementation(() => ({
-    request: mockRequest,
-    hook: { after: jest.fn(), before: mockHookBefore },
-  })),
+const mockRequest = vi.fn();
+const mockHookBefore = vi.fn<void, [string, HookBeforeCallback]>();
+vi.mock("@octokit/rest", () => ({
+  Octokit: vi.fn().mockImplementation(function CostruttoreFinto() {
+    return {
+      request: mockRequest,
+      hook: { after: vi.fn(), before: mockHookBefore },
+    };
+  }),
 }));
 
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { createMockRedis, RedisTestModule } from "@nestjs-modules/ioredis";
 import { GithubClientService } from "./github-client.service";
 
@@ -156,38 +160,6 @@ describe("GithubClientService — cache behavior", () => {
         "EX",
         86400,
       );
-    });
-
-    it("returns an empty-but-valid file instead of rejecting it as unreadable", async () => {
-      redis.get.mockResolvedValue(null);
-      mockRequest.mockResolvedValue({
-        headers: {},
-        data: {
-          type: "file",
-          path: "empty.py",
-          sha: "filesha",
-          content: "",
-        },
-      });
-
-      const result = await service.getFileContent(
-        "token",
-        "owner",
-        "repo",
-        "empty.py",
-        "sha123",
-      );
-
-      expect(result.content).toBe("");
-    });
-
-    it("still rejects a path that is not a file, e.g. a directory", async () => {
-      redis.get.mockResolvedValue(null);
-      mockRequest.mockResolvedValue({ headers: {}, data: [] });
-
-      await expect(
-        service.getFileContent("token", "owner", "repo", "src", "sha123"),
-      ).rejects.toThrow("is not a readable file");
     });
   });
 

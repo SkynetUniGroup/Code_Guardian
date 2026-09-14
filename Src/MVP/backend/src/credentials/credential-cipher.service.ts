@@ -1,6 +1,6 @@
+import { createCipheriv, createDecipheriv, hkdfSync, randomBytes } from "node:crypto";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { createCipheriv, createDecipheriv, hkdfSync, randomBytes } from "crypto";
 import type { EncryptedCredential } from "./encrypted-credential";
 
 const ALGORITHM = "aes-256-gcm";

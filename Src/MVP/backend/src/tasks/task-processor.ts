@@ -1,18 +1,18 @@
+import { randomUUID } from "node:crypto";
 import { Processor, WorkerHost } from "@nestjs/bullmq";
 import { Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import type { Job } from "bullmq";
-import { randomUUID } from "crypto";
+import { Job } from "bullmq";
 import { Model } from "mongoose";
 import { EventsGateway } from "../events/events.gateway";
 import { AgentRegistry } from "../operations/agent-registry.service";
 import { ReportAssemblyService } from "../reports/report-assembly.service";
-import type { ReportDocument } from "../reports/schemas/report.schema";
-import type { AgentRunPayload } from "./agent-client.types";
-import type { AgentInvocationResult } from "./agent-invocation.service";
-import { AgentInvocationService } from "./agent-invocation.service";
-import { Task, type TaskDocument } from "./schemas/task.schema";
-import type { TaskError } from "./task.types";
+import { ReportDocument } from "../reports/schemas/report.schema";
+import { AgentRunPayload } from "./agent-client.types";
+import { AgentInvocationResult, AgentInvocationService } from "./agent-invocation.service";
+import { ProposalPublisherService } from "./proposal-publisher.service";
+import { Task, TaskDocument } from "./schemas/task.schema";
+import { TaskError } from "./task.types";
 
 // Two job shapes on the same 'tasks' queue: a plain {taskId} is either a
 // brand-new PENDING pickup, or (BE-17) a Changelog Task whose sprintId was
@@ -74,6 +74,7 @@ export class TaskProcessor extends WorkerHost {
     private readonly agentInvocation: AgentInvocationService,
     private readonly agentRegistry: AgentRegistry,
     private readonly reportAssembly: ReportAssemblyService,
+    private readonly proposalPublisher: ProposalPublisherService,
   ) {
     super();
   }
@@ -169,7 +170,7 @@ export class TaskProcessor extends WorkerHost {
           processingClaimToken: claimToken,
         },
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     return task === null ? null : { task, claimToken };
@@ -362,7 +363,13 @@ export class TaskProcessor extends WorkerHost {
     claimToken: string,
     payload: AgentRunPayload,
   ): Promise<void> {
-    const report = await this.reportAssembly.assembleCompleted(task, payload);
+    // Se l'agente ha prodotto una Proposal, la PR va aperta *prima*
+    // dell'assemblaggio: il Report e' un documento immutabile e deve nascere
+    // gia' con l'URL della PR dentro, non essere modificato dopo. Se
+    // l'apertura fallisce, publish() restituisce il payload invariato e il
+    // report esce comunque, con il solo diff.
+    const publishedPayload = await this.proposalPublisher.publish(task, payload);
+    const report = await this.reportAssembly.assembleCompleted(task, publishedPayload);
     const persisted = await this.persistIfStillRunning(task, claimToken, {
       status: "COMPLETED",
       reportId: report._id,

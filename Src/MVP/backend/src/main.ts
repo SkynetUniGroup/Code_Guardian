@@ -1,9 +1,10 @@
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
+import { SWAGGER_CONFIG } from "./common/openapi/swagger.config";
 
 async function bootstrap() {
   // rawBody: true exposes request.rawBody (the exact bytes received) instead
@@ -30,13 +31,10 @@ async function bootstrap() {
     origin: config.get<string>("CORS_ORIGIN"),
   });
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle("Code Guardian — Backend MVP")
-    .setDescription("API del backend di Code Guardian")
-    .setVersion("0.1")
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  // SWAGGER_CONFIG e' definita altrove ed e' la stessa che usano i test sul
+  // documento: titolo, versione e schema di autenticazione devono coincidere
+  // nei due percorsi.
+  const document = SwaggerModule.createDocument(app, SWAGGER_CONFIG);
   SwaggerModule.setup("api/docs", app, document);
 
   const port = config.get<number>("PORT") ?? 3000;

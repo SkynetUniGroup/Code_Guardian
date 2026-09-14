@@ -5,6 +5,7 @@ import { useSessionStore } from "../stores/sessionStore";
 import { useTasksStore } from "../stores/tasksStore";
 import type {
   BatchCompletedEvent,
+  TaskDto,
   TaskFailedEvent,
   TaskInputRequiredEvent,
   TaskProgressEvent,
@@ -53,17 +54,22 @@ export function useWebSocket(): void {
      */
     async function resync_tasks(): Promise<void> {
       try {
-        const response = await apiClient.get<{ tasks: any[] }>("/tasks");
+        // GET /tasks risponde con un array nudo (TaskDto[]).
+        const response = await apiClient.get<TaskDto[]>("/tasks");
         // Map the raw backend DTO to the local TaskEntry shape.
-        const tasks = response.data.tasks.map((t: any) => ({
+        const tasks = response.data.map((t) => ({
           id: t.id,
+          batchId: t.batchId ?? null,
           operation: t.operation,
           status: t.status,
           progressPercent: t.progressPercent ?? 0,
           currentStage: t.currentStage ?? null,
           reportId: t.reportId ?? null,
           error: t.error ?? null,
-          pendingInput: null, // pendingInput is ephemeral; re-emitted via WS if still active
+          // pendingInput e' persistito sul Task: dopo una disconnessione e'
+          // proprio questa GET a recuperarlo, perche' l'evento WS che lo
+          // annunciava e' gia' passato e non viene ritrasmesso.
+          pendingInput: t.pendingInput ?? null,
         }));
         loadTasks(tasks);
       } catch {
@@ -158,16 +164,13 @@ export function useWebSocket(): void {
       socket.disconnect();
       socketRef.current = null;
     };
-    // Re-run when the token changes (login / logout). The store actions are
-    // included for exhaustive-deps correctness, but zustand gives them a
-    // stable identity across renders, so they never actually trigger a re-run.
   }, [
     token,
-    markCredentialsInvalid,
-    upsertFromUpdated,
     upsertFromProgress,
-    applyFailed,
     applyInputRequired,
+    upsertFromUpdated,
+    markCredentialsInvalid,
     loadTasks,
-  ]);
+    applyFailed,
+  ]); // Re-run when the token changes (login / logout).
 }

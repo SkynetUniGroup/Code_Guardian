@@ -12,16 +12,17 @@ import { type Model, Types } from "mongoose";
 import type { AuthenticatedUser } from "../common/authenticated-user";
 import {
   AnalysisContext,
-  type AnalysisContextDocument,
+  AnalysisContextDocument,
 } from "../contexts/schemas/analysis-context.schema";
 import { CredentialsService } from "../credentials/credentials.service";
 import { EventsGateway } from "../events/events.gateway";
 import { AgentRegistry } from "../operations/agent-registry.service";
 import { CreateTaskBatchDto } from "./dto/create-task-batch.dto";
 import { SubmitInputDto } from "./dto/submit-input.dto";
-import { type TaskDto, toTaskDto } from "./dto/task.dto";
-import { Task, type TaskDocument } from "./schemas/task.schema";
-import type { RunTaskJobData } from "./task-processor";
+import { TaskDto, toTaskDto } from "./dto/task.dto";
+import { Task, TaskDocument } from "./schemas/task.schema";
+import { TaskCancellationService } from "./task-cancellation.service";
+import { RunTaskJobData } from "./task-processor";
 import { UsageLimitService } from "./usage-limit.service";
 
 export interface CreateTaskBatchResult {
@@ -39,6 +40,7 @@ export class TasksService {
     private readonly agentRegistry: AgentRegistry,
     private readonly events: EventsGateway,
     private readonly usageLimit: UsageLimitService,
+    private readonly cancellation: TaskCancellationService,
     @InjectQueue("tasks") private readonly queue: Queue<RunTaskJobData>,
   ) {}
 
@@ -129,11 +131,22 @@ export class TasksService {
       throw new ConflictException(`Task ${id} cannot be cancelled from status ${task.status}`);
     }
 
-    if (!(await this.markCancelled(id, userId))) {
+    // `pendingInput: null` non e' un dettaglio estetico: senza, la richiesta
+    // di input resta aperta su un Task terminale. submitInput() la trova
+    // ancora valida, risponde 204 e accoda un job che TaskProcessor scartera'
+    // in silenzio, e GET /tasks/:id continua a dichiarare un pendingInput su
+    // cui il frontend decide se mostrare la finestra di dialogo. E' la stessa
+    // transizione che compie il percorso CANCEL di submitInput(), che infatti
+    // lo azzera gia'.
+    if (!(await this.markCancelled(id, userId, { pendingInput: null }))) {
       throw new ConflictException(
         `Task ${id} reached a terminal state before it could be cancelled`,
       );
     }
+    // Solo dopo che la transizione e' passata: segnalare la cancellazione a un
+    // agente il cui Task e' nel frattempo arrivato a COMPLETED lo fermerebbe
+    // per niente (e, con l'id riusato da un retry, quello sbagliato).
+    await this.cancellation.requestCancellation(id);
     this.events.emitTaskUpdated(userId, id, "CANCELLED");
   }
 
@@ -209,6 +222,7 @@ export class TasksService {
           `Task ${id} reached a terminal state before it could be cancelled`,
         );
       }
+      await this.cancellation.requestCancellation(id);
       this.events.emitTaskUpdated(userId, id, "CANCELLED");
       return;
     }

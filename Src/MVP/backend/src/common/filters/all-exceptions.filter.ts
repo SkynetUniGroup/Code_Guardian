@@ -45,12 +45,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
 
     if (exception instanceof BadRequestException) {
-      const body: ErrorResponseBody = {
+      const body = exception.getResponse();
+      const pipeMessages =
+        typeof body === "object" && body !== null && Array.isArray((body as { message?: unknown }).message)
+          ? (body as { message: string[] }).message
+          : undefined;
+
+      const errorBody: ErrorResponseBody = {
         code: "VALIDATION_ERROR",
-        message: "Validation failed.",
-        details: this.extractValidationDetails(exception),
+        message: pipeMessages ? "Validation failed." : exception.message,
+        details: pipeMessages,
       };
-      response.status(HttpStatus.BAD_REQUEST).json(body);
+      response.status(HttpStatus.BAD_REQUEST).json(errorBody);
       return;
     }
 

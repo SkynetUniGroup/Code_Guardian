@@ -1,3 +1,5 @@
+import { type Mock, type MockedFunction, vi } from "vitest";
+
 // Integration test for GET /reports/:id/export, driven through a real HTTP
 // request against the real ReportsController -> real ReportsExportService,
 // with the real global ValidationPipe/AllExceptionsFilter registered — not
@@ -19,27 +21,28 @@
 // generic branch answers with {code:'UPSTREAM', message:'An internal error
 // occurred.'} instead of {code:'EXPORT_FAILED', message:<real message>} —
 // only a real filter, actually wired up, can catch that.
-jest.mock("./report-pdf.composer");
+vi.mock("./report-pdf.composer");
 
 import {
-  type CanActivate,
-  type ExecutionContext,
-  type INestApplication,
+  CanActivate,
+  ExecutionContext,
+  INestApplication,
   NotFoundException,
   ValidationPipe,
 } from "@nestjs/common";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
-import type { App } from "supertest/types";
+import { App } from "supertest/types";
 import { AllExceptionsFilter } from "../common/filters/all-exceptions.filter";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
+import { AgentRegistry } from "../operations/agent-registry.service";
 import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { composeReportPdf } from "./report-pdf.composer";
 import { ReportsController } from "./reports.controller";
 import { ReportsService } from "./reports.service";
 import { ReportsExportService } from "./reports-export.service";
 
-const composeReportPdfMock = composeReportPdf as jest.MockedFunction<typeof composeReportPdf>;
+const composeReportPdfMock = composeReportPdf as MockedFunction<typeof composeReportPdf>;
 
 // Stands in for JwtAuthGuard: skips real passport/JWT verification (there is
 // no AuthModule wired into this narrow test module) and attaches the same
@@ -58,27 +61,36 @@ function makeReportDto(overrides: Record<string, unknown> = {}) {
     id: "report1",
     operation: "DOCS_README",
     status: "COMPLETED",
+    generatedAt: "2026-09-13T10:00:00.000Z",
+    context: { repoOwner: "OWASP", repoName: "NodeGoat" },
     ...overrides,
   };
 }
 
 describe("ReportsController (export, integration)", () => {
   let app: INestApplication<App>;
-  let reportsService: { findOneForUser: jest.Mock };
-  let storage: { putReportArtifact: jest.Mock };
+  let reportsService: { findOneForUser: Mock; removeForUser: Mock };
+  let storage: { putReportArtifact: Mock };
 
   beforeEach(async () => {
-    reportsService = { findOneForUser: jest.fn() };
-    storage = { putReportArtifact: jest.fn().mockResolvedValue(undefined) };
+    reportsService = {
+      findOneForUser: vi.fn(),
+      removeForUser: vi.fn().mockResolvedValue(undefined),
+    };
+    storage = { putReportArtifact: vi.fn().mockResolvedValue(undefined) };
     composeReportPdfMock.mockReset();
 
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [ReportsController],
       providers: [
         // The real service, wired to real ReportsExportService — only its
-        // two collaborators are mocked, exactly the boundary a real
-        // deployment would have (Mongo, MinIO).
+        // collaborators are mocked, exactly the boundary a real
+        // deployment would have (Mongo, MinIO). AgentRegistry is real too:
+        // it's pure lookup logic (no I/O), so there is no boundary reason
+        // to mock it, and using the real display-name mapping is what
+        // proves the actual filename that reaches the client.
         ReportsExportService,
+        AgentRegistry,
         { provide: ReportsService, useValue: reportsService },
         { provide: ReportArtifactStorageService, useValue: storage },
       ],
@@ -101,6 +113,12 @@ describe("ReportsController (export, integration)", () => {
 
   afterEach(async () => {
     await app.close();
+  });
+
+  it("deletes a report through the owner-scoped service and returns 204", async () => {
+    await request(app.getHttpServer()).delete("/reports/report1").expect(204);
+
+    expect(reportsService.removeForUser).toHaveBeenCalledWith("user1", "report1");
   });
 
   it("responds 409 with a genuinely empty body for a FAILED report", async () => {
@@ -149,9 +167,14 @@ describe("ReportsController (export, integration)", () => {
     });
   });
 
-  it("streams the composed PDF with the right headers and filename on success", async () => {
+  it("streams the composed PDF with the right headers and a human-readable filename on success", async () => {
     reportsService.findOneForUser.mockResolvedValue(
-      makeReportDto({ operation: "SECURITY_OWASP", id: "r42" }),
+      makeReportDto({
+        operation: "SECURITY_OWASP",
+        id: "r42",
+        generatedAt: "2026-09-13T10:00:00.000Z",
+        context: { repoOwner: "OWASP", repoName: "NodeGoat" },
+      }),
     );
     const pdf = Buffer.from("%PDF-1.4 fake pdf bytes");
     composeReportPdfMock.mockResolvedValue(pdf);
@@ -162,7 +185,7 @@ describe("ReportsController (export, integration)", () => {
 
     expect(res.headers["content-type"]).toBe("application/pdf");
     expect(res.headers["content-disposition"]).toBe(
-      'attachment; filename="code-guardian-SECURITY_OWASP-r42.pdf"',
+      'attachment; filename="owasp-top-10-vulnerability-scan-owasp-nodegoat-2026-09-13.pdf"',
     );
     expect(Buffer.compare(res.body as Buffer, pdf)).toBe(0);
     expect(storage.putReportArtifact).toHaveBeenCalledWith("r42", pdf);

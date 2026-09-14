@@ -1,11 +1,12 @@
-import type { FrancFn } from "./franc.provider";
+import { type Mock, vi } from "vitest";
+import { FrancFn } from "./franc.provider";
 import { isReadmeNonEnglish } from "./readme-language";
 
 describe("isReadmeNonEnglish", () => {
-  let franc: jest.Mock<string, [string]>;
+  let franc: Mock<string, [string]>;
 
   beforeEach(() => {
-    franc = jest.fn<string, [string]>();
+    franc = vi.fn<string, [string]>();
   });
 
   it("returns false when franc detects English", () => {

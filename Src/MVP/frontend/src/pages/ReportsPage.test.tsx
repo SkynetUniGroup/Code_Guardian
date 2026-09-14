@@ -1,9 +1,11 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router", async () => {
   const { createElement } = await import("react");
   return {
+    useNavigate: () => navigateMock,
     Link: ({ to, params, children, ...rest }: any) => {
       const href = params
         ? Object.entries(params).reduce<string>(
@@ -17,9 +19,12 @@ vi.mock("@tanstack/react-router", async () => {
 });
 
 const getMock = vi.fn();
+const deleteMock = vi.fn();
+const navigateMock = vi.fn();
 vi.mock("../api/client", () => ({
   apiClient: {
     get: (...args: any[]) => getMock(...args),
+    delete: (...args: any[]) => deleteMock(...args),
   },
 }));
 
@@ -33,6 +38,7 @@ function riepilogo(over: Partial<Record<string, unknown>> & { id: string }) {
     status: "COMPLETED",
     generatedAt: "2026-08-20T10:30:00Z",
     title: "Analisi OWASP – OWASP/NodeGoat",
+    durationMs: null,
     ...over,
   };
 }
@@ -46,6 +52,8 @@ async function renderConReport(reports: unknown[]) {
 
 beforeEach(() => {
   getMock.mockReset();
+  deleteMock.mockReset();
+  navigateMock.mockReset();
 });
 
 describe("ReportsPage", () => {
@@ -89,22 +97,59 @@ describe("ReportsPage", () => {
     expect(within(righe[2]).getByText("Report vecchio")).toBeInTheDocument();
   });
 
-  it("mostra un trattino quando la durata non e' disponibile", async () => {
-    await renderConReport([riepilogo({ id: "rep-1", durationMs: undefined })]);
+  it("mostra la durata del report", async () => {
+    await renderConReport([
+      riepilogo({
+        id: "rep-1",
+        durationMs: 4200,
+      }),
+    ]);
 
     const riga = screen.getAllByRole("row")[1];
+
+    expect(within(riga).getByText("4.2s")).toBeInTheDocument();
+  });
+
+  it("mostra un trattino quando la durata non e' disponibile", async () => {
+    await renderConReport([
+      riepilogo({
+        id: "rep-1",
+        durationMs: null,
+      }),
+    ]);
+
+    const riga = screen.getAllByRole("row")[1];
+
     expect(within(riga).getByText("—")).toBeInTheDocument();
   });
 
-  it("collega ogni voce al proprio report", async () => {
+  it("apre un report cliccando sulla sua riga", async () => {
     await renderConReport([
       riepilogo({ id: "rep-1" }),
       riepilogo({ id: "rep-2", generatedAt: "2026-08-19T10:30:00Z" }),
     ]);
 
-    const collegamenti = screen.getAllByRole("link", { name: /Visualizza/ });
-    expect(collegamenti[0]).toHaveAttribute("href", "/reports/rep-1");
-    expect(collegamenti[1]).toHaveAttribute("href", "/reports/rep-2");
+    await userEvent.setup().click(screen.getAllByRole("row")[1]);
+
+    expect(navigateMock).toHaveBeenCalledWith({
+      to: "/reports/$id",
+      params: { id: "rep-1" },
+    });
+    expect(screen.queryByText("Visualizza →")).not.toBeInTheDocument();
+  });
+
+  it("elimina singolarmente un report dopo la conferma interna all'app", async () => {
+    await renderConReport([riepilogo({ id: "rep-1" })]);
+    deleteMock.mockResolvedValueOnce({});
+
+    await userEvent.setup().click(screen.getByRole("button", { name: /Elimina Analisi OWASP/ }));
+    expect(screen.getByRole("dialog", { name: "Elimina report" })).toBeInTheDocument();
+    expect(deleteMock).not.toHaveBeenCalled();
+
+    await userEvent.setup().click(screen.getByRole("button", { name: "Elimina report" }));
+
+    expect(deleteMock).toHaveBeenCalledWith("/reports/rep-1");
+    expect(await screen.findByText(/Nessun report disponibile/)).toBeInTheDocument();
   });
 
   it("distingue i report falliti da quelli completati", async () => {

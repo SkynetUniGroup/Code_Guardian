@@ -1,7 +1,8 @@
 import { NotFoundException } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { Types } from "mongoose";
+import { type Mock, vi } from "vitest";
 import { AnalysisContext } from "../contexts/schemas/analysis-context.schema";
 import { CredentialsService } from "../credentials/credentials.service";
 import { Task } from "../tasks/schemas/task.schema";
@@ -9,16 +10,16 @@ import { InternalTaskContextResolver } from "./internal-task-context.resolver";
 
 describe("InternalTaskContextResolver", () => {
   let resolver: InternalTaskContextResolver;
-  let taskModel: { findById: jest.Mock };
-  let contextModel: { findById: jest.Mock };
-  let credentials: { getDecryptedToken: jest.Mock };
+  let taskModel: { findById: Mock };
+  let contextModel: { findById: Mock };
+  let credentials: { getDecryptedToken: Mock };
 
   const contextId = new Types.ObjectId();
 
   beforeEach(async () => {
-    taskModel = { findById: jest.fn() };
-    contextModel = { findById: jest.fn() };
-    credentials = { getDecryptedToken: jest.fn() };
+    taskModel = { findById: vi.fn() };
+    contextModel = { findById: vi.fn() };
+    credentials = { getDecryptedToken: vi.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

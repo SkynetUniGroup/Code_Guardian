@@ -1,20 +1,11 @@
 packages:
-  - backend
-  - frontend
-  - infra
-
-onlyBuiltDependencies:
-  - argon2
-  - esbuild
-  - '@parcel/watcher'
-  - '@scarf/scarf'
-  - msgpackr-extract
-  - unrs-resolver
-
+  - 'frontend'
+  - 'backend'
+  - 'infra'
+  - 'shared'
 allowBuilds:
   '@parcel/watcher': true
   '@scarf/scarf': true
   argon2: true
-  esbuild: true
   msgpackr-extract: true
   unrs-resolver: true

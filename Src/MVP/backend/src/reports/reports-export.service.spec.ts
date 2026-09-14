@@ -1,21 +1,23 @@
-jest.mock("./report-pdf.composer");
+import { type Mock, type MockedFunction, vi } from "vitest";
+
+vi.mock("./report-pdf.composer");
 
 import { composeReportPdf } from "./report-pdf.composer";
 import { ReportsExportService } from "./reports-export.service";
 
-const composeReportPdfMock = composeReportPdf as jest.MockedFunction<typeof composeReportPdf>;
+const composeReportPdfMock = composeReportPdf as MockedFunction<typeof composeReportPdf>;
 
 function makeResponse() {
-  const res: Record<string, jest.Mock> = {};
-  res.status = jest.fn().mockReturnValue(res);
-  res.set = jest.fn().mockReturnValue(res);
-  res.end = jest.fn().mockReturnValue(res);
-  res.json = jest.fn().mockReturnValue(res);
+  const res: Record<string, Mock> = {};
+  res.status = vi.fn().mockReturnValue(res);
+  res.set = vi.fn().mockReturnValue(res);
+  res.end = vi.fn().mockReturnValue(res);
+  res.json = vi.fn().mockReturnValue(res);
   return res as unknown as {
-    status: jest.Mock;
-    set: jest.Mock;
-    end: jest.Mock;
-    json: jest.Mock;
+    status: Mock;
+    set: Mock;
+    end: Mock;
+    json: Mock;
   };
 }
 
@@ -24,20 +26,28 @@ function makeReportDto(overrides: Record<string, unknown> = {}) {
     id: "report1",
     operation: "DOCS_README",
     status: "COMPLETED",
+    generatedAt: "2026-09-13T10:00:00.000Z",
+    context: { repoOwner: "OWASP", repoName: "NodeGoat" },
     ...overrides,
   };
 }
 
 describe("ReportsExportService", () => {
   let service: ReportsExportService;
-  let reportsService: { findOneForUser: jest.Mock };
-  let storage: { putReportArtifact: jest.Mock };
+  let reportsService: { findOneForUser: Mock };
+  let storage: { putReportArtifact: Mock };
+  let agentRegistry: { getDisplayName: Mock };
 
   beforeEach(() => {
-    reportsService = { findOneForUser: jest.fn() };
-    storage = { putReportArtifact: jest.fn().mockResolvedValue(undefined) };
+    reportsService = { findOneForUser: vi.fn() };
+    storage = { putReportArtifact: vi.fn().mockResolvedValue(undefined) };
+    agentRegistry = { getDisplayName: vi.fn().mockReturnValue("README generation/update") };
     composeReportPdfMock.mockReset();
-    service = new ReportsExportService(reportsService as never, storage as never);
+    service = new ReportsExportService(
+      reportsService as never,
+      storage as never,
+      agentRegistry as never,
+    );
   });
 
   it("lets a NotFoundException from ReportsService propagate unmodified (normal 404 flow)", async () => {
@@ -61,9 +71,15 @@ describe("ReportsExportService", () => {
     expect(storage.putReportArtifact).not.toHaveBeenCalled();
   });
 
-  it("composes, archives, and streams the PDF with the right headers and filename on success", async () => {
-    const report = makeReportDto({ operation: "SECURITY_OWASP", id: "r42" });
+  it("composes, archives, and streams the PDF with the right headers and a human-readable filename on success", async () => {
+    const report = makeReportDto({
+      operation: "SECURITY_OWASP",
+      id: "r42",
+      generatedAt: "2026-09-13T10:00:00.000Z",
+      context: { repoOwner: "OWASP", repoName: "NodeGoat" },
+    });
     reportsService.findOneForUser.mockResolvedValue(report);
+    agentRegistry.getDisplayName.mockReturnValue("OWASP Top 10 vulnerability scan");
     const pdf = Buffer.from("%PDF-1.4 fake");
     composeReportPdfMock.mockResolvedValue(pdf);
     const res = makeResponse();
@@ -72,10 +88,12 @@ describe("ReportsExportService", () => {
 
     expect(composeReportPdfMock).toHaveBeenCalledWith(report);
     expect(storage.putReportArtifact).toHaveBeenCalledWith("r42", pdf);
+    expect(agentRegistry.getDisplayName).toHaveBeenCalledWith("SECURITY_OWASP");
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.set).toHaveBeenCalledWith({
       "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="code-guardian-SECURITY_OWASP-r42.pdf"',
+      "Content-Disposition":
+        'attachment; filename="owasp-top-10-vulnerability-scan-owasp-nodegoat-2026-09-13.pdf"',
       "Content-Length": String(pdf.length),
     });
     expect(res.end).toHaveBeenCalledWith(pdf);

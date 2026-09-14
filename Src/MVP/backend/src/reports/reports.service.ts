@@ -1,18 +1,22 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import type { Model } from "mongoose";
-import { Task, type TaskDocument } from "../tasks/schemas/task.schema";
+import { Model } from "mongoose";
+import { Task, TaskDocument } from "../tasks/schemas/task.schema";
 import { ListReportsQueryDto } from "./dto/list-reports-query.dto";
-import { type ReportDto, toReportDto } from "./dto/report.dto";
-import { type ReportSummaryDto, toReportSummaryDto } from "./dto/report-summary.dto";
-import { Report, type ReportDocument } from "./schemas/report.schema";
+import { ReportArtifactStorageService } from "./report-artifact-storage.service";
+import { ReportDto, toReportDto } from "./dto/report.dto";
+import { ReportSummaryDto, toReportSummaryDto } from "./dto/report-summary.dto";
+import { Report, ReportDocument } from "./schemas/report.schema";
 
 @Injectable()
 export class ReportsService {
+  private readonly logger = new Logger(ReportsService.name);
+
   constructor(
     @InjectModel(Report.name)
     private readonly reportModel: Model<ReportDocument>,
     @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>,
+    private readonly artifactStorage: ReportArtifactStorageService,
   ) {}
 
   // Scoped to the caller and run against the (userId, generatedAt) index
@@ -51,5 +55,31 @@ export class ReportsService {
     const pendingAction = task?.pendingInput ?? null;
 
     return toReportDto(report, pendingAction);
+  }
+
+  /**
+   * Removes one report owned by the caller. The Task remains in the activity
+   * history, but no longer links to a Report that has been deleted.
+   */
+  async removeForUser(userId: string, id: string): Promise<void> {
+    const report = await this.reportModel.findOneAndDelete({ _id: id, userId });
+    if (!report) {
+      throw new NotFoundException(`Report ${id} not found`);
+    }
+
+    await this.taskModel.updateOne(
+      { _id: report.taskId, userId, reportId: report._id },
+      { $set: { reportId: null } },
+    );
+
+    // The database row is the source of truth. The archived PDF is only a
+    // short-lived (30 days) export cache, so an object-storage outage must not
+    // make the user's deletion look like it failed.
+    try {
+      await this.artifactStorage.deleteReportArtifact(report.id);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      this.logger.warn(`Could not delete archived PDF for report ${report.id}: ${reason}`);
+    }
   }
 }

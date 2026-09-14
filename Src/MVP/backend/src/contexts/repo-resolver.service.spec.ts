@@ -1,14 +1,15 @@
 import { NotFoundException } from "@nestjs/common";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
 import { GithubClientService } from "../github/github-client.service";
 import { RepoResolverService } from "./repo-resolver.service";
 
 describe("RepoResolverService", () => {
   let service: RepoResolverService;
-  let github: { getRepository: jest.Mock };
+  let github: { getRepository: Mock };
 
   beforeEach(async () => {
-    github = { getRepository: jest.fn() };
+    github = { getRepository: vi.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [RepoResolverService, { provide: GithubClientService, useValue: github }],

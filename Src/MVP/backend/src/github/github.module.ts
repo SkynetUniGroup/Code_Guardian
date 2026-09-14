@@ -1,6 +1,4 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { RedisModule } from "@nestjs-modules/ioredis";
 import { GithubClientService } from "./github-client.service";
 import { GithubWriteService } from "./github-write.service";
 
@@ -18,17 +16,10 @@ import { GithubWriteService } from "./github-write.service";
 // client for the three write calls it needs, and reuses GithubClientService
 // only for the reads it needs first (resolving the base branch's HEAD,
 // fetching the file being changed).
+// La connessione Redis (cache delle letture) arriva da AppModule, dove
+// RedisModule e' registrato una volta sola come modulo globale: qui serve solo
+// @InjectRedis() nel servizio che la usa.
 @Module({
-  imports: [
-    RedisModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (config: ConfigService) => ({
-        type: "single",
-        url: config.get<string>("REDIS_URL"),
-      }),
-      inject: [ConfigService],
-    }),
-  ],
   providers: [GithubClientService, GithubWriteService],
   exports: [GithubClientService, GithubWriteService],
 })

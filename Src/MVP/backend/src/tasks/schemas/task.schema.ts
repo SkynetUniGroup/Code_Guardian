@@ -26,38 +26,38 @@ const TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
 @Schema({ timestamps: true })
 export class Task {
   @Prop({ required: true })
-  userId: string;
+  userId!: string;
 
   // Shared by every Task created from the same POST /tasks call — a
   // correlation label, not a reference to any other collection.
   @Prop({ required: true })
-  batchId: string;
+  batchId!: string;
 
   @Prop({ type: Types.ObjectId, ref: "AnalysisContext", required: true })
-  contextId: Types.ObjectId;
+  contextId!: Types.ObjectId;
 
   @Prop({ type: String, required: true })
-  operation: OperationCode;
+  operation!: OperationCode;
 
   @Prop({ type: String, required: true, default: "PENDING" })
-  status: TaskStatus;
+  status!: TaskStatus;
 
   @Prop({ default: 0 })
-  progressPercent: number;
+  progressPercent!: number;
 
   @Prop({ type: String, default: null })
-  currentStage: string | null;
+  currentStage!: string | null;
 
   // Valorized when status is COMPLETED *or* FAILED — a failed Task still
   // has a report to open (empty body, error populated).
   @Prop({ type: Types.ObjectId, ref: "Report", default: null })
-  reportId: Types.ObjectId | null;
+  reportId!: Types.ObjectId | null;
 
   @Prop({ type: MongooseSchema.Types.Mixed, default: null })
-  error: TaskError | null;
+  error!: TaskError | null;
 
   @Prop({ type: MongooseSchema.Types.Mixed, default: null })
-  pendingInput: PendingInput;
+  pendingInput!: PendingInput;
 
   // Only used by the Changelog operations; collected interactively during
   // execution, not at context creation.
@@ -84,7 +84,7 @@ export class Task {
   // time, as the finished value of executionTimeMs (§11.7's field is named
   // durationMs on Report — see that schema's own comment).
   @Prop({ default: 0 })
-  accumulatedMs: number;
+  accumulatedMs!: number;
 
   // Processing lease. BullMQ delivers at-least-once, so the same job can be
   // handed to two workers at once (a worker restart, an expired lock,
@@ -97,7 +97,7 @@ export class Task {
   // exception path); a claim older than its lease window is taken over, so
   // a worker killed mid-invocation doesn't strand the Task forever.
   @Prop({ type: Date, default: null })
-  processingClaimedAt: Date | null;
+  processingClaimedAt!: Date | null;
 
   // Fencing token: who holds the claim above, not just that someone does.
   // Regenerated on every successful claim, and required to match before a
@@ -109,7 +109,7 @@ export class Task {
   // clock stepped backwards by NTP), and a token that can collide is not a
   // token. Null exactly when processingClaimedAt is null.
   @Prop({ type: String, default: null })
-  processingClaimToken: string | null;
+  processingClaimToken!: string | null;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

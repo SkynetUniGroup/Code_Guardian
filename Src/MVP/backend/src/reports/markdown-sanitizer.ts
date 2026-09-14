@@ -1,4 +1,4 @@
-import type { Block } from "./report.types";
+import type { Block, Remediation } from "./report.types";
 
 // Raw HTML embedded in Markdown that's meant to be rendered as Markdown, not
 // as HTML — any tag, opening or closing. Deliberately broad (not just
@@ -320,7 +320,7 @@ function escapeUnmatchedBrackets(label: string): string {
   let out = "";
   let cursor = 0;
   for (const position of positions) {
-    out += label.slice(cursor, position) + "\\[";
+    out += `${label.slice(cursor, position)}\\[`;
     cursor = position + 1;
   }
   return out + label.slice(cursor);
@@ -570,8 +570,10 @@ export function isSafeDestination(destination: string): boolean {
     // into a hole, so the removal earns its place from the pointy-bracket
     // form it exists for, not from a monotonicity it does not have.
     .replace(/[<>]/g, "")
-    // eslint-disable-next-line no-control-regex -- the point is the control characters
-    // biome-ignore lint/suspicious/noControlCharactersInRegex: the point is the control characters
+    // Rimuovere i caratteri di controllo e' esattamente lo scopo di questa
+    // normalizzazione: un "javascript:" spezzato da un byte nullo deve tornare
+    // riconoscibile prima che l'allowlist decida se il link e' sicuro.
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: vedi sopra
     .replace(/[\u0000-\u001F\u007F]/g, "")
     .trim()
     .toLowerCase();
@@ -603,18 +605,43 @@ function sanitizeBlock(block: Block): Block {
     case "FINDING":
       return {
         ...block,
-        explanation: sanitizeMarkdown(block.explanation),
-        remediation: sanitizeMarkdown(block.remediation),
+        description: sanitizeMarkdown(block.description),
+        remediation: sanitizeRemediation(block.remediation),
       };
     case "POLICY_VIOLATION":
       return {
         ...block,
         explanation: sanitizeMarkdown(block.explanation),
-        remediation: sanitizeMarkdown(block.remediation),
+        remediation: sanitizeRemediation(block.remediation),
       };
     case "COMPLEXITY_WARNING":
       return { ...block, explanation: sanitizeMarkdown(block.explanation) };
     case "CHANGELOG_ITEM":
       return { ...block, detail: sanitizeMarkdown(block.detail) };
+    case "SAST_FINDING":
+      return {
+        ...block,
+        // `message` arriva dai metadati della regola Semgrep e `llmRemediation`
+        // dal modello: entrambi testo libero di provenienza esterna, entrambi
+        // resi come Markdown a schermo. `codeSnippet` invece è codice sorgente,
+        // non Markdown, e va lasciato intatto — sanificarlo lo corromperebbe,
+        // esattamente come per una remediation di tipo SNIPPET.
+        message: sanitizeMarkdown(block.message),
+        llmRemediation:
+          block.llmRemediation === undefined ? undefined : sanitizeMarkdown(block.llmRemediation),
+      };
+    case "SAST_SUMMARY":
+      // Solo conteggi e flag: nessun campo di testo libero da sanificare.
+      return block;
   }
+}
+
+// Remediation è una union: SNIPPET porta codice sorgente, che non è Markdown e
+// va lasciato intatto (sanificarlo corromperebbe lo snippet che l'utente deve
+// poter copiare); TEXT è prosa, e attraversa lo stesso filtro di ogni altro
+// campo free-form scritto dal modello.
+function sanitizeRemediation(remediation: Remediation): Remediation {
+  return remediation.kind === "TEXT"
+    ? { ...remediation, text: sanitizeMarkdown(remediation.text) }
+    : remediation;
 }

@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { apiClient } from "../api/client";
+import { toApiError } from "../api/errors";
 import { Spinner } from "../components/shared/Spinner";
 import { ValidatedField } from "../components/shared/ValidatedField";
 import { useSessionStore } from "../stores/sessionStore";
-import type { AuthResponseDto, LoginDto } from "../types";
+import type { AuthTokenDto, LoginDto, UserProfileDto } from "../types";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -31,11 +32,20 @@ export function LoginPage() {
     setErrors({});
     const dto: LoginDto = { email: email.trim(), password };
     try {
-      const response = await apiClient.post<AuthResponseDto>("/auth/login", dto);
-      login(response.data.user, response.data.token);
+      const tokenResponse = await apiClient.post<AuthTokenDto>("/auth/login", dto);
+      const accessToken = tokenResponse.data.accessToken;
+      // L'header Authorization lo mette l'interceptor leggendo il token dallo
+      // store, che pero' viene popolato solo da login() qui sotto: senza
+      // passare il token a mano, questa GET partiva senza header e tornava
+      // 401 — il login andava a buon fine e l'utente vedeva "credenziali non
+      // corrette".
+      const userResponse = await apiClient.get<UserProfileDto>("/auth/me", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      login(userResponse.data, accessToken);
       navigate({ to: "/select" });
-    } catch (err: any) {
-      const status = err?.response?.status;
+    } catch (err: unknown) {
+      const { status } = toApiError(err);
       if (status === 401 || status === 403) {
         setErrors({ global: "Email o password non corretti." });
       } else {

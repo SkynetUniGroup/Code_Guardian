@@ -1,4 +1,5 @@
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
 import { CredentialsService } from "../credentials/credentials.service";
 import { GithubClientService } from "../github/github-client.service";
 import { RepoResolverService } from "./repo-resolver.service";
@@ -6,25 +7,25 @@ import { RepositoriesService } from "./repositories.service";
 
 describe("RepositoriesService", () => {
   let service: RepositoriesService;
-  let credentials: { getDecryptedToken: jest.Mock };
+  let credentials: { getDecryptedToken: Mock };
   let github: {
-    listRepositories: jest.Mock;
-    listRefs: jest.Mock;
-    resolveRefToSha: jest.Mock;
-    getTree: jest.Mock;
+    listRepositories: Mock;
+    listRefs: Mock;
+    resolveRefToSha: Mock;
+    getTree: Mock;
   };
-  let repoResolver: { resolve: jest.Mock };
+  let repoResolver: { resolve: Mock };
 
   beforeEach(async () => {
-    credentials = { getDecryptedToken: jest.fn().mockResolvedValue("token") };
+    credentials = { getDecryptedToken: vi.fn().mockResolvedValue("token") };
     github = {
-      listRepositories: jest.fn(),
-      listRefs: jest.fn(),
-      resolveRefToSha: jest.fn(),
-      getTree: jest.fn(),
+      listRepositories: vi.fn(),
+      listRefs: vi.fn(),
+      resolveRefToSha: vi.fn(),
+      getTree: vi.fn(),
     };
     repoResolver = {
-      resolve: jest.fn().mockResolvedValue({
+      resolve: vi.fn().mockResolvedValue({
         owner: "owner",
         repo: "repo",
         isPrivate: false,

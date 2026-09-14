@@ -235,27 +235,65 @@ describe("IncompleteTasksModal", () => {
 });
 
 describe("BusinessConfirmationModal", () => {
-  it("offre il report tecnico da consultare prima di decidere", () => {
-    taskInPausa({ kind: "BUSINESS_CONFIRMATION", technicalReportId: "rep-tec-1" });
+  const TECNICO = "## Sprint 3\n\n- #12 login con OAuth\n- #14 cache delle letture";
+
+  function inPausa(
+    over: Partial<{ technicalChangelog: string; technicalChangelogTruncated: boolean }> = {},
+  ) {
+    taskInPausa({
+      kind: "BUSINESS_CONFIRMATION",
+      technicalChangelog: TECNICO,
+      technicalChangelogTruncated: false,
+      ...over,
+    });
+  }
+
+  it("mostra il changelog tecnico dentro la finestra, senza mandare altrove", () => {
+    inPausa();
     render(
-      <BusinessConfirmationModal taskId="t1" technicalReportId="rep-tec-1" onClose={vi.fn()} />,
+      <BusinessConfirmationModal taskId="t1" technicalChangelog={TECNICO} onClose={vi.fn()} />,
     );
 
-    const collegamento = screen.getByRole("link", { name: /Visualizza/ });
-    expect(collegamento).toHaveAttribute("href", "/reports/rep-tec-1");
-    // Si apre in una scheda nuova: la decisione in sospeso non va persa.
-    expect(collegamento).toHaveAttribute("target", "_blank");
+    expect(screen.getByText(/#12 login con OAuth/)).toBeInTheDocument();
+    // Nessun collegamento: il link a /reports/<id> apriva una scheda nuova, e
+    // siccome il JWT sta solo in memoria quella scheda finiva sul login. In
+    // piu' l'id non esisteva, perche' il Report tecnico non e' ancora stato
+    // creato quando la conferma viene chiesta.
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
-  it("confermando chiede l'apertura della Pull Request", async () => {
-    taskInPausa({ kind: "BUSINESS_CONFIRMATION", technicalReportId: "rep-tec-1" });
+  it("formatta il changelog tecnico come il report", () => {
+    inPausa();
+    render(
+      <BusinessConfirmationModal taskId="t1" technicalChangelog={TECNICO} onClose={vi.fn()} />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Sprint 3", level: 2 })).toBeInTheDocument();
+    expect(screen.getByRole("list")).toBeInTheDocument();
+    expect(screen.queryByText(/## Sprint 3/)).not.toBeInTheDocument();
+  });
+
+  it("non nomina le Pull Request, che il changelog non apre", () => {
+    inPausa();
+    render(
+      <BusinessConfirmationModal taskId="t1" technicalChangelog={TECNICO} onClose={vi.fn()} />,
+    );
+
+    // ChangelogBusinessProfile.parse_output restituisce None come Proposal in
+    // entrambe le fasi: nessuna PR viene mai aperta da questa operazione.
+    expect(screen.queryByText(/Pull Request/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\bPR\b/)).not.toBeInTheDocument();
+  });
+
+  it("confermando chiede di generare la versione business", async () => {
+    inPausa();
     postMock.mockResolvedValueOnce({ data: {} });
     render(
-      <BusinessConfirmationModal taskId="t1" technicalReportId="rep-tec-1" onClose={vi.fn()} />,
+      <BusinessConfirmationModal taskId="t1" technicalChangelog={TECNICO} onClose={vi.fn()} />,
     );
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button", { name: /Apri Pull Request/ }));
+    await user.click(screen.getByRole("button", { name: /Genera la versione business/ }));
 
     await waitFor(() =>
       expect(postMock).toHaveBeenCalledWith("/tasks/t1/input", {
@@ -267,14 +305,14 @@ describe("BusinessConfirmationModal", () => {
   });
 
   it("rifiutando invia la decisione di annullamento", async () => {
-    taskInPausa({ kind: "BUSINESS_CONFIRMATION", technicalReportId: "rep-tec-1" });
+    inPausa();
     postMock.mockResolvedValueOnce({ data: {} });
     render(
-      <BusinessConfirmationModal taskId="t1" technicalReportId="rep-tec-1" onClose={vi.fn()} />,
+      <BusinessConfirmationModal taskId="t1" technicalChangelog={TECNICO} onClose={vi.fn()} />,
     );
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button", { name: "Annulla" }));
+    await user.click(screen.getByRole("button", { name: "Interrompi" }));
 
     await waitFor(() =>
       expect(postMock).toHaveBeenCalledWith("/tasks/t1/input", {
@@ -284,16 +322,38 @@ describe("BusinessConfirmationModal", () => {
     );
   });
 
-  it("se l'invio fallisce non apre la PR e lo dichiara", async () => {
-    taskInPausa({ kind: "BUSINESS_CONFIRMATION", technicalReportId: "rep-tec-1" });
+  it("dichiara quando l'anteprima e' stata troncata", () => {
+    inPausa({ technicalChangelogTruncated: true });
+    render(
+      <BusinessConfirmationModal
+        taskId="t1"
+        technicalChangelog={TECNICO}
+        technicalChangelogTruncated
+        onClose={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/Anteprima troncata/)).toBeInTheDocument();
+  });
+
+  it("senza testo lo dice, e lascia comunque decidere", () => {
+    inPausa({ technicalChangelog: "" });
+    render(<BusinessConfirmationModal taskId="t1" technicalChangelog="" onClose={vi.fn()} />);
+
+    expect(screen.getByText(/arrivato insieme alla richiesta/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Genera la versione business/ })).toBeEnabled();
+  });
+
+  it("se l'invio fallisce lo dichiara e lascia la task in attesa", async () => {
+    inPausa();
     postMock.mockRejectedValueOnce(new Error("500"));
     const onClose = vi.fn();
     render(
-      <BusinessConfirmationModal taskId="t1" technicalReportId="rep-tec-1" onClose={onClose} />,
+      <BusinessConfirmationModal taskId="t1" technicalChangelog={TECNICO} onClose={onClose} />,
     );
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button", { name: /Apri Pull Request/ }));
+    await user.click(screen.getByRole("button", { name: /Genera la versione business/ }));
 
     expect(await screen.findByText(/Impossibile inviare la risposta/)).toBeInTheDocument();
     expect(onClose).not.toHaveBeenCalled();

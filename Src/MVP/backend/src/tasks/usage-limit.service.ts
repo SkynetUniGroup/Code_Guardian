@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import type { Model } from "mongoose";
 import { AppException } from "../common/exceptions/app.exception";
 import { UsageCounter, type UsageCounterDocument } from "./schemas/usage-counter.schema";
 
@@ -26,12 +26,15 @@ export class UsageLimitService {
 
   async checkAndIncrement(userId: string, taskCount: number): Promise<void> {
     const yearMonth = this.currentYearMonth();
-    const limit = this.config.get<number>("MONTHLY_TASK_LIMIT")!;
+    const limit = this.config.get<number>("MONTHLY_TASK_LIMIT");
+    if (limit === undefined) {
+      throw new Error("MONTHLY_TASK_LIMIT is required");
+    }
 
     const updated = await this.usageCounterModel.findOneAndUpdate(
       { userId, yearMonth },
       { $inc: { count: taskCount } },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
 
     if (updated.count > limit) {

@@ -1,16 +1,24 @@
+import { randomUUID } from "node:crypto";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { randomUUID } from "crypto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import {
+  AnalysisContext,
+  AnalysisContextDocument,
+} from "../contexts/schemas/analysis-context.schema";
+import { CredentialsService } from "../credentials/credentials.service";
 import { AgentRegistry } from "../operations/agent-registry.service";
-import type {
+import { TemplatesService } from "../templates/templates.service";
+import {
   AgentResumeRequest,
   AgentRunPayload,
   AgentStartRequest,
   AgentStepResult,
 } from "./agent-client.types";
 import { mapAgentErrorKind } from "./agent-error-mapping";
-import type { TaskDocument } from "./schemas/task.schema";
-import type { PendingInput, TaskError, TaskStatus } from "./task.types";
+import { TaskDocument } from "./schemas/task.schema";
+import { PendingInput, TaskError, TaskStatus } from "./task.types";
 
 // A third outcome alongside the Task-terminal COMPLETED/FAILED: the agent
 // paused mid-run (or, for Changelog, was never started at all — see
@@ -32,6 +40,10 @@ export class AgentInvocationService {
   constructor(
     private readonly config: ConfigService,
     private readonly agentRegistry: AgentRegistry,
+    @InjectModel(AnalysisContext.name)
+    private readonly contextModel: Model<AnalysisContextDocument>,
+    private readonly credentials: CredentialsService,
+    private readonly templates: TemplatesService,
   ) {}
 
   async invoke(task: TaskDocument): Promise<AgentInvocationResult> {
@@ -41,14 +53,65 @@ export class AgentInvocationService {
       await task.save();
     }
 
+    // Fetch the context to populate the payload
+    const context = await this.contextModel.findById(task.contextId);
+    if (!context) {
+      return this.failure("UPSTREAM", "Context not found for task");
+    }
+
+    // Solo le operazioni DOCS_* leggono le metriche SonarQube (DocsLoader).
+    // La credenziale e' opzionale: se l'utente non ne ha una, o se la
+    // lettura fallisse, l'operazione gira comunque — quindi qui un errore
+    // non blocca l'avvio del task, al massimo lascia il prompt senza metriche.
+    const sonarqubeCredentials = task.operation.startsWith("DOCS")
+      ? await this.loadSonarqubeCredentials(task.userId)
+      : undefined;
+
+    // RF.79-RF.81: il template README caricato dall'utente. Riguarda la sola
+    // operazione DOCS_README; se non ne ha caricato uno il campo resta
+    // assente e l'agente usa il proprio modello di default, che e'
+    // esattamente il ripristino descritto da RF.81.
+    const readmeTemplate =
+      task.operation === "DOCS_README" ? await this.templates.contentForUser(task.userId) : null;
+
     const body: AgentStartRequest = {
       taskId: task.id,
       threadId,
       operationCode: task.operation,
-      payload: {},
+      payload: {
+        userId: task.userId,
+        // Presente solo quando il Task ne ha uno: startOrPause mette in pausa
+        // le operazioni Changelog finche' non arriva, quindi qui o c'e' o
+        // l'operazione non e' una di quelle che lo richiedono.
+        ...(task.sprintId ? { sprintId: task.sprintId } : {}),
+        ...(sonarqubeCredentials ? { sonarqube_credentials: sonarqubeCredentials } : {}),
+        ...(readmeTemplate ? { readmeTemplate } : {}),
+        context_ref: {
+          repoOwner: context.repoOwner,
+          repoName: context.repoName,
+          repoUrl: context.repoUrl,
+          branch: context.branch,
+          resolvedSha: context.resolvedSha,
+          scopeType: context.scopeType,
+          paths: context.paths || [],
+        },
+      },
     };
 
     return this.call(task, "/internal/agent/start", body);
+  }
+
+  // SonarQube is a nice-to-have on the DOCS prompt, never a prerequisite:
+  // most users won't have a credential, and the ones who do may hit a
+  // temporarily unreachable instance. Either way the task must still start,
+  // so this swallows every failure and returns undefined — DocsLoader then
+  // generates documentation exactly as it did before SonarQube existed.
+  private async loadSonarqubeCredentials(userId: string) {
+    try {
+      return (await this.credentials.getDecryptedSonarqubeCredential(userId)) ?? undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   // BE-17: called after POST /tasks/:id/input clears an INCOMPLETE_TASKS or
@@ -136,7 +199,10 @@ export class AgentInvocationService {
       return { status: "INTERRUPTED", pendingInput: result.pendingInput };
     }
 
-    return this.failure(mapAgentErrorKind(result.error), result.error ?? "Agent execution failed");
+    return this.failure(
+      mapAgentErrorKind(result.errorKind),
+      result.error ?? "Agent execution failed",
+    );
   }
 
   private failure(code: TaskError["code"], message: string): AgentInvocationResult {

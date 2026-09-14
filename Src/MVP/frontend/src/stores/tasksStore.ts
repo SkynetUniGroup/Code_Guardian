@@ -5,7 +5,6 @@ import type {
   TaskFailedEvent,
   TaskInputRequiredEvent,
   TaskProgressEvent,
-  TaskStatus,
   TaskUpdatedEvent,
 } from "../types";
 
@@ -85,6 +84,7 @@ export type TasksStore = TasksState & TasksActions;
 function makeDefaultEntry(id: string): TaskEntry {
   return {
     id,
+    batchId: null,
     operation: "DOCS_README", // placeholder, overwritten on first upsert
     status: "PENDING",
     progressPercent: 0,
@@ -99,7 +99,7 @@ function makeDefaultEntry(id: string): TaskEntry {
  * Global tasks store.
  * Maintained by WebSocket events; resynced via GET /tasks on reconnect.
  */
-export const useTasksStore = create<TasksStore>((set, get) => ({
+export const useTasksStore = create<TasksStore>((set, _get) => ({
   // ---- Initial state ----
   tasks: {},
   currentBatchId: null,
@@ -165,7 +165,11 @@ export const useTasksStore = create<TasksStore>((set, get) => ({
       } else if (event.kind === "INCOMPLETE_TASKS") {
         pending = { kind: "INCOMPLETE_TASKS", taskIds: event.taskIds ?? [] };
       } else {
-        pending = { kind: "BUSINESS_CONFIRMATION", technicalReportId: event.reportId ?? "" };
+        pending = {
+          kind: "BUSINESS_CONFIRMATION",
+          technicalChangelog: event.technicalChangelog ?? "",
+          technicalChangelogTruncated: event.technicalChangelogTruncated ?? false,
+        };
       }
 
       return {

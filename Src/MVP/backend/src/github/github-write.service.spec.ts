@@ -1,11 +1,18 @@
+import { type Mock, vi } from "vitest";
+
 // Same mocking approach as github-client.service.spec.ts: a fake Octokit so
 // these stay fast, deterministic unit tests of our own branch/commit/PR
 // sequencing rather than real network calls.
-const mockRequest = jest.fn();
-jest.mock("@octokit/rest", () => ({
-  Octokit: jest.fn().mockImplementation(() => ({
-    request: mockRequest,
-  })),
+const mockRequest = vi.fn();
+// `vi.mock`, non `vi.fn`: con vi.fn il modulo non veniva sostituito affatto e i
+// test chiamavano GitHub davvero, prendendosi un 401 che il servizio traduce
+// (correttamente) in PR_CREATION_FAILED — quindi i test fallivano su un errore
+// che non c'entrava nulla con cio' che volevano verificare.
+// Function classica e non arrow: il servizio fa `new Octokit(...)`.
+vi.mock("@octokit/rest", () => ({
+  Octokit: vi.fn(function Octokit() {
+    return { request: mockRequest };
+  }),
 }));
 
 import { Test, type TestingModule } from "@nestjs/testing";
@@ -16,8 +23,8 @@ import { GithubWriteService } from "./github-write.service";
 describe("GithubWriteService", () => {
   let service: GithubWriteService;
   let githubClient: {
-    resolveRefToSha: jest.Mock;
-    getFileContent: jest.Mock;
+    resolveRefToSha: Mock;
+    getFileContent: Mock;
   };
 
   const change = {
@@ -30,8 +37,8 @@ describe("GithubWriteService", () => {
   beforeEach(async () => {
     mockRequest.mockReset();
     githubClient = {
-      resolveRefToSha: jest.fn().mockResolvedValue("base-sha"),
-      getFileContent: jest.fn().mockResolvedValue({
+      resolveRefToSha: vi.fn().mockResolvedValue("base-sha"),
+      getFileContent: vi.fn().mockResolvedValue({
         path: "README.md",
         content: "old\n",
         sha: "file-sha",
@@ -67,14 +74,20 @@ describe("GithubWriteService", () => {
     expect(Buffer.from(createBlobCall[1].content, "base64").toString()).toBe("new\n");
 
     // Tree creation
-    const createTreeCall = mockRequest.mock.calls[1] as [string, { base_tree: string; tree: any[] }];
+    const createTreeCall = mockRequest.mock.calls[1] as [
+      string,
+      { base_tree: string; tree: any[] },
+    ];
     expect(createTreeCall[0]).toBe("POST /repos/{owner}/{repo}/git/trees");
     expect(createTreeCall[1].base_tree).toBe("base-sha");
     expect(createTreeCall[1].tree[0].path).toBe("README.md");
     expect(createTreeCall[1].tree[0].sha).toBe("new-blob-sha");
 
     // Commit creation
-    const createCommitCall = mockRequest.mock.calls[2] as [string, { tree: string; parents: string[] }];
+    const createCommitCall = mockRequest.mock.calls[2] as [
+      string,
+      { tree: string; parents: string[] },
+    ];
     expect(createCommitCall[0]).toBe("POST /repos/{owner}/{repo}/git/commits");
     expect(createCommitCall[1].tree).toBe("new-tree-sha");
     expect(createCommitCall[1].parents).toEqual(["base-sha"]);
@@ -123,7 +136,9 @@ describe("GithubWriteService", () => {
 
     try {
       await service.openPullRequestForProposal("token", "owner", "repo", "main", change);
-      fail("expected rejection");
+      // `fail()` e' di Jasmine/Jest e in Vitest non esiste: qui basta
+      // un'asserzione che non puo' passare se si arriva a questa riga.
+      expect.unreachable("la chiamata avrebbe dovuto fallire");
     } catch (error) {
       expect((error as AppException).code).toBe("PR_CREATION_FAILED");
     }

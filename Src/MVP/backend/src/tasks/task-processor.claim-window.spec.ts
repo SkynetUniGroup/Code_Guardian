@@ -1,5 +1,6 @@
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
 import { EventsGateway } from "../events/events.gateway";
 import { AgentRegistry } from "../operations/agent-registry.service";
 import { ReportAssemblyService } from "../reports/report-assembly.service";
@@ -66,25 +67,25 @@ function matches(doc: StoredTask, filter: Record<string, unknown>): boolean {
 class FakeTaskCollection {
   constructor(private readonly docs: StoredTask[]) {}
 
-  findOneAndUpdate = jest.fn(
+  findOneAndUpdate = vi.fn(
     (filter: Record<string, unknown>, update: { $set: Record<string, unknown> }) => {
       const doc = this.docs.find((d) => matches(d, filter));
       if (!doc) {
         return Promise.resolve(null);
       }
       Object.assign(doc, update.$set);
-      // findOneAndUpdate({new: true}) hands the processor a hydrated
+      // findOneAndUpdate({ returnDocument: "after" }) hands the processor a hydrated
       // document; a copy stands in for it, so the processor's in-memory
       // mutations don't leak back into the store the way only a real
       // conditional write should.
       return Promise.resolve({
         ...doc,
-        save: jest.fn().mockResolvedValue(undefined),
+        save: vi.fn().mockResolvedValue(undefined),
       });
     },
   );
 
-  updateOne = jest.fn(
+  updateOne = vi.fn(
     (filter: Record<string, unknown>, update: { $set: Record<string, unknown> }) => {
       const doc = this.docs.find((d) => matches(d, filter));
       if (!doc) {
@@ -95,7 +96,7 @@ class FakeTaskCollection {
     },
   );
 
-  countDocuments = jest.fn((filter: Record<string, unknown>) =>
+  countDocuments = vi.fn((filter: Record<string, unknown>) =>
     Promise.resolve(this.docs.filter((d) => matches(d, filter)).length),
   );
 
@@ -130,31 +131,31 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
   let processor: TaskProcessor;
   let store: FakeTaskCollection;
   let events: {
-    emitTaskUpdated: jest.Mock;
-    emitTaskFailed: jest.Mock;
-    emitTaskInputRequired: jest.Mock;
-    emitBatchCompleted: jest.Mock;
+    emitTaskUpdated: Mock;
+    emitTaskFailed: Mock;
+    emitTaskInputRequired: Mock;
+    emitBatchCompleted: Mock;
   };
-  let agentInvocation: { invoke: jest.Mock; resume: jest.Mock };
-  let agentRegistry: { getAgent: jest.Mock };
+  let agentInvocation: { invoke: Mock; resume: Mock };
+  let agentRegistry: { getAgent: Mock };
   let reportAssembly: {
-    assembleCompleted: jest.Mock;
-    assembleFailed: jest.Mock;
+    assembleCompleted: Mock;
+    assembleFailed: Mock;
   };
 
   async function build(docs: StoredTask[]) {
     store = new FakeTaskCollection(docs);
     events = {
-      emitTaskUpdated: jest.fn(),
-      emitTaskFailed: jest.fn(),
-      emitTaskInputRequired: jest.fn(),
-      emitBatchCompleted: jest.fn(),
+      emitTaskUpdated: vi.fn(),
+      emitTaskFailed: vi.fn(),
+      emitTaskInputRequired: vi.fn(),
+      emitBatchCompleted: vi.fn(),
     };
-    agentInvocation = { invoke: jest.fn(), resume: jest.fn() };
-    agentRegistry = { getAgent: jest.fn().mockReturnValue("CHANGELOG") };
+    agentInvocation = { invoke: vi.fn(), resume: vi.fn() };
+    agentRegistry = { getAgent: vi.fn().mockReturnValue("CHANGELOG") };
     reportAssembly = {
-      assembleCompleted: jest.fn().mockResolvedValue({ _id: "report1" }),
-      assembleFailed: jest.fn().mockResolvedValue({ _id: "report1" }),
+      assembleCompleted: vi.fn().mockResolvedValue({ _id: "report1" }),
+      assembleFailed: vi.fn().mockResolvedValue({ _id: "report1" }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -179,7 +180,7 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
     return { data } as never;
   }
 
-  it("loses the answer to a SPRINT_ID pause when the user replies before the claim is released", async () => {
+  it("starts the agent when the user answers a SPRINT_ID pause before the claim is released", async () => {
     // BE-17's first legitimate case: a Changelog Task with no sprintId
     // pauses without ever calling the agent, the frontend gets
     // task.inputRequired, the user answers, and POST /tasks/:id/input
@@ -220,7 +221,7 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
     expect(task.pendingInput).toBeNull();
   });
 
-  it("loses the answer to an agent-reported INCOMPLETE_TASKS pause the same way", async () => {
+  it("resumes the agent when the user answers an agent-reported INCOMPLETE_TASKS pause the same way", async () => {
     // BE-17's second legitimate case: the agent itself pauses mid-run and
     // POST /tasks/:id/input enqueues a resume-task job carrying inputValue.
     await build([makeStored({ sprintId: "SPRINT-42" })]);
@@ -264,7 +265,7 @@ describe("TaskProcessor — the window between announcing and releasing", () => 
 
     const T0 = 1_700_000_000_000;
     const LEASE_MS = 10 * 60 * 1000;
-    const clock = jest.spyOn(Date, "now").mockReturnValue(T0);
+    const clock = vi.spyOn(Date, "now").mockReturnValue(T0);
 
     // Worker A claims and is still inside the agent call.
     let releaseA: () => void = () => undefined;

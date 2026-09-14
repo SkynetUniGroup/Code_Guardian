@@ -57,7 +57,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   // ---- Initial state ----
   user: null,
   token: null,
-  credentialsStatus: "unknown",
+  credentialsStatus: "UNKNOWN",
 
   // ---- Actions ----
 
@@ -68,7 +68,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
 
   logout: () => {
-    set({ user: null, token: null, credentialsStatus: "unknown" });
+    set({ user: null, token: null, credentialsStatus: "UNKNOWN" });
   },
 
   setCredentialsStatus: (status) => {
@@ -76,6 +76,6 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
 
   markCredentialsInvalid: () => {
-    set({ credentialsStatus: "invalid" });
+    set({ credentialsStatus: "INVALID" });
   },
 }));

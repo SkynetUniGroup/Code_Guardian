@@ -1,6 +1,6 @@
 import PDFDocument from "pdfkit";
 import type { ReportDto } from "./dto/report.dto";
-import type { Block, Proposal } from "./report.types";
+import type { Block, Proposal, Remediation } from "./report.types";
 
 // BE-20: composes the PDF programmatically from the persisted ReportDto —
 // never from rendered HTML (the issue is explicit about this), so there's
@@ -62,13 +62,13 @@ function renderHeader(doc: PDFKit.PDFDocument, report: ReportDto): void {
 function renderBlock(doc: PDFKit.PDFDocument, block: Block): void {
   switch (block.kind) {
     case "TEXT":
-      doc.fontSize(11).text(block.markdown);
+      renderMarkdown(doc, block.markdown);
       return;
     case "FINDING":
       renderHeading(doc, `Finding — ${block.severity.toUpperCase()} — ${block.category}`);
-      renderMeta(doc, `${block.filePath}:${block.startLine}-${block.endLine}`);
-      doc.fontSize(10).text(block.explanation);
-      renderRemediation(doc, block.remediation, block.remediationLanguage);
+      renderMeta(doc, `${block.filePath}:${formatLines(block.lineStart, block.lineEnd)}`);
+      doc.fontSize(10).text(block.description);
+      renderRemediation(doc, block.remediation);
       return;
     case "POLICY_VIOLATION":
       renderHeading(doc, `Policy violation — ${block.severity.toUpperCase()} — ${block.ruleId}`);
@@ -78,12 +78,46 @@ function renderBlock(doc: PDFKit.PDFDocument, block: Block): void {
       return;
     case "COMPLEXITY_WARNING":
       renderHeading(doc, "Complexity warning");
-      renderMeta(doc, `${block.filePath}:${block.startLine}-${block.endLine}`);
+      renderMeta(doc, `${block.filePath}:${formatLines(block.lineStart, block.lineEnd)}`);
       doc.fontSize(10).text(block.explanation);
       return;
     case "CHANGELOG_ITEM":
       renderHeading(doc, `${block.issueRef} — ${block.title}`);
       doc.fontSize(10).text(block.detail);
+      return;
+    case "SAST_FINDING":
+      renderHeading(
+        doc,
+        `SAST — ${block.severity} — ${block.owaspCategory}${block.cwe ? ` (${block.cwe})` : ""}`,
+      );
+      renderMeta(
+        doc,
+        `${block.filePath}:${block.lineStart} · regola ${block.ruleId} · Semgrep ${block.ruleSeverity} · verdetto ${block.verdict}`,
+      );
+      doc.fontSize(10).text(block.message);
+      if (block.codeSnippet) {
+        doc.font("Courier").fontSize(9).text(block.codeSnippet);
+        doc.font("Helvetica");
+      }
+      if (block.llmRemediation) {
+        doc.fontSize(9).font("Helvetica-Bold").text("Remediation:");
+        doc.font("Helvetica").fontSize(10).text(block.llmRemediation);
+      }
+      return;
+    case "SAST_SUMMARY":
+      renderHeading(doc, "Riepilogo analisi statica (Semgrep)");
+      renderMeta(
+        doc,
+        `${block.scannedFiles} file analizzati in ${block.durationMs}ms` +
+          (block.timedOut ? " (timeout: risultati parziali)" : ""),
+      );
+      doc
+        .fontSize(10)
+        .text(
+          `${block.totalFindings} finding — ${block.confirmedFindings} confermati, ` +
+            `${block.falsePositives} falsi positivi, ${block.needsReview} da rivedere` +
+            (block.cappedFindings > 0 ? `, ${block.cappedFindings} esclusi dal limite` : ""),
+        );
       return;
   }
 }
@@ -93,6 +127,13 @@ function renderProposal(doc: PDFKit.PDFDocument, proposal: Proposal): void {
   renderHeading(doc, `Proposed change — ${proposal.targetPath}`);
   if (proposal.pullRequestUrl) {
     renderMeta(doc, `Pull Request: ${proposal.pullRequestUrl}`);
+  } else if (proposal.pullRequestError) {
+    // Nel PDF vale come nell'interfaccia: senza questa riga il lettore non ha
+    // modo di sapere che una PR era prevista e non e' stata aperta.
+    renderMeta(
+      doc,
+      `Pull Request non aperta (${proposal.pullRequestError.kind}): ${proposal.pullRequestError.message}`,
+    );
   }
   doc.fontSize(9).font("Courier").text(proposal.diffUnified);
   doc.font("Helvetica");
@@ -108,10 +149,111 @@ function renderMeta(doc: PDFKit.PDFDocument, text: string): void {
   doc.fillColor("black");
 }
 
-function renderRemediation(doc: PDFKit.PDFDocument, remediation: string, language?: string): void {
+// Remediation è una union: SNIPPET va reso in monospace, perché è codice da
+// leggere riga per riga e una proporzionale ne rompe l'allineamento; TEXT è
+// prosa e usa il font del resto del documento.
+function renderRemediation(doc: PDFKit.PDFDocument, remediation: Remediation): void {
+  const language = remediation.kind === "SNIPPET" ? remediation.language : undefined;
   doc
     .fontSize(9)
     .font("Helvetica-Bold")
     .text(`Remediation${language ? ` (${language})` : ""}:`);
-  doc.font("Helvetica").fontSize(10).text(remediation);
+  if (remediation.kind === "SNIPPET") {
+    doc.font("Courier").fontSize(9).text(remediation.code);
+  } else {
+    doc.font("Helvetica").fontSize(10).text(remediation.text);
+  }
+  doc.font("Helvetica");
+}
+
+function renderMarkdown(doc: PDFKit.PDFDocument, markdown: string): void {
+  const lines = markdown.split(/\r?\n/);
+  let inCodeFence = false;
+  let codeFenceLines: string[] = [];
+
+  for (const line of lines) {
+    if (/^```/.test(line)) {
+      if (inCodeFence) {
+        doc.font("Courier").fontSize(9).text(codeFenceLines.join("\n"));
+        doc.font("Helvetica").fontSize(11);
+        codeFenceLines = [];
+        inCodeFence = false;
+      } else {
+        inCodeFence = true;
+      }
+      continue;
+    }
+    if (inCodeFence) {
+      codeFenceLines.push(line);
+      continue;
+    }
+
+    if (line.trim() === "") {
+      doc.moveDown(0.5);
+      continue;
+    }
+
+    const heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      const level = heading[1].length;
+      const headingSize = Math.max(18 - level * 2, 10);
+      doc.moveDown(0.3);
+      renderInline(doc, heading[2], headingSize, true);
+      doc.moveDown(0.2);
+      continue;
+    }
+
+    const listItem = line.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
+    if (listItem) {
+      const bullet = /\d+\./.test(listItem[2]) ? listItem[2] : "•";
+      doc.font("Helvetica-Bold").fontSize(11).text(`${bullet} `, { continued: true });
+      renderInline(doc, listItem[3], 11, false);
+      continue;
+    }
+
+    renderInline(doc, line, 11, false);
+  }
+
+  if (inCodeFence && codeFenceLines.length > 0) {
+    doc.font("Courier").fontSize(9).text(codeFenceLines.join("\n"));
+    doc.font("Helvetica").fontSize(11);
+  }
+}
+
+const INLINE_TOKEN = /(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|_[^_]+_|\[[^\]]+\]\([^)]+\))/;
+
+function renderInline(doc: PDFKit.PDFDocument, text: string, size: number, bold: boolean): void {
+  const parts = text.split(INLINE_TOKEN).filter((p) => p.length > 0);
+
+  parts.forEach((part, index) => {
+    const opts = index === parts.length - 1 ? {} : { continued: true };
+    const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+
+    if (link) {
+      doc
+        .font(bold ? "Helvetica-Bold" : "Helvetica")
+        .fontSize(size)
+        .fillColor("#2277cc")
+        .text(link[1], { ...opts, link: link[2], underline: true });
+      doc.fillColor("black");
+    } else if (/^\*\*[^*]+\*\*$/.test(part)) {
+      doc.font("Helvetica-Bold").fontSize(size).text(part.slice(2, -2), opts);
+    } else if (/^`[^`]+`$/.test(part)) {
+      doc.font("Courier").fontSize(size - 1).text(part.slice(1, -1), opts);
+    } else if (/^\*[^*]+\*$/.test(part) || /^_[^_]+_$/.test(part)) {
+      doc.font("Helvetica-Oblique").fontSize(size).text(part.slice(1, -1), opts);
+    } else {
+      doc.font(bold ? "Helvetica-Bold" : "Helvetica").fontSize(size).text(part, opts);
+    }
+  });
+
+  doc.font("Helvetica").fontSize(11).fillColor("black");
+}
+
+// lineEnd è opzionale su FindingBlock: un finding su una riga sola non ha un
+// intervallo da mostrare, e "42-undefined" sarebbe peggio di "42".
+function formatLines(lineStart: number, lineEnd?: number): string {
+  return lineEnd === undefined || lineEnd === lineStart
+    ? String(lineStart)
+    : `${lineStart}-${lineEnd}`;
 }

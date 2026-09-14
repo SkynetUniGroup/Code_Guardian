@@ -14,7 +14,7 @@ export const selectRoute = createRoute({
   path: "/select",
   beforeLoad: ({ context }) => {
     const status = context.session.credentialsStatus;
-    if (status === "missing" || status === "invalid") {
+    if (status === "MISSING" || status === "INVALID") {
       throw redirect({ to: "/credentials" });
     }
   },

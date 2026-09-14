@@ -1,19 +1,25 @@
-const mockSend = jest.fn();
+import { vi } from "vitest";
 
-jest.mock("@aws-sdk/client-s3", () => ({
-  S3Client: jest.fn().mockImplementation(() => ({ send: mockSend })),
-  CreateBucketCommand: jest.fn((input: unknown) => ({
-    __type: "CreateBucketCommand",
-    input,
-  })),
-  PutBucketLifecycleConfigurationCommand: jest.fn((input: unknown) => ({
-    __type: "PutBucketLifecycleConfigurationCommand",
-    input,
-  })),
-  PutObjectCommand: jest.fn((input: unknown) => ({
-    __type: "PutObjectCommand",
-    input,
-  })),
+const mockSend = vi.fn();
+
+vi.mock("@aws-sdk/client-s3", () => ({
+  S3Client: vi.fn().mockImplementation(function CostruttoreFinto() {
+    return { send: mockSend };
+  }),
+  CreateBucketCommand: vi.fn(function CreateBucketCommand(input: unknown) {
+    return { __type: "CreateBucketCommand", input };
+  }),
+  DeleteObjectCommand: vi.fn(function DeleteObjectCommand(input: unknown) {
+    return { __type: "DeleteObjectCommand", input };
+  }),
+  PutBucketLifecycleConfigurationCommand: vi.fn(function PutBucketLifecycleConfigurationCommand(
+    input: unknown,
+  ) {
+    return { __type: "PutBucketLifecycleConfigurationCommand", input };
+  }),
+  PutObjectCommand: vi.fn(function PutObjectCommand(input: unknown) {
+    return { __type: "PutObjectCommand", input };
+  }),
 }));
 
 import { ReportArtifactStorageService } from "./report-artifact-storage.service";
@@ -28,7 +34,7 @@ function makeConfig(overrides: Record<string, unknown> = {}) {
     S3_SECRET_ACCESS_KEY: "minioadmin",
     ...overrides,
   };
-  return { get: jest.fn((key: string) => values[key]) };
+  return { get: vi.fn((key: string) => values[key]) };
 }
 
 describe("ReportArtifactStorageService", () => {
@@ -112,6 +118,20 @@ describe("ReportArtifactStorageService", () => {
           Body: pdf,
           ContentType: "application/pdf",
         },
+      });
+    });
+  });
+
+  describe("deleteReportArtifact", () => {
+    it("removes the archived PDF by report id", async () => {
+      mockSend.mockResolvedValue({});
+      const service = new ReportArtifactStorageService(makeConfig() as never);
+
+      await service.deleteReportArtifact("report1");
+
+      expect(mockSend).toHaveBeenCalledWith({
+        __type: "DeleteObjectCommand",
+        input: { Bucket: "code-guardian-reports", Key: "report1" },
       });
     });
   });

@@ -5,10 +5,10 @@ import { IsInt, IsString, Max, Min } from "class-validator";
 // param, not in this body.
 export class TaskProgressCallbackDto {
   @IsString()
-  stage: string;
+  stage!: string;
 
   @IsInt()
   @Min(0)
   @Max(100)
-  percent: number;
+  percent!: number;
 }

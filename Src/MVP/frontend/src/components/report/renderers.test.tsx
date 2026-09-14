@@ -44,23 +44,25 @@ const PROPOSTA: Proposal = {
 };
 
 describe("TextBlockRenderer", () => {
-  it("mostra il contenuto testuale del blocco", () => {
+  it("renderizza un titolo Markdown come vero heading, non come testo letterale", () => {
     render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown: "## Sintesi" }} />);
-
-    expect(screen.getByText("## Sintesi")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Sintesi" })).toBeInTheDocument();
+    expect(screen.queryByText("## Sintesi")).not.toBeInTheDocument();
   });
 
-  it("preserva gli a capo del testo", () => {
-    const markdown = "Prima riga\nSeconda riga";
-    const { container } = render(
-      <TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown }} />,
-    );
+  it("renderizza un elenco puntato Markdown come lista", () => {
+    const markdown = "- Prima voce\n- Seconda voce";
+    render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown }} />);
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(2);
+  });
 
-    // Il testo, non il nome della classe CSS che lo impagina: asserire
-    // 'whitespace-pre-wrap' si rompeva a ogni ritocco estetico e passava
-    // comunque se gli a capo non fossero stati preservati.
-    const pre = container.querySelector("pre")!;
-    expect(pre.textContent).toBe(markdown);
+  it("renderizza un link Markdown come vero elemento <a>", () => {
+    const markdown = "Vedi [#42](https://github.com/org/repo/issues/42)";
+    render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown }} />);
+    expect(screen.getByRole("link", { name: "#42" })).toHaveAttribute(
+      "href", "https://github.com/org/repo/issues/42",
+    );
   });
 });
 

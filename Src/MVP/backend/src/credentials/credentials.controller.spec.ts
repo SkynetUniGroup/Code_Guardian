@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { ForbiddenException } from "@nestjs/common";
 import { type Mock, vi } from "vitest";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
 import { CredentialsController } from "./credentials.controller";
@@ -42,8 +43,25 @@ describe("CredentialsController", () => {
   it("files a new credential under the caller, not under a body-supplied owner", async () => {
     const dto = { provider: "GITHUB" as const, token: "ghp_secret" };
 
-    await expect(controller.create("user-1", dto)).resolves.toEqual(credential);
+    await expect(controller.create({ userId: "user-1", role: "DEVELOPER" }, dto)).resolves.toEqual(
+      credential,
+    );
     expect(service.create).toHaveBeenCalledWith("user-1", dto);
+  });
+
+  it("rejects SonarQube credentials from non-Developer roles", async () => {
+    expect(() =>
+      controller.create(
+        { userId: "user-1", role: "PROJECT_MANAGER" },
+        {
+          provider: "SONARQUBE",
+          token: "squ_secret",
+          instanceUrl: "https://sonarcloud.io",
+          projectKey: "org_project",
+        },
+      ),
+    ).toThrow(ForbiddenException);
+    expect(service.create).not.toHaveBeenCalled();
   });
 
   it("lists only the caller own credentials", async () => {
@@ -63,10 +81,13 @@ describe("CredentialsController", () => {
   });
 
   it("never echoes the submitted token back to the caller", async () => {
-    const result = await controller.create("user-1", {
-      provider: "GITHUB" as const,
-      token: "ghp_secret",
-    });
+    const result = await controller.create(
+      { userId: "user-1", role: "DEVELOPER" },
+      {
+        provider: "GITHUB" as const,
+        token: "ghp_secret",
+      },
+    );
 
     expect(JSON.stringify(result)).not.toContain("ghp_secret");
   });

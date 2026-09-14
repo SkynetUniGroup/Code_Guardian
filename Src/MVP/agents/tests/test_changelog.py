@@ -122,6 +122,37 @@ async def test_load_filters_issues_by_sprint():
 
 
 @pytest.mark.asyncio
+async def test_load_rejects_a_sprint_id_with_no_matching_milestone():
+    """Uno Sprint ID inesistente blocca il caricamento invece di produrre un
+    changelog vuoto travestito da 'nessuna modifica in questo sprint'."""
+    from src.agents.changelog import SprintNotFoundError
+
+    toolset = FakeToolset(issues=[
+        _issue(1, 'Dello sprint', milestone='SPRINT-42'),
+        _issue(2, 'Senza milestone', milestone=None),
+    ])
+
+    with pytest.raises(SprintNotFoundError):
+        await ChangelogLoader().load(
+            FakeContextRef(), toolset, {'sprintId': 'SPRINT-999'}
+        )
+
+
+@pytest.mark.asyncio
+async def test_load_accepts_a_sprint_id_that_matches_a_milestone():
+    """Uno Sprint ID che corrisponde a una milestone reale prosegue normalmente."""
+    toolset = FakeToolset(issues=[
+        _issue(1, 'Dello sprint', milestone='SPRINT-42'),
+    ])
+
+    result = await ChangelogLoader().load(
+        FakeContextRef(), toolset, {'sprintId': 'SPRINT-42'}
+    )
+
+    assert '#1' in result['tasks_formatted']
+
+
+@pytest.mark.asyncio
 async def test_load_without_sprint_considers_every_closed_issue():
     """Senza Sprint indicato non si filtra per milestone."""
     toolset = FakeToolset(issues=[

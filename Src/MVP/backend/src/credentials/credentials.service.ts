@@ -3,15 +3,33 @@ import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
 import { AppException } from "../common/exceptions/app.exception";
 import { GithubClientService } from "../github/github-client.service";
+import {
+  SonarqubeClientService,
+  type SonarqubeProjectRef,
+} from "../sonarqube/sonarqube-client.service";
 import { CredentialCipherService } from "./credential-cipher.service";
-import { CreateCredentialDto } from "./dto/create-credential.dto";
-import { ServiceCredentialDto } from "./dto/service-credential.dto";
+import type { CreateCredentialDto } from "./dto/create-credential.dto";
+import type { ServiceCredentialDto } from "./dto/service-credential.dto";
 import {
   ServiceCredential,
   type ServiceCredentialDocument,
 } from "./schemas/service-credential.schema";
+import { SONARQUBE_PROVIDER } from "./supported-providers";
 
 const REQUIRED_GITHUB_SCOPE = "repo";
+
+// What a SONARQUBE credential decrypts back to. Stored as one JSON blob
+// through the same single-string cipher GitHub uses (only `token` is
+// secret, but encrypting the whole bundle keeps one code path and one
+// record shape). This is exactly the object the Python agents expect under
+// `sonarqube_credentials` in the agent payload — see
+// agents/src/sonarqube_service.py SonarQubeCredentials.from_dict.
+export interface SonarqubeCredentialPayload {
+  instanceUrl: string;
+  projectKey: string;
+  token: string;
+  organizationKey?: string;
+}
 
 @Injectable()
 export class CredentialsService {
@@ -20,23 +38,24 @@ export class CredentialsService {
     private readonly credentialModel: Model<ServiceCredentialDocument>,
     private readonly cipher: CredentialCipherService,
     private readonly github: GithubClientService,
+    private readonly sonarqube: SonarqubeClientService,
   ) {}
 
-  // Nothing is persisted unless the live GitHub check passes (§4.2,
+  // Nothing is persisted unless the live provider check passes (§4.2,
   // RF.13–RF.14). The upsert on (userId, provider) means reconnecting an
   // already-configured provider replaces it instead of creating a second row
   // — the unique index on the schema would reject a plain insert here, and
   // that's the point: this is the one path allowed to satisfy it.
   async create(userId: string, dto: CreateCredentialDto): Promise<ServiceCredentialDto> {
-    await this.verifyGithubToken(dto.token);
+    await this.verifyCredential(dto);
 
-    const encrypted = this.cipher.encrypt(dto.token);
+    const encrypted = this.cipher.encrypt(this.serializeSecret(dto));
     const connectedAt = new Date();
 
     const credential = await this.credentialModel.findOneAndUpdate(
       { userId, provider: dto.provider },
       { ...encrypted, connectedAt },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
 
     return this.toDto(credential);
@@ -58,8 +77,8 @@ export class CredentialsService {
   }
 
   // Local revocation only: this removes the ciphertext from our database but
-  // does not revoke the token on GitHub's side — that stays the user's own
-  // action (§4.1). Scoped to (id, userId) so one user can never delete
+  // does not revoke the token on the provider's side — that stays the user's
+  // own action (§4.1). Scoped to (id, userId) so one user can never delete
   // another's credential by guessing an id.
   async remove(userId: string, id: string): Promise<void> {
     const result = await this.credentialModel.findOneAndDelete({
@@ -85,8 +104,8 @@ export class CredentialsService {
       throw new NotFoundException("Credential not found");
     }
 
-    const token = this.cipher.decrypt(credential);
-    await this.verifyGithubToken(token);
+    const secret = this.cipher.decrypt(credential);
+    await this.verifyStoredSecret(credential.provider, secret);
 
     credential.connectedAt = new Date();
     await credential.save();
@@ -98,7 +117,8 @@ export class CredentialsService {
   // that calls GitHub on a user's behalf (repository browsing, context
   // creation, PR opening) needs a way to get that user's live token — and
   // this is the only service that ever touches the cipher, so it's the one
-  // place this can live.
+  // place this can live. GITHUB only: a SONARQUBE record decrypts to a JSON
+  // bundle, not a bare token — use getDecryptedSonarqubeCredential for that.
   async getDecryptedToken(userId: string, provider: string): Promise<string> {
     const credential = await this.credentialModel.findOne({
       userId,
@@ -108,6 +128,65 @@ export class CredentialsService {
       throw new NotFoundException(`No ${provider} credential configured for this user`);
     }
     return this.cipher.decrypt(credential);
+  }
+
+  // The SONARQUBE counterpart of getDecryptedToken: returns the full bundle
+  // the agents need, or null when the user simply has no SonarQube
+  // credential — SonarQube is optional (it enriches DOCS prompts, it does
+  // not gate anything), so "not configured" is a normal state the caller
+  // handles by omitting the metrics, not an error.
+  async getDecryptedSonarqubeCredential(
+    userId: string,
+  ): Promise<SonarqubeCredentialPayload | null> {
+    const credential = await this.credentialModel.findOne({
+      userId,
+      provider: SONARQUBE_PROVIDER,
+    });
+    if (!credential) {
+      return null;
+    }
+    return JSON.parse(this.cipher.decrypt(credential)) as SonarqubeCredentialPayload;
+  }
+
+  // ─────────────────────────── per-provider ───────────────────────────
+
+  private serializeSecret(dto: CreateCredentialDto): string {
+    if (dto.provider === SONARQUBE_PROVIDER) {
+      const payload: SonarqubeCredentialPayload = {
+        instanceUrl: dto.instanceUrl as string,
+        projectKey: dto.projectKey as string,
+        token: dto.token,
+        ...(dto.organizationKey ? { organizationKey: dto.organizationKey } : {}),
+      };
+      return JSON.stringify(payload);
+    }
+    return dto.token;
+  }
+
+  private async verifyCredential(dto: CreateCredentialDto): Promise<void> {
+    if (dto.provider === SONARQUBE_PROVIDER) {
+      await this.sonarqube.verifyProjectAccess(this.sonarRefFromDto(dto));
+      return;
+    }
+    await this.verifyGithubToken(dto.token);
+  }
+
+  private async verifyStoredSecret(provider: string, secret: string): Promise<void> {
+    if (provider === SONARQUBE_PROVIDER) {
+      const payload = JSON.parse(secret) as SonarqubeCredentialPayload;
+      await this.sonarqube.verifyProjectAccess(payload);
+      return;
+    }
+    await this.verifyGithubToken(secret);
+  }
+
+  private sonarRefFromDto(dto: CreateCredentialDto): SonarqubeProjectRef {
+    return {
+      instanceUrl: dto.instanceUrl as string,
+      projectKey: dto.projectKey as string,
+      token: dto.token,
+      organizationKey: dto.organizationKey,
+    };
   }
 
   // A 401 means GitHub itself rejected the token — bad or revoked. Missing

@@ -1,17 +1,18 @@
 import { ConfigService } from "@nestjs/config";
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
 import { UsageCounter } from "./schemas/usage-counter.schema";
 import { UsageLimitService } from "./usage-limit.service";
 
 describe("UsageLimitService", () => {
   let service: UsageLimitService;
-  let model: { findOneAndUpdate: jest.Mock; updateOne: jest.Mock };
-  let config: { get: jest.Mock };
+  let model: { findOneAndUpdate: Mock; updateOne: Mock };
+  let config: { get: Mock };
 
   beforeEach(async () => {
-    model = { findOneAndUpdate: jest.fn(), updateOne: jest.fn() };
-    config = { get: jest.fn().mockReturnValue(50) };
+    model = { findOneAndUpdate: vi.fn(), updateOne: vi.fn() };
+    config = { get: vi.fn().mockReturnValue(50) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -32,12 +33,16 @@ describe("UsageLimitService", () => {
     const [filter, update, options] = model.findOneAndUpdate.mock.calls[0] as [
       { userId: string; yearMonth: string },
       { $inc: { count: number } },
-      { upsert: boolean; new: boolean },
+      { upsert: boolean; returnDocument: "after" },
     ];
     expect(filter.userId).toBe("user1");
-    expect(filter.yearMonth).toMatch(/^\d{4}-\d{2}$/);
+    // Il mese vero, non la sua forma: con /^\d{4}-\d{2}$/ anche un
+    // currentYearMonth() bloccato su '1970-01' passava, e il contatore di
+    // RF.66 non si sarebbe più azzerato — il tetto mensile diventava un
+    // tetto a vita.
+    expect(filter.yearMonth).toBe(new Date().toISOString().slice(0, 7));
     expect(update).toEqual({ $inc: { count: 3 } });
-    expect(options).toEqual({ upsert: true, new: true });
+    expect(options).toEqual({ upsert: true, returnDocument: "after" });
     expect(model.updateOne).not.toHaveBeenCalled();
   });
 
@@ -58,7 +63,7 @@ describe("UsageLimitService", () => {
     expect(model.updateOne).toHaveBeenCalledWith(
       {
         userId: "user1",
-        yearMonth: expect.stringMatching(/^\d{4}-\d{2}$/) as string,
+        yearMonth: new Date().toISOString().slice(0, 7),
       },
       { $inc: { count: -10 } },
     );

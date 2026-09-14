@@ -1,9 +1,11 @@
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, type MockInstance, vi } from "vitest";
 import { EventsGateway } from "../events/events.gateway";
 import { AgentRegistry } from "../operations/agent-registry.service";
 import { ReportAssemblyService } from "../reports/report-assembly.service";
 import { AgentInvocationService } from "./agent-invocation.service";
+import { ProposalPublisherService } from "./proposal-publisher.service";
 import { Task } from "./schemas/task.schema";
 import { TaskProcessor } from "./task-processor";
 
@@ -22,24 +24,24 @@ const CLAIM_LEASE_MS = 10 * 60 * 1000;
 describe("TaskProcessor", () => {
   let processor: TaskProcessor;
   let taskModel: {
-    findOneAndUpdate: jest.Mock;
-    updateOne: jest.Mock;
-    countDocuments: jest.Mock;
+    findOneAndUpdate: Mock;
+    updateOne: Mock;
+    countDocuments: Mock;
   };
   let events: {
-    emitTaskUpdated: jest.Mock;
-    emitTaskFailed: jest.Mock;
-    emitTaskInputRequired: jest.Mock;
-    emitBatchCompleted: jest.Mock;
+    emitTaskUpdated: Mock;
+    emitTaskFailed: Mock;
+    emitTaskInputRequired: Mock;
+    emitBatchCompleted: Mock;
   };
-  let agentInvocation: { invoke: jest.Mock; resume: jest.Mock };
-  let agentRegistry: { getAgent: jest.Mock };
+  let agentInvocation: { invoke: Mock; resume: Mock };
+  let agentRegistry: { getAgent: Mock };
   let reportAssembly: {
-    assembleCompleted: jest.Mock;
-    assembleFailed: jest.Mock;
-    discard: jest.Mock;
+    assembleCompleted: Mock;
+    assembleFailed: Mock;
+    discard: Mock;
   };
-  let clock: jest.SpyInstance<number, []>;
+  let clock: MockInstance<number, []>;
 
   function makeTask(overrides: Record<string, unknown> = {}) {
     return {
@@ -55,11 +57,11 @@ describe("TaskProcessor", () => {
       sprintId: undefined,
       accumulatedMs: 0,
       processingClaimedAt: null,
-      canTransitionTo: jest.fn().mockReturnValue(true),
+      canTransitionTo: vi.fn().mockReturnValue(true),
       // Kept on the fixture purely so the "no state change goes through
       // save()" assertions below have something that would have been called
       // if the class regressed to mutate-then-save.
-      save: jest.fn().mockResolvedValue(undefined),
+      save: vi.fn().mockResolvedValue(undefined),
       ...overrides,
     };
   }
@@ -88,31 +90,31 @@ describe("TaskProcessor", () => {
 
   beforeEach(async () => {
     taskModel = {
-      findOneAndUpdate: jest.fn(),
+      findOneAndUpdate: vi.fn(),
       // Every conditional write matches by default; the tests about losing
       // a race override this per call.
-      updateOne: jest.fn().mockResolvedValue({ matchedCount: 1 }),
+      updateOne: vi.fn().mockResolvedValue({ matchedCount: 1 }),
       // No other task left active in the batch, by default — most tests
       // only care about the single task's own transition, not the tally.
-      countDocuments: jest.fn().mockResolvedValue(0),
+      countDocuments: vi.fn().mockResolvedValue(0),
     };
     events = {
-      emitTaskUpdated: jest.fn(),
-      emitTaskFailed: jest.fn(),
-      emitTaskInputRequired: jest.fn(),
-      emitBatchCompleted: jest.fn(),
+      emitTaskUpdated: vi.fn(),
+      emitTaskFailed: vi.fn(),
+      emitTaskInputRequired: vi.fn(),
+      emitBatchCompleted: vi.fn(),
     };
-    agentInvocation = { invoke: jest.fn(), resume: jest.fn() };
+    agentInvocation = { invoke: vi.fn(), resume: vi.fn() };
     // DOCS by default — most tests don't care about the Changelog/sprintId
     // pre-check, only the ones under 'BE-17 pause/resume' below do, and they
     // override this per-test.
-    agentRegistry = { getAgent: jest.fn().mockReturnValue("DOCS") };
+    agentRegistry = { getAgent: vi.fn().mockReturnValue("DOCS") };
     reportAssembly = {
-      assembleCompleted: jest.fn().mockResolvedValue({ _id: "report1" }),
-      assembleFailed: jest.fn().mockResolvedValue({ _id: "report1" }),
-      discard: jest.fn().mockResolvedValue(undefined),
+      assembleCompleted: vi.fn().mockResolvedValue({ _id: "report1" }),
+      assembleFailed: vi.fn().mockResolvedValue({ _id: "report1" }),
+      discard: vi.fn().mockResolvedValue(undefined),
     };
-    clock = jest.spyOn(Date, "now").mockReturnValue(NOW);
+    clock = vi.spyOn(Date, "now").mockReturnValue(NOW);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -122,6 +124,10 @@ describe("TaskProcessor", () => {
         { provide: AgentInvocationService, useValue: agentInvocation },
         { provide: AgentRegistry, useValue: agentRegistry },
         { provide: ReportAssemblyService, useValue: reportAssembly },
+        {
+          provide: ProposalPublisherService,
+          useValue: { publish: vi.fn(async (_task, payload) => payload) },
+        },
       ],
     }).compile();
 
@@ -173,7 +179,7 @@ describe("TaskProcessor", () => {
             processingClaimToken: claimToken(),
           },
         },
-        { new: true },
+        { returnDocument: "after" },
       );
       expect(claimToken()).toEqual(expect.any(String));
     });

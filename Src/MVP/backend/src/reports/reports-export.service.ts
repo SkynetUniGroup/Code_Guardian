@@ -3,6 +3,8 @@ import type { Response } from "express";
 import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { composeReportPdf } from "./report-pdf.composer";
 import { ReportsService } from "./reports.service";
+import { AgentRegistry } from "../operations/agent-registry.service";
+import type { ReportDto } from "./dto/report.dto";
 
 // BE-20: deliberately bypasses the shared error envelope
 // (AllExceptionsFilter / BE-2's error.code catalog) for its two
@@ -25,6 +27,7 @@ export class ReportsExportService {
   constructor(
     private readonly reportsService: ReportsService,
     private readonly storage: ReportArtifactStorageService,
+    private readonly agentRegistry: AgentRegistry,
   ) {}
 
   async export(userId: string, id: string, res: Response): Promise<void> {
@@ -44,7 +47,7 @@ export class ReportsExportService {
       const pdf = await composeReportPdf(report);
       await this.storage.putReportArtifact(report.id, pdf);
 
-      const filename = `code-guardian-${report.operation}-${report.id}.pdf`;
+      const filename = this.buildExportFilename(report);
       res
         .status(200)
         .set({
@@ -66,5 +69,19 @@ export class ReportsExportService {
         message: err instanceof Error ? err.message : "PDF export failed",
       });
     }
+  }
+
+  private buildExportFilename(report: ReportDto): string {
+    const operationLabel = this.agentRegistry.getDisplayName(report.operation);
+    const date = report.generatedAt.slice(0, 10);
+
+    const raw = `${operationLabel}-${report.context.repoOwner}-${report.context.repoName}-${date}`;
+
+    return `${raw
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .toLowerCase()}.pdf`;
   }
 }

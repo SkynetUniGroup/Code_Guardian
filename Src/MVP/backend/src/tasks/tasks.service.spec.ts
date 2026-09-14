@@ -6,49 +6,51 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
+import { type Mock, vi } from "vitest";
 import { AnalysisContext } from "../contexts/schemas/analysis-context.schema";
 import { CredentialsService } from "../credentials/credentials.service";
 import { EventsGateway } from "../events/events.gateway";
 import { AgentRegistry } from "../operations/agent-registry.service";
 import { Task } from "./schemas/task.schema";
+import { TaskCancellationService } from "./task-cancellation.service";
 import { TasksService } from "./tasks.service";
 import { UsageLimitService } from "./usage-limit.service";
 
 describe("TasksService", () => {
   let service: TasksService;
   let taskModel: {
-    findOne: jest.Mock;
-    find: jest.Mock;
-    insertMany: jest.Mock;
-    updateOne: jest.Mock;
+    findOne: Mock;
+    find: Mock;
+    insertMany: Mock;
+    updateOne: Mock;
   };
-  let contextModel: { findOne: jest.Mock };
-  let credentials: { hasCredential: jest.Mock };
-  let agentRegistry: { getForRole: jest.Mock };
-  let events: { emitTaskUpdated: jest.Mock };
-  let queue: { addBulk: jest.Mock; add: jest.Mock };
-  let usageLimit: { checkAndIncrement: jest.Mock };
+  let contextModel: { findOne: Mock };
+  let credentials: { hasCredential: Mock };
+  let agentRegistry: { getForRole: Mock };
+  let events: { emitTaskUpdated: Mock };
+  let queue: { addBulk: Mock; add: Mock };
+  let usageLimit: { checkAndIncrement: Mock };
 
   const developer = { userId: "user1", role: "DEVELOPER" as const };
 
   beforeEach(async () => {
     taskModel = {
-      findOne: jest.fn(),
-      find: jest.fn(),
-      insertMany: jest.fn(),
+      findOne: vi.fn(),
+      find: vi.fn(),
+      insertMany: vi.fn(),
       // Conditional writes match by default; the tests about losing a race
       // against TaskProcessor override this.
-      updateOne: jest.fn().mockResolvedValue({ matchedCount: 1 }),
+      updateOne: vi.fn().mockResolvedValue({ matchedCount: 1 }),
     };
-    contextModel = { findOne: jest.fn() };
-    credentials = { hasCredential: jest.fn() };
-    agentRegistry = { getForRole: jest.fn() };
-    events = { emitTaskUpdated: jest.fn() };
-    queue = { addBulk: jest.fn(), add: jest.fn() };
+    contextModel = { findOne: vi.fn() };
+    credentials = { hasCredential: vi.fn() };
+    agentRegistry = { getForRole: vi.fn() };
+    events = { emitTaskUpdated: vi.fn() };
+    queue = { addBulk: vi.fn(), add: vi.fn() };
     // Passes by default — only the dedicated usage-limit tests below need
     // it to reject, everything else is testing the other three checks.
-    usageLimit = { checkAndIncrement: jest.fn().mockResolvedValue(undefined) };
+    usageLimit = { checkAndIncrement: vi.fn().mockResolvedValue(undefined) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -63,6 +65,10 @@ describe("TasksService", () => {
         { provide: EventsGateway, useValue: events },
         { provide: UsageLimitService, useValue: usageLimit },
         { provide: getQueueToken("tasks"), useValue: queue },
+        {
+          provide: TaskCancellationService,
+          useValue: { requestCancellation: vi.fn(async () => undefined) },
+        },
       ],
     }).compile();
 
@@ -206,7 +212,34 @@ describe("TasksService", () => {
     });
   });
 
+  // Il filtro passato a Mongo è la sola cosa che tiene separate le Task di
+  // utenti diversi: i mock qui sotto risolvono senza guardare gli argomenti,
+  // quindi senza un'asserzione esplicita su di esso togliere `userId` dalla
+  // query non farebbe fallire niente — GET /tasks restituirebbe le task di
+  // tutti e GET /tasks/:id sarebbe leggibile da chiunque indovini un id.
+  describe("findAllForUser", () => {
+    it("queries only the caller own tasks, newest first", async () => {
+      const sort = vi.fn().mockResolvedValue([]);
+      taskModel.find.mockReturnValue({ sort });
+
+      await service.findAllForUser("user1");
+
+      expect(taskModel.find).toHaveBeenCalledWith({ userId: "user1" });
+      expect(sort).toHaveBeenCalledWith({ createdAt: -1 });
+    });
+  });
+
   describe("findOneForUser", () => {
+    it("scopes the lookup by id and owner together", async () => {
+      taskModel.findOne.mockResolvedValue(null);
+
+      await expect(service.findOneForUser("user1", "task1")).rejects.toThrow(NotFoundException);
+      expect(taskModel.findOne).toHaveBeenCalledWith({
+        _id: "task1",
+        userId: "user1",
+      });
+    });
+
     it("throws NotFoundException when the task does not belong to the caller", async () => {
       taskModel.findOne.mockResolvedValue(null);
 
@@ -215,6 +248,16 @@ describe("TasksService", () => {
   });
 
   describe("cancel", () => {
+    it("scopes the initial lookup by id and owner together", async () => {
+      taskModel.findOne.mockResolvedValue(null);
+
+      await expect(service.cancel("user1", "task1")).rejects.toThrow(NotFoundException);
+      expect(taskModel.findOne).toHaveBeenCalledWith({
+        _id: "task1",
+        userId: "user1",
+      });
+    });
+
     it("throws NotFoundException when the task does not belong to the caller", async () => {
       taskModel.findOne.mockResolvedValue(null);
 
@@ -224,7 +267,7 @@ describe("TasksService", () => {
     it("rejects with 409 when the task is already in a terminal state", async () => {
       taskModel.findOne.mockResolvedValue({
         status: "COMPLETED",
-        canTransitionTo: jest.fn().mockReturnValue(false),
+        canTransitionTo: vi.fn().mockReturnValue(false),
       });
 
       await expect(service.cancel("user1", "task1")).rejects.toThrow(ConflictException);
@@ -233,8 +276,8 @@ describe("TasksService", () => {
     it("transitions to CANCELLED with a conditional write and emits task.updated", async () => {
       const task = {
         status: "PENDING",
-        canTransitionTo: jest.fn().mockReturnValue(true),
-        save: jest.fn().mockResolvedValue(undefined),
+        canTransitionTo: vi.fn().mockReturnValue(true),
+        save: vi.fn().mockResolvedValue(undefined),
       };
       taskModel.findOne.mockResolvedValue(task);
 
@@ -266,8 +309,8 @@ describe("TasksService", () => {
       // terminal Task, so the write matches nothing and the caller is told.
       taskModel.findOne.mockResolvedValue({
         status: "RUNNING",
-        canTransitionTo: jest.fn().mockReturnValue(true),
-        save: jest.fn(),
+        canTransitionTo: vi.fn().mockReturnValue(true),
+        save: vi.fn(),
       });
       taskModel.updateOne.mockResolvedValue({ matchedCount: 0 });
 
@@ -283,8 +326,8 @@ describe("TasksService", () => {
         status: "RUNNING",
         pendingInput: null,
         sprintId: undefined,
-        canTransitionTo: jest.fn().mockReturnValue(true),
-        save: jest.fn().mockResolvedValue(undefined),
+        canTransitionTo: vi.fn().mockReturnValue(true),
+        save: vi.fn().mockResolvedValue(undefined),
         ...overrides,
       };
     }
@@ -327,6 +370,14 @@ describe("TasksService", () => {
         sprintId: "S-42",
       } as never);
 
+      // Il ramo SPRINT_ID scrive con task.save(), non con l'updateOne
+      // condizionato che porta userId nel filtro: qui l'unica difesa
+      // contro la scrittura sulla Task di un altro è la findOne iniziale,
+      // quindi il suo filtro va asserito.
+      expect(taskModel.findOne).toHaveBeenCalledWith({
+        _id: "task1",
+        userId: "user1",
+      });
       expect(task.sprintId).toBe("S-42");
       expect(task.pendingInput).toBeNull();
       expect(task.save).toHaveBeenCalled();
@@ -356,7 +407,8 @@ describe("TasksService", () => {
       const task = makeTask({
         pendingInput: {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: "r1",
+          technicalChangelog: "## Sprint 1",
+          technicalChangelogTruncated: false,
         },
       });
       taskModel.findOne.mockResolvedValue(task);

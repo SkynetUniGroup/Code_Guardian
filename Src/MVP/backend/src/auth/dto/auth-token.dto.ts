@@ -1,3 +1,1 @@
-export interface AuthTokenDto {
-  accessToken: string;
-}
+export type { AuthTokenDto } from "@codeguardian/shared";

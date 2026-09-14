@@ -1,4 +1,5 @@
-import type { AgentRunPayload } from "../tasks/agent-client.types";
+import { type Mock, vi } from "vitest";
+import { AgentRunPayload } from "../tasks/agent-client.types";
 import { ReportAssemblyService } from "./report-assembly.service";
 
 function makeTask(overrides: Record<string, unknown> = {}) {
@@ -32,18 +33,18 @@ function makeContext(overrides: Record<string, unknown> = {}) {
 
 describe("ReportAssemblyService", () => {
   let service: ReportAssemblyService;
-  let reportModel: { create: jest.Mock; deleteOne: jest.Mock };
-  let contextModel: { findById: jest.Mock };
-  let agentRegistry: { getDisplayName: jest.Mock };
+  let reportModel: { create: Mock; deleteOne: Mock };
+  let contextModel: { findById: Mock };
+  let agentRegistry: { getDisplayName: Mock };
 
   beforeEach(() => {
     reportModel = {
-      create: jest.fn().mockResolvedValue({ id: "report1" }),
-      deleteOne: jest.fn().mockResolvedValue({ deletedCount: 1 }),
+      create: vi.fn().mockResolvedValue({ id: "report1" }),
+      deleteOne: vi.fn().mockResolvedValue({ deletedCount: 1 }),
     };
-    contextModel = { findById: jest.fn() };
+    contextModel = { findById: vi.fn() };
     agentRegistry = {
-      getDisplayName: jest.fn().mockReturnValue("README generation/update"),
+      getDisplayName: vi.fn().mockReturnValue("README generation/update"),
     };
     service = new ReportAssemblyService(
       reportModel as never,

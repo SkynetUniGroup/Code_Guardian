@@ -1,10 +1,11 @@
 import {
   CreateBucketCommand,
+  DeleteObjectCommand,
   PutBucketLifecycleConfigurationCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 // BE-20: archives the composed PDF in object storage, keyed by the report
@@ -25,16 +26,31 @@ export class ReportArtifactStorageService implements OnModuleInit {
   private readonly bucket: string;
 
   constructor(private readonly config: ConfigService) {
-    this.bucket = this.config.get<string>("REPORTS_BUCKET_NAME")!;
+    this.bucket = this.require("REPORTS_BUCKET_NAME");
     this.client = new S3Client({
       region: this.config.get<string>("S3_REGION"),
+      // Assente contro AWS S3 reale: l'SDK risolve da solo l'endpoint
+      // regionale a partire da S3_REGION.
       endpoint: this.config.get<string>("S3_ENDPOINT"),
       forcePathStyle: this.config.get<boolean>("S3_FORCE_PATH_STYLE"),
       credentials: {
-        accessKeyId: this.config.get<string>("S3_ACCESS_KEY_ID")!,
-        secretAccessKey: this.config.get<string>("S3_SECRET_ACCESS_KEY")!,
+        accessKeyId: this.require("S3_ACCESS_KEY_ID"),
+        secretAccessKey: this.require("S3_SECRET_ACCESS_KEY"),
       },
     });
+  }
+
+  // Al posto di un `!`: lo schema Joi di env.validation.ts rende queste
+  // variabili obbligatorie, quindi in pratica ci sono sempre — ma se qualcuno
+  // le toglie dallo schema, un throw esplicito qui dice cosa manca, mentre un
+  // `!` propaga `undefined` dentro l'SDK e produce un 403 incomprensibile alla
+  // prima esportazione.
+  private require(key: string): string {
+    const value = this.config.get<string>(key);
+    if (!value) {
+      throw new Error(`${key} non e' configurata: l'export dei report non puo' funzionare.`);
+    }
+    return value;
   }
 
   // Idempotent, run once at boot: creates the bucket and applies the
@@ -81,6 +97,16 @@ export class ReportArtifactStorageService implements OnModuleInit {
         Key: reportId,
         Body: pdf,
         ContentType: "application/pdf",
+      }),
+    );
+  }
+
+  /** Removes the archived PDF when its report is deleted by its owner. */
+  async deleteReportArtifact(reportId: string): Promise<void> {
+    await this.client.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: reportId,
       }),
     );
   }

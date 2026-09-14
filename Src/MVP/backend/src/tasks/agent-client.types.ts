@@ -3,11 +3,43 @@ import type { Block, Proposal } from "../reports/report.types";
 import type { PendingInput } from "./task.types";
 
 // POST /internal/agent/start body.
+export interface ContextRef {
+  repoOwner: string;
+  repoName: string;
+  repoUrl: string;
+  branch: string;
+  resolvedSha: string;
+  scopeType: string;
+  paths?: string[];
+}
+
 export interface AgentStartRequest {
   taskId: string;
   threadId: string;
   operationCode: OperationCode;
-  payload: object;
+  payload: {
+    userId: string;
+    context_ref: ContextRef;
+    // Solo per le operazioni Changelog, e solo dopo che
+    // POST /tasks/:id/input l'ha raccolto (BE-17). Viaggia qui e non in
+    // context_ref perche' e' del Task, non del contesto: un contesto puo'
+    // essere condiviso da piu' operazioni dello stesso batch, lo Sprint ID
+    // riguarda solo quelle di changelog. ChangelogLoader lo legge da
+    // agent_payload, che e' esattamente questo oggetto.
+    sprintId?: string;
+    // Solo per le operazioni DOCS_*, e solo se l'utente ha configurato una
+    // credenziale SONARQUBE. Le metriche di qualita' arricchiscono il
+    // prompt, non lo reggono: DocsLoader (agents/src/agents/docs.py) le
+    // legge da qui e, se mancano o l'istanza e' irraggiungibile, procede
+    // senza. La forma e' quella che si aspetta
+    // SonarQubeCredentials.from_dict lato agenti.
+    sonarqube_credentials?: {
+      instanceUrl: string;
+      projectKey: string;
+      token: string;
+      organizationKey?: string;
+    };
+  };
 }
 
 // What a 'completed' AgentStepResult carries in `result` — everything about
@@ -27,7 +59,13 @@ export interface AgentStepResult {
   status: "interrupted" | "completed" | "failed";
   pendingInput?: PendingInput;
   result?: AgentRunPayload;
+  // Messaggio leggibile del fallimento.
   error?: string;
+  // Categoria del fallimento (ErrorKind lato Python), separata dal messaggio.
+  // Prima esisteva solo `error` e veniva passato a mapAgentErrorKind sia come
+  // categoria sia come messaggio: nessun messaggio corrisponde mai a una voce
+  // della tabella, quindi ogni fallimento dell'agente finiva su UPSTREAM.
+  errorKind?: string;
 }
 
 // POST /internal/agent/resume body. Mirrors AgentStartRequest's three

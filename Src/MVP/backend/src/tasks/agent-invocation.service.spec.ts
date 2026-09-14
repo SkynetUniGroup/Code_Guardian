@@ -1,34 +1,65 @@
-import type { AgentRunPayload } from "./agent-client.types";
+import { type Mock, vi } from "vitest";
+import { OPERATION_CODES } from "../common/domain-types";
+import { AgentRunPayload } from "./agent-client.types";
 import { AgentInvocationService } from "./agent-invocation.service";
 
 interface MockTask {
   id: string;
+  userId: string;
   operation: string;
   lgThreadId?: string;
-  save: jest.Mock;
+  save: Mock;
 }
 
 function makeTask(overrides: Partial<MockTask> = {}): MockTask {
   return {
     id: "task1",
+    userId: "user1",
     operation: "DOCS_README",
     lgThreadId: undefined,
-    save: jest.fn().mockResolvedValue(undefined),
+    save: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
 }
 
 describe("AgentInvocationService", () => {
   let service: AgentInvocationService;
-  let config: { get: jest.Mock };
-  let agentRegistry: { getTimeoutS: jest.Mock };
-  let fetchMock: jest.Mock;
+  let config: { get: Mock };
+  let agentRegistry: { getTimeoutS: Mock };
+  let templates: { contentForUser: Mock };
+  let contextModel: { findById: Mock };
+  let credentials: { getDecrypted: Mock };
+  let fetchMock: Mock;
+
+  const CONTESTO = {
+    repoOwner: "OWASP",
+    repoName: "NodeGoat",
+    repoUrl: "https://github.com/OWASP/NodeGoat",
+    branch: "master",
+    resolvedSha: "abc1234",
+    scopeType: "FULL_REPOSITORY",
+    paths: [],
+  };
 
   beforeEach(() => {
-    config = { get: jest.fn().mockReturnValue("http://agents:8000") };
-    agentRegistry = { getTimeoutS: jest.fn().mockReturnValue(90) };
-    service = new AgentInvocationService(config as never, agentRegistry as never);
-    fetchMock = jest.fn();
+    config = { get: vi.fn().mockReturnValue("http://agents:8000") };
+    agentRegistry = { getTimeoutS: vi.fn().mockReturnValue(90) };
+    // RF.79: per difetto l'utente non ha un template personalizzato, che è
+    // il caso di gran lunga più comune; i test dedicati lo valorizzano.
+    templates = { contentForUser: vi.fn().mockResolvedValue(null) };
+    // Il contesto non e' piu' nel Task: il servizio lo rilegge dal database
+    // prima di comporre il payload, cosi' il payload non dipende da una copia
+    // che potrebbe essere invecchiata.
+    contextModel = { findById: vi.fn().mockResolvedValue(CONTESTO) };
+    credentials = { getDecrypted: vi.fn().mockResolvedValue(null) };
+    service = new AgentInvocationService(
+      config as never,
+      agentRegistry as never,
+      contextModel as never,
+      credentials as never,
+      templates as never,
+    );
+    fetchMock = vi.fn();
     global.fetch = fetchMock as never;
   });
 
@@ -82,6 +113,45 @@ describe("AgentInvocationService", () => {
     });
   });
 
+  // RF.79 / RF.81: il template personalizzato dell'utente raggiunge
+  // l'agente, e la sua assenza è il ripristino del modello di default.
+  describe("template README personalizzato (RF.79, RF.81)", () => {
+    function payloadInviato(): Record<string, unknown> {
+      const [, options] = fetchMock.mock.calls[0] as [string, { body: string }];
+      return (JSON.parse(options.body) as { payload: Record<string, unknown> }).payload;
+    }
+
+    it("attaches the caller own README template when they have one", async () => {
+      templates.contentForUser.mockResolvedValue("# Il mio template");
+      fetchMock.mockResolvedValue(completedResponse());
+
+      await service.invoke(makeTask() as never);
+
+      // Chiesto per l'utente proprietario della task, non per un altro.
+      expect(templates.contentForUser).toHaveBeenCalledWith("user1");
+      expect(payloadInviato()).toMatchObject({ readmeTemplate: "# Il mio template" });
+    });
+
+    it("sends no template at all when the user has none, so the agent falls back to its default", async () => {
+      templates.contentForUser.mockResolvedValue(null);
+      fetchMock.mockResolvedValue(completedResponse());
+
+      await service.invoke(makeTask() as never);
+
+      expect(payloadInviato()).not.toHaveProperty("readmeTemplate");
+    });
+
+    it("does not even look for a template for operations other than DOCS_README", async () => {
+      templates.contentForUser.mockResolvedValue("# Il mio template");
+      fetchMock.mockResolvedValue(completedResponse());
+
+      await service.invoke(makeTask({ operation: "SECURITY_OWASP" }) as never);
+
+      expect(templates.contentForUser).not.toHaveBeenCalled();
+      expect(payloadInviato()).not.toHaveProperty("readmeTemplate");
+    });
+  });
+
   it("returns COMPLETED carrying the agent result payload — BE-18 needs it to assemble a Report", async () => {
     const task = makeTask();
     const payload: AgentRunPayload = {
@@ -111,7 +181,13 @@ describe("AgentInvocationService", () => {
 
   it("maps a failed response error through the agent error mapper", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: "failed", error: "RATE_LIMITED" }));
+    fetchMock.mockResolvedValue(
+      jsonResponse({
+        status: "failed",
+        errorKind: "RATE_LIMITED",
+        error: "Il modello ha rifiutato la richiesta.",
+      }),
+    );
 
     const result = await service.invoke(task as never);
 
@@ -119,7 +195,7 @@ describe("AgentInvocationService", () => {
       status: "FAILED",
       error: {
         code: "LLM_RATE_LIMITED",
-        message: "RATE_LIMITED",
+        message: "Il modello ha rifiutato la richiesta.",
         stage: "EXECUTION",
       },
     });
@@ -179,7 +255,9 @@ describe("AgentInvocationService", () => {
 
   it("fails with TIMEOUT when the agent itself reports its model call timed out", async () => {
     const task = makeTask();
-    fetchMock.mockResolvedValue(jsonResponse({ status: "failed", error: "TIMEOUT" }));
+    fetchMock.mockResolvedValue(
+      jsonResponse({ status: "failed", errorKind: "TIMEOUT", error: "Nessuna risposta." }),
+    );
 
     const result = await service.invoke(task as never);
 
@@ -246,7 +324,8 @@ describe("AgentInvocationService", () => {
           status: "interrupted",
           pendingInput: {
             kind: "BUSINESS_CONFIRMATION",
-            technicalReportId: "report1",
+            technicalChangelog: "## Sprint 1",
+            technicalChangelogTruncated: false,
           },
         }),
       );
@@ -259,9 +338,67 @@ describe("AgentInvocationService", () => {
         status: "INTERRUPTED",
         pendingInput: {
           kind: "BUSINESS_CONFIRMATION",
-          technicalReportId: "report1",
+          technicalChangelog: "## Sprint 1",
+          technicalChangelogTruncated: false,
         },
       });
+    });
+  });
+
+  /**
+   * TU_18 (RF.40, RV.1) — la metà "destinazione" del descrittore.
+   *
+   * Il Piano di Qualifica descrive il descrittore come (agentId,
+   * destinationUrl). Nell'MVP il secondo campo non esiste: il servizio agenti
+   * è un unico processo FastAPI che smista internamente su operationCode
+   * (agents/src/main.py, get_agent_components), quindi tutte e sette le
+   * operazioni hanno la stessa destinazione, letta dalla configurazione. È
+   * quella proprietà che si verifica qui — insieme al fatto che l'operazione
+   * viaggia comunque nel corpo, altrimenti l'agente non saprebbe cosa fare.
+   * La metà "agentId" sta in agent-registry.service.spec.ts.
+   */
+  describe("TU_18 (RF.40, RV.1) — destinazione dell'invocazione per i sette OperationCode", () => {
+    it.each(OPERATION_CODES)(
+      "%s viene inviata in POST a <AGENTS_SERVICE_URL>/internal/agent/start col proprio codice nel corpo",
+      async (code) => {
+        const task = makeTask({ operation: code });
+        fetchMock.mockResolvedValue(completedResponse());
+
+        await service.invoke(task as never);
+
+        const [url, options] = fetchMock.mock.calls[0] as [
+          string,
+          { method: string; body: string },
+        ];
+        expect(url).toBe("http://agents:8000/internal/agent/start");
+        expect(options.method).toBe("POST");
+        expect((JSON.parse(options.body) as { operationCode: string }).operationCode).toBe(code);
+      },
+    );
+
+    it("la destinazione è una sola per tutte e sette le operazioni", async () => {
+      fetchMock.mockResolvedValue(completedResponse());
+
+      for (const code of OPERATION_CODES) {
+        await service.invoke(makeTask({ operation: code }) as never);
+      }
+
+      const destinazioni = new Set(fetchMock.mock.calls.map(([url]) => url as string));
+      expect(fetchMock).toHaveBeenCalledTimes(OPERATION_CODES.length);
+      expect([...destinazioni]).toEqual(["http://agents:8000/internal/agent/start"]);
+    });
+
+    it("la destinazione viene dalla configurazione, non da una costante nel codice", async () => {
+      // Se fosse cablata, l'MVP non sarebbe schierabile fuori da
+      // docker-compose: AGENTS_SERVICE_URL cambia fra locale, container e AWS.
+      config.get.mockReturnValue("http://agenti-di-collaudo:9100");
+      fetchMock.mockResolvedValue(completedResponse());
+
+      await service.invoke(makeTask({ operation: "SECURITY_OWASP" }) as never);
+
+      const [url] = fetchMock.mock.calls[0] as [string];
+      expect(url).toBe("http://agenti-di-collaudo:9100/internal/agent/start");
+      expect(config.get).toHaveBeenCalledWith("AGENTS_SERVICE_URL");
     });
   });
 });

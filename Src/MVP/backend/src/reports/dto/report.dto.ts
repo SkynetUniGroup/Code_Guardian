@@ -28,7 +28,7 @@ export interface ReportDto {
   // In practice this is close to always null: a Report only exists once its
   // Task reaches a terminal state (COMPLETED/FAILED — see BE-18), and a
   // terminal Task's pendingInput is always already cleared by then. The one
-  // case where it wouldn't be is BUSINESS_CONFIRMATION's technicalReportId
+  // case where it wouldn't be is BUSINESS_CONFIRMATION's technical changelog
   // (BE-17), which names a Report that's supposed to exist for a *draft*,
   // before its Task actually finishes — but neither BE-17 nor BE-18 as
   // implemented have a path that persists an intermediate Report on a
