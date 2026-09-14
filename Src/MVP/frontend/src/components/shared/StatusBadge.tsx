@@ -18,13 +18,13 @@ const STATUS_STYLES: Record<TaskStatus, string> = {
   CANCELLED: "bg-[#888888] text-white",
 };
 
-/** Human-readable Italian labels shown inside the badge. */
+/** Human-readable labels shown inside the badge. */
 const STATUS_LABELS: Record<TaskStatus, string> = {
-  PENDING: "In attesa",
-  RUNNING: "In esecuzione",
-  COMPLETED: "Completato",
-  FAILED: "Fallito",
-  CANCELLED: "Annullato",
+  PENDING: "Pending",
+  RUNNING: "Running",
+  COMPLETED: "Completed",
+  FAILED: "Failed",
+  CANCELLED: "Cancelled",
 };
 
 /**

@@ -45,10 +45,10 @@ export const useAppStore = create<AppStore>((set) => ({
   reports: {},
   currentTaskId: null,
   websocketConnected: false,
-  // Non deriva da un JWT eventualmente presente: il JWT del login silenzioso
-  // non implica che il PAT GitHub sia stato salvato. Si riparte sempre dalla
-  // schermata di setup, che è l'unica a impostarlo a true (dopo il salvataggio
-  // riuscito della credenziale GitHub).
+  // Does not derive from a possibly present JWT: the JWT from the silent login
+  // does not imply that the GitHub PAT has been saved. It always starts from
+  // the setup screen, which is the only one that sets it to true (after the
+  // successful save of the GitHub credential).
   isConfigured: false,
   formData: null,
 

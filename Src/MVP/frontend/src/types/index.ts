@@ -128,22 +128,22 @@ export interface AuthUser {
 // ---------------------------------------------------------------------------
 
 /**
- * Quali operazioni può lanciare un ruolo NON è una costante di frontend: la
- * decide AgentRegistry lato backend, che è anche chi la applica su POST /tasks.
- * Duplicarla qui significava avere due tabelle da tenere allineate a mano, con
- * l'unico effetto possibile di mostrare all'utente un'operazione che il
- * backend gli rifiuterà con un 403. RunPage legge GET /operations.
+ * Which operations a role can launch is NOT a frontend constant: it is decided
+ * by AgentRegistry on the backend, which is also what enforces it on POST
+ * /tasks. Duplicating it here meant having two tables to keep aligned by hand,
+ * with the only possible effect of showing the user an operation that the
+ * backend will refuse with a 403. RunPage reads GET /operations.
  */
 
-/** Etichetta leggibile per ciascun codice operazione (fallback di sola UI). */
+/** Human-readable label for each operation code (UI-only fallback). */
 export const OPERATION_LABELS: Record<OperationCode, string> = {
-  DOCS_README: "Documentazione README",
-  DOCS_INLINE: "Documentazione Inline",
-  DOCS_API: "Documentazione API",
-  SECURITY_OWASP: "Analisi Sicurezza OWASP",
-  SECURITY_POLICY: "Verifica Policy",
-  CHANGELOG_TECHNICAL: "Changelog Tecnico",
-  CHANGELOG_BUSINESS: "Changelog Business",
+  DOCS_README: "README Documentation",
+  DOCS_INLINE: "Inline Documentation",
+  DOCS_API: "API Documentation",
+  SECURITY_OWASP: "OWASP Security Analysis",
+  SECURITY_POLICY: "Policy Check",
+  CHANGELOG_TECHNICAL: "Technical Changelog",
+  CHANGELOG_BUSINESS: "Business Changelog",
 };
 
 // ---------------------------------------------------------------------------

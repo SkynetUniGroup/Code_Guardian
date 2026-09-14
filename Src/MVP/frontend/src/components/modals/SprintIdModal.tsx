@@ -32,7 +32,7 @@ export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
 
     const trimmed = sprint_id.trim();
     if (!trimmed) {
-      setError("Inserisci un ID Sprint valido");
+      setError("Please enter a valid Sprint ID");
       return;
     }
 
@@ -45,24 +45,24 @@ export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
       clear_pending(taskId);
       onClose();
     } catch {
-      setError("Impossibile inviare l'ID Sprint. Riprova.");
+      setError("Unable to send the Sprint ID. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <ModalOverlay open title="Inserisci ID Sprint" onClose={onClose}>
+    <ModalOverlay open title="Enter Sprint ID" onClose={onClose}>
       <p className="mb-4 text-sm text-gray-500">
-        L'agente richiede l'identificatore dello Sprint per associare le modifiche al ciclo
-        corretto. Inserisci il numero o codice Sprint (es:{" "}
+        The agent requires the Sprint identifier to associate the changes with the correct
+        cycle. Enter the Sprint number or code (e.g.{" "}
         <code className="font-mono">SPRINT-42</code>).
       </p>
 
       <form onSubmit={handle_submit} className="flex flex-col gap-4">
         <ValidatedField
           label="Sprint ID"
-          placeholder="es. SPRINT-42"
+          placeholder="e.g. SPRINT-42"
           value={sprint_id}
           onChange={(e) => {
             setSprintId(e.target.value);
@@ -79,7 +79,7 @@ export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
             disabled={loading}
             className="rounded border border-[#cccccc] px-4 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
           >
-            Annulla
+            Cancel
           </button>
 
           <button
@@ -88,7 +88,7 @@ export function SprintIdModal({ taskId, onClose }: SprintIdModalProps) {
             className="flex items-center gap-2 rounded bg-[#2277cc] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a5fa8] transition disabled:opacity-50"
           >
             {loading && <Spinner size="sm" className="text-white" />}
-            Conferma
+            Confirm
           </button>
         </div>
       </form>

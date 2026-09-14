@@ -5,9 +5,9 @@ import { authRoute } from "./_auth";
 /**
  * Template route — /template (authenticated, Developer only)
  *
- * RF.79-RF.81: gestione del template README personalizzato. Come le
- * credenziali, è una risorsa personale dell'utente e non dipende dal
- * repository selezionato, quindi vive fuori dal flusso di analisi.
+ * RF.79-RF.81: management of the custom README template. Like credentials,
+ * it is a personal resource of the user and does not depend on the selected
+ * repository, so it lives outside the analysis flow.
  */
 export const templateRoute = createRoute({
   getParentRoute: () => authRoute,

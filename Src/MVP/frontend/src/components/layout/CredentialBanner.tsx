@@ -19,11 +19,11 @@ export function CredentialBanner() {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-[#cc2222] px-4 py-2 text-center text-sm text-white shadow-md">
-      Le credenziali non sono più valide.{" "}
+      Your credentials are no longer valid.{" "}
       <Link to="/credentials" className="font-semibold underline hover:no-underline">
-        Aggiorna le credenziali
+        Update credentials
       </Link>{" "}
-      per continuare ad usare il sistema.
+      to continue using the system.
     </div>
   );
 }

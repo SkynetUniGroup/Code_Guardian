@@ -10,10 +10,10 @@ interface BusinessConfirmationModalProps {
   /** ID of the paused task (CHANGELOG_BUSINESS). */
   taskId: string;
 
-  /** Il changelog tecnico appena prodotto, in Markdown. */
+  /** The technical changelog just produced, in Markdown. */
   technicalChangelog: string;
 
-  /** Vero se il testo è stato tagliato perché troppo lungo. */
+  /** True if the text was truncated because it was too long. */
   technicalChangelogTruncated?: boolean;
 
   /** Called after submission or cancel. */
@@ -21,27 +21,27 @@ interface BusinessConfirmationModalProps {
 }
 
 /**
- * Finestra di conferma fra la fase tecnica e quella business del changelog.
+ * Confirmation dialog between the technical and business phases of the changelog.
  *
- * L'agente Changelog produce prima la versione tecnica, poi si ferma e chiede
- * conferma prima di riscriverla per un pubblico non tecnico. Qui l'utente la
- * legge e decide.
+ * The Changelog agent first produces the technical version, then pauses and
+ * asks for confirmation before rewriting it for a non-technical audience. Here
+ * the user reads it and decides.
  *
- * Due cose che questa finestra prima sbagliava:
+ * Two things this dialog previously got wrong:
  *
- * 1. Offriva un collegamento a `/reports/{technicalReportId}` — un `<a href>`
- *    con target="_blank", quindi un caricamento completo in una scheda nuova.
- *    Il JWT vive solo in memoria per scelta (vedi sessionStore), quindi la
- *    scheda nuova nasceva senza sessione e la guardia rimandava al login. E
- *    l'id era comunque vuoto: in questo istante un Report tecnico non esiste
- *    ancora, perché le due fasi stanno dentro un solo Task e il Report nasce
- *    alla fine. Adesso il testo arriva insieme alla richiesta e si legge qui,
- *    senza uscire dalla pagina.
+ * 1. It offered a link to `/reports/{technicalReportId}` — an `<a href>`
+ *    with target="_blank", so a full page load in a new tab. The JWT lives only
+ *    in memory by design (see sessionStore), so the new tab was born without a
+ *    session and the guard redirected to login. And the id was empty anyway:
+ *    at this point a technical Report does not exist yet, because the two
+ *    phases live inside a single Task and the Report is created at the end.
+ *    Now the text arrives together with the request and is read here, without
+ *    leaving the page.
  *
- * 2. Parlava di Pull Request. L'agente Changelog non produce nessuna Proposal
- *    (ChangelogBusinessProfile.parse_output restituisce None in entrambe le
- *    fasi), quindi nessuna PR viene mai aperta: confermare qui vuol dire
- *    "procedi a generare la versione business", nient'altro.
+ * 2. It mentioned Pull Requests. The Changelog agent does not produce any
+ *    Proposal (ChangelogBusinessProfile.parse_output returns None in both
+ *    phases), so no PR is ever opened: confirming here means "proceed to
+ *    generate the business version", nothing else.
  */
 export function BusinessConfirmationModal({
   taskId,
@@ -62,17 +62,17 @@ export function BusinessConfirmationModal({
       clear_pending(taskId);
       onClose();
     } catch {
-      setError("Impossibile inviare la risposta. Riprova.");
+      setError("Unable to send the response. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <ModalOverlay open title="Rivedi il changelog tecnico" onClose={onClose}>
+    <ModalOverlay open title="Review the technical changelog" onClose={onClose}>
       <p className="mb-4 text-sm text-gray-500">
-        Il changelog tecnico è pronto. Rileggilo qui sotto: confermando, l'agente lo riscriverà in
-        una versione comprensibile a chi non conosce il codice.
+        The technical changelog is ready. Read it below: by confirming, the agent will rewrite it
+        in a version understandable to someone who does not know the code.
       </p>
 
       {technicalChangelog ? (
@@ -83,15 +83,15 @@ export function BusinessConfirmationModal({
         </div>
       ) : (
         <p className="mb-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-[#8a5a00]">
-          Il testo del changelog tecnico non è arrivato insieme alla richiesta. Puoi comunque
-          procedere: la versione business verrà generata lo stesso, e il report finale conterrà
-          entrambe.
+          The technical changelog text did not arrive with the request. You can still proceed: the
+          business version will be generated anyway, and the final report will contain both.
         </p>
       )}
 
       {technicalChangelogTruncated && (
         <p className="mb-4 text-xs text-gray-500">
-          Anteprima troncata perché molto lunga. Il changelog completo finisce comunque nel report.
+          Preview truncated because it was very long. The full changelog still ends up in the
+          report.
         </p>
       )}
 
@@ -104,7 +104,7 @@ export function BusinessConfirmationModal({
           disabled={loading}
           className="rounded border border-[#cccccc] px-4 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
         >
-          Interrompi
+          Cancel
         </button>
 
         <button
@@ -114,7 +114,7 @@ export function BusinessConfirmationModal({
           className="flex items-center gap-2 rounded bg-[#2a8a2a] px-4 py-2 text-sm font-medium text-white hover:bg-[#1e6b1e] transition disabled:opacity-50"
         >
           {loading && <Spinner size="sm" className="text-white" />}
-          Genera la versione business
+          Generate business version
         </button>
       </div>
     </ModalOverlay>

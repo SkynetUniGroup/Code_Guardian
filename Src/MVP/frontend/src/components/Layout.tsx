@@ -27,7 +27,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ... (mantieni il tuo Header/Nav attuale) ... */}
+      {/* ... (keep your current Header/Nav) ... */}
       <header className="bg-white shadow">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">

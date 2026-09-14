@@ -5,23 +5,24 @@ interface ComplexityWarningRendererProps {
 }
 
 /**
- * Renderer del blocco COMPLEXITY_WARNING, prodotto dall'agente Docs quando
- * incontra una funzione troppo complessa per essere documentata in modo utile.
+ * Renderer for the COMPLEXITY_WARNING block, produced by the Docs agent when
+ * it encounters a function too complex to be documented usefully.
  *
- * Esisteva nel contratto (shared/types.ts, models.py) ma non aveva un renderer:
- * il dispatcher di ReportDetailPage cadeva nel `default` e restituiva null, così
- * questi blocchi venivano scritti nel report, esportati nel PDF e non mostrati
- * mai a schermo.
+ * It existed in the contract (shared/types.ts, models.py) but had no renderer:
+ * the dispatcher in ReportDetailPage fell into the `default` case and
+ * returned null, so these blocks were written to the report, exported to the
+ * PDF, and never shown on screen.
  *
- * Severità fissa a INFO — non è un difetto, è un avviso — quindi niente
- * SeverityBadge: il tono neutro lo distingue da finding e violazioni.
+ * Fixed severity at INFO — it is not a defect, it is a notice — so no
+ * SeverityBadge: the neutral tone distinguishes it from findings and
+ * violations.
  */
 export function ComplexityWarningRenderer({ block }: ComplexityWarningRendererProps) {
   return (
     <div className="rounded border border-[#cccccc] bg-white p-4">
       <div className="mb-1 flex flex-wrap items-center gap-2">
         <span className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Complessità elevata
+          High complexity
         </span>
         <span className="truncate font-mono text-xs text-gray-500">
           {block.filePath}

@@ -7,38 +7,39 @@ interface SastFindingRendererProps {
 }
 
 /**
- * Come si legge il verdetto dell'LLM su un finding di Semgrep.
+ * How to read the LLM verdict on a Semgrep finding.
  *
- * NEEDS_REVIEW non è un errore né un successo: è il caso in cui il modello non
- * si è pronunciato — o perché il finding è stato escluso dal tetto, o perché
- * l'LLM non l'ha citato nella sua risposta. Merita un colore neutro e una
- * dicitura che non suggerisca né "risolto" né "vulnerabile".
+ * NEEDS_REVIEW is neither an error nor a success: it is the case where the
+ * model did not pronounce itself — either because the finding was excluded
+ * by the cap, or because the LLM did not mention it in its response. It
+ * deserves a neutral colour and a label that suggests neither "resolved" nor
+ * "vulnerable".
  */
 const VERDICT_STYLE: Record<SastVerdict, { label: string; className: string }> = {
   CONFIRMED: {
-    label: "Confermato",
+    label: "Confirmed",
     className: "bg-[#cc2222]/10 text-[#cc2222]",
   },
   FALSE_POSITIVE: {
-    label: "Falso positivo",
+    label: "False positive",
     className: "bg-[#2a8a2a]/10 text-[#2a8a2a]",
   },
   NEEDS_REVIEW: {
-    label: "Da rivedere",
+    label: "Needs review",
     className: "bg-gray-100 text-gray-500",
   },
 };
 
 /**
- * Renderer di un finding prodotto dall'analisi statica (Semgrep) e poi
- * giudicato dall'LLM.
+ * Renderer for a finding produced by static analysis (Semgrep) and then
+ * judged by the LLM.
  *
- * Distinto da FindingBlockRenderer di proposito: qui la provenienza è una
- * regola deterministica, non il modello, e sono proprio la regola, la categoria
- * OWASP, il CWE e il verdetto a dire a un revisore quanto fidarsi del
- * risultato. Un finding marcato falso positivo resta visibile — nasconderlo
- * significherebbe chiedere all'utente di fidarsi del giudizio dell'LLM senza
- * potergli dare un'occhiata.
+ * Deliberately distinct from FindingBlockRenderer: here the source is a
+ * deterministic rule, not the model, and it is precisely the rule, the OWASP
+ * category, the CWE, and the verdict that tell a reviewer how much to trust
+ * the result. A finding marked as false positive remains visible — hiding it
+ * would mean asking the user to trust the LLM's judgement without being able
+ * to look at it.
  */
 export function SastFindingRenderer({ block }: SastFindingRendererProps) {
   const [expanded, setExpanded] = useState(false);
@@ -93,7 +94,7 @@ export function SastFindingRenderer({ block }: SastFindingRendererProps) {
       {expanded && (
         <div className="divide-y divide-[#eeeeee] border-t border-[#cccccc] bg-gray-50 px-4 py-3">
           <div className="pb-3">
-            <span className="text-xs font-semibold uppercase text-gray-500">Regola</span>
+            <span className="text-xs font-semibold uppercase text-gray-500">Rule</span>
             <p className="mt-1 break-all font-mono text-xs text-gray-500">
               {block.ruleId} <span className="text-gray-400">({block.ruleSeverity})</span>
             </p>
@@ -102,7 +103,7 @@ export function SastFindingRenderer({ block }: SastFindingRendererProps) {
 
           {block.codeSnippet && (
             <div className="py-3">
-              <span className="text-xs font-semibold uppercase text-gray-500">Codice</span>
+              <span className="text-xs font-semibold uppercase text-gray-500">Code</span>
               <pre className="mt-1 overflow-x-auto rounded bg-white p-2 font-mono text-xs leading-relaxed text-[#2a2a2a]">
                 {block.codeSnippet}
               </pre>
@@ -112,7 +113,7 @@ export function SastFindingRenderer({ block }: SastFindingRendererProps) {
           {block.llmRemediation && (
             <div className="pt-3">
               <span className="text-xs font-semibold uppercase text-gray-500">
-                Rimedio suggerito
+                Suggested remediation
               </span>
               <p className="mt-1 text-sm leading-relaxed text-[#2a2a2a]">{block.llmRemediation}</p>
             </div>

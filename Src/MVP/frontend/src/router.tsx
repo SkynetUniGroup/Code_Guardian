@@ -15,15 +15,15 @@ import { useSessionStore } from "./stores/sessionStore";
  */
 const router = createRouter({
   routeTree,
-  // biome-ignore lint/style/noNonNullAssertion: convenzione di TanStack Router
-  // per inizializzare il contesto con un segnaposto sostituito a runtime
-  // da RouterProvider (vedi il componente Router qui sotto).
+  // biome-ignore lint/style/noNonNullAssertion: TanStack Router convention
+  // to initialise context with a placeholder replaced at runtime
+  // by RouterProvider (see the Router component below).
   context: { session: null! },
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   defaultErrorComponent: ({ error }) => (
     <div className="flex items-center justify-center min-h-screen text-sm text-red-600 p-4">
-      Errore inatteso: {error instanceof Error ? error.message : String(error)}
+      Unexpected error: {error instanceof Error ? error.message : String(error)}
     </div>
   ),
 });
