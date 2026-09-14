@@ -19,20 +19,21 @@ logger = logging.getLogger(__name__)
 
 
 def _with_sonarqube(ctx: dict, code_section: str) -> str:
-    """Antepone al codice la sezione con le metriche SonarQube, se ci sono.
+    """Prepends the SonarQube metrics section to the code, if present.
 
-    Le metriche entrano nella variabile che gia' porta il codice invece che in
-    una variabile propria del template: la sezione si intitola da sola
-    ("### Metriche SonarQube ..."), quindi il modello capisce cos'e' senza che
-    i tre template debbano dichiarare una `required_vars` in piu' — e senza che
-    un'operazione senza SonarQube configurato smetta di renderizzare.
+    The metrics go into the variable that already carries the code rather
+    than into a template variable of their own: the section titles itself
+    ("### SonarQube Metrics ..."), so the model understands what it is
+    without the three templates having to declare an extra 'required_vars'
+    -- and without an operation without SonarQube configured failing to
+    render.
 
     Args:
-        ctx (dict): Contesto caricato da DocsLoader.
-        code_section (str): Il blocco di codice o l'albero dei file.
+        ctx (dict): The context loaded by DocsLoader.
+        code_section (str): The code block or file tree.
 
     Returns:
-        str: La sezione da passare al template.
+        str: The section to pass to the template.
     """
     metrics = ctx.get("sonarqube_metrics")
     if not metrics:
@@ -54,10 +55,11 @@ class DocsLoader:
 
         Args:
             operation (str): The operation code. Defaults to 'DOCS_INLINE'.
-            sonarqube_service (SonarQubeService | None): Servizio per le metriche
-                di qualita'. Iniettato invece che costruito qui: e' main.py a
-                sapere se la funzionalita' e' attiva, e passarlo come dipendenza
-                lascia il loader verificabile senza un'istanza SonarQube.
+            sonarqube_service (SonarQubeService | None): Service for quality
+                metrics. Injected rather than constructed here: it is main.py
+                that knows whether the feature is active, and passing it as a
+                dependency keeps the loader testable without a SonarQube
+                instance.
         """
         self.operation = operation
         self._sonarqube = sonarqube_service
@@ -65,21 +67,21 @@ class DocsLoader:
     async def _load_sonarqube_metrics(
         self, agent_payload: dict | None, sha: str
     ) -> dict[str, Any] | None:
-        """Legge le metriche di qualita' del progetto, se disponibili.
+        """Reads the project quality metrics, if available.
 
-        Degrado silenzioso per scelta: le metriche arricchiscono il prompt, non
-        lo reggono. Un'istanza SonarQube irraggiungibile, un token scaduto o
-        credenziali malformate non devono far fallire la generazione della
-        documentazione, che senza di esse funziona esattamente come prima.
+        Silent degradation by design: the metrics enrich the prompt, they
+        do not sustain it. An unreachable SonarQube instance, an expired
+        token, or malformed credentials must not cause the documentation
+        generation to fail, which without them works exactly as before.
 
         Args:
-            agent_payload (dict | None): Payload dell'operazione, da cui si
-                leggono le credenziali sotto la chiave 'sonarqube_credentials'.
-            sha (str): Commit a cui e' ancorato il contesto; entra nella chiave
-                di cache, perche' le metriche di un commit non cambiano piu'.
+            agent_payload (dict | None): The operation payload, from which
+                credentials are read under the 'sonarqube_credentials' key.
+            sha (str): The commit the context is anchored to; enters the
+                cache key, because the metrics of a commit never change.
 
         Returns:
-            dict[str, Any] | None: Metriche per file, o None se non disponibili.
+            dict[str, Any] | None: Metrics per file, or None if not available.
         """
         if not (self._sonarqube and settings.enable_sonarqube):
             return None
@@ -91,15 +93,16 @@ class DocsLoader:
         try:
             credentials = SonarQubeCredentials.from_dict(raw_credentials)
             return await self._sonarqube.get_metrics(credentials, sha)
-        except Exception as exc:  # noqa: BLE001 - vedi la nota sul degrado
-            logger.warning("Metriche SonarQube non disponibili: %s", exc)
+        except Exception as exc:  # noqa: BLE001 - see the note on silent degradation
+            logger.warning("SonarQube metrics unavailable: %s", exc)
             return None
 
     def _find_target_units(self, content: str, filepath: str) -> list[str]:
         """Local pre-analysis to identify functions/classes for documentation or alignment check.
 
         Args:
-            content (str): The file content.
+            content (str): The file con
+tent.
             filepath (str): The path of the file.
 
         Returns:
@@ -144,7 +147,8 @@ class DocsLoader:
                 r"^\s*"  # Start of line with optional whitespace
                 r"(?:"  # Alternatives
                 r"(?:export\s+)?function\s+[a-zA-Z0-9_]+|"  # export function
-                r"(?:export\s+)?class\s+[a-zA-Z0-9_]+|"  # export class
+                r"(?:export\s+)?class\s+
+[a-zA-Z0-9_]+|"  # export class
                 r"(?:export\s+)?const\s+[a-zA-Z0-9_]+\s*=\s*(?:async\s*)?(?:\([^)]*\)|[a-zA-Z0-9_]+)\s*=>|"  # export const
                 r"(?:private\s+|public\s+|protected\s+)?[a-zA-Z0-9_]+\s*\("  # methods with access modifiers
                 r")"
@@ -204,7 +208,8 @@ class DocsLoader:
                     # Skip if the line starts with a keyword followed by (
                     match = re.match(r"^([a-zA-Z0-9_]+)\s*\(", line.strip())
                     if match:
-                        identifier = match.group(1)
+                        identifier = matc
+h.group(1)
                         if identifier in ts_keywords:
                             continue
                     has_doc = False
@@ -250,7 +255,8 @@ class DocsLoader:
                         elif prev_line.startswith("//"):
                             k -= 1
                             continue
-                        elif prev_line == "":
+                       
+ elif prev_line == "":
                             k -= 1
                             continue
                         else:
@@ -304,7 +310,8 @@ class DocsLoader:
             if endpoint_pattern.search(line):
                 has_doc = False
 
-                for j in range(max(0, i - 3), min(len(lines), i + 4)):
+                for j in rang
+e(max(0, i - 3), min(len(lines), i + 4)):
                     line_check = lines[j].strip()
                     if line_check.startswith(("/**", '"""', "'''")):
                         has_doc = True
@@ -356,7 +363,8 @@ class DocsLoader:
         for n in nodes:
             if n["path"].lower() == "package.json":
                 resp = await toolset.read_file(owner, repo, sha, n["path"])
-                package_json = resp.get("content", "Not found.")
+                package
+_json = resp.get("content", "Not found.")
             elif n["path"].lower() == "readme.md":
                 resp = await toolset.read_file(owner, repo, sha, n["path"])
                 readme = resp.get("content", "Not found.")
@@ -376,11 +384,11 @@ class DocsLoader:
                 "readme_path": readme_path,
                 "sonarqube_metrics": sonarqube_metrics,
                 "sonarqube_scope_files": [n["path"] for n in nodes if n["type"] == "file"],
-                # RF.79: il template README caricato dall'utente, se ne ha
-                # caricato uno. Arriva nel payload di avvio invece che da
-                # GitHub perche' appartiene all'utente, non al repository:
-                # lo stesso template vale per tutti i progetti che analizza.
-                # Assente significa "usa il modello di default" (RF.81).
+                # RF.79: the README template uploaded by the user, if they
+                # uploaded one. It arrives in the startup payload rather than
+                # from GitHub because it belongs to the user, not the
+                # repository: the same template applies to all projects
+                # analyzed. Absent means "use the default model" (RF.81).
                 "readme_template": (agent_payload or {}).get("readmeTemplate"),
             }
 
@@ -394,7 +402,8 @@ class DocsLoader:
 
         undocumented_summary = []
         for path in files_to_doc:
-            file_resp = await toolset.read_file(owner, repo, sha, path)
+            file_resp = await toolset.read_file(owner, rep
+o, sha, path)
             content = file_resp.get("content", "")
             if content:
                 if self.operation == "DOCS_API":
@@ -453,7 +462,8 @@ class BaseDocsDiffProfile:
         return self._shared_docs_parser(raw)
 
     def _shared_docs_parser(self, raw: str) -> tuple[list[Block], Proposal | None]:
-        """Shared parser for Proposal (unified diff) and Warning generation.
+        """Shared parser for Proposal (unified dif
+f) and Warning generation.
 
         Args:
             raw (str): The raw string output from the model.
@@ -513,7 +523,8 @@ class BaseDocsDiffProfile:
 
                 insert_line = line
 
-                diff_unified += f"@@ -{insert_line},0 +{insert_line},{num_lines} @@\n"
+                diff_unified += f"@@ -{insert_line},0 +{insert_line},{num_line
+s} @@\n"
                 for doc_line in doc_lines:
                     diff_unified += f"+{doc_line}\n"
 
@@ -568,7 +579,8 @@ class DocsInlineProfile(BaseDocsDiffProfile):
             # Find all "### File: path ###" sections
             file_sections = re.findall(r"### File: ([^\s]+) ###", ctx["code_units"])
 
-            for file_path in file_sections:
+            for file_path in
+ file_sections:
                 if file_path not in proposal_files:
                     # File was processed but not in proposal = all its units documented
                     blocks.append(
@@ -627,7 +639,8 @@ class DocsReadmeProfile:
         self._ctx = {}
 
     def build_prompt(self, ctx: dict) -> tuple[str, str]:
-        """Builds the system and user prompts incorporating the existing README.
+        """Builds the system and u
+ser prompts incorporating the existing README.
 
         Args:
             ctx (dict): The context containing languages and code units.
@@ -638,10 +651,10 @@ class DocsReadmeProfile:
         self._ctx = ctx
         template_data = load_prompt_template("docs", "readme_docs")
 
-        # RF.79/RF.81: vince il template caricato dall'utente; senza, si
-        # ricade sul modello di default dell'agente. Il ripristino previsto
-        # da RF.81 non e' quindi un'operazione a se': togliere il template
-        # personalizzato riporta l'agente su questo ramo.
+        # RF.79/RF.81: the user-uploaded template takes precedence; without
+        # one, the agent falls back to its default model. The restore
+        # provided by RF.81 is therefore not a separate operation: removing
+        # the custom template brings the agent back to this branch.
         readme_template = (ctx.get("readme_template") or "").strip()
 
         if not readme_template:
@@ -677,7 +690,8 @@ class DocsReadmeProfile:
         if match:
             new_readme = match.group(1).strip()
 
-        original_readme = self._ctx.get("original_readme", "Not found.")
+        ori
+ginal_readme = self._ctx.get("original_readme", "Not found.")
         if original_readme == "Not found.":
             original_readme = ""
 
@@ -711,3 +725,4 @@ class DocsReadmeProfile:
             )
         ]
         return blocks, proposal
+
