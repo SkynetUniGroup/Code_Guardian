@@ -21,26 +21,26 @@ import { UsageCounter, UsageCounterDocument } from "./../src/tasks/schemas/usage
 import { RunTaskJobData } from "./../src/tasks/task-processor";
 
 /**
- * Impalcatura condivisa dei test di integrazione.
+ * Shared scaffolding for integration tests.
  *
- * Ricalca quella di task-lifecycle.e2e-spec.ts, che resta il modello: gira il
- * vero AppModule contro MongoDB e Redis reali e sostituisce solo i confini
- * effettivamente esterni al sistema — GitHub e il servizio agenti Python.
- * Estratta qui perche' i test aggiunti dopo TI_05 sono sei e la
- * ricostruivano identica ciascuno; task-lifecycle.e2e-spec.ts non e' stato
- * toccato, la sua copia funziona ed e' il riferimento con cui confrontare
- * questa.
+ * Mirrors the one in task-lifecycle.e2e-spec.ts, which remains the reference
+ * model: it runs the real AppModule against real MongoDB and Redis and
+ * replaces only the boundaries that are truly external to the system —
+ * GitHub and the Python agent service. Extracted here because the tests
+ * added after TI_05 are six and each rebuilt it identically;
+ * task-lifecycle.e2e-spec.ts was not touched, its copy works and is the
+ * reference to compare this one against.
  *
- * Va eseguita con la coda in esclusiva: l'AppModule registra un worker
- * BullMQ, quindi un backend di sviluppo acceso sullo stesso Redis
- * consumerebbe i job di questi test col servizio agenti reale invece che col
- * doppio.
+ * Must be run with the queue in exclusive mode: the AppModule registers a
+ * BullMQ worker, so a development backend running on the same Redis would
+ * consume these tests' jobs with the real agent service instead of the
+ * mock.
  */
 
 export const URL_REPO = "https://github.com/OWASP/NodeGoat";
 
-/** Alberatura minima che la validazione del contesto si aspetta da GitHub. */
-export const ALBERO = [
+/** Minimal tree structure that context validation expects from GitHub. */
+export const TREE = [
   { path: "app/data/user-dao.js", type: "file" as const, sizeBytes: 2048 },
   { path: "app/routes/session.js", type: "file" as const, sizeBytes: 1024 },
 ];
@@ -53,7 +53,7 @@ const REPOSITORY = {
   primaryLanguage: "JavaScript",
 };
 
-export interface DoppioGithub {
+export interface GithubMock {
   verifyToken: Mock;
   listRepositories: Mock;
   getRepository: Mock;
@@ -66,14 +66,14 @@ export interface DoppioGithub {
   getIssueDetail: Mock;
 }
 
-/** Doppio di GitHub in lettura: nessuna rete, risposte deterministiche. */
-export function doppioGithub(): DoppioGithub {
+/** GitHub read mock: no network, deterministic responses. */
+export function githubMock(): GithubMock {
   return {
-    verifyToken: vi.fn().mockResolvedValue({ scopes: ["repo"], login: "utente-di-prova" }),
+    verifyToken: vi.fn().mockResolvedValue({ scopes: ["repo"], login: "test-user" }),
     listRepositories: vi.fn().mockResolvedValue([REPOSITORY]),
     getRepository: vi.fn().mockResolvedValue(REPOSITORY),
     resolveRefToSha: vi.fn().mockResolvedValue("abc1234567890"),
-    getTree: vi.fn().mockResolvedValue(ALBERO),
+    getTree: vi.fn().mockResolvedValue(TREE),
     getFileContent: vi.fn().mockResolvedValue({
       path: "app/data/user-dao.js",
       content: "function login() {}",
@@ -90,88 +90,88 @@ export function doppioGithub(): DoppioGithub {
   };
 }
 
-export interface DoppioAgente {
+export interface AgentMock {
   invoke: Mock;
   resume: Mock;
 }
 
-/** Doppio del servizio agenti: ogni test decide come deve rispondere. */
-export function doppioAgente(): DoppioAgente {
+/** Agent service mock: each test decides how it should respond. */
+export function agentMock(): AgentMock {
   return { invoke: vi.fn(), resume: vi.fn() };
 }
 
-export interface DoppioScritturaGithub {
+export interface GithubWriteMock {
   openPullRequestForProposal: Mock;
 }
 
-export interface AmbienteE2E {
+export interface E2EEnvironment {
   app: INestApplication<App>;
   server: App;
-  github: DoppioGithub;
-  agente: DoppioAgente;
-  scritturaGithub: DoppioScritturaGithub;
-  coda: Queue<RunTaskJobData>;
+  github: GithubMock;
+  agent: AgentMock;
+  githubWrite: GithubWriteMock;
+  queue: Queue<RunTaskJobData>;
   taskModel: Model<TaskDocument>;
   reportModel: Model<ReportDocument>;
   usageModel: Model<UsageCounterDocument>;
-  chiudi: () => Promise<void>;
+  close: () => Promise<void>;
 }
 
-export interface OpzioniAmbiente {
-  /** Sostituisce anche GithubWriteService, per i test sull'apertura di PR. */
-  conScritturaGithub?: boolean;
+export interface EnvironmentOptions {
+  /** Also replaces GithubWriteService, for tests on PR opening. */
+  withGithubWrite?: boolean;
   /**
-   * Lascia in piedi AgentInvocationService vero, sostituendo il confine piu'
-   * in basso: la chiamata HTTP al servizio agenti. Serve ai test che devono
-   * esercitare la traduzione fra la risposta dell'agente e l'esito della
-   * task — sostituire il servizio la salterebbe insieme al resto.
+   * Keeps the real AgentInvocationService, replacing the boundary further
+   * down: the HTTP call to the agent service. Useful for tests that need
+   * to exercise the translation between the agent response and the task
+   * outcome — replacing the service would skip it along with the rest.
    */
-  conAgenteReale?: boolean;
+  withRealAgent?: boolean;
   /**
-   * Lascia in piedi GithubClientService vero, cioe' chiamate reali all'API
-   * di GitHub. Solo per i test che verificano proprio quel confine, e solo
-   * con un token valido a disposizione.
+   * Keeps the real GithubClientService, i.e. real calls to the GitHub API.
+   * Only for tests that verify that specific boundary, and only with a
+   * valid token available.
    */
-  conGithubReale?: boolean;
+  withRealGithub?: boolean;
 }
 
 /**
- * Avvia l'applicazione reale con i due confini esterni sostituiti.
+ * Starts the real application with the two external boundaries replaced.
  *
- * Le impostazioni della pipe e del filtro sono le stesse di main.ts: senza
- * la pipe i DTO non verrebbero validati, senza il filtro il corpo degli
- * errori non porterebbe il campo `code` su cui questi test asseriscono.
+ * The pipe and filter settings are the same as main.ts: without the pipe
+ * DTOs would not be validated, without the filter the error body would not
+ * carry the `code` field that these tests assert on.
  */
-export async function avviaAmbiente(opzioni: OpzioniAmbiente = {}): Promise<AmbienteE2E> {
-  const github = doppioGithub();
-  const agente = doppioAgente();
-  const scritturaGithub: DoppioScritturaGithub = {
+export async function startEnvironment(options: EnvironmentOptions = {}): Promise<E2EEnvironment> {
+  const github = githubMock();
+  const agent = agentMock();
+  const githubWrite: GithubWriteMock = {
     openPullRequestForProposal: vi.fn(),
   };
 
-  let costruttore = Test.createTestingModule({ imports: [AppModule] })
-    // franc-min e' ESM-only e viene risolto con un import() dinamico, che
-    // Jest non sa eseguire senza --experimental-vm-modules (lo dichiara il
-    // commento in franc.provider.ts). E' una libreria di terze parti per il
-    // riconoscimento della lingua: sostituirla non tocca la logica in esame.
+  let builder = Test.createTestingModule({ imports: [AppModule] })
+    // franc-min is ESM-only and is resolved with a dynamic import(), which
+    // Jest cannot run without --experimental-vm-modules (as stated in the
+    // comment in franc.provider.ts). It is a third-party library for
+    // language detection: replacing it does not affect the logic under test.
     .overrideProvider(FRANC)
     .useValue(() => "eng");
 
-  if (!opzioni.conGithubReale) {
-    costruttore = costruttore.overrideProvider(GithubClientService).useValue(github);
+  if (!options.withRealGithub) {
+    builder = builder.overrideProvider(GithubClientService).useValue(github);
   }
 
-  if (!opzioni.conAgenteReale) {
-    costruttore = costruttore.overrideProvider(AgentInvocationService).useValue(agente);
+  if (!options.withRealAgent) {
+    builder = builder.overrideProvider(AgentInvocationService).useValue(agent);
   }
 
-  if (opzioni.conScritturaGithub) {
-    costruttore = costruttore.overrideProvider(GithubWriteService).useValue(scritturaGithub);
+  if (options.withGithubWrite) {
+    builder = builder.overrideProvider(GithubWriteService).useValue(githubWrite);
   }
 
-  const modulo: TestingModule = await costruttore.compile();
+  const module: TestingModule = await builder.compile();
 
-  const app = modulo.createNestApplication<INestApplication<App>>();
+  const app = module.createNestApplication<INestApplication<App>>();
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -187,130 +187,130 @@ export async function avviaAmbiente(opzioni: OpzioniAmbiente = {}): Promise<Ambi
     app,
     server: app.getHttpServer(),
     github,
-    agente,
-    scritturaGithub,
-    coda: app.get<Queue<RunTaskJobData>>(getQueueToken("tasks")),
+    agent,
+    githubWrite,
+    queue: app.get<Queue<RunTaskJobData>>(getQueueToken("tasks")),
     taskModel: app.get<Model<TaskDocument>>(getModelToken(Task.name)),
     reportModel: app.get<Model<ReportDocument>>(getModelToken(Report.name)),
     usageModel: app.get<Model<UsageCounterDocument>>(getModelToken(UsageCounter.name)),
-    chiudi: () => app.close(),
+    close: () => app.close(),
   };
 }
 
-export interface UtenteDiProva {
+export interface TestUser {
   token: string;
   userId: string;
   email: string;
 }
 
-/** Registra un utente nuovo e apre una sessione. */
-export async function utenteAutenticato(
+/** Registers a new user and opens a session. */
+export async function authenticatedUser(
   server: App,
   role = "SECURITY_AUDITOR",
-): Promise<UtenteDiProva> {
-  const email = `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@esempio.invalid`;
-  const password = "password-di-prova-123";
+): Promise<TestUser> {
+  const email = `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.invalid`;
+  const password = "test-password-123";
 
-  const registrazione = await request(server)
+  const registration = await request(server)
     .post("/api/v1/auth/register")
     .send({ firstName: "Ada", lastName: "Lovelace", email, password, role })
     .expect(201);
 
-  const accesso = await request(server)
+  const login = await request(server)
     .post("/api/v1/auth/login")
     .send({ email, password })
     .expect(200);
 
   return {
-    token: accesso.body.accessToken as string,
-    userId: registrazione.body.id as string,
+    token: login.body.accessToken as string,
+    userId: registration.body.id as string,
     email,
   };
 }
 
-/** Salva la credenziale GitHub che ogni operazione richiede. */
-export async function salvaCredenziale(server: App, token: string): Promise<void> {
+/** Saves the GitHub credential that every operation requires. */
+export async function saveCredential(server: App, token: string): Promise<void> {
   await request(server)
     .post("/api/v1/credentials")
     .set("Authorization", `Bearer ${token}`)
-    .send({ provider: "GITHUB", token: "ghp_token_di_prova_0123456789" })
+    .send({ provider: "GITHUB", token: "ghp_test_token_0123456789" })
     .expect(201);
 }
 
-/** Crea un contesto di analisi sull'intero repository. */
-export async function creaContesto(server: App, token: string): Promise<string> {
-  const risposta = await request(server)
+/** Creates an analysis context on the entire repository. */
+export async function createContext(server: App, token: string): Promise<string> {
+  const response = await request(server)
     .post("/api/v1/contexts")
     .set("Authorization", `Bearer ${token}`)
     .send({ repoUrl: URL_REPO, branch: "master", scopeType: "FULL_REPOSITORY" })
     .expect(201);
 
-  return risposta.body.id as string;
+  return response.body.id as string;
 }
 
-/** Utente autenticato, con credenziale e contesto gia' pronti. */
-export async function utentePronto(
+/** Authenticated user, with credential and context already set up. */
+export async function readyUser(
   server: App,
   role = "SECURITY_AUDITOR",
-): Promise<UtenteDiProva & { contextId: string }> {
-  const utente = await utenteAutenticato(server, role);
-  await salvaCredenziale(server, utente.token);
-  const contextId = await creaContesto(server, utente.token);
-  return { ...utente, contextId };
+): Promise<TestUser & { contextId: string }> {
+  const user = await authenticatedUser(server, role);
+  await saveCredential(server, user.token);
+  const contextId = await createContext(server, user.token);
+  return { ...user, contextId };
 }
 
 /**
- * Attende che una task raggiunga uno stato terminale.
+ * Waits for a task to reach a terminal state.
  *
- * Il worker BullMQ registrato dall'AppModule consuma la coda da solo: il
- * test non deve invocare il processore a mano — lo farebbe in corsa con lui
- * — ma osservare l'esito del percorso reale.
+ * The BullMQ worker registered by the AppModule consumes the queue on its
+ * own: the test must not invoke the processor manually — it would race
+ * with it — but observe the outcome of the real path.
  */
-export async function attendiEsito(
+export async function waitForOutcome(
   taskModel: Model<TaskDocument>,
   taskId: string,
   timeoutMs = 20_000,
 ): Promise<TaskDocument> {
-  const scadenza = Date.now() + timeoutMs;
-  while (Date.now() < scadenza) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
     const task = await taskModel.findById(taskId);
     if (task && ["COMPLETED", "FAILED", "CANCELLED"].includes(task.status)) {
       return task;
     }
     await new Promise((r) => setTimeout(r, 200));
   }
-  throw new Error(`La task ${taskId} non ha raggiunto uno stato terminale in ${timeoutMs}ms`);
+  throw new Error(`Task ${taskId} did not reach a terminal state within ${timeoutMs}ms`);
 }
 
-/** Attende che una condizione si verifichi, per le attese non terminali. */
-export async function attendiChe(
-  condizione: () => Promise<boolean>,
-  descrizione: string,
+/** Waits for a condition to be met, for non-terminal waits. */
+export async function waitForCondition(
+  condition: () => Promise<boolean>,
+  description: string,
   timeoutMs = 20_000,
 ): Promise<void> {
-  const scadenza = Date.now() + timeoutMs;
-  while (Date.now() < scadenza) {
-    if (await condizione()) return;
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (await condition()) return;
     await new Promise((r) => setTimeout(r, 200));
   }
-  throw new Error(`Condizione non verificata in ${timeoutMs}ms: ${descrizione}`);
+  throw new Error(`Condition not met within ${timeoutMs}ms: ${description}`);
 }
 
 /**
- * Legge una variabile da `Src/MVP/.env`, che Jest non carica da solo.
+ * Reads a variable from `Src/MVP/.env`, which Jest does not load on its own.
  *
- * Quel file raccoglie le variabili dei test contro servizi reali
- * (`E2E_GITHUB_PAT` e simili) ed e' gia' usato dalla suite Playwright; i
- * test di integrazione che toccano GitHub lo leggono da qui invece di
- * pretendere che l'operatore le esporti a mano prima di ogni esecuzione.
- * Una variabile gia' presente nell'ambiente ha comunque la precedenza.
+ * That file collects the variables for tests against real services
+ * (`E2E_GITHUB_PAT` and similar) and is already used by the Playwright suite;
+ * integration tests that touch GitHub read from here instead of requiring
+ * the operator to export them manually before each run.
+ * A variable already present in the environment takes precedence anyway.
  */
-export function daEnvDelMonorepo(chiave: string): string | undefined {
-  if (process.env[chiave]) return process.env[chiave];
+export function fromMonorepoEnv(key: string): string | undefined {
+  if (process.env[key]) return process.env[key];
   try {
-    const contenuto = readFileSync(resolve(__dirname, "..", "..", ".env"), "utf8");
-    const riga = contenuto.split("\n").find((r) => r.trim().startsWith(`${chiave}=`));
-    return riga?.slice(riga.indexOf("=") + 1).trim() || undefined;
+    const content = readFileSync(resolve(__dirname, "..", "..", ".env"), "utf8");
+    const line = content.split("\n").find((r) => r.trim().startsWith(`${key}=`));
+    return line?.slice(line.indexOf("=") + 1).trim() || undefined;
   } catch {
     return undefined;
   }
