@@ -1,36 +1,36 @@
-"""Eccezioni condivise fra il grafo e i singoli agenti.
+"""Shared exceptions between the graph and individual agents.
 
-Perche' un modulo a parte: `ReadabilityTooLowError` e' sollevata dall'agente
-Changelog e intercettata dal grafo, che la mappa su
-`ErrorKind.READABILITY_TOO_LOW`. Definita dentro `agents/changelog.py` — dove
-stava — creava un ciclo di import: `graph` importava `agents.changelog` per
-avere l'eccezione, e `agents.changelog` importava `graph` per avere
-`AgentCancelled` e `resume_action`.
+Why a separate module: `ReadabilityTooLowError` is raised by the Changelog
+agent and intercepted by the graph, which maps it to
+`ErrorKind.READABILITY_TOO_LOW`. Defined inside `agents/changelog.py` --
+where it used to live -- it created an import cycle: `graph` imported
+`agents.changelog` to get the exception, and `agents.changelog` imported
+`graph` to get `AgentCancelled` and `resume_action`.
 
-Il ciclo non si vedeva sempre. Partendo da `src.graph` (come fanno i test)
-l'import passa, perche' quando `changelog` chiede `AgentCancelled` il grafo lo
-ha gia' definito. Partendo da `src.main` — cioe' avviando davvero il servizio —
-si rompe: `main` importa `changelog`, che a meta' file importa `graph`, che
-torna a chiedere a `changelog` una classe non ancora dichiarata, e uvicorn muore
-con `ImportError: cannot import name 'ReadabilityTooLowError' from partially
-initialized module`.
+The cycle did not always surface. Starting from `src.graph` (as tests do)
+the import succeeds, because when `changelog` asks for `AgentCancelled` the
+graph has already defined it. Starting from `src.main` -- i.e. actually
+starting the service -- it breaks: `main` imports `changelog`, which
+mid-file imports `graph`, which turns back and asks `changelog` for a class
+not yet declared, and uvicorn dies with `ImportError: cannot import name
+'ReadabilityTooLowError' from partially initialized module`.
 
-Questo modulo non importa nulla dal progetto, quindi non puo' partecipare a
-nessun ciclo.
+This module imports nothing from the project, so it cannot participate in
+any cycle.
 """
 
 
 class ReadabilityTooLowError(Exception):
-    """Il testo prodotto non raggiunge la leggibilita' minima richiesta.
+    """The produced text does not meet the minimum required readability.
 
-    Mappata su ErrorKind.READABILITY_TOO_LOW dal nodo di gestione errori.
+    Mapped to ErrorKind.READABILITY_TOO_LOW by the error handling node.
     """
 
     def __init__(self, message: str):
-        """Inizializza l'eccezione.
+        """Initializes the exception.
 
         Args:
-            message (str): Il messaggio d'errore.
+            message (str): The error message.
         """
         self.error_type = "READABILITY_TOO_LOW"
         super().__init__(message)

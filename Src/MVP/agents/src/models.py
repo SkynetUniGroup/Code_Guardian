@@ -139,9 +139,9 @@ class ComplexityWarningBlock(_Immutable):
     filePath: str
     lineStart: int
     lineEnd: int
-    # Nome allineato al contratto condiviso (shared/src/types.ts): era `reason`,
-    # ma il frontend e il compositore PDF leggono `explanation` su questo blocco
-    # esattamente come su PolicyViolationBlock.
+    # Name aligned with the shared contract (shared/src/types.ts): was `reason`,
+    # but the frontend and the PDF composer read `explanation` on this block
+    # exactly as on PolicyViolationBlock.
     explanation: str
 
 
@@ -160,10 +160,10 @@ class ChangelogItemBlock(_Immutable):
 SastVerdict = Literal["CONFIRMED", "FALSE_POSITIVE", "NEEDS_REVIEW"]
 SastRuleSeverity = Literal["ERROR", "WARNING", "INFO"]
 
-# Semgrep ha un suo vocabolario di severità (tre livelli) diverso da quello del
-# report (cinque). Si conservano entrambi: `severity` per far funzionare filtro
-# e badge del frontend come su ogni altro blocco, `ruleSeverity` per poter
-# ancora confrontare il report con una scansione Semgrep grezza.
+# Semgrep has its own severity vocabulary (three levels) different from the
+# report's (five). Both are kept: `severity` to make the frontend filter
+# and badge work as on every other block, `ruleSeverity` to still be able
+# to compare the report with a raw Semgrep scan.
 SEMGREP_SEVERITY_MAP: dict[str, Severity] = {
     "ERROR": "HIGH",
     "WARNING": "MEDIUM",
@@ -172,11 +172,11 @@ SEMGREP_SEVERITY_MAP: dict[str, Severity] = {
 
 
 class SastFindingBlock(BaseModel):
-    """Un finding sollevato dall'analisi statica (Semgrep).
+    """A finding raised by static analysis (Semgrep).
 
-    Non è `_Immutable` come gli altri blocchi di proposito: `verdict` e
-    `llmRemediation` vengono assegnati *dopo* la costruzione, quando l'LLM ha
-    giudicato il finding (OwaspScanProfile.parse_output).
+    Not `_Immutable` like the other blocks on purpose: `verdict` and
+    `llmRemediation` are assigned *after* construction, when the LLM
+    has judged the finding (OwaspScanProfile.parse_output).
     """
 
     kind: Literal["SAST_FINDING"] = "SAST_FINDING"
@@ -195,7 +195,7 @@ class SastFindingBlock(BaseModel):
 
 
 class SastSummaryBlock(BaseModel):
-    """Riepilogo aggregato della fase SAST."""
+    """Aggregated summary of the SAST phase."""
 
     kind: Literal["SAST_SUMMARY"] = "SAST_SUMMARY"
     order: int = 0
@@ -305,15 +305,16 @@ class PendingInputBusinessConfirmation(BaseModel):
     """Pending input for the business changelog confirmation."""
 
     kind: Literal["BUSINESS_CONFIRMATION"]
-    # Il changelog tecnico appena prodotto, come testo Markdown.
+    # The technical changelog just produced, as Markdown text.
     #
-    # Qui c'era `technicalReportId`, con la nota che l'avrebbe riempito NestJS
-    # dopo aver persistito il report. Non poteva succedere: in quel momento il
-    # Report tecnico non esiste ancora, perche' le due fasi stanno dentro un
-    # solo Task e il Report nasce alla fine. Si manda il testo, che invece c'e'.
+    # This used to be `technicalReportId`, with a note that NestJS would
+    # fill it after persisting the report. That could not happen: at that
+    # point the technical Report does not exist yet, because the two
+    # phases live inside a single Task and the Report is born at the end.
+    # The text is sent instead, which is already available.
     technicalChangelog: str = ""
-    # True quando il testo e' stato tagliato al tetto: serve all'interfaccia
-    # per dirlo, invece di far credere che il changelog finisca li'.
+    # True when the text was truncated at the cap: the interface needs this
+    # to say so, rather than letting it appear that the changelog ends there.
     technicalChangelogTruncated: bool = False
 
 
@@ -330,16 +331,16 @@ class AgentStepResult(BaseModel):
 
     status: Literal["interrupted", "completed", "failed"]
     pendingInput: PendingInput | None = None
-    # Payload di run per il backend (AgentRunPayload): body, proposal, summary,
-    # tokensConsumed. NON il Report intero: titolo, contesto e stato li compone
-    # il backend, che e' l'unico a conoscerli in modo attendibile.
+    # Run payload for the backend (AgentRunPayload): body, proposal, summary,
+    # tokensConsumed. NOT the full Report: title, context and status are
+    # composed by the backend, which is the only one that knows them reliably.
     result: dict | None = None
-    # Messaggio leggibile del fallimento.
+    # Human-readable failure message.
     error: str | None = None
-    # Classificazione del fallimento (ErrorKind lato Python). Separata da
-    # `error` perche' il backend la mappa sul proprio catalogo di error.code:
-    # passargli il messaggio al posto della categoria faceva finire ogni
-    # fallimento su UPSTREAM.
+    # Failure classification (ErrorKind on the Python side). Separate from
+    # `error` because the backend maps it to its own error.code catalog:
+    # passing it the message instead of the category sent every failure to
+    # UPSTREAM.
     errorKind: str | None = None
 
 
@@ -359,7 +360,8 @@ class ResumeAgentRequest(BaseModel):
     threadId: str
     operationCode: str
     inputValue: Any
-    # Opzionale: su un resume lo stato dell'agente (toolset incluso) viene
-    # ripristinato dal checkpoint LangGraph, quindi il backend non ha motivo di
-    # rimandarlo. Obbligatorio com'era, faceva fallire con 422 ogni resume.
+    # Optional: on a resume the agent state (toolset included) is
+    # restored from the LangGraph checkpoint, so the backend has no reason
+    # to resend it. Required as it was, it caused every resume to fail with 422.
+
     userId: str | None = None

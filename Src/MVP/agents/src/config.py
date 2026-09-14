@@ -65,10 +65,10 @@ class Settings(BaseSettings):
     # Security and Internal Communication
     internal_shared_secret: str = Field(default="", alias="INTERNAL_SHARED_SECRET")
     backend_base_url: str = Field(default="http://backend:3000", alias="BACKEND_BASE_URL")
-    # Il backend monta tutte le rotte sotto un prefisso globale
-    # (main.ts: app.setGlobalPrefix("api/v1")), /internal/* incluse. Il valore
-    # entra sia nell'URL chiamato sia nel messaggio firmato in HMAC, perche'
-    # InternalAuthGuard firma request.path, che il prefisso ce l'ha dentro.
+    # The backend mounts all routes under a global prefix
+    # (main.ts: app.setGlobalPrefix("api/v1")), /internal/* included. The value
+    # goes into both the called URL and the HMAC-signed message, because
+    # InternalAuthGuard signs request.path, which includes the prefix.
     backend_api_prefix: str = Field(default="/api/v1", alias="BACKEND_API_PREFIX")
     prompts_dir: str = Field(default="/app/prompts", alias="PROMPTS_DIR")
 
@@ -95,9 +95,9 @@ class Settings(BaseSettings):
 
     # Operational Limits
     max_output_tokens: int = 4096
-    # DOCS_API deve descrivere un'intera superficie API in un solo JSON: con
-    # il tetto generico la risposta viene troncata a meta' oggetto e il
-    # parsing fallisce sempre, anche dopo i retry (stesso tetto ogni volta).
+    # DOCS_API must describe an entire API surface in a single JSON: with
+    # the generic cap the response gets truncated mid-object and parsing
+    # always fails, even after retries (same cap every time).
     docs_api_max_output_tokens: int = Field(default=8000, alias="DOCS_API_MAX_OUTPUT_TOKENS")
     max_scope_chars: int = Field(default=100_000, alias="MAX_SCOPE_CHARS")
     changelog_min_readability: float = Field(default=50.0, alias="CHANGELOG_MIN_READABILITY")
@@ -121,28 +121,28 @@ class Settings(BaseSettings):
     # Queues and Storage
     redis_url: str = Field(default="redis://redis:6379", alias="REDIS_URL")
 
-    # ─────────────────── Analisi statica (Semgrep) ───────────────────
-    # Fase deterministica che precede l'LLM in SECURITY_OWASP: Semgrep trova i
-    # candidati, il modello li giudica uno per uno.
+    # ─────────────────── Static analysis (Semgrep) ───────────────────
+    # Deterministic phase that precedes the LLM in SECURITY_OWASP: Semgrep finds
+    # the candidates, the model judges them one by one.
     enable_sast_semgrep: bool = Field(default=True, alias="ENABLE_SAST_SEMGREP")
-    # Tetto al tempo della sola scansione. Deve stare comodamente sotto il
-    # budget dell'operazione (SECURITY_OWASP: 180s), perché dopo la scansione
-    # resta ancora da fare la parte piu' lenta, cioe' l'invocazione del modello.
+    # Cap on the scanning time alone. Must sit comfortably below the
+    # operation budget (SECURITY_OWASP: 180s), because after the scan
+    # the slowest part still remains, namely the model invocation.
     semgrep_timeout_s: int = Field(default=120, alias="SEMGREP_TIMEOUT_S")
-    # Quanti finding vengono sottoposti al modello. I finding oltre questa
-    # soglia restano contati nel riepilogo ma senza verdetto: e' un limite di
-    # costo e di finestra di contesto, non di analisi.
+    # How many findings are submitted to the model. Findings above this
+    # threshold remain counted in the summary but without a verdict: it is a
+    # cost and context-window limit, not an analysis limit.
     sast_max_findings_llm: int = Field(default=40, alias="SAST_MAX_FINDINGS_LLM")
-    # Quanti file al massimo vengono scaricati per la scansione. Ogni file e'
-    # una chiamata HTTP alla facade del backend (e una riga di AccessLog, e una
-    # chiamata a GitHub): su un repository grande, senza un tetto, la sola
-    # raccolta sfonderebbe il budget dell'operazione prima ancora di iniziare.
+    # How many files at most are downloaded for scanning. Each file is
+    # an HTTP call to the backend facade (and an AccessLog line, and a
+    # GitHub call): on a large repository, without a cap, the collection
+    # alone would blow the operation budget before even starting.
     sast_max_files: int = Field(default=200, alias="SAST_MAX_FILES")
 
     # ─────────────────────────── SonarQube ───────────────────────────
-    # Disattivato di default: richiede un'istanza SonarQube/SonarCloud e delle
-    # credenziali per progetto, che nell'MVP non hanno ancora un posto dove
-    # essere salvate (il backend accetta solo il provider GITHUB).
+    # Disabled by default: requires a SonarQube/SonarCloud instance and
+    # per-project credentials, which in the MVP have no place to be
+    # stored yet (the backend only accepts the GITHUB provider).
     enable_sonarqube: bool = Field(default=False, alias="ENABLE_SONARQUBE")
     sonar_cache_ttl_s: int = Field(default=86400, alias="SONAR_CACHE_TTL_S")
 
