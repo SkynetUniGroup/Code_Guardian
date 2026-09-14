@@ -7,19 +7,20 @@ export interface AtlasStackProps extends cdk.StackProps {
   sgAtlas: ec2.ISecurityGroup;
 }
 
-// Project, cluster M10 e Private Endpoint Service Atlas sono gestiti a mano
-// nella console Atlas (org di Alessandro): il team non ha una API key con
-// permessi di scrittura sul progetto. Questo stack crea solo il lato AWS
-// del PrivateLink, cioè l'Interface VPC Endpoint che punta al service name
-// che Atlas genera quando il Private Endpoint viene creato in console.
+// The Atlas M10 project, cluster, and Private Endpoint Service are managed
+// manually in the Atlas console (Alessandro's org): the team does not have
+// an API key with write permissions on the project. This stack creates only
+// the AWS side of the PrivateLink, i.e. the Interface VPC Endpoint pointing
+// to the service name that Atlas generates when the Private Endpoint is
+// created in the console.
 //
-// Handshake manuale (vedi RUNBOOK.md):
-// 1. Alessandro crea il Private Endpoint su Atlas (regione AWS eu-south-1),
-//    ottiene un service name (com.amazonaws.vpce...).
+// Manual handshake (see RUNBOOK.md):
+// 1. Alessandro creates the Private Endpoint on Atlas (AWS region eu-south-1),
+//    obtains a service name (com.amazonaws.vpce...).
 // 2. `cdk deploy CodeGuardian-Atlas --context atlasPrivateEndpointServiceName=<...>`
-//    crea l'Interface VPC Endpoint qui sotto.
-// 3. L'ID dell'endpoint (output AtlasPrivateEndpointId) va incollato in Atlas
-//    per completare il collegamento e sbloccare la connection string.
+//    creates the Interface VPC Endpoint below.
+// 3. The endpoint ID (output AtlasPrivateEndpointId) must be pasted in Atlas
+//    to complete the connection and unlock the connection string.
 export class AtlasStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AtlasStackProps) {
     super(scope, id, props);
@@ -28,7 +29,7 @@ export class AtlasStack extends cdk.Stack {
     const serviceName = this.node.tryGetContext("atlasPrivateEndpointServiceName");
     if (!serviceName) {
       throw new Error(
-        "Contesto 'atlasPrivateEndpointServiceName' non impostato: recuperare il service name del Private Endpoint da Atlas (creato a mano) e passarlo con --context (vedi RUNBOOK.md).",
+        "Context 'atlasPrivateEndpointServiceName' not set: retrieve the Private Endpoint service name from Atlas (created manually) and pass it with --context (see RUNBOOK.md).",
       );
     }
 
@@ -38,13 +39,13 @@ export class AtlasStack extends cdk.Stack {
       subnetIds: vpc.privateSubnets.map((s) => s.subnetId),
       vpcEndpointType: "Interface",
       securityGroupIds: [sgAtlas.securityGroupId],
-      privateDnsEnabled: false, // la risoluzione passa dalla connection string fornita da Atlas
+      privateDnsEnabled: false, // resolution goes through the connection string provided by Atlas
     });
 
     new cdk.CfnOutput(this, "AtlasPrivateEndpointId", {
       value: awsPrivateEndpoint.ref,
       description:
-        "Incollare in Atlas (Private Endpoint -> AWS) per completare il collegamento, poi recuperare la connection string per il secret codeguardian/mongo-uri",
+        "Paste in Atlas (Private Endpoint -> AWS) to complete the connection, then retrieve the connection string for the codeguardian/mongo-uri secret",
     });
   }
 }

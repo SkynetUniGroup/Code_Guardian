@@ -1,6 +1,6 @@
-// Costanti condivise tra gli stack.
+// Shared constants across stacks.
 
-export const REGION = "eu-south-1"; // Milano, data residency
+export const REGION = "eu-south-1"; // Milan, data residency
 
 export const PROJECT_TAGS = {
   Project: "CodeGuardian",
@@ -15,13 +15,13 @@ export const ECS_SIZING = {
   agents: { cpu: 1024, memoryLimitMiB: 2048, desiredCount: 1, port: 8000 },
 };
 
-export const HEALTH_CHECK_GRACE_PERIOD_SECONDS = 60; // evita restart-loop in avvio
+export const HEALTH_CHECK_GRACE_PERIOD_SECONDS = 60; // avoids restart loop at startup
 
-export const ALB_IDLE_TIMEOUT_SECONDS = 3600; // necessario per WebSocket
+export const ALB_IDLE_TIMEOUT_SECONDS = 3600; // needed for WebSocket
 export const ALB_STICKINESS_DURATION_SECONDS = 3600;
 export const ALB_DEREGISTRATION_DELAY_SECONDS = 30;
-// Lo slash iniziale non e' cosmetico: un target group ALB rifiuta un path
-// che non comincia con "/", e il deploy fallisce in fase di sintesi.
+// The leading slash is not cosmetic: an ALB target group rejects a path
+// that does not start with "/", and the deploy fails at synth time.
 export const HEALTH_CHECK_PATH = "/api/v1/auth/health";
 
 export const CLOUD_MAP_NAMESPACE = "codeguardian.local";
@@ -44,6 +44,6 @@ export const ARTIFACTS_LIFECYCLE_EXPIRATION_DAYS = 30;
 
 export const BUDGET_THRESHOLDS_PERCENT = [50, 80, 100];
 
-export const RATE_LIMIT_GITHUB_RPM = 60; // rate limiter applicativo su Redis
+export const RATE_LIMIT_GITHUB_RPM = 60; // application-level rate limiter on Redis
 
 export const SNS_ALERTS_TOPIC_NAME = "codeguardian-alerts";

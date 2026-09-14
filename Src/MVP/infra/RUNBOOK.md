@@ -1,103 +1,104 @@
-# RUNBOOK -- Attività manuali (non automatizzabili in CDK)
+# RUNBOOK -- Manual activities (not automatable in CDK)
 
-Queste attività non hanno un equivalente CloudFormation/CDK affidabile (richieste
-soggette ad approvazione umana, generazione di chiavi fuori banda, conferme
-via email) e vanno eseguite a mano, nell'ordine indicato. Ogni punto riporta
-il riferimento al documento di progettazione.
+These activities have no reliable CloudFormation/CDK equivalent (requests
+subject to human approval, out-of-band key generation, email confirmations)
+and must be performed manually, in the order indicated. Each item references
+the design document.
 
-## 1. Richiesta accesso modelli Bedrock (scadenza issue: 22/08)
+## 1. Request Bedrock model access (issue deadline: 22/08)
 
-Rif. §27.1, §32.1 Tabella 32.
+Ref. §27.1, §32.1 Table 32.
 
-Questa è la prima cosa da avviare: i tempi di approvazione AWS non sono
-controllabili dal team.
+This is the first thing to start: AWS approval times are not controllable by
+the team.
 
-1. Console AWS Bedrock -> regione **eu-south-1** (Milano) -> *Model access*.
-2. Richiedere accesso a:
-   - **Qwen3-32B** (dense) -- Docs, Changelog. Priorità alta.
-   - **Qwen3-Coder-30B-A3B-Instruct** -- Security. Priorità alta.
-   - **Qwen3-235B-A22B** -- fallback di scalata (§39.5). Priorità media, ma
-     richiederla comunque subito: serve se il modello da 30B non supera il
-     Piano di Qualifica sul golden set (RQ.5, accuratezza ≥ 85%).
-3. Verificare in anticipo l'assenza di Service Control Policy (SCP)
-   organizzative che blocchino Bedrock nell'account.
-4. Verificare in console (sezione *Model access* / *Cross-region inference*)
-   se i modelli Qwen3 richiedono un **Inference Profile ARN** invece
-   dell'ARN diretto del foundation model per l'invocazione on-demand. Se sì,
-   aggiornare `BEDROCK_MODEL_ARN_PATTERN` in `lib/config.ts` e la policy IAM
-   in `lib/compute-stack.ts` (`InvokeQwenModelsOnly`) di conseguenza --
-   l'errore tipico in caso di mismatch è `ValidationException: Invocation of
+1. AWS Bedrock Console -> region **eu-south-1** (Milan) -> *Model access*.
+2. Request access to:
+   - **Qwen3-32B** (dense) -- Docs, Changelog. High priority.
+   - **Qwen3-Coder-30B-A3B-Instruct** -- Security. High priority.
+   - **Qwen3-235B-A22B** -- scaling fallback (§39.5). Medium priority, but
+     request it immediately anyway: needed if the 30B model does not pass
+     the Qualification Plan on the golden set (RQ.5, accuracy >= 85%).
+3. Verify in advance the absence of organizational Service Control Policies
+   (SCP) that block Bedrock in the account.
+4. Verify in the console (section *Model access* / *Cross-region inference*)
+   whether the Qwen3 models require an **Inference Profile ARN** instead of
+   the direct foundation model ARN for on-demand invocation. If so, update
+   `BEDROCK_MODEL_ARN_PATTERN` in `lib/config.ts` and the IAM policy in
+   `lib/compute-stack.ts` (`InvokeQwenModelsOnly`) accordingly -- the
+   typical error in case of mismatch is `ValidationException: Invocation of
    model ID ... is not supported`.
 
-## 2. MongoDB Atlas -- handshake manuale prima di `cdk deploy CodeGuardian-Atlas`
+## 2. MongoDB Atlas -- manual handshake before `cdk deploy CodeGuardian-Atlas`
 
-Rif. §27.4, §31.1.
+Ref. §27.4, §31.1.
 
-Project e cluster M10 sono creati e gestiti a mano nella console Atlas
-(nessuna API key con permessi di scrittura sul progetto è disponibile per il
-team): `lib/atlas-stack.ts` crea solo il lato AWS del PrivateLink.
+The M10 project and cluster are created and managed manually in the Atlas
+console (no API key with write permissions on the project is available to
+the team): `lib/atlas-stack.ts` creates only the AWS side of the PrivateLink.
 
-1. **Chi gestisce Atlas** (Alessandro) crea il Private Endpoint dal progetto
-   Atlas esistente, regione AWS **eu-south-1**, e comunica il service name
-   generato (`com.amazonaws.vpce-svc-...`).
-2. Deployare passando quel service name:
+1. **Whoever manages Atlas** (Alessandro) creates the Private Endpoint from
+   the existing Atlas project, AWS region **eu-south-1**, and communicates
+   the generated service name (`com.amazonaws.vpce-svc-...`).
+2. Deploy passing that service name:
    ```bash
    npx cdk deploy CodeGuardian-Atlas --context atlasPrivateEndpointServiceName=<SERVICE_NAME>
    ```
-3. Recuperare l'output `AtlasPrivateEndpointId` e comunicarlo a chi gestisce
-   Atlas: va incollato in console Atlas (Private Endpoint -> AWS) per
-   completare il collegamento.
-4. **Azione Dev post-collegamento (§27.4 punto 4, §31.1):** da console Atlas
-   -> Connect -> Private Endpoint, recuperare la connection string generata e
-   aggiornarla nel secret:
+3. Retrieve the `AtlasPrivateEndpointId` output and communicate it to whoever
+   manages Atlas: it must be pasted in the Atlas console (Private Endpoint ->
+   AWS) to complete the connection.
+4. **Dev action post-connection (§27.4 point 4, §31.1):** from the Atlas
+   console -> Connect -> Private Endpoint, retrieve the generated connection
+   string and update it in the secret:
    ```bash
    aws secretsmanager put-secret-value \
      --secret-id codeguardian/mongo-uri \
-     --secret-string '<connection-string-del-private-endpoint>'
+     --secret-string '<private-endpoint-connection-string>'
    ```
-   Verificare la connettività dal task backend prima di considerare questo
-   punto completato. La Network Access List di Atlas non deve contenere
-   alcuna entry pubblica (0.0.0.0/0 o IP): è l'assenza di entry pubbliche,
-   combinata con la connettività PrivateLink attiva, a restringere l'accesso
-   al solo VPC.
+   Verify connectivity from the backend task before considering this item
+   complete. The Atlas Network Access List must not contain any public
+   entries (0.0.0.0/0 or IP): it is the absence of public entries, combined
+   with active PrivateLink connectivity, that restricts access to the VPC
+   only.
 
-## 3. GitHub Actions -- secrets del repository
+## 3. GitHub Actions -- repository secrets
 
-Rif. `.github/workflows/deploy.yml`.
+Ref. `.github/workflows/deploy.yml`.
 
-Nel repository GitHub (Settings -> Secrets and variables -> Actions),
-aggiungere:
+In the GitHub repository (Settings -> Secrets and variables -> Actions),
+add:
 
-| Secret                      | Valore                                                        |
+| Secret                      | Value                                                        |
 | ---------------------------- | -------------------------------------------------------------- |
-| `AWS_ACCOUNT_ID`             | ID account AWS (12 cifre) dove è deployata l'infrastruttura     |
-| `FRONTEND_BUCKET_NAME`       | Output `FrontendBucketName` di `CodeGuardian-CloudFront`       |
-| `CLOUDFRONT_DISTRIBUTION_ID` | Output `DistributionId` di `CodeGuardian-CloudFront`            |
+| `AWS_ACCOUNT_ID`             | AWS account ID (12 digits) where the infrastructure is deployed     |
+| `FRONTEND_BUCKET_NAME`       | `FrontendBucketName` output of `CodeGuardian-CloudFront`       |
+| `CLOUDFRONT_DISTRIBUTION_ID` | `DistributionId` output of `CodeGuardian-CloudFront`            |
 
-Aggiornare inoltre `githubOrg`/`githubRepo` in `cdk.json` (o via
-`--context`) con i valori reali PRIMA di deployare `CodeGuardian-CicdIdentity`,
-altrimenti il trust policy del ruolo OIDC punterà a un repository segnaposto.
+Also update `githubOrg`/`githubRepo` in `cdk.json` (or via `--context`) with
+the real values BEFORE deploying `CodeGuardian-CicdIdentity`, otherwise the
+OIDC role trust policy will point to a placeholder repository.
 
-Il trust policy del ruolo accetta token OIDC da qualunque branch/ref del
-repository indicato. Le pull request possono quindi tecnicamente assumere il
-ruolo, ma nella pipeline (`.github/workflows/deploy.yml`) non lo fanno mai:
-gli step che richiedono AWS sono condizionati a `push` su `main`. Sulle PR
-girano solo typecheck e build Docker locale.
+The role trust policy accepts OIDC tokens from any branch/ref of the
+indicated repository. Pull requests can therefore technically assume the
+role, but in the pipeline (`.github/workflows/deploy.yml`) they never do:
+steps that require AWS are conditioned on `push` to `main`. On PRs only
+typecheck and local Docker build run.
 
-## 4. Conferma sottoscrizione email SNS (scadenza issue: 30/08)
+## 4. Confirm SNS email subscription (issue deadline: 30/08)
 
-Rif. §27.9 punto 3.
+Ref. §27.9 point 3.
 
-Dopo `cdk deploy CodeGuardian-Observability`, l'indirizzo email indicato in
-`alertEmail` (`cdk.json` o `--context alertEmail=...`) riceve una mail di
-conferma da AWS SNS. **Se nessuno clicca il link, gli allarmi non verranno
-mai recapitati** e il problema resta invisibile finché non serve davvero.
-Verificare lo stato `Confirmed` in console SNS -> Subscriptions.
+After `cdk deploy CodeGuardian-Observability`, the email address specified
+in `alertEmail` (`cdk.json` or `--context alertEmail=...`) receives a
+confirmation email from AWS SNS. **If nobody clicks the link, the alarms
+will never be delivered** and the problem remains invisible until it is
+actually needed. Verify the `Confirmed` status in the SNS console ->
+Subscriptions.
 
-## 5. Primo push manuale immagini ECR (scadenza issue: 24/08)
+## 5. First manual push of ECR images (issue deadline: 24/08)
 
-Rif. §27.5 punto 4. Prima che la pipeline CI/CD esista, per validare il
-flusso:
+Ref. §27.5 point 4. Before the CI/CD pipeline exists, to validate the
+flow:
 
 ```bash
 aws ecr get-login-password --region eu-south-1 | \
@@ -110,35 +111,35 @@ docker build -t <ACCOUNT_ID>.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/agent
 docker push <ACCOUNT_ID>.dkr.ecr.eu-south-1.amazonaws.com/codeguardian/agents:latest
 ```
 
-## 6. Bootstrap di us-east-1 (prerequisito per `CodeGuardian-Budget`)
+## 6. Bootstrap of us-east-1 (prerequisite for `CodeGuardian-Budget`)
 
-`AWS::Budgets::Budget` esiste come risorsa CloudFormation solo nella regione
-us-east-1 (AWS Budgets è un servizio globale, come IAM o CloudFront) --
-`lib/budget-stack.ts` deploya lì a prescindere da dove vive il resto
-dell'infrastruttura. Prima del primo `cdk deploy CodeGuardian-Budget`,
-bootstrappare anche quella regione:
+`AWS::Budgets::Budget` exists as a CloudFormation resource only in the
+us-east-1 region (AWS Budgets is a global service, like IAM or CloudFront)
+-- `lib/budget-stack.ts` deploys there regardless of where the rest of the
+infrastructure lives. Before the first `cdk deploy CodeGuardian-Budget`,
+bootstrap that region as well:
 
 ```bash
 npx cdk bootstrap aws://<ACCOUNT_ID>/us-east-1
 ```
 
-## 7. Attivazione del cost allocation tag (prerequisito per AWS Budgets)
+## 7. Activate the cost allocation tag (prerequisite for AWS Budgets)
 
-Rif. §36.2. Il budget CDK (`budget-stack.ts`) filtra i costi con
-`costFilters: { TagKeyValue: ["user:Project$CodeGuardian"] }`. Perché questo
-filtro funzioni, il tag `Project` deve prima essere **attivato come Cost
+Ref. §36.2. The CDK budget (`budget-stack.ts`) filters costs with
+`costFilters: { TagKeyValue: ["user:Project$CodeGuardian"] }`. For this
+filter to work, the `Project` tag must first be **activated as a Cost
 Allocation Tag** in Billing and Cost Management -> Cost Allocation Tags
-(operazione manuale, non esiste un'API/risorsa CloudFormation per attivarlo).
-Impiega fino a 24 ore per riflettersi nei dati di costo. Finché non è
-attivato, il budget mostrerà una spesa pari a zero anche con risorse
-correttamente taggate.
+(manual operation, there is no API/CloudFormation resource to activate
+it). It takes up to 24 hours to reflect in cost data. Until it is
+activated, the budget will show zero spend even with correctly tagged
+resources.
 
-## 8. Stima costi e AWS Budgets (scadenza issue: 30/08)
+## 8. Cost estimate and AWS Budgets (issue deadline: 30/08)
 
-Rif. §36.2. Usare **AWS Pricing Calculator** con i parametri di questo
-documento: 1 NAT Gateway, 1 nodo ElastiCache, 8 VPC Endpoint Interface (+
-Atlas PrivateLink), Compute ECS (Tabella 26). Il costo del cluster MongoDB
-Atlas M10 è **fatturato separatamente da MongoDB** (non compare in AWS Cost
-Explorer/Budgets): sommarlo manualmente alla stima e monitorarlo a parte in
-console Atlas. Aggiornare `monthlyBudgetUsd` in `cdk.json` con la cifra
-concordata dal team prima di deployare `CodeGuardian-Budget`.
+Ref. §36.2. Use the **AWS Pricing Calculator** with the parameters of this
+document: 1 NAT Gateway, 1 ElastiCache node, 8 VPC Endpoint Interface (+
+Atlas PrivateLink), ECS Compute (Table 26). The MongoDB Atlas M10 cluster
+cost is **billed separately by MongoDB** (does not appear in AWS Cost
+Explorer/Budgets): add it manually to the estimate and monitor it
+separately in the Atlas console. Update `monthlyBudgetUsd` in `cdk.json`
+with the amount agreed by the team before deploying `CodeGuardian-Budget`.

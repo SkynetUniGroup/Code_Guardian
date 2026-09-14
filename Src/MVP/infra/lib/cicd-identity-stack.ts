@@ -4,11 +4,11 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import type { Construct } from "constructs";
 import { ECR_MAX_TAGGED_IMAGES, ECR_REPOS, ECR_UNTAGGED_MAX_AGE_DAYS } from "./config";
 
-// Repository ECR + identità CI/CD via GitHub OIDC (nessuna chiave IAM
-// long-lived salvata come secret del repository). Il ruolo
-// `codeguardian-ci-role` copre qui solo il push su ECR; i permessi di
-// deploy (ECS) e distribuzione frontend (S3 + CloudFront) vengono aggiunti
-// allo stesso ruolo da compute-stack.ts e cloudfront-stack.ts.
+// ECR repositories + CI/CD identity via GitHub OIDC (no long-lived IAM
+// key stored as a repository secret). The `codeguardian-ci-role` role
+// covers only ECR push here; deploy (ECS) and frontend distribution (S3 +
+// CloudFront) permissions are added to the same role by compute-stack.ts
+// and cloudfront-stack.ts.
 export class CicdIdentityStack extends cdk.Stack {
   public readonly backendRepo: ecr.Repository;
   public readonly agentsRepo: ecr.Repository;
@@ -23,17 +23,17 @@ export class CicdIdentityStack extends cdk.Stack {
     const lifecycleRules: ecr.LifecycleRule[] = [
       {
         rulePriority: 1,
-        description: `Mantieni solo le ultime ${ECR_MAX_TAGGED_IMAGES} immagini taggate`,
+        description: `Keep only the last ${ECR_MAX_TAGGED_IMAGES} tagged images`,
         tagStatus: ecr.TagStatus.TAGGED,
-        // Match su qualsiasi tag: il tagging reale è lo SHA breve del
-        // commit senza prefisso (es. `:a1b2c3d`), un prefisso fisso tipo
-        // "sha-" non avrebbe mai fatto match.
+        // Match on any tag: the actual tagging is the short SHA of the
+        // commit without prefix (e.g. `:a1b2c3d`), a fixed prefix like
+        // "sha-" would never match.
         tagPatternList: ["*"],
         maxImageCount: ECR_MAX_TAGGED_IMAGES,
       },
       {
         rulePriority: 2,
-        description: `Elimina immagini untagged più vecchie di ${ECR_UNTAGGED_MAX_AGE_DAYS} giorno/i`,
+        description: `Delete untagged images older than ${ECR_UNTAGGED_MAX_AGE_DAYS} day(s)`,
         tagStatus: ecr.TagStatus.UNTAGGED,
         maxImageAge: cdk.Duration.days(ECR_UNTAGGED_MAX_AGE_DAYS),
       },
@@ -61,15 +61,15 @@ export class CicdIdentityStack extends cdk.Stack {
     this.ciRole = new iam.Role(this, "CiRole", {
       roleName: "codeguardian-ci-role",
       description:
-        "Identità GitHub Actions per build/push immagini, deploy ECS e invalidazione CloudFront",
+        "GitHub Actions identity for image build/push, ECS deploy and CloudFront invalidation",
       assumedBy: new iam.OpenIdConnectPrincipal(githubOidcProvider, {
         StringEquals: {
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
         },
         StringLike: {
-          // Qualunque ref/branch del repo può assumere il ruolo; è il
-          // workflow (deploy.yml), non il trust policy, a restringere le
-          // credenziali AWS al solo push su main.
+          // Any ref/branch of the repo can assume the role; it is the
+          // workflow (deploy.yml), not the trust policy, that restricts
+          // AWS credentials to pushes on main only.
           "token.actions.githubusercontent.com:sub": `repo:${githubOrg}/${githubRepo}:*`,
         },
       }),
@@ -82,13 +82,13 @@ export class CicdIdentityStack extends cdk.Stack {
       new iam.PolicyStatement({
         sid: "EcrAuth",
         actions: ["ecr:GetAuthorizationToken"],
-        resources: ["*"], // azione non scopabile a livello di risorsa
+        resources: ["*"], // action not scoppable at resource level
       }),
     );
 
-    // Serve al job synth-infra della pipeline: senza questi due permessi,
-    // i context lookup di `cdk synth` (AZ della VPC, prefix list di
-    // CloudFront) falliscono con AccessDenied.
+    // Needed by the synth-infra job in the pipeline: without these two
+    // permissions, the context lookups of `cdk synth` (VPC AZs, CloudFront
+    // prefix list) fail with AccessDenied.
     this.ciRole.addToPolicy(
       new iam.PolicyStatement({
         sid: "CdkSynthContextLookups",
@@ -98,7 +98,7 @@ export class CicdIdentityStack extends cdk.Stack {
     );
 
     new cdk.CfnOutput(this, "CiRoleArn", { value: this.ciRole.roleArn });
-    new cdk.CfnOutput(this, "BackendRepoUri", { value: this.backendRepo.repositoryUri });
-    new cdk.CfnOutput(this, "AgentsRepoUri", { value: this.agentsRepo.repositoryUri });
+    new cdk.CfnOutput(this, "BackendRepoURI", { value: this.backendRepo.repositoryUri });
+    new cdk.CfnOutput(this, "AgentsRepoURI", { value: this.agentsRepo.repositoryUri });
   }
 }

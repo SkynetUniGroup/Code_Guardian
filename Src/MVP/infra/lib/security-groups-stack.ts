@@ -7,22 +7,22 @@ export interface SecurityGroupsStackProps extends cdk.StackProps {
   vpc: ec2.IVpc;
 }
 
-// Un SG per componente. sg-backend e sg-agents si parlano in entrambe le
-// direzioni: dichiarare quelle regole inline nei costruttori fa lamentare
-// CloudFormation di un ciclo tra i due SG, quindi si creano vuoti e le
-// regole reciproche si aggiungono dopo (sezione 3).
+// One SG per component. sg-backend and sg-agents talk to each other in
+// both directions: declaring those rules inline in the constructors makes
+// CloudFormation complain about a cycle between the two SGs, so they are
+// created empty and the reciprocal rules are added afterwards (section 3).
 //
-// sg-agents non ha mai una regola di egress verso 0.0.0.0/0: è così che
-// il divieto per gli agenti di accedere a Internet è garantito a livello
-// di rete, non solo nel codice Python.
+// sg-agents never has an egress rule towards 0.0.0.0/0: this is how the
+// prohibition for agents to access the Internet is guaranteed at the
+// network level, not just in the Python code.
 export class SecurityGroupsStack extends cdk.Stack {
   public readonly sgAlb: ec2.SecurityGroup;
   public readonly sgBackend: ec2.SecurityGroup;
   public readonly sgAgents: ec2.SecurityGroup;
-  public readonly sgAtlas: ec2.SecurityGroup; // sull'Interface VPC Endpoint di Atlas PrivateLink
+  public readonly sgAtlas: ec2.SecurityGroup; // on the Atlas PrivateLink Interface VPC Endpoint
   public readonly sgRedis: ec2.SecurityGroup;
-  public readonly sgVpce: ec2.SecurityGroup; // endpoint Interface generici
-  public readonly sgBedrock: ec2.SecurityGroup; // endpoint Bedrock, solo da sg-agents
+  public readonly sgVpce: ec2.SecurityGroup; // generic Interface endpoints
+  public readonly sgBedrock: ec2.SecurityGroup; // Bedrock endpoint, only from sg-agents
 
   constructor(scope: Construct, id: string, props: SecurityGroupsStackProps) {
     super(scope, id, props);
@@ -31,28 +31,28 @@ export class SecurityGroupsStack extends cdk.Stack {
     this.sgAlb = new ec2.SecurityGroup(this, "SgAlb", {
       vpc,
       securityGroupName: "codeguardian-alb",
-      description: "ALB pubblico dietro CloudFront",
+      description: "Public ALB behind CloudFront",
       allowAllOutbound: false,
     });
 
     this.sgBackend = new ec2.SecurityGroup(this, "SgBackend", {
       vpc,
       securityGroupName: "codeguardian-backend",
-      description: "Servizio ECS backend (NestJS)",
+      description: "Backend ECS service (NestJS)",
       allowAllOutbound: false,
     });
 
     this.sgAgents = new ec2.SecurityGroup(this, "SgAgents", {
       vpc,
       securityGroupName: "codeguardian-agents",
-      description: "Servizio ECS agents (Python/LangGraph) -- zero egress verso Internet",
+      description: "Agents ECS service (Python/LangGraph) -- zero egress to Internet",
       allowAllOutbound: false,
     });
 
     this.sgAtlas = new ec2.SecurityGroup(this, "SgAtlas", {
       vpc,
       securityGroupName: "codeguardian-atlas",
-      description: "Interface VPC Endpoint verso MongoDB Atlas PrivateLink",
+      description: "Interface VPC Endpoint to MongoDB Atlas PrivateLink",
       allowAllOutbound: false,
     });
 
@@ -66,19 +66,19 @@ export class SecurityGroupsStack extends cdk.Stack {
     this.sgVpce = new ec2.SecurityGroup(this, "SgVpce", {
       vpc,
       securityGroupName: "codeguardian-vpce",
-      description: "VPC Endpoints Interface generici (Secrets Manager, ECR, CloudWatch Logs, SSM)",
+      description: "Generic Interface VPC Endpoints (Secrets Manager, ECR, CloudWatch Logs, SSM)",
       allowAllOutbound: false,
     });
 
     this.sgBedrock = new ec2.SecurityGroup(this, "SgBedrock", {
       vpc,
       securityGroupName: "codeguardian-bedrock",
-      description: "VPC Endpoint Interface Bedrock Runtime -- ingress solo da sg-agents",
+      description: "Bedrock Runtime Interface VPC Endpoint -- ingress only from sg-agents",
       allowAllOutbound: false,
     });
 
-    // L'ID del prefix list di CloudFront cambia per account/regione: va
-    // risolto a synth-time (serve una sessione AWS valida per `cdk synth`).
+    // The CloudFront prefix list ID changes per account/region: it must be
+    // resolved at synth-time (requires a valid AWS session for `cdk synth`).
     const cloudFrontOriginFacingPrefixListId = ec2.PrefixList.fromLookup(
       this,
       "CloudFrontOriginFacingPrefixList",
@@ -90,32 +90,31 @@ export class SecurityGroupsStack extends cdk.Stack {
     this.sgAlb.addIngressRule(
       ec2.Peer.prefixList(cloudFrontOriginFacingPrefixListId),
       ec2.Port.tcp(80),
-      "HTTP da CloudFront origin-facing (edge)",
+      "HTTP from CloudFront origin-facing (edge)",
     );
     this.sgAlb.addEgressRule(this.sgBackend, ec2.Port.tcp(ECS_SIZING.backend.port), "To backend");
 
     this.sgBackend.addIngressRule(this.sgAlb, ec2.Port.tcp(ECS_SIZING.backend.port), "From ALB");
 
-        this.sgBackend.addEgressRule(
+    this.sgBackend.addEgressRule(
       this.sgAtlas,
       ec2.Port.tcp(ATLAS_MONGO_PORT),
       "To Atlas PrivateLink",
     );
     this.sgAtlas.addIngressRule(this.sgBackend, ec2.Port.tcp(ATLAS_MONGO_PORT), "From backend");
 
-    // TEMPORANEO: il cluster Atlas vive in eu-central-1 (Frankfurt), non in
-    // eu-south-1 come questa infrastruttura — PrivateLink funziona solo
-    // dentro la stessa region, quindi l'endpoint sopra non è mai
-    // utilizzabile per questo cluster. Finché il cluster non viene spostato
-    // in eu-south-1 (o si abbandona l'idea del PrivateLink), il backend
-    // raggiunge Atlas via Internet pubblico attraverso il NAT Gateway,
-    // autenticato dalla IP Access List su Atlas (IP del NAT Gateway
-    // whitelisted a mano). Va tolta quando si risolve il disallineamento
-    // di region.
+    // TEMPORARY: the Atlas cluster lives in eu-central-1 (Frankfurt), not
+    // in eu-south-1 like this infrastructure -- PrivateLink works only
+    // within the same region, so the endpoint above is never usable for
+    // this cluster. Until the cluster is moved to eu-south-1 (or the
+    // PrivateLink idea is abandoned), the backend reaches Atlas via the
+    // public Internet through the NAT Gateway, authenticated by the IP
+    // Access List on Atlas (NAT Gateway IP whitelisted manually). Remove
+    // this when the region mismatch is resolved.
     this.sgBackend.addEgressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(ATLAS_MONGO_PORT),
-      "To Atlas via Internet pubblico (region mismatch col Private Endpoint)",
+      "To Atlas via public Internet (region mismatch with Private Endpoint)",
     );
 
     this.sgBackend.addEgressRule(this.sgRedis, ec2.Port.tcp(REDIS_PORT), "To Redis");
@@ -133,53 +132,53 @@ export class SecurityGroupsStack extends cdk.Stack {
     this.sgAgents.addEgressRule(this.sgVpce, ec2.Port.tcp(443), "To VPC Endpoints (SM/ECR/CW/SSM)");
     this.sgVpce.addIngressRule(this.sgAgents, ec2.Port.tcp(443), "From agents");
 
-        // I livelli delle immagini ECR sono fisicamente su S3: anche con gli
-    // endpoint Interface ecr.api/ecr.dkr coperti da sgVpce sopra, il pull
-    // effettivo di un livello puo' reindirizzare a un URL S3 il cui IP di
-    // destinazione resta quello pubblico di S3 (il Gateway Endpoint lo
-    // instrada privatamente sotto banco, ma il security group valuta
-    // comunque l'IP di destinazione apparente). Un Gateway Endpoint non ha
-    // una ENI/SG propria da referenziare: serve la prefix list di S3. Non
-    // e' un buco verso Internet generico (non viola il divieto di riga
-    // 15-17): la prefix list copre solo gli IP di S3 di questa region,
-    // sempre instradati via il Gateway Endpoint gia' esistente.
+    // ECR image layers are physically on S3: even with the Interface
+    // endpoints ecr.api/ecr.dkr covered by sgVpce above, the actual pull
+    // of a layer can redirect to an S3 URL whose destination IP remains
+    // the public S3 IP (the Gateway Endpoint routes it privately
+    // underneath, but the security group still evaluates the apparent
+    // destination IP). A Gateway Endpoint has no own ENI/SG to reference:
+    // the S3 prefix list is needed. This is not a hole to the generic
+    // Internet (does not violate the prohibition of lines 15-17): the
+    // prefix list covers only S3 IPs in this region, always routed via
+    // the existing Gateway Endpoint.
     const s3PrefixListId = ec2.PrefixList.fromLookup(this, "S3PrefixList", {
       prefixListName: `com.amazonaws.${REGION}.s3`,
     }).prefixListId;
     this.sgAgents.addEgressRule(
       ec2.Peer.prefixList(s3PrefixListId),
       ec2.Port.tcp(443),
-      "To S3 (livelli immagine ECR, via Gateway Endpoint)",
+      "To S3 (ECR image layers, via Gateway Endpoint)",
     );
 
     this.sgAgents.addEgressRule(this.sgBedrock, ec2.Port.tcp(443), "To Bedrock Runtime endpoint");
     this.sgBedrock.addIngressRule(
       this.sgAgents,
       ec2.Port.tcp(443),
-      "From agents (solo agents invoca Bedrock)",
+      "From agents (only agents invoke Bedrock)",
     );
 
-        // TEMPORANEO, stesso motivo del backend (vedi sopra): il cluster Atlas
-    // e' in eu-central-1, non eu-south-1, quindi il Private Endpoint non e'
-    // mai utilizzabile. Nota bene: questa riga viola deliberatamente la
-    // garanzia di riga 15-17 ("sg-agents non ha mai egress verso
-    // 0.0.0.0/0") -- e' un compromesso di sicurezza consapevole, non un
-    // errore. Va tolta quando si risolve il disallineamento di region.
+    // TEMPORARY, same reason as the backend (see above): the Atlas cluster
+    // is in eu-central-1, not eu-south-1, so the Private Endpoint is never
+    // usable. Note: this rule deliberately violates the guarantee of
+    // lines 15-17 ("sg-agents never has egress to 0.0.0.0/0") -- it is a
+    // conscious security compromise, not an error. Remove this when the
+    // region mismatch is resolved.
     this.sgAgents.addEgressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(ATLAS_MONGO_PORT),
-      "To Atlas via Internet pubblico (region mismatch col Private Endpoint) -- TEMPORANEO, viola il divieto di riga 15-17",
+      "To Atlas via public Internet (region mismatch with Private Endpoint) -- TEMPORARY, violates the prohibition of lines 15-17",
     );
 
-    // Unico egress verso Internet di tutto lo stack: il backend che chiama
-    // l'API REST di GitHub via NAT.
+    // The only egress to the Internet of the entire stack: the backend
+    // calling the GitHub REST API via NAT.
     this.sgBackend.addEgressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(443),
-      "HTTPS verso api.github.com (via NAT Gateway) -- unico canale esterno oltre a Bedrock",
+      "HTTPS to api.github.com (via NAT Gateway) -- only external channel besides Bedrock",
     );
 
-    // Regole reciproche backend <-> agents, aggiunte ora (vedi commento in cima al file).
+    // Reciprocal rules backend <-> agents, added now (see comment at top of file).
     this.sgBackend.addEgressRule(this.sgAgents, ec2.Port.tcp(ECS_SIZING.agents.port), "To agents");
     this.sgAgents.addIngressRule(
       this.sgBackend,
@@ -190,7 +189,7 @@ export class SecurityGroupsStack extends cdk.Stack {
     this.sgAgents.addEgressRule(
       this.sgBackend,
       ec2.Port.tcp(ECS_SIZING.backend.port),
-      "To backend (tool-calls GitHub read-only + callback progresso)",
+      "To backend (read-only GitHub tool-calls + progress callback)",
     );
     this.sgBackend.addIngressRule(
       this.sgAgents,
@@ -198,8 +197,8 @@ export class SecurityGroupsStack extends cdk.Stack {
       "From agents",
     );
 
-    // sg-atlas, sg-redis, sg-vpce, sg-bedrock non hanno regole di egress:
-    // sono endpoint/servizi terminali, non aprono connessioni verso altro.
+    // sg-atlas, sg-redis, sg-vpce, sg-bedrock have no egress rules:
+    // they are terminal endpoints/services, they do not open connections to anything.
 
     new cdk.CfnOutput(this, "SgAgentsId", { value: this.sgAgents.securityGroupId });
     new cdk.CfnOutput(this, "SgBackendId", { value: this.sgBackend.securityGroupId });

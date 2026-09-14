@@ -4,17 +4,17 @@ import type { Construct } from "constructs";
 import { BUDGET_THRESHOLDS_PERCENT, PROJECT_TAGS } from "./config";
 
 export interface BudgetStackProps extends cdk.StackProps {
-  // ARN letterale, non l'oggetto Topic: quello vive in eu-south-1, questo
-  // stack in us-east-1, e nome/account/regione sono già noti a synth-time.
+  // Literal ARN, not the Topic object: that lives in eu-south-1, this
+  // stack in us-east-1, and name/account/region are already known at synth-time.
   alertsTopicArn: string;
   monthlyBudgetUsd: number;
 }
 
-// AWS Budgets è un servizio globale: la risorsa CloudFormation
-// `AWS::Budgets::Budget` esiste solo in us-east-1, quindi questo stack va
-// deployato lì a prescindere da dove vive il resto (vedi bin/codeguardian.ts
-// e RUNBOOK.md per il bootstrap separato). Notifica comunque il Topic SNS
-// in eu-south-1 -- Budgets supporta nativamente l'invio cross-region.
+// AWS Budgets is a global service: the CloudFormation resource
+// `AWS::Budgets::Budget` exists only in us-east-1, so this stack must be
+// deployed there regardless of where the rest lives (see bin/codeguardian.ts
+// and RUNBOOK.md for the separate bootstrap). It still notifies the SNS
+// Topic in eu-south-1 -- Budgets natively supports cross-region delivery.
 export class BudgetStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: BudgetStackProps) {
     super(scope, id, props);
@@ -31,17 +31,17 @@ export class BudgetStack extends cdk.Stack {
         subscribers: [{ subscriptionType: "SNS", address: alertsTopicArn }],
       }));
 
-    // Il cluster MongoDB Atlas è fatturato a parte da MongoDB, non compare
-    // qui: va monitorato in console Atlas.
+    // The MongoDB Atlas cluster is billed separately by MongoDB, it does
+    // not appear here: monitor it in the Atlas console.
     new budgets.CfnBudget(this, "MonthlyBudget", {
       budget: {
         budgetName: "codeguardian-mvp-monthly",
         budgetType: "COST",
         timeUnit: "MONTHLY",
         budgetLimit: { amount: monthlyBudgetUsd, unit: "USD" },
-        // Il tag "Project" va prima attivato come Cost Allocation Tag in
-        // Billing -> Cost Allocation Tags (RUNBOOK.md), altrimenti questo
-        // filtro non intercetta nulla.
+        // The "Project" tag must first be activated as a Cost Allocation
+        // Tag in Billing -> Cost Allocation Tags (RUNBOOK.md), otherwise
+        // this filter intercepts nothing.
         costFilters: {
           TagKeyValue: [`user:Project$${PROJECT_TAGS.Project}`],
         },

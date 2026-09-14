@@ -4,23 +4,23 @@ import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import type { Construct } from "constructs";
 
-// KMS, Secrets Manager, Parameter Store. Un segreto per credenziale (non un
-// blob JSON unico): con un JSON unico l'ARN nella Task Definition deve
-// specificare la chiave da estrarre, dimenticarlo inietta l'intero blob
-// nella variabile d'ambiente.
+// KMS, Secrets Manager, Parameter Store. One secret per credential (not a
+// single JSON blob): with a single JSON blob the ARN in the Task Definition
+// must specify the key to extract, forgetting it injects the entire blob
+// into the environment variable.
 //
-// REDIS_URL non è qui: dipende dall'endpoint del cluster ElastiCache, quindi
-// il parametro nasce in data-stack.ts subito dopo il provisioning.
+// REDIS_URL is not here: it depends on the ElastiCache cluster endpoint, so
+// the parameter is created in data-stack.ts right after provisioning.
 //
-// I 4 secret usano la chiave gestita di default `aws/secretsmanager`, non la
-// CMK condivisa qui sotto. Non è una scelta di comodo: `Secret.grantRead()`
-// (chiamato da compute-stack.ts quando i secret finiscono nel container)
-// concede il decrypt KMS avvolgendo il grantee in un `ViaServicePrincipal`,
-// che non supporta le policy identity-based -- il grant è quindi costretto a
-// scrivere sulla key policy della CMK, che vivrebbe qui e dovrebbe
-// referenziare il ruolo creato in compute-stack.ts: un ciclo (Secrets <->
-// Compute). Con la chiave di default questo non serve. La CMK resta usata
-// per S3 e Redis, dove il problema non si presenta.
+// The 4 secrets use the default managed key `aws/secretsmanager`, not the
+// shared CMK below. This is not a convenience choice: `Secret.grantRead()`
+// (called by compute-stack.ts when secrets land in the container) grants
+// KMS decrypt by wrapping the grantee in a `ViaServicePrincipal`, which
+// does not support identity-based policies -- the grant is therefore
+// forced to write to the CMK key policy, which would live here and would
+// need to reference the role created in compute-stack.ts: a cycle
+// (Secrets <-> Compute). With the default key this is not needed. The CMK
+// remains used for S3 and Redis, where the problem does not arise.
 export class KmsSecretsStack extends cdk.Stack {
   public readonly kmsKey: kms.Key;
 
@@ -35,22 +35,22 @@ export class KmsSecretsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Usata da S3 e ElastiCache (MongoDB Atlas cifra a riposo con chiavi
-    // proprie). Il grant esplicito per i Task Role vive nei rispettivi
-    // stack consumatori.
+    // Used by S3 and ElastiCache (MongoDB Atlas encrypts at rest with its
+    // own keys). The explicit grant for the Task Role lives in the
+    // respective consumer stacks.
     this.kmsKey = new kms.Key(this, "CodeGuardianKey", {
       alias: "alias/codeguardian-mvp",
-      description: "CMK condivisa MVP: ElastiCache, S3",
+      description: "Shared MVP CMK: ElastiCache, S3",
       enableKeyRotation: true,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
-    // Placeholder: il valore reale arriva solo dopo il provisioning di
-    // Atlas (RUNBOOK.md) -- non va lasciato così in un ambiente condiviso.
+    // Placeholder: the real value arrives only after Atlas provisioning
+    // (RUNBOOK.md) -- must not be left like this in a shared environment.
     this.secretMongoUri = new secretsmanager.Secret(this, "MongoUriSecret", {
       secretName: "codeguardian/mongo-uri",
       description:
-        "MONGO_URI -- connection string del Private Endpoint MongoDB Atlas (da aggiornare dopo il provisioning Atlas)",
+        "MONGO_URI -- MongoDB Atlas Private Endpoint connection string (to update after Atlas provisioning)",
       secretStringValue: cdk.SecretValue.unsafePlainText(
         "REPLACE_AFTER_ATLAS_PRIVATE_ENDPOINT_SETUP",
       ),
@@ -58,14 +58,14 @@ export class KmsSecretsStack extends cdk.Stack {
 
     this.secretJwt = new secretsmanager.Secret(this, "JwtSecret", {
       secretName: "codeguardian/jwt-secret",
-      description: "JWT_SECRET -- firma HS256 dei token di sessione",
+      description: "JWT_SECRET -- HS256 signing of session tokens",
       generateSecretString: { passwordLength: 64, excludePunctuation: true },
     });
 
     this.secretCredentialMasterKey = new secretsmanager.Secret(this, "CredentialMasterKeySecret", {
       secretName: "codeguardian/credential-master-key",
       description:
-        "CREDENTIAL_MASTER_KEY -- key material per HKDF -> AES-256-GCM sulle credenziali di servizio",
+        "CREDENTIAL_MASTER_KEY -- key material for HKDF -> AES-256-GCM on service credentials",
       generateSecretString: { passwordLength: 64, excludePunctuation: true },
     });
 
@@ -75,7 +75,7 @@ export class KmsSecretsStack extends cdk.Stack {
       {
         secretName: "codeguardian/internal-shared-secret",
         description:
-          "INTERNAL_SHARED_SECRET -- HMAC sugli endpoint /internal/* tra backend e agents",
+          "INTERNAL_SHARED_SECRET -- HMAC on /internal/* endpoints between backend and agents",
         generateSecretString: { passwordLength: 64, excludePunctuation: true },
       },
     );
@@ -83,19 +83,19 @@ export class KmsSecretsStack extends cdk.Stack {
     this.paramBackendBaseUrl = new ssm.StringParameter(this, "BackendBaseUrlParam", {
       parameterName: "/codeguardian/backend-base-url",
       description:
-        "BACKEND_BASE_URL -- usato dagli agents per le tool-call di lettura verso il backend",
+        "BACKEND_BASE_URL -- used by agents for read tool-calls towards the backend",
       stringValue: "http://backend.codeguardian.local:3000",
     });
 
     this.paramLlmProvider = new ssm.StringParameter(this, "LlmProviderParam", {
       parameterName: "/codeguardian/llm-provider",
-      description: "LLM_PROVIDER -- seleziona l'implementazione LLMProvider attiva negli agents",
+      description: "LLM_PROVIDER -- selects the active LLMProvider implementation in agents",
       stringValue: "bedrock",
     });
 
     new cdk.CfnOutput(this, "MongoUriSecretArn", {
       value: this.secretMongoUri.secretArn,
-      description: "Aggiornare con la connection string reale del Private Endpoint Atlas",
+      description: "Update with the real Atlas Private Endpoint connection string",
     });
   }
 }

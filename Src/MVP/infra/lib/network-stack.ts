@@ -3,9 +3,9 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import type { Construct } from "constructs";
 import { AZ_COUNT, VPC_CIDR } from "./config";
 
-// VPC, subnet e NAT Gateway. Il NAT serve solo per uscire verso GitHub; il
-// resto del traffico verso servizi AWS resta dentro la VPC via i VPC
-// Endpoint di vpc-endpoints-stack.ts.
+// VPC, subnets and NAT Gateway. The NAT is only for outbound traffic to
+// GitHub; the rest of the traffic towards AWS services stays inside the
+// VPC via the VPC Endpoints in vpc-endpoints-stack.ts.
 export class NetworkStack extends cdk.Stack {
   public readonly vpc: ec2.Vpc;
 
@@ -16,7 +16,7 @@ export class NetworkStack extends cdk.Stack {
       vpcName: "codeguardian-vpc",
       ipAddresses: ec2.IpAddresses.cidr(VPC_CIDR),
       maxAzs: AZ_COUNT,
-      natGateways: 1, // singolo NAT, rischio accettato per l'MVP
+      natGateways: 1, // single NAT, risk accepted for the MVP
       subnetConfiguration: [
         { name: "public", subnetType: ec2.SubnetType.PUBLIC, cidrMask: 24 },
         { name: "private", subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS, cidrMask: 24 },

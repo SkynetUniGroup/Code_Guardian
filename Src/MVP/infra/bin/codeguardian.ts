@@ -25,20 +25,20 @@ const env: cdk.Environment = {
 const alertEmail = app.node.tryGetContext("alertEmail") ?? process.env.CODEGUARDIAN_ALERT_EMAIL;
 if (!alertEmail || alertEmail === "REPLACE_WITH_TEAM_ALERT_EMAIL") {
   throw new Error(
-    "Contesto 'alertEmail' non impostato: aggiornare cdk.json o passare --context alertEmail=<email> (destinatario allarmi SNS).",
+    "Context 'alertEmail' not set: update cdk.json or pass --context alertEmail=<email> (SNS alarm recipient).",
   );
 }
 const monthlyBudgetUsd = Number(app.node.tryGetContext("monthlyBudgetUsd") ?? "150");
 
-// L'ordine segue le dipendenze tecniche tra gli stack.
+// The order follows the technical dependencies between stacks.
 
-// Indipendenti tra loro.
+// Independent of each other.
 const network = new NetworkStack(app, "CodeGuardian-Network", { env });
 const cicdIdentity = new CicdIdentityStack(app, "CodeGuardian-CicdIdentity", { env });
 const secrets = new KmsSecretsStack(app, "CodeGuardian-Secrets", { env });
 const storage = new StorageStack(app, "CodeGuardian-Storage", { env, kmsKey: secrets.kmsKey });
 
-// Rete e sicurezza, dipendono dalla VPC.
+// Network and security, depend on the VPC.
 const securityGroups = new SecurityGroupsStack(app, "CodeGuardian-SecurityGroups", {
   env,
   vpc: network.vpc,
@@ -51,7 +51,7 @@ const vpcEndpoints = new VpcEndpointsStack(app, "CodeGuardian-VpcEndpoints", {
   artifactsBucket: storage.artifactsBucket,
 });
 
-// Livello dati.
+// Data layer.
 const data = new DataStack(app, "CodeGuardian-Data", {
   env,
   vpc: network.vpc,
@@ -64,7 +64,7 @@ const atlas = new AtlasStack(app, "CodeGuardian-Atlas", {
   sgAtlas: securityGroups.sgAtlas,
 });
 
-// Compute, orchestrazione, distribuzione.
+// Compute, orchestration, distribution.
 const compute = new ComputeStack(app, "CodeGuardian-Compute", {
   env,
   vpc: network.vpc,
@@ -83,7 +83,7 @@ const compute = new ComputeStack(app, "CodeGuardian-Compute", {
   paramBackendBaseUrl: secrets.paramBackendBaseUrl,
   paramLlmProvider: secrets.paramLlmProvider,
 });
-compute.addStackDependency(atlas); // Atlas deve essere pronto prima del primo avvio del task backend
+compute.addStackDependency(atlas); // Atlas must be ready before the first backend task start
 
 const cloudfront = new CloudFrontStack(app, "CodeGuardian-CloudFront", {
   env,
@@ -101,15 +101,15 @@ const observability = new ObservabilityStack(app, "CodeGuardian-Observability", 
   alertEmail,
 });
 
-// us-east-1, non eu-south-1: vedi budget-stack.ts.
+// us-east-1, not eu-south-1: see budget-stack.ts.
 const budget = new BudgetStack(app, "CodeGuardian-Budget", {
   env: { account: env.account, region: "us-east-1" },
   alertsTopicArn: `arn:aws:sns:${REGION}:${env.account}:${SNS_ALERTS_TOPIC_NAME}`,
   monthlyBudgetUsd,
 });
 
-// Tag di progetto su tutti gli stack, usato anche come Cost Filter da AWS
-// Budgets in budget-stack.ts.
+// Project tags on all stacks, also used as a Cost Filter by AWS Budgets
+// in budget-stack.ts.
 for (const stack of [
   network,
   cicdIdentity,
