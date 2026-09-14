@@ -58,7 +58,8 @@ class ChangelogLoader:
             AgentCancelled: If the user cancels the operation during the interactive prompt.
         """
         if agent_payload is None:
-            agent_payload = {}
+            agent_payload
+ = {}
         sprint_id = agent_payload.get("sprintId", "Current Sprint")
 
         issues_response = await toolset.read_issues(
@@ -106,7 +107,8 @@ class ChangelogLoader:
             if action == "CANCEL":
                 # NOTE: According to MVP specs, NestJS handles user cancellation
                 # by terminating the task without resuming the graph. This branch is defensive
-                # and guarantees graceful abortion during tests, debug, or manual API usage.
+        
+        # and guarantees graceful abortion during tests, debug, or manual API usage.
                 raise AgentCancelled(stage="INCOMPLETE_TASKS")
 
         return {
@@ -162,7 +164,8 @@ class ChangelogTechnicalProfile:
                         order=idx + 1,
                         issueRef=issue_ref,
                         title=exc,
-                        detail="Excluded from changelog due to insufficient metadata.",
+     
+                   detail="Excluded from changelog due to insufficient metadata.",
                     )
                 )
         return blocks, None
@@ -217,7 +220,8 @@ class ChangelogBusinessProfile:
             AgentCancelled: If the user cancels the confirmation phase.
             ValueError: If the readability score is too low, triggering a retry.
         """
-        if ctx.get("phase", "TECHNICAL") == "TECHNICAL":
+        if ctx.get("phase", "TECHNICAL") 
+== "TECHNICAL":
             # Phase 1: Parse the technical output
             blocks: list[Block] = [TextBlock(order=0, markdown=raw.strip())]
 
@@ -268,51 +272,52 @@ def calculate_flesch_reading_ease(text: str) -> float:
     if not text.strip():
         return 0.0
 
-    # I collegamenti alle issue sono contenuto obbligatorio -- il prompt
-    # impone di conservarli parola per parola -- ma non sono prosa, e la
-    # formula li conta come parole: un URL vale un'unica parola da una
-    # quindicina di gruppi vocalici, e ne bastano tre per portare sotto zero
-    # un testo che senza di essi passerebbe con margine. Del collegamento si
-    # tiene il testo visibile, che l'utente legge davvero, e si butta la
-    # destinazione, che non legge nessuno.
+    # Issue links are mandatory content -- the prompt requires keeping them
+    # word for word -- but they are not prose, and the formula counts them as
+    # words: a URL is worth a single word with about fifteen vowel groups,
+    # and three are enough to push a text that would otherwise pass with
+    # margin below zero. The visible link text is kept (what the user actually
+    # reads) and the destination is discarded (what nobody reads).
     text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
     text = re.sub(r"https?://\S+", " ", text)
 
     # Clean Markdown to avoid altering the count
     clean_text = re.sub(r"[*_#`>\-\[\]()]+", " ", text)
 
-    # Conteggio delle frasi. La sola punteggiatura forte non basta: un
-    # changelog e' fatto di elenchi puntati e di intestazioni, e quasi
-    # nessuna voce finisce col punto. Contandola da sola, l'intero
-    # documento risulta un'unica frase da decine di parole, e il termine
-    # parole-per-frase vale allora quaranta punti di penalita' su cento:
-    # un elenco scritto benissimo non raggiungerebbe mai la soglia. Ogni
-    # riga non vuota vale almeno una frase, che e' come la legge chi
-    # riceve le note di rilascio.
-    per_punteggiatura = len(re.split(r"[.!?]+", clean_text)) - 1
-    per_riga = len([riga for riga in clean_text.splitlines() if riga.strip()])
-    sentences = max(1, per_punteggiatura, per_riga)
+    # Sentence count. Strong punctuation alone is not enough: a changelog
+    # is made of bulleted lists and headings, and almost no entry ends with
+    # a period. Counting punctuation alone, the entire document becomes a
+    # single sentence of dozens of words, and the words-per-sentence term
+    # is then worth forty penalty points out of a hundred: a well-written
+    # list would never reach the threshold. Each non-empty line is worth at
+    # least one sentence, which is how the reader who receives the release
+    # notes reads it.
+    by_punctuation = len(re.split(r"[.!?]+", clean_text)) - 1
+    by_line = len([line for line in clean_text.splitlines() if line.strip()])
+    sentences = max(1, by_punctuation, by_line)
 
     # Word count
     words = clean_text.split()
     num_words = max(1, len(words))
 
-    # Conteggio euristico delle sillabe, per gruppi di vocali. La formula
-    # qui sopra ha le costanti di Flesch, che sono tarate sull'inglese: e
-    # in inglese la 'e' finale quasi sempre non si pronuncia. Contandola,
-    # 'time' vale due sillabe invece di una e 'improved' tre invece di
-    # due; su un testo intero sono trenta punti d'indice buttati, e un
-    # changelog scritto in inglese piano non arrivava mai alla soglia.
-    # Restano escluse le uscite in -le, -ee, -ie, dove la 'e' si sente.
+    # Heuristic syllable count by vowel groups. The formula above uses the
+    # Flesch constants, which are tuned for English: in English the final
+    # 'e' is almost never pronounced. Counting it, 'time' is worth two
+    # syllables instead of one and 'improved' three instead of two; over an
+    # entire text that is thirty index points wasted, and a changelog
+    # written in plain English never reached the threshold.
+    # Excluded are endings in -le, -ee, -ie, where the 'e' is heard.
     vowels = "aeiouyàèéìíòóùú"
     syllables = 0
     for word in words:
         word = word.lower().strip(".,;:!?'\"")
         word_syllables = len(re.findall(f"[{vowels}]+", word))
-        if word.endswith("e") and not word.endswith(("le", "ee", "ie")) and word_syllables > 1:
+        if word.endswith("e") and not word.e
+ndswith(("le", "ee", "ie")) and word_syllables > 1:
             word_syllables -= 1
         syllables += max(1, word_syllables)
 
     # Standard Flesch formula
     fre = 206.835 - 1.015 * (num_words / sentences) - 84.6 * (syllables / num_words)
     return fre
+
