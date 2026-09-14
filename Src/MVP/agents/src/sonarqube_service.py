@@ -1,8 +1,8 @@
-"""Lettura delle metriche di qualita' da un'istanza SonarQube/SonarCloud.
+"""Reading quality metrics from a SonarQube/SonarCloud instance.
 
-Le metriche sono calcolate da SonarQube al momento della sua analisi, non da
-noi: qui si legge il risultato per un progetto a un dato commit e lo si mette in
-cache, perche' e' un dato che per uno stesso commit non cambia mai piu'.
+The metrics are computed by SonarQube at the time of its own analysis, not by
+us: here the result is read for a project at a given commit and cached,
+because for the same commit it never changes again.
 """
 
 from __future__ import annotations
@@ -27,10 +27,10 @@ _METRICS = [
 ]
 
 _METRIC_LABELS: dict[str, str] = {
-    "complexity": "Complessita' ciclomatica",
-    "cognitive_complexity": "Complessita' cognitiva",
+    "complexity": "Cyclomatic complexity",
+    "cognitive_complexity": "Cognitive complexity",
     "code_smells": "Code smells",
-    "duplicated_lines_density": "Duplicazione (%)",
+    "duplicated_lines_density": "Duplication (%)",
     "security_hotspots": "Security hotspot",
 }
 
@@ -38,32 +38,32 @@ _REDIS_PREFIX = "sonarqube"
 
 _HTTP_TIMEOUT_S = 30.0
 
-# Quante voci mostrare quando nessun file modificato compare fra le metriche:
-# meglio un estratto che una sezione vuota, ma senza riversare nel prompt le
-# metriche di un intero repository.
+# How many entries to show when no modified file appears among the metrics:
+# an excerpt is better than an empty section, but without pouring the
+# metrics of an entire repository into the prompt.
 _PROMPT_FALLBACK_LIMIT = 20
 
 
 def cache_key(project_key: str, commit_sha: str) -> str:
-    """Compone la chiave Redis delle metriche di un commit.
+    """Composes the Redis cache key for a commit's metrics.
 
-    Funzione a livello di modulo, e non metodo privato del servizio, perche'
-    la usa anche l'endpoint che invalida la cache: due punti che scrivono lo
-    stesso formato a mano divergerebbero senza che nulla se ne accorga, e
-    l'invalidazione fallirebbe in silenzio.
+    A module-level function, not a private method of the service, because
+    the cache-invalidation endpoint also uses it: two points writing the
+    same format by hand would diverge without anyone noticing, and the
+    invalidation would fail silently.
 
     Args:
-        project_key (str): Chiave del progetto su SonarQube.
-        commit_sha (str): Commit di riferimento.
+        project_key (str): Project key on SonarQube.
+        commit_sha (str): Reference commit.
 
     Returns:
-        str: La chiave della cache.
+        str: The cache key.
     """
     return f"{_REDIS_PREFIX}:{project_key}:{commit_sha}"
 
 
 class SonarQubeCredentials:
-    """Coordinate di accesso a un progetto SonarQube."""
+    """Access credentials for a SonarQube project."""
 
     def __init__(
         self,
@@ -72,13 +72,13 @@ class SonarQubeCredentials:
         token: str,
         organization_key: str | None = None,
     ) -> None:
-        """Inizializza le credenziali.
+        """Initializes the credentials.
 
         Args:
-            instance_url (str): URL dell'istanza SonarQube o SonarCloud.
-            project_key (str): Chiave del progetto.
-            token (str): Token di accesso.
-            organization_key (str | None): Organizzazione, richiesta da SonarCloud.
+            instance_url (str): URL of the SonarQube or SonarCloud instance.
+            project_key (str): Project key.
+            token (str): Access token.
+            organization_key (str | None): Organization, required by SonarCloud.
         """
         self.instance_url = instance_url.rstrip("/")
         self.project_key = project_key
@@ -87,14 +87,14 @@ class SonarQubeCredentials:
 
     @classmethod
     def from_dict(cls, data: dict) -> SonarQubeCredentials:
-        """Costruisce le credenziali dalla forma con cui viaggiano sul filo.
+        """Builds the credentials from the wire format.
 
         Args:
-            data (dict): Oggetto con instanceUrl, projectKey, token e
-                facoltativamente organizationKey.
+            data (dict): Object with instanceUrl, projectKey, token and
+                optionally organizationKey.
 
         Returns:
-            SonarQubeCredentials: Le credenziali.
+            SonarQubeCredentials: The credentials.
         """
         return cls(
             instance_url=data["instanceUrl"],
@@ -105,61 +105,61 @@ class SonarQubeCredentials:
 
 
 class SonarQubeService:
-    """Legge le metriche di un progetto, con cache su Redis."""
+    """Reads a project's metrics, with Redis caching."""
 
     def __init__(self, redis_client: aioredis.Redis) -> None:
-        """Inizializza il servizio.
+        """Initializes the service.
 
         Args:
-            redis_client (aioredis.Redis): Connessione usata per la cache.
+            redis_client (aioredis.Redis): Connection used for caching.
         """
         self._redis = redis_client
 
     async def get_metrics(
         self, credentials: SonarQubeCredentials, commit_sha: str
     ) -> dict[str, Any]:
-        """Restituisce le metriche per file, dalla cache quando possibile.
+        """Returns metrics per file, from cache when possible.
 
-        La cache e' sicura per costruzione: la chiave contiene il commit, e le
-        metriche di un commit non cambiano piu'. Il TTL serve solo a non tenere
-        per sempre i dati di commit che nessuno riguardera'.
+        The cache is safe by construction: the key contains the commit, and
+        the metrics of a commit never change again. The TTL only prevents
+        keeping forever the data of commits no one will look at again.
 
         Args:
-            credentials (SonarQubeCredentials): Accesso al progetto.
-            commit_sha (str): Commit di riferimento.
+            credentials (SonarQubeCredentials): Access to the project.
+            commit_sha (str): Reference commit.
 
         Returns:
-            dict[str, Any]: Metriche indicizzate per percorso di file.
+            dict[str, Any]: Metrics indexed by file path.
         """
         key = cache_key(credentials.project_key, commit_sha)
 
         cached = await self._redis.get(key)
         if cached:
-            logger.debug("Metriche SonarQube da cache: %s", key)
+            logger.debug("SonarQube metrics from cache: %s", key)
             return json.loads(cached)
 
         data = await self._fetch_metrics(credentials)
         await self._redis.set(key, json.dumps(data), ex=settings.sonar_cache_ttl_s)
         logger.info(
-            "Metriche SonarQube lette e messe in cache: progetto=%s commit=%s",
+            "SonarQube metrics read and cached: project=%s commit=%s",
             credentials.project_key,
             commit_sha,
         )
         return data
 
     async def _fetch_metrics(self, credentials: SonarQubeCredentials) -> dict[str, Any]:
-        """Interroga l'API di SonarQube.
+        """Queries the SonarQube API.
 
         Args:
-            credentials (SonarQubeCredentials): Accesso al progetto.
+            credentials (SonarQubeCredentials): Access to the project.
 
         Returns:
-            dict[str, Any]: Metriche per file.
+            dict[str, Any]: Metrics per file.
 
         Raises:
-            ValueError: Token rifiutato o progetto inesistente — due casi che
-                il chiamante deve poter distinguere da un guasto dell'istanza.
-            httpx.HTTPStatusError: Per ogni altro codice di errore.
+            ValueError: Token rejected or project not found -- two cases that
+                the caller must be able to distinguish from an instance failure.
+            httpx.HTTPStatusError: For any other error code.
         """
         url = f"{credentials.instance_url}/api/measures/component_tree"
         params: dict[str, Any] = {
@@ -171,30 +171,30 @@ class SonarQubeService:
         if credentials.organization_key:
             params["organization"] = credentials.organization_key
 
-        # SonarQube autentica con il token come nome utente e password vuota.
+        # SonarQube authenticates with the token as username and empty password.
         auth = (credentials.token, "")
 
         async with httpx.AsyncClient(timeout=_HTTP_TIMEOUT_S) as client:
             response = await client.get(url, params=params, auth=auth)
 
         if response.status_code == 401:
-            raise ValueError("Autenticazione SonarQube fallita: controlla il token")
+            raise ValueError("SonarQube authentication failed: check the token")
         if response.status_code == 404:
-            raise ValueError(f"Progetto SonarQube non trovato: {credentials.project_key}")
+            raise ValueError(f"SonarQube project not found: {credentials.project_key}")
         response.raise_for_status()
 
         return self._parse_component_tree(response.json())
 
     @staticmethod
     def _parse_component_tree(payload: dict) -> dict[str, Any]:
-        """Appiattisce la risposta in una mappa percorso -> metriche.
+        """Flattens the response into a path -> metrics map.
 
         Args:
-            payload (dict): Risposta di /api/measures/component_tree.
+            payload (dict): Response of /api/measures/component_tree.
 
         Returns:
-            dict[str, Any]: Metriche numeriche per file; i file senza alcuna
-            misura vengono omessi.
+            dict[str, Any]: Numeric metrics per file; files without any
+            measurement are omitted.
         """
         result: dict[str, Any] = {}
         for component in payload.get("components", []):
@@ -215,14 +215,14 @@ class SonarQubeService:
 
     @staticmethod
     def format_for_prompt(metrics_by_file: dict[str, Any], changed_files: list[str]) -> str:
-        """Rende le metriche nella sezione di prompt per l'agente.
+        """Renders the metrics in the prompt section for the agent.
 
         Args:
-            metrics_by_file (dict[str, Any]): Metriche per file.
-            changed_files (list[str]): File dello scope dell'analisi.
+            metrics_by_file (dict[str, Any]): Metrics per file.
+            changed_files (list[str]): Files in the analysis scope.
 
         Returns:
-            str: La sezione Markdown, vuota se non ci sono metriche.
+            str: The Markdown section, empty if there are no metrics.
         """
         if not metrics_by_file:
             return ""
@@ -235,7 +235,7 @@ class SonarQubeService:
         if not relevant:
             relevant = dict(list(metrics_by_file.items())[:_PROMPT_FALLBACK_LIMIT])
 
-        lines: list[str] = ["### Metriche SonarQube per i file in analisi\n"]
+        lines: list[str] = ["### SonarQube metrics for files under analysis\n"]
         for path, metrics in relevant.items():
             lines.append(f"**{path}**")
             for metric, value in metrics.items():
