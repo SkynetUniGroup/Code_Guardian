@@ -31,6 +31,20 @@ export class AuthController {
   // Unauthenticated on purpose: this is what Docker / infrastructure monitoring
   // polls to check the process is alive, before any user has ever logged in.
   @Get("health")
+/**
+ * @openapi
+ * /auth/health:
+ *   get:
+ *     summary: Liveness del processo
+ *     description: Non autenticato di proposito: e' quello che interrogano Docker e il monitoraggio, prima che esista un utente.
+ *     responses:
+ *       200:
+ *         description: Status response.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthResponse'
+ */
   @ApiOperation({
     summary: "Liveness del processo",
     description:
@@ -42,6 +56,31 @@ export class AuthController {
   }
 
   @Post("register")
+/**
+ * @openapi
+ * /auth/register:
+ *   post:
+ *     summary: Registra un nuovo utente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegisterDto'
+ *     responses:
+ *       201:
+ *         description: User profile created.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
+ *       409:
+ *         description: Email gia' registrata.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Registra un nuovo utente" })
   @ApiCreatedResponse({ type: UserProfileResponse })
@@ -51,6 +90,31 @@ export class AuthController {
   }
 
   @Post("login")
+/**
+ * @openapi
+ * /auth/login:
+ *   post:
+ *     summary: Autentica e restituisce il JWT
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginDto'
+ *     responses:
+ *       200:
+ *         description: Auth token response.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthTokenResponse'
+ *       401:
+ *         description: Credenziali non valide.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Autentica e restituisce il JWT" })
   @ApiOkResponse({ type: AuthTokenResponse })
@@ -60,6 +124,27 @@ export class AuthController {
   }
 
   @Get("me")
+/**
+ * @openapi
+ * /auth/me:
+ *   get:
+ *     summary: Il profilo di chi chiama
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile response.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
+ *       401:
+ *         description: Unauthorized access.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Il profilo di chi chiama" })
@@ -76,6 +161,24 @@ export class AuthController {
   // token a real 401 to fail on, which is the whole reason this endpoint
   // exists rather than the frontend just discarding the token locally.
   @Post("logout")
+/**
+ * @openapi
+ * /auth/logout:
+ *   post:
+ *     summary: Chiude la sessione lato client
+ *     description: Il JWT e' stateless e resta valido fino alla scadenza: questo endpoint esiste per dare a un token mancante o scaduto un 401 vero su cui fallire.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       204:
+ *         description: No content.
+ *       401:
+ *         description: Unauthorized access.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
