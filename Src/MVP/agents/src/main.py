@@ -178,7 +178,13 @@ async def start_agent(request: StartAgentRequest):
             settings.llm_model_security if is_security else settings.llm_model_general
         ),
         temperature=settings.security_temperature if is_security else None,
-        max_tokens=settings.security_max_output_tokens if is_security else None,
+        max_tokens=(
+            settings.security_max_output_tokens
+            if is_security
+            else settings.docs_api_max_output_tokens
+            if request.operationCode == "DOCS_API"
+            else None
+        ),
     )
 
     graph = AgentGraph(
@@ -227,7 +233,13 @@ async def resume_agent(request: ResumeAgentRequest):
             settings.llm_model_security if is_security else settings.llm_model_general
         ),
         temperature=settings.security_temperature if is_security else None,
-        max_tokens=settings.security_max_output_tokens if is_security else None,
+        max_tokens=(
+            settings.security_max_output_tokens
+            if is_security
+            else settings.docs_api_max_output_tokens
+            if request.operationCode == "DOCS_API"
+            else None
+        ),
     )
 
     graph = AgentGraph(

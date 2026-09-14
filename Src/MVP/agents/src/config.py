@@ -95,6 +95,10 @@ class Settings(BaseSettings):
 
     # Operational Limits
     max_output_tokens: int = 4096
+    # DOCS_API deve descrivere un'intera superficie API in un solo JSON: con
+    # il tetto generico la risposta viene troncata a meta' oggetto e il
+    # parsing fallisce sempre, anche dopo i retry (stesso tetto ogni volta).
+    docs_api_max_output_tokens: int = Field(default=8000, alias="DOCS_API_MAX_OUTPUT_TOKENS")
     max_scope_chars: int = Field(default=100_000, alias="MAX_SCOPE_CHARS")
     changelog_min_readability: float = Field(default=50.0, alias="CHANGELOG_MIN_READABILITY")
 
