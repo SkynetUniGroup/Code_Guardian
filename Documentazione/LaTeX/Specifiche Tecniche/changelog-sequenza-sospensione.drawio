@@ -1,37 +1,10 @@
 <mxfile host="app.diagrams.net" agent="Claude Code">
   <diagram name="Sospensione e ripresa Changelog Business" id="changelog-sospensione-uml-diagram">
-    <mxGraphModel dx="1084" dy="1375" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="820" pageHeight="820" math="0" shadow="0">
+    <mxGraphModel dx="1627" dy="1740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="820" pageHeight="820" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="sd" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=11;verticalAlign=top;align=left;width=270;height=20;" value="sd&amp;nbsp; &amp;nbsp;Sospensione e ripresa — changelog di business" vertex="1">
-          <mxGeometry height="880" width="790" x="40" y="-120" as="geometry" />
-        </mxCell>
-        <mxCell id="fe" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="Frontend" vertex="1">
-          <mxGeometry height="728" width="140" x="65" y="-68" as="geometry" />
-        </mxCell>
-        <mxCell id="act-fe-1" parent="fe" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
-          <mxGeometry height="40" width="10" x="65" y="218" as="geometry" />
-        </mxCell>
-        <mxCell id="act-fe-2" parent="fe" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
-          <mxGeometry height="130" width="10" x="65" y="520" as="geometry" />
-        </mxCell>
-        <mxCell id="be" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="Backend" vertex="1">
-          <mxGeometry height="728" width="140" x="320" y="-70" as="geometry" />
-        </mxCell>
-        <mxCell id="act-be-1" parent="be" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
-          <mxGeometry height="90" width="10" x="65" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="act-be-2" parent="be" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
-          <mxGeometry height="40" width="10" x="65" y="220" as="geometry" />
-        </mxCell>
-        <mxCell id="act-be-3" parent="be" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
-          <mxGeometry height="70" width="10" x="65" y="360" as="geometry" />
-        </mxCell>
-        <mxCell id="act-be-4" parent="be" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
-          <mxGeometry height="130" width="10" x="65" y="520" as="geometry" />
-        </mxCell>
-        <mxCell id="ag" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="Servizio Agenti" vertex="1">
+        <mxCell id="ag" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="&lt;u&gt;agente : ServizioAgenti&lt;/u&gt;" vertex="1">
           <mxGeometry height="728" width="140" x="670" y="-70" as="geometry" />
         </mxCell>
         <mxCell id="act-ag-2" parent="ag" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
@@ -40,10 +13,52 @@
         <mxCell id="act-ag-1" parent="ag" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
           <mxGeometry height="70" width="10" x="65" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="m1" edge="1" parent="1" source="act-be-1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;exitX=0.985;exitY=0.424;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.133;entryY=0.55;entryDx=0;entryDy=0;entryPerimeter=0;" target="act-ag-1">
+        <mxCell id="sd" parent="ag" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=11;verticalAlign=top;align=left;width=270;height=20;" value="sd&amp;nbsp; &amp;nbsp;Sospensione e ripresa — changelog di business" vertex="1">
+          <mxGeometry height="880" width="960" x="-630" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-19" parent="ag" style="text;whiteSpace=wrap;html=1;" value="&lt;p&gt;&lt;font face=&quot;Helvetica&quot;&gt;&lt;code&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;11: imposta cancel:task: su Redis&lt;/font&gt;&lt;/code&gt;&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="40" width="270" x="-100" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-25" edge="1" parent="ag" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;entryX=1.148;entryY=0.514;entryDx=0;entryDy=0;entryPerimeter=0;" target="_VQbpj231XNpDv_BION6-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="230" y="660" as="sourcePoint" />
+            <mxPoint x="-20" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-27" parent="ag" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="100" width="10" x="65" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="altbox" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=11;verticalAlign=top;align=left;width=30;height=30;" value="alt" vertex="1">
+          <mxGeometry height="470" width="690" x="90" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="fe" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="&lt;u&gt;: Frontend&lt;/u&gt;" vertex="1">
+          <mxGeometry height="728" width="140" x="65" y="-68" as="geometry" />
+        </mxCell>
+        <mxCell id="act-fe-1" parent="fe" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="65" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="act-fe-2" parent="fe" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="65" y="498" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-16" parent="fe" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="133" width="10" x="65" y="578" as="geometry" />
+        </mxCell>
+        <mxCell id="be" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="&lt;u&gt;worker : TaskProcessor&lt;/u&gt;" vertex="1">
+          <mxGeometry height="722" width="140" x="290" y="-70" as="geometry" />
+        </mxCell>
+        <mxCell id="act-be-1" parent="be" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="190" width="10" x="65" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="act-be-3" parent="be" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="113" width="10" x="65" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="m3l" parent="be" style="text;html=1;align=center;fontSize=10;" value="4: WS task.inputRequired { kind: BUSINESS_CONFIRMATION, technicalChangelog, technicalChangelogTruncated }" vertex="1">
+          <mxGeometry height="20" width="480" x="-120" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" edge="1" parent="1" source="act-be-1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;exitX=1.29;exitY=0.218;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.043;entryY=0.007;entryDx=0;entryDy=0;entryPerimeter=0;" target="_VQbpj231XNpDv_BION6-27">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="400" y="10" as="sourcePoint" />
-            <mxPoint x="635" y="10" as="targetPoint" />
+            <mxPoint x="736.33" y="48.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="m1l" parent="1" style="text;html=1;align=center;fontSize=10;" value="1: POST /internal/agent/start(taskId, threadId, CHANGELOG_BUSINESS)" vertex="1">
@@ -71,23 +86,17 @@
             <mxPoint x="385" y="100" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m2l" parent="1" style="text;html=1;align=center;fontSize=10;" value="3: 200 { status: interrupted, pendingInput: BUSINESS_CONFIRMATION }" vertex="1">
-          <mxGeometry height="20" width="270" x="420" y="100" as="geometry" />
+        <mxCell id="m2l" parent="1" style="text;html=1;align=center;fontSize=10;" value="3:&amp;nbsp;200 { status: interrupted, pendingInput: { kind: BUSINESS_CONFIRMATION, technicalChangelog, technicalChangelogTruncated } }" vertex="1">
+          <mxGeometry height="20" width="500" x="420" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="m3" edge="1" parent="1" source="act-be-2" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;entryX=1.059;entryY=0.472;entryDx=0;entryDy=0;entryPerimeter=0;exitX=-0.116;exitY=0.493;exitDx=0;exitDy=0;exitPerimeter=0;" target="act-fe-1">
+        <mxCell id="m3" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;entryX=1.059;entryY=0.472;entryDx=0;entryDy=0;entryPerimeter=0;exitX=-0.116;exitY=0.493;exitDx=0;exitDy=0;exitPerimeter=0;" target="act-fe-1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="260" y="170" />
             </Array>
-            <mxPoint x="385" y="150" as="sourcePoint" />
+            <mxPoint x="353.8399999999999" y="169.72000000000003" as="sourcePoint" />
             <mxPoint x="135" y="150" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="m3l" parent="1" style="text;html=1;align=center;fontSize=10;" value="4: WS task.inputRequired { kind: BUSINESS_CONFIRMATION }" vertex="1">
-          <mxGeometry height="20" width="260" x="150" y="150" as="geometry" />
-        </mxCell>
-        <mxCell id="altbox" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontSize=11;verticalAlign=top;align=left;width=30;height=30;" value="alt" vertex="1">
-          <mxGeometry height="470" width="695" x="90" y="200" as="geometry" />
         </mxCell>
         <mxCell id="altdiv" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;entryX=1.003;entryY=0.611;entryDx=0;entryDy=0;entryPerimeter=0;" target="altbox">
           <mxGeometry relative="1" as="geometry">
@@ -99,36 +108,33 @@
           <mxGeometry height="18" width="100" x="120" y="214" as="geometry" />
         </mxCell>
         <mxCell id="guard2" parent="1" style="text;html=1;align=left;fontSize=10;fontStyle=2;" value="[CANCEL]" vertex="1">
-          <mxGeometry height="18" width="100" x="105" y="505" as="geometry" />
+          <mxGeometry height="18" width="100" x="105" y="490" as="geometry" />
         </mxCell>
-        <mxCell id="m4a" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+        <mxCell id="m4a" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;entryX=0.953;entryY=0.971;entryDx=0;entryDy=0;entryPerimeter=0;" target="m4al">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="135" y="250" as="sourcePoint" />
+            <mxPoint x="140" y="251.42000000000007" as="sourcePoint" />
             <mxPoint x="385" y="250" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m4al" parent="1" style="text;html=1;align=center;fontSize=10;" value="5: POST /tasks/:id/input { action: PROCEED }" vertex="1">
-          <mxGeometry height="20" width="220" x="145" y="232" as="geometry" />
-        </mxCell>
-        <mxCell id="m5a" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;">
+        <mxCell id="m5a" edge="1" parent="1" source="_VQbpj231XNpDv_BION6-7" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;exitX=0.195;exitY=0.992;exitDx=0;exitDy=0;exitPerimeter=0;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="385" y="280" as="sourcePoint" />
-            <mxPoint x="135" y="280" as="targetPoint" />
+            <mxPoint x="358.6200000000001" y="282.45399999999995" as="sourcePoint" />
+            <mxPoint x="140" y="281.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="m5al" parent="1" style="text;html=1;align=center;fontSize=9;" value="6: 204 No Content" vertex="1">
-          <mxGeometry height="14" width="200" x="145" y="285" as="geometry" />
+          <mxGeometry height="14" width="200" x="155" y="261" as="geometry" />
         </mxCell>
         <mxCell id="m6a" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;entryX=0.935;entryY=0.362;entryDx=0;entryDy=0;entryPerimeter=0;" target="altbox">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="390" y="370" as="sourcePoint" />
+            <mxPoint x="360" y="370.14" as="sourcePoint" />
             <mxPoint x="635" y="370" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="m6al" parent="1" style="text;html=1;align=center;fontSize=10;" value="7: POST /internal/agent/resume(taskId, threadId, {action: PROCEED})" vertex="1">
           <mxGeometry height="24" width="260" x="420" y="350" as="geometry" />
         </mxCell>
-        <mxCell id="m7a" edge="1" parent="1" source="altbox" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;exitX=0.935;exitY=0.447;exitDx=0;exitDy=0;exitPerimeter=0;">
+        <mxCell id="m7a" edge="1" parent="1" source="altbox" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;exitX=0.935;exitY=0.447;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.957;entryY=0.535;entryDx=0;entryDy=0;entryPerimeter=0;" target="act-be-3">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="635" y="410" as="sourcePoint" />
             <mxPoint x="390" y="410" as="targetPoint" />
@@ -139,14 +145,14 @@
         </mxCell>
         <mxCell id="m8a" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="385" y="455" as="sourcePoint" />
+            <mxPoint x="350" y="455" as="sourcePoint" />
             <mxPoint x="135" y="455" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="m8al" parent="1" style="text;html=1;align=center;fontSize=9;" value="9: WS task.updated (COMPLETED)" vertex="1">
           <mxGeometry height="14" width="200" x="145" y="460" as="geometry" />
         </mxCell>
-        <mxCell id="m4b" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+        <mxCell id="m4b" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;entryX=0.338;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="_VQbpj231XNpDv_BION6-17">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="135" y="530" as="sourcePoint" />
             <mxPoint x="385" y="530" as="targetPoint" />
@@ -155,20 +161,7 @@
         <mxCell id="m4bl" parent="1" style="text;html=1;align=center;fontSize=10;" value="10: POST /tasks/:id/input { action: CANCEL }" vertex="1">
           <mxGeometry height="20" width="220" x="145" y="512" as="geometry" />
         </mxCell>
-        <mxCell id="sm2" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="440" y="555" />
-              <mxPoint x="440" y="580" />
-            </Array>
-            <mxPoint x="385" y="555" as="sourcePoint" />
-            <mxPoint x="385" y="580" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="sm2l" parent="1" style="text;html=1;align=left;fontSize=10;" value="11: porta la Task a CANCELLED e imposta cancel:task:&lt;id&gt; su Redis (§3.1)" vertex="1">
-          <mxGeometry height="34" width="220" x="450" y="553" as="geometry" />
-        </mxCell>
-        <mxCell id="m5b" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;">
+        <mxCell id="m5b" edge="1" parent="1" source="_VQbpj231XNpDv_BION6-17" style="html=1;endArrow=open;endFill=0;rounded=0;fontSize=10;exitX=0.005;exitY=0.704;exitDx=0;exitDy=0;exitPerimeter=0;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="385" y="610" as="sourcePoint" />
             <mxPoint x="135" y="610" as="targetPoint" />
@@ -177,7 +170,7 @@
         <mxCell id="m5bl" parent="1" style="text;html=1;align=center;fontSize=10;" value="12: WS task.updated (CANCELLED)" vertex="1">
           <mxGeometry height="20" width="200" x="145" y="592" as="geometry" />
         </mxCell>
-        <mxCell id="m6b" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;">
+        <mxCell id="m6b" edge="1" parent="1" source="_VQbpj231XNpDv_BION6-17" style="html=1;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;exitX=0.29;exitY=0.986;exitDx=0;exitDy=0;exitPerimeter=0;">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="385" y="640" as="sourcePoint" />
             <mxPoint x="135" y="640" as="targetPoint" />
@@ -185,6 +178,51 @@
         </mxCell>
         <mxCell id="m6bl" parent="1" style="text;html=1;align=center;fontSize=9;" value="13: 204 No Content" vertex="1">
           <mxGeometry height="14" width="200" x="145" y="622" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-1" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="&lt;u&gt;controller : TasksController&lt;/u&gt;" vertex="1">
+          <mxGeometry height="728" width="170" x="465" y="-70" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-7" parent="_VQbpj231XNpDv_BION6-1" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="34" width="10" x="80" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="m4al" parent="_VQbpj231XNpDv_BION6-1" style="text;html=1;align=center;fontSize=10;" value="5: POST /tasks/:id/input { action: PROCEED }" vertex="1">
+          <mxGeometry height="20" width="220" x="-130" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-17" parent="_VQbpj231XNpDv_BION6-1" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="113" width="10" x="80" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-18" edge="1" parent="_VQbpj231XNpDv_BION6-1" style="html=1;endArrow=block;endFill=1;rounded=0;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90" y="619.71" as="sourcePoint" />
+            <mxPoint x="435" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-6" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="&lt;u&gt;: Redis&lt;/u&gt;" vertex="1">
+          <mxGeometry height="728" width="130" x="840" y="-70" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-24" parent="_VQbpj231XNpDv_BION6-6" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="60" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-10" parent="1" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="47" width="10" x="130" y="238" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-12" parent="1" style="text;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;preleva job (resume)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="140" x="225" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-13" edge="1" parent="1" style="html=1;endArrow=none;endFill=0;rounded=0;fontSize=10;entryX=1.059;entryY=0.472;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=open;startFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="334" y="351" />
+            </Array>
+            <mxPoint x="355" y="350" as="sourcePoint" />
+            <mxPoint x="215" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-26" parent="1" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1">
+          <mxGeometry height="40" width="10" x="735" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="_VQbpj231XNpDv_BION6-28" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;&lt;br&gt;conferma&lt;br&gt;&lt;br&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="580" y="562" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
