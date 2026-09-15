@@ -740,7 +740,13 @@ class AgentGraph:
                         f" {num_blocks - 1} issues were ignored due to insufficient metadata."
                     )
             elif op.startswith("DOCS"):
-                analysis_status = st.loaded_context.get("analysis_status")
+                # `or {}`: loaded_context nasce a None e lo popola
+                # carica_contesto. Questo era l'unico punto del file a darlo
+                # per gia' presente -- altrove e' sempre `st.loaded_context or
+                # {}` oppure un getattr con default -- e un None trasformava
+                # il riepilogo in un AttributeError catturato piu' sotto,
+                # cioe' in un report d'errore al posto di uno riuscito.
+                analysis_status = (st.loaded_context or {}).get("analysis_status")
 
                 if analysis_status == "NO_API_ENDPOINTS":
                     summary_text = (

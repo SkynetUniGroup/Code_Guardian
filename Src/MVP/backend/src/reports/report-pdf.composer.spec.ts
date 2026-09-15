@@ -27,6 +27,7 @@ function testoDelPdf(pdf: Buffer): string {
 
   const inizioStream = /stream\r?\n/g;
   let trovato: RegExpExecArray | null;
+  // biome-ignore lint/suspicious/noAssignInExpressions: è il ciclo canonico su una regex /g. La riscrittura con l'assegnazione in fondo al corpo non regge qui, perché i `continue` più sotto la salterebbero lasciando il ciclo fermo sullo stesso match.
   while ((trovato = inizioStream.exec(grezzo)) !== null) {
     const da = trovato.index + trovato[0].length;
     const a = grezzo.indexOf("endstream", da);

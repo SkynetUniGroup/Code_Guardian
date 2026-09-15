@@ -43,12 +43,16 @@ class FakeSocket {
 
   /** Simula un evento inviato dal server al client. */
   trigger(event: string, payload?: any) {
-    this.handlers.get(event)?.forEach((h) => h(payload));
+    this.handlers.get(event)?.forEach((h) => {
+      h(payload);
+    });
   }
 
   /** Simula un evento del Manager (es. la riconnessione automatica). */
   triggerManager(event: string) {
-    this.managerHandlers.get(event)?.forEach((h) => h());
+    this.managerHandlers.get(event)?.forEach((h) => {
+      h();
+    });
   }
 
   listenerCount(event: string) {

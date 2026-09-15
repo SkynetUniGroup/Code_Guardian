@@ -6,8 +6,8 @@ import { ErrorState } from "../components/shared/ErrorState";
 import { Spinner } from "../components/shared/Spinner";
 import { useSelectionStore } from "../stores/selectionStore";
 import { useTasksStore } from "../stores/tasksStore";
-import { OPERATION_LABELS } from "../types";
 import type { CreateTaskBatchDto, OperationCode, OperationDescriptorDto } from "../types";
+import { OPERATION_LABELS } from "../types";
 
 /**
  * RunPage — /run
@@ -28,7 +28,7 @@ import type { CreateTaskBatchDto, OperationCode, OperationDescriptorDto } from "
  */
 export function RunPage() {
   const navigate = useNavigate();
-  const { contextId, context, clearContext } = useSelectionStore();
+  const { contextId, context } = useSelectionStore();
   const setCurrentBatch = useTasksStore((s) => s.setCurrentBatch);
 
   // Set of selected operations — the batch can contain more than one.

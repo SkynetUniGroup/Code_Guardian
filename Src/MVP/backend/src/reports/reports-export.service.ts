@@ -1,10 +1,10 @@
 import { Injectable, Logger } from "@nestjs/common";
 import type { Response } from "express";
+import { AgentRegistry } from "../operations/agent-registry.service";
+import type { ReportDto } from "./dto/report.dto";
 import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { composeReportPdf } from "./report-pdf.composer";
 import { ReportsService } from "./reports.service";
-import { AgentRegistry } from "../operations/agent-registry.service";
-import type { ReportDto } from "./dto/report.dto";
 
 // BE-20: deliberately bypasses the shared error envelope
 // (AllExceptionsFilter / BE-2's error.code catalog) for its two

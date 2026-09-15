@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import request from "supertest";
-import { AmbienteE2E, avviaAmbiente, utenteAutenticato } from "./e2e-helpers";
+import { type AmbienteE2E, avviaAmbiente, utenteAutenticato } from "./e2e-helpers";
 
 /**
  * TI_06 (RF.19, 20, 22, 25, 30, RV.3) — validazione del contesto contro un
@@ -146,7 +146,12 @@ descrivi("TI_06 (RF.19,20,22,25,30, RV.3) — validazione del contesto su GitHub
       paths: ["questo/percorso/non/esiste-ti06.ts"],
     }).expect(400);
 
-    expect(risposta.body.code).toBe("VALIDATION_ERROR");
+    // CONTEXT_RESOURCE_MISSING, non VALIDATION_ERROR: la richiesta e'
+    // sintatticamente valida — il DTO la accetta — ed e' il passo 9 a bocciarla
+    // perche' quel percorso nell'albero non c'e'. Distinguere i due codici e'
+    // cio' che permette al frontend di mettere l'errore sotto il campo giusto
+    // invece che nel banner generico.
+    expect(risposta.body.code).toBe("CONTEXT_RESOURCE_MISSING");
   }, 120_000);
 
   it("passo 9 (RF.30) — un percorso presente nell'albero reale e' accettato", async () => {

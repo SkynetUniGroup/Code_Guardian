@@ -56,18 +56,26 @@ export function TemplatePage() {
   const [errore, setErrore] = useState<string | null>(null);
   const [conferma, setConferma] = useState<string | null>(null);
 
-  async function leggiStato(): Promise<void> {
-    try {
-      const { data } = await apiClient.get<ReadmeTemplateDto>("/templates/readme");
-      setTemplate(data);
-    } catch {
-      // Una lettura fallita e "nessun template" portano allo stesso passo
-      // successivo: caricarne uno.
-      setTemplate(null);
-    }
-  }
-
+  // leggiStato vive dentro l'effect, non accanto: era l'unico punto che la
+  // chiamava, e definita nel corpo del componente veniva ricreata a ogni
+  // render. Con la lista di dipendenze vuota React non se ne accorgeva, ma
+  // aggiungerla alla lista — la correzione che il linter propone da solo —
+  // avrebbe fatto ripartire l'effect a ogni render, cioe' una richiesta a
+  // /templates/readme dietro l'altra senza fine. Spostandola qui dentro non
+  // c'e' piu' nessuna dipendenza da dichiarare: l'effect resta quello di
+  // prima, una sola lettura al montaggio.
   useEffect(() => {
+    async function leggiStato(): Promise<void> {
+      try {
+        const { data } = await apiClient.get<ReadmeTemplateDto>("/templates/readme");
+        setTemplate(data);
+      } catch {
+        // Una lettura fallita e "nessun template" portano allo stesso passo
+        // successivo: caricarne uno.
+        setTemplate(null);
+      }
+    }
+
     void leggiStato().finally(() => setCaricamento(false));
   }, []);
 

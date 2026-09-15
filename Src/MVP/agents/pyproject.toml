@@ -77,6 +77,24 @@ target-version = "py312"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 
+# Configurazione di coverage.py. Sta qui e non in pytest.ini perche' pytest-cov
+# non espone un'opzione da riga di comando per `omit`; coverage.py legge questa
+# sezione per conto suo, indipendentemente dal fatto che pytest ignori la
+# [tool.pytest.ini_options] qui sopra a favore di pytest.ini.
+[tool.coverage.run]
+# Copertura di ramo oltre a quella di istruzione: il Piano di Qualifica misura
+# MPD_8 (Branch Coverage) accanto a MP_12, e senza questo per il servizio
+# agenti quel valore non veniva calcolato affatto — non era basso, mancava.
+branch = true
+# main.py e' il punto di ingresso del servizio: costruisce l'app FastAPI, apre
+# le connessioni e avvia uvicorn. Non ha logica verificabile con un test di
+# unita', e lasciarlo dentro pesava 139 istruzioni mai eseguite su 1658.
+#
+# E' anche una questione di coerenza fra componenti: il config Vitest del
+# backend esclude gia' src/main.ts e quello del frontend src/main.tsx. Lo
+# stesso tipo di file era escluso in due componenti su tre.
+omit = ["src/main.py"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]

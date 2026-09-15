@@ -11,10 +11,10 @@ import { TextBlockRenderer } from "../components/report/TextBlockRenderer";
 import { ErrorState } from "../components/shared/ErrorState";
 import { Spinner } from "../components/shared/Spinner";
 import { StatusBadge } from "../components/shared/StatusBadge";
+import { buildReportPdfFilename } from "../lib/utils";
 import { useSessionStore } from "../stores/sessionStore";
 import type { Block, Report, Severity } from "../types";
 import { OPERATION_LABELS } from "../types";
-import { buildReportPdfFilename } from "../lib/utils";
 
 /**
  * ReportDetailPage — /reports/:id

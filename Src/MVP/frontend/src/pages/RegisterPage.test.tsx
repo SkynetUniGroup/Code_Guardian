@@ -57,6 +57,14 @@ function httpError(status: number) {
 }
 
 /**
+ * Una password che soddisfa l'intera politica della pagina: almeno otto
+ * caratteri, almeno una lettera e almeno una cifra. La cifra non e' un
+ * dettaglio estetico — senza, `validate()` respinge il modulo e nessuno degli
+ * scenari di invio qui sotto arriverebbe mai a chiamare il server.
+ */
+const PASSWORD_VALIDA = "password-lunga1";
+
+/**
  * Compila l'intero modulo con dati validi, permettendo di sovrascrivere i
  * singoli campi per isolare lo scenario sotto esame.
  */
@@ -65,8 +73,8 @@ async function compilaModulo(override: Partial<Record<string, string>> = {}) {
     Nome: "Marco",
     Cognome: "Rossi",
     Email: "marco@azienda.it",
-    Password: "password-lunga",
-    "Conferma Password": "password-lunga",
+    Password: PASSWORD_VALIDA,
+    "Conferma Password": PASSWORD_VALIDA,
     ...override,
   };
   const user = userEvent.setup();
@@ -118,14 +126,14 @@ describe("RegisterPage", () => {
       firstName: "Marco",
       lastName: "Rossi",
       email: "marco@azienda.it",
-      password: "password-lunga",
+      password: PASSWORD_VALIDA,
       role: "DEVELOPER",
     });
     // La registrazione non emette un token: il login segue subito, cosi'
     // l'utente non deve ridigitare le credenziali appena scritte.
     expect(postMock).toHaveBeenNthCalledWith(2, "/auth/login", {
       email: "marco@azienda.it",
-      password: "password-lunga",
+      password: PASSWORD_VALIDA,
     });
     expect(useSessionStore.getState().token).toBe("jwt-nuovo-utente");
   });
@@ -209,6 +217,24 @@ describe("RegisterPage", () => {
 
     expect(
       await screen.findByText("La password deve essere di almeno 8 caratteri"),
+    ).toBeInTheDocument();
+    expect(postMock).not.toHaveBeenCalled();
+  });
+
+  it("rifiuta una password abbastanza lunga ma senza cifre", async () => {
+    // La seconda meta' della politica, quella che la sola lunghezza non
+    // copre: otto caratteri bastano a superare il primo controllo, ma senza
+    // una cifra il modulo non parte comunque.
+    render(<RegisterPage />);
+    const user = await compilaModulo({
+      Password: "soltantolettere",
+      "Conferma Password": "soltantolettere",
+    });
+
+    await user.click(screen.getByRole("button", { name: "Registrati" }));
+
+    expect(
+      await screen.findByText("La password deve contenere almeno una lettera e un numero"),
     ).toBeInTheDocument();
     expect(postMock).not.toHaveBeenCalled();
   });

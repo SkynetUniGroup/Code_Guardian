@@ -29,7 +29,7 @@ export class ReportArtifactStorageService implements OnModuleInit {
     this.bucket = this.require("REPORTS_BUCKET_NAME");
     const accessKeyId = this.config.get<string>("S3_ACCESS_KEY_ID");
     const secretAccessKey = this.config.get<string>("S3_SECRET_ACCESS_KEY");
-  this.client = new S3Client({
+    this.client = new S3Client({
       region: this.config.get<string>("S3_REGION"),
       // Assente contro AWS S3 reale: l'SDK risolve da solo l'endpoint
       // regionale a partire da S3_REGION.
@@ -40,9 +40,7 @@ export class ReportArtifactStorageService implements OnModuleInit {
       // credenziali di default dell'SDK, che su Fargate legge il Task Role
       // — nessuna chiave statica da gestire (compute-stack.ts già concede
       // a backendTaskRole l'accesso al bucket via grantReadWrite).
-      ...(accessKeyId && secretAccessKey
-        ? { credentials: { accessKeyId, secretAccessKey } }
-        : {}),
+      ...(accessKeyId && secretAccessKey ? { credentials: { accessKeyId, secretAccessKey } } : {}),
     });
   }
 

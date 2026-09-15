@@ -48,7 +48,7 @@ import { TemplatesModule } from "./templates/templates.module";
         if (!redisUrlStr) {
           throw new Error("REDIS_URL is required");
         }
-      const redisUrl = new URL(redisUrlStr);
+        const redisUrl = new URL(redisUrlStr);
         return {
           connection: {
             host: redisUrl.hostname,

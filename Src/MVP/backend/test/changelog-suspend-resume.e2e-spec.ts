@@ -1,6 +1,12 @@
 import request from "supertest";
-import { TaskDocument } from "./../src/tasks/schemas/task.schema";
-import { AmbienteE2E, attendiChe, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
+import type { TaskDocument } from "./../src/tasks/schemas/task.schema";
+import {
+  type AmbienteE2E,
+  attendiChe,
+  attendiEsito,
+  avviaAmbiente,
+  utentePronto,
+} from "./e2e-helpers";
 
 /**
  * TI_09 (RF.94, 98, 100, 103, 104, 57) e TI_10 (RF.99, 102, 105) — le tre

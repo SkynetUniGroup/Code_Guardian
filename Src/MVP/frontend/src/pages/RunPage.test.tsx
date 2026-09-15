@@ -1,6 +1,6 @@
-import { AxiosError } from "axios";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { AxiosError } from "axios";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useSelectionStore } from "../stores/selectionStore";
 import { useSessionStore } from "../stores/sessionStore";
@@ -45,13 +45,13 @@ function httpError(status: number, message?: string) {
   // Dev'essere un AxiosError vero: toApiError legge stato e corpo solo dopo
   // `err instanceof AxiosError`, e con un oggetto della sola forma giusta la
   // pagina non vedrebbe nemmeno lo stato.
-  return new AxiosError(
-    message ?? "Request failed",
-    String(status),
-    undefined,
-    undefined,
-    { status, data: message ? { message } : {}, statusText: "", headers: {}, config: {} } as never,
-  );
+  return new AxiosError(message ?? "Request failed", String(status), undefined, undefined, {
+    status,
+    data: message ? { message } : {},
+    statusText: "",
+    headers: {},
+    config: {},
+  } as never);
 }
 
 // Le operazioni non sono piu' cablate nella pagina: RunPage le legge da

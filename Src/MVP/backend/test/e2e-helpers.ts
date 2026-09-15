@@ -1,24 +1,27 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { getQueueToken } from "@nestjs/bullmq";
-import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { type INestApplication, ValidationPipe } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-import { Queue } from "bullmq";
-import { Model } from "mongoose";
+import { Test, type TestingModule } from "@nestjs/testing";
+import type { Queue } from "bullmq";
+import type { Model } from "mongoose";
 import request from "supertest";
-import { App } from "supertest/types";
+import type { App } from "supertest/types";
 import { type Mock, vi } from "vitest";
 import { AppModule } from "./../src/app.module";
 import { AllExceptionsFilter } from "./../src/common/filters/all-exceptions.filter";
 import { FRANC } from "./../src/contexts/franc.provider";
 import { GithubClientService } from "./../src/github/github-client.service";
 import { GithubWriteService } from "./../src/github/github-write.service";
-import { Report, ReportDocument } from "./../src/reports/schemas/report.schema";
+import { Report, type ReportDocument } from "./../src/reports/schemas/report.schema";
 import { AgentInvocationService } from "./../src/tasks/agent-invocation.service";
-import { Task, TaskDocument } from "./../src/tasks/schemas/task.schema";
-import { UsageCounter, UsageCounterDocument } from "./../src/tasks/schemas/usage-counter.schema";
-import { RunTaskJobData } from "./../src/tasks/task-processor";
+import { Task, type TaskDocument } from "./../src/tasks/schemas/task.schema";
+import {
+  UsageCounter,
+  type UsageCounterDocument,
+} from "./../src/tasks/schemas/usage-counter.schema";
+import type { RunTaskJobData } from "./../src/tasks/task-processor";
 
 /**
  * Impalcatura condivisa dei test di integrazione.
@@ -62,6 +65,10 @@ export interface DoppioGithub {
   getFileContent: Mock;
   getReadme: Mock;
   listRefs: Mock;
+  // Il passo 4 della sequenza di validazione interroga il singolo branch, non
+  // l'elenco completo dei ref. listRefs resta perche' serve ancora a
+  // GET /repositories/refs, che l'elenco lo espone davvero.
+  getBranch: Mock;
   listIssues: Mock;
   getIssueDetail: Mock;
 }
@@ -85,6 +92,7 @@ export function doppioGithub(): DoppioGithub {
       branches: [{ name: "master", sha: "abc1234567890" }],
       tags: [],
     }),
+    getBranch: vi.fn().mockResolvedValue({ name: "master", sha: "abc1234567890" }),
     listIssues: vi.fn().mockResolvedValue([]),
     getIssueDetail: vi.fn(),
   };

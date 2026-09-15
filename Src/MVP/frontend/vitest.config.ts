@@ -38,6 +38,14 @@ export default defineConfig({
         "src/vite-env.d.ts",
         "src/test/**",
       ],
+      // Stesse soglie del backend, per lo stesso motivo: MP_12 (75% di linea)
+      // e MPD_8 (60% di ramo) del Piano di Qualifica. Valori accettabili, non
+      // ottimali: la soglia serve a far fallire una regressione, non a
+      // dichiarare un obiettivo.
+      thresholds: {
+        lines: 75,
+        branches: 60,
+      },
     },
   },
 });

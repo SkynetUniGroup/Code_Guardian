@@ -61,7 +61,8 @@ describe("TextBlockRenderer", () => {
     const markdown = "Vedi [#42](https://github.com/org/repo/issues/42)";
     render(<TextBlockRenderer block={{ kind: "TEXT", order: 1, markdown }} />);
     expect(screen.getByRole("link", { name: "#42" })).toHaveAttribute(
-      "href", "https://github.com/org/repo/issues/42",
+      "href",
+      "https://github.com/org/repo/issues/42",
     );
   });
 });

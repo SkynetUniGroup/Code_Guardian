@@ -20,6 +20,7 @@ export interface EsitoValidazione {
  * capo e ritorno a capo. Qualunque altro byte di controllo — NUL in testa —
  * indica un file binario a cui è stata cambiata l'estensione.
  */
+// biome-ignore lint/suspicious/noControlCharactersInRegex: riconoscere i caratteri di controllo è il compito di questa costante. La regola previene l'inserimento accidentale di un byte di controllo in una regex di testo; qui sono l'oggetto della ricerca, non un refuso.
 const CONTROLLI_NON_AMMESSI = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/;
 
 export function validaTemplateReadme(filename: string, content: string): EsitoValidazione {

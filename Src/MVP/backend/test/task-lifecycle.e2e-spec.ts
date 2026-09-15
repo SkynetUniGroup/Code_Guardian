@@ -1,16 +1,16 @@
-import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { type INestApplication, ValidationPipe } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-import { Model } from "mongoose";
+import { Test, type TestingModule } from "@nestjs/testing";
+import type { Model } from "mongoose";
 import request from "supertest";
-import { App } from "supertest/types";
+import type { App } from "supertest/types";
 import { vi } from "vitest";
 import { AppModule } from "./../src/app.module";
 import { FRANC } from "./../src/contexts/franc.provider";
 import { GithubClientService } from "./../src/github/github-client.service";
-import { Report, ReportDocument } from "./../src/reports/schemas/report.schema";
+import { Report, type ReportDocument } from "./../src/reports/schemas/report.schema";
 import { AgentInvocationService } from "./../src/tasks/agent-invocation.service";
-import { Task, TaskDocument } from "./../src/tasks/schemas/task.schema";
+import { Task, type TaskDocument } from "./../src/tasks/schemas/task.schema";
 
 /**
  * TI_05 (Piano di Qualifica) — ciclo di vita completo di una task contro lo
@@ -84,6 +84,7 @@ describe("TI_05 — ciclo di vita della task (stack reale)", () => {
       branches: [{ name: "master", sha: "abc1234567890" }],
       tags: [],
     }),
+    getBranch: vi.fn().mockResolvedValue({ name: "master", sha: "abc1234567890" }),
     listIssues: vi.fn().mockResolvedValue([]),
     getIssueDetail: vi.fn(),
   };

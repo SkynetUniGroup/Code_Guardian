@@ -12,8 +12,9 @@ export const runRoute = createRoute({
   getParentRoute: () => authRoute,
   path: "/run",
   beforeLoad: ({ context }) => {
-    const status = context.session.credentialsStatus;
-    if (status === "MISSING" || status === "INVALID") {
+    // Stessa regola di /select: passa solo CONNECTED. Lo stato iniziale
+    // UNKNOWN significa "non ancora verificato", non "va bene".
+    if (context.session.credentialsStatus !== "CONNECTED") {
       throw redirect({ to: "/credentials" });
     }
   },

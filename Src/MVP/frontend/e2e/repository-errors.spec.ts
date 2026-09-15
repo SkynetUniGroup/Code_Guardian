@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { GITHUB_PAT, SKIP_REASON, signedInWithCredentials, submitContext } from "./helpers";
+import { GITHUB_PAT, SKIP_REASON, signedInWithCredentials, submitContext, vaiA } from "./helpers";
 
 /**
  * Test di Sistema sui percorsi d'errore nella creazione del contesto
@@ -22,9 +22,13 @@ test.describe("Percorsi d'errore nella creazione del contesto", () => {
     page,
   }) => {
     await signedInWithCredentials(page);
-    await page.goto("/select");
+    // Non page.goto: ricaricherebbe la pagina e, con la sessione tenuta solo in
+    // memoria, farebbe finire sul login. Si naviga come l'utente.
+    await vaiA(page, "Repository");
 
-    const repositories = page.getByLabel("Repository");
+    // L'etichetta e' "Seleziona repository" da quando accanto alla tendina c'e'
+    // anche il campo per incollare l'URL di un repository pubblico.
+    const repositories = page.getByLabel("Seleziona repository");
     await expect(repositories).toBeEnabled({ timeout: 30_000 });
 
     // La voce segnaposto piu' almeno un repository vero: se l'elenco avesse

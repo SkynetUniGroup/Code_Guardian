@@ -1,5 +1,5 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { ForbiddenException } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
 import { type Mock, vi } from "vitest";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
 import { CredentialsController } from "./credentials.controller";

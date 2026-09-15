@@ -35,6 +35,22 @@ export function freshEmail(prefix = "e2e"): string {
 
 export const PASSWORD = "e2eTest1234";
 
+/**
+ * Naviga cliccando la voce della barra laterale, non con `page.goto`.
+ *
+ * `page.goto` e' un ricaricamento completo, e la sessione di Code Guardian vive
+ * solo in memoria — mai in localStorage, per scelta dichiarata in sessionStore.
+ * Un reload quindi disautentica e fa finire sul login: gli helper che usavano
+ * goto portavano ogni spec a fallire su un'asserzione che con il caso in esame
+ * non c'entrava nulla. Cliccare il link e' anche il percorso reale dell'utente.
+ */
+export async function vaiA(page: Page, voce: string): Promise<void> {
+  await page
+    .getByRole("complementary", { name: "Navigazione principale" })
+    .getByRole("link", { name: voce })
+    .click();
+}
+
 export interface Account {
   email: string;
   password: string;
@@ -74,7 +90,7 @@ export async function registerAndLogin(page: Page, role = "Developer"): Promise<
  * E2E_GITHUB_PAT.
  */
 export async function saveGithubPat(page: Page, token: string): Promise<void> {
-  await page.goto("/credentials");
+  await vaiA(page, "Credenziali");
   await page.getByLabel(/GitHub Personal Access Token/).fill(token);
   await page.getByRole("button", { name: "Salva e verifica" }).click();
   await expect(page.getByText("Connessa e valida")).toBeVisible({ timeout: 30_000 });
@@ -105,13 +121,29 @@ export interface ContextOptions {
  * chiamante.
  */
 export async function submitContext(page: Page, options: ContextOptions): Promise<void> {
-  await page.goto("/select");
+  await vaiA(page, "Repository");
 
-  const repositories = page.getByLabel("Repository");
+  const repositories = page.getByLabel("Seleziona repository");
   await expect(repositories).toBeEnabled({ timeout: 30_000 });
-  // Per valore e non per etichetta: l'etichetta di un repository privato porta
-  // in coda un lucchetto, quindi non coincide con "owner/nome". Il valore, si'.
-  await repositories.selectOption(options.repo);
+
+  // La tendina elenca i repository dell'account a cui appartiene il PAT: un
+  // repository pubblico di terzi — OWASP/NodeGoat, che quasi tutti gli spec
+  // usano — non ci compare. Per quello esiste il campo dell'URL manuale, ed e'
+  // il percorso che un utente segue davvero in questo caso. Si sceglie in base
+  // a cosa la tendina offre, invece di dare per scontato l'uno o l'altro.
+  const disponibili = await repositories
+    .locator("option")
+    .evaluateAll((opzioni) => opzioni.map((o) => (o as HTMLOptionElement).value));
+
+  if (disponibili.includes(options.repo)) {
+    // Per valore e non per etichetta: l'etichetta di un repository privato
+    // porta in coda un lucchetto, quindi non coincide con "owner/nome".
+    await repositories.selectOption(options.repo);
+  } else {
+    await page
+      .getByLabel("Oppure incolla l'URL di un repository pubblico")
+      .fill(`https://github.com/${options.repo}`);
+  }
 
   await page.getByLabel("Branch").fill(options.branch);
   if (options.commitSha !== undefined) {
@@ -127,6 +159,18 @@ export async function submitContext(page: Page, options: ContextOptions): Promis
   }
 
   await page.getByRole("button", { name: "Salva contesto e vai ad Avvia" }).click();
+}
+
+/**
+ * Le schede delle task, e solo quelle.
+ *
+ * `page.getByRole("listitem")` da solo non basta: anche la barra laterale e' un
+ * `<ul>` di `<li>`, quindi il primo listitem della pagina e' la voce
+ * "Credenziali" del menu, non la prima task. Restringere a `main` e' la
+ * differenza fra guardare il contenuto e guardare la navigazione.
+ */
+export function schedeTask(page: Page) {
+  return page.getByRole("main").getByRole("listitem");
 }
 
 /** Seleziona una o piu' operazioni su /run e le avvia. */
@@ -151,7 +195,7 @@ export async function launchOperations(page: Page, operations: string[]): Promis
  * aggiorni davvero.
  */
 export async function waitForTerminalState(page: Page, timeout = 6 * 60_000): Promise<string> {
-  const card = page.getByRole("listitem").first();
+  const card = schedeTask(page).first();
   const terminal = card.getByText(/^(Completato|Fallito|Annullato)$/i);
   await expect(terminal).toBeVisible({ timeout });
   return ((await terminal.textContent()) ?? "").trim();

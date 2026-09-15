@@ -109,6 +109,52 @@ def _identita_delle_docstring(albero: ast.Module) -> set[int]:
     return identita
 
 
+#: Suffissi che, per convenzione, indicano un'espressione regolare.
+_SUFFISSI_DI_ESPRESSIONE_REGOLARE = ('pattern', 'regex', 'regexp')
+
+
+def _identita_delle_espressioni_regolari(albero: ast.Module) -> set[int]:
+    """Le espressioni regolari, da non contare come testo scritto a mano.
+
+    Una regex e' lunga per costruzione — alternative, classi di caratteri,
+    sequenze di escape — ma non e' un prompt: non la legge il modello, la
+    legge ``re``. Contarla insieme ai prompt farebbe fallire TU_17 per un
+    motivo che con RQ.4 non c'entra nulla, e l'unico modo di "sistemarlo"
+    sarebbe spezzare la regex peggiorandone la leggibilita'.
+
+    Riconosciute per struttura e non a occhio: il valore di un'assegnazione a
+    un nome che finisce in pattern/regex, oppure un argomento diretto di una
+    chiamata a ``re.*``.
+
+    Args:
+        albero (ast.Module): L'albero del modulo.
+
+    Returns:
+        set[int]: Gli identificatori dei nodi che sono espressioni regolari.
+    """
+    identita: set[int] = set()
+
+    def annota(nodo: ast.AST) -> None:
+        if isinstance(nodo, ast.Constant) and isinstance(nodo.value, str):
+            identita.add(id(nodo))
+
+    for nodo in ast.walk(albero):
+        if isinstance(nodo, ast.Assign):
+            nomi = [b.id.lower() for b in nodo.targets if isinstance(b, ast.Name)]
+            if any(n.endswith(_SUFFISSI_DI_ESPRESSIONE_REGOLARE) for n in nomi):
+                annota(nodo.value)
+        elif (
+            isinstance(nodo, ast.Call)
+            and isinstance(nodo.func, ast.Attribute)
+            and isinstance(nodo.func.value, ast.Name)
+            and nodo.func.value.id == 're'
+        ):
+            for argomento in nodo.args:
+                annota(argomento)
+
+    return identita
+
+
 def _testo_letterale(nodo: ast.AST) -> int:
     """Quanti caratteri di testo scritto a mano porta un nodo.
 
@@ -144,6 +190,7 @@ def _stringhe_del_modulo(percorso: Path) -> list[tuple[int, int, str]]:
     """
     albero = _albero(percorso)
     docstring = _identita_delle_docstring(albero)
+    espressioni_regolari = _identita_delle_espressioni_regolari(albero)
 
     # Le parti costanti di una f-string vengono misurate insieme, come un
     # testo solo: contarle una per una lascerebbe passare un prompt scritto su
@@ -167,7 +214,11 @@ def _stringhe_del_modulo(percorso: Path) -> list[tuple[int, int, str]]:
             continue
         if not (isinstance(nodo, ast.Constant) and isinstance(nodo.value, str)):
             continue
-        if id(nodo) in docstring or id(nodo) in parti_di_fstring:
+        if (
+            id(nodo) in docstring
+            or id(nodo) in parti_di_fstring
+            or id(nodo) in espressioni_regolari
+        ):
             continue
         trovate.append((len(nodo.value), nodo.lineno, nodo.value[:60]))
     return trovate

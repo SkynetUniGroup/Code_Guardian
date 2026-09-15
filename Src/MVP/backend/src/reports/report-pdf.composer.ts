@@ -239,11 +239,17 @@ function renderInline(doc: PDFKit.PDFDocument, text: string, size: number, bold:
     } else if (/^\*\*[^*]+\*\*$/.test(part)) {
       doc.font("Helvetica-Bold").fontSize(size).text(part.slice(2, -2), opts);
     } else if (/^`[^`]+`$/.test(part)) {
-      doc.font("Courier").fontSize(size - 1).text(part.slice(1, -1), opts);
+      doc
+        .font("Courier")
+        .fontSize(size - 1)
+        .text(part.slice(1, -1), opts);
     } else if (/^\*[^*]+\*$/.test(part) || /^_[^_]+_$/.test(part)) {
       doc.font("Helvetica-Oblique").fontSize(size).text(part.slice(1, -1), opts);
     } else {
-      doc.font(bold ? "Helvetica-Bold" : "Helvetica").fontSize(size).text(part, opts);
+      doc
+        .font(bold ? "Helvetica-Bold" : "Helvetica")
+        .fontSize(size)
+        .text(part, opts);
     }
   });
 

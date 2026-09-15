@@ -1,5 +1,5 @@
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { AmbienteE2E, avviaAmbiente } from "./e2e-helpers";
+import { type AmbienteE2E, avviaAmbiente } from "./e2e-helpers";
 
 /**
  * TU_27 (RV.16) — il documento OpenAPI generato dal backend.

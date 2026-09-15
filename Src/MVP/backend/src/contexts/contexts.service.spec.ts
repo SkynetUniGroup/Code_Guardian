@@ -1,13 +1,8 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  NotFoundException,
-  UnprocessableEntityException,
-  ValidationPipe,
-} from "@nestjs/common";
+import { ArgumentMetadata, HttpStatus, NotFoundException, ValidationPipe } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { type Mock, vi } from "vitest";
+import { AppException } from "../common/exceptions/app.exception";
 import { CredentialsService } from "../credentials/credentials.service";
 import { GithubClientService } from "../github/github-client.service";
 import { ContextsService } from "./contexts.service";
@@ -15,6 +10,26 @@ import { CreateContextDto } from "./dto/create-context.dto";
 import { FRANC } from "./franc.provider";
 import { RepoResolverService } from "./repo-resolver.service";
 import { AnalysisContext } from "./schemas/analysis-context.schema";
+
+/**
+ * Raccoglie l'errore con cui la sequenza ha respinto la creazione.
+ *
+ * Serve perche' ContextsService segnala i propri fallimenti con AppException —
+ * un HttpException che porta con se' un `code` di dominio — e non con le
+ * sottoclassi predefinite di Nest: `instanceof BadRequestException` e' falso
+ * anche quando lo stato e' 400. La proprieta' che questi test intendono
+ * fissare e' lo stato HTTP (e il codice di dominio), ed e' su quella che
+ * asseriscono. RepoResolverService resta l'eccezione: i passi 1-3 vivono li'
+ * e continuano a usare NotFoundException.
+ */
+async function rifiuto(promessa: Promise<unknown>): Promise<AppException> {
+  const errore = await promessa.then(
+    () => null,
+    (e: unknown) => e,
+  );
+  expect(errore).toBeInstanceOf(AppException);
+  return errore as AppException;
+}
 
 describe("ContextsService", () => {
   let service: ContextsService;
@@ -25,7 +40,7 @@ describe("ContextsService", () => {
   let repoResolver: { resolve: Mock };
   let franc: Mock<string, [string]>;
   let github: {
-    listRefs: Mock;
+    getBranch: Mock;
     compareCommits: Mock;
     getTree: Mock;
     getReadme: Mock;
@@ -71,10 +86,9 @@ describe("ContextsService", () => {
       resolve: vi.fn().mockResolvedValue({ owner: "owner", repo: "repo", isPrivate: false }),
     };
     github = {
-      listRefs: vi.fn().mockResolvedValue({
-        branches: [{ name: "main", sha: "branch-head-sha" }],
-        tags: [],
-      }),
+      // Il passo 4 interroga il singolo branch, non l'elenco completo dei ref:
+      // getBranch restituisce il ref oppure null quando non esiste.
+      getBranch: vi.fn().mockResolvedValue({ name: "main", sha: "branch-head-sha" }),
       compareCommits: vi.fn(),
       getTree: vi.fn().mockResolvedValue(fullTree),
       getReadme: vi.fn().mockResolvedValue(null),
@@ -180,10 +194,13 @@ describe("ContextsService", () => {
   });
 
   describe("step 4 — branch existence", () => {
-    it("throws NotFoundException when the branch does not exist", async () => {
-      github.listRefs.mockResolvedValue({ branches: [], tags: [] });
+    it("rejects with 404 when the branch does not exist", async () => {
+      github.getBranch.mockResolvedValue(null);
 
-      await expect(service.create("user1", baseDto)).rejects.toBeInstanceOf(NotFoundException);
+      const errore = await rifiuto(service.create("user1", baseDto));
+
+      expect(errore.getStatus()).toBe(HttpStatus.NOT_FOUND);
+      expect(errore.code).toBe("CONTEXT_RESOURCE_MISSING");
       expect(model.create).not.toHaveBeenCalled();
     });
   });
@@ -194,9 +211,12 @@ describe("ContextsService", () => {
       async (status) => {
         github.compareCommits.mockResolvedValue({ status });
 
-        await expect(
+        const errore = await rifiuto(
           service.create("user1", { ...baseDto, commitSha: "stray-sha" }),
-        ).rejects.toBeInstanceOf(UnprocessableEntityException);
+        );
+
+        expect(errore.getStatus()).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
+        expect(errore.code).toBe("CONTEXT_RESOURCE_INVALID");
         expect(model.create).not.toHaveBeenCalled();
       },
     );
@@ -212,61 +232,78 @@ describe("ContextsService", () => {
 
   describe("step 8 — non-empty scope", () => {
     it("rejects FILES with no paths", async () => {
-      await expect(
+      const errore = await rifiuto(
         service.create("user1", { ...baseDto, scopeType: "FILES", paths: [] }),
-      ).rejects.toBeInstanceOf(BadRequestException);
+      );
+
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(errore.code).toBe("CONTEXT_RESOURCE_MISSING");
     });
 
     it("rejects paths that normalize away to nothing", async () => {
-      await expect(
+      const errore = await rifiuto(
         service.create("user1", {
           ...baseDto,
           scopeType: "FILES",
           paths: [".", "..", "/"],
         }),
-      ).rejects.toBeInstanceOf(BadRequestException);
+      );
+
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
     });
 
     it("rejects FULL_REPOSITORY with paths supplied", async () => {
-      await expect(
+      const errore = await rifiuto(
         service.create("user1", {
           ...baseDto,
           scopeType: "FULL_REPOSITORY",
           paths: ["src"],
         }),
-      ).rejects.toBeInstanceOf(BadRequestException);
+      );
+
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(errore.code).toBe("CONTEXT_RESOURCE_INVALID");
     });
   });
 
   describe("step 9 — scope existence", () => {
     it("rejects a path that does not exist in the tree", async () => {
-      await expect(
+      const errore = await rifiuto(
         service.create("user1", {
           ...baseDto,
           scopeType: "FILES",
           paths: ["nope.ts"],
         }),
-      ).rejects.toBeInstanceOf(BadRequestException);
+      );
+
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(errore.code).toBe("CONTEXT_RESOURCE_MISSING");
     });
 
     it("rejects a FILES path that is actually a directory", async () => {
-      await expect(
+      const errore = await rifiuto(
         service.create("user1", {
           ...baseDto,
           scopeType: "FILES",
           paths: ["src"],
         }),
-      ).rejects.toBeInstanceOf(BadRequestException);
+      );
+
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(errore.code).toBe("CONTEXT_RESOURCE_INVALID");
     });
 
     it("rejects a DIRECTORIES path that is actually a file", async () => {
-      await expect(
+      const errore = await rifiuto(
         service.create("user1", {
           ...baseDto,
           scopeType: "DIRECTORIES",
           paths: ["src/index.ts"],
         }),
-      ).rejects.toBeInstanceOf(BadRequestException);
+      );
+
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(errore.code).toBe("CONTEXT_RESOURCE_INVALID");
     });
   });
 
@@ -423,7 +460,7 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
   let modello: { create: Mock };
   let github: {
     getRepository: Mock;
-    listRefs: Mock;
+    getBranch: Mock;
     compareCommits: Mock;
     getTree: Mock;
     getReadme: Mock;
@@ -453,7 +490,7 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
     const spie: [string, Mock][] = [
       ["credenziale", credenziali.getDecryptedToken],
       ["passo 3: getRepository", github.getRepository],
-      ["passo 4: listRefs", github.listRefs],
+      ["passo 4: getBranch", github.getBranch],
       ["passo 5: compareCommits", github.compareCommits],
       ["passo 7: getTree", github.getTree],
       ["RV.8: getReadme", github.getReadme],
@@ -472,10 +509,7 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
         defaultBranch: "main",
         primaryLanguage: "TypeScript",
       }),
-      listRefs: vi.fn().mockResolvedValue({
-        branches: [{ name: "main", sha: SHA_HEAD }],
-        tags: [],
-      }),
+      getBranch: vi.fn().mockResolvedValue({ name: "main", sha: SHA_HEAD }),
       compareCommits: vi.fn().mockResolvedValue({ status: "identical" }),
       getTree: vi.fn().mockResolvedValue(albero),
       getReadme: vi.fn().mockResolvedValue(null),
@@ -511,7 +545,7 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
     expect(tracciato()).toEqual([
       "credenziale",
       "passo 3: getRepository",
-      "passo 4: listRefs",
+      "passo 4: getBranch",
       "passo 5: compareCommits",
       "passo 7: getTree",
       "RV.8: getReadme",
@@ -580,11 +614,12 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
 
   describe("passo 4 — esistenza del branch (RF.21)", () => {
     it("un branch inesistente ferma la sequenza prima dell’albero", async () => {
-      github.listRefs.mockResolvedValue({ branches: [], tags: [] });
+      github.getBranch.mockResolvedValue(null);
 
-      await expect(servizio.create("user1", dtoBase)).rejects.toBeInstanceOf(NotFoundException);
+      const errore = await rifiuto(servizio.create("user1", dtoBase));
+      expect(errore.getStatus()).toBe(HttpStatus.NOT_FOUND);
 
-      expect(tracciato()).toEqual(["credenziale", "passo 3: getRepository", "passo 4: listRefs"]);
+      expect(tracciato()).toEqual(["credenziale", "passo 3: getRepository", "passo 4: getBranch"]);
     });
   });
 
@@ -592,14 +627,15 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
     it("un commit fuori dal branch ferma la sequenza prima dell’albero", async () => {
       github.compareCommits.mockResolvedValue({ status: "diverged" });
 
-      await expect(
+      const errore = await rifiuto(
         servizio.create("user1", { ...dtoBase, commitSha: "sha-estraneo" }),
-      ).rejects.toBeInstanceOf(UnprocessableEntityException);
+      );
+      expect(errore.getStatus()).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
 
       expect(tracciato()).toEqual([
         "credenziale",
         "passo 3: getRepository",
-        "passo 4: listRefs",
+        "passo 4: getBranch",
         "passo 5: compareCommits",
       ]);
     });
@@ -634,7 +670,7 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
       expect(tracciato()).toEqual([
         "credenziale",
         "passo 3: getRepository",
-        "passo 4: listRefs",
+        "passo 4: getBranch",
         "passo 7: getTree",
       ]);
     });
@@ -649,15 +685,14 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
       ],
       ["FULL_REPOSITORY con percorsi", { scopeType: "FULL_REPOSITORY" as const, paths: ["src"] }],
     ])("%s ferma la sequenza prima della persistenza", async (_caso, ambito) => {
-      await expect(servizio.create("user1", { ...dtoBase, ...ambito })).rejects.toBeInstanceOf(
-        BadRequestException,
-      );
+      const errore = await rifiuto(servizio.create("user1", { ...dtoBase, ...ambito }));
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
 
       expect(modello.create).not.toHaveBeenCalled();
       expect(tracciato()).toEqual([
         "credenziale",
         "passo 3: getRepository",
-        "passo 4: listRefs",
+        "passo 4: getBranch",
         "passo 7: getTree",
         "RV.8: getReadme",
       ]);
@@ -673,9 +708,8 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
         { scopeType: "DIRECTORIES" as const, paths: ["src/index.ts"] },
       ],
     ])("%s ferma la sequenza prima della persistenza", async (_caso, ambito) => {
-      await expect(servizio.create("user1", { ...dtoBase, ...ambito })).rejects.toBeInstanceOf(
-        BadRequestException,
-      );
+      const errore = await rifiuto(servizio.create("user1", { ...dtoBase, ...ambito }));
+      expect(errore.getStatus()).toBe(HttpStatus.BAD_REQUEST);
 
       expect(modello.create).not.toHaveBeenCalled();
       // L'albero del passo 7 è riusato: il passo 9 non ne chiede un secondo.
@@ -687,7 +721,7 @@ describe("TU_20 (RF.19,20,21,22,29,30) — arresto al primo passo fallito", () =
     it("nulla viene persistito finché i nove passi precedenti non sono passati", async () => {
       // Il complemento di tutti gli scenari sopra, detto una volta sola: in
       // nessuno dei fallimenti il contesto arriva su Mongo.
-      github.listRefs.mockResolvedValue({ branches: [], tags: [] });
+      github.getBranch.mockResolvedValue(null);
 
       await expect(servizio.create("user1", dtoBase)).rejects.toBeDefined();
 

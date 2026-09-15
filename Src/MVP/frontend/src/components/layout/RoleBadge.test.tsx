@@ -30,6 +30,7 @@ describe("RoleBadge", () => {
   });
 
   it("accetta classi aggiuntive senza perdere le proprie", () => {
+    // biome-ignore lint/a11y/useValidAriaRole: `role` qui è una prop di RoleBadge (il ruolo applicativo dell'utente), non l'attributo ARIA di un elemento DOM.
     const { container } = render(<RoleBadge role="DEVELOPER" className="mt-4" />);
 
     const classe = container.querySelector("span")!.className;

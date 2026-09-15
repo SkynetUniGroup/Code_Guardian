@@ -1,5 +1,5 @@
 import request from "supertest";
-import { AmbienteE2E, avviaAmbiente } from "./e2e-helpers";
+import { type AmbienteE2E, avviaAmbiente } from "./e2e-helpers";
 
 /**
  * TNF_02 (RQ.9) — il processo di autenticazione resta sotto i due secondi.

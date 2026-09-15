@@ -24,6 +24,24 @@ const { ReportDetailPage } = await import("./ReportDetailPage");
 
 const initialSession = useSessionStore.getState();
 
+/**
+ * Il contesto di analisi che accompagna ogni report.
+ *
+ * Non e' decorativo: `context` e' un campo obbligatorio di ReportDto e il nome
+ * del PDF esportato si costruisce da operation + owner/repo + data. Un report
+ * senza contesto fa fallire l'esportazione con un TypeError, che la pagina
+ * cattura e presenta come "Errore durante il download".
+ */
+const CONTESTO = {
+  repoOwner: "OWASP",
+  repoName: "NodeGoat",
+  repoUrl: "https://github.com/OWASP/NodeGoat",
+  branch: "master",
+  resolvedSha: "abc1234",
+  scopeType: "FULL_REPOSITORY",
+  paths: [],
+};
+
 /** Report completo nella forma restituita da GET /reports/:id. */
 function report(over: Record<string, unknown> = {}) {
   return {
@@ -35,6 +53,7 @@ function report(over: Record<string, unknown> = {}) {
     generatedAt: "2026-08-20T10:30:00Z",
     title: "Analisi OWASP",
     durationMs: 12500,
+    context: CONTESTO,
     body: [],
     ...over,
   };

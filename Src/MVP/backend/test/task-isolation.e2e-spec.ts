@@ -1,6 +1,6 @@
 import request from "supertest";
-import { TaskDocument } from "./../src/tasks/schemas/task.schema";
-import { AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
+import type { TaskDocument } from "./../src/tasks/schemas/task.schema";
+import { type AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
 
 /**
  * TI_11 (RF.48) — le task di uno stesso batch sono elaborate in isolamento.

@@ -7,13 +7,14 @@
     "format": "biome format --write .",
     "lint:fix": "pnpm format && pnpm lint",
     "build": "pnpm -r run build",
-    "test:unit": "pnpm -r run test",
+    "//test:unit": "shared espone dist/index.js: senza compilarlo prima, backend e frontend non risolvono @codeguardian/shared e undici file di test muoiono in import. `pnpm -r run test` da solo non lo compila, perche' shared non ha uno script test e viene saltato.",
+    "test:unit": "pnpm --filter @codeguardian/shared run build && pnpm -r run test",
     "test:integration:up": "docker compose -f docker-compose.test.yml up -d --wait",
     "test:integration:test": "pnpm --filter backend run test:e2e",
     "test:integration:down": "docker compose -f docker-compose.test.yml down -v",
     "test:integration": "pnpm test:integration:up && pnpm test:integration:test; pnpm test:integration:down",
     "test": "pnpm test:unit && pnpm test:integration",
-    "test:cov": "pnpm -r run test:cov"
+    "test:cov": "pnpm --filter @codeguardian/shared run build && pnpm -r run test:cov"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json}": [

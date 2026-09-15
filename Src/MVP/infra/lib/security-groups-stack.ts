@@ -96,7 +96,7 @@ export class SecurityGroupsStack extends cdk.Stack {
 
     this.sgBackend.addIngressRule(this.sgAlb, ec2.Port.tcp(ECS_SIZING.backend.port), "From ALB");
 
-        this.sgBackend.addEgressRule(
+    this.sgBackend.addEgressRule(
       this.sgAtlas,
       ec2.Port.tcp(ATLAS_MONGO_PORT),
       "To Atlas PrivateLink",
@@ -133,7 +133,7 @@ export class SecurityGroupsStack extends cdk.Stack {
     this.sgAgents.addEgressRule(this.sgVpce, ec2.Port.tcp(443), "To VPC Endpoints (SM/ECR/CW/SSM)");
     this.sgVpce.addIngressRule(this.sgAgents, ec2.Port.tcp(443), "From agents");
 
-        // I livelli delle immagini ECR sono fisicamente su S3: anche con gli
+    // I livelli delle immagini ECR sono fisicamente su S3: anche con gli
     // endpoint Interface ecr.api/ecr.dkr coperti da sgVpce sopra, il pull
     // effettivo di un livello puo' reindirizzare a un URL S3 il cui IP di
     // destinazione resta quello pubblico di S3 (il Gateway Endpoint lo
@@ -159,7 +159,7 @@ export class SecurityGroupsStack extends cdk.Stack {
       "From agents (solo agents invoca Bedrock)",
     );
 
-        // TEMPORANEO, stesso motivo del backend (vedi sopra): il cluster Atlas
+    // TEMPORANEO, stesso motivo del backend (vedi sopra): il cluster Atlas
     // e' in eu-central-1, non eu-south-1, quindi il Private Endpoint non e'
     // mai utilizzabile. Nota bene: questa riga viola deliberatamente la
     // garanzia di riga 15-17 ("sg-agents non ha mai egress verso

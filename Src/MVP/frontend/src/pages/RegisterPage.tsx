@@ -14,7 +14,6 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "PROJECT_MANAGER", label: "Project Manager" },
 ];
 
-
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
 /**
@@ -35,7 +34,7 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirm_password, setConfirmPassword] = useState("");
   const [role, setRole] = useState<UserRole>("DEVELOPER");
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 

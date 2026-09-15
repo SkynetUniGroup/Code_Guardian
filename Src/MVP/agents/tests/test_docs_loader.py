@@ -168,8 +168,9 @@ async def test_load_inline_says_so_when_everything_is_already_documented():
     result = await DocsLoader(operation='DOCS_INLINE').load(FakeContextRef(), toolset)
 
     # Il file resta comunque incluso: e' documentato ma va verificato
-    # l'allineamento fra docstring e codice.
-    assert 'verify alignment' in result['code_units']
+    # l'allineamento fra docstring e codice, ed e' quello che dice l'etichetta
+    # con cui il rilevatore lo consegna al modello.
+    assert 'DOCUMENTED - SKIP unless outdated' in result['code_units']
 
 
 # --- DOCS_API ---------------------------------------------------------------

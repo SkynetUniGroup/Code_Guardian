@@ -1,6 +1,6 @@
 import request from "supertest";
 import {
-  AmbienteE2E,
+  type AmbienteE2E,
   attendiEsito,
   avviaAmbiente,
   daEnvDelMonorepo,

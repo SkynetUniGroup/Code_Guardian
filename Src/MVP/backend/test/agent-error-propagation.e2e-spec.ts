@@ -1,7 +1,7 @@
 import request from "supertest";
 import { type Mock, vi } from "vitest";
 import { AgentRegistry, MAX_OPERATION_TIMEOUT_S } from "./../src/operations/agent-registry.service";
-import { AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
+import { type AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
 
 /**
  * TI_14 (RQ.8) — la meta' lato backend della catena del rate limit.

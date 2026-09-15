@@ -1,7 +1,7 @@
 import { ConfigService } from "@nestjs/config";
 import request from "supertest";
 import { vi } from "vitest";
-import { AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
+import { type AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
 
 /**
  * TI_15 (RF.66, RV.6) — il tetto mensile e' controllato prima

@@ -3,9 +3,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Task, TaskDocument } from "../tasks/schemas/task.schema";
 import { ListReportsQueryDto } from "./dto/list-reports-query.dto";
-import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { ReportDto, toReportDto } from "./dto/report.dto";
 import { ReportSummaryDto, toReportSummaryDto } from "./dto/report-summary.dto";
+import { ReportArtifactStorageService } from "./report-artifact-storage.service";
 import { Report, ReportDocument } from "./schemas/report.schema";
 
 @Injectable()

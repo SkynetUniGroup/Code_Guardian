@@ -77,9 +77,7 @@ export function BusinessConfirmationModal({
 
       {technicalChangelog ? (
         <div className="mb-4 max-h-72 overflow-auto">
-          <TextBlockRenderer
-            block={{ kind: "TEXT", order: 0, markdown: technicalChangelog }}
-          />
+          <TextBlockRenderer block={{ kind: "TEXT", order: 0, markdown: technicalChangelog }} />
         </div>
       ) : (
         <p className="mb-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-[#8a5a00]">

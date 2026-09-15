@@ -99,11 +99,7 @@ export class GithubClientService {
     return this.toRepositorySummary(data);
   }
 
-  async listRefs(
-    token: string,
-    owner: string,
-    repo: string,
-  ): Promise<RefSummary> {
+  async listRefs(token: string, owner: string, repo: string): Promise<RefSummary> {
     const client = this.client(token);
 
     const [branches, tags] = await Promise.all([
@@ -283,7 +279,6 @@ export class GithubClientService {
       throw error;
     }
   }
-
 
   private isNotFound(error: unknown): boolean {
     return typeof error === "object" && error !== null && "status" in error && error.status === 404;

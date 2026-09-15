@@ -76,6 +76,17 @@ describe("TemplatePage", () => {
     expect(getMock).toHaveBeenCalledWith("/templates/readme");
   });
 
+  it("legge lo stato una volta sola, non a ogni render", async () => {
+    // La lettura iniziale sta in un useEffect con lista di dipendenze vuota.
+    // Se un domani la funzione che la esegue tornasse a vivere nel corpo del
+    // componente e finisse fra le dipendenze, verrebbe ricreata a ogni render
+    // e l'effect ripartirebbe ogni volta: una richiesta dietro l'altra, senza
+    // fine. Qui si vede subito, invece che in produzione.
+    await renderCaricata();
+
+    expect(getMock).toHaveBeenCalledTimes(1);
+  });
+
   it("senza template personalizzato dichiara che è in uso il default", async () => {
     await renderCaricata();
 

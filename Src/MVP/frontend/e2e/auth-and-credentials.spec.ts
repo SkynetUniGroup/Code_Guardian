@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { freshEmail, GITHUB_PAT, PASSWORD, registerAndLogin, SKIP_REASON } from "./helpers";
+import { freshEmail, GITHUB_PAT, PASSWORD, registerAndLogin, SKIP_REASON, vaiA } from "./helpers";
 
 /**
  * TS_10 / TS_11 (PdQ) — RF.10, RF.11: accesso e configurazione del Personal
@@ -36,17 +36,31 @@ test.describe("Accesso e credenziali", () => {
 
     // La guardia sta su beforeLoad della rotta, non su un controllo dentro la
     // pagina: si verifica navigando, non cercando un messaggio.
-    await page.goto("/select");
+    //
+    // Si naviga dai link della barra laterale e non con page.goto(): goto e' un
+    // ricaricamento completo, e la sessione di Code Guardian vive solo in
+    // memoria — mai in localStorage, per scelta dichiarata in sessionStore. Un
+    // reload quindi disautentica, e il test finirebbe sul login misurando la
+    // guardia sbagliata. Cliccare i link e' anche il modo in cui ci arriva
+    // davvero un utente.
+    // L'etichetta "Navigazione principale" sta sull'<aside> che contiene la
+    // barra, non sul <nav>: il landmark da cercare e' quindi complementary.
+    const vaiA = (etichetta: string) =>
+      page.getByRole("complementary", { name: "Navigazione principale" }).getByRole("link", {
+        name: etichetta,
+      });
+
+    await vaiA("Repository").click();
     await expect(page).toHaveURL(/\/credentials$/);
 
-    await page.goto("/run");
+    await vaiA("Avvia").click();
     await expect(page).toHaveURL(/\/credentials$/);
 
     // /tasks e /reports invece restano raggiungibili: leggerli non richiede
     // GitHub, e chiuderli nasconderebbe all'utente il lavoro gia' svolto.
-    await page.goto("/tasks");
+    await vaiA("Task").click();
     await expect(page).toHaveURL(/\/tasks$/);
-    await page.goto("/reports");
+    await vaiA("Report").click();
     await expect(page).toHaveURL(/\/reports$/);
   });
 
@@ -125,7 +139,9 @@ test.describe("Accesso e credenziali", () => {
     // data dell'ultima validazione.
     await expect(page.getByText(/Ultima validazione:/)).toBeVisible();
 
-    await page.goto("/select");
+    // Cliccando, non con page.goto: la sessione vive solo in memoria e un
+    // ricaricamento riporterebbe al login.
+    await vaiA(page, "Repository");
     await expect(page).toHaveURL(/\/select$/);
     await expect(page.getByRole("heading", { name: "Seleziona Repository" })).toBeVisible();
   });

@@ -47,14 +47,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof BadRequestException) {
       const body = exception.getResponse();
       const pipeMessages =
-        typeof body === "object" && body !== null && Array.isArray((body as { message?: unknown }).message)
+        typeof body === "object" &&
+        body !== null &&
+        Array.isArray((body as { message?: unknown }).message)
           ? (body as { message: string[] }).message
           : undefined;
 
       const errorBody: ErrorResponseBody = {
         code: "VALIDATION_ERROR",
         message: pipeMessages ? "Validation failed." : exception.message,
-        details: pipeMessages,
+        // Non `pipeMessages`: un BadRequestException costruito con una stringa
+        // nuda (`new BadRequestException("Formato non valido")`) non ha un
+        // array di messaggi, e lasciare `details` indefinito toglieva al
+        // frontend l'unico campo da cui ricava il dettaglio del campo in
+        // errore. extractValidationDetails copre entrambe le forme.
+        details: this.extractValidationDetails(exception),
       };
       response.status(HttpStatus.BAD_REQUEST).json(errorBody);
       return;

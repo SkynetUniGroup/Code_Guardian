@@ -8,7 +8,6 @@ import { ValidatedField } from "../components/shared/ValidatedField";
 import { useSelectionStore } from "../stores/selectionStore";
 import type { AnalysisContextDto, CreateContextDto, RepositorySummary } from "../types";
 
-
 const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)$/;
 
 function fieldErrorFromApiError(err: unknown): Record<string, string> {
@@ -130,7 +129,6 @@ export function SelectPage() {
     setFormErrors(next);
     return Object.keys(next).length === 0;
   }
-  
 
   async function handle_submit(e: FormEvent) {
     e.preventDefault();
@@ -236,7 +234,7 @@ export function SelectPage() {
         {/* Repository selector */}
         <div className="flex flex-col gap-1">
           <label htmlFor="repo-select" className="text-sm font-medium text-[#2a2a2a]">
-            Seleziona repository 
+            Seleziona repository
           </label>
           <select
             id="repo-select"
@@ -268,7 +266,7 @@ export function SelectPage() {
             setFormErrors((p) => ({ ...p, repo: "", repo_url: "" }));
           }}
           disabled={!!selected_repo}
-          error={form_errors.repo_url}  
+          error={form_errors.repo_url}
           className="disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
         />
 

@@ -1,7 +1,7 @@
 import { HttpStatus, Inject, Injectable } from "@nestjs/common";
-import { AppException } from "../common/exceptions/app.exception";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
+import { AppException } from "../common/exceptions/app.exception";
 import { CredentialsService } from "../credentials/credentials.service";
 import { GithubClientService } from "../github/github-client.service";
 import type { TreeNode } from "../github/github-client.types";
@@ -38,14 +38,9 @@ export class ContextsService {
     // method ever runs), owner/repo extraction, reachability + isPrivate.
     const { owner, repo, isPrivate } = await this.repoResolver.resolve(token, dto.repoUrl);
 
-    // Step 4: branch existence (RF.21). listRefs also gives us the branch's
+    // Step 4: branch existence (RF.21). getBranch also gives us the branch's
     // HEAD sha, reused directly in step 6 — no second call.
-    const branchRef = await this.githubClient.getBranch(
-      token,
-      owner,
-      repo,
-      dto.branch,
-    );
+    const branchRef = await this.githubClient.getBranch(token, owner, repo, dto.branch);
 
     if (!branchRef) {
       throw new AppException(

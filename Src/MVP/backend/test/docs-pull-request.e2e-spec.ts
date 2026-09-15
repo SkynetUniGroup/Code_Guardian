@@ -1,8 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import request from "supertest";
 import { AppException } from "./../src/common/exceptions/app.exception";
-import { TaskDocument } from "./../src/tasks/schemas/task.schema";
-import { AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
+import type { TaskDocument } from "./../src/tasks/schemas/task.schema";
+import { type AmbienteE2E, attendiEsito, avviaAmbiente, utentePronto } from "./e2e-helpers";
 
 /**
  * TI_12 (RF.82, RF.63) e TI_13 (RF.72) — apertura automatica della Pull

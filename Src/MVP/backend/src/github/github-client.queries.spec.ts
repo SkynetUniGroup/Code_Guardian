@@ -4,10 +4,16 @@ import { vi } from "vitest";
 // so these stay fast, deterministic unit tests of our own mapping and
 // caching logic rather than network calls.
 const mockRequest = vi.fn();
+// `paginate` non e' `request`: listRefs lo usa per branch e tag (le pagine
+// oltre la prima andavano perse con `request` + per_page), e restituisce gia'
+// l'array di elementi, non un `{ data }`. Il doppio deve esporlo, altrimenti
+// il servizio chiama undefined.
+const mockPaginate = vi.fn();
 vi.mock("@octokit/rest", () => ({
   Octokit: vi.fn().mockImplementation(function CostruttoreFinto() {
     return {
       request: mockRequest,
+      paginate: mockPaginate,
       hook: { after: vi.fn(), before: vi.fn() },
     };
   }),
@@ -51,6 +57,7 @@ describe("GithubClientService — queries and mapping", () => {
 
   beforeEach(async () => {
     mockRequest.mockReset();
+    mockPaginate.mockReset();
     redis = createMockRedis();
     redis.get.mockResolvedValue(null);
 
@@ -117,9 +124,9 @@ describe("GithubClientService — queries and mapping", () => {
 
   describe("listRefs", () => {
     it("returns branches and tags together, each with its commit", async () => {
-      mockRequest
-        .mockResolvedValueOnce({ data: [{ name: "master", commit: { sha: "aaa" } }] })
-        .mockResolvedValueOnce({ data: [{ name: "v1.0.0", commit: { sha: "bbb" } }] });
+      mockPaginate
+        .mockResolvedValueOnce([{ name: "master", commit: { sha: "aaa" } }])
+        .mockResolvedValueOnce([{ name: "v1.0.0", commit: { sha: "bbb" } }]);
 
       const refs = await service.listRefs(TOKEN, "OWASP", "NodeGoat");
 
@@ -129,22 +136,107 @@ describe("GithubClientService — queries and mapping", () => {
       });
     });
 
-    it("fetches branches and tags in parallel, not one after the other", async () => {
-      mockRequest.mockResolvedValue({ data: [] });
+    it("asks for branches and tags a page of 100 at a time", async () => {
+      // per_page e' quello che rende conveniente l'impaginazione: senza, ogni
+      // repository con molti branch costerebbe una richiesta ogni 30 ref.
+      mockPaginate.mockResolvedValue([]);
 
       await service.listRefs(TOKEN, "OWASP", "NodeGoat");
 
-      expect(mockRequest).toHaveBeenCalledTimes(2);
+      expect(mockPaginate).toHaveBeenCalledWith("GET /repos/{owner}/{repo}/branches", {
+        owner: "OWASP",
+        repo: "NodeGoat",
+        per_page: 100,
+      });
+      expect(mockPaginate).toHaveBeenCalledWith("GET /repos/{owner}/{repo}/tags", {
+        owner: "OWASP",
+        repo: "NodeGoat",
+        per_page: 100,
+      });
+    });
+
+    it("fetches branches and tags in parallel, not one after the other", async () => {
+      mockPaginate.mockResolvedValue([]);
+
+      await service.listRefs(TOKEN, "OWASP", "NodeGoat");
+
+      expect(mockPaginate).toHaveBeenCalledTimes(2);
     });
 
     it("returns empty lists for a repository with no tags", async () => {
-      mockRequest
-        .mockResolvedValueOnce({ data: [{ name: "main", commit: { sha: "aaa" } }] })
-        .mockResolvedValueOnce({ data: [] });
+      mockPaginate
+        .mockResolvedValueOnce([{ name: "main", commit: { sha: "aaa" } }])
+        .mockResolvedValueOnce([]);
 
       const refs = await service.listRefs(TOKEN, "OWASP", "NodeGoat");
 
       expect(refs.tags).toEqual([]);
+    });
+  });
+
+  /**
+   * TU_21 (RF.22) — le quattro relazioni possibili fra commit e branch.
+   *
+   * Qui si verifica solo la *classificazione*: che il client riporti fedelmente
+   * lo stato che GitHub gli restituisce. Quali di questi stati valgano come
+   * appartenenza legittima — ahead e identical sì, behind e diverged no — è una
+   * decisione del dominio, la prende ContextsService al passo 5 della sequenza
+   * di validazione, e ha i suoi test in contexts.service.spec.ts. Separarli
+   * significa che cambiare la regola non tocca questo file e viceversa.
+   */
+  describe("compareCommits", () => {
+    it.each(["ahead", "identical", "behind", "diverged"] as const)(
+      "riporta la relazione %s così come GitHub la classifica",
+      async (stato) => {
+        mockRequest.mockResolvedValue({ data: { status: stato } });
+
+        const esito = await service.compareCommits(TOKEN, "OWASP", "NodeGoat", "base", "head");
+
+        expect(esito).toEqual({ status: stato });
+      },
+    );
+
+    it("interroga GitHub nella forma base...head", async () => {
+      // L'ordine dei due estremi non è cosmetico: invertirli scambia ahead con
+      // behind, e il passo 5 accetta il primo e rifiuta il secondo.
+      mockRequest.mockResolvedValue({ data: { status: "identical" } });
+
+      await service.compareCommits(TOKEN, "OWASP", "NodeGoat", "sha-base", "sha-head");
+
+      expect(mockRequest).toHaveBeenCalledWith("GET /repos/{owner}/{repo}/compare/{basehead}", {
+        owner: "OWASP",
+        repo: "NodeGoat",
+        basehead: "sha-base...sha-head",
+      });
+    });
+
+    it("traduce un commit inesistente in not_found invece di propagare il 404", async () => {
+      // Un commit che non esiste non è un guasto: è una risposta alla domanda
+      // "questo commit appartiene al branch?". Il chiamante la tratta come tale.
+      mockRequest.mockRejectedValue(Object.assign(new Error("Not Found"), { status: 404 }));
+
+      const esito = await service.compareCommits(TOKEN, "OWASP", "NodeGoat", "ignoto", "head");
+
+      expect(esito).toEqual({ status: "not_found" });
+    });
+
+    it("lascia risalire un guasto che non sia un 404", async () => {
+      mockRequest.mockRejectedValue(Object.assign(new Error("Bad gateway"), { status: 502 }));
+
+      await expect(
+        service.compareCommits(TOKEN, "OWASP", "NodeGoat", "base", "head"),
+      ).rejects.toThrow("Bad gateway");
+    });
+
+    it("rifiuta uno stato che non è fra i quattro previsti", async () => {
+      // Se GitHub introducesse un quinto stato, farlo passare come se fosse
+      // valido sarebbe peggio che fermarsi: il passo 5 deciderebbe su un
+      // valore che nessuno ha considerato.
+      mockRequest.mockResolvedValue({ data: { status: "qualcosa_di_nuovo" } });
+
+      await expect(
+        service.compareCommits(TOKEN, "OWASP", "NodeGoat", "base", "head"),
+      ).rejects.toThrow("Unexpected compare status from GitHub: qualcosa_di_nuovo");
     });
   });
 

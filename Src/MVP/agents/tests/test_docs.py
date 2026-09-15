@@ -49,6 +49,14 @@ const senzaNulla = (x) => x / 2;
 '''
 
 
+#: Le due etichette con cui `_find_target_units` classifica un'unita'. Sono le
+#: stringhe che finiscono nel prompt sotto "Units to process", quindi fanno
+#: parte del contratto verso il modello: i test le nominano da qui invece di
+#: ripeterle a mano, cosi' una loro modifica si vede in un punto solo.
+DA_DOCUMENTARE = 'UNDOCUMENTED - generate'
+GIA_DOCUMENTATA = 'DOCUMENTED - SKIP unless outdated'
+
+
 def _stato(targets: list, nome: str) -> str:
     """Restituisce la voce di rilevamento relativa all'unita' indicata.
 
@@ -68,22 +76,22 @@ def test_find_target_units_flags_python_function_without_docstring():
     """Una funzione Python priva di docstring viene marcata come non documentata."""
     targets = DocsLoader()._find_target_units(PYTHON_SOURCE, 'src/calc.py')
 
-    assert 'undocumented' in _stato(targets, 'senza_docstring')
+    assert DA_DOCUMENTARE in _stato(targets, 'senza_docstring')
 
 
 def test_find_target_units_spares_documented_python_function():
     """Una funzione gia' documentata non va riscritta, solo verificata."""
     targets = DocsLoader()._find_target_units(PYTHON_SOURCE, 'src/calc.py')
 
-    assert 'documented, verify alignment' in _stato(targets, 'documentata')
+    assert GIA_DOCUMENTATA in _stato(targets, 'documentata')
 
 
 def test_find_target_units_covers_python_classes_too():
     """Il rilevamento riguarda anche le classi, non solo le funzioni."""
     targets = DocsLoader()._find_target_units(PYTHON_SOURCE, 'src/calc.py')
 
-    assert 'documented, verify alignment' in _stato(targets, 'ClasseDocumentata')
-    assert 'undocumented' in _stato(targets, 'ClasseNuda')
+    assert GIA_DOCUMENTATA in _stato(targets, 'ClasseDocumentata')
+    assert DA_DOCUMENTARE in _stato(targets, 'ClasseNuda')
 
 
 def test_find_target_units_reports_line_numbers():
@@ -99,7 +107,7 @@ def test_find_target_units_accepts_docstring_in_single_quotes():
 
     targets = DocsLoader()._find_target_units(source, 'src/a.py')
 
-    assert 'documented, verify alignment' in targets[0]
+    assert GIA_DOCUMENTATA in targets[0]
 
 
 def test_find_target_units_returns_nothing_for_a_file_without_code():
@@ -115,28 +123,35 @@ def test_find_target_units_flags_javascript_function_without_jsdoc():
     """Una funzione JavaScript priva di JSDoc viene marcata come non documentata."""
     targets = DocsLoader()._find_target_units(JS_SOURCE, 'app/util.js')
 
-    assert 'undocumented' in _stato(targets, 'senzaJsdoc')
+    assert DA_DOCUMENTARE in _stato(targets, 'senzaJsdoc')
 
 
 def test_find_target_units_spares_javascript_function_with_jsdoc():
     """Il blocco JSDoc che precede la funzione conta come documentazione."""
     targets = DocsLoader()._find_target_units(JS_SOURCE, 'app/util.js')
 
-    assert 'documented, verify alignment' in _stato(targets, 'documentata')
+    assert GIA_DOCUMENTATA in _stato(targets, 'documentata')
 
 
 def test_find_target_units_detects_arrow_function_constants():
     """Anche le costanti assegnate a funzioni freccia sono unita' documentabili."""
     targets = DocsLoader()._find_target_units(JS_SOURCE, 'app/util.js')
 
-    assert 'undocumented' in _stato(targets, 'senzaNulla')
+    assert DA_DOCUMENTARE in _stato(targets, 'senzaNulla')
 
 
-def test_find_target_units_accepts_line_comment_as_documentation():
-    """Un commento di riga immediatamente sopra vale come documentazione."""
+def test_find_target_units_does_not_accept_a_line_comment_as_documentation():
+    """Un commento `//` non basta: l'agente Docs produce JSDoc, e JSDoc non c'e'.
+
+    Il rilevatore scavalca i commenti di riga mentre cerca all'indietro il
+    blocco `/** ... */`, cosi' un JSDoc separato dalla dichiarazione da un
+    commento continua a valere; ma un `//` da solo lascia l'unita' fra quelle
+    da documentare. Trattarlo come documentazione sufficiente farebbe saltare
+    proprio le unita' che un generatore di JSDoc deve coprire.
+    """
     targets = DocsLoader()._find_target_units(JS_SOURCE, 'app/util.js')
 
-    assert 'documented, verify alignment' in _stato(targets, 'conCommento')
+    assert DA_DOCUMENTARE in _stato(targets, 'conCommento')
 
 
 # --- Rilevamento endpoint non documentati -----------------------------------
@@ -202,8 +217,11 @@ def test_parse_output_builds_diff_that_only_adds_lines():
     Un diff che contenesse righe in rimozione riscriverebbe codice funzionante
     per il solo scopo di documentarlo.
     """
+    # Il modello emette la docstring senza rientro: per i file .py e' il parser
+    # ad aggiungere i quattro spazi che la portano dentro il corpo della
+    # funzione, cosi' il modello non deve indovinare il livello di annidamento.
     raw = json.dumps({'docs': [
-        {'file': 'src/calc.py', 'line': 6, 'doc': '    """Sottrae due numeri."""'},
+        {'file': 'src/calc.py', 'line': 6, 'doc': '"""Sottrae due numeri."""'},
     ]})
 
     _, proposal = DocsInlineProfile().parse_output(raw)
@@ -244,10 +262,10 @@ def test_parse_output_counts_lines_of_multiline_docstring():
 
     _, proposal = DocsInlineProfile().parse_output(raw)
 
-    # Il modello indica la riga della definizione; la docstring va su quella
-    # successiva, altrimenti in Python finirebbe prima del `def` invece che
-    # dentro il blocco.
-    assert '@@ -4,0 +4,4 @@' in proposal.diffUnified
+    # Quattro righe aggiunte, ancorate alla riga che il modello ha indicato:
+    # in un diff di sole aggiunte `-3,0` significa "dopo la riga 3", cioe'
+    # subito sotto il `def`, dentro il blocco e non prima di esso.
+    assert '@@ -3,0 +3,4 @@' in proposal.diffUnified
 
 
 def test_parse_output_without_docs_produces_no_proposal():
