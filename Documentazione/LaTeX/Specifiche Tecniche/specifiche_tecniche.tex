@@ -70,7 +70,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{0.7} \\ \hline
+            \textbf{Versione} & \textit{0.8} \\ \hline
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic} \\ \hline
@@ -95,7 +95,9 @@
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     %%%%%%
-    0.7 & 2026/09/13 & Scrittura della sezione "Flusso dei dati" & \makecell[l]{Sara Ristovic} & \makecell[l]{Nome Cognome} \\ \hline
+    0.8 & 2026/09/15 & Scrittura della sezione "Copertura dei requisiti" & \makecell[l]{Sara Ristovic} & \makecell[l]{Nome Cognome} \\ \hline
+    %%%%%%
+    0.7 & 2026/09/13 & Scrittura della sezione "Flusso dei dati" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
     %%%%%%
     0.6 & 2026/09/13 & Scrittura della sezione "Design Pattern Implementati" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
     %%%%%%
@@ -191,7 +193,7 @@ In questa sezione vengono elencate le tecnologie adottate per la release MVP, or
 % sono floating e non pinnati in un lockfile).
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|l|l|l|X|}
-    \caption{Linguaggi e framework principali, per servizio.}\label{tab:linguaggi-framework} \\
+    \caption{Linguaggi e framework principali, per servizio}\label{tab:linguaggi-framework} \\
     \hline
     \textbf{Tecnologia} & \textbf{Versione} & \textbf{Servizio} & \textbf{Descrizione} \\ \hline
     \endfirsthead
@@ -222,7 +224,7 @@ Librerie applicative usate dal Frontend oltre al framework React.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
-    \caption{Librerie Frontend.}\label{tab:librerie-frontend} \\
+    \caption{Librerie Frontend}\label{tab:librerie-frontend} \\
     \hline
     \textbf{Libreria} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
     \endfirsthead
@@ -251,7 +253,7 @@ Librerie applicative usate dal Backend oltre al framework NestJS.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
-    \caption{Librerie Backend.}\label{tab:librerie-backend} \\
+    \caption{Librerie Backend}\label{tab:librerie-backend} \\
     \hline
     \textbf{Libreria} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
     \endfirsthead
@@ -283,7 +285,7 @@ Tecnologie di persistenza e caching condivise da Backend e Agenti.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
-    \caption{Persistenza e caching.}\label{tab:persistenza-caching} \\
+    \caption{Persistenza e caching}\label{tab:persistenza-caching} \\
     \hline
     \textbf{Tecnologia} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
     \endfirsthead
@@ -312,7 +314,7 @@ Algoritmi e standard adottati per l'autenticazione e la protezione delle credenz
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|l|X|}
-    \caption{Autenticazione e crittografia.}\label{tab:auth-crittografia} \\
+    \caption{Autenticazione e crittografia}\label{tab:auth-crittografia} \\
     \hline
     \textbf{Tecnologia} & \textbf{Descrizione} \\ \hline
     \endfirsthead
@@ -337,7 +339,7 @@ Servizi gestiti su cui è ospitato il modello linguistico e l'infrastruttura di 
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|p{5.2cm}|l|X|}
-    \caption{LLM e infrastruttura Cloud (AWS).}\label{tab:llm-cloud-aws} \\
+    \caption{LLM e infrastruttura AWS}\label{tab:llm-cloud-aws} \\
     \hline
     \textbf{Tecnologia} & \textbf{Versione} & \textbf{Descrizione} \\ \hline
     \endfirsthead
@@ -372,7 +374,7 @@ Framework di test adottati per ciascun servizio.
 
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|l|l|l|X|}
-    \caption{Framework di testing, per ambito.}\label{tab:testing} \\
+    \caption{Framework di testing, per ambito}\label{tab:testing} \\
     \hline
     \textbf{Framework} & \textbf{Versione} & \textbf{Ambito} & \textbf{Descrizione} \\ \hline
     \endfirsthead
@@ -491,7 +493,7 @@ Il confine più importante dell'intero sistema, cioè che nessun componente dive
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{backend-github-integration.pdf}
-    \caption{Struttura interna dell'integrazione con GitHub: facade di sola lettura e percorso di scrittura.}
+    \caption{Struttura interna dell'integrazione con GitHub.}
     \label{fig:backend-github}
 \end{figure}
 
@@ -523,7 +525,7 @@ Qualunque sia l'agente che l'ha prodotto, il Backend persiste ed espone sempre l
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{backend-report-blocks.pdf}
-    \caption{Il contratto Report: intestazione fissa e blocchi polimorfi nel corpo.}
+    \caption{Struttura del Report}
     \label{fig:backend-report-blocks}
 \end{figure}
 
@@ -547,7 +549,7 @@ I tre agenti non sono tre implementazioni distinte che duplicano la stessa logic
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{agenti-architettura.pdf}
-    \caption{Un solo scheletro (\texttt{AgentGraph}), tre configurazioni intercambiabili.}
+    \caption{AgentGraph: un solo scheletro, tre configurazioni}
     \label{fig:agenti-architettura}
 \end{figure}
 
@@ -590,7 +592,7 @@ I dati applicativi persistono su MongoDB in sette collezioni, organizzate attorn
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{modello-dati.pdf}
-    \caption{Modello dei dati persistiti su MongoDB e relative relazioni.}
+    \caption{Modello dei dati persistiti su MongoDB.}
     \label{fig:modello-dati}
 \end{figure}
 
@@ -751,5 +753,329 @@ Il PDF viene composto per intero in memoria prima che la risposta HTTP venga anc
 
 \newpage
 \section{Copertura dei requisiti}
+
+I requisiti riportati in questa sezione sono quelli definiti nel documento \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/analisi_dei_requisiti_v1.0.0.pdf}{Analisi dei Requisiti}, capitolo 7, e sono qui organizzati per sottosistema anziché nell'ordine in cui compaiono in quel documento. Per ciascun requisito le tabelle seguenti riportano il codice, la priorità e lo stato di soddisfacimento: \emph{Soddisfatto}, \emph{Parziale} se implementato solo in parte rispetto a quanto descritto, \emph{Non implementato} se non presente nell'MVP, oppure \emph{Fuori Perimetro} se il gruppo ha deliberatamente scelto di escluderlo dallo sviluppo in accordo con il Proponente.
+
+\subsection{Stato per requisito}
+
+\medskip
+\noindent\textbf{Identità, Autenticazione e Sicurezza Account}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.1--RF.9 & Obbligatorio & Soddisfatto \\ \hline
+        RS.1 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Identità, Autenticazione e Sicurezza Account}
+    \label{tab:req-identita}
+\end{table}
+
+\medskip
+\noindent\textbf{Credenziali Esterne e Autorizzazione ai Servizi}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.10--RF.14 & Obbligatorio & Soddisfatto \\ \hline
+        RS.2 & Obbligatorio & Soddisfatto \\ \hline
+        RS.4 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Credenziali Esterne e Autorizzazione ai Servizi}
+    \label{tab:req-credenziali}
+\end{table}
+
+\medskip
+\noindent\textbf{Repository, Riferimento di Base e Ambito di Analisi}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.15--RF.17 & Obbligatorio & Soddisfatto \\ \hline
+        RF.18 & Desiderabile & Fuori Perimetro \\ \hline
+        RF.19--RF.22 & Obbligatorio & Soddisfatto \\ \hline
+        RF.23 & Obbligatorio & Fuori Perimetro \\ \hline
+        RF.24--RF.30 & Obbligatorio & Soddisfatto \\ \hline
+        RF.31 & Desiderabile & Parziale \\ \hline
+        RQ.7 & Obbligatorio & Soddisfatto \\ \hline
+        RQ.9--RQ.10 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Repository, Riferimento di Base e Ambito di Analisi}
+    \label{tab:req-repository}
+\end{table}
+
+\medskip
+\noindent\textbf{Selezione e Avvio delle Operazioni}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.32--RF.36 & Obbligatorio & Soddisfatto \\ \hline
+        RF.37 & Desiderabile & Soddisfatto \\ \hline
+        RF.38 & Opzionale & Fuori Perimetro \\ \hline
+        RF.39 & Desiderabile & Soddisfatto \\ \hline
+        RF.40--RF.42 & Obbligatorio & Soddisfatto \\ \hline
+        RF.106 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Selezione e Avvio delle Operazioni}
+    \label{tab:req-selezione}
+\end{table}
+
+\medskip
+\noindent\textbf{Monitoraggio dell'Esecuzione}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.43--RF.48 & Obbligatorio & Soddisfatto \\ \hline
+        RS.3 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Monitoraggio dell'Esecuzione}
+    \label{tab:req-monitoraggio}
+\end{table}
+
+\medskip
+\noindent\textbf{Storico e Archivio dei Report}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.49--RF.52 & Opzionale & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Storico e Archivio dei Report}
+    \label{tab:req-storico}
+\end{table}
+
+\medskip
+\noindent\textbf{Visualizzazione e Struttura del Report}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.53--RF.56 & Obbligatorio & Soddisfatto \\ \hline
+        RF.57--RF.61 & Obbligatorio & Soddisfatto \\ \hline
+        RF.62--RF.63 & Obbligatorio & Soddisfatto \\ \hline
+        RF.64 & Obbligatorio & Parziale \\ \hline
+        
+        %%%% 62 implementato, 64 non imp, 63 imp.
+    \end{tabular}
+    \caption{Stato dei requisiti — Visualizzazione e Struttura del Report}
+    \label{tab:req-visualizzazione}
+\end{table}
+
+\medskip
+\noindent\textbf{Gestione degli Errori di Esecuzione}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.65 & Obbligatorio & Soddisfatto \\ \hline
+        RF.66--RF.67 & Desiderabile & Soddisfatto \\ \hline
+        RF.68--RF.72 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Gestione degli Errori di Esecuzione}
+    \label{tab:req-errori}
+\end{table}
+
+\medskip
+\noindent\textbf{Esportazione e Notifiche}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.73--RF.74 & Obbligatorio & Soddisfatto \\ \hline
+        RF.75--RF.78 & Opzionale & Fuori Perimetro \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Esportazione e Notifiche}
+    \label{tab:req-esportazione}
+\end{table}
+
+\medskip
+\noindent\textbf{Agente Docs}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.79--RF.81 & Opzionale & Fuori Perimetro \\ \hline
+        RF.82--RF.84 & Obbligatorio & Soddisfatto \\ \hline
+        RF.85 & Desiderabile & Non implementato \\ \hline
+        RF.86 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Agente Docs}
+    \label{tab:req-docs}
+\end{table}
+
+\medskip
+\noindent\textbf{Agente Security}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.87--RF.91 & Obbligatorio & Soddisfatto \\ \hline
+        RF.92 & Obbligatorio & Soddisfatto \\ \hline
+        RF.93 & Obbligatorio & Non implementato \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Agente Security}
+    \label{tab:req-security}
+\end{table}
+
+\medskip
+\noindent\textbf{Agente Changelog e Task Management}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.94 & Obbligatorio & Soddisfatto \\ \hline
+        RF.95 & Obbligatorio & Parziale \\ \hline
+        RF.96 & Obbligatorio & Soddisfatto \\ \hline
+        RF.97 & Opzionale & \\ \hline
+        RF.98--RF.99 & Obbligatorio & Soddisfatto \\ \hline
+        RF.100 & Obbligatorio & \\ \hline
+        RF.101--RF.105 & Obbligatorio & Soddisfatto \\ \hline
+        RF.108 & Obbligatorio & \\ \hline
+        RQ.11 & Obbligatorio & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Agente Changelog e Task Management}
+    \label{tab:req-changelog}
+\end{table}
+
+\medskip
+\noindent\textbf{Prestazioni e Limiti Operativi}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RF.107 & Obbligatorio & Soddisfatto \\ \hline
+        RF.109--RF.110 & Desiderabile & Soddisfatto \\ \hline
+        RF.111 & Obbligatorio & Soddisfatto \\ \hline
+        RQ.8 & Desiderabile & Soddisfatto \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Prestazioni e Limiti Operativi}
+    \label{tab:req-prestazioni}
+\end{table}
+
+\medskip
+\noindent\textbf{Vincoli Tecnologici e Infrastrutturali}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RV.1--RV.8 & Obbligatorio & Soddisfatto \\ \hline
+        RS.5 & Desiderabile & Parziale \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Vincoli Tecnologici e Infrastrutturali}
+    \label{tab:req-vincoli}
+\end{table}
+
+\medskip
+\noindent\textbf{Qualità del Codice, Test e Affidabilità AI}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RQ.1--RQ.6 & Obbligatorio & \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Qualità del Codice, Test e Affidabilità AI}
+    \label{tab:req-qualita-codice}
+\end{table}
+
+\medskip
+\noindent\textbf{Qualità di Processo e Documentazione di Progetto}
+\medskip
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RQ.12 & Obbligatorio & \\ \hline
+        RQ.13--RQ.16 & Obbligatorio & Soddisfatto \\ \hline
+        RQ.17 & Obbligatorio & \\ \hline
+    \end{tabular}
+    \caption{Stato dei requisiti — Qualità di Processo e Documentazione di Progetto}
+    \label{tab:req-qualita-processo}
+\end{table}
+
+\subsection{Percentuali di riepilogo}
+
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|l|*{3}{>{\centering\arraybackslash}p{2.7cm}|}}
+        \hline
+        \textbf{Categoria} & \textbf{\% soddisfatta} & \textbf{\% fuori perimetro} & \textbf{\% non soddisfatta} \\ \hline
+        Requisiti Funzionali &  &  &  \\ \hline
+        Requisiti Qualitativi &  &  &  \\ \hline
+        Requisiti di Vincolo &  &  &  \\ \hline
+        Requisiti di Sicurezza &  &  &  \\ \hline
+        Requisiti Desiderabili &  &  &  \\ \hline
+        Requisiti Opzionali &  &  &  \\ \hline
+        Requisiti Obbligatori &  &  &  \\ \hline
+    \end{tabular}
+    \caption{Percentuali di riepilogo dello stato dei requisiti}
+    \label{tab:req-percentuali}
+\end{table}
 
 \end{document}
