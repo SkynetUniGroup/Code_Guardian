@@ -95,7 +95,9 @@
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     %%%%%%
-    0.8 & 2026/09/15 & Scrittura della sezione "Copertura dei requisiti" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
+    0.9 & 2026/09/15 & Correzioni al documento in seguito alla verifica complessiva & \makecell[l]{Sara Ristovic} & \makecell[l]{Nome Cognome} \\ \hline
+    %%%%%%
+    0.8 & 2026/09/14 & Scrittura della sezione "Copertura dei requisiti" & \makecell[l]{Sara Ristovic} & \makecell[l]{Nome Cognome} \\ \hline
     %%%%%%
     0.7 & 2026/09/13 & Scrittura della sezione "Flusso dei dati" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
     %%%%%%
@@ -143,11 +145,11 @@ Il testo è stato redatto a conclusione della progettazione architetturale, inte
 
 \subsection{Scopo del prodotto}
 
-\textbf{Code Guardian} è un'applicazione web progettata per automatizzare i processi di security audit, manutenzione e documentazione all'interno dei repository software. L'obiettivo principale del sistema è sollevare i team di sviluppo dal carico di lavoro manuale più ripetitivo, elevando allo stesso tempo la sicurezza del codice e garantendo che la documentazione tecnica sia sempre aggiornata.
+\textbf{Code Guardian} è un'applicazione web progettata per automatizzare i processi di security audit, manutenzione e documentazione all'interno dei repository software. L'obiettivo principale del sistema è sollevare i team di sviluppo dal carico di lavoro manuale più ripetitivo, elevando allo stesso tempo la sicurezza del codice e supportando l'aggiornamento della documentazione tecnica.
 
 Il cuore del prodotto si basa su un orchestratore deterministico che coordina l'attività di tre agenti intelligenti basati su LLM esterni:
 \begin{itemize}
-    \item \textbf{Agente Docs}: si occupa di creare e aggiornare dinamicamente il README di progetto in base alle effettive modifiche del codice sorgente. Genera  inoltre commenti inline standardizzati (JSDoc) e compila guide API sempre allineate allo stato del software, scrivendo direttamente nel file API.md.
+    \item \textbf{Agente Docs}: genera una proposta di aggiornamento del README di progetto in base alle effettive modifiche del codice sorgente, propone commenti inline standardizzati (Docstring per Python, JSDoc per TypeScript/JavaScript) e compila guide API allineate allo stato del software. In tutti i casi produce una proposta di modifica (diff) che il backend trasforma in una Pull Request quando applicabile: l'agente non scrive mai direttamente sui file del repository.
     \item \textbf{Agente Security}: esegue un'analisi semantica del codice per individuare le falle di sicurezza più critiche appartenenti alla classificazione OWASP Top 10. Inoltre, sposa la filosofia del Policy-as-code verificando l'aderenza delle pratiche di scrittura del codice alle regole interne definite dal team nel file POLICY.md.
     \item \textbf{Agente Changelog}: si integra direttamente con \textit{GitHub Issues} per estrarre le attività completate durante uno \textit{sprint}. Traduce poi il gergo tecnico delle task in report chiari e leggibili, producendo sia un changelog di tipo ingegneristico per gli sviluppatori, sia un changelog orientato al business per i clienti e il management.
 \end{itemize}
@@ -180,17 +182,10 @@ Il prodotto risponde alle esigenze di diversi tipi di utente:
 \newpage
 \section{Tecnologie}
 
-In questa sezione vengono elencate le tecnologie adottate per la release MVP, organizzate per ruolo. Le versioni riportate sono quelle risolte nei file di dipendenza dei rispettivi servizi (\texttt{package-lock.json}, \texttt{pnpm-lock.yaml}, \texttt{pyproject.toml}) alla data di redazione.
+In questa sezione vengono elencate le tecnologie adottate per la release MVP, organizzate per ruolo. Per Backend e Frontend le versioni riportate sono quelle risolte in \texttt{pnpm-lock.yaml} alla data di redazione. Per gli Agenti non esiste un lockfile — \texttt{pyproject.toml} dichiara vincoli minimi (e in un caso un tetto massimo), non versioni risolte — perciò le versioni riportate sono i vincoli dichiarati, non un numero risolto.
 
 \subsection{Linguaggi e Framework}
 
-% TODO: versione Node.js da riallineare col team -- backend e frontend
-% dichiarano oggi due major diverse (24 vs 20); verificare col collega
-% se/quando il bump a Node 26 viene effettivamente committato.
-% Nota: root/pnpm-lock.yaml risolve il devEngine a Node 24.20.0 (coerente
-% con backend, non con frontend) -- utile come riferimento, non è però
-% la versione del runtime Docker (tag "node:24-alpine"/"node:20-alpine"
-% sono floating e non pinnati in un lockfile).
 \renewcommand{\arraystretch}{1.3}
 \begin{xltabular}{\textwidth}{|l|l|l|X|}
     \caption{Linguaggi e framework principali, per servizio}\label{tab:linguaggi-framework} \\
@@ -206,16 +201,15 @@ In questa sezione vengono elencate le tecnologie adottate per la release MVP, or
     \endfoot
     \hline
     \endlastfoot
-    TypeScript & 5.9.3 & \makecell[l]{Backend \\ Frontend} & Linguaggio principale. \\ \hline
-    Node.js & 24 (\textit{da verificare}) & Backend & Runtime JavaScript su cui gira il servizio NestJS in container. \\ \hline
-    Node.js & 20 (\textit{da verificare}) & Frontend & Runtime usato in fase di build dell'immagine Docker del Frontend. \\ \hline
+    TypeScript & 6.0.3 & \makecell[l]{Backend \\ Frontend} & Linguaggio principale. \\ \hline
+    Node.js & 26 & Backend & Runtime JavaScript su cui gira il servizio NestJS in container. \\ \hline
+    Node.js & 26 & Frontend & Runtime usato in fase di build dell'immagine Docker del Frontend. \\ \hline
     NestJS & 11.2.3 & Backend & Framework Backend, basato su Node.js/TypeScript. \\ \hline
     React & 19.2.8 & Frontend & Libreria per la costruzione dell'interfaccia utente. \\ \hline
-    % Agenti: nessun lockfile -- versione = vincolo minimo (>=) di pyproject.toml, non quella risolta. Da riverificare.
-    Python & 3.12 & Agenti & Linguaggio del servizio Agenti. \\ \hline
-    FastAPI & 0.110.0 & Agenti & Framework web su cui è esposta l'API interna del servizio Agenti. \\ \hline
-    Uvicorn & 0.29.0 & Agenti & Server ASGI su cui gira FastAPI. \\ \hline
-    LangGraph & 0.2.20 & Agenti & Framework di orchestrazione del grafo agente. \\ \hline
+    Python & $\geq$3.12 & Agenti & Linguaggio del servizio Agenti. \\ \hline
+    FastAPI & $\geq$0.111.0 & Agenti & Framework web su cui è esposta l'API interna del servizio Agenti. \\ \hline
+    Uvicorn & $\geq$0.30.0 & Agenti & Server ASGI su cui gira FastAPI. \\ \hline
+    LangGraph & $\geq$0.2.20 & Agenti & Framework di orchestrazione del grafo agente. \\ \hline
 \end{xltabular}
 
 \subsection{Librerie Frontend}
@@ -242,7 +236,9 @@ Librerie applicative usate dal Frontend oltre al framework React.
     \texttt{@tanstack/react-router} & 1.170.32 & Router con tipizzazione nativa di rotte e parametri. \\ \hline
     Zustand & 5.0.15 & Gestione dello stato globale applicativo (store). \\ \hline
     Tailwind CSS & 3.4.19 & Framework CSS utility-first, base del design system. \\ \hline
-    \makecell[l]{\texttt{clsx} \\ \texttt{class-variance-authority} \\ \texttt{tailwind-merge} \\ \texttt{lucide-react}} & \makecell[l]{2.1.1 \\ 0.7.1 \\ 3.6.0 \\ 0.513.0} & Libreria di componenti accessibili: i componenti \texttt{shadcn/ui} vengono copiati direttamente nel codice sorgente del Frontend, non installati come pacchetto npm (\texttt{shadcn/ui} non compare quindi in \texttt{package.json}). Le quattro voci a sinistra sono invece le dipendenze reali che quei componenti importano, effettivamente installate. \\ \hline
+    \texttt{@tailwindcss/typography} & 0.5.20 & Plugin Tailwind per la tipografia dei contenuti Markdown renderizzati. \\ \hline
+    \makecell[l]{\texttt{clsx} \\ \texttt{class-variance-authority} \\ \texttt{tailwind-merge} \\ \texttt{lucide-react}} & \makecell[l]{2.1.1 \\ 0.7.1 \\ 3.6.0 \\ 1.40.0} & Libreria di componenti accessibili: i componenti \texttt{shadcn/ui} vengono copiati direttamente nel codice sorgente del Frontend, non installati come pacchetto npm (\texttt{shadcn/ui} non compare quindi in \texttt{package.json}). Le quattro voci a sinistra sono invece le dipendenze reali che quei componenti importano, effettivamente installate. \\ \hline
+    \texttt{react-markdown} / \texttt{remark-gfm} & 10.1.0 / 4.0.1 & Rendering dei blocchi di testo del report come Markdown, con supporto GitHub Flavored Markdown. \\ \hline
     Socket.IO Client & 4.8.3 & Client per il canale realtime verso il Backend. \\ \hline
     Axios & 1.20.0 & Client HTTP per le chiamate REST al Backend. \\ \hline
 \end{xltabular}
@@ -267,7 +263,7 @@ Librerie applicative usate dal Backend oltre al framework NestJS.
     \hline
     \endlastfoot
     \texttt{mongoose} / \texttt{@nestjs/mongoose} & 9.9.4 / 11.0.4 & ODM per l'accesso a MongoDB, con il relativo modulo di integrazione NestJS. \\ \hline
-    \texttt{@nestjs/jwt} & 12.0.1 & Emissione e verifica dei token JWT di sessione. \\ \hline
+    \texttt{@nestjs/jwt} & 11.0.2 & Emissione e verifica dei token JWT di sessione. \\ \hline
     Passport / \texttt{passport-jwt} & 0.7.0 / 4.0.1 & Strategia di autenticazione basata su JWT. \\ \hline
     argon2 & 0.45.1 & Hashing delle password (Argon2id). \\ \hline
     class-validator / class-transformer & 0.15.1 / 0.5.1 & Validazione e trasformazione dei DTO in ingresso. \\ \hline
@@ -277,6 +273,8 @@ Librerie applicative usate dal Backend oltre al framework NestJS.
     \texttt{@octokit/rest} & 22.0.1 & Client per le chiamate all'API REST di GitHub. \\ \hline
     diff & 9.0.0 & Applicazione delle patch/diff proposte dagli agenti sui file. \\ \hline
     franc-min & 6.2.0 & Rilevamento della lingua del README, usato dall'Agente Docs. \\ \hline
+    pdfkit & 0.20.2 & Composizione del PDF esportato di un Report. \\ \hline
+    \texttt{@aws-sdk/client-s3} & 3.1127.0 & Caricamento degli artefatti (PDF esportati) su Amazon S3. \\ \hline
 \end{xltabular}
 
 \subsection{Persistenza e Caching}
@@ -298,14 +296,13 @@ Tecnologie di persistenza e caching condivise da Backend e Agenti.
     \endfoot
     \hline
     \endlastfoot
-    MongoDB & 7 & Database documentale; container locale in sviluppo, MongoDB Atlas (cluster M10, via AWS PrivateLink) in produzione. \\ \hline
-    Redis & 7 & Coda e cache in memoria; container locale in sviluppo, Amazon ElastiCache in produzione. \\ \hline
+    MongoDB & 7 & Database documentale; container locale in sviluppo, MongoDB Atlas (cluster M10) in produzione — project e cluster gestiti manualmente in console Atlas, fuori dal CDK. \\ \hline
+    Redis & 7 & Coda BullMQ, segnalazione di cancellazione cooperativa delle Task, cache delle risposte GitHub (albero, file, README) e cache delle metriche SonarQube; container locale in sviluppo, Amazon ElastiCache in produzione. \\ \hline
     \texttt{ioredis} / \texttt{@nestjs-modules/ioredis} & 6.0.0 / 2.2.2 & Client Redis lato Backend, con il relativo modulo di integrazione NestJS. \\ \hline
-    \texttt{bullmq} / \texttt{@nestjs/bullmq} & 6.3.2 / 11.0.5 & Libreria di code sopra Redis, con il relativo modulo di integrazione NestJS, per l'esecuzione asincrona degli agenti. \\ \hline
-    % Agenti: nessun lockfile -- versioni = vincolo minimo (>=) di pyproject.toml, non quelle risolte. Da riverificare.
-    motor & 3.3.2 & Driver MongoDB asincrono lato Agenti. \\ \hline
-    langgraph-checkpoint-mongodb & 0.2.0 & Persistenza su MongoDB dello stato (checkpoint) del grafo LangGraph. \\ \hline
-    redis-py & 5.0.0 & Client Redis lato Agenti. \\ \hline
+    \texttt{bullmq} / \texttt{@nestjs/bullmq} & 6.3.4 / 11.0.5 & Libreria di code sopra Redis, con il relativo modulo di integrazione NestJS, per l'esecuzione asincrona degli agenti. \\ \hline
+    pymongo & $\geq$4.12, \textless4.18 & Driver MongoDB asincrono lato Agenti (\texttt{AsyncMongoClient}); arriva transitivamente con \texttt{langgraph-checkpoint-mongodb} (vincolo dichiarato da quest'ultimo). \\ \hline
+    langgraph-checkpoint-mongodb & $\geq$0.2.2, \textless0.3 & Persistenza su MongoDB dello stato (checkpoint) del grafo LangGraph. \\ \hline
+    redis-py & $\geq$5.0.4 & Client Redis lato Agenti. \\ \hline
 \end{xltabular}
 
 \subsection{Autenticazione e Crittografia}
@@ -329,7 +326,7 @@ Algoritmi e standard adottati per l'autenticazione e la protezione delle credenz
     \endlastfoot
     JWT (HS256) & Token di sessione stateless. \\ \hline
     Argon2id & Hashing delle password. \\ \hline
-    AES-256-GCM & Cifratura autenticata delle credenziali di servizio (es. token GitHub). \\ \hline
+    AES-256-GCM & Cifratura autenticata delle credenziali di GitHub \\ \hline
     HKDF-SHA256 & Derivazione della chiave di cifratura per-record a partire dalla chiave master. \\ \hline
 \end{xltabular}
 
@@ -352,10 +349,9 @@ Servizi gestiti su cui è ospitato il modello linguistico e l'infrastruttura di 
     \endfoot
     \hline
     \endlastfoot
-    % Agenti: nessun lockfile -- versioni = vincolo minimo (>=) di pyproject.toml, non quelle risolte. Da riverificare.
-    \texttt{langchain-openai} & 0.1.1 & Integrazione LangChain con provider LLM tramite API compatibile OpenAI. \\ \hline
-    \texttt{langchain-aws} & 0.1.6 & Integrazione LangChain con Amazon Bedrock. \\ \hline
-    boto3 & 1.34.0 & SDK AWS per Python, usato dal servizio Agenti per Bedrock. \\ \hline
+    \texttt{langchain-openai} & $\geq$0.1.8 & Integrazione LangChain con provider LLM tramite API compatibile OpenAI. \\ \hline
+    \texttt{langchain-aws} & $\geq$0.1.6 & Integrazione LangChain con Amazon Bedrock. \\ \hline
+    boto3 & $\geq$1.34.0 & SDK AWS per Python, usato dal servizio Agenti per Bedrock. \\ \hline
     Amazon Bedrock & --- & Hosting gestito dei modelli LLM in produzione (famiglia Qwen3: Qwen3-32B, Qwen3-Coder-30B-A3B-Instruct, Qwen3-235B-A22B come fallback), regione \texttt{eu-south-1}. \\ \hline
     Amazon ECS su Fargate & --- & Orchestrazione dei container Backend e Agenti. \\ \hline
     Amazon ECR & --- & Registro delle immagini container. \\ \hline
@@ -364,7 +360,6 @@ Servizi gestiti su cui è ospitato il modello linguistico e l'infrastruttura di 
     Amazon S3 / CloudFront & --- & Storage degli artefatti applicativi, hosting statico e distribuzione del Frontend. \\ \hline
     AWS Secrets Manager / Parameter Store / KMS & --- & Gestione di segreti, configurazione e cifratura a riposo. \\ \hline
     \texttt{aws-cdk-lib} & 2.266.0 & Strumento di Infrastructure-as-Code con cui è provisionata l'infrastruttura AWS. \\ \hline
-    awscdk-resources-mongodbatlas & 3.13.1 & Costrutto CDK per il provisioning diretto di MongoDB Atlas. \\ \hline
     GitHub Actions & --- & Automazione di build, test e deploy dell'infrastruttura, federata verso AWS via OIDC (nessuna chiave IAM statica). \\ \hline
 \end{xltabular}
 
@@ -387,12 +382,9 @@ Framework di test adottati per ciascun servizio.
     \endfoot
     \hline
     \endlastfoot
-    Jest & 30.4.2 & Backend & Test unitari e di integrazione. \\ \hline
-    Vitest & 4.1.11 (\textit{da verificare}) & Monorepo (root) & Test unitari e di integrazione trasversali. \\ \hline
-    Vitest & 3.2.7 (\textit{da verificare}) & Frontend & Test unitari dei componenti. \\ \hline
+    Vitest & 4.1.11 & \makecell[l]{Monorepo (root) \\ Backend \\ Frontend} & Test unitari e di integrazione, sia trasversali sia per i singoli servizi. \\ \hline
     Playwright & 1.62.1 & Frontend & Test end-to-end. \\ \hline
-    % Agenti: nessun lockfile -- pytest = vincolo minimo (>=) di pyproject.toml; pytest-asyncio non ha alcun vincolo di versione dichiarato. Da riverificare.
-    pytest / pytest-asyncio & 8.0.0 / \textit{non vincolata} & Agenti & Test unitari e di integrazione, incluso il testing di endpoint asincroni. \\ \hline
+    pytest / pytest-asyncio & $\geq$8.2.0 / $\geq$0.23.7 & Agenti & Test unitari e di integrazione, incluso il testing di endpoint asincroni. \\ \hline
 \end{xltabular}
 
 \newpage
@@ -421,7 +413,7 @@ Il servizio Agenti è invece deliberatamente isolato dal resto del sistema. È l
 
 La comunicazione tra Backend e Agenti è quindi bidirezionale, ma asimmetrica nei permessi: il Backend avvia l'esecuzione di un agente e ne riceve il risultato finale, mentre l'agente, durante l'esecuzione, può soltanto richiedere indietro al Backend le singole letture di cui ha bisogno. Nessuna delle due direzioni espone un endpoint pubblico: è traffico interno, non raggiungibile né dal Frontend né da Internet.
 
-Infine, l'esecuzione di un'operazione non è mai sincrona rispetto alla richiesta dell'utente: il Backend accoda il lavoro e risponde subito, lasciando che l'esecuzione effettiva avvenga in background e che l'esito raggiunga il Frontend attraverso il canale realtime. I dettagli di questo meccanismo sono discussi più avanti; ciò che rileva in questa vista d'insieme è che nessuna delle tre unità resta mai bloccata in attesa di una risposta lenta di un'altra, né tantomeno di un intervento umano.
+Infine, l'esecuzione di un'operazione non è mai sincrona rispetto alla richiesta dell'utente: il Backend accoda il lavoro e risponde subito, lasciando che l'esecuzione effettiva avvenga in background e che l'esito raggiunga il Frontend attraverso il canale realtime. I dettagli di questo meccanismo sono discussi più avanti; ciò che rileva in questa vista d'insieme è che nessun worker resta mai bloccato in attesa di una risposta lenta di un'altra unità o di un intervento umano: il lavoro in corso viene checkpointato e il worker che lo eseguiva torna subito disponibile.
 
 \subsection{Architettura di Deployment}
 \label{subsec:deployment}
@@ -435,23 +427,21 @@ Se la vista d'insieme descrive chi parla con chi, questa sezione descrive dove c
     \label{fig:deployment}
 \end{figure}
 
-La VPC è divisa in subnet pubbliche e private. Solo le subnet pubbliche possono raggiungere direttamente Internet; le subnet private instradano il traffico in uscita attraverso un unico NAT Gateway. Backend e Agenti girano entrambi in subnet private dello stesso tipo: ciò che impedisce concretamente al servizio Agenti di raggiungere Internet non è quindi la subnet in cui si trova, ma il suo Security Group, configurato per non consentire mai traffico in uscita se non verso le poche destinazioni esplicitamente permesse. Ogni componente ha un proprio Security Group dedicato, e ciascuno nega per difetto tutto il traffico non esplicitamente concesso.
+La VPC è divisa in subnet pubbliche e private. Solo le subnet pubbliche possono raggiungere direttamente Internet; le subnet private instradano il traffico in uscita attraverso un unico NAT Gateway. Backend e Agenti girano entrambi in subnet private dello stesso tipo: ciò che limita concretamente l'accesso a Internet del servizio Agenti non è quindi la subnet in cui si trova, ma il suo Security Group, configurato secondo un principio di \emph{default deny}: il traffico in uscita è permesso solo verso destinazioni esplicitamente elencate. Ogni componente ha un proprio Security Group dedicato, e ciascuno nega per difetto tutto il traffico non esplicitamente concesso.
 
 Il percorso pubblico non cambia rispetto a quanto già descritto nella vista d'insieme: un'unica distribuzione CloudFront riceve tutto il traffico del browser e lo instrada verso due origini diverse a seconda del percorso richiesto, i file statici del Frontend, letti da un bucket S3 privato, oppure il Backend, raggiunto attraverso un Application Load Balancer (ALB). L'ALB non possiede un proprio certificato TLS: è CloudFront a terminare HTTPS verso il browser, mentre il collegamento tra CloudFront e l'ALB resta in HTTP semplice, comunque confinato all'interno della rete di AWS. Il bucket del Frontend resta privato, leggibile solo da CloudFront tramite un meccanismo dedicato (\textit{Origin Access Control}); CloudFront è inoltre configurato per restituire comunque la pagina applicativa sui percorsi non gestiti dal bucket, così che il routing lato client funzioni anche dopo un ricaricamento diretto della pagina.
 
 Backend e Agenti sono due servizi ECS su Fargate distinti, ciascuno con il proprio dimensionamento di CPU e memoria, proporzionato al carico atteso: il servizio Agenti riceve più risorse, essendo quello che dialoga con il modello linguistico. Entrambi girano oggi con una singola replica, una semplificazione accettata per l'MVP e non un obiettivo architetturale. Per compensare l'assenza di ridondanza, ogni distribuzione richiede che la nuova versione sia effettivamente in salute prima di terminare quella precedente, ed è annullata automaticamente se la nuova versione non riesce mai a diventarlo.
 
-Entrambi i servizi girano come processi a lunga vita, mai come funzioni invocate una tantum per singola richiesta: un modello di esecuzione puramente serverless non potrebbe ospitare né lo stato di una conversazione con il modello linguistico che può restare sospesa, in attesa di un input umano per un tempo non prevedibile, né una connessione WebSocket che deve rimanere aperta per l'intera durata di una Task. È questo vincolo a spiegare perché entrambi restano servizi containerizzati sempre attivi, invece di adottare un modello \textit{serverless}.
+Entrambi i servizi girano come processi a lunga vita, mai come funzioni invocate una tantum per singola richiesta: un modello di esecuzione puramente serverless non potrebbe sostenere un worker che consuma continuamente una coda, né una connessione WebSocket che deve rimanere aperta per l'intera durata di una Task. La sospensione di un'esecuzione, quando avviene, non richiede comunque che il processo resti vivo ad attenderla: lo stato viene esternalizzato come checkpoint su MongoDB (\S~\ref{subsec:agenti}), e il worker che l'ha gestita torna subito disponibile. È il vincolo del worker e del canale realtime, non quello dello stato sospeso, a spiegare perché entrambi restano servizi containerizzati sempre attivi, invece di adottare un modello \textit{serverless}.
 
 Il meccanismo con cui Backend e Agenti si trovano a runtime, già introdotto nella vista d'insieme, è una zona DNS privata interna, non raggiungibile dall'esterno della rete: ciascun servizio si registra con un nome stabile, e l'altro lo risolve senza che nessuno dei due debba conoscere in anticipo un indirizzo IP.
 
-Il livello dati vive anch'esso interamente all'interno della rete privata. MongoDB è ospitato su MongoDB Atlas, un servizio gestito esterno ad AWS, raggiunto però attraverso un collegamento privato dedicato (PrivateLink) invece che tramite Internet pubblico: il cluster non accetta alcuna connessione che non provenga da quel collegamento. Redis (ElastiCache) gira invece come una singola istanza, anche questo un rischio esplicitamente accettato per l'MVP.
+Il livello dati vive anch'esso interamente all'interno della rete privata. MongoDB è ospitato su MongoDB Atlas, un servizio gestito esterno ad AWS: il progetto prevede di raggiungerlo attraverso un collegamento privato dedicato (PrivateLink) invece che tramite Internet pubblico, così che il cluster non debba accettare connessioni dalla rete pubblica. Redis (ElastiCache) gira invece come una singola istanza, anche questo un rischio esplicitamente accettato per l'MVP.
 
 Oltre a queste due destinazioni, la rete privata include una serie di collegamenti dedicati verso gli altri servizi AWS di cui Backend e Agenti hanno bisogno, dalla gestione dei segreti al registro delle immagini container, proprio per evitare che quel traffico debba uscire dalla rete privata e passare dal NAT Gateway. Il collegamento verso il modello linguistico (Amazon Bedrock) è uno di questi, ma con una particolarità: è raggiungibile soltanto dal Security Group del servizio Agenti, cosicché anche a livello di rete, non solo nel codice applicativo, resti vero che è soltanto l'Agente a poter invocare il modello.
 
-\textit{[Punto aperto: il Security Group del servizio Agenti non prevede oggi alcuna regola verso Redis né verso l'endpoint PrivateLink di MongoDB Atlas, mentre il servizio vi si connette direttamente per il proprio stato di esecuzione (§3.1, checkpoint LangGraph e flag di cancellazione). La regola di rete corrispondente va aggiunta prima del rilascio.]}
-
-Rimane infine un solo canale che attraversa davvero il confine della rete privata verso l'Internet pubblico: quello del Backend verso l'API di GitHub, instradato attraverso il NAT Gateway. È deliberatamente l'unico.
+Rimane infine il canale principale che attraversa il confine della rete privata verso l'Internet pubblico: quello del Backend verso l'API di GitHub, instradato attraverso il NAT Gateway.
 
 \subsection{Architettura del Frontend}
 \label{subsec:frontend}
@@ -516,8 +506,6 @@ L'instradamento di un'operazione verso l'agente corretto non è mai una decision
 
 \texttt{TasksController} e \texttt{TasksService} gestiscono il ciclo di vita di una Task dalla richiesta alla persistenza, ma non la eseguono direttamente: l'avvio di un batch si conclude accodando un job per ciascuna Task, e la richiesta HTTP termina immediatamente. È \texttt{TaskProcessor}, un consumatore della coda separato dal ciclo della richiesta, a prelevare i job uno alla volta e a invocare l'agente tramite \texttt{AgentInvocationService}; un job che fallisce aggiorna solo la propria Task e non ha alcun effetto sulle altre in coda. Ogni cambiamento di stato, sia esso di avanzamento, completamento o fallimento, viene propagato al Frontend da \texttt{EventsGateway} sul canale WebSocket già descritto in precedenza: la distribuzione avviene per utente e non per singola Task, cosicché un'unica connessione basti a tenere aggiornata la dashboard su più operazioni in corso contemporaneamente.
 
-\textbf{Concorrenza e Race Condition:} Per prevenire esecuzioni duplicate della medesima Task — causate, ad esempio, dalle garanzie di consegna \textit{at-least-once} delle code o da cancellazioni improvvise da parte dell'utente — il \texttt{TaskProcessor} implementa un meccanismo di lock ottimistico sul database. Prima di procedere, viene acquisito un claim utilizzando un token univoco e un tempo di \textit{lease} (\texttt{CLAIM\_LEASE\_MS}). Soltanto il processo che detiene il claim valido è autorizzato a invocare l'agente.
-
 Il meccanismo di sospensione e ripresa di un'esecuzione, e il protocollo dettagliato tra Backend e Agenti, sono discussi più avanti in questo documento.
 
 \subsubsection{Il contratto Report}
@@ -576,7 +564,7 @@ Anche mentre attende un input, una Task resta nello stato \texttt{RUNNING}: la s
     \label{fig:agenti-lifecycle}
 \end{figure}
 
-L'Agente Changelog è l'unico che può richiedere questo tipo di sospensione, fino a tre volte nel corso di una singola Task. La prima non ha nulla a che fare con il grafo dell'agente, che a quel punto non è ancora stato invocato: entrambe le operazioni Changelog richiedono uno Sprint ID, ed è il Backend stesso a sospendere la Task prima ancora di avviare l'agente e a richiedere lo Sprint ID. Le altre due sospensioni avvengono invece dentro un grafo già in esecuzione. Nella prima, se lo \texttt{ChangelogLoader} trova Issue chiuse con metadati insufficienti, l'agente si sospende subito e lascia all'utente la scelta se procedere escludendole o annullare la Task. Nella seconda, prevista solo per il changelog di business, l'agente si sospende subito dopo aver completato internamente la fase tecnica, prima di passare alla fase business: l'intenzione è che l'utente possa rivedere il changelog tecnico prima di confermare. In questo caso, l'anteprima viene inviata direttamente nel payload dell'evento WebSocket \texttt{task.inputRequired} (tramite i campi \texttt{technicalChangelog} e \texttt{technicalChangelogTruncated}), permettendo all'utente di visionare il changelog tecnico prima di decidere se procedere o annullare l'operazione.
+L'Agente Changelog è l'unico che può richiedere questo tipo di sospensione, fino a tre volte nel corso di una singola Task. La prima non ha nulla a che fare con il grafo dell'agente, che a quel punto non è ancora stato invocato: entrambe le operazioni Changelog richiedono uno Sprint ID, ed è il Backend stesso a sospendere la Task prima ancora di avviare l'agente e a richiedere lo Sprint ID. Le altre due sospensioni avvengono invece dentro un grafo già in esecuzione. Nella prima, se lo \texttt{ChangelogLoader} trova Issue chiuse con metadati insufficienti, l'agente si sospende subito e lascia all'utente la scelta se procedere escludendole o annullare la Task. Nella seconda, prevista solo per il changelog di business, l'agente si sospende subito dopo aver completato internamente la fase tecnica, prima di passare alla fase business: l'intenzione è che l'utente possa rivedere il changelog tecnico prima di confermare. \emph{[Punto aperto: la fase tecnica non viene persistita come Report a sé stante prima di questa sospensione, poiché fa ancora parte dello stesso grafo non concluso; il riferimento pensato per permettere quella lettura non viene quindi valorizzato, e oggi la conferma avviene senza una reale anteprima.]}
 
 Le sospensioni interne al grafo sono rese possibili da un meccanismo di checkpoint di LangGraph, che salva lo stato interno del grafo su MongoDB a ogni passaggio, sulla stessa istanza usata per i dati applicativi ma in collezioni gestite interamente da LangGraph e indipendenti dal modello di dominio della Figura \ref{fig:modello-dati}. È la scrittura su MongoDB già anticipata nella vista d'insieme, che permette di riprendere un'esecuzione esattamente dal punto in cui si era fermata. In tutti e tre i casi delle sospensioni il Backend, ricevuta la risposta dell'utente, rimette la Task sulla stessa coda usata per un avvio normale; cambia solo l'endpoint con cui invoca il servizio agenti: \texttt{/internal/agent/start} se il grafo deve partire per la prima volta (Sprint ID), \texttt{/internal/agent/resume} con lo stesso \texttt{threadId} di prima se deve riprendere da un checkpoint (le altre due).
 
@@ -705,7 +693,7 @@ Il diagramma precedente tratta il Backend come un unico partecipante; la Figura~
     \label{fig:flusso-avvio-dettaglio}
 \end{figure}
 
-Il confine tra i due momenti del flusso è visibile qui in una forma che il diagramma d'insieme non può mostrare: \texttt{TasksController} e \texttt{TasksService} non chiamano mai direttamente \texttt{TaskProcessor}, né lo attendono. Lo scrivono in coda e restituiscono la risposta; è \texttt{TaskProcessor} a prelevare il job in un momento scelto da lui, non da chi lo ha accodato. La prima cosa che fa, prima ancora di invocare l'agente, è segnalare al Frontend il passaggio a \texttt{RUNNING} tramite \texttt{EventsGateway}: è per questo che quell'evento ha una fonte distinta dal successivo \texttt{COMPLETED}. Successivamente, prima di invocare l'API del Servizio Agenti, l'\texttt{AgentInvocationService} arricchisce il contesto recuperando eventuali credenziali aggiuntive (come quelle di SonarQube per l'Agente Security/Docs) e i template Markdown personalizzati forniti dall'utente, iniettandoli nel payload della richiesta.
+Il confine tra i due momenti del flusso è visibile qui in una forma che il diagramma d'insieme non può mostrare: \texttt{TasksController} e \texttt{TasksService} non chiamano mai direttamente \texttt{TaskProcessor}, né lo attendono. Lo scrivono in coda e restituiscono la risposta; è \texttt{TaskProcessor} a prelevare il job in un momento scelto da lui, non da chi lo ha accodato. La prima cosa che fa, prima ancora di invocare l'agente, è segnalare al Frontend il passaggio a \texttt{RUNNING} tramite \texttt{EventsGateway}: è per questo che quell'evento ha una fonte distinta dal successivo \texttt{COMPLETED}.
 
 Anche l'assemblaggio del Report, che il diagramma d'insieme tratta come un unico passo del Backend, si scompone qui in due classi con una responsabilità ciascuna e un ordine preciso tra loro: \texttt{ProposalPublisherService} apre la Pull Request quando l'agente ha prodotto una Proposal, e solo dopo \texttt{ReportAssemblyService} costruisce il Report, ricevendo un payload che già contiene l'URL della PR se questa è stata aperta. \texttt{AgentInvocationService} ed \texttt{EventsGateway} restano invece due classi distinte pur essendo entrambe invocate da \texttt{TaskProcessor}, perché rispondono a due domande diverse: la prima esegue l'operazione, la seconda ne comunica soltanto l'esito.
 
@@ -1035,7 +1023,9 @@ I requisiti riportati in questa sezione sono quelli definiti nel documento \href
     \begin{tabular}{|c|c|c|}
         \hline
         \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
-        RQ.1--RQ.6 & Obbligatorio & \\ \hline
+        RQ.4 & Obbligatorio & Soddisfatto \\ \hline
+        RQ.1--RQ.5 & Obbligatorio & \\ \hline
+        RQ.6 & Obbligatorio & Fuori Perimetro \\ \hline
     \end{tabular}
     \caption{Stato dei requisiti — Qualità del Codice, Test e Affidabilità AI}
     \label{tab:req-qualita-codice}

@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Claude Code">
   <diagram name="Modello dei Dati Persistiti" id="data-model-diagram">
-    <mxGraphModel dx="3689" dy="1171" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" math="0" shadow="0">
+    <mxGraphModel dx="3117" dy="878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -49,25 +49,6 @@
         <mxCell id="task-body" parent="task" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;userId: string&lt;br&gt;batchId: string (correlation label)&lt;br&gt;contextId: ObjectId → AnalysisContext&lt;br&gt;operation: OperationCode&lt;br&gt;status: &#39;PENDING&#39; | &#39;RUNNING&#39; | &#39;COMPLETED&#39;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;| &#39;FAILED&#39; | &#39;CANCELLED&#39;&lt;br&gt;progressPercent: number&lt;br&gt;currentStage: string | null&lt;br&gt;reportId: ObjectId → Report | null&lt;br&gt;error: {code, message, stage} | null «Mixed»&lt;br&gt;pendingInput: {kind, ...} | null «Mixed»&lt;br&gt;sprintId?: string&lt;br&gt;previousTaskId?: ObjectId → Task&lt;br&gt;lgThreadId?: string&lt;br&gt;createdAt, updatedAt: Date&lt;/div&gt;" vertex="1">
           <mxGeometry height="358" width="340" y="34" as="geometry" />
         </mxCell>
-        <mxCell id="e-task-task" edge="1" parent="task" source="task-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;startArrow=none;exitX=-0.001;exitY=0.055;entryX=0;entryY=0.25;innerLoopWaypoints=1;exitDx=0;exitDy=0;exitPerimeter=0;entryDx=0;entryDy=0;" target="task-body" value="previousTaskId">
-          <mxGeometry relative="1" x="-0.1605" y="-60" as="geometry">
-            <mxPoint as="offset" />
-            <Array as="points">
-              <mxPoint x="-80.02" y="53.72" />
-              <mxPoint x="-80.02" y="123.53" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-task-task-src" connectable="0" parent="e-task-task" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;fontSize=10;" value="0..*" vertex="1">
-          <mxGeometry relative="1" x="-0.7" as="geometry">
-            <mxPoint y="-8" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-task-task-tgt" connectable="0" parent="e-task-task" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;fontSize=10;" value="0..1" vertex="1">
-          <mxGeometry relative="1" x="0.7" as="geometry">
-            <mxPoint y="8" as="offset" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="report" parent="1" style="swimlane;html=1;fontStyle=1;fontColor=#ffffff;align=center;verticalAlign=top;startSize=30;fillColor=#d79b00;strokeColor=#b07d00;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;" value="Report" vertex="1">
           <mxGeometry height="407" width="340" x="990" y="480" as="geometry" />
         </mxCell>
@@ -85,9 +66,6 @@
         </mxCell>
         <mxCell id="accessLog-body" parent="accessLog" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;taskId: ObjectId → Task&lt;br&gt;endpoint: string&lt;br&gt;resource: string&lt;br&gt;createdAt: Date&lt;/div&gt;" vertex="1">
           <mxGeometry height="107" width="260" y="34" as="geometry" />
-        </mxCell>
-        <mxCell id="legend" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;dashed=1;fontSize=10;fontColor=#666666;align=left;spacingLeft=6;verticalAlign=top;spacingTop=4;" value="«Mixed» = Mongoose non valida&lt;br&gt;la struttura interna del campo, solo TypeScript la impone." vertex="1">
-          <mxGeometry height="55" width="270" x="-20" y="40" as="geometry" />
         </mxCell>
         <mxCell id="e-task-context" edge="1" parent="1" source="task" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;startArrow=none;jettySize=auto;" target="context" value="contextId">
           <mxGeometry relative="1" as="geometry" />
