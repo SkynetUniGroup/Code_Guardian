@@ -540,7 +540,6 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_60 & Verificare che il sistema renderizzi nel corpo del report una lista contenitore strutturata, mostrando gli spazi grafici e popolando i dettagli attributivi di ciascun singolo elemento in essa iterato. & RF.60 & S \\ \hline
     TS\_61 & Verificare che il sistema esponga per ogni singolo elemento strutturato l'indicatore testuale relativo alla sua categoria (es. tipo di \textit{vulnerabilità}) e l'etichetta classificatoria della sua gravità o priorità. & RF.61 & S \\ \hline
     TS\_62 & Verificare che il sistema riporti, per gli elementi che lo richiedono, i riferimenti puntuali alla porzione di codice interessata (percorso del file e numeri di riga) ed esponga eventuali \textit{Snippet} di codice sorgente suggerito all'interno di un contenitore dedicato. & RF.62 & S \\ \hline
-    TS\_63 & Verificare che, qualora l'agente abbia generato una proposta di modifica sul \textit{Repository} remoto, il sistema renderizzi nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & RF.63 & NI \\ \hline
     TS\_64 & Verificare che il sistema visualizzi all'interno del report un modulo interattivo con comandi di validazione e avanzamento per le operazioni che richiedono un'approvazione umana o un feedback esplicito. & RF.64 & S \\ \hline
     TS\_65 & Verificare che il sistema mostri un messaggio di errore esplicativo e blocchi l'esecuzione in caso di fallimento o anomalia generale durante l'elaborazione interna di un agente. & RF.65 & S \\ \hline
     TS\_66 & Verificare che il sistema blocchi preventivamente l'esecuzione di un agente e mostri un messaggio d'errore qualora venga superato il limite massimo di utilizzo (chiamate) configurato. & RF.66 & S \\ \hline
@@ -549,15 +548,11 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_69 & Verificare che il sistema interrompa l'esecuzione prima dell'invio e notifichi l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello \textit{LLM} a runtime. & RF.69 & S \\ \hline
     TS\_70 & Verificare che il sistema inibisca l'elaborazione di un agente e notifichi l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file POLICY.md, \textit{Sprint} ID) risulti assente o non trovata. & RF.70 & S \\ \hline
     TS\_71 & Verificare che il sistema blocchi l'elaborazione di un agente e notifichi l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & RF.71 & S \\ \hline
-    TS\_72 & Verificare che il sistema interrompa l'operazione e mostri un messaggio d'errore qualora la Piattaforma \textit{GitHub} rifiuti la creazione di una \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & RF.72 & NI \\ \hline
     TS\_74 & Verificare che il sistema annulli il processo di esportazione e notifichi l'utente con un messaggio d'errore qualora si verifichi un'anomalia interna durante la conversione e impaginazione del report in PDF. & RF.74 & S \\ \hline
     TS\_79 & Verificare che il sistema permetta all'utente di gestire la struttura del file \textit{README}.md, consentendo il caricamento e il salvataggio di un file \textit{template} personalizzato. & RF.79 & S \\ \hline
     TS\_80 & Verificare che il sistema validi il file \textit{template} caricato e blocchi l'operazione mostrando un messaggio di errore qualora il formato non sia valido o non abbia estensione .md. & RF.80 & S \\ \hline
     TS\_81 & Verificare che il sistema consenta all'utente di rimuovere un \textit{template} personalizzato precedentemente caricato, ripristinando il modello di default dell'Agente Docs. & RF.81 & S \\ \hline
-    TS\_82 & Verificare che il sistema orchestri l'Agente Docs per generare e proporre l'aggiornamento del file \textit{README}.md di progetto tramite l'apertura automatica di una \textit{Pull Request}. & RF.82 & NI \\ \hline
     TS\_83 & Verificare che il sistema orchestri l'Agente Docs per analizzare il codice e proporre l'aggiornamento della documentazione Inline (\textit{JSDoc}) tramite l'apertura automatica di una \textit{Pull Request}. & RF.83 & S \\ \hline
-    TS\_84 & Verificare che il sistema corregga documentazione Inline esistente quando questa non è più coerente con il codice. & RF.84 & NI \\ \hline
-    TS\_85 & Verificare che il sistema escluda dalla generazione documentale inline e segnali nel report tramite avviso le porzioni di codice o classi la cui complessità impedisce un'interpretazione affidabile. & RF.85 & NI \\ \hline
     TS\_86 & Verificare che il sistema orchestri l'Agente Docs per estrarre le informazioni relative agli \textit{Endpoint}, generando e proponendo il documento \textit{API}.md tramite \textit{Pull Request}. & RF.86 & S \\ \hline
     TS\_87 & Verificare che il sistema orchestri l'Agente Security per eseguire una scansione del codice sorgente al fine di individuare pattern riconducibili alle \textit{vulnerabilità} dell'\textit{OWASP} Top 10. & RF.87 & S \\ \hline
     TS\_88 & Verificare che il sistema classifichi le \textit{vulnerabilità} rilevate dall'Agente Security indicando la relativa categoria \textit{OWASP} e il livello di gravità. & RF.88 & S \\ \hline
@@ -565,11 +560,9 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     TS\_90 & Verificare che il sistema generi suggerimenti di \textit{Remediation} per ciascuna \textit{vulnerabilità} o violazione di policy rilevata, proponendo uno \textit{snippet} di codice correttivo qualora la problematica risulti sufficientemente localizzata. & RF.90 & S \\ \hline
     TS\_91 & Verificare che il sistema generi una descrizione testuale della \textit{Remediation} da effettuare qualora non sia possibile proporre in modo affidabile uno \textit{snippet} di codice correttivo. & RF.91 & S \\ \hline
     TS\_92 & Verificare che il sistema orchestri l'Agente Security per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file POLICY.md. & RF.92 & S \\ \hline
-    TS\_93 & Verificare che il sistema, durante l'esecuzione dell'analisi \textit{policy-as-code}, processi e applichi esclusivamente le direttive riguardanti la sicurezza del software del file POLICY.md. & RF.93 & NI \\ \hline
     TS\_94 & Verificare che il sistema interroghi le \textit{API} del sistema di Task Management esterno per recuperare e filtrare le \textit{User Stories} e i \textit{task} in stato di completamento associati allo specifico \textit{Sprint} richiesto. & RF.94 & S \\ \hline
     TS\_95 & Verificare che il sistema estragga dai \textit{task} validati i \textit{metadati} rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & RF.95 & S \\ \hline
     TS\_96 & Verificare che il sistema orchestri l'Agente \textit{Changelog} per generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai \textit{task} dello \textit{Sprint}. & RF.96 & S \\ \hline
-    TS\_97 & Verificare che il \textit{Changelog} tecnico generato includa i collegamenti ipertestuali diretti e gli identificativi dei \textit{Ticket} di origine, qualora tali informazioni siano disponibili. & RF.97 & NI \\ \hline
     TS\_98 & Verificare che il sistema permetta all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (Sprint ID) da analizzare. & RF.98 & NI \\ \hline
     TS\_99 & Verificare che il sistema consenta all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello \textit{Sprint}, bloccando l'esecuzione dell'agente. & RF.99 & S \\ \hline
     TS\_100 & Verificare che il sistema rilevi i \textit{task} completati che risultano privi di \textit{metadati} sufficienti e li segnali all'utente tramite una finestra di avviso. & RF.100 & S \\ \hline
@@ -668,7 +661,7 @@ I test di unità isolano e verificano la correttezza logica dei singoli moduli s
 
 
 
-    TU\_17 & Verificare, tramite analisi statica dell'\textit{Abstract Syntax Tree} dei moduli \textit{Python} degli agenti, che nessuna stringa letterale superi la soglia di lunghezza configurata, a garanzia che i \textit{prompt} risiedano esclusivamente nei file \textit{YAML} esterni (metrica MPD\_13). Test già implementato nel codice del PoC (\texttt{test\_prompt\_isolation.py}) e qui formalmente tracciato. & RQ.4 & I \\ \hline
+    TU\_17 & Verificare, tramite analisi statica dell'\textit{Abstract Syntax Tree} dei moduli \textit{Python} degli agenti, che nessuna stringa letterale superi la soglia di lunghezza configurata, a garanzia che i \textit{prompt} risiedano esclusivamente nei file \textit{YAML} esterni (metrica MPD\_13). Test già implementato nel codice del PoC (\texttt{test\_prompt\_isolation.py}) e qui formalmente tracciato. & RQ.4 & S \\ \hline
 
     TU\_18 & Verificare che l'\textbf{AgentRegistry} risolva il descrittore corretto (\texttt{agentId}, \texttt{destinationUrl}) per ciascuno dei sette \texttt{OperationCode} previsti dall'\textit{MVP} (\texttt{DOCS\_README}, \texttt{DOCS\_INLINE}, \texttt{DOCS\_API}, \texttt{SECURITY\_OWASP}, \texttt{SECURITY\_POLICY}, \texttt{CHANGELOG\_TECHNICAL}, \texttt{CHANGELOG\_BUSINESS}), estendendo la copertura di TU\_08 dall'unico caso oggi verificato all'intero catalogo. & RF.40, RF.106 & S \\ \hline
 
@@ -885,7 +878,6 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_60 & RF.60 \\\hline
     TS\_61 & RF.61 \\\hline
     TS\_62 & RF.62 \\\hline
-    TS\_63 & RF.63 \\\hline
     TS\_64 & RF.64 \\\hline
     TS\_65 & RF.65 \\\hline
     TS\_66 & RF.66 \\\hline
@@ -894,15 +886,11 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_69 & RF.69 \\\hline
     TS\_70 & RF.70 \\\hline
     TS\_71 & RF.71 \\\hline
-    TS\_72 & RF.72 \\\hline
     TS\_74 & RF.74 \\\hline
     TS\_79 & RF.79 \\\hline
     TS\_80 & RF.80 \\\hline
     TS\_81 & RF.81 \\\hline
-    TS\_82 & RF.82 \\\hline
     TS\_83 & RF.83 \\\hline
-    TS\_84 & RF.84 \\\hline
-    TS\_85 & RF.85 \\\hline
     TS\_86 & RF.86 \\\hline
     TS\_87 & RF.87 \\\hline
     TS\_88 & RF.88 \\\hline
@@ -910,11 +898,9 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_90 & RF.90 \\\hline
     TS\_91 & RF.91 \\\hline
     TS\_92 & RF.92 \\\hline
-    TS\_93 & RF.93 \\\hline
     TS\_94 & RF.94 \\\hline
     TS\_95 & RF.95 \\\hline
     TS\_96 & RF.96 \\\hline
-    TS\_97 & RF.97 \\\hline
     TS\_98 & RF.98 \\\hline
     TS\_99 & RF.99 \\\hline
     TS\_100 & RF.100 \\\hline

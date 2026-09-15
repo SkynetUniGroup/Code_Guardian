@@ -1,9 +1,9 @@
-"""TU_17 (RQ.4, metrica MPD_14) — isolamento dei prompt dai moduli Python.
+"""TU_17 (RQ.4, metrica MPD_13) — isolamento dei prompt dai moduli Python.
 
 RQ.4 chiede il disaccoppiamento totale dei prompt dalla logica: i prompt
 stanno nei file YAML sotto ``prompts/``, i moduli Python li caricano e basta.
 La verifica per analisi statica dell'AST e' quella che il Piano di Qualifica
-associa alla metrica MPD_14: se in un modulo di ``src/`` comparisse una
+associa alla metrica MPD_13: se in un modulo di ``src/`` comparisse una
 stringa letterale lunga come un prompt, il disaccoppiamento sarebbe rotto
 indipendentemente da cosa dice la documentazione.
 
@@ -299,7 +299,7 @@ def test_tu17_the_ast_scan_actually_reaches_the_agent_modules():
 def test_tu17_no_literal_string_exceeds_the_prompt_length_threshold():
     """Nessuna stringa letterale di src/ supera la soglia configurata.
 
-    E' la formulazione diretta di MPD_14: un prompt e' un testo lungo, e se
+    E' la formulazione diretta di MPD_13: un prompt e' un testo lungo, e se
     nessun testo lungo vive nel codice allora i prompt stanno tutti fuori.
     """
     oltre_soglia = [
@@ -312,7 +312,7 @@ def test_tu17_no_literal_string_exceeds_the_prompt_length_threshold():
     assert oltre_soglia == [], (
         f'Stringhe letterali oltre i {SOGLIA_CARATTERI} caratteri nei moduli '
         f'degli agenti: se sono prompt vanno spostate nei file YAML di '
-        f'prompts/ (RQ.4, MPD_14).\n' + '\n'.join(oltre_soglia)
+        f'prompts/ (RQ.4, MPD_13).\n' + '\n'.join(oltre_soglia)
     )
 
 
