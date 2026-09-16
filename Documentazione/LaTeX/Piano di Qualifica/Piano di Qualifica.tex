@@ -483,7 +483,7 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
     \endhead
 
-    TS\_1 & Verificare che il sistema permetta a un utente non autenticato di avviare la procedura di registrazione per la creazione di un nuovo account. & RF.1 & NI \\ \hline
+    TS\_1 & Verificare che il sistema permetta a un utente non autenticato di avviare la procedura di registrazione per la creazione di un nuovo account. & RF.1 & S \\ \hline
     TS\_2 & Verificare che il sistema consenta all'utente di inserire il proprio nome e cognome in fase di registrazione. & RF.2 & S \\ \hline
     TS\_3 & Verificare che il sistema consenta all'utente di inserire il proprio indirizzo email e la password in fase di registrazione. & RF.3 & S \\ \hline
     TS\_4 & Verificare che il sistema permetta all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textbf{Security Auditor}, \textbf{Project Manager}). & RF.4 & S \\ \hline
@@ -746,7 +746,7 @@ I test non funzionali di sistema verificano il rispetto dei requisiti qualitativ
     \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
     \endhead
 
-    TNF\_01 & Verificare, rieseguendo la suite dei test di accettazione sulle versioni più recenti di \textit{Google Chrome}, \textit{Mozilla Firefox} e \textit{Microsoft Edge}, l'assenza di anomalie grafiche o funzionali su ciascuno dei tre \textit{browser} target. & RV.2 & NI \\ \hline
+    TNF\_01 & Verificare, rieseguendo la suite dei test di accettazione sulle versioni più recenti di \textit{Google Chrome}, \textit{Mozilla Firefox} e \textit{Microsoft Edge}, l'assenza di anomalie grafiche o funzionali su ciascuno dei tre \textit{browser} target. & RV.2 & S \\ \hline
 
     \caption{Test non funzionali di sistema}
     \label{tab:test_non_funzionali}
@@ -1311,8 +1311,8 @@ Il Superamento dei Test misura la percentuale di test automatici che ottengono e
         Agents (\textit{pytest}) & 261 & 258* & 3 & 98,9\%* \\ \hline
         Frontend (\textit{Vitest}) & 274 & 274 & --- & 100\% \\ \hline
         Infrastruttura (\textit{Vitest}, \textit{CDK}) & 3 & 3 & --- & 100\% \\ \hline
-        Sistema (\textit{Playwright}) & 50 & 50 & --- & 100\% \\ \hline
-        \textbf{Totale} & \textbf{1271} & \textbf{1265} & \textbf{6} & \textbf{99,5\%} \\ \hline
+        Sistema (\textit{Playwright}, 3 \textit{browser}) & 153 & 153 & --- & 100\% \\ \hline
+        \textbf{Totale} & \textbf{1374} & \textbf{1368} & \textbf{6} & \textbf{99,6\%} \\ \hline
     \end{tabular}
     \caption{Superamento dei test per livello (MP\_13)}
     \label{tab:mp13_pass_rate}
@@ -1321,13 +1321,13 @@ Il Superamento dei Test misura la percentuale di test automatici che ottengono e
 *Il test del Golden Set (TI\_04, RQ.5) richiede per definizione una vera \texttt{LLM\_API\_KEY} e viene per questo saltato (\textit{skip}) di norma, non fallito; il 2026/08/20 è stato eseguito per la prima volta con una chiave reale. Il tentativo fuori da \textit{Docker} falliva per un motivo puramente ambientale (l'hostname interno \texttt{redis} usato da \texttt{REDIS\_URL} non è risolvibile sull'host); eseguendolo dentro la rete \textit{Docker} quell'errore spariva, ma emergeva un secondo problema, questa volta un difetto reale del test: il contesto fittizio impostava \texttt{scopeType="FILES"} senza il corrispondente \texttt{paths}, per cui \texttt{SecurityLoader} scartava sistematicamente l'unico file fornito prima ancora di interpellare l'LLM. Corretto il fixture (\texttt{scopeType="FULL\_REPOSITORY"}), il test è risultato \textbf{superato}: il modello ha identificato correttamente la SQL Injection nel file di prova.
 
 \paragraph*{Valutazione dell'andamento}
-Il tasso di superamento è del 99,5\% sui 1271 test eseguiti, su tutti i livelli della piramide (unità, integrazione \textit{end-to-end} di \textit{backend}, infrastruttura e test di sistema in \textit{Playwright}). Nessuna suite è rossa: i 6 test non superati sono difetti noti, marcati nel sorgente con \texttt{it.fails} (\textit{Vitest}) o \texttt{@pytest.mark.xfail} (\textit{pytest}) proprio perché l'esito negativo è atteso e documentato, e per questo non interrompono la \textit{build}. Riguardano il mancato instradamento a FAILED quando GitHub rifiuta l'apertura della \textit{Pull Request} (TI\_13, RF.72), la completezza degli schemi nel documento \textit{OpenAPI} (2 casi), il limite di frequenza verso il modello (TI\_14) e 2 casi dell'Agente Docs.
+Il tasso di superamento è del 99,6\% sui 1374 test eseguiti, su tutti i livelli della piramide (unità, integrazione \textit{end-to-end} di \textit{backend}, infrastruttura e test di sistema in \textit{Playwright}). Nessuna suite è rossa: i 6 test non superati sono difetti noti, marcati nel sorgente con \texttt{it.fails} (\textit{Vitest}) o \texttt{@pytest.mark.xfail} (\textit{pytest}) proprio perché l'esito negativo è atteso e documentato, e per questo non interrompono la \textit{build}. Riguardano il mancato instradamento a FAILED quando GitHub rifiuta l'apertura della \textit{Pull Request} (TI\_13, RF.72), la completezza degli schemi nel documento \textit{OpenAPI} (2 casi), il limite di frequenza verso il modello (TI\_14) e 2 casi dell'Agente Docs.
 
-Alla cifra dei test eseguiti non concorrono 10 casi di integrazione saltati (\texttt{contexts-github-live} e \texttt{ti16-repository-privato}): sono condizionati alla presenza di una credenziale \textit{GitHub} reale e vengono saltati, non falliti, quando non è configurata. Sul livello di sistema la cifra si riferisce ai casi che non richiedono un'esecuzione reale del modello linguistico; quelli marcati \texttt{@agent} sono esclusi da questo conteggio perché dipendono da una chiave \textit{LLM} attiva e da un costo per esecuzione.
+Alla cifra dei test eseguiti non concorrono 10 casi di integrazione saltati (\texttt{contexts-github-live} e \texttt{ti16-repository-privato}): sono condizionati alla presenza di una credenziale \textit{GitHub} reale e vengono saltati, non falliti, quando non è configurata. Sul livello di sistema i 153 casi sono 51 casi distinti ripetuti su \textit{Google Chrome}, \textit{Mozilla Firefox} e \textit{Microsoft Edge}: è questa esecuzione a soddisfare TNF\_01 (RV.2), che chiede proprio la riesecuzione della suite sui tre \textit{browser} target. Restano esclusi dal conteggio i casi marcati \texttt{@agent}, che dipendono da una chiave \textit{LLM} attiva e da un costo per esecuzione; girano sul solo \textit{Chromium}, perché ciò che verificano non dipende dal motore del \textit{browser}.
 
 \paragraph*{MP\_13 - Superamento dei Test (Test Success Rate)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($= 100\%$):} Il vincolo non è rispettato: 1265 test superati su 1271 eseguiti, pari al 99,5\%. I 6 mancanti corrispondono ad altrettanti difetti noti e tracciati, non a regressioni: nessuna suite risulta rossa.
+    \item \textbf{Valore di accettazione ($= 100\%$):} Il vincolo non è rispettato: 1368 test superati su 1374 eseguiti, pari al 99,6\%. I 6 mancanti corrispondono ad altrettanti difetti noti e tracciati, non a regressioni: nessuna suite risulta rossa.
     \item \textbf{Valore ottimale ($= 100\%$):} Non raggiunto, coincidendo con il valore di accettazione.
 \end{itemize}
 

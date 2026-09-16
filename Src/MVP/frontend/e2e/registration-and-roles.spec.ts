@@ -34,6 +34,27 @@ async function compilaRegistrazione(
 }
 
 test.describe("Registrazione, ruolo e accesso", () => {
+  test("TS_01 (RF.1) — un utente non autenticato puo' avviare la registrazione", async ({
+    page,
+  }) => {
+    // Il presupposto di tutti i casi sotto, e l'unico che va verificato
+    // partendo da fuori: chi non ha ancora un account arriva sul login, e da
+    // li' deve poter raggiungere la registrazione. Se il collegamento
+    // mancasse, il prodotto sarebbe inaccessibile a un utente nuovo pur
+    // avendo la pagina /register funzionante.
+    await page.goto("/");
+    await expect(page).toHaveURL(/\/login$/);
+
+    await page.getByRole("link", { name: /Registrati|Crea un account/i }).click();
+
+    await expect(page).toHaveURL(/\/register$/);
+    // Raggiungerla non basta: il modulo dev'essere quello vero e compilabile,
+    // altrimenti la procedura non e' "avviabile" ma solo visibile.
+    await expect(page.getByLabel("Nome", { exact: true })).toBeEditable();
+    await expect(page.getByLabel("Email")).toBeEditable();
+    await expect(page.getByRole("button", { name: /Registrati|Crea account/i })).toBeEnabled();
+  });
+
   test("TS_02 (RF.2) — nome e cognome si inseriscono in registrazione", async ({ page }) => {
     await page.goto("/register");
 

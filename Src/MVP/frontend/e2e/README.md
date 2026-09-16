@@ -93,9 +93,13 @@ girano solo su Chromium: avviano
 un'analisi vera, e ripeterla su tre motori costerebbe tre chiamate complete
 all'LLM per verificare qualcosa che con il browser non ha a che fare.
 
-Su Windows l'avvio di Firefox può fallire con `browserType.launch: spawn
-UNKNOWN`: è un problema di configurazione *side-by-side* della macchina, non
-del prodotto. Su `windows-latest` e `ubuntu-latest` in CI parte senza problemi.
+Se Firefox fallisce con `browserType.launch: Executable doesn't exist`, manca
+solo il binario: `pnpm exec playwright install firefox` lo scarica. Non è un
+problema del prodotto e non richiede altro — `pnpm install` non scarica i
+browser da solo, e Chromium ed Edge possono già esserci mentre Firefox no.
+
+Eseguita sui tre browser il 2026-09-16: 153 casi passati, 51 per motore. È
+l'esecuzione che soddisfa TNF_01 (RV.2).
 
 ## Perché gli spec sono stati riscritti
 
