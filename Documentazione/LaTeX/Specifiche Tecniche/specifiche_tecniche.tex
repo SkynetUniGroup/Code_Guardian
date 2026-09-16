@@ -459,7 +459,7 @@ Lo stato applicativo condiviso è diviso in tre store distinti, ciascuno respons
     \label{fig:frontend-stores}
 \end{figure}
 
-Lo store dedicato alle operazioni non viene scritto dall'interfaccia: lo popolano soltanto gli eventi che il Backend invia sul canale WebSocket già descritto in §3.1. C'è poi un meccanismo di riallineamento esplicito, perché quel canale non garantisce la consegna degli eventi emessi durante un'eventuale disconnessione: alla riconnessione il Frontend richiede di nuovo lo stato delle operazioni tramite API REST.
+Lo store dedicato alle operazioni non riceve i propri dati soltanto dal canale WebSocket già descritto in §3.1; viene scritto anche da chiamate REST dirette — al caricamento iniziale della schermata e per riflettere localmente un annullamento richiesto dall'utente. Il canale WebSocket resta comunque la fonte primaria degli aggiornamenti di stato durante l'esecuzione di un'operazione. Poiché quel canale non garantisce la consegna degli eventi emessi durante un'eventuale disconnessione, alla riconnessione il Frontend richiede nuovamente lo stato delle operazioni tramite API REST.
 
 Un solo caso vede un singolo evento aggiornare due store anziché uno: quando il canale realtime segnala che le credenziali configurate non sono più valide, lo stesso evento tocca sia lo stato delle operazioni sia lo stato di sessione, attivando insieme l'avviso persistente in interfaccia e le guardie di rotta. I due store restano comunque indipendenti: nessuno dei due richiama l'altro, è l'evento a raggiungere entrambi.
 
@@ -467,7 +467,7 @@ Il token di sessione (JWT) resta in memoria e non tocca lo storage persistente d
 
 Verso il Backend il Frontend usa solo percorsi relativi sotto un unico prefisso, senza domini assoluti. Il Backend riceve la propria configurazione a runtime; il Frontend invece è distribuito come artefatto statico già compilato, e un indirizzo assoluto cablato al suo interno resterebbe fissato in modo irreversibile per ogni ambiente in cui quello stesso pacchetto venisse distribuito. Lo stesso token di sessione autentica sia le chiamate REST sia l'apertura del canale WebSocket.
 
-La gestione degli errori distingue due famiglie, con pattern d'interfaccia diversi. Gli errori di validazione e configurazione sono sincroni: l'utente li risolve subito, senza lasciare la schermata corrente, e compaiono in prossimità del campo interessato. Gli errori di esecuzione di un'operazione sono invece asincroni, emergono a distanza di tempo dall'avvio tramite il canale realtime, e passano da un unico componente condiviso, alimentato da un catalogo chiuso di codici d'errore ciascuno con un proprio messaggio ed un'eventuale azione secondaria. Fa eccezione il solo fallimento dell'esportazione PDF, che non altera lo stato del report né sostituisce i contenuti già visualizzati, poiché non riflette alcun problema dell'analisi sottostante.
+La gestione degli errori distingue due famiglie, con pattern d'interfaccia diversi. Gli errori di validazione e configurazione sono sincroni: l'utente li risolve subito, senza lasciare la schermata corrente, e compaiono in prossimità del campo interessato. Gli errori di esecuzione di un'operazione sono invece asincroni, emergono a distanza di tempo dall'avvio tramite il canale realtime, e passano da un unico componente condiviso, alimentato da un catalogo chiuso di codici d'errore chiuso lato Backend.
 
 \subsection{Architettura del Backend}
 \label{subsec:backend}
@@ -525,7 +525,7 @@ Ogni agente riempie il corpo del Report in modo diverso: l'Agente Docs produce s
 
 Un'analisi può fallire per ragioni molto diverse tra loro (un timeout del modello linguistico, un token GitHub non più valido, un limite di utilizzo superato), ma il sistema le riconduce tutte a un vocabolario chiuso di codici, condiviso tra Servizio Agenti e Backend nonostante i due linguaggi diversi. Un errore che nasce lato agente viene tradotto nel corrispondente codice del Backend mentre attraversa il confine tra i due servizi. Un codice che il Backend non riconosce non viene propagato così com'è: viene ricondotto a un valore generico.
 
-Un normalizzatore centralizzato sul Backend traduce ogni errore in una risposta HTTP di forma identica (un codice, un messaggio, eventuali dettagli di validazione) prima che raggiunga il Frontend. Abbiamo riusato la stessa forma anche sul canale asincrono: un errore emerso a metà di una Task arriva al Frontend con lo stesso codice di una risposta REST, non con un messaggio libero costruito per l'occasione. \texttt{CREDENTIAL\_INVALID} ne è l'esempio più concreto: lo stesso codice vale sia quando GitHub rifiuta un token al salvataggio, sia quando quel token si rivela non funzionante a metà di un'operazione già avviata, e in entrambi i casi compare lo stesso avviso con reindirizzamento alla schermata delle credenziali.
+Un normalizzatore centralizzato sul Backend traduce ogni errore in una risposta HTTP di forma identica (un codice, un messaggio, eventuali dettagli di validazione) prima che raggiunga il Frontend. Lo stesso vocabolario di codici è riusato anche sul canale asincrono: un errore emerso a metà di una Task raggiunge il Frontend con lo stesso codice di una risposta REST. L'involucro che lo trasporta resta però diverso, un oggetto annidato sotto \texttt{error} invece della forma piatta REST. \texttt{CREDENTIAL\_INVALID} ne è l'esempio più concreto: lo stesso codice vale sia quando GitHub rifiuta un token al salvataggio, sia quando quel token si rivela non funzionante a metà di un'operazione già avviata, e in entrambi i casi compare lo stesso avviso con reindirizzamento alla schermata delle credenziali.
 
 \subsection{Architettura del Servizio Agenti}
 \label{subsec:agenti}
@@ -798,7 +798,7 @@ I requisiti riportati in questa sezione sono quelli definiti nel documento \href
         RF.19--RF.22 & Obbligatorio & Soddisfatto \\ \hline
         RF.23 & Obbligatorio & Fuori Perimetro \\ \hline
         RF.24--RF.30 & Obbligatorio & Soddisfatto \\ \hline
-        RF.31 & Desiderabile & Parziale \\ \hline
+        RF.31 & Desiderabile & Soddisfatto \\ \hline
         RQ.7 & Obbligatorio & Soddisfatto \\ \hline
         RQ.9--RQ.10 & Obbligatorio & Soddisfatto \\ \hline
     \end{tabular}
@@ -966,11 +966,11 @@ I requisiti riportati in questa sezione sono quelli definiti nel documento \href
         RF.94 & Obbligatorio & Soddisfatto \\ \hline
         RF.95 & Obbligatorio & Parziale \\ \hline
         RF.96 & Obbligatorio & Soddisfatto \\ \hline
-        RF.97 & Opzionale & \\ \hline
+        RF.97 & Opzionale & Soddisfatto \\ \hline
         RF.98--RF.99 & Obbligatorio & Soddisfatto \\ \hline
-        RF.100 & Obbligatorio & \\ \hline
+        RF.100 & Obbligatorio & Parziale \\ \hline
         RF.101--RF.105 & Obbligatorio & Soddisfatto \\ \hline
-        RF.108 & Obbligatorio & \\ \hline
+        RF.108 & Obbligatorio & Soddisfatto \\ \hline
         RQ.11 & Obbligatorio & Soddisfatto \\ \hline
     \end{tabular}
     \caption{Stato dei requisiti — Agente Changelog e Task Management}
@@ -1023,9 +1023,11 @@ I requisiti riportati in questa sezione sono quelli definiti nel documento \href
     \begin{tabular}{|c|c|c|}
         \hline
         \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
+        RQ.1--RQ.2 & Obbligatorio & Soddisfatto \\ \hline
+        RQ.3 & Obbligatorio & Non implementato \\ \hline
         RQ.4 & Obbligatorio & Soddisfatto \\ \hline
-        RQ.1--RQ.5 & Obbligatorio & \\ \hline
-        RQ.6 & Obbligatorio & Fuori Perimetro \\ \hline
+        RQ.5 & Obbligatorio & Non implementato \\ \hline
+        RQ.6 & Obbligatorio & Fuori perimetro \\ \hline
     \end{tabular}
     \caption{Stato dei requisiti — Qualità del Codice, Test e Affidabilità AI}
     \label{tab:req-qualita-codice}
@@ -1041,9 +1043,8 @@ I requisiti riportati in questa sezione sono quelli definiti nel documento \href
     \begin{tabular}{|c|c|c|}
         \hline
         \textbf{Codice} & \textbf{Priorità} & \textbf{Stato} \\ \hline
-        RQ.12 & Obbligatorio & \\ \hline
-        RQ.13--RQ.16 & Obbligatorio & Soddisfatto \\ \hline
-        RQ.17 & Obbligatorio & \\ \hline
+        RQ.12--RQ.16 & Obbligatorio & Soddisfatto \\ \hline
+        RQ.17 & Obbligatorio & Parziale \\ \hline
     \end{tabular}
     \caption{Stato dei requisiti — Qualità di Processo e Documentazione di Progetto}
     \label{tab:req-qualita-processo}
@@ -1055,16 +1056,16 @@ I requisiti riportati in questa sezione sono quelli definiti nel documento \href
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|l|*{3}{>{\centering\arraybackslash}p{2.7cm}|}}
+    \begin{tabular}{|l|*{4}{>{\centering\arraybackslash}p{2.7cm}|}}
         \hline
-        \textbf{Categoria} & \textbf{\% soddisfatta} & \textbf{\% fuori perimetro} & \textbf{\% non soddisfatta} \\ \hline
-        Requisiti Funzionali &  &  &  \\ \hline
-        Requisiti Qualitativi &  &  &  \\ \hline
-        Requisiti di Vincolo &  &  &  \\ \hline
-        Requisiti di Sicurezza &  &  &  \\ \hline
-        Requisiti Desiderabili &  &  &  \\ \hline
-        Requisiti Opzionali &  &  &  \\ \hline
-        Requisiti Obbligatori &  &  &  \\ \hline
+        \textbf{Categoria} & \textbf{\% soddisfatta} & \textbf{\% parziale} & \textbf{\% non implementata} & \textbf{\% fuori perimetro} \\ \hline
+        Requisiti Funzionali & 86,5 & 2,7 & 1,8 & 9 \\ \hline
+        Requisiti Qualitativi & 76,4 & 5,9 & 11,8 & 5,9 \\ \hline
+        Requisiti di Vincolo & 100 & 0 & 0 & 0 \\ \hline
+        Requisiti di Sicurezza & 80 & 20 & 0 & 0 \\ \hline
+        Requisiti Desiderabili & 72,7 & 9,1 & 9,1 & 9,1 \\ \hline
+        Requisiti Opzionali & 76,9 & 0 & 0 & 23,1 \\ \hline
+        Requisiti Obbligatori & 92,3 & 3,4 & 2,6 & 1,7 \\ \hline
     \end{tabular}
     \caption{Percentuali di riepilogo dello stato dei requisiti}
     \label{tab:req-percentuali}
