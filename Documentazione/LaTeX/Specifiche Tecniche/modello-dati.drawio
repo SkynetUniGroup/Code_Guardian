@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Claude Code">
   <diagram name="Modello dei Dati Persistiti" id="data-model-diagram">
-    <mxGraphModel dx="3117" dy="878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" math="0" shadow="0">
+    <mxGraphModel dx="2136" dy="376" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -23,13 +23,13 @@
           <mxGeometry height="202" width="280" y="34" as="geometry" />
         </mxCell>
         <mxCell id="context" parent="1" style="swimlane;html=1;fontStyle=1;fontColor=#ffffff;align=center;verticalAlign=top;startSize=30;fillColor=#d79b00;strokeColor=#b07d00;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;" value="AnalysisContext" vertex="1">
-          <mxGeometry height="294" width="300" x="-20" y="306" as="geometry" />
+          <mxGeometry height="324" width="300" x="-20" y="306" as="geometry" />
         </mxCell>
         <mxCell id="context-div" parent="context" style="line;strokeColor=#b07d00;strokeWidth=2;html=1;" vertex="1">
           <mxGeometry height="4" width="300" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="context-body" parent="context" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;userId: string&lt;br&gt;repoUrl, repoOwner, repoName: string&lt;br&gt;isPrivate: boolean&lt;br&gt;branch: string&lt;br&gt;resolvedSha: string&lt;br&gt;scopeType: &#39;FULL_REPOSITORY&#39; | &#39;FILES&#39;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;| &#39;DIRECTORIES&#39;&lt;br&gt;paths: string[]&lt;br&gt;detectedLanguages: string[]&lt;br&gt;estimatedFileCount: number&lt;br&gt;nonEnglishReadmeDetected: boolean&lt;br&gt;createdAt, updatedAt: Date&lt;/div&gt;" vertex="1">
-          <mxGeometry height="260" width="300" y="34" as="geometry" />
+        <mxCell id="context-body" parent="context" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;userId: string&lt;br&gt;repoUrl, repoOwner, repoName: string&lt;br&gt;isPrivate: boolean&lt;br&gt;branch: string&lt;br&gt;resolvedSha: string&lt;br&gt;scopeType: &#39;FULL_REPOSITORY&#39; | &#39;FILES&#39;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;| &#39;DIRECTORIES&#39;&lt;br&gt;paths: string[]&lt;br&gt;detectedLanguages: string[]&lt;br&gt;unsupportedLanguages: string[]&lt;br&gt;predominantLanguage: string | null&lt;br&gt;estimatedFileCount: number&lt;br&gt;nonEnglishReadmeDetected: boolean&lt;br&gt;createdAt, updatedAt: Date&lt;/div&gt;" vertex="1">
+          <mxGeometry height="290" width="300" y="34" as="geometry" />
         </mxCell>
         <mxCell id="usage" parent="1" style="swimlane;html=1;fontStyle=1;fontColor=#ffffff;align=center;verticalAlign=top;startSize=30;fillColor=#d79b00;strokeColor=#b07d00;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;" value="UsageCounter" vertex="1">
           <mxGeometry height="141" width="280" x="950" y="250" as="geometry" />
@@ -41,22 +41,22 @@
           <mxGeometry height="107" width="280" y="34" as="geometry" />
         </mxCell>
         <mxCell id="task" parent="1" style="swimlane;html=1;fontStyle=1;fontColor=#ffffff;align=center;verticalAlign=top;startSize=30;fillColor=#d79b00;strokeColor=#b07d00;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;" value="Task" vertex="1">
-          <mxGeometry height="392" width="340" x="410" y="700" as="geometry" />
+          <mxGeometry height="450" width="340" x="410" y="700" as="geometry" />
         </mxCell>
         <mxCell id="task-div" parent="task" style="line;strokeColor=#b07d00;strokeWidth=2;html=1;" vertex="1">
           <mxGeometry height="4" width="340" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="task-body" parent="task" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;userId: string&lt;br&gt;batchId: string (correlation label)&lt;br&gt;contextId: ObjectId → AnalysisContext&lt;br&gt;operation: OperationCode&lt;br&gt;status: &#39;PENDING&#39; | &#39;RUNNING&#39; | &#39;COMPLETED&#39;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;| &#39;FAILED&#39; | &#39;CANCELLED&#39;&lt;br&gt;progressPercent: number&lt;br&gt;currentStage: string | null&lt;br&gt;reportId: ObjectId → Report | null&lt;br&gt;error: {code, message, stage} | null «Mixed»&lt;br&gt;pendingInput: {kind, ...} | null «Mixed»&lt;br&gt;sprintId?: string&lt;br&gt;previousTaskId?: ObjectId → Task&lt;br&gt;lgThreadId?: string&lt;br&gt;createdAt, updatedAt: Date&lt;/div&gt;" vertex="1">
-          <mxGeometry height="358" width="340" y="34" as="geometry" />
+        <mxCell id="task-body" parent="task" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;userId: string&lt;br&gt;batchId: string (correlation label)&lt;br&gt;contextId: ObjectId → AnalysisContext&lt;br&gt;operation: OperationCode&lt;br&gt;status: &#39;PENDING&#39; | &#39;RUNNING&#39; | &#39;COMPLETED&#39;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;| &#39;FAILED&#39; | &#39;CANCELLED&#39;&lt;br&gt;progressPercent: number&lt;br&gt;currentStage: string | null&lt;br&gt;reportId: ObjectId → Report | null&lt;br&gt;error: {code, message, stage} | null «Mixed»&lt;br&gt;pendingInput: {kind, ...} | null «Mixed»&lt;br&gt;sprintId?: string&lt;br&gt;previousTaskId?: ObjectId → Task&lt;br&gt;lgThreadId?: string&lt;br&gt;accumulatedMs: number&lt;br&gt;processingClaimedAt: Date | null (lease)&lt;br&gt;processingClaimToken: string | null (fencing)&lt;br&gt;createdAt, updatedAt: Date&lt;br&gt;— index: (batchId, status)&lt;br&gt;— index: (userId, createdAt desc)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="416" width="340" y="34" as="geometry" />
         </mxCell>
         <mxCell id="report" parent="1" style="swimlane;html=1;fontStyle=1;fontColor=#ffffff;align=center;verticalAlign=top;startSize=30;fillColor=#d79b00;strokeColor=#b07d00;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;" value="Report" vertex="1">
-          <mxGeometry height="407" width="340" x="990" y="480" as="geometry" />
+          <mxGeometry height="400" width="340" x="990" y="480" as="geometry" />
         </mxCell>
         <mxCell id="report-div" parent="report" style="line;strokeColor=#b07d00;strokeWidth=2;html=1;" vertex="1">
           <mxGeometry height="4" width="340" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="report-body" parent="report" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;taskId: ObjectId → Task&lt;br&gt;userId: string (denormalized)&lt;br&gt;operation: OperationCode&lt;br&gt;status: &#39;COMPLETED&#39; | &#39;FAILED&#39;&lt;br&gt;title: string&lt;br&gt;summary: string | null&lt;br&gt;durationMs: number | null&lt;br&gt;tokensConsumed: number&lt;br&gt;context: {repoOwner, repoName, repoUrl,&lt;br&gt;&amp;nbsp;&amp;nbsp;branch, resolvedSha, scopeType, paths} «Mixed»&lt;br&gt;body: Block[] «Mixed, polymorphic»&lt;br&gt;proposal?: {targetPath, diffUnified,&lt;br&gt;&amp;nbsp;&amp;nbsp;language, pullRequestUrl} «Mixed»&lt;br&gt;error?: {kind, message, stage} «Mixed»&lt;br&gt;generatedAt: Date&lt;br&gt;— index: (userId, generatedAt desc)&lt;/div&gt;" vertex="1">
-          <mxGeometry height="373" width="340" y="34" as="geometry" />
+        <mxCell id="report-body" parent="report" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;spacingTop=6;fontSize=11;fontColor=#333333;" value="&lt;div style=&quot;line-height:1.7&quot;&gt;_id: ObjectId&lt;br&gt;taskId: ObjectId → Task&lt;br&gt;userId: string (denormalized)&lt;br&gt;operation: OperationCode&lt;br&gt;status: &#39;COMPLETED&#39; | &#39;FAILED&#39;&lt;br&gt;title: string&lt;br&gt;summary: string | null&lt;br&gt;durationMs: number | null&lt;br&gt;tokensConsumed: number&lt;br&gt;context: {repoOwner, repoName, repoUrl,&lt;br&gt;&amp;nbsp;&amp;nbsp;branch, resolvedSha, scopeType, paths} «Mixed»&lt;br&gt;body: Block[] «Mixed, polymorphic»&lt;br&gt;proposal?: {targetPath, diffUnified,&lt;br&gt;&amp;nbsp;&amp;nbsp;language, pullRequestUrl,&lt;br&gt;&amp;nbsp;&amp;nbsp;pullRequestError?} «Mixed, §3.4.3»&lt;br&gt;error?: {kind, message, stage} «Mixed»&lt;br&gt;generatedAt: Date&lt;br&gt;— index: (userId, generatedAt desc)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="366" width="340" y="34" as="geometry" />
         </mxCell>
         <mxCell id="accessLog" parent="1" style="swimlane;html=1;fontStyle=1;fontColor=#ffffff;align=center;verticalAlign=top;startSize=30;fillColor=#d79b00;strokeColor=#b07d00;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;" value="AccessLog" vertex="1">
           <mxGeometry height="141" width="260" x="930" y="1000" as="geometry" />

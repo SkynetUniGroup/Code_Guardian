@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Claude Code">
   <diagram name="Integrazione GitHub" id="backend-github-diagram">
-    <mxGraphModel dx="1585" dy="863" grid="1" gridSize="10" guides="1" tooltips="1" connect="0" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1350" pageHeight="800" math="0" shadow="0">
+    <mxGraphModel dx="1471" dy="753" grid="1" gridSize="10" guides="1" tooltips="1" connect="0" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1350" pageHeight="800" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -65,7 +65,7 @@
           <mxGeometry height="94" width="440" y="68" as="geometry" />
         </mxCell>
         <mxCell id="accessLog" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«entity»&lt;/font&gt;&lt;br&gt;AccessLog" vertex="1">
-          <mxGeometry height="101" width="180" x="1060" y="49" as="geometry" />
+          <mxGeometry height="101" width="180" x="1060" y="63.5" as="geometry" />
         </mxCell>
         <mxCell id="accessLog-attr" parent="accessLog" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="- taskId: ObjectId&lt;br&gt;- endpoint: string&lt;br&gt;- resource: string" vertex="1">
           <mxGeometry height="60" width="180" y="40" as="geometry" />
@@ -96,6 +96,9 @@
         </mxCell>
         <mxCell id="githubApi" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" value="GitHub API&#xa;«external»" vertex="1">
           <mxGeometry height="60" width="150" x="1090" y="641" as="geometry" />
+        </mxCell>
+        <mxCell id="proposalPublisher" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="&lt;font style=&quot;font-size:11px&quot;&gt;«service»&lt;/font&gt;&lt;br&gt;ProposalPublisherService" vertex="1">
+          <mxGeometry height="60" width="360" x="60" y="668" as="geometry" />
         </mxCell>
         <mxCell id="redisCache" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="Redis" vertex="1">
           <mxGeometry height="60" width="130" x="1110" y="376" as="geometry" />
@@ -208,6 +211,14 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="r9l" connectable="0" parent="r9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r11" edge="1" parent="1" source="proposalPublisher" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="writeService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r11l" connectable="0" parent="r11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="«use»" vertex="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
