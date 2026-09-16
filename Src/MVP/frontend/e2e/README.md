@@ -87,7 +87,9 @@ ripeterebbe altrimenti.
 ## Browser
 
 `playwright.config.ts` dichiara Chromium, Firefox ed Edge — è ciò che rende
-RV.5 verificabile. I casi marcati `@agent` girano solo su Chromium: avviano
+RV.2 verificabile, ed è il caso TNF_01 del Piano di Qualifica. (RV.5 riguarda
+il linguaggio del servizio agenti, non i browser.) I casi marcati `@agent`
+girano solo su Chromium: avviano
 un'analisi vera, e ripeterla su tre motori costerebbe tre chiamate complete
 all'LLM per verificare qualcosa che con il browser non ha a che fare.
 

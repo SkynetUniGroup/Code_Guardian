@@ -344,15 +344,22 @@ describe("ContextsService", () => {
   /**
    * TU_22 (RV.7, RF.24) — linguaggi supportati e avviso non bloccante.
    *
-   * Corrispondenza PARZIALE, e il motivo è un difetto aperto documentato qui
-   * sotto con due `it.fails`: RV.7 (i tre linguaggi supportati passano
-   * senza avviso) è verificabile e regge; RF.24 (per ogni altro linguaggio
-   * un avviso non bloccante) non è implementato da nessuna parte —
-   * `detectLanguage` mappa qualunque estensione fuori da ts/tsx/js/jsx/py su
-   * 'unknown' e `detectLanguages` filtra via proprio quel valore, quindi
-   * l'informazione da cui l'avviso dovrebbe nascere viene scartata prima di
-   * arrivare al contesto. Da non confondere con RV.8, la lingua *naturale*
-   * del README, che invece esiste e ha il suo campo dedicato.
+   * I due requisiti si verificano sugli stessi dati ma su campi diversi, ed è
+   * la ragione per cui il servizio ne tiene due invece di uno:
+   * `detectedLanguages` porta i soli linguaggi che gli agenti sanno
+   * analizzare (RV.7), `unsupportedLanguages` tutto il resto del codice
+   * riconosciuto (RF.24). Un repository interamente in Go esce quindi con il
+   * primo campo vuoto — ed è corretto che lo sia — e il secondo valorizzato.
+   *
+   * L'avviso vero e proprio non è persistito: `toDto` lo ricava da
+   * `unsupportedLanguages` e da `predominantLanguage`, perché un booleano
+   * scritto accanto ai dati da cui dipende è solo un modo in più per farli
+   * divergere. I test seguono la stessa divisione: quello che riguarda la
+   * persistenza guarda il documento, quello che riguarda l'avviso guarda il
+   * DTO restituito.
+   *
+   * Da non confondere con RV.8, la lingua *naturale* del README, che ha un
+   * campo dedicato suo.
    */
   describe("TU_22 (RV.7, RF.24) — linguaggi supportati e avviso non bloccante", () => {
     /** Repository interamente nei tre linguaggi supportati da RV.7. */
@@ -375,9 +382,11 @@ describe("ContextsService", () => {
     }
 
     /**
-     * I campi booleani accesi nel documento persistito. È il modo in cui
-     * questo test guarda "c'è un avviso?" senza fissare il nome di un campo
-     * che oggi non esiste: sceglierlo spetta a chi implementerà RF.24.
+     * I campi booleani accesi in un oggetto. Serve al caso di RV.7 per
+     * affermare che su un repository interamente supportato non si accende
+     * *nessun* avviso, senza doverli elencare uno per uno: un avviso nuovo
+     * aggiunto in futuro farebbe fallire quel test, che è esattamente il
+     * comportamento voluto.
      */
     function avvisiAccesi(oggetto: Record<string, unknown>): string[] {
       return Object.entries(oggetto)
@@ -409,30 +418,53 @@ describe("ContextsService", () => {
       expect(model.create).toHaveBeenCalledTimes(1);
     });
 
-    it.fails("DIFETTO APERTO — il linguaggio di un repository non supportato non arriva nemmeno al contesto", async () => {
-      // detectLanguage restituisce 'unknown' per .go, e detectLanguages lo
-      // filtra: il contesto di un repository interamente scritto in Go
-      // risulta con detectedLanguages vuoto, cioè indistinguibile da quello
-      // di un repository vuoto. Finché l'informazione viene scartata qui,
-      // nessuno strato a valle — backend, API o interfaccia — può ricavare
-      // l'avviso di RF.24, perché non c'è più niente da cui ricavarlo.
+    it("RF.24 — il linguaggio non supportato arriva al contesto invece di essere scartato", async () => {
+      // È la premessa di tutto il resto: se l'informazione venisse buttata
+      // qui, nessuno strato a valle potrebbe più ricavarne un avviso. Il
+      // contesto di un repository interamente in Go deve restare
+      // distinguibile da quello di un repository vuoto, e a distinguerlo è
+      // `unsupportedLanguages` — non `detectedLanguages`, che per RV.7 porta
+      // i soli linguaggi analizzabili ed è giusto che qui sia vuoto.
       github.getTree.mockResolvedValue(alberoNonSupportato);
 
       await service.create("user1", baseDto);
 
-      expect(persistito().detectedLanguages).not.toEqual([]);
+      const documento = persistito();
+      expect(documento.unsupportedLanguages).toEqual(["go"]);
+      expect(documento.detectedLanguages).toEqual([]);
+      expect(documento.predominantLanguage).toBe("go");
     });
 
-    it.fails("DIFETTO APERTO — la creazione del contesto non emette l'avviso non bloccante di RF.24", async () => {
-      // L'altra metà di RF.24: l'avviso. AnalysisContext non ha un campo
-      // per portarlo (ha solo nonEnglishReadmeDetected, che è RV.8), e
-      // ContextsService non ne calcola alcuno.
+    it("RF.24 — la creazione del contesto emette l'avviso non bloccante", async () => {
+      // L'altra metà di RF.24: l'avviso, che il DTO ricava dai due campi
+      // sopra. Si guarda il valore restituito e non il documento persistito
+      // perché lì il booleano non c'è per scelta: dipende interamente da
+      // `unsupportedLanguages` e `predominantLanguage`, e memorizzarlo
+      // significherebbe poterlo far divergere da loro.
       github.getTree.mockResolvedValue(alberoNonSupportato);
 
       const risultato = await service.create("user1", baseDto);
 
-      expect(avvisiAccesi(persistito())).not.toEqual([]);
-      expect(avvisiAccesi(risultato as unknown as Record<string, unknown>)).not.toEqual([]);
+      expect(risultato.unsupportedLanguageWarning).toBe(true);
+      expect(avvisiAccesi(risultato as unknown as Record<string, unknown>)).toEqual([
+        "unsupportedLanguageWarning",
+      ]);
+    });
+
+    it("RF.24 — l'avviso non si accende per un po' di codice non supportato di contorno", async () => {
+      // La soglia è il linguaggio *predominante*, non la semplice presenza:
+      // quasi ogni repository contiene uno script di shell, e un avviso che
+      // compare sempre non lo legge più nessuno. L'elenco completo resta
+      // comunque disponibile per chi lo vuole mostrare in ogni caso.
+      github.getTree.mockResolvedValue([
+        ...alberoSupportato,
+        { path: "scripts/setup.sh", type: "file" as const, sizeBytes: 10 },
+      ]);
+
+      const risultato = await service.create("user1", baseDto);
+
+      expect(risultato.unsupportedLanguages).toEqual(["shell"]);
+      expect(risultato.unsupportedLanguageWarning).toBe(false);
     });
   });
 });
