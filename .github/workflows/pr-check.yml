@@ -48,8 +48,9 @@ jobs:
       - name: Node.js linting
         run: pnpm lint
 
-      # Esegue le due suite native: Jest per il backend (i .spec.ts usano
-      # jest.mock e non girano sotto Vitest), Vitest per il frontend.
+      # Vitest su tutto il workspace: backend, frontend e infra. Il backend
+      # non usa piu' Jest -- `backend/package.json` ha `"test": "vitest run"`
+      # e la configurazione sta in `vitest.config.mts`.
       - name: Node.js unit tests
         run: pnpm test:unit
 
