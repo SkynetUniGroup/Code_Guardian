@@ -1,11 +1,11 @@
 # ========================
-# Dipendenze
+# Dependencies
 # ========================
 node_modules/
 .pnpm-store/
 
 # ========================
-# Build, Log e Cache
+# Build, Logs and Cache
 # ========================
 dist/
 build/                 
@@ -16,21 +16,24 @@ yarn-debug.log*
 yarn-error.log*        
 pnpm-debug.log*        
 
-# Cache di strumenti di sviluppo
+# Development tool caches
 *.tsbuildinfo          
 .eslintcache          
 
 # ========================
-# Ambiente e Segreti
+# Environment and Secrets
 # ========================
 .env
 .env.*.local
+# Also service copies: .env.before-change, .env.bak, .env.local.
+# They contain the same keys as .env and must not be versioned.
+.env.*
 *.pem
-# Assicuriamoci che il .env.example non venga MAI ignorato
+# Make sure .env.example is NEVER ignored
 !.env.example
 
 # ========================
-# OS e IDE
+# OS and IDE
 # ========================
 .DS_Store
 Thumbs.db
@@ -38,14 +41,14 @@ Thumbs.db
 .vscode/
 
 # ========================
-# File di stato di pnpm
+# pnpm state files
 # ========================
 .modules.yaml
 .package-map.json
 .pnpm-workspace-state-v1.json
 
 # ========================
-# Python (servizio agenti)
+# Python (agents service)
 # ========================
 __pycache__/
 *.py[cod]
@@ -62,7 +65,7 @@ env/
 htmlcov/
 
 # ========================
-# Override regole precedenti
+# Override previous rules
 # ========================
 !package.json
 !pnpm-lock.yaml

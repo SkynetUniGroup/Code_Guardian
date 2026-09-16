@@ -1,26 +1,27 @@
 import * as cdk from "aws-cdk-lib";
-import * as kms from "aws-cdk-lib/aws-kms";
+import type * as kms from "aws-cdk-lib/aws-kms";
 import * as s3 from "aws-cdk-lib/aws-s3";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 import { ARTIFACTS_LIFECYCLE_EXPIRATION_DAYS } from "./config";
 
 export interface StorageStackProps extends cdk.StackProps {
   kmsKey: kms.IKey;
 }
 
-// Bucket S3 per gli artefatti (report esportati): nessun accesso pubblico,
-// accesso di rete ristretto al Gateway Endpoint (policy creata in
-// vpc-endpoints-stack.ts, dove l'endpoint stesso nasce), lettura/scrittura
-// solo per il task role del backend (compute-stack.ts).
+// S3 bucket for artifacts (exported reports): no public access, network
+// access restricted to the Gateway Endpoint (policy created in
+// vpc-endpoints-stack.ts, where the endpoint itself is created),
+// read/write only for the backend task role (compute-stack.ts).
 //
-// Il bucket frontend statico non è qui: vive in cloudfront-stack.ts insieme
-// alla distribuzione che lo serve, per evitare una dipendenza circolare nota
-// tra bucket e CloudFront quando stanno in stack diversi (vedi quel file).
+// The static frontend bucket is not here: it lives in cloudfront-stack.ts
+// together with the distribution that serves it, to avoid a known circular
+// dependency between bucket and CloudFront when they live in different
+// stacks (see that file).
 //
-// Niente `enforceSSL: true` qui: creerebbe subito una BucketPolicy in questo
-// stack, e vpc-endpoints-stack.ts ne crea già una propria per lo stesso
-// bucket -- un bucket ne accetta una sola. Il vincolo HTTPS-only è aggiunto
-// insieme al resto là.
+// No `enforceSSL: true` here: it would immediately create a BucketPolicy in
+// this stack, and vpc-endpoints-stack.ts already creates its own for the
+// same bucket -- a bucket accepts only one. The HTTPS-only constraint is
+// added together with the rest there.
 export class StorageStack extends cdk.Stack {
   public readonly artifactsBucket: s3.Bucket;
 

@@ -20,9 +20,13 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    "types": ["vite/client"],
+    "types": ["vite/client", "@testing-library/jest-dom"],
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@codeguardian/shared": ["../shared/src"],
+      "@codeguardian/shared/*": ["../shared/src/*"]
+    }
   },
   "include": ["src"]
 }

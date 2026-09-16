@@ -1,0 +1,161 @@
+networks:
+  codeguardian-net:
+    driver: bridge
+
+services:
+  # Python agents service (FastAPI/Uvicorn on :8000, per agents/Dockerfile).
+  # Not exposed to the host — only reachable from other containers, at
+  # http://agents:8000, matching AGENTS_SERVICE_URL in backend/.env.
+  agents:
+    build: ./agents
+    # Without this line the container ended up on the default network while all
+    # the others are on codeguardian-net: "backend", "mongodb" and "redis"
+    # did not resolve at all, and every agent call died in DNS.
+    networks:
+      - codeguardian-net
+    env_file:
+      - .env
+    environment:
+      # Same override rationale as the backend service: inside the Docker
+      # network, containers reach each other by service name, never by
+      # localhost or the backend's own hostnames.
+      BACKEND_BASE_URL: http://backend:3000
+      # Must match app.setGlobalPrefix() in backend/src/main.ts: it ends up both
+      # in the called URL and in the HMAC-signed message.
+      BACKEND_API_PREFIX: /api/v1
+      MONGO_URI: mongodb://mongodb:27017/codeguardian
+      REDIS_URL: redis://redis:6379
+      INTERNAL_SHARED_SECRET: ${INTERNAL_SHARED_SECRET}
+      PROMPTS_DIR: /app/prompts
+      # Static analysis: the defaults live in config.py, here the two levers
+      # most often tweaked during development are made explicit.
+      ENABLE_SAST_SEMGREP: ${ENABLE_SAST_SEMGREP:-true}
+      # SonarQube metrics for the DOCS_* prompts: active if the user has
+      # saved a SONARQUBE credential from /credentials. The backend forwards
+      # it in the agent payload (agent-invocation.service.ts).
+      ENABLE_SONARQUBE: ${ENABLE_SONARQUBE:-true}
+    depends_on:
+      backend:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - "5173:80"
+    networks:
+      - codeguardian-net
+    de
+pends_on:
+      backend:
+        condition: service_healthy
+    # No VITE_* here: Vite inlines variables at build time, a runtime env on
+    # an already-compiled nginx image has no effect.
+    # The bundle uses relative paths (/api/v1) and nginx.conf forwards them
+    # to the backend — see frontend/nginx.conf.
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - codeguardian-net
+    env_file:
+      - .env
+    environment:
+      # Overrides the values from .env: inside the Docker network, containers
+      # reach each other by service name, never by localhost.
+      MONGODB_URI: mongodb://mongodb:27017/codeguardian
+      REDIS_URL: redis://redis:6379
+      AGENTS_SERVICE_URL: http://agents:8000
+      # BE-20: same reasoning — the container reaches MinIO by service name.
+      S3_ENDPOINT: http://minio:9000
+      S3_FORCE_PATH_STYLE: "true"
+      # File-change notifications from a Windows bind mount don't reliably
+      # reach the Linux container, so the TypeScript watcher has to poll for
+      # changes instead of waiting for them — without this, edits on the host
+      # are silently ignored until the container is restarted.
+      TSC_WATCHFILE: PriorityPollingInterval
+      TSC_WATCHDIRECTORY: DynamicPriorityPolling
+    volumes:
+      # Only the sources, mounted in their place inside the workspace.
+      # Mounting ./backend on /app (as it was) replaced the monorepo ROOT
+      # built into the image: pnpm-workspace.yaml, shared/ and
+      # backend/node_modules disappeared, and `pnpm --filter backend` could no
+      # longer find any workspace to start.
+      - ./backend/src:/app/backend/src
+      - ./backend/test:/app/backend/test
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      # Era un elemento di lista in mezzo a una mappa: YAML non valido, e
+      # `docker compose up` rifiutava l'intero 
+file.
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/v1/auth/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - codeguardian-net
+    healthcheck:
+      test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - codeguardian-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - codeguardian-net
+    environment:
+      # Must match S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY of the
+      # backend, otherwise bucket creation at startup fails with 403.
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-minioadmin}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:
+  minio_data:

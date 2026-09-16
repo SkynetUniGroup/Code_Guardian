@@ -1,116 +1,51 @@
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import { Construct } from "constructs";
-import {
-  CfnCluster,
-  CfnPrivateEndpointAws,
-  CfnPrivateEndpointService,
-  CfnPrivateEndpointServicePropsCloudProvider,
-  CfnProject,
-} from "awscdk-resources-mongodbatlas";
-import { ATLAS_INSTANCE_SIZE, ATLAS_REGION } from "./config";
+import type { Construct } from "constructs";
 
 export interface AtlasStackProps extends cdk.StackProps {
   vpc: ec2.IVpc;
   sgAtlas: ec2.ISecurityGroup;
 }
 
-// MongoDB Atlas: Project, Cluster M10, PrivateLink. Prerequisiti manuali
-// (vedi RUNBOOK.md): CloudFormation Public Extensions "MongoDB::Atlas::*"
-// attivate in eu-south-1, una Atlas API Key salvata come profilo in Secrets
-// Manager, l'Org ID passato via --context atlasOrgId=<ID>.
+// The Atlas M10 project, cluster, and Private Endpoint Service are managed
+// manually in the Atlas console (Alessandro's org): the team does not have
+// an API key with write permissions on the project. This stack creates only
+// the AWS side of the PrivateLink, i.e. the Interface VPC Endpoint pointing
+// to the service name that Atlas generates when the Private Endpoint is
+// created in the console.
 //
-// Il Private Endpoint richiede tre risorse in ordine: l'Atlas Private
-// Endpoint Service, l'Interface VPC Endpoint AWS che punta al suo service
-// name, poi l'Atlas Private Endpoint che conferma la connessione.
-//
-// Nessuna entry pubblica nella Network Access List: è proprio la loro
-// assenza, insieme al Private Endpoint attivo, a rendere il cluster
-// raggiungibile solo dalla VPC.
+// Manual handshake (see RUNBOOK.md):
+// 1. Alessandro creates the Private Endpoint on Atlas (AWS region eu-south-1),
+//    obtains a service name (com.amazonaws.vpce...).
+// 2. `cdk deploy CodeGuardian-Atlas --context atlasPrivateEndpointServiceName=<...>`
+//    creates the Interface VPC Endpoint below.
+// 3. The endpoint ID (output AtlasPrivateEndpointId) must be pasted in Atlas
+//    to complete the connection and unlock the connection string.
 export class AtlasStack extends cdk.Stack {
-  public readonly project: CfnProject;
-  public readonly cluster: CfnCluster;
-
   constructor(scope: Construct, id: string, props: AtlasStackProps) {
     super(scope, id, props);
     const { vpc, sgAtlas } = props;
 
-    const atlasProfile = this.node.tryGetContext("atlasProfile") ?? "codeguardian-atlas";
-    const atlasOrgId = this.node.tryGetContext("atlasOrgId");
-    if (!atlasOrgId || atlasOrgId === "REPLACE_WITH_ATLAS_ORG_ID") {
+    const serviceName = this.node.tryGetContext("atlasPrivateEndpointServiceName");
+    if (!serviceName) {
       throw new Error(
-        "Contesto 'atlasOrgId' non impostato. Eseguire: cdk deploy CodeGuardian-Atlas --context atlasOrgId=<ORG_ID> (vedi RUNBOOK.md).",
+        "Context 'atlasPrivateEndpointServiceName' not set: retrieve the Private Endpoint service name from Atlas (created manually) and pass it with --context (see RUNBOOK.md).",
       );
     }
-    const atlasProjectName = this.node.tryGetContext("atlasProjectName") ?? "code-guardian-mvp";
-
-    this.project = new CfnProject(this, "AtlasProject", {
-      name: atlasProjectName,
-      orgId: atlasOrgId,
-      profile: atlasProfile,
-    });
-
-    this.cluster = new CfnCluster(this, "AtlasCluster", {
-      name: "codeguardian-mvp",
-      projectId: this.project.attrId,
-      profile: atlasProfile,
-      clusterType: "REPLICASET",
-      backupEnabled: true, // Atlas Cloud Backup, non AWS Backup
-      pitEnabled: false,
-      replicationSpecs: [
-        {
-          numShards: 1,
-          advancedRegionConfigs: [
-            {
-              regionName: ATLAS_REGION,
-              priority: 7,
-              electableSpecs: {
-                instanceSize: ATLAS_INSTANCE_SIZE, // M10, il minimo che abilita PrivateLink
-                nodeCount: 3, // replica set a 3 nodi
-                ebsVolumeType: "STANDARD",
-              },
-              autoScaling: {
-                diskGb: { enabled: true },
-                compute: { enabled: false, scaleDownEnabled: false },
-              },
-            },
-          ],
-        },
-      ],
-    });
-
-    const endpointService = new CfnPrivateEndpointService(this, "AtlasPrivateEndpointService", {
-      projectId: this.project.attrId,
-      profile: atlasProfile,
-      region: ATLAS_REGION,
-      cloudProvider: CfnPrivateEndpointServicePropsCloudProvider.AWS,
-    });
-    endpointService.addResourceDependency(this.cluster);
 
     const awsPrivateEndpoint = new ec2.CfnVPCEndpoint(this, "AtlasAwsPrivateEndpoint", {
-      serviceName: endpointService.attrEndpointServiceName,
+      serviceName,
       vpcId: vpc.vpcId,
       subnetIds: vpc.privateSubnets.map((s) => s.subnetId),
       vpcEndpointType: "Interface",
       securityGroupIds: [sgAtlas.securityGroupId],
-      privateDnsEnabled: false, // la risoluzione passa dalla connection string fornita da Atlas
+      privateDnsEnabled: false, // resolution goes through the connection string provided by Atlas
     });
-    awsPrivateEndpoint.addResourceDependency(endpointService);
 
-    const atlasPrivateEndpoint = new CfnPrivateEndpointAws(this, "AtlasPrivateEndpoint", {
-      projectId: this.project.attrId,
-      profile: atlasProfile,
-      endpointServiceId: endpointService.attrId,
-      id: awsPrivateEndpoint.ref,
-      enforceConnectionSuccess: true,
-    });
-    atlasPrivateEndpoint.addResourceDependency(awsPrivateEndpoint);
-
-    new cdk.CfnOutput(this, "AtlasProjectId", { value: this.project.attrId });
-    new cdk.CfnOutput(this, "AtlasClusterName", { value: "codeguardian-mvp" });
     new cdk.CfnOutput(this, "AtlasPrivateEndpointId", {
       value: awsPrivateEndpoint.ref,
-      description: "Recuperare da Atlas (Connect -> Private Endpoint) la connection string e aggiornare il secret codeguardian/mongo-uri",
+      description:
+        "Paste in Atlas (Private Endpoint -> AWS) to complete the connection, then retrieve the connection string for the codeguardian/mongo-uri secret",
     });
   }
 }

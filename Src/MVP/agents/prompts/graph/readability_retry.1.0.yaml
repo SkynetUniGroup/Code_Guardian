@@ -1,0 +1,21 @@
+id: readability_retry
+version: "1.0"
+required_vars:
+  - dettagli
+# Message with which the graph asks the model to rewrite a business changelog
+# rejected by the readability index (RQ.7). It lives here and not in graph.py
+# because it is a prompt in every sense -- the model reads it, not a human --
+# and RQ.4/MPD_14 want prompts kept out of modules.
+system_prompt: |
+  Your text was scored with the Flesch Reading Ease index and came out too low.
+  Details: {dettagli}
+
+  Rewrite it. That index rewards short sentences and short words, and of the
+  two it is word length that dominates the score.
+
+  - Keep every sentence under twelve words. Split a long bullet into two short
+    ones.
+  - Prefer words of one or two syllables. Replace abstract nouns such as
+    'capabilities', 'traceability', 'functionality', 'optimisation' with a
+    plain verb: say what the user can now do.
+  - Do not drop or reword the markdown links: keep them exactly as they are.

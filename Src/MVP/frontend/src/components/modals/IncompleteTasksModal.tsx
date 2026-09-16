@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { ModalOverlay } from './ModalOverlay';
-import { Spinner } from '../shared/Spinner';
-import { apiClient } from '../../api/client';
-import { useTasksStore } from '../../stores/tasksStore';
-import type { SubmitInputDto } from '../../types';
+import { useState } from "react";
+import { apiClient } from "../../api/client";
+import { useTasksStore } from "../../stores/tasksStore";
+import type { SubmitInputDto } from "../../types";
+import { Spinner } from "../shared/Spinner";
+import { ModalOverlay } from "./ModalOverlay";
 
 interface IncompleteTasksModalProps {
   /** ID of the paused task. */
@@ -25,29 +25,29 @@ interface IncompleteTasksModalProps {
  */
 export function IncompleteTasksModal({ taskId, taskIds, onClose }: IncompleteTasksModalProps) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const clear_pending = useTasksStore((s) => s.clearPendingInput);
 
-  async function submit(action: 'PROCEED' | 'CANCEL') {
-    const dto: SubmitInputDto = { kind: 'INCOMPLETE_TASKS', action };
+  async function submit(action: "PROCEED" | "CANCEL") {
+    const dto: SubmitInputDto = { kind: "INCOMPLETE_TASKS", action };
     setLoading(true);
-    setError('');
+    setError("");
     try {
       await apiClient.post(`/tasks/${taskId}/input`, dto);
       clear_pending(taskId);
       onClose();
     } catch {
-      setError('Impossibile inviare la risposta. Riprova.');
+      setError("Unable to send the response. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <ModalOverlay open title="Task incompleti rilevati" onClose={onClose}>
+    <ModalOverlay open title="Incomplete tasks detected" onClose={onClose}>
       <p className="mb-3 text-sm text-gray-500">
-        I seguenti task risultano ancora aperti nel sistema di ticketing. Vuoi procedere ugualmente
-        con il changelog o annullare l'operazione?
+        The following tasks are still open in the ticketing system. Do you want to proceed anyway
+        with the changelog or cancel the operation?
       </p>
 
       {/* List of incomplete task IDs */}
@@ -63,20 +63,22 @@ export function IncompleteTasksModal({ taskId, taskIds, onClose }: IncompleteTas
 
       <div className="flex justify-end gap-2">
         <button
-          onClick={() => submit('CANCEL')}
+          type="button"
+          onClick={() => submit("CANCEL")}
           disabled={loading}
           className="rounded border border-[#cccccc] px-4 py-2 text-sm text-[#2a2a2a] hover:bg-gray-50 transition disabled:opacity-50"
         >
-          Annulla operazione
+          Cancel operation
         </button>
 
         <button
-          onClick={() => submit('PROCEED')}
+          type="button"
+          onClick={() => submit("PROCEED")}
           disabled={loading}
           className="flex items-center gap-2 rounded bg-[#2277cc] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a5fa8] transition disabled:opacity-50"
         >
           {loading && <Spinner size="sm" className="text-white" />}
-          Procedi comunque
+          Proceed anyway
         </button>
       </div>
     </ModalOverlay>

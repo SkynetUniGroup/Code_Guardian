@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolvePackageJsonExports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2023",
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    // Il file di build incrementale sta DENTRO dist, non accanto al tsconfig.
+    //
+    // nest-cli.json ha `deleteOutDir: true`: `nest start --watch` cancella dist
+    // a ogni avvio. Con il .tsbuildinfo fuori da dist, tsc sopravvive alla
+    // cancellazione, si convince che sia gia' tutto compilato e non emette piu'
+    // niente — "Found 0 errors" seguito da
+    // `Cannot find module '/app/backend/dist/main'`, che e' esattamente come
+    // moriva il container del backend. Tenendolo qui dentro, cancellare dist
+    // cancella anche la memoria di cio' che c'era, e la compilazione riparte
+    // davvero.
+    "tsBuildInfoFile": "./dist/.tsconfig.tsbuildinfo",
+    "paths": {
+      "@app/*": ["./src/*"],
+      "@common/*": ["./src/common/*"],
+      "@auth/*": ["./src/auth/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@tasks/*": ["./src/tasks/*"],
+      "@reports/*": ["./src/reports/*"],
+      "@credentials/*": ["./src/credentials/*"],
+      "@github/*": ["./src/github/*"],
+      "@events/*": ["./src/events/*"],
+      "@codeguardian/shared": ["../shared/dist"],
+      "@codeguardian/shared/*": ["../shared/dist/*"]
+    },
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["vitest/globals", "node"]
+  },
+  "include": ["src/**/*"]
+}

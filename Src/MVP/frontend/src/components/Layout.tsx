@@ -1,7 +1,7 @@
-import { Outlet, Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import { useEffect } from 'react';
-import { useWebSocket } from '../hooks/useWebSocket';
-import { useAppStore } from '../stores/useAppStore';
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useWebSocket } from "../hooks/useWebSocket";
+import { useAppStore } from "../stores/useAppStore";
 
 export default function Layout() {
   useWebSocket();
@@ -10,11 +10,10 @@ export default function Layout() {
   const { isConfigured } = useAppStore();
 
   useEffect(() => {
-    if (!isConfigured && routerState.location.pathname !== '/setup') {
-      navigate({ to: '/setup' });
+    if (!isConfigured && routerState.location.pathname !== "/setup") {
+      navigate({ to: "/setup" });
     }
   }, [isConfigured, routerState.location.pathname, navigate]);
-
 
   if (!isConfigured) {
     return (
@@ -28,12 +27,15 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ... (mantieni il tuo Header/Nav attuale) ... */}
+      {/* ... (keep your current Header/Nav) ... */}
       <header className="bg-white shadow">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
-              <Link to="/" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600">
+              <Link
+                to="/"
+                className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600"
+              >
                 Home
               </Link>
             </div>

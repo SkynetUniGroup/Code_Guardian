@@ -1,94 +1,95 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
+import { GITHUB_PAT, SKIP_REASON, signedInWithCredentials, submitContext } from "./helpers";
 
 /**
- * Ulteriori Test di Sistema sulla selezione del riferimento/ambito, reali
- * (nessun mock). Nota di implementazione: l'AdR descrive branch e commit
- * come due campi separati (UC9.3/UC9.4) e un selettore di tipologia
- * branch/PR (UC9.2); l'interfaccia realizzata in questo PoC li unisce in
- * un unico campo generico "Ref" e non ha alcun selettore per le Pull
- * Request — quindi RF.21 (branch inesistente) e RF.22 (commit inesistente)
- * collassano nello stesso comportamento osservabile da UI (un ref non
- * risolvibile), e RF.23/RF.18 (riferimento a una Pull Request) non sono
- * testabili perché l'opzione non esiste in interfaccia.
+ * Test di Sistema sulla selezione del riferimento e dell'ambito, reali
+ * (nessun mock).
+ *
+ * Nota di implementazione, aggiornata rispetto alla versione PoC di questo
+ * file: li' branch e commit erano un unico campo "Ref" e RF.21/RF.22
+ * collassavano nello stesso comportamento osservabile. Nell'MVP sono due campi
+ * distinti — "Branch" e "Commit SHA (opzionale)" — quindi i due requisiti sono
+ * ora verificabili separatamente, e lo sono in repository-errors.spec.ts.
+ * Resta invece vero che non esiste alcun selettore per le Pull Request, e che
+ * RF.23/RF.18 non sono percio' testabili da interfaccia.
  */
-const GITHUB_PAT = process.env.E2E_GITHUB_PAT;
+test.describe("Riferimento e ambito", () => {
+  test.skip(!GITHUB_PAT, SKIP_REASON);
 
-test.describe('Riferimento e ambito', () => {
-  test.skip(!GITHUB_PAT, 'E2E_GITHUB_PAT non impostato nel .env — vedi TESTING.md');
+  test("RF.17 — omettere il commit ancora l'analisi all'HEAD del branch", async ({ page }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      commitSha: "",
+      scope: "Directory specifiche",
+      paths: ["app/routes"],
+    });
 
-  async function login(page: import('@playwright/test').Page) {
-    await page.goto('/');
-    await page.getByPlaceholder('ghp_xxxxxxxxxxxx...').fill(GITHUB_PAT!);
-    await page.getByRole('button', { name: 'Salva e Inizia' }).click();
-    await expect(page).toHaveURL('http://localhost:5173/');
-  }
-
-  test('RF.21/RF.22 — ref (branch o commit) inesistente: errore esplicito, nessun avvio', async ({ page }) => {
-    await login(page);
-    await page.getByPlaceholder('skynetunigroup').fill('OWASP');
-    await page.getByPlaceholder('code_guardian').fill('NodeGoat');
-    await page.getByPlaceholder('main').fill('questo-ref-non-esiste-e2e-12345');
-    await page.getByPlaceholder('es. Src/').fill('app/routes');
-
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_OWASP' });
-
-    const dialogPromise = page.waitForEvent('dialog');
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-    const dialog = await dialogPromise;
-    expect(dialog.message()).toContain('Errore');
-    await dialog.accept();
-    await expect(page).toHaveURL('http://localhost:5173/');
+    await expect(page).toHaveURL(/\/run$/);
+    // Lo SHA risolto compare nel riepilogo del contesto: e' la prova che
+    // l'ancoraggio e' avvenuto e non e' rimasto vuoto.
+    await expect(page.getByText(/^SHA: [0-9a-f]{8}/)).toBeVisible();
   });
 
-  test('RF.26/UC16.1 — nessuno scope selezionato (intero repository): completa con successo se sotto il limite file', async ({ page }) => {
-    await login(page);
-    // Repository di fixture creato per i test precedenti (3-4 file
-    // totali): FULL_REPOSITORY qui resta ampiamente sotto il limite di
-    // 100 file di RF.31, a differenza di NodeGoat/Code_Guardian usati
-    // negli altri test proprio per superarlo.
-    await page.getByPlaceholder('skynetunigroup').fill('IlGranz');
-    await page.getByPlaceholder('code_guardian').fill('codeguardian-e2e-fixture');
-    await page.getByPlaceholder('main').fill('develop');
-    // Scope lasciato vuoto di proposito.
+  test("RF.26/UC16.1 — scope sull'intero repository: il contesto si crea", async ({ page }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "Repository completo",
+    });
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_OWASP' });
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-
-    await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
-    await expect(page.getByText('Analisi completata!')).toBeVisible({ timeout: 5 * 60_000 });
+    await expect(page).toHaveURL(/\/run$/);
+    await expect(page.getByText(/Scope: FULL_REPOSITORY/)).toBeVisible();
   });
 
-  test('RF.27 — ambito ristretto a un singolo file (non una directory): funziona', async ({ page }) => {
-    await login(page);
-    await page.getByPlaceholder('skynetunigroup').fill('IlGranz');
-    await page.getByPlaceholder('code_guardian').fill('codeguardian-e2e-fixture');
-    await page.getByPlaceholder('main').fill('develop');
-    await page.getByPlaceholder('es. Src/').fill('src/example.js'); // percorso di file, non di directory
+  test("RF.27 — ambito ristretto a un singolo file", async ({ page }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "File specifici",
+      paths: ["app/routes/index.js"],
+    });
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_OWASP' });
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-
-    await expect(page).toHaveURL(/\/tasks\/.+/, { timeout: 20_000 });
-    await expect(page.getByText('Analisi completata!')).toBeVisible({ timeout: 5 * 60_000 });
+    await expect(page).toHaveURL(/\/run$/);
+    await expect(page.getByText(/Scope: FILES/)).toBeVisible();
+    await expect(page.getByText(/1 file stimati/)).toBeVisible();
   });
 
-  test('RF.30/UC18 — ambito (directory) inesistente in un repository valido: errore esplicito', async ({ page }) => {
-    await login(page);
-    await page.getByPlaceholder('skynetunigroup').fill('IlGranz');
-    await page.getByPlaceholder('code_guardian').fill('codeguardian-e2e-fixture');
-    await page.getByPlaceholder('main').fill('develop');
-    await page.getByPlaceholder('es. Src/').fill('questa-cartella-non-esiste-nel-repo');
+  test("RF.24 — i linguaggi rilevati compaiono nel riepilogo del contesto", async ({ page }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "Directory specifiche",
+      paths: ["app/routes"],
+    });
 
-    await page.getByRole('button', { name: 'Carica operazioni disponibili' }).click();
-    await page.getByRole('combobox').selectOption({ value: 'SECURITY_OWASP' });
+    await expect(page).toHaveURL(/\/run$/);
+    await expect(page.getByText(/javascript/)).toBeVisible();
+  });
 
-    const dialogPromise = page.waitForEvent('dialog');
-    await page.getByRole('button', { name: 'Avvia Analisi' }).click();
-    const dialog = await dialogPromise;
-    expect(dialog.message()).toContain('Errore');
-    await dialog.accept();
+  test("RF.30/UC18 — directory inesistente in un repository valido: nessun file nello scope", async ({
+    page,
+  }) => {
+    await signedInWithCredentials(page);
+    await submitContext(page, {
+      repo: "OWASP/NodeGoat",
+      branch: "master",
+      scope: "Directory specifiche",
+      paths: ["cartella/che/non/esiste"],
+    });
+
+    // Due esiti ammessi, e sono entrambi corretti: o il backend rifiuta lo
+    // scope, o crea un contesto con zero file stimati. Quello che non deve
+    // succedere e' arrivare su /run con una stima non nulla, cioe' con uno
+    // scope che l'utente crede popolato e non lo e'.
+    if (/\/run$/.test(page.url())) {
+      await expect(page.getByText(/0 file stimati/)).toBeVisible();
+    } else {
+      await expect(page).toHaveURL(/\/select$/);
+    }
   });
 });

@@ -1,20 +1,24 @@
-import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { useSessionStore } from '../stores/sessionStore';
-import { apiClient } from '../api/client';
-import { ValidatedField } from '../components/shared/ValidatedField';
-import { Spinner } from '../components/shared/Spinner';
-import type { RegisterDto, AuthResponseDto, UserRole } from '../types';
+import { Link, useNavigate } from "@tanstack/react-router";
+import { type FormEvent, useState } from "react";
+import { apiClient } from "../api/client";
+import { toApiError } from "../api/errors";
+import { Spinner } from "../components/shared/Spinner";
+import { ValidatedField } from "../components/shared/ValidatedField";
+import { useSessionStore } from "../stores/sessionStore";
+import type { AuthTokenDto, LoginDto, RegisterDto, UserProfileDto, UserRole } from "../types";
 
 /** Role options shown in the register form selector. */
 const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
-  { value: 'DEVELOPER', label: 'Developer' },
-  { value: 'SECURITY_AUDITOR', label: 'Security Auditor' },
-  { value: 'PROJECT_MANAGER', label: 'Project Manager' },
+  { value: "DEVELOPER", label: "Developer" },
+  { value: "SECURITY_AUDITOR", label: "Security Auditor" },
+  { value: "PROJECT_MANAGER", label: "Project Manager" },
 ];
 
+
+const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+
 /**
- * RegisterPage — /register
+ * RegisterPage â /register
  *
  * New-user registration form. On success, the user is immediately logged in
  * (the backend returns a JWT) and redirected to /credentials so they can
@@ -25,25 +29,31 @@ export function RegisterPage() {
   const login = useSessionStore((s) => s.login);
 
   // Form fields
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm_password, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('DEVELOPER');
-
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm_password, setConfirmPassword] = useState("");
+  const [role, setRole] = useState<UserRole>("DEVELOPER");
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
   /** Client-side validation before the API call. */
   function validate(): boolean {
     const next: Record<string, string> = {};
-    if (!first_name.trim()) next.first_name = 'Inserisci il nome';
-    if (!last_name.trim()) next.last_name = 'Inserisci il cognome';
-    if (!email.trim()) next.email = 'Inserisci la email';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = 'Email non valida';
-    if (password.length < 8) next.password = 'La password deve essere di almeno 8 caratteri';
-    if (password !== confirm_password) next.confirm_password = 'Le password non coincidono';
+    if (!first_name.trim()) next.first_name = "Enter your first name";
+    if (!last_name.trim()) next.last_name = "Enter your last name";
+    if (!email.trim()) next.email = "Enter your email";
+    else if (!/^[^\s@]+@[^\
+s@
+]+\.[^\s@]+$/.test(email)) next.email = "Invalid email";
+    if (password.length < 8) {
+      next.password = "Password must be at least 8 characters long";
+    } else if (!PASSWORD_REGEX.test(password)) {
+      next.password = "Password must contain at least one letter and one number";
+    }
+    if (password !== confirm_password) next.confirm_password = "Passwords do not match";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -55,7 +65,7 @@ export function RegisterPage() {
     setLoading(true);
     setErrors({});
 
-    const dto: RegisterDto = {
+    const registerDto: RegisterDto = {
       firstName: first_name.trim(),
       lastName: last_name.trim(),
       email: email.trim(),
@@ -64,16 +74,22 @@ export function RegisterPage() {
     };
 
     try {
-      const response = await apiClient.post<AuthResponseDto>('/auth/register', dto);
-      login(response.data.user, response.data.token);
+      const userResponse = await apiClient.post<UserProfileDto>("/auth/register", registerDto);
+      const loginDto: LoginDto = { email: registerDto.email, password: registerDto.password };
+      const tokenResponse = await apiClient.post<AuthTokenDto>("/auth/login", loginDto);
+      login(userResponse.data, tokenResponse.data.accessToken);
       // Redirect to /credentials so the user sets up their secrets immediately.
-      navigate({ to: '/credentials' });
-    } catch (err: any) {
-      const status = err?.response?.status;
+      navigate({ to: "/credentials" });
+    } catch (err: unknown) {
+      const { status, code, details } = toApiError(err);
+      const password_detail = details?.find((d) => /password/i.test(d));
+
       if (status === 409) {
-        setErrors({ global: 'Esiste già un account con questa email.' });
+        setErrors({ global: "An account with this email already exists." });
+      } else if (code === "VALIDATION_ERROR" && password_detail) {
+        setErrors({ password: "Password must contain at least one letter and one number" });
       } else {
-        setErrors({ global: 'Errore durante la registrazione. Riprova.' });
+        setErrors({ global: "Error during registration. Try again." });
       }
     } finally {
       setLoading(false);
@@ -82,9 +98,11 @@ export function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm rounded-lg border border-[#cccccc] bg-gray-50 p-8 shadow-sm">
+      <div className="w-full max-w-sm rounded-lg border border-[#cccccc] bg-gra
+y-50 p-
+8 shadow-sm">
         <h1 className="mb-1 text-xl font-bold text-[#2a2a2a]">Code Guardian</h1>
-        <p className="mb-6 text-sm text-gray-400">Crea il tuo account</p>
+        <p className="mb-6 text-sm text-gray-400">Create your account</p>
 
         {errors.global && (
           <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-[#cc2222]">
@@ -96,18 +114,24 @@ export function RegisterPage() {
           {/* Name row */}
           <div className="flex gap-3">
             <ValidatedField
-              label="Nome"
+              label="First name"
               placeholder="Marco"
               value={first_name}
-              onChange={(e) => { setFirstName(e.target.value); setErrors((p) => ({ ...p, first_name: '' })); }}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+                setErrors((p) => ({ ...p, first_name: "" }));
+              }}
               error={errors.first_name}
               containerClassName="flex-1"
             />
             <ValidatedField
-              label="Cognome"
+              label="Last name"
               placeholder="Rossi"
               value={last_name}
-              onChange={(e) => { setLastName(e.target.value); setErrors((p) => ({ ...p, last_name: '' })); }}
+              onChange={(e) => {
+                setLastName(e.target.value);
+                setErrors((p) => ({ ...p, last_name: "" }));
+              }}
               error={errors.last_name}
               containerClassName="flex-1"
             />
@@ -117,21 +141,26 @@ export function RegisterPage() {
             label="Email"
             type="email"
             autoComplete="email"
-            placeholder="nome@azienda.it"
+            placeholder="name@company.com"
             value={email}
-            onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: '' })); }}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors((p) => ({ ...p, email: "" }));
+            }}
             error={errors.email}
           />
 
           {/* Role selector */}
           <div className="flex flex-col gap-1">
             <label htmlFor="role-select" className="text-sm font-medium text-[#2a2a2a]">
-              Ruolo
+              Role
             </label>
             <select
               id="role-select"
               value={role}
-              onChange={(e) => setRole(e.target.value as UserRole)}
+              onChange={(e) => setRole(e.target.value as
+ U
+serRole)}
               className="w-full rounded border border-[#cccccc] bg-white px-3 py-2 text-sm text-[#2a2a2a] outline-none focus:border-[#2277cc] focus:ring-2 focus:ring-[#2277cc]/20"
             >
               {ROLE_OPTIONS.map(({ value, label }) => (
@@ -142,23 +171,34 @@ export function RegisterPage() {
             </select>
           </div>
 
-          <ValidatedField
-            label="Password"
-            type="password"
-            autoComplete="new-password"
-            placeholder="Minimo 8 caratteri"
-            value={password}
-            onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: '' })); }}
-            error={errors.password}
-          />
+          <div className="flex flex-col gap-1">
+            <ValidatedField
+              label="Password"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((p) => ({ ...p, password: "" }));
+              }}
+              error={errors.password}
+            />
+            <p className="text-xs text-gray-400">
+              At least 8 characters, with at least one letter and one number.
+            </p>
+          </div>
 
           <ValidatedField
-            label="Conferma Password"
+            label="Confirm password"
             type="password"
             autoComplete="new-password"
-            placeholder="••••••••"
+            placeholder="Repeat password"
             value={confirm_password}
-            onChange={(e) => { setConfirmPassword(e.target.value); setErrors((p) => ({ ...p, confirm_password: '' })); }}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setErrors((p) => ({ ...p, confirm_password: "" }));
+            }}
             error={errors.confirm_password}
           />
 
@@ -168,17 +208,20 @@ export function RegisterPage() {
             className="mt-2 flex items-center justify-center gap-2 rounded bg-[#2a2a2a] px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-200 transition disabled:opacity-60"
           >
             {loading && <Spinner size="sm" className="text-white" />}
-            Registrati
+            Register
           </button>
         </form>
 
         <p className="mt-4 text-center text-xs text-gray-500">
-          Hai già un account?{' '}
-          <Link to="/login" className="text-[#2277cc] hover:underline">
-            Accedi
+          Already have an account?{" "}
+          <Link to="/
+login" c
+lassName="text-[#2277cc] hover:underline">
+            Sign in
           </Link>
         </p>
       </div>
     </div>
   );
 }
+

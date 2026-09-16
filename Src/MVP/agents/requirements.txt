@@ -1,2 +1,9 @@
-pylint
-black
+# The source of truth for dependencies is pyproject.toml.
+#
+# This file remains because the CI workflows install with
+# `pip install -r requirements.txt` and the pip cache is keyed on its
+# hash. It previously contained only pylint and black: neither pytest nor
+# fastapi, langgraph, motor... — so the subsequent CI steps (`python -m pylint`,
+# `python -m pytest`) ran in an environment where the code under test
+# was not even importable.
+-e .[dev]
