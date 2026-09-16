@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Claude Code">
   <diagram name="Vista d&#39;insieme" id="vista-insieme-diagram">
-    <mxGraphModel dx="448" dy="229" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="1288" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -90,17 +90,17 @@
             <mxPoint x="720" y="610.0026315789473" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e-agenti-mongo" edge="1" parent="1" source="agenti" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;strokeColor=#b85450;fontColor=#b85450;" target="mongodb" value="Checkpoint LangGraph&#xa;(stato d&#39;esecuzione)">
+        <mxCell id="e-agenti-mongo" edge="1" parent="1" source="agenti" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;strokeColor=default;fontColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;labelBackgroundColor=default;endArrow=classic;" target="mongodb" value="Checkpoint LangGraph&#xa;(stato d&#39;esecuzione)">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e-agenti-redis" edge="1" parent="1" source="redis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;strokeColor=#b85450;fontColor=#b85450;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.152;entryY=0.011;entryDx=0;entryDy=0;entryPerimeter=0;" target="agenti" value="Flag di cancellazione">
-          <mxGeometry relative="1" x="-0.0485" as="geometry">
+        <mxCell id="e-agenti-redis" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;strokeColor=default;fontColor=default;endArrow=classic;entryX=0;entryY=0.25;entryDx=0;entryDy=0;align=center;verticalAlign=middle;fontFamily=Helvetica;labelBackgroundColor=default;" target="agenti" value="Flag di cancellazione">
+          <mxGeometry relative="1" x="0.2857" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
-              <mxPoint x="310" y="590.03" />
-              <mxPoint x="340.03" y="590.03" />
-              <mxPoint x="340.03" y="680.91" />
+              <mxPoint x="280" y="480.4" />
+              <mxPoint x="280" y="700.4" />
             </Array>
+            <mxPoint x="280" y="480" as="sourcePoint" />
             <mxPoint x="350" y="680.8" as="targetPoint" />
           </mxGeometry>
         </mxCell>
