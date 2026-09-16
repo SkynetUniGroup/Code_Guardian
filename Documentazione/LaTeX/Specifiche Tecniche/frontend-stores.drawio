@@ -1,0 +1,50 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Architettura degli Store" id="frontend-store-diagram">
+    <mxGraphModel dx="1030" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sessionStore" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" value="sessionStore&#xa;Identità, JWT, ruolo" vertex="1">
+          <mxGeometry height="60" width="220" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="selectionStore" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" value="selectionStore&#xa;Contesto operativo" vertex="1">
+          <mxGeometry height="60" width="220" x="40" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="tasksStore" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" value="tasksStore&#xa;Stato vivo delle operazioni" vertex="1">
+          <mxGeometry height="60" width="220" x="40" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="apiRest" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="API REST" vertex="1">
+          <mxGeometry height="60" width="220" x="460" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="w2wX1wIvhDIJ8PykLq6H-1" edge="1" parent="1" source="websocket" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="apiRest" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="websocket" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="WebSocket" vertex="1">
+          <mxGeometry height="60" width="220" x="460" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="e-session-rest" edge="1" parent="1" source="sessionStore" style="rounded=0;html=1;fontSize=11;" target="apiRest" value="Login / ruolo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-selection-rest" edge="1" parent="1" source="selectionStore" style="rounded=0;html=1;fontSize=11;" target="apiRest" value="Invio contesto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-tasks-rest" edge="1" parent="1" source="tasksStore" style="rounded=0;html=1;fontSize=11;" target="apiRest" value="Inoltro input utente">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ws-tasks" edge="1" parent="1" source="websocket" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;" target="tasksStore" value="Eventi asincroni">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ws-session" edge="1" parent="1" source="websocket" style="rounded=0;html=1;fontSize=11;strokeColor=#b85450;fontColor=light-dark(#B85450,#FF9933);exitX=1;exitY=0.25;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" target="sessionStore" value="Credenziale GitHub&amp;nbsp;&lt;div&gt;non più valida&lt;/div&gt;">
+          <mxGeometry relative="1" x="0.4857" y="-15" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="700" y="295" />
+              <mxPoint x="700" y="55" />
+            </Array>
+            <mxPoint x="560" y="50" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

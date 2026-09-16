@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import { NetworkStack } from "../lib/network-stack";
-import { CicdIdentityStack } from "../lib/cicd-identity-stack";
-import { StorageStack } from "../lib/storage-stack";
-import { SecurityGroupsStack } from "../lib/security-groups-stack";
-import { VpcEndpointsStack } from "../lib/vpc-endpoints-stack";
-import { KmsSecretsStack } from "../lib/kms-secrets-stack";
-import { DataStack } from "../lib/data-stack";
 import { AtlasStack } from "../lib/atlas-stack";
-import { ComputeStack } from "../lib/compute-stack";
-import { CloudFrontStack } from "../lib/cloudfront-stack";
-import { ObservabilityStack } from "../lib/observability-stack";
 import { BudgetStack } from "../lib/budget-stack";
+import { CicdIdentityStack } from "../lib/cicd-identity-stack";
+import { CloudFrontStack } from "../lib/cloudfront-stack";
+import { ComputeStack } from "../lib/compute-stack";
 import { PROJECT_TAGS, REGION, SNS_ALERTS_TOPIC_NAME } from "../lib/config";
+import { DataStack } from "../lib/data-stack";
+import { KmsSecretsStack } from "../lib/kms-secrets-stack";
+import { NetworkStack } from "../lib/network-stack";
+import { ObservabilityStack } from "../lib/observability-stack";
+import { SecurityGroupsStack } from "../lib/security-groups-stack";
+import { StorageStack } from "../lib/storage-stack";
+import { VpcEndpointsStack } from "../lib/vpc-endpoints-stack";
 
 const app = new cdk.App();
 
@@ -39,7 +39,10 @@ const secrets = new KmsSecretsStack(app, "CodeGuardian-Secrets", { env });
 const storage = new StorageStack(app, "CodeGuardian-Storage", { env, kmsKey: secrets.kmsKey });
 
 // Rete e sicurezza, dipendono dalla VPC.
-const securityGroups = new SecurityGroupsStack(app, "CodeGuardian-SecurityGroups", { env, vpc: network.vpc });
+const securityGroups = new SecurityGroupsStack(app, "CodeGuardian-SecurityGroups", {
+  env,
+  vpc: network.vpc,
+});
 const vpcEndpoints = new VpcEndpointsStack(app, "CodeGuardian-VpcEndpoints", {
   env,
   vpc: network.vpc,
@@ -107,7 +110,20 @@ const budget = new BudgetStack(app, "CodeGuardian-Budget", {
 
 // Tag di progetto su tutti gli stack, usato anche come Cost Filter da AWS
 // Budgets in budget-stack.ts.
-for (const stack of [network, cicdIdentity, storage, securityGroups, vpcEndpoints, secrets, data, atlas, compute, cloudfront, observability, budget]) {
+for (const stack of [
+  network,
+  cicdIdentity,
+  storage,
+  securityGroups,
+  vpcEndpoints,
+  secrets,
+  data,
+  atlas,
+  compute,
+  cloudfront,
+  observability,
+  budget,
+]) {
   for (const [key, value] of Object.entries(PROJECT_TAGS)) {
     cdk.Tags.of(stack).add(key, value);
   }

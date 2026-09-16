@@ -2,7 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as kms from "aws-cdk-lib/aws-kms";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as ssm from "aws-cdk-lib/aws-ssm";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 
 // KMS, Secrets Manager, Parameter Store. Un segreto per credenziale (non un
 // blob JSON unico): con un JSON unico l'ARN nella Task Definition deve
@@ -49,8 +49,11 @@ export class KmsSecretsStack extends cdk.Stack {
     // Atlas (RUNBOOK.md) -- non va lasciato così in un ambiente condiviso.
     this.secretMongoUri = new secretsmanager.Secret(this, "MongoUriSecret", {
       secretName: "codeguardian/mongo-uri",
-      description: "MONGO_URI -- connection string del Private Endpoint MongoDB Atlas (da aggiornare dopo il provisioning Atlas)",
-      secretStringValue: cdk.SecretValue.unsafePlainText("REPLACE_AFTER_ATLAS_PRIVATE_ENDPOINT_SETUP"),
+      description:
+        "MONGO_URI -- connection string del Private Endpoint MongoDB Atlas (da aggiornare dopo il provisioning Atlas)",
+      secretStringValue: cdk.SecretValue.unsafePlainText(
+        "REPLACE_AFTER_ATLAS_PRIVATE_ENDPOINT_SETUP",
+      ),
     });
 
     this.secretJwt = new secretsmanager.Secret(this, "JwtSecret", {
@@ -61,19 +64,26 @@ export class KmsSecretsStack extends cdk.Stack {
 
     this.secretCredentialMasterKey = new secretsmanager.Secret(this, "CredentialMasterKeySecret", {
       secretName: "codeguardian/credential-master-key",
-      description: "CREDENTIAL_MASTER_KEY -- key material per HKDF -> AES-256-GCM sulle credenziali di servizio",
+      description:
+        "CREDENTIAL_MASTER_KEY -- key material per HKDF -> AES-256-GCM sulle credenziali di servizio",
       generateSecretString: { passwordLength: 64, excludePunctuation: true },
     });
 
-    this.secretInternalSharedSecret = new secretsmanager.Secret(this, "InternalSharedSecretSecret", {
-      secretName: "codeguardian/internal-shared-secret",
-      description: "INTERNAL_SHARED_SECRET -- HMAC sugli endpoint /internal/* tra backend e agents",
-      generateSecretString: { passwordLength: 64, excludePunctuation: true },
-    });
+    this.secretInternalSharedSecret = new secretsmanager.Secret(
+      this,
+      "InternalSharedSecretSecret",
+      {
+        secretName: "codeguardian/internal-shared-secret",
+        description:
+          "INTERNAL_SHARED_SECRET -- HMAC sugli endpoint /internal/* tra backend e agents",
+        generateSecretString: { passwordLength: 64, excludePunctuation: true },
+      },
+    );
 
     this.paramBackendBaseUrl = new ssm.StringParameter(this, "BackendBaseUrlParam", {
       parameterName: "/codeguardian/backend-base-url",
-      description: "BACKEND_BASE_URL -- usato dagli agents per le tool-call di lettura verso il backend",
+      description:
+        "BACKEND_BASE_URL -- usato dagli agents per le tool-call di lettura verso il backend",
       stringValue: "http://backend.codeguardian.local:3000",
     });
 

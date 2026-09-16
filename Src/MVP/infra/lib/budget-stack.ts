@@ -1,6 +1,6 @@
-import * as budgets from "aws-cdk-lib/aws-budgets";
 import * as cdk from "aws-cdk-lib";
-import { Construct } from "constructs";
+import * as budgets from "aws-cdk-lib/aws-budgets";
+import type { Construct } from "constructs";
 import { BUDGET_THRESHOLDS_PERCENT, PROJECT_TAGS } from "./config";
 
 export interface BudgetStackProps extends cdk.StackProps {

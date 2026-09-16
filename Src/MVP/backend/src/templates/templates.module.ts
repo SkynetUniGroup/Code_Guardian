@@ -1,0 +1,21 @@
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { ReadmeTemplate, ReadmeTemplateSchema } from "./schemas/readme-template.schema";
+import { TemplatesController } from "./templates.controller";
+import { TemplatesService } from "./templates.service";
+
+/**
+ * RF.79-RF.81. Esporta TemplatesService perché TasksModule ne ha bisogno:
+ * all'avvio di un'operazione DOCS_README il template dell'utente va
+ * allegato all'invocazione dell'agente.
+ */
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: ReadmeTemplate.name, schema: ReadmeTemplateSchema }]),
+  ],
+  controllers: [TemplatesController],
+  providers: [TemplatesService, RolesGuard],
+  exports: [TemplatesService],
+})
+export class TemplatesModule {}

@@ -1,15 +1,15 @@
 import * as cdk from "aws-cdk-lib";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as ecr from "aws-cdk-lib/aws-ecr";
+import type * as ec2 from "aws-cdk-lib/aws-ec2";
+import type * as ecr from "aws-cdk-lib/aws-ecr";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as logs from "aws-cdk-lib/aws-logs";
-import * as s3 from "aws-cdk-lib/aws-s3";
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
+import type * as s3 from "aws-cdk-lib/aws-s3";
+import type * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as servicediscovery from "aws-cdk-lib/aws-servicediscovery";
-import * as ssm from "aws-cdk-lib/aws-ssm";
-import { Construct } from "constructs";
+import type * as ssm from "aws-cdk-lib/aws-ssm";
+import type { Construct } from "constructs";
 import {
   ALB_DEREGISTRATION_DELAY_SECONDS,
   ALB_IDLE_TIMEOUT_SECONDS,
@@ -20,8 +20,8 @@ import {
   ECS_SIZING,
   HEALTH_CHECK_GRACE_PERIOD_SECONDS,
   HEALTH_CHECK_PATH,
-  REGION,
   RATE_LIMIT_GITHUB_RPM,
+  REGION,
 } from "./config";
 
 export interface ComputeStackProps extends cdk.StackProps {
@@ -92,7 +92,9 @@ export class ComputeStack extends cdk.Stack {
     const backendExecutionRole = new iam.Role(this, "BackendExecutionRole", {
       roleName: "codeguardian-backend-execution-role",
       assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy")],
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy"),
+      ],
     });
 
     const backendTaskRole = new iam.Role(this, "BackendTaskRole", {
@@ -123,13 +125,19 @@ export class ComputeStack extends cdk.Stack {
         NODE_ENV: "production",
         PORT: String(ECS_SIZING.backend.port),
         RATE_LIMIT_GITHUB_RPM: String(RATE_LIMIT_GITHUB_RPM),
-        ARTIFACTS_BUCKET: artifactsBucket.bucketName,
+        REPORTS_BUCKET_NAME: artifactsBucket.bucketName,
+        CORS_ORIGIN: this.node.tryGetContext("corsOrigin") ?? "http://localhost:5173",
+        // Default Joi (env.validation.ts) e' "http://agents:8000", pensato
+        // per Docker Compose. Su AWS il backend trova gli agenti solo via
+        // Cloud Map, con questo nome.
+        AGENTS_SERVICE_URL: `http://agents.${CLOUD_MAP_NAMESPACE}:${ECS_SIZING.agents.port}`,
+        S3_REGION: REGION,
       },
       // `secrets` concede da sé il grantRead all'execution role per ciascuna
       // voce. Usano la chiave KMS di default, non la CMK condivisa (vedi
       // kms-secrets-stack.ts).
       secrets: {
-        MONGO_URI: ecs.Secret.fromSecretsManager(secretMongoUri),
+        MONGODB_URI: ecs.Secret.fromSecretsManager(secretMongoUri),
         JWT_SECRET: ecs.Secret.fromSecretsManager(secretJwt),
         CREDENTIAL_MASTER_KEY: ecs.Secret.fromSecretsManager(secretCredentialMasterKey),
         INTERNAL_SHARED_SECRET: ecs.Secret.fromSecretsManager(secretInternalSharedSecret),
@@ -164,7 +172,9 @@ export class ComputeStack extends cdk.Stack {
     const agentsExecutionRole = new iam.Role(this, "AgentsExecutionRole", {
       roleName: "codeguardian-agents-execution-role",
       assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy")],
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy"),
+      ],
     });
 
     const agentsTaskRole = new iam.Role(this, "AgentsTaskRole", {
@@ -177,7 +187,12 @@ export class ComputeStack extends cdk.Stack {
     agentsTaskRole.addToPolicy(
       new iam.PolicyStatement({
         sid: "InvokeQwenModelsOnly",
-        actions: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+        actions: [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:Converse",
+          "bedrock:ConverseStream",
+        ],
         resources: [BEDROCK_MODEL_ARN_PATTERN],
         conditions: { StringEquals: { "aws:RequestedRegion": REGION } },
       }),
@@ -205,11 +220,19 @@ export class ComputeStack extends cdk.Stack {
         PORT: String(ECS_SIZING.agents.port),
         // PROMPTS_DIR non è una env var: i prompt sono bake-in nell'immagine
         // Docker, Fargate non supporta bind mount.
+        LLM_MODEL_GENERAL: "qwen.qwen3-32b-v1:0",
+        LLM_MODEL_SECURITY: "qwen.qwen3-coder-30b-a3b-v1:0",
       },
       secrets: {
         INTERNAL_SHARED_SECRET: ecs.Secret.fromSecretsManager(secretInternalSharedSecret),
         BACKEND_BASE_URL: ecs.Secret.fromSsmParameter(paramBackendBaseUrl),
         LLM_PROVIDER: ecs.Secret.fromSsmParameter(paramLlmProvider),
+        // Stesso secret del backend (MONGODB_URI), nome diverso: il
+        // checkpointer LangGraph lato Python legge MONGO_URI. Default Joi
+        // "mongodb://mongo:27017/codeguardian" e' l'hostname Docker
+        // Compose, inesistente nella VPC.
+        MONGO_URI: ecs.Secret.fromSecretsManager(secretMongoUri),
+        REDIS_URL: ecs.Secret.fromSsmParameter(paramRedisUrl),
       },
     });
 

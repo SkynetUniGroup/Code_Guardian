@@ -1,7 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as iam from "aws-cdk-lib/aws-iam";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 import { ECR_MAX_TAGGED_IMAGES, ECR_REPOS, ECR_UNTAGGED_MAX_AGE_DAYS } from "./config";
 
 // Repository ECR + identità CI/CD via GitHub OIDC (nessuna chiave IAM
@@ -60,7 +60,8 @@ export class CicdIdentityStack extends cdk.Stack {
 
     this.ciRole = new iam.Role(this, "CiRole", {
       roleName: "codeguardian-ci-role",
-      description: "Identità GitHub Actions per build/push immagini, deploy ECS e invalidazione CloudFront",
+      description:
+        "Identità GitHub Actions per build/push immagini, deploy ECS e invalidazione CloudFront",
       assumedBy: new iam.OpenIdConnectPrincipal(githubOidcProvider, {
         StringEquals: {
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",

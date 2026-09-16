@@ -1,0 +1,301 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="Orchestrazione ed Esecuzione" id="backend-orchestration-diagram">
+    <mxGraphModel dx="1585" dy="1771" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1350" pageHeight="960" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="controller" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«controller»&lt;/font&gt;&lt;br&gt;TasksController" vertex="1">
+          <mxGeometry height="148" width="460" x="60" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="controller-attr" parent="controller" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="460" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="controller-div" parent="controller" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="460" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="controller-ops" parent="controller" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ create(user: AuthenticatedUser, dto: CreateTaskBatchDto): CreateTaskBatchResult&lt;br&gt;+ findAll(userId: string): TaskDto[]&lt;br&gt;+ findOne(userId: string, id: string): TaskDto&lt;br&gt;+ cancel(userId: string, id: string): void" vertex="1">
+          <mxGeometry height="80" width="460" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="service" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«service»&lt;/font&gt;&lt;br&gt;TasksService" vertex="1">
+          <mxGeometry height="148" width="460" x="60" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="service-attr" parent="service" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="460" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="service-div" parent="service" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="460" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="service-ops" parent="service" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ createBatch(user: AuthenticatedUser, dto: CreateTaskBatchDto): CreateTaskBatchResult&lt;br&gt;+ findAllForUser(userId: string): TaskDto[]&lt;br&gt;+ findOneForUser(userId: string, id: string): TaskDto&lt;br&gt;+ cancel(userId: string, id: string): void" vertex="1">
+          <mxGeometry height="80" width="460" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="registry" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«service»&lt;/font&gt;&lt;br&gt;AgentRegistry" vertex="1">
+          <mxGeometry height="118" width="400" x="680" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="registry-attr" parent="registry" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="- ENTRIES: AgentRegistryEntry[]  {static}" vertex="1">
+          <mxGeometry height="26" width="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="registry-div" parent="registry" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="400" y="66" as="geometry" />
+        </mxCell>
+        <mxCell id="registry-ops" parent="registry" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ getForRole(role: UserRole): OperationDescriptorDto[]&lt;br&gt;+ getTimeoutS(code: OperationCode): number" vertex="1">
+          <mxGeometry height="44" width="400" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="queue" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" value="Queue&lt;RunTaskJobData&gt;&#xa;«BullMQ / Redis»" vertex="1">
+          <mxGeometry height="60" width="280" x="60" y="427" as="geometry" />
+        </mxCell>
+        <mxCell id="workerHost" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«abstract»&lt;/font&gt;&lt;br&gt;WorkerHost" vertex="1">
+          <mxGeometry height="94" width="320" x="410" y="393" as="geometry" />
+        </mxCell>
+        <mxCell id="workerHost-attr" parent="workerHost" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="320" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="workerHost-div" parent="workerHost" style="line;strokeColor=#666666;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="320" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="workerHost-ops" parent="workerHost" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="# process(job: Job): Promise&lt;any&gt;" vertex="1">
+          <mxGeometry height="26" width="320" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="processor" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«worker»&lt;/font&gt;&lt;br&gt;TaskProcessor" vertex="1">
+          <mxGeometry height="156" width="420" x="50" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="processor-attr" parent="processor" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="420" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="processor-div" parent="processor" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="420" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="processor-ops" parent="processor" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ process(job: Job&lt;RunTaskJobData&gt;): Promise&lt;void&gt;&lt;br&gt;- claim(taskId): {task, claimToken} | null&lt;br&gt;- releaseClaim(task, claimToken): Promise&lt;void&gt;&lt;br&gt;- maybeEmitBatchCompleted(batchId, userId): Promise&lt;void&gt;" vertex="1">
+          <mxGeometry height="88" width="420" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="invocation" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«service»&lt;/font&gt;&lt;br&gt;AgentInvocationService" vertex="1">
+          <mxGeometry height="112" width="290" x="890" y="546" as="geometry" />
+        </mxCell>
+        <mxCell id="invocation-attr" parent="invocation" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="290" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="invocation-div" parent="invocation" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="290" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="invocation-ops" parent="invocation" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ invoke(task: TaskDocument): AgentInvocationResult&lt;br&gt;- failure(code, message): AgentInvocationResult" vertex="1">
+          <mxGeometry height="44" width="290" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="agents" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" value="Servizio Agenti&#xa;«external»" vertex="1">
+          <mxGeometry height="60" width="200" x="1120" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="onGatewayConnection" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«interface»&lt;/font&gt;&lt;br&gt;OnGatewayConnection" vertex="1">
+          <mxGeometry height="94" width="420" x="840" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="onGatewayConnection-attr" parent="onGatewayConnection" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="420" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="onGatewayConnection-div" parent="onGatewayConnection" style="line;strokeColor=#666666;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="420" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="onGatewayConnection-ops" parent="onGatewayConnection" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ handleConnection(client: Socket): void" vertex="1">
+          <mxGeometry height="26" width="420" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="events" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«gateway»&lt;/font&gt;&lt;br&gt;EventsGateway" vertex="1">
+          <mxGeometry height="202" width="460" x="820" y="682" as="geometry" />
+        </mxCell>
+        <mxCell id="events-attr" parent="events" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="460" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="events-div" parent="events" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="460" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="events-ops" parent="events" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ handleConnection(client: Socket): void&lt;br&gt;+ emitTaskProgress(userId, taskId, stage, percent): void&lt;br&gt;+ emitTaskUpdated(userId, taskId, status, reportId?): void&lt;br&gt;+ emitTaskFailed(userId, taskId, error): void&lt;br&gt;+ emitBatchCompleted(userId, batchId, completed, failed): void&lt;br&gt;+ emitTaskInputRequired(userId, taskId, pendingInput): void&lt;br&gt;- roomFor(userId: string): string" vertex="1">
+          <mxGeometry height="134" width="460" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="controller" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1s" connectable="0" parent="e1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1t" connectable="0" parent="e1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="service" style="rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="registry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2s" connectable="0" parent="e2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2t" connectable="0" parent="e2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="events">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850.08" y="294.08" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3s" connectable="0" parent="e3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3t" connectable="0" parent="e3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="service" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="queue">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="380" />
+              <mxPoint x="200" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4s" connectable="0" parent="e4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="processor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;dashed=1;endArrow=open;endFill=0;endSize=12;startArrow=none;exitX=0.356;exitY=0.008;exitDx=0;exitDy=0;exitPerimeter=0;" target="queue">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="570" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5l" connectable="0" parent="e5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="processor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=block;endFill=0;endSize=16;startArrow=none;" target="workerHost">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="processor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="invocation">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="602" />
+              <mxPoint x="680" y="602" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7s" connectable="0" parent="e7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7t" connectable="0" parent="e7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="processor" style="rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8s" connectable="0" parent="e8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8t" connectable="0" parent="e8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="invocation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="registry">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1035" y="310" />
+              <mxPoint x="1035" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9s" connectable="0" parent="e9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9t" connectable="0" parent="e9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="invocation" style="rounded=0;html=1;fontSize=11;dashed=1;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="agents">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10l" connectable="0" parent="e10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="events" style="rounded=0;html=1;fontSize=11;dashed=1;endArrow=block;endFill=0;endSize=16;startArrow=none;edgeStyle=orthogonalEdgeStyle;" target="onGatewayConnection">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11l" connectable="0" parent="e11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="«realize»" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="proposalPublisher" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«service»&lt;/font&gt;&lt;br&gt;ProposalPublisherService" vertex="1">
+          <mxGeometry height="94" width="330" x="300" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="proposalPublisher-attr" parent="proposalPublisher" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="330" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="proposalPublisher-div" parent="proposalPublisher" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="330" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="proposalPublisher-ops" parent="proposalPublisher" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ publish(task: TaskDocument, payload: AgentRunPayload): Promise&lt;AgentRunPayload&gt;" vertex="1">
+          <mxGeometry height="26" width="330" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="reportAssembly" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font style=&quot;font-size:11px&quot;&gt;«service»&lt;/font&gt;&lt;br&gt;ReportAssemblyService" vertex="1">
+          <mxGeometry height="130" width="330" x="50" y="954" as="geometry" />
+        </mxCell>
+        <mxCell id="reportAssembly-attr" parent="reportAssembly" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="" vertex="1">
+          <mxGeometry height="20" width="330" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="reportAssembly-div" parent="reportAssembly" style="line;strokeColor=#6c8ebf;html=1;" value="" vertex="1">
+          <mxGeometry height="8" width="330" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="reportAssembly-ops" parent="reportAssembly" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;spacingTop=2;overflow=hidden;portConstraint=eastwest;points=[[0,0.5],[1,0.5]];fontSize=11;html=1;" value="+ assembleCompleted(task, payload): Promise&lt;ReportDocument&gt;&lt;br&gt;+ assembleFailed(task, error): Promise&lt;ReportDocument&gt;&lt;br&gt;+ discard(report): Promise&lt;void&gt;" vertex="1">
+          <mxGeometry height="62" width="330" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="processor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="proposalPublisher">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12s" connectable="0" parent="e12" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12t" connectable="0" parent="e12" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="processor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;endArrow=open;endFill=0;endSize=12;startArrow=none;" target="reportAssembly">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="215.05" y="780" />
+              <mxPoint x="215.05" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13s" connectable="0" parent="e13" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13t" connectable="0" parent="e13" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

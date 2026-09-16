@@ -1,25 +1,26 @@
-import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { useSessionStore } from '../stores/sessionStore';
-import { apiClient } from '../api/client';
-import { ValidatedField } from '../components/shared/ValidatedField';
-import { Spinner } from '../components/shared/Spinner';
-import type { LoginDto, AuthResponseDto } from '../types';
+import { Link, useNavigate } from "@tanstack/react-router";
+import { type FormEvent, useState } from "react";
+import { apiClient } from "../api/client";
+import { toApiError } from "../api/errors";
+import { Spinner } from "../components/shared/Spinner";
+import { ValidatedField } from "../components/shared/ValidatedField";
+import { useSessionStore } from "../stores/sessionStore";
+import type { AuthTokenDto, LoginDto, UserProfileDto } from "../types";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const login = useSessionStore((s) => s.login);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string; global?: string }>({});
   const [loading, setLoading] = useState(false);
 
   function validate(): boolean {
     const next: typeof errors = {};
-    if (!email.trim()) next.email = 'Inserisci la tua email';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = 'Email non valida';
-    if (!password) next.password = 'Inserisci la password';
+    if (!email.trim()) next.email = "Inserisci la tua email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Email non valida";
+    if (!password) next.password = "Inserisci la password";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -31,15 +32,24 @@ export function LoginPage() {
     setErrors({});
     const dto: LoginDto = { email: email.trim(), password };
     try {
-      const response = await apiClient.post<AuthResponseDto>('/auth/login', dto);
-      login(response.data.user, response.data.token);
-      navigate({ to: '/select' });
-    } catch (err: any) {
-      const status = err?.response?.status;
+      const tokenResponse = await apiClient.post<AuthTokenDto>("/auth/login", dto);
+      const accessToken = tokenResponse.data.accessToken;
+      // L'header Authorization lo mette l'interceptor leggendo il token dallo
+      // store, che pero' viene popolato solo da login() qui sotto: senza
+      // passare il token a mano, questa GET partiva senza header e tornava
+      // 401 — il login andava a buon fine e l'utente vedeva "credenziali non
+      // corrette".
+      const userResponse = await apiClient.get<UserProfileDto>("/auth/me", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      login(userResponse.data, accessToken);
+      navigate({ to: "/select" });
+    } catch (err: unknown) {
+      const { status } = toApiError(err);
       if (status === 401 || status === 403) {
-        setErrors({ global: 'Email o password non corretti.' });
+        setErrors({ global: "Email o password non corretti." });
       } else {
-        setErrors({ global: 'Errore di rete. Riprova più tardi.' });
+        setErrors({ global: "Errore di rete. Riprova più tardi." });
       }
     } finally {
       setLoading(false);
@@ -65,7 +75,10 @@ export function LoginPage() {
             autoComplete="email"
             placeholder="nome@azienda.it"
             value={email}
-            onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })); }}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors((p) => ({ ...p, email: undefined }));
+            }}
             error={errors.email}
           />
           <ValidatedField
@@ -74,7 +87,10 @@ export function LoginPage() {
             autoComplete="current-password"
             placeholder="••••••••"
             value={password}
-            onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrors((p) => ({ ...p, password: undefined }));
+            }}
             error={errors.password}
           />
           <button
@@ -88,7 +104,7 @@ export function LoginPage() {
         </form>
 
         <p className="mt-4 text-center text-xs text-gray-500">
-          Non hai un account?{' '}
+          Non hai un account?{" "}
           <Link to="/register" className="text-[#2277cc] hover:underline">
             Registrati
           </Link>

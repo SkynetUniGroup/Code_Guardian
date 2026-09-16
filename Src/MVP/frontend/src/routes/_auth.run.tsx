@@ -1,6 +1,6 @@
-import { createRoute, redirect } from '@tanstack/react-router';
-import { authRoute } from './_auth';
-import { RunPage } from '../pages/RunPage';
+import { createRoute, redirect } from "@tanstack/react-router";
+import { RunPage } from "../pages/RunPage";
+import { authRoute } from "./_auth";
 
 /**
  * Run route — /run (authenticated + credentials required)
@@ -10,11 +10,12 @@ import { RunPage } from '../pages/RunPage';
  */
 export const runRoute = createRoute({
   getParentRoute: () => authRoute,
-  path: '/run',
+  path: "/run",
   beforeLoad: ({ context }) => {
-    const status = context.session.credentialsStatus;
-    if (status === 'missing' || status === 'invalid') {
-      throw redirect({ to: '/credentials' });
+    // Stessa regola di /select: passa solo CONNECTED. Lo stato iniziale
+    // UNKNOWN significa "non ancora verificato", non "va bene".
+    if (context.session.credentialsStatus !== "CONNECTED") {
+      throw redirect({ to: "/credentials" });
     }
   },
   component: RunPage,

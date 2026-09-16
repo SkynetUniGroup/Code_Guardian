@@ -1,13 +1,13 @@
 import * as cdk from "aws-cdk-lib";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
-import * as ecs from "aws-cdk-lib/aws-ecs";
-import * as elasticache from "aws-cdk-lib/aws-elasticache";
+import type * as ecs from "aws-cdk-lib/aws-ecs";
+import type * as elasticache from "aws-cdk-lib/aws-elasticache";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as sns from "aws-cdk-lib/aws-sns";
 import * as subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 import { SNS_ALERTS_TOPIC_NAME } from "./config";
 
 export interface ObservabilityStackProps extends cdk.StackProps {
@@ -86,11 +86,17 @@ export class ObservabilityStack extends cdk.Stack {
 
     // Tasso di errore 5xx sul target group (non sull'ELB), per isolare gli
     // errori generati dal backend da quelli generati dall'edge.
-    const target5xx = backendTargetGroup.metrics.httpCodeTarget(elbv2.HttpCodeTarget.TARGET_5XX_COUNT, {
+    const target5xx = backendTargetGroup.metrics.httpCodeTarget(
+      elbv2.HttpCodeTarget.TARGET_5XX_COUNT,
+      {
+        statistic: "Sum",
+        period: fiveMinutes,
+      },
+    );
+    const requestCount = backendTargetGroup.metrics.requestCount({
       statistic: "Sum",
       period: fiveMinutes,
     });
-    const requestCount = backendTargetGroup.metrics.requestCount({ statistic: "Sum", period: fiveMinutes });
     const errorRate = new cloudwatch.MathExpression({
       expression: "(errors / requests) * 100",
       usingMetrics: { errors: target5xx, requests: requestCount },

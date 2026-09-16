@@ -1,10 +1,10 @@
 import * as cdk from "aws-cdk-lib";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
-import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import type * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 
 export interface CloudFrontStackProps extends cdk.StackProps {
   alb: elbv2.IApplicationLoadBalancer;
@@ -68,8 +68,18 @@ export class CloudFrontStack extends cdk.Stack {
       // reindirizzati a index.html con status 200, altrimenti il router
       // lato client non funziona su un refresh di pagina.
       errorResponses: [
-        { httpStatus: 403, responseHttpStatus: 200, responsePagePath: "/index.html", ttl: cdk.Duration.seconds(0) },
-        { httpStatus: 404, responseHttpStatus: 200, responsePagePath: "/index.html", ttl: cdk.Duration.seconds(0) },
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+          ttl: cdk.Duration.seconds(0),
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+          ttl: cdk.Duration.seconds(0),
+        },
       ],
       defaultRootObject: "index.html",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
@@ -94,7 +104,9 @@ export class CloudFrontStack extends cdk.Stack {
     );
 
     new cdk.CfnOutput(this, "FrontendBucketName", { value: this.frontendBucket.bucketName });
-    new cdk.CfnOutput(this, "DistributionDomainName", { value: this.distribution.distributionDomainName });
+    new cdk.CfnOutput(this, "DistributionDomainName", {
+      value: this.distribution.distributionDomainName,
+    });
     new cdk.CfnOutput(this, "DistributionId", { value: this.distribution.distributionId });
   }
 }

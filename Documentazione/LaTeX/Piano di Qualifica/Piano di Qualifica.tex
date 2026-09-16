@@ -76,7 +76,7 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.2.0} \\ \hline
+            \textbf{Versione} & \textit{1.3.1} \\ \hline
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic, Dario Pirrone, Edoardo Granziero, Andrea Fistarol} \\ \hline
             \textbf{Verifica} & \textit{Dario Pirrone, Samuele Bertin, Sara Ristovic, Andrea Fistarol, Edoardo Granziero} \\ \hline
@@ -96,24 +96,24 @@
 % ==========================================
 \section*{Versioni del documento}
 \markboth{Versioni del documento}{}
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabularx}{\textwidth}{|c|c|X|l|l|}
-        \hline
-        \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-        1.2.0 & 2026/08/31 & Estensione esaustiva della copertura di test ai requisiti qualitativi & Edoardo Granziero & \textemdash \\ \hline
-        1.1.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & Marco Barbiero & Dario Pirrone \\ \hline
-        1.1.0 & 2026/08/21 & Aggiornamento tabelle di testing & Edoardo Granziero &  \\ \hline
-        1.0.0 & 2026/08/13 & Correzione e verifica per revisione RTB & Andrea Fistarol & Edoardo Granziero \\ \hline
-        0.5.0 & 2026/07/22 & Stesura tabelle di test di unità e integrazione & \makecell[l]{Edoardo Granziero} & \makecell[l]{Andrea Fistarol} \\ \hline
-        0.4.0 & 2026/07/14 & Stesura del capitolo 6 & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
-        0.3.0 & 2026/07/08 & Verifica dettagliata del documento intero & Sara Ristovic & {Edoardo Granziero} \\ \hline
-        0.3.0 & 2026/07/08 & Integrazione di nuove metriche e revisione di quelle preesistenti & \makecell[l]{Edoardo Granziero} & \makecell[l]{Sara Ristovic} \\ \hline
-        0.2.0 & 2026/05/25 & Compilazione "Obiettivi di qualità del processo" & \makecell[l]{Dario Pirrone} & \makecell[l]{Samuele Bertin} \\ \hline
-        0.1.0 & 2026/05/10 & Creazione documento e compilazione "Introduzione" & \makecell[l]{Sara Ristovic} & \makecell[l]{Dario Pirrone} \\ \hline
-    \end{tabularx}
-\end{table}
+\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|c|X|p{2.2cm}|p{2.2cm}|}
+    \hline
+    \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
+    
+    1.3.1 & 2026/09/08 & Rimossa sezione “valutazioni per il miglioramento” & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
+    1.3.0 & 2026/09/02 & Modifiche ai test per allinearli agli ultimi cambiamenti del AdR & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
+    1.2.0 & 2026/08/31 & Estensione esaustiva della copertura di test ai requisiti qualitativi & \makecell[l]{Edoardo \\Granziero} & \makecell[l]{Marco\\ Barbiero}\\ \hline
+    1.1.1 & 2026/08/21 & Aggiunta versione al riferimento del glossario e aggiunta data di accesso alle risorse web di riferimento & \makecell[l]{Marco\\ Barbiero} & \makecell[l]{Dario \\Pirrone} \\ \hline
+    1.1.0 & 2026/08/21 & Aggiornamento tabelle di testing & \makecell[l]{Edoardo \\Granziero} & \\ \hline
+    1.0.0 & 2026/08/13 & Approvazione del documento per revisione RTB & \makecell[l]{Andrea \\Fistarol} & --\\ \hline
+    0.6.0 & 2026/07/22 & Stesura tabelle di test di unità e integrazione & \makecell[l]{Edoardo \\ Granziero} & \makecell[l]{Andrea \\Fistarol} \\ \hline
+    0.5.0 & 2026/07/14 & Stesura del capitolo 6 & \makecell[l]{Edoardo \\Granziero} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.4.0 & 2026/07/08 & Verifica dettagliata e correzione del documento intero & \makecell[l]{Sara \\Ristovic} & \makecell[l]{Edoardo \\Granziero} \\ \hline
+    0.3.0 & 2026/07/08 & Integrazione di nuove metriche e revisione di quelle preesistenti & \makecell[l]{Edoardo \\Granziero} & \makecell[l]{Sara \\Ristovic} \\ \hline
+    0.2.0 & 2026/05/25 & Compilazione "Obiettivi di qualità del processo" & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Samuele \\Bertin} \\ \hline
+    0.1.0 & 2026/05/10 & Creazione documento e compilazione "Introduzione" & \makecell[l]{Sara \\Ristovic} & \makecell[l]{Dario \\Pirrone} \\ \hline
+\end{xltabular}
 
 \newpage
 
@@ -379,8 +379,7 @@ L'usabilità rappresenta la capacità del prodotto software di essere compreso, 
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
     \endhead
 
-    MPD\_9 & \textbf{Tempo di Apprendimento (Learning Time)}: Tempo massimo necessario affinché un nuovo utente riesca a comprendere e utilizzare autonomamente le funzionalità principali del sistema, senza ricorrere a manuali o supporto esterno. & $\le 30$ min & $\le 15$ min \\ \hline
-    MPD\_10 & \textbf{Tasso di Errore (Error Rate)}: Percentuale di azioni errate, non valide o annullate commesse dall'utente durante la normale interazione con l'applicativo per completare uno specifico scenario d'uso. & $\le 5\%$ & $\le 2\%$ \\ \hline
+    MPD\_9& \textbf{Tasso di Errore (Error Rate)}: Percentuale di azioni errate, non valide o annullate commesse dall'utente durante la normale interazione con l'applicativo per completare uno specifico scenario d'uso. & $\le 5\%$ & $\le 2\%$ \\ \hline
 
 \caption{Metriche di usabilità}
     \label{tab:prod_usabilita}
@@ -400,9 +399,9 @@ L'efficienza definisce la relazione tra il livello di prestazioni del software e
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
     \endhead
 
-    MPD\_11 & \textbf{Tempo di Risposta Interfaccia}: Tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema, escludendo l'esecuzione in background degli agenti. & $\le 2$ s & $\le 1$ s \\ \hline
-    MPD\_12 & \textbf{Tempo di Risposta dell'Agente}: Tempo medio impiegato da un singolo agente per completare l'analisi ed emettere l'output. & $\le 5$ min & $\le 1m 30s$ \\ \hline
-    MPD\_13 & \textbf{Tempo di Autenticazione}: Tempo massimo impiegato dal sistema per completare la verifica delle credenziali e autorizzare l'accesso. & $\le 2 \text{ s}$ & $\le 1 \text{ s}$ \\ \hline
+    MPD\_10& \textbf{Tempo di Risposta Interfaccia}: Tempo massimo di attesa tra un'azione dell'utente nell'interfaccia grafica e il feedback visivo del sistema, escludendo l'esecuzione in background degli agenti. & $\le 2$ s & $\le 1$ s \\ \hline
+    MPD\_11 & \textbf{Tempo di Risposta dell'Agente}: Tempo medio impiegato da un singolo agente per completare l'analisi ed emettere l'output. & $\le 5$ min & $\le 1m 30s$ \\ \hline
+    MPD\_12 & \textbf{Tempo di Autenticazione}: Tempo massimo impiegato dal sistema per completare la verifica delle credenziali e autorizzare l'accesso. & $\le 2 \text{ s}$ & $\le 1 \text{ s}$ \\ \hline
     \caption{Metriche di Efficienza}
     \label{tab:prod_efficienza}
 \end{xltabular}
@@ -421,10 +420,10 @@ La manutenibilità descrive lo sforzo richiesto per eseguire modifiche al softwa
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
     \endhead
 
-    MPD\_14 & \textbf{Prompt Isolation (Disaccoppiamento dei Prompt)}: Percentuale di \textit{prompt} archiviati in file di configurazione isolati rispetto alla logica di \textit{backend}. & $100\%$ & $100\%$ \\ \hline
-    MPD\_15 & \textbf{Complessità Ciclomatica}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite \textit{analisi statica}). & $\le 15$ & $\le 10$ \\ \hline
-    MPD\_16 & \textbf{Code Smell}: Numero di difetti di progettazione o implementazione nel codice (es. codice morto, importazioni superflue) rilevabili tramite strumenti di analisi statica. & $\le 5$ per componente & $0$ difetti \\ \hline
-    MPD\_17 & \textbf{Duplicazione del Codice}: Percentuale di linee di codice sorgente duplicate all'interno del progetto. & $\le 10\%$ & $\le 3\%$ \\ \hline
+    MPD\_13 & \textbf{Prompt Isolation (Disaccoppiamento dei Prompt)}: Percentuale di \textit{prompt} archiviati in file di configurazione isolati rispetto alla logica di \textit{backend}. & $100\%$ & $100\%$ \\ \hline
+    MPD\_14 & \textbf{Complessità Ciclomatica}: Grado di complessità logica dei metodi e delle funzioni del codice sorgente (calcolata tramite \textit{analisi statica}). & $\le 15$ & $\le 10$ \\ \hline
+    MPD\_15 & \textbf{Code Smell}: Numero di difetti di progettazione o implementazione nel codice (es. codice morto, importazioni superflue) rilevabili tramite strumenti di analisi statica. & $\le 5$ per componente & $0$ difetti \\ \hline
+    MPD\_16 & \textbf{Duplicazione del Codice}: Percentuale di linee di codice sorgente duplicate all'interno del progetto. & $\le 10\%$ & $\le 3\%$ \\ \hline
 
     \caption{Metriche di Manutenibilità}
     \label{tab:prod_manutenibilita}
@@ -443,9 +442,9 @@ Le metriche di sicurezza valutano la capacità del sistema di proteggere i dati 
     \textbf{Codice} & \textbf{Nome e Descrizione} & \textbf{Val. Accettazione} & \textbf{Val. Ottimale} \\ \hline
     \endhead
 
-    MPD\_18 & \textbf{Esposizione di Credenziali}: Numero di \textit{token} \textit{API}, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
-    MPD\_19 & \textbf{Cifratura dei Dati Sensibili}: Percentuale di password degli utenti e \textit{token} di accesso esterni memorizzati nel \textit{database} utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
-    MPD\_20 & \textbf{\glo{Input Validation}{input-validation}}: Percentuale di input forniti dall'utente (inclusi \textit{URL} di \textit{Repository}, \textit{token} e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
+    MPD\_17 & \textbf{Esposizione di Credenziali}: Numero di \textit{token} \textit{API}, password o chiavi segrete esposte in chiaro nel codice sorgente, nei log di sistema o nei report generati. & $0$ chiavi esposte & $0$ chiavi esposte \\ \hline
+    MPD\_18 & \textbf{Cifratura dei Dati Sensibili}: Percentuale di password degli utenti e \textit{token} di accesso esterni memorizzati nel \textit{database} utilizzando algoritmi di crittografia o hashing sicuri. & $100\%$ & $100\%$ \\ \hline
+    MPD\_19 & \textbf{\glo{Input Validation}{input-validation}}: Percentuale di input forniti dall'utente (inclusi \textit{URL} di \textit{Repository}, \textit{token} e configurazioni) sottoposti a validazione e sanificazione prima dell'elaborazione. & $\ge 95\%$ & $100\%$ \\ \hline
 
     \caption{Metriche di Sicurezza}
     \label{tab:prod_sicurezza}
@@ -484,111 +483,99 @@ I test di sistema controllano il comportamento dell'intera applicazione consider
     \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
     \endhead
 
-    TS\_1 & Verificare che il sistema permetta a un utente non autenticato di avviare la procedura di registrazione per la creazione di un nuovo account. & RF.1 & NI \\ \hline
-    TS\_2 & Verificare che il sistema consenta all'utente di inserire il proprio nome e cognome in fase di registrazione. & RF.2 & NI \\ \hline
-    TS\_3 & Verificare che il sistema consenta all'utente di inserire il proprio indirizzo email e la password in fase di registrazione. & RF.3 & NI \\ \hline
-    TS\_4 & Verificare che il sistema permetta all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textbf{Security Auditor}, \textbf{Project Manager}). & RF.4 & NI \\ \hline
-    TS\_5 & Verificare che il sistema impedisca la registrazione e mostri un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & RF.5 & NI \\ \hline
-    TS\_6 & Verificare che il sistema validi i dati di registrazione inseriti (formato dell'email e robustezza della password) e mostri un messaggio d'errore in caso di mancata conformità. & RF.6 & NI \\ \hline
-    TS\_7 & Verificare che il sistema consenta a un utente registrato di sbloccare i permessi e le funzionalità associate allo specifico ruolo operativo a seguito del login. & RF.7 & NI \\ \hline
-    TS\_8 & Verificare che il sistema permetta all'utente di autenticarsi inserendo le proprie credenziali, ovvero email e password. & RF.8 & NI \\ \hline
-    TS\_9 & Verificare che il sistema neghi l'accesso e mostri un messaggio di errore generico nel caso in cui le credenziali inserite non risultino valide. & RF.9 & NI \\ \hline
+    TS\_1 & Verificare che il sistema permetta a un utente non autenticato di avviare la procedura di registrazione per la creazione di un nuovo account. & RF.1 & S \\ \hline
+    TS\_2 & Verificare che il sistema consenta all'utente di inserire il proprio nome e cognome in fase di registrazione. & RF.2 & S \\ \hline
+    TS\_3 & Verificare che il sistema consenta all'utente di inserire il proprio indirizzo email e la password in fase di registrazione. & RF.3 & S \\ \hline
+    TS\_4 & Verificare che il sistema permetta all'utente, in fase di registrazione, di selezionare il proprio ruolo operativo (Sviluppatore, \textbf{Security Auditor}, \textbf{Project Manager}). & RF.4 & S \\ \hline
+    TS\_5 & Verificare che il sistema impedisca la registrazione e mostri un messaggio informativo se l'indirizzo email inserito è già associato a un account esistente. & RF.5 & S \\ \hline
+    TS\_6 & Verificare che il sistema validi i dati di registrazione inseriti (formato dell'email e robustezza della password) e mostri un messaggio d'errore in caso di mancata conformità. & RF.6 & S \\ \hline
+    TS\_7 & Verificare che il sistema consenta a un utente registrato di sbloccare i permessi e le funzionalità associate allo specifico ruolo operativo a seguito del login. & RF.7 & S \\ \hline
+    TS\_8 & Verificare che il sistema permetta all'utente di autenticarsi inserendo le proprie credenziali, ovvero email e password. & RF.8 & S \\ \hline
+    TS\_9 & Verificare che il sistema neghi l'accesso e mostri un messaggio di errore generico nel caso in cui le credenziali inserite non risultino valide. & RF.9 & S \\ \hline
     TS\_10 & Verificare che il sistema permetta all'utente di configurare e memorizzare in modo sicuro i \textit{token} di accesso necessari per l'integrazione con i servizi esterni. & RF.10 & S \\ \hline
     TS\_11 & Verificare che il sistema consenta l'inserimento del \textit{token} personale della Piattaforma \textit{GitHub} per l'integrazione con il servizio esterno. & RF.11 & S \\ \hline
-    TS\_12 & Verificare che il sistema consenta l'inserimento del \textit{token} personale del sistema di \textit{Task} Management per l'integrazione con il servizio esterno. & RF.12 & NI \\ \hline
-    TS\_13 & Verificare che il sistema testi la validità dei \textit{token} tramite una chiamata ai servizi esterni, interrompendo la memorizzazione e mostrando un errore in caso di fallimento. & RF.13 & NI \\ \hline
-    TS\_14 & Verificare che il sistema validi sintatticamente il formato dei \textit{token} inseriti e mostri un messaggio di errore qualora questo non risulti valido. & RF.14 & NI \\ \hline
+    TS\_12 & Verificare che il sistema consenta l'inserimento del \textit{token} personale del sistema di \textit{Task} Management per l'integrazione con il servizio esterno. & RF.12 & S \\ \hline
+    TS\_13 & Verificare che il sistema testi la validità dei \textit{token} tramite una chiamata ai servizi esterni, interrompendo la memorizzazione e mostrando un errore in caso di fallimento. & RF.13 & S \\ \hline
+    TS\_14 & Verificare che il sistema validi sintatticamente il formato dei \textit{token} inseriti e mostri un messaggio di errore qualora questo non risulti valido. & RF.14 & S \\ \hline
     TS\_15 & Verificare che il sistema finalizzi e registri la selezione del \textit{Repository} \textit{Git} e del relativo riferimento di base, rendendoli disponibili come contesto per gli agenti. & RF.15 & S \\ \hline
     TS\_16 & Verificare che il sistema permetta all'utente di inserire l'\textit{URL} del \textit{Repository} \textit{Git} e di selezionare la tipologia di riferimento di base. & RF.16 & S \\ \hline
     TS\_17 & Verificare che il sistema consenta la specificazione del nome del \textit{Branch} e, in via opzionale, l'identificativo di un \textit{Commit} specifico come riferimento di base. & RF.17 & S \\ \hline
-    TS\_18 & Verificare che il sistema permetta l'inserimento dell'identificativo di una \textit{Pull Request} specifica da utilizzare come riferimento di base. & RF.18 & NI \\ \hline
-    TS\_19 & Verificare che il sistema validi localmente l'\textit{URL} del \textit{Repository Git} inserito e mostri un messaggio di errore qualora il formato sintattico non sia valido. & RF.19 & NI \\ \hline
+    TS\_19 & Verificare che il sistema validi localmente l'\textit{URL} del \textit{Repository Git} inserito e mostri un messaggio di errore qualora il formato sintattico non sia valido. & RF.19 & S \\ \hline
     TS\_20 & Verificare che il sistema verifichi la raggiungibilità del \textit{Repository} remoto e la validità dei permessi d'accesso, mostrando un messaggio di errore in caso di fallimento. & RF.20 & S \\ \hline
     TS\_21 & Verificare che il sistema verifichi l'esistenza del \textit{Branch} specificato sul \textit{Repository} remoto e mostri un messaggio di errore qualora non venga trovato. & RF.21 & S \\ \hline
     TS\_22 & Verificare che il sistema verifichi l'esistenza dell'hash del \textit{commit} specificato e la sua appartenenza al \textit{Branch} selezionato, mostrando un errore in caso negativo. & RF.22 & S \\ \hline
-    TS\_23 & Verificare che il sistema verifichi l'esistenza dell'identificativo della \textit{Pull Request} specificata, mostrando un messaggio di errore qualora non venga trovata. & RF.23 & NI \\ \hline
     TS\_24 & Verificare che il sistema mostri un messaggio di avviso all'utente qualora il \textit{Repository} selezionato contenga codice sorgente scritto in linguaggi non supportati. & RF.24 & S \\ \hline
     TS\_25 & Verificare che il sistema consenta all'utente di definire e selezionare l'ambito di analisi del contesto di esecuzione. & RF.25 & S \\ \hline
     TS\_26 & Verificare che il sistema consenta la selezione dell'intero \textit{Repository} come ambito di analisi. & RF.26 & S \\ \hline
     TS\_27 & Verificare che il sistema consenta all'utente di selezionare uno o più file del \textit{Repository} come ambito di analisi. & RF.27 & S \\ \hline
     TS\_28 & Verificare che il sistema consenta all'utente di selezionare una o più directory del \textit{Repository} come ambito di analisi. & RF.28 & S \\ \hline
-    TS\_29 & Verificare che il sistema blocchi il proseguimento e mostri un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & RF.29 & NI \\ \hline
+    TS\_29 & Verificare che il sistema blocchi il proseguimento e mostri un avviso a schermo qualora l'utente tenti di confermare senza aver selezionato alcun ambito di analisi. & RF.29 & S \\ \hline
     TS\_30 & Verificare che il sistema verifichi l'effettiva esistenza e accessibilità degli elementi selezionati nel \textit{Repository} remoto, mostrando un messaggio di errore in caso di fallimento. & RF.30 & S \\ \hline
     TS\_31 & Verificare che il sistema verifichi che l'ambito di analisi selezionato non ecceda i limiti dimensionali entro i quali il modello \textit{LLM} garantisce performance affidabili, mostrando un messaggio di errore in caso contrario. & RF.31 & S \\ \hline
     TS\_32 & Verificare che il sistema fornisca un'interfaccia grafica che elenchi in modo chiaro le operazioni disponibili associate ai vari agenti. & RF.32 & S \\ \hline
     TS\_33 & Verificare che il sistema mostri a schermo il nome identificativo di ciascuna operazione disponibile all'interno della dashboard dell'\textit{Orchestratore}. & RF.33 & S \\ \hline
-    TS\_34 & Verificare che il sistema mostri a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & RF.34 & NI \\ \hline
+    TS\_34 & Verificare che il sistema mostri a schermo una breve descrizione testuale di supporto associata alle funzionalità di ciascuna operazione disponibile. & RF.34 & S \\ \hline
     TS\_35 & Verificare che il sistema predisponga l'interfaccia grafica per la configurazione e la successiva gestione dell'avvio delle operazioni. & RF.35 & S \\ \hline
-    TS\_36 & Verificare che il sistema permetta all'utente una selezione e deselezione esplicita delle singole operazioni tramite una specifica interazione nell'interfaccia grafica. & RF.36 & NI \\ \hline
-    TS\_37 & Verificare che il sistema permetta all'utente, tramite l'interfaccia grafica, di selezionare più operazioni diverse in contemporanea. & RF.37 & NI \\ \hline
-    TS\_38 & Verificare che il sistema consenta all'utente di abilitare o disabilitare la ricezione di comunicazioni via email, includendo la consegna dei report completati e le richieste di intervento manuale in piattaforma. & RF.38 & NI \\ \hline
-    TS\_39 & Verificare che il sistema permetta all'utente, tramite l'interfaccia grafica, di avviare più operazioni selezionate in contemporanea. & RF.39 & NI \\ \hline
+    TS\_36 & Verificare che il sistema permetta all'utente una selezione e deselezione esplicita delle singole operazioni tramite una specifica interazione nell'interfaccia grafica. & RF.36 & S \\ \hline
+    TS\_37 & Verificare che il sistema permetta all'utente, tramite l'interfaccia grafica, di selezionare più operazioni diverse in contemporanea. & RF.37 & S \\ \hline
+    TS\_39 & Verificare che il sistema permetta all'utente, tramite l'interfaccia grafica, di avviare più operazioni selezionate in contemporanea. & RF.39 & S \\ \hline
     TS\_40 & Verificare che l'\textit{orchestratore} mappi deterministicamente le operazioni selezionate dall'utente e instradi le richieste ai rispettivi agenti. & RF.40 & S \\ \hline
     TS\_41 & Verificare che il sistema inibisca la procedura di esecuzione dell'\textit{orchestratore} e mostri un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver selezionato alcuna operazione dalla lista. & RF.41 & S \\ \hline
     TS\_42 & Verificare che il sistema inibisca la procedura di esecuzione dell'\textit{orchestratore} e mostri un messaggio di errore contestuale qualora l'utente prema il comando di avvio senza aver prima configurato i parametri di contesto obbligatori per le operazioni selezionate. & RF.42 & S \\ \hline
-    TS\_43 & Verificare che il sistema mostri all'utente una dashboard grafica dedicata al monitoraggio delle operazioni prese in carico dall'\textit{orchestratore}. & RF.43 & S \\ \hline
+    TS\_43 & Verificare che il sistema mostri all'utente una dashboard grafica dedicated al monitoraggio delle operazioni prese in carico dall'\textit{orchestratore}. & RF.43 & S \\ \hline
     TS\_44 & Verificare che il sistema visualizzi lo stato di avanzamento in tempo reale delle singole attività monitorate all'interno della dashboard. & RF.44 & S \\ \hline
-    TS\_45 & Verificare che il sistema renderizzi a schermo il nome di ogni operazione in fase di elaborazione. & RF.45 & NI \\ \hline
+    TS\_45 & Verificare che il sistema renderizzi a schermo il nome di ogni operazione in fase di elaborazione. & RF.45 & S \\ \hline
     TS\_46 & Verificare che il sistema mostri un indicatore visivo/testuale rappresentante lo stato corrente di ciascuna operazione, che può assumere i valori "In attesa", "In elaborazione", "Completato", "Fallito" o "Annullato". & RF.46 & S \\ \hline
     TS\_47 & Verificare che il sistema abiliti i controlli grafici per le fasi successive esclusivamente al raggiungimento dello stato "Completato" per la specifica operazione. & RF.47 & S \\ \hline
-    TS\_48 & Verificare che, in caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textit{orchestratore} garantisca l'isolamento dell'errore per non compromettere le altre attività parallele in corso. & RF.48 & NI \\ \hline
-    TS\_49 & Verificare che il sistema permetta all'utente di accedere ad un archivio storico e visualizzare la lista aggregata di tutti i report precedentemente generati e salvati, mostrando delle informazioni per ogni elemento. & RF.49 & NI \\ \hline
-    TS\_50 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nell'archivio storico, il relativo codice identificativo univoco. & RF.50 & NI \\ \hline
-    TS\_51 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nell'archivio storico, il relativo titolo descrittivo. & RF.51 & NI \\ \hline
-    TS\_52 & Verificare che il sistema visualizzi all'interno del blocco grafico del singolo report le informazioni temporali di completamento, nello specifico la data e l'orario esatto di generazione. & RF.52 & NI \\ \hline
+    TS\_48 & Verificare che, in caso di fallimento architetturale o di routing di una specifica \textit{task}, l'\textit{orchestratore} garantisca l'isolamento dell'errore per non compromettere le altre attività parallele in corso. & RF.48 & S \\ \hline
+    TS\_49 & Verificare che il sistema permetta all'utente di accedere ad un archivio storico e visualizzare la lista aggregata di tutti i report precedentemente generati e salvati, mostrando delle informazioni per ogni elemento. & RF.49 & S \\ \hline
+    TS\_50 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nell'archivio storico, il relativo codice identificativo univoco. & RF.50 & S \\ \hline
+    TS\_51 & Verificare che il sistema mostri all'interno del blocco grafico del singolo report nell'archivio storico, il relativo titolo descrittivo. & RF.51 & S \\ \hline
+    TS\_52 & Verificare che il sistema visualizzi all'interno del blocco grafico del singolo report le informazioni temporali di completamento, nello specifico la data e l'orario esatto di generazione. & RF.52 & S \\ \hline
     TS\_53 & Verificare che il sistema consenta all'utente la selezione e la visualizzazione del report desiderato. & RF.53 & S \\ \hline
     TS\_54 & Verificare che il sistema strutturi il report dividendolo in una sezione di intestazione e una di corpo del report con il contenuto effettivo. & RF.54 & S \\ \hline
-    TS\_55 & Verificare che il sistema visualizzi, all'interno dell'intestazione del report, il nome identificativo del \textit{Repository  Git} analizzato. & RF.55 & NI \\ \hline
-    TS\_56 & Verificare che il sistema visualizzi nell'intestazione del report il riferimento base e l'ambito di analisi selezionato. & RF.56 & NI \\ \hline
-    TS\_57 & Verificare che il sistema includa nell'intestazione del report il tempo di esecuzione impiegato dall'agente. & RF.57 & NI \\ \hline
+    TS\_57 & Verificare che il sistema includa nell'intestazione del report il tempo di esecuzione impiegato dall'agente. & RF.57 & S \\ \hline
     TS\_58 & Verificare che il sistema riporti nell'intestazione del report la data e l'ora di completamento dell'operazione. & RF.58 & S \\ \hline
     TS\_59 & Verificare che il sistema visualizzi all'interno del corpo del report blocchi di testo formattato (\textit{Markdown}), convertendo correttamente i tag testuali in elementi grafici leggibili a schermo. & RF.59 & S \\ \hline
     TS\_60 & Verificare che il sistema renderizzi nel corpo del report una lista contenitore strutturata, mostrando gli spazi grafici e popolando i dettagli attributivi di ciascun singolo elemento in essa iterato. & RF.60 & S \\ \hline
     TS\_61 & Verificare che il sistema esponga per ogni singolo elemento strutturato l'indicatore testuale relativo alla sua categoria (es. tipo di \textit{vulnerabilità}) e l'etichetta classificatoria della sua gravità o priorità. & RF.61 & S \\ \hline
     TS\_62 & Verificare che il sistema riporti, per gli elementi che lo richiedono, i riferimenti puntuali alla porzione di codice interessata (percorso del file e numeri di riga) ed esponga eventuali \textit{Snippet} di codice sorgente suggerito all'interno di un contenitore dedicato. & RF.62 & S \\ \hline
-    TS\_63 & Verificare che, qualora l'agente abbia generato una proposta di modifica sul \textit{Repository} remoto, il sistema renderizzi nel report un collegamento ipertestuale interattivo verso la rispettiva \textit{Pull Request}. & RF.63 & NI \\ \hline
-    TS\_64 & Verificare che il sistema visualizzi all'interno del report un modulo interattivo con comandi di validazione e avanzamento per le operazioni che richiedono un'approvazione umana o un feedback esplicito. & RF.64 & NI \\ \hline
+    TS\_64 & Verificare che il sistema visualizzi all'interno del report un modulo interattivo con comandi di validazione e avanzamento per le operazioni che richiedono un'approvazione umana o un feedback esplicito. & RF.64 & S \\ \hline
     TS\_65 & Verificare che il sistema mostri un messaggio di errore esplicativo e blocchi l'esecuzione in caso di fallimento o anomalia generale durante l'elaborazione interna di un agente. & RF.65 & S \\ \hline
-    TS\_66 & Verificare che il sistema blocchi preventivamente l'esecuzione di un agente e mostri un messaggio d'errore qualora venga superato il limite massimo di utilizzo (chiamate) configurato. & RF.66 & NI \\ \hline
-    TS\_67 & Verificare che il sistema interrompa l'attesa, chiuda la connessione e notifichi l'utente con un errore qualora il modello \textit{LLM} non restituisca una risposta entro il tempo limite prefissato (\textit{Timeout} di risposta). & RF.67 & NI \\ \hline
-    TS\_68 & Verificare che il sistema blocchi l'elaborazione e mostri un errore qualora l'output fornito dal modello \textit{LLM} non sia parsabile, interpretabile o conforme alle strutture dati attese. & RF.68 & NI \\ \hline
-    TS\_69 & Verificare che il sistema interrompa l'esecuzione prima dell'invio e notifichi l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello \textit{LLM} a runtime. & RF.69 & NI \\ \hline
+    TS\_66 & Verificare che il sistema blocchi preventivamente l'esecuzione di un agente e mostri un messaggio d'errore qualora venga superato il limite massimo di utilizzo (chiamate) configurato. & RF.66 & S \\ \hline
+    TS\_67 & Verificare che il sistema interrompa l'attesa, chiuda la connessione e notifichi l'utente con un errore qualora il modello \textit{LLM} non restituisca una risposta entro il tempo limite prefissato (\textit{Timeout} di risposta). & RF.67 & S \\ \hline
+    TS\_68 & Verificare che il sistema blocchi l'elaborazione e mostri un errore qualora l'output fornito dal modello \textit{LLM} non sia parsabile, interpretabile o conforme alle strutture dati attese. & RF.68 & S \\ \hline
+    TS\_69 & Verificare che il sistema interrompa l'esecuzione prima dell'invio e notifichi l'utente qualora i dati da analizzare eccedano la capacità massima di elaborazione o la finestra di contesto del modello \textit{LLM} a runtime. & RF.69 & S \\ \hline
     TS\_70 & Verificare che il sistema inibisca l'elaborazione di un agente e notifichi l'utente qualora una risorsa esterna di contesto strettamente necessaria (es. file POLICY.md, \textit{Sprint} ID) risulti assente o non trovata. & RF.70 & S \\ \hline
-    TS\_71 & Verificare che il sistema blocchi l'elaborazione di un agente e notifichi l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & RF.71 & NI \\ \hline
-    TS\_72 & Verificare che il sistema interrompa l'operazione e mostri un messaggio d'errore qualora la Piattaforma \textit{GitHub} rifiuti la creazione di una \textit{Pull Request} a causa di permessi insufficienti o problemi di rete. & RF.72 & NI \\ \hline
-    TS\_73 & Verificare che il sistema consenta all'utente di esportare il report attualmente visualizzato, raccogliendo e formattando i dati per innescare il download locale in formato PDF. & RF.73 & NI \\ \hline
-    TS\_74 & Verificare che il sistema annulli il processo di esportazione e notifichi l'utente con un messaggio d'errore qualora si verifichi un'anomalia interna durante la conversione e impaginazione del report in PDF. & RF.74 & NI \\ \hline
-    TS\_75 & Verificare che il sistema invii automaticamente un'email all'indirizzo dell'utente contenente il report PDF in allegato, qualora l'operazione sia completata e la relativa preferenza sia attiva. & RF.75 & NI \\ \hline
-    TS\_76 & Verificare che il sistema invii automaticamente un'email di notifica contenente un collegamento diretto alla piattaforma, qualora un'operazione richieda un intervento manuale o una validazione umana per proseguire. & RF.76 & NI \\ \hline
-    TS\_77 & Verificare che il sistema gestisca il fallimento dell'invio dell'email (es. \textit{server SMTP} irraggiungibile) interrompendo la notifica ma predisponendo un avviso e mantenendo la visualizzazione in piattaforma. & RF.77 & NI \\ \hline
-    TS\_78 & Verificare che il sistema invii l'email priva di allegato, includendo nel corpo del messaggio il collegamento diretto al report in piattaforma, qualora il file generato superi i limiti dimensionali imposti dal \textit{server SMTP}. & RF.78 & NI \\ \hline
-    TS\_79 & Verificare che il sistema permetta all'utente di gestire la struttura del file \textit{README}.md, consentendo il caricamento e il salvataggio di un file \textit{template} personalizzato. & RF.79 & NI \\ \hline
-    TS\_80 & Verificare che il sistema validi il file \textit{template} caricato e blocchi l'operazione mostrando un messaggio di errore qualora il formato non sia valido o non abbia estensione .md. & RF.80 & NI \\ \hline
-    TS\_81 & Verificare che il sistema consenta all'utente di rimuovere un \textit{template} personalizzato precedentemente caricato, ripristinando il modello di default dell'Agente Docs. & RF.81 & NI \\ \hline
-    TS\_82 & Verificare che il sistema orchestri l'Agente Docs per generare e proporre l'aggiornamento del file \textit{README}.md di progetto tramite l'apertura automatica di una \textit{Pull Request}. & RF.82 & NI \\ \hline
+    TS\_71 & Verificare che il sistema blocchi l'elaborazione di un agente e notifichi l'utente qualora una risorsa di contesto risulti illeggibile, malformata o contenga direttive logicamente contraddittorie. & RF.71 & S \\ \hline
+    TS\_74 & Verificare che il sistema annulli il processo di esportazione e notifichi l'utente con un messaggio d'errore qualora si verifichi un'anomalia interna durante la conversione e impaginazione del report in PDF. & RF.74 & S \\ \hline
+    TS\_79 & Verificare che il sistema permetta all'utente di gestire la struttura del file \textit{README}.md, consentendo il caricamento e il salvataggio di un file \textit{template} personalizzato. & RF.79 & S \\ \hline
+    TS\_80 & Verificare che il sistema validi il file \textit{template} caricato e blocchi l'operazione mostrando un messaggio di errore qualora il formato non sia valido o non abbia estensione .md. & RF.80 & S \\ \hline
+    TS\_81 & Verificare che il sistema consenta all'utente di rimuovere un \textit{template} personalizzato precedentemente caricato, ripristinando il modello di default dell'Agente Docs. & RF.81 & S \\ \hline
     TS\_83 & Verificare che il sistema orchestri l'Agente Docs per analizzare il codice e proporre l'aggiornamento della documentazione Inline (\textit{JSDoc}) tramite l'apertura automatica di una \textit{Pull Request}. & RF.83 & S \\ \hline
-    TS\_84 & Verificare che il sistema corregga documentazione Inline esistente quando questa non è più coerente con il codice. & RF.84 & NI \\ \hline
-    TS\_85 & Verificare che il sistema escluda dalla generazione documentale inline e segnali nel report tramite avviso le porzioni di codice o classi la cui complessità impedisce un'interpretazione affidabile. & RF.85 & NI \\ \hline
-    TS\_86 & Verificare che il sistema orchestri l'Agente Docs per estrarre le informazioni relative agli \textit{Endpoint}, generando e proponendo il documento \textit{API}.md tramite \textit{Pull Request}. & RF.86 & NI \\ \hline
+    TS\_86 & Verificare che il sistema orchestri l'Agente Docs per estrarre le informazioni relative agli \textit{Endpoint}, generando e proponendo il documento \textit{API}.md tramite \textit{Pull Request}. & RF.86 & S \\ \hline
     TS\_87 & Verificare che il sistema orchestri l'Agente Security per eseguire una scansione del codice sorgente al fine di individuare pattern riconducibili alle \textit{vulnerabilità} dell'\textit{OWASP} Top 10. & RF.87 & S \\ \hline
     TS\_88 & Verificare che il sistema classifichi le \textit{vulnerabilità} rilevate dall'Agente Security indicando la relativa categoria \textit{OWASP} e il livello di gravità. & RF.88 & S \\ \hline
     TS\_89 & Verificare che il sistema associ ciascuna \textit{vulnerabilità} rilevata al file specifico interessato e, se disponibile, alla puntuale porzione di codice coinvolta. & RF.89 & S \\ \hline
     TS\_90 & Verificare che il sistema generi suggerimenti di \textit{Remediation} per ciascuna \textit{vulnerabilità} o violazione di policy rilevata, proponendo uno \textit{snippet} di codice correttivo qualora la problematica risulti sufficientemente localizzata. & RF.90 & S \\ \hline
     TS\_91 & Verificare che il sistema generi una descrizione testuale della \textit{Remediation} da effettuare qualora non sia possibile proporre in modo affidabile uno \textit{snippet} di codice correttivo. & RF.91 & S \\ \hline
     TS\_92 & Verificare che il sistema orchestri l'Agente Security per verificare la conformità del codice sorgente rispetto alle policy interne di sviluppo sicuro definite nel file POLICY.md. & RF.92 & S \\ \hline
-    TS\_93 & Verificare che il sistema, durante l'esecuzione dell'analisi \textit{policy-as-code}, processi e applichi esclusivamente le direttive riguardanti la sicurezza del software del file POLICY.md. & RF.93 & NI \\ \hline
     TS\_94 & Verificare che il sistema interroghi le \textit{API} del sistema di Task Management esterno per recuperare e filtrare le \textit{User Stories} e i \textit{task} in stato di completamento associati allo specifico \textit{Sprint} richiesto. & RF.94 & S \\ \hline
     TS\_95 & Verificare che il sistema estragga dai \textit{task} validati i \textit{metadati} rilevanti per la sintesi, includendo almeno il titolo, la descrizione, i criteri di accettazione e i commenti rilevanti. & RF.95 & S \\ \hline
     TS\_96 & Verificare che il sistema orchestri l'Agente \textit{Changelog} per generare un \textit{Changelog} tecnico orientato allo sviluppo, strutturato a partire dai dati estratti dai \textit{task} dello \textit{Sprint}. & RF.96 & S \\ \hline
-    TS\_97 & Verificare che il \textit{Changelog} tecnico generato includa i collegamenti ipertestuali diretti e gli identificativi dei \textit{Ticket} di origine, qualora tali informazioni siano disponibili. & RF.97 & NI \\ \hline
     TS\_98 & Verificare che il sistema permetta all'utente di inserire testualmente l'identificativo dello \textit{Sprint} (Sprint ID) da analizzare. & RF.98 & NI \\ \hline
-    TS\_99 & Verificare che il sistema consenta all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello \textit{Sprint}, bloccando l'esecuzione dell'agente. & RF.99 & NI \\ \hline
+    TS\_99 & Verificare che il sistema consenta all'utente di annullare volontariamente l'operazione durante la fase di richiesta dell'identificativo dello \textit{Sprint}, bloccando l'esecuzione dell'agente. & RF.99 & S \\ \hline
     TS\_100 & Verificare che il sistema rilevi i \textit{task} completati che risultano privi di \textit{metadati} sufficienti e li segnali all'utente tramite una finestra di avviso. & RF.100 & S \\ \hline
     TS\_101 & Verificare che il sistema permetta all'utente di proseguire l'elaborazione del \textit{Changelog} escludendo automaticamente i \textit{task} segnalati come informativamente insufficienti. & RF.101 & S \\ \hline
-    TS\_102 & Verificare che il sistema consenta all'utente di interrompere e annullare definitivamente la generazione del \textit{Changelog} qualora decida di non procedere a fronte della segnalazione di \textit{metadati} mancanti. & RF.102 & NI \\ \hline
-    TS\_103 & Verificare che il sistema fornisca un comando interattivo, all'interno del report del \textit{Changelog} tecnico, per innescare la sua traduzione in un documento di business. & RF.103 & NI \\ \hline
-    TS\_104 & Verificare che il sistema orchestri l'Agente Changelog per generare un \textit{Changelog} orientato al business, comprensibile agli \textbf{Stakeholder}, a partire dal testo del \textit{Changelog} tecnico. & RF.104 & NI \\ \hline
-    TS\_105 & Verificare che il sistema consenta all'utente di annullare la generazione del \textit{Changelog} di business dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & RF.105 & NI \\ \hline
+    TS\_102 & Verificare che il sistema consenta all'utente di interrompere e annullare definitivamente la generazione del \textit{Changelog} qualora decida di non procedere a fronte della segnalazione di \textit{metadati} mancanti. & RF.102 & S \\ \hline
+    TS\_104 & Verificare che il sistema orchestri l'Agente Changelog per generare un \textit{Changelog} orientato al business, comprensibile agli \textbf{Stakeholder}, a partire dal testo del \textit{Changelog} tecnico. & RF.104 & S \\ \hline
+    TS\_105 & Verificare che il sistema consenta all'utente di annullare la generazione del \textit{Changelog} di business dopo aver visionato il report tecnico, rimuovendo l'attività dalla coda di elaborazione. & RF.105 & S \\ \hline
+    TS\_106 & Verificare che l'\textit{Orchestratore} instradi le operazioni esclusivamente tramite il registro statico degli agenti, senza alcuna chiamata al modello \textit{LLM} in fase di routing. & RF.106 & S \\ \hline
+    TS\_107 & Verificare che il tempo di risposta di un agente, dalla ricezione della richiesta all'emissione del report, non superi i 5 minuti. & RF.107 & S \\ \hline
+    TS\_108 & Verificare che il \textit{Changelog} di Business generato abbia un \textit{Flesch Reading Ease} > 50. & RF.108 & S \\ \hline
+    TS\_109 & Verificare che una risposta 429 dal \textit{provider LLM} sia gestita correttamente senza bloccare l'esecuzione. & RF.109 & S \\ \hline
+    TS\_110 & Verificare che il processo di autenticazione non superi i 2 secondi. & RF.110 & S \\ \hline
+    TS\_111 & Verificare che il feedback visivo a un'azione utente non superi i 2 secondi. & RF.111 & S \\ \hline
 
     \caption{Test di Sistema}
     \label{tab:test_sistema}
@@ -661,42 +648,40 @@ I test di unità isolano e verificano la correttezza logica dei singoli moduli s
     TU\_05 & Verificare che il profilo di rilevamento identifichi le funzioni JavaScript sprovviste di commenti \textit{JSDoc}. & RF.83 & S \\ \hline
     TU\_06 & Verificare che la proposta di modifica per codice \textit{Python} inserisca correttamente la stringa di documentazione senza alterare il codice adiacente. & RF.83 & S \\ \hline
     TU\_07 & Verificare che il ciclo di cifratura/decifratura (round trip AES-256-GCM) dei \textit{token} delle credenziali utente sia integro e che il testo cifrato persistito non contenga mai il segreto in chiaro. & RS.2 & S \\ \hline
-    TU\_08 & Verificare che l'\textit{Orchestratore} risolva ogni operazione delegando esclusivamente al registro statico degli agenti (nessuna chiamata a un modello \textit{LLM} nel percorso di instradamento) e propaghi l'errore per un codice operazione non mappato. & RV.1 & S \\ \hline
+    TU\_08 & Verificare che l'\textit{Orchestratore} risolva ogni operazione delegando esclusivamente al registro statico degli agenti (nessuna chiamata a un modello \textit{LLM} nel percorso di instradamento) e propaghi l'errore per un codice operazione non mappato. & RF.106 & S \\ \hline
     TU\_09 & Verificare che il parser dell'output dell'Agente Security normalizzi correttamente la \textit{Remediation} restituita dal modello \textit{LLM} in tutti i formati previsti (\textit{snippet} di codice, testo/\textit{Markdown} o stringa semplice). & RF.90, RF.91 & S \\ \hline
     TU\_10 & Verificare che il sistema scarti le vulnerabilità segnalate dal modello \textit{LLM} su file che non appartenevano all'ambito di analisi effettivamente richiesto (percorsi allucinati o fuori \textit{scope}). & RF.30 & S \\ \hline
     TU\_11 & Verificare che i riscontri restituiti dall'Agente Security vengano correttamente riordinati dal più al meno critico in base al livello di gravità della \textit{vulnerabilità}. & RF.61 & S \\ \hline
 
-    TU\_12 & Verificare che l'\textit{hashing} della password tramite \textit{Argon2id} produca un digest che non contiene mai la password in chiaro e che la funzione di verifica restituisca esito positivo solo a fronte della password originale, esito negativo per qualsiasi altra stringa. & RS.1 & NI \\ \hline
+    TU\_12 & Verificare che l'\textit{hashing} della password tramite \textit{Argon2id} produca un digest che non contiene mai la password in chiaro e che la funzione di verifica restituisca esito positivo solo a fronte della password originale, esito negativo per qualsiasi altra stringa. & RS.1 & S \\ \hline
 
-    TU\_13 & Verificare che il tentativo di decifratura di una credenziale con \textit{authTag} manomesso (integrità \textit{AEAD} compromessa) sollevi un'eccezione e non restituisca alcun \textit{token}, nemmeno parzialmente, estendendo la copertura di TU\_07 al percorso di manomissione. & RS.2 & NI \\ \hline
+    TU\_13 & Verificare che il tentativo di decifratura di una credenziale con \textit{authTag} manomesso (integrità \textit{AEAD} compromessa) sollevi un'eccezione e non restituisca alcun \textit{token}, nemmeno parzialmente, estendendo la copertura di TU\_07 al percorso di manomissione. & RS.2 & S \\ \hline
 
-    TU\_14 & Verificare, tramite ispezione riflessiva dei metodi pubblici della classe che implementa \texttt{GitHubClient}, che nessun metodo esposto corrisponda a un'operazione di scrittura (\texttt{POST}, \texttt{PUT}, \texttt{PATCH}, \texttt{DELETE}) verso l'\textit{API} \textit{GitHub}, a garanzia strutturale del vincolo RS.3 indipendente dal contenuto della \textit{whitelist} a runtime. & RS.3 & NI \\ \hline
+    TU\_14 & Verificare, tramite ispezione riflessiva dei metodi pubblici della classe che implementa \texttt{GitHubClient}, che nessun metodo esposto corrisponda a un'operazione di scrittura (\texttt{POST}, \texttt{PUT}, \texttt{PATCH}, \texttt{DELETE}) verso l'\textit{API} \textit{GitHub}, a garanzia strutturale del vincolo RS.3 indipendente dal contenuto della \textit{whitelist} a runtime. & RS.3 & S \\ \hline
 
-    TU\_15 & Verificare che l'\texttt{HmacGuard} rifiuti una richiesta che riutilizza una coppia \textit{timestamp}/firma già accettata in precedenza (\textit{replay attack}) e che rifiuti una richiesta il cui corpo sia stato alterato dopo il calcolo della firma, pur mantenendo \textit{timestamp} e firma sintatticamente validi. & RS.4 & NI \\ \hline
 
-    TU\_16 & Verificare, tramite asserzioni sul \textit{template CloudFormation} sintetizzato dallo stack \texttt{SecurityGroupsStack} (\texttt{aws-cdk-lib/assertions}), che il \textit{Security Group} del servizio agenti non contenga alcuna regola di \textit{egress} verso \texttt{0.0.0.0/0}, a garanzia infrastrutturale del vincolo RS.3 indipendente dal codice applicativo. & RS.3, RV.15 & NI \\ \hline
 
-    TU\_17 & Verificare, tramite analisi statica dell'\textit{Abstract Syntax Tree} dei moduli \textit{Python} degli agenti, che nessuna stringa letterale superi la soglia di lunghezza configurata, a garanzia che i \textit{prompt} risiedano esclusivamente nei file \textit{YAML} esterni (metrica MPD\_14). Test già implementato nel codice del PoC (\texttt{test\_prompt\_isolation.py}) e qui formalmente tracciato. & RQ.4 & I \\ \hline
+    TU\_17 & Verificare, tramite analisi statica dell'\textit{Abstract Syntax Tree} dei moduli \textit{Python} degli agenti, che nessuna stringa letterale superi la soglia di lunghezza configurata, a garanzia che i \textit{prompt} risiedano esclusivamente nei file \textit{YAML} esterni (metrica MPD\_13). Test già implementato nel codice del PoC (\texttt{test\_prompt\_isolation.py}) e qui formalmente tracciato. & RQ.4 & S \\ \hline
 
-    TU\_18 & Verificare che l'\textbf{AgentRegistry} risolva il descrittore corretto (\texttt{agentId}, \texttt{destinationUrl}) per ciascuno dei sette \texttt{OperationCode} previsti dall'\textit{MVP} (\texttt{DOCS\_README}, \texttt{DOCS\_INLINE}, \texttt{DOCS\_API}, \texttt{SECURITY\_OWASP}, \texttt{SECURITY\_POLICY}, \texttt{CHANGELOG\_TECHNICAL}, \texttt{CHANGELOG\_BUSINESS}), estendendo la copertura di TU\_08 dall'unico caso oggi verificato all'intero catalogo. & RF.40, RV.1 & NI \\ \hline
+    TU\_18 & Verificare che l'\textbf{AgentRegistry} risolva il descrittore corretto (\texttt{agentId}, \texttt{destinationUrl}) per ciascuno dei sette \texttt{OperationCode} previsti dall'\textit{MVP} (\texttt{DOCS\_README}, \texttt{DOCS\_INLINE}, \texttt{DOCS\_API}, \texttt{SECURITY\_OWASP}, \texttt{SECURITY\_POLICY}, \texttt{CHANGELOG\_TECHNICAL}, \texttt{CHANGELOG\_BUSINESS}), estendendo la copertura di TU\_08 dall'unico caso oggi verificato all'intero catalogo. & RF.40, RF.106 & S \\ \hline
 
-    TU\_19 & Verificare che \texttt{Task.canTransitionTo(s)} accetti tutte e sole le transizioni di stato ammesse dal ciclo di vita della \textit{task} (da \texttt{PENDING} a \texttt{RUNNING} o \texttt{CANCELLED}; da \texttt{RUNNING} a \texttt{COMPLETED}, \texttt{FAILED} o \texttt{CANCELLED}) e rifiuti ogni altra transizione, incluso qualunque tentativo di uscita da uno stato terminale. & RF.46 & NI \\ \hline
+    TU\_19 & Verificare che \texttt{Task.canTransitionTo(s)} accetti tutte e sole le transizioni di stato ammesse dal ciclo di vita della \textit{task} (da \texttt{PENDING} a \texttt{RUNNING} o \texttt{CANCELLED}; da \texttt{RUNNING} a \texttt{COMPLETED}, \texttt{FAILED} o \texttt{CANCELLED}) e rifiuti ogni altra transizione, incluso qualunque tentativo di uscita da uno stato terminale. & RF.46 & S \\ \hline
 
-    TU\_20 & Verificare che la sequenza di validazione del contesto si interrompa al primo passo fallito (\textit{fail-fast}) senza eseguire i passi successivi, ripetendo il test per ciascuno dei dieci passi definiti (sintassi dell'\textit{URL}, estrazione di \textit{owner}/nome, raggiungibilità, esistenza del \textit{branch}, appartenenza del \textit{commit}, ancoraggio dello \textit{SHA}, rilevamento dei linguaggi, ambito non vuoto, esistenza dell'ambito, persistenza). & RF.19, RF.20, RF.21, RF.22, RF.29, RF.30 & NI \\ \hline
+    TU\_20 & Verificare che la sequenza di validazione del contesto si interrompa al primo passo fallito (\textit{fail-fast}) senza eseguire i passi successivi, ripetendo il test per ciascuno dei dieci passi definiti (sintassi dell'\textit{URL}, estrazione di \textit{owner}/nome, raggiungibilità, esistenza del \textit{branch}, appartenenza del \textit{commit}, ancoraggio dello \textit{SHA}, rilevamento dei linguaggi, ambito non vuoto, esistenza dell'ambito, persistenza). & RF.19, RF.20, RF.21, RF.22, RF.29, RF.30 & S \\ \hline
 
-    TU\_21 & Verificare che il metodo \texttt{compareCommits} classifichi correttamente le quattro relazioni possibili tra \textit{commit} e \textit{branch} (\texttt{ahead}, \texttt{identical}, \texttt{behind}, \texttt{diverged}) e che solo \texttt{ahead} e \texttt{identical} siano trattati come esito valido ai fini di RF.22. & RF.22 & NI \\ \hline
+    TU\_21 & Verificare che il metodo \texttt{compareCommits} classifichi correttamente le quattro relazioni possibili tra \textit{commit} e \textit{branch} (\texttt{ahead}, \texttt{identical}, \texttt{behind}, \texttt{diverged}) e che solo \texttt{ahead} e \texttt{identical} siano trattati come esito valido ai fini di RF.22. & RF.22 & S \\ \hline
 
-    TU\_22 & Verificare che il controllo dei linguaggi supportati accetti senza avviso i \textit{repository} il cui linguaggio predominante sia \textit{TypeScript}, \textit{JavaScript} o \textit{Python}, e generi l'avviso non bloccante previsto da RF.24 per ogni altro linguaggio rilevato. & RV.7, RF.24 & NI \\ \hline
+    TU\_22 & Verificare che il controllo dei linguaggi supportati accetti senza avviso i \textit{repository} il cui linguaggio predominante sia \textit{TypeScript}, \textit{JavaScript} o \textit{Python}, e generi l'avviso non bloccante previsto da RF.24 per ogni altro linguaggio rilevato. & RQ.9, RF.24 & S \\ \hline
 
-    TU\_23 & Verificare che il titolo del \textit{Report} sia generato deterministicamente nel formato ``Nome operazione --- owner/repo@branch'' per ciascuno dei sette \texttt{OperationCode}, senza alcuna invocazione al modello \textit{LLM}, e che risulti sempre presente anche sui \textit{Report} con stato \texttt{FAILED}. & RF.51 & NI \\ \hline
+    TU\_23 & Verificare che il titolo del \textit{Report} sia generato deterministicamente nel formato ``Nome operazione --- owner/repo@branch'' per ciascuno dei sette \texttt{OperationCode}, senza alcuna invocazione al modello \textit{LLM}, e che risulti sempre presente anche sui \textit{Report} con stato \texttt{FAILED}. & RF.51 & S \\ \hline
 
-    TU\_24 & Verificare che il sanificatore \textit{Markdown} applicato ai blocchi testuali del \textit{Report} rimuova i tag \textit{HTML} grezzi e rifiuti i collegamenti con schema \texttt{javascript:} o \texttt{data:}, prevenendo l'iniezione di script nella resa a schermo e nell'esportazione \textit{PDF} (metrica MPD\_20). & MPD\_20 & NI \\ \hline
+    TU\_24 & Verificare che il sanificatore \textit{Markdown} applicato ai blocchi testuali del \textit{Report} rimuova i tag \textit{HTML} grezzi e rifiuti i collegamenti con schema \texttt{javascript:} o \texttt{data:}, prevenendo l'iniezione di script nella resa a schermo e nell'esportazione \textit{PDF} (metrica MPD\_19). & MPD\_19 & S \\ \hline
 
-    TU\_25 & Verificare che il calcolo dell'indice \textit{Flesch Reading Ease} sul testo del \textit{Changelog} di Business restituisca un valore coerente su un campione di testi di riferimento a punteggio noto, e che un punteggio inferiore alla soglia (50) determini l'errore \texttt{READABILITY\_TOO\_LOW}. & RQ.7 & NI \\ \hline
+    TU\_25 & Verificare che il calcolo dell'indice \textit{Flesch Reading Ease} sul testo del \textit{Changelog} di Business restituisca un valore coerente su un campione di testi di riferimento a punteggio noto, e che un punteggio inferiore alla soglia (50) determini l'errore \texttt{READABILITY\_TOO\_LOW}. & RF.108 & S \\ \hline
 
-    TU\_26 & Verificare che la mappatura tra l'enumerazione \texttt{ErrorKind} lato agente e il campo \texttt{error.code} lato \textit{backend} sia biunivoca e completa per tutti gli otto valori previsti (\texttt{TIMEOUT}, \texttt{PARSING}, \texttt{UPSTREAM}, \texttt{CONTEXT\_TOO\_LARGE}, \texttt{CONTEXT\_RESOURCE\_MISSING}, \texttt{CONTEXT\_RESOURCE\_INVALID}, \texttt{READABILITY\_TOO\_LOW}, \texttt{RATE\_LIMITED}). & RF.65, RF.67, RF.68, RF.69, RF.70, RF.71, RQ.7, RQ.8 & NI \\ \hline
+    TU\_26 & Verificare che la mappatura tra l'enumerazione \texttt{ErrorKind} lato agente e il campo \texttt{error.code} lato \textit{backend} sia biunivoca e completa per tutti gli otto valori previsti (\texttt{TIMEOUT}, \texttt{PARSING}, \texttt{UPSTREAM}, \texttt{CONTEXT\_TOO\_LARGE}, \texttt{CONTEXT\_RESOURCE\_MISSING}, \texttt{CONTEXT\_RESOURCE\_INVALID}, \texttt{READABILITY\_TOO\_LOW}, \texttt{RATE\_LIMITED}). & RF.65, RF.67, RF.68, RF.69, RF.70, RF.71, RF.108, RF.109 & S \\ \hline
 
-    TU\_27 & Verificare che il documento \textit{OpenAPI} (\textit{Swagger}) generato automaticamente dal \textit{backend} sia valido secondo lo schema \textit{OpenAPI 3.0} e che ogni \textit{Endpoint} pubblico implementato risulti documentato con metodo, parametri attesi e schema di risposta. & RV.16 & NI \\ \hline
+    TU\_27 & Verificare che il documento \textit{OpenAPI} (\textit{Swagger}) generato automaticamente dal \textit{backend} sia valido secondo lo schema \textit{OpenAPI 3.0} e che ogni \textit{Endpoint} pubblico implementato risulti documentato con metodo, parametri attesi e schema di risposta. & RQ.12 & S \\ \hline
 
     \caption{Test di Unità}
     \label{tab:test_unita}
@@ -721,31 +706,27 @@ I test di integrazione verificano il corretto funzionamento delle interfacce, lo
     TI\_04 & Verificare che l'agente \textit{OWASP}, integrato con il sistema di caricamento \textit{repository} locale, individui con successo i riscontri previsti all'interno del Golden Set di calibrazione. & RQ.5 & S \\ \hline
     TI\_05 & Verificare, con lo stack applicativo reale (\textit{backend} \textit{NestJS} contro un vero \textit{database} \textit{MongoDB}, mockando solo i confini esterni effettivi), l'intero ciclo di vita di una \textit{task}: creazione del contesto, creazione della \textit{task}, instradamento deterministico all'agente da parte dell'\textit{Orchestratore}, esecuzione e persistenza del \textit{Report} risultante. & RF.40 & S \\ \hline
 
-    TI\_06 & Verificare l'intero flusso di validazione del contesto su \texttt{POST /contexts} contro un \textit{repository} reale messo a disposizione dal \textbf{Proponente}, includendo il percorso di successo e almeno un caso di fallimento per ciascuno dei passi che coinvolgono una chiamata all'\textit{API GitHub}. & RF.19, RF.20, RF.22, RF.25, RF.30, RV.3 & NI \\ \hline
+    TI\_06 & Verificare l'intero flusso di validazione del contesto su \texttt{POST /contexts} contro un \textit{repository} reale messo a disposizione dal \textbf{Proponente}, includendo il percorso di successo e almeno un caso di fallimento per ciascuno dei passi che coinvolgono una chiamata all'\textit{API GitHub}. & RF.19, RF.20, RF.22, RF.25, RF.30, RV.3 & S \\ \hline
 
-    TI\_07 & Verificare, tramite il servizio \textit{SMTP} di test (\textit{mailpit}, già presente nell'ambiente \textit{Docker Compose}), che l'invio automatico del \textit{Report} via \textit{email} recapiti l'allegato \textit{PDF} corretto e che, superata la soglia dimensionale, l'\textit{email} venga ricomposta e reinviata priva di allegato con il collegamento diretto alla piattaforma. & RF.75, RF.78 & NI \\ \hline
 
-    TI\_08 & Verificare, simulando un server \textit{SMTP} non raggiungibile, che il fallimento dell'invio non blocchi l'operazione né la visualizzazione del \textit{Report} in piattaforma, e che l'utente riceva l'avviso di mancato recapito alla successiva apertura di \textbf{Code Guardian}. & RF.77 & NI \\ \hline
 
-    TI\_09 & Verificare il meccanismo completo di sospensione e ripresa dell'esecuzione (\textit{interrupt}/\texttt{Command(resume=...)} di \textit{LangGraph} con \textit{checkpointer} \textit{MongoDB}) nel caso peggiore dell'operazione \texttt{CHANGELOG\_BUSINESS}, attraversando le tre sospensioni previste (\texttt{SPRINT\_ID}, \texttt{INCOMPLETE\_TASKS}, \texttt{BUSINESS\_CONFIRMATION}) e verificando che \texttt{Report.executionTimeMs} sommi esclusivamente i tre segmenti di tempo macchina, escludendo le attese dell'utente. & RF.94, RF.98, RF.100, RF.103, RF.104, RF.57 & NI \\ \hline
+    TI\_09 & Verificare il meccanismo completo di sospensione e ripresa dell'esecuzione (\textit{interrupt}/\texttt{Command(resume=...)} di \textit{LangGraph} con \textit{checkpointer} \textit{MongoDB}) nel caso peggiore dell'operazione \texttt{CHANGELOG\_BUSINESS}, attraversando le tre sospensioni previste (\texttt{SPRINT\_ID}, \texttt{INCOMPLETE\_TASKS}, \texttt{BUSINESS\_CONFIRMATION}) e verificando che \texttt{Report.executionTimeMs} sommi esclusivamente i tre segmenti di tempo macchina, escludendo le attese dell'utente. & RF.94, RF.98, RF.100, RF.103, RF.104, RF.57 & S \\ \hline
 
-    TI\_10 & Verificare che, a fronte dell'annullamento in uno qualsiasi dei tre punti di sospensione dell'Agente \textit{Changelog}, la \textit{task} transiti a \texttt{CANCELLED} senza generare alcuna ulteriore chiamata di rete verso il Modello \textit{AI} o il Sistema di \textit{Task Management}. & RF.99, RF.102, RF.105 & NI \\ \hline
+    TI\_10 & Verificare che, a fronte dell'annullamento in uno qualsiasi dei tre punti di sospensione dell'Agente \textit{Changelog}, la \textit{task} transiti a \texttt{CANCELLED} senza generare alcuna ulteriore chiamata di rete verso il Modello \textit{AI} o il Sistema di \textit{Task Management}. & RF.99, RF.102, RF.105 & S \\ \hline
 
-    TI\_11 & Verificare che due o più \textit{task} appartenenti allo stesso \textit{batch} vengano elaborate in isolamento dal \texttt{TaskProcessor}: il fallimento di una singola \textit{task} (es. errore di \textit{parsing}) non deve alterare lo stato né l'esito delle \textit{task} parallele residue. & RF.48 & NI \\ \hline
+    TI\_11 & Verificare che due o più \textit{task} appartenenti allo stesso \textit{batch} vengano elaborate in isolamento dal \texttt{TaskProcessor}: il fallimento di una singola \textit{task} (es. errore di \textit{parsing}) non deve alterare lo stato né l'esito delle \textit{task} parallele residue. & RF.48 & S \\ \hline
 
-    TI\_12 & Verificare, con lo stack applicativo reale e un \textit{mock} delle \textit{API GitHub} in scrittura, il ciclo completo di un'operazione dell'Agente Docs: ricezione della \textit{Proposal} dall'agente, apertura automatica della \textit{Pull Request} e persistenza del relativo collegamento nel \textit{Report}. & RF.82, RF.63 & NI \\ \hline
+    TI\_12 & Verificare, con lo stack applicativo reale e un \textit{mock} delle \textit{API GitHub} in scrittura, il ciclo completo di un'operazione dell'Agente Docs: ricezione della \textit{Proposal} dall'agente, apertura automatica della \textit{Pull Request} e persistenza del relativo collegamento nel \textit{Report}. & RF.82, RF.63 & S \\ \hline
 
-    TI\_13 & Verificare che, a fronte del rifiuto della \textit{Piattaforma GitHub} in fase di apertura della \textit{Pull Request}, il \textit{Report} già persistito con il \textit{diff} generato dall'agente transiti a stato \texttt{FAILED} con \texttt{error.code = PR\_CREATION\_FAILED}, mantenendo il \textit{diff} nei dati ma senza offrirlo nell'interfaccia. & RF.72 & NI \\ \hline
+    TI\_13 & Verificare che, a fronte del rifiuto della \textit{Piattaforma GitHub} in fase di apertura della \textit{Pull Request}, il \textit{Report} già persistito con il \textit{diff} generato dall'agente transiti a stato \texttt{FAILED} con \texttt{error.code = PR\_CREATION\_FAILED}, mantenendo il \textit{diff} nei dati ma senza offrirlo nell'interfaccia. & RF.72 & S \\ \hline
 
-    TI\_14 & Verificare che una risposta \texttt{429} del \textit{provider LLM} venga intercettata dall'agente, mappata sul valore \texttt{RATE\_LIMITED} di \texttt{ErrorKind} e propagata dal \textit{backend} come \texttt{error.code = LLM\_RATE\_LIMITED}, senza che l'esecuzione resti bloccata in attesa indefinita. & RQ.8 & NI \\ \hline
+    TI\_14 & Verificare che una risposta \texttt{429} del \textit{provider LLM} venga intercettata dall'agente, mappata sul valore \texttt{RATE\_LIMITED} di \texttt{ErrorKind} e propagata dal \textit{backend} come \texttt{error.code = LLM\_RATE\_LIMITED}, senza che l'esecuzione resti bloccata in attesa indefinita. & RF.109 & S \\ \hline
 
-    TI\_15 & Verificare che il controllo del tetto mensile di utilizzo sia eseguito prima dell'accodamento in \texttt{POST /tasks} e che, se superato, l'intero \textit{batch} venga respinto con \texttt{429 USAGE\_LIMIT\_EXCEEDED} senza accodare parzialmente alcuna operazione. & RF.66, RV.6 & NI \\ \hline
+    TI\_15 & Verificare che il controllo del tetto mensile di utilizzo sia eseguito prima dell'accodamento in \texttt{POST /tasks} e che, se superato, l'intero \textit{batch} venga respinto con \texttt{429 USAGE\_LIMIT\_EXCEEDED} senza accodare parzialmente alcuna operazione. & RF.66, RQ.8 & S \\ \hline
 
-    TI\_16 & Verificare, con un \textit{repository} privato di test e un \textit{token} dotato dei permessi corretti, che l'intero flusso di selezione del contesto e di esecuzione di un'operazione completi con successo esattamente come su un \textit{repository} pubblico. & RV.4 & NI \\ \hline
+    TI\_16 & Verificare, con un \textit{repository} privato di test e un \textit{token} dotato dei permessi corretti, che l'intero flusso di selezione del contesto e di esecuzione di un'operazione completi con successo esattamente come su un \textit{repository} pubblico. & RQ.7 & S \\ \hline
 
-    TI\_17 & Verificare, tramite l'ambiente di \textit{storage} compatibile \textit{S3} di test (\textit{minio}, già presente in \textit{Docker Compose}), che l'esportazione del \textit{Report} generi il \textit{PDF}, lo archivi nel \textit{bucket} privato e lo restituisca in \textit{streaming} con gli \textit{header} corretti e un nome file deterministico. & RF.73 & NI \\ \hline
 
-    TI\_18 & Test di carico: verificare che venti richieste concorrenti di esportazione \textit{PDF} non producano file troncati né errori inattesi sul \textit{task} \textit{backend} dimensionato a 0,5 \textit{vCPU} / 1 \textit{GB}, colmando il rischio residuo segnalato nella Progettazione \textit{MVP} sull'esportazione \textit{PDF}. & RF.73, RF.74 & NI \\ \hline
 
     \caption{Test di Integrazione}
     \label{tab:test_integrazione}
@@ -765,15 +746,7 @@ I test non funzionali di sistema verificano il rispetto dei requisiti qualitativ
     \textbf{Codice} & \textbf{Descrizione} & \textbf{Requisito} & \textbf{Stato} \\ \hline
     \endhead
 
-    TNF\_01 & Verificare che il tempo tra un'azione dell'utente nell'interfaccia grafica e il relativo \textit{feedback} visivo non superi i 2 secondi, misurato sulle interazioni principali (selezione del \textit{repository}, avvio delle operazioni, apertura di un \textit{Report}). & RQ.10 & NI \\ \hline
-
-    TNF\_02 & Verificare che il tempo complessivo del processo di autenticazione (verifica della password con \textit{Argon2id} ed emissione del \textit{token JWT}) non superi i 2 secondi, misurato \textit{end-to-end} su \texttt{POST /auth/login}. & RQ.9 & NI \\ \hline
-
-    TNF\_03 & Verificare che il tempo di risposta di un singolo agente, dalla ricezione della richiesta all'emissione del \textit{Report}, non superi i 5 minuti, misurato per ciascuno dei sette \texttt{OperationCode} su \textit{repository} di dimensione rappresentativa. & RQ.6 & NI \\ \hline
-
-    TNF\_04 & Verificare, rieseguendo la suite dei test di accettazione sulle versioni più recenti di \textit{Google Chrome}, \textit{Mozilla Firefox} e \textit{Microsoft Edge}, l'assenza di anomalie grafiche o funzionali su ciascuno dei tre \textit{browser} target. & RV.5 & NI \\ \hline
-
-    TNF\_05 & Test di usabilità moderato: misurare, su un campione di nuovi utenti privi di formazione pregressa sul sistema, il tempo necessario a completare autonomamente uno scenario rappresentativo (selezione del \textit{repository} e avvio di un'operazione); il tempo mediano rilevato deve risultare inferiore o uguale a 30 minuti. & RQ.11 & NI \\ \hline
+    TNF\_01 & Verificare, rieseguendo la suite dei test di accettazione sulle versioni più recenti di \textit{Google Chrome}, \textit{Mozilla Firefox} e \textit{Microsoft Edge}, l'assenza di anomalie grafiche o funzionali su ciascuno dei tre \textit{browser} target. & RV.2 & S \\ \hline
 
     \caption{Test non funzionali di sistema}
     \label{tab:test_non_funzionali}
@@ -793,27 +766,27 @@ Non tutti i requisiti di vincolo e di sicurezza si prestano a una verifica dinam
     \textbf{Requisito} & \textbf{Descrizione sintetica} & \textbf{Metodo di verifica} \\ \hline
     \endhead
 
-    RV.2 & Nessun addestramento di nuovi modelli; integrazione esclusiva tramite \textit{API} esterne. & Revisione architetturale: il codice non contiene routine di \textit{training}; RV.13 ne è la conferma applicativa. \\ \hline
+    RV.1 & Nessun addestramento di nuovi modelli; integrazione esclusiva tramite \textit{API} esterne. & Revisione architetturale: il codice non contiene routine di \textit{training}; RV.7 ne è la conferma applicativa. \\ \hline
 
-    RV.9 & \textit{Frontend} sviluppato in \textit{TypeScript} con \textit{React}. & Ispezione del manifesto di progetto (\texttt{package.json}) e della configurazione di \textit{build} (\texttt{vite.config.ts}). \\ \hline
+    RV.3 & \textit{Frontend} sviluppato in \textit{TypeScript} con \textit{React}. & Ispezione del manifesto di progetto (\texttt{package.json}) e della configurazione di \textit{build} (\texttt{vite.config.ts}). \\ \hline
 
-    RV.10 & \textit{Backend} sviluppato in \textit{TypeScript} con \textit{NestJS}. & Ispezione del manifesto di progetto (\texttt{package.json}) e della struttura dei moduli \texttt{@nestjs/*}. \\ \hline
+    RV.4 & \textit{Backend} sviluppato in \textit{TypeScript} con \textit{NestJS}. & Ispezione del manifesto di progetto (\texttt{package.json}) e della struttura dei moduli \texttt{@nestjs/*}. \\ \hline
 
-    RV.11 & Agenti IA sviluppati in \textit{Python} con \textit{LangGraph}. & Ispezione del manifesto di progetto (\texttt{pyproject.toml}) e del grafo definito in \texttt{graph.py}. \\ \hline
+    RV.5 & Agenti IA sviluppati in \textit{Python} con \textit{LangGraph}. & Ispezione del manifesto di progetto (\texttt{pyproject.toml}) e del grafo definito in \texttt{graph.py}. \\ \hline
 
-    RV.12 & Persistenza su \textit{database} non relazionale \textit{MongoDB}. & Ispezione degli schemi \textit{Mongoose} e del documento di \textit{Schema Design} (RV.21). \\ \hline
+    RV.6 & Persistenza su \textit{database} non relazionale \textit{MongoDB}. & Ispezione degli schemi \textit{Mongoose} e del documento di \textit{Schema Design} (RQ.17). \\ \hline
 
-    RV.13 & Integrazione con i modelli \textit{LLM} tramite \textit{AWS Bedrock}. & Revisione della configurazione \textit{IAM} e degli \textit{stack infra} (\texttt{compute-stack.ts}, \texttt{atlas-stack.ts}). \\ \hline
+    RV.7 & Integrazione con i modelli \textit{LLM} tramite \textit{AWS Bedrock}. & Revisione della configurazione \textit{IAM} e degli \textit{stack infra} (\texttt{compute-stack.ts}, \texttt{atlas-stack.ts}). \\ \hline
 
-    RV.17 & Manuale Utente a corredo del prodotto finale. & Verifica di completezza in sede di revisione della \textit{Product Baseline} (PB). \\ \hline
+    RQ.13 & Manuale Utente a corredo del prodotto finale. & Verifica di completezza in sede di revisione della \textit{Product Baseline} (PB). \\ \hline
 
-    RV.18 & Documento di Specifiche Tecniche dell'architettura. & Verifica di completezza in sede di revisione della PB; coincide in larga parte con la Progettazione \textit{MVP}. \\ \hline
+    RQ.14 & Documento di Specifiche Tecniche dell'architettura. & Verifica di completezza in sede di revisione della PB; coincide in larga parte con la Progettazione \textit{MVP}. \\ \hline
 
-    RV.19 & Sistema o formato documentale per il tracciamento dei difetti. & Verifica dell'esistenza e dell'uso effettivo del formato di \textit{Bug Report} in sede di revisione della PB. \\ \hline
+    RQ.15 & Sistema o formato documentale per il tracciamento dei difetti. & Verifica dell'esistenza e dell'uso effettivo del formato di \textit{Bug Report} in sede di revisione della PB. \\ \hline
 
-    RV.20 & Codice sorgente versionato su \textit{repository Git} remoto. & Verificato per costruzione: il progetto è ospitato su \textit{GitHub}. \\ \hline
+    RQ.16 & Codice sorgente versionato su \textit{repository Git} remoto. & Verificato per costruzione: il progetto è ospitato su \textit{GitHub}. \\ \hline
 
-    RV.21 & Documento di \textit{Schema Design} della base dati non relazionale. & Verifica di completezza in sede di revisione della PB; il modello di dominio persistito (Progettazione \textit{MVP}) ne costituisce la base. \\ \hline
+    RQ.17 & Documento di \textit{Schema Design} della base dati non relazionale. & Verifica di completezza in sede di revisione della PB; il modello di dominio persistito (Progettazione \textit{MVP}) ne costituisce la base. \\ \hline
 
     RS.5 & \textit{Policy} del fornitore \textit{LLM} che escluda la ritenzione o l'uso del codice analizzato per l'addestramento di terzi. & Revisione contrattuale/documentale delle condizioni di servizio di \textit{AWS Bedrock} per il modello selezionato. \\ \hline
 
@@ -823,8 +796,9 @@ Non tutti i requisiti di vincolo e di sicurezza si prestano a una verifica dinam
 
 \begin{itemize}
     \item \textbf{RQ.1, RQ.2, RQ.3}: non compaiono in questa tabella né tra i casi di test, perché non sono proprietà osservabili con un singolo caso di test ma \textit{metriche aggregate} calcolate a partire dall'esito dell'intera suite (percentuale di test superati, copertura del codice, complessità/duplicazione) già misurate nel \textbf{Cruscotto di valutazione} (\S~7) tramite gli strumenti indicati nelle Norme di Progetto.
-    \item \textbf{RV.14} (integrazione con \textit{GitHub} e \textit{GitHub Issues}): non riceve un caso di test dedicato perché è già esercitato trasversalmente da TI\_05 e TA\_12.
-    \item \textbf{RV.8} (contenuti esclusivamente in lingua inglese): l'\textbf{Analisi dei Requisiti} non definisce un comportamento atteso (avviso, blocco o migliore sforzo) per un \textit{repository} o \textit{Task Management} con testo in una lingua diversa dall'inglese. In assenza di un \textit{Caso d'Uso} o di un requisito che ne descriva la gestione degli errori, non è possibile progettare un caso di test univoco: si raccomanda di chiarire questo punto con il \textbf{Proponente} ed eventualmente introdurre un requisito e un \textit{Caso d'Uso} di errore dedicati prima della Product Baseline.
+    \item \textbf{RQ.6} (operare su repository di esempio forniti dal Proponente): non riceve un caso di test dedicato poiché è validato trasversalmente durante l'esecuzione dei test di integrazione TI\_04, TI\_06 e TI\_16.
+    \item \textbf{RQ.11} (integrazione con \textit{GitHub} e \textit{GitHub Issues}): non riceve un caso di test dedicato perché è già esercitato trasversalmente da TI\_05 e TA\_12.
+    \item \textbf{RQ.10} (contenuti esclusivamente in lingua inglese): il requisito chiarisce il perimetro linguistico supportato, risolvendo l'ambiguità precedentemente segnalata. La sua conformità è ora garantita per costruzione e verificata tramite ispezione dei \textit{prompt} e dell'infrastruttura di test, senza richiedere un caso d'uso d'errore dedicato.
 \end{itemize}
 
 \subsection{Test di regressione (TR)}
@@ -864,12 +838,10 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_15 & RF.15 \\\hline
     TS\_16 & RF.16 \\\hline
     TS\_17 & RF.17 \\\hline
-    TS\_18 & RF.18 \\\hline
     TS\_19 & RF.19 \\\hline
     TS\_20 & RF.20 \\\hline
     TS\_21 & RF.21 \\\hline
     TS\_22 & RF.22 \\\hline
-    TS\_23 & RF.23 \\\hline
     TS\_24 & RF.24 \\\hline
     TS\_25 & RF.25 \\\hline
     TS\_26 & RF.26 \\\hline
@@ -884,7 +856,6 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_35 & RF.35 \\\hline
     TS\_36 & RF.36 \\\hline
     TS\_37 & RF.37 \\\hline
-    TS\_38 & RF.38 \\\hline
     TS\_39 & RF.39 \\\hline
     TS\_40 & RF.40 \\\hline
     TS\_41 & RF.41 \\\hline
@@ -901,15 +872,12 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_52 & RF.52 \\\hline
     TS\_53 & RF.53 \\\hline
     TS\_54 & RF.54 \\\hline
-    TS\_55 & RF.55 \\\hline
-    TS\_56 & RF.56 \\\hline
     TS\_57 & RF.57 \\\hline
     TS\_58 & RF.58 \\\hline
     TS\_59 & RF.59 \\\hline
     TS\_60 & RF.60 \\\hline
     TS\_61 & RF.61 \\\hline
     TS\_62 & RF.62 \\\hline
-    TS\_63 & RF.63 \\\hline
     TS\_64 & RF.64 \\\hline
     TS\_65 & RF.65 \\\hline
     TS\_66 & RF.66 \\\hline
@@ -918,20 +886,11 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_69 & RF.69 \\\hline
     TS\_70 & RF.70 \\\hline
     TS\_71 & RF.71 \\\hline
-    TS\_72 & RF.72 \\\hline
-    TS\_73 & RF.73 \\\hline
     TS\_74 & RF.74 \\\hline
-    TS\_75 & RF.75 \\\hline
-    TS\_76 & RF.76 \\\hline
-    TS\_77 & RF.77 \\\hline
-    TS\_78 & RF.78 \\\hline
     TS\_79 & RF.79 \\\hline
     TS\_80 & RF.80 \\\hline
     TS\_81 & RF.81 \\\hline
-    TS\_82 & RF.82 \\\hline
     TS\_83 & RF.83 \\\hline
-    TS\_84 & RF.84 \\\hline
-    TS\_85 & RF.85 \\\hline
     TS\_86 & RF.86 \\\hline
     TS\_87 & RF.87 \\\hline
     TS\_88 & RF.88 \\\hline
@@ -939,19 +898,22 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TS\_90 & RF.90 \\\hline
     TS\_91 & RF.91 \\\hline
     TS\_92 & RF.92 \\\hline
-    TS\_93 & RF.93 \\\hline
     TS\_94 & RF.94 \\\hline
     TS\_95 & RF.95 \\\hline
     TS\_96 & RF.96 \\\hline
-    TS\_97 & RF.97 \\\hline
     TS\_98 & RF.98 \\\hline
     TS\_99 & RF.99 \\\hline
     TS\_100 & RF.100 \\\hline
     TS\_101 & RF.101 \\\hline
     TS\_102 & RF.102 \\\hline
-    TS\_103 & RF.103 \\\hline
     TS\_104 & RF.104 \\\hline
     TS\_105 & RF.105 \\\hline
+    TS\_106 & RF.106 \\\hline
+    TS\_107 & RF.107 \\\hline
+    TS\_108 & RF.108 \\\hline
+    TS\_109 & RF.109 \\\hline
+    TS\_110 & RF.110 \\\hline
+    TS\_111 & RF.111 \\\hline
     \hline
     TA\_01 & RF.1, RF.5, RF.6, RF.7 \\\hline
     TA\_02 & RF.10, RF.13, RF.14 \\\hline
@@ -975,26 +937,24 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TU\_05 & RF.83 \\\hline
     TU\_06 & RF.83 \\\hline
     TU\_07 & RS.2 \\\hline
-    TU\_08 & RV.1 \\\hline
+    TU\_08 & RF.106 \\\hline
     TU\_09 & RF.90, RF.91 \\\hline
     TU\_10 & RF.30 \\\hline
     TU\_11 & RF.61 \\\hline
     TU\_12 & RS.1 \\\hline
     TU\_13 & RS.2 \\\hline
     TU\_14 & RS.3 \\\hline
-    TU\_15 & RS.4 \\\hline
-    TU\_16 & RS.3, RV.15 \\\hline
     TU\_17 & RQ.4 \\\hline
-    TU\_18 & RF.40, RV.1 \\\hline
+    TU\_18 & RF.40, RF.106 \\\hline
     TU\_19 & RF.46 \\\hline
     TU\_20 & RF.19, RF.20, RF.21, RF.22, RF.29, RF.30 \\\hline
     TU\_21 & RF.22 \\\hline
-    TU\_22 & RV.7, RF.24 \\\hline
+    TU\_22 & RQ.9, RF.24 \\\hline
     TU\_23 & RF.51 \\\hline
-    TU\_24 & MPD\_20 \\\hline
-    TU\_25 & RQ.7 \\\hline
-    TU\_26 & RF.65, RF.67, RF.68, RF.69, RF.70, RF.71, RQ.7, RQ.8 \\\hline
-    TU\_27 & RV.16 \\\hline
+    TU\_24 & MPD\_19 \\\hline
+    TU\_25 & RF.108 \\\hline
+    TU\_26 & RF.65, RF.67, RF.68, RF.69, RF.70, RF.71, RF.108, RF.109 \\\hline
+    TU\_27 & RQ.12 \\\hline
     \hline
     TI\_01 & RF.40 \\\hline
     TI\_02 & RF.67 \\\hline
@@ -1002,24 +962,16 @@ Al fine di garantire la trasparenza e la copertura dei requisiti, il gruppo adot
     TI\_04 & RQ.5 \\\hline
     TI\_05 & RF.40 \\\hline
     TI\_06 & RF.19, RF.20, RF.22, RF.25, RF.30, RV.3 \\\hline
-    TI\_07 & RF.75, RF.78 \\\hline
-    TI\_08 & RF.77 \\\hline
     TI\_09 & RF.94, RF.98, RF.100, RF.103, RF.104, RF.57 \\\hline
     TI\_10 & RF.99, RF.102, RF.105 \\\hline
     TI\_11 & RF.48 \\\hline
     TI\_12 & RF.82, RF.63 \\\hline
     TI\_13 & RF.72 \\\hline
-    TI\_14 & RQ.8 \\\hline
-    TI\_15 & RF.66, RV.6 \\\hline
-    TI\_16 & RV.4 \\\hline
-    TI\_17 & RF.73 \\\hline
-    TI\_18 & RF.73, RF.74 \\\hline
+    TI\_14 & RF.109 \\\hline
+    TI\_15 & RF.66, RQ.8 \\\hline
+    TI\_16 & RQ.7 \\\hline
     \hline
-    TNF\_01 & RQ.10 \\\hline
-    TNF\_02 & RQ.9 \\\hline
-    TNF\_03 & RQ.6 \\\hline
-    TNF\_04 & RV.5 \\\hline
-    TNF\_05 & RQ.11 \\\hline
+    TNF\_01 & RV.2 \\\hline
     \caption{Tracciamento Test}
     \label{tab:tracciamento_test}
 \end{xltabular}
@@ -1320,7 +1272,7 @@ Prima del rilascio dei documenti nella loro versione 1.0.0, il team effettua un 
 \end{itemize}
 
 \subsection{MP\_12: Copertura del Codice (Code Coverage)}
-La Copertura del Codice misura la percentuale di linee di codice sorgente effettivamente eseguite dai test automatici, individuando le porzioni di logica applicativa prive di verifica. Come indicato in apertura del capitolo, questa metrica di prodotto era stata dichiarata "da popolare progressivamente a partire dalla Product Baseline": la prima misurazione utile è riportata di seguito, ottenuta rieseguendo dal vivo l'intera suite (comandi \texttt{npm run test:cov} per \textit{backend} e \textit{frontend}, \texttt{pytest --cov=src --cov-branch} per gli \textit{agents}) il 2026/08/20.
+La Copertura del Codice misura la percentuale di linee di codice sorgente effettivamente eseguite dai test automatici, individuando le porzioni di logica applicativa prive di verifica. Come indicato in apertura del capitolo, questa metrica di prodotto era stata dichiarata "da popolare progressivamente a partire dalla Product Baseline": la misurazione riportata di seguito è stata ottenuta rieseguendo dal vivo l'intera suite (comandi \texttt{pnpm test:cov} per \textit{backend} e \textit{frontend}, \texttt{pytest} per gli \textit{agents}) il 2026/09/16.
 
 \begin{table}[htbp]
     \centering
@@ -1328,38 +1280,39 @@ La Copertura del Codice misura la percentuale di linee di codice sorgente effett
     \begin{tabular}{|l|c|c|c|c|}
         \hline
         \textbf{Componente} & \textbf{\% Istruzioni} & \textbf{\% Rami} & \textbf{\% Funzioni} & \textbf{Soglia accettabile} \\ \hline
-        Backend (\textit{NestJS}) & 94,16\% & 85,11\% & 95,28\% & 75\% \\ \hline
-        Agents (\textit{Python}) & 94\% & 94\% & n/d & 75\% \\ \hline
-        Frontend (\textit{React}) & 100\% & 100\% & 100\% & 75\% \\ \hline
+        Backend (\textit{NestJS}) & 91,93\% & 83,23\% & 93,51\% & 75\% \\ \hline
+        Agents (\textit{Python}) & 87,56\% & 75,58\% & n/d & 75\% \\ \hline
+        Frontend (\textit{React}) & 82,91\% & 76,67\% & 83,94\% & 75\% \\ \hline
     \end{tabular}
     \caption{Copertura del codice per componente (MP\_12)}
     \label{tab:mp12_coverage}
 \end{table}
 
 \paragraph*{Valutazione dell'andamento}
-Le tre componenti del sistema superano ampiamente sia la soglia di accettazione (75\%) sia quella ottimale (90\%) definite per questa metrica. Nel \textit{backend} le uniche righe non coperte appartengono a tre schemi \textit{Mongoose} puramente dichiarativi (\texttt{user.schema.ts}, \texttt{access-log.schema.ts}, \texttt{service-credential.schema.ts}), non ancora collegati all'applicazione in questo PoC (registrazione/multi-utente reale fuori perimetro, si veda il README) e privi quindi di logica da verificare. Negli \textit{agents}, il modulo meno coperto è \texttt{graph.py} (89\%), che gestisce percorsi d'errore rari del motore \textit{LangGraph}. Il \textit{frontend} raggiunge la copertura totale su tutti i file applicativi sostanziali (sono esclusi solo i file di puro \textit{wiring}: \texttt{main.tsx}, \texttt{App.tsx}, \texttt{router.tsx}, \texttt{routeTree.gen.ts}).
+Le tre componenti superano la soglia di accettazione (75\%) su istruzioni e rami; la soglia ottimale (90\%) è raggiunta dalle sole istruzioni del \textit{backend}. La misura non è presa sull'intero albero dei sorgenti: il \textit{backend} esclude dal calcolo gli schemi \textit{Mongoose} (\texttt{src/**/schemas/**}) e i \textit{DTO} (\texttt{src/**/dto/**}), entrambi dichiarativi e privi di logica da verificare; il \textit{frontend} esclude i file di puro \textit{wiring} (\texttt{main.tsx}, \texttt{App.tsx}, \texttt{router.tsx}, \texttt{routeTree.gen.ts}), le definizioni di rotta (\texttt{src/routes/**}) e le dichiarazioni di tipo (\texttt{src/types/**}); gli \textit{agents} escludono \texttt{src/main.py}, che è il solo punto di avvio del servizio. Le esclusioni sono dichiarate nei rispettivi file di configurazione (\texttt{vitest.config.mts}, \texttt{vitest.config.ts}, \texttt{pyproject.toml}), dove sono anche fissate le soglie minime di MP\_12 e MPD\_8, così che una regressione della copertura faccia fallire la \textit{build}.
 
 \paragraph*{MP\_12 - Copertura del Codice (Code Coverage)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 75\%$):} Il vincolo è ampiamente rispettato su tutti e tre i componenti.
-    \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è rispettato su tutti e tre i componenti (94,16\% backend, 94\% agents, 100\% frontend).
+    \item \textbf{Valore di accettazione ($\ge 75\%$):} Il vincolo è rispettato su tutti e tre i componenti, sia sulle istruzioni sia sui rami.
+    \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è rispettato dalle sole istruzioni del \textit{backend} (91,93\%); \textit{agents} (87,56\%) e \textit{frontend} (82,91\%) restano fra la soglia di accettazione e quella ottimale.
 \end{itemize}
 
 \subsection{MP\_13: Superamento dei Test (Test Success Rate)}
-Il Superamento dei Test misura la percentuale di test automatici che ottengono esito positivo, a garanzia della stabilità del software e dell'assenza di regressioni. Anche questa metrica viene popolata per la prima volta con la misurazione riportata di seguito, ottenuta rieseguendo dal vivo, in data 2026/08/20, l'intera suite automatica su tutti i livelli (unità, integrazione, end-to-end verso un vero \textit{MongoDB}/\textit{Redis} in \textit{Docker}, e i test di sistema/accettazione \textit{Playwright} contro lo stack applicativo reale).
+Il Superamento dei Test misura la percentuale di test automatici che ottengono esito positivo, a garanzia della stabilità del software e dell'assenza di regressioni. La misurazione riportata di seguito è stata ottenuta rieseguendo dal vivo, in data 2026/09/16, l'intera suite automatica su tutti i livelli (unità, integrazione \textit{end-to-end} verso un vero \textit{MongoDB} e un vero \textit{Redis}, e test di sistema \textit{Playwright} contro lo stack applicativo reale).
 
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|l|c|c|c|}
+    \begin{tabular}{|l|c|c|c|c|}
         \hline
-        \textbf{Livello} & \textbf{Test eseguiti} & \textbf{Test superati} & \textbf{TSR} \\ \hline
-        Backend (\textit{Jest}) & 153 & 153 & 100\% \\ \hline
-        Backend end-to-end (\textit{Jest}, \textit{Docker}) & 4 & 4 & 100\% \\ \hline
-        Agents (\textit{pytest}) & 113 & 113* & 100\%* \\ \hline
-        Frontend (\textit{Vitest}) & 90 & 90 & 100\% \\ \hline
-        Sistema/Accettazione (\textit{Playwright}, reali) & 12 & 12 & 100\% \\ \hline
-        \textbf{Totale} & \textbf{372} & \textbf{372} & \textbf{100\%} \\ \hline
+        \textbf{Livello} & \textbf{Eseguiti} & \textbf{Superati} & \textbf{Difetti aperti} & \textbf{TSR} \\ \hline
+        Backend, unità (\textit{Vitest}) & 625 & 625 & --- & 100\% \\ \hline
+        Backend, integrazione (\textit{Vitest}) & 58 & 55 & 3 & 94,8\% \\ \hline
+        Agents (\textit{pytest}) & 261 & 258* & 3 & 98,9\%* \\ \hline
+        Frontend (\textit{Vitest}) & 274 & 274 & --- & 100\% \\ \hline
+        Infrastruttura (\textit{Vitest}, \textit{CDK}) & 3 & 3 & --- & 100\% \\ \hline
+        Sistema (\textit{Playwright}, 3 \textit{browser}) & 153 & 153 & --- & 100\% \\ \hline
+        \textbf{Totale} & \textbf{1374} & \textbf{1368} & \textbf{6} & \textbf{99,6\%} \\ \hline
     \end{tabular}
     \caption{Superamento dei test per livello (MP\_13)}
     \label{tab:mp13_pass_rate}
@@ -1368,12 +1321,14 @@ Il Superamento dei Test misura la percentuale di test automatici che ottengono e
 *Il test del Golden Set (TI\_04, RQ.5) richiede per definizione una vera \texttt{LLM\_API\_KEY} e viene per questo saltato (\textit{skip}) di norma, non fallito; il 2026/08/20 è stato eseguito per la prima volta con una chiave reale. Il tentativo fuori da \textit{Docker} falliva per un motivo puramente ambientale (l'hostname interno \texttt{redis} usato da \texttt{REDIS\_URL} non è risolvibile sull'host); eseguendolo dentro la rete \textit{Docker} quell'errore spariva, ma emergeva un secondo problema, questa volta un difetto reale del test: il contesto fittizio impostava \texttt{scopeType="FILES"} senza il corrispondente \texttt{paths}, per cui \texttt{SecurityLoader} scartava sistematicamente l'unico file fornito prima ancora di interpellare l'LLM. Corretto il fixture (\texttt{scopeType="FULL\_REPOSITORY"}), il test è risultato \textbf{superato}: il modello ha identificato correttamente la SQL Injection nel file di prova.
 
 \paragraph*{Valutazione dell'andamento}
-Il tasso di superamento è del 100\% su tutti i 372 test eseguiti dal vivo in data odierna, su tutti i livelli della piramide di test (unità, integrazione, \textit{end-to-end} di \textit{backend} e test di sistema/accettazione reali in \textit{Playwright}), incluso il caso limite del Golden Set che richiede una vera chiamata \textit{LLM}. Il numero di test \textit{Agents} include anche 3 test di unità nuovi, aggiunti insieme alle relative funzionalità implementate lo stesso giorno (lo scarto dei \textit{finding} fuori ambito e il riordinamento per gravità dei riscontri dell'Agente Security): due sono le nuove voci tracciate TU\_10 e TU\_11, il terzo è un test di supporto sul comportamento "\textit{fail open}" (nessun filtro applicato quando l'informazione di ambito non è disponibile al parser). Non risultano test disabilitati, marcati come \textit{todo} o con asserzioni puramente segnaposto (verifica campionaria di dettaglio su entrambi i lati del sistema, si veda anche \texttt{TESTING.md} nel \textit{repository} del codice).
+Il tasso di superamento è del 99,6\% sui 1374 test eseguiti, su tutti i livelli della piramide (unità, integrazione \textit{end-to-end} di \textit{backend}, infrastruttura e test di sistema in \textit{Playwright}). Nessuna suite è rossa: i 6 test non superati sono difetti noti, marcati nel sorgente con \texttt{it.fails} (\textit{Vitest}) o \texttt{@pytest.mark.xfail} (\textit{pytest}) proprio perché l'esito negativo è atteso e documentato, e per questo non interrompono la \textit{build}. Riguardano il mancato instradamento a FAILED quando GitHub rifiuta l'apertura della \textit{Pull Request} (TI\_13, RF.72), la completezza degli schemi nel documento \textit{OpenAPI} (2 casi), il limite di frequenza verso il modello (TI\_14) e 2 casi dell'Agente Docs.
+
+Alla cifra dei test eseguiti non concorrono 10 casi di integrazione saltati (\texttt{contexts-github-live} e \texttt{ti16-repository-privato}): sono condizionati alla presenza di una credenziale \textit{GitHub} reale e vengono saltati, non falliti, quando non è configurata. Sul livello di sistema i 153 casi sono 51 casi distinti ripetuti su \textit{Google Chrome}, \textit{Mozilla Firefox} e \textit{Microsoft Edge}: è questa esecuzione a soddisfare TNF\_01 (RV.2), che chiede proprio la riesecuzione della suite sui tre \textit{browser} target. Restano esclusi dal conteggio i casi marcati \texttt{@agent}, che dipendono da una chiave \textit{LLM} attiva e da un costo per esecuzione; girano sul solo \textit{Chromium}, perché ciò che verificano non dipende dal motore del \textit{browser}.
 
 \paragraph*{MP\_13 - Superamento dei Test (Test Success Rate)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($= 100\%$):} Il vincolo è rispettato: 372/372 test superati.
-    \item \textbf{Valore ottimale ($= 100\%$):} Il vincolo è rispettato, coincidendo con il valore di accettazione.
+    \item \textbf{Valore di accettazione ($= 100\%$):} Il vincolo non è rispettato: 1368 test superati su 1374 eseguiti, pari al 99,6\%. I 6 mancanti corrispondono ad altrettanti difetti noti e tracciati, non a regressioni: nessuna suite risulta rossa.
+    \item \textbf{Valore ottimale ($= 100\%$):} Non raggiunto, coincidendo con il valore di accettazione.
 \end{itemize}
 
 \subsection{MP\_14: Rischi non Preventivati}
@@ -1452,83 +1407,6 @@ L'analisi del \textit{Time Efficiency} (TE) mostra una fisiologica stabilizzazio
     \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è soddisfatto per la maggior parte della durata del progetto. Si sono registrati valori inferiori alla soglia ottimale del 90\% solamente durante gli \textit{Sprint} 3 (87,1\%) e 4 (89,0\%), prima di intraprendere un costante trend di risalita che ha riportato e mantenuto la metrica su valori adeguati fino allo \textit{Sprint} 10 (95,8\%).
 \end{itemize}
 
-\newpage
-\section{Valutazioni per il miglioramento}
 
-Al termine di ogni iterazione, il gruppo SkyNet identifica le criticità emerse durante ogni \textit{Sprint} e definisce azioni correttive concrete da applicare negli \textit{Sprint} successivi. Le informazioni qui presentate sono tratte dalle discussioni che si sono svolte alla fine di ogni \textit{Sprint} e sono state annotate nel \textbf{Piano di Progetto}. Di seguito, sono elencate le problematiche riscontrate in modo chiaro e le azioni intraprese per superarle (basate sull'approccio iterativo PDSA - Plan Do-Study-Act) intraprese per garantire il miglioramento continuo del \textit{Way of Working}.
-
-\subsection{Valutazione sugli strumenti}
-Questa sezione analizza l'adeguatezza, le performance e l'effettivo utilizzo degli strumenti software a supporto dello sviluppo e della gestione operativa. Per ogni categoria tecnologica sono state identificate le efficienze riscontrate, le criticità d'uso e le relative prospettive di miglioramento, al fine di ottimizzare continuamente il \textit{Way of Working}.
-
-\subsubsection{Strumenti per la Documentazione e Redazione}
-Nel complesso, l'infrastruttura documentale si è rivelata utile e adeguata alle esigenze del progetto, sebbene abbia richiesto alcuni adattamenti in corso d'opera.
-\begin{itemize}
-    \item \textbf{Punti di forza:} \textit{Google Sheets} si è confermato uno strumento estremamente versatile e ampiamente utilizzato dal gruppo per molteplici aspetti gestionali, in particolare per il tracciamento delle ore, la gestione dei preventivi e la generazione dei \textit{Burndown Chart}.
-    \item \textbf{Criticità e Soluzioni:} Lo strumento che ha presentato maggiori criticità è \textbf{Overleaf}. I limiti imposti dalla versione gratuita e le frizioni nella stesura collaborativa lo rendono uno strumento probabilmente non ottimale per il nostro specifico caso d'uso. Per risolvere i conflitti, il gruppo ha adottato un approccio ibrido: la stesura e la modifica avvengono ora su istanze separate dei documenti testuali, demandando l'unione del lavoro al sistema di versionamento su \textit{GitHub}. Nonostante queste limitazioni, il team ha deciso di continuare a utilizzarlo in quanto produce risultati di formattazione validi ed è una tecnologia con cui i membri hanno ormai acquisito una buona familiarità.
-\end{itemize}
-
-\subsubsection{Strumenti per la Comunicazione}
-L'ecosistema di comunicazione ha raggiunto una stabilità eccellente: tutti gli strumenti selezionati si sono rivelati utili e ognuno ha trovato il proprio spazio operativo senza creare ridondanze.
-\begin{itemize}
-    \item \textbf{Comunicazione interna:} \textbf{Discord} si è affermato come il protagonista assoluto per il coordinamento del team. I suoi canali vocali e testuali sono risultati molto utili e vengono usati quotidianamente per la sincronizzazione del lavoro.
-    \item \textbf{Comunicazione esterna:} \textit{Slack} si è rivelato il canale primario, nonché il protagonista, per le interazioni dirette, i chiarimenti e la comunicazione tempestiva con l'azienda \textbf{Proponente (Var Group)}.
-\end{itemize}
-
-\subsubsection{Strumenti per la Gestione del Progetto e il Versionamento}
-Gli strumenti di versionamento e tracciamento si confermano essenziali e centrali per la riuscita del progetto.
-\begin{itemize}
-    \item \textbf{Punti di forza:} La \textit{TO DO Blackboard} (implementata tramite \textit{GitHub Projects}) rappresenta un solido punto di riferimento per l'intero gruppo. Permette di mantenere il focus e avere sempre chiara la situazione di avanzamento durante lo svolgimento degli \textit{Sprint}.
-    \item \textbf{Aree di miglioramento:} Sebbene l'attuale configurazione sia funzionale, il team ritiene che ci sia potenziale inespresso. Nei prossimi \textit{Sprint} si valuterà di approfondire ulteriormente le funzionalità di questi strumenti per integrare un'organizzazione del \textit{workflow} ancora migliore di quella attuale.
-\end{itemize}
-
-\subsubsection{Strumenti per l'Automazione e il Deployment}
-\begin{itemize}
-    \item \textbf{Stato attuale e prospettive:} Fino ad oggi, gli strumenti di automazione (es. \textit{GitHub Actions}) sono stati impiegati solo in modo marginale, prevalentemente per automatizzare la pubblicazione della documentazione sul sito statico del progetto.
-    \item \textbf{Aree di miglioramento:} Con l'avanzamento dello sviluppo verso le fasi centrali del \textit{Proof of Concept} e del prodotto finale, il gruppo ritiene che sarebbe estremamente utile un utilizzo più approfondito di queste tecnologie. L'obiettivo futuro è integrare pipeline automatiche per snellire i processi di test e \textbf{Continuous Integration}.
-\end{itemize}
-
-\subsection{Valutazione sull'organizzazione}
-Questa sezione analizza l'efficacia delle metodologie di pianificazione adottate dal gruppo, la stima dell'impegno richiesto (confronto tra \textbf{preventivo} e \textbf{consuntivo}), il coordinamento asincrono e l'efficacia delle riunioni interne ed esterne. Nel corso degli \textit{Sprint}, il gruppo ha monitorato costantemente i processi organizzativi, identificando le inefficienze e applicando iterativamente azioni correttive per raffinare il \textit{Way of Working}.
-
-\subsubsection{Criticità}
-Durante l'avanzamento del progetto, le metriche organizzative e l'analisi dei \textit{Burndown Chart} hanno fatto emergere le seguenti criticità, tutte riconducibili a rischi preventivati nel \textbf{Piano di Progetto}:
-
-\begin{itemize}
-    \item \textbf{[RO1] - Scarsa Pianificazione (\textit{Sprint} 1, 3 e 10):} Nel primo \textit{Sprint}, la definizione delle attività è risultata eccessivamente generica (es. "Inizio stesura \textbf{Analisi dei Requisiti}"). Questa mancanza di granularità ha ostacolato il monitoraggio dei progressi. Nonostante un primo tentativo di risoluzione, il problema si è ripresentato nello \textit{Sprint} 3, dove la scomposizione delle \textit{Issue} non si è rivelata ancora sufficientemente atomica. Ciò ha generato colli di bottiglia e ha impedito la chiusura definitiva di diverse attività, causando uno slittamento dei \textit{task} allo \textit{Sprint} successivo. Infine, nello \textit{Sprint} 10, una mancanza di pianificazione trasversale ha visto impegnati a pieno regime solo i ruoli di progettazione e codifica, lasciando il resto del gruppo con compiti minimi e causando l'accumulo di lievi ritardi sul lungo termine.
-    \item \textbf{[RO3] - Comunicazione Esterna Inefficace/Inefficiente (\textit{Sprint} 4):} Si è registrata una forte difficoltà comunicativa con l'azienda \textbf{Proponente (Var Group)}, caratterizzata da risposte lente che hanno ritardato l'organizzazione di un incontro fondamentale per la validazione dell'\textbf{Analisi dei Requisiti}. Questo ha costretto il gruppo a dover rivalutare alcune scadenze interne, rallentando la tabella di marcia.
-    \item \textbf{[RO4] Sottostima e [RO5] Sovrastima delle Attività (\textit{Sprint} 7):} Si è verificato un lieve scostamento, a livello individuale, tra le ore preventivate e quelle effettivamente impiegate per lo svolgimento delle mansioni. L'analisi retrospettiva ha inoltre evidenziato come la durata bisettimanale degli \textit{Sprint} favorisse, in alcuni casi, la tendenza a concentrare il carico di lavoro verso la fine del periodo, inficiando la qualità dei risultati e rallentando il flusso di lavoro continuo.
-\end{itemize}
-
-\subsubsection{Soluzioni}
-Per mitigare le criticità organizzative riscontrate, il gruppo ha implementato le seguenti soluzioni secondo il \textit{ciclo di miglioramento continuo (PDSA)}:
-
-\begin{itemize}
-    \item \textbf{Scomposizione atomica e propedeuticità:} Per risolvere il rischio \textbf{[RO1]}, a partire dallo \textit{Sprint} 2 e ulteriormente dopo lo \textit{Sprint} 3 si è imposta una scomposizione delle macro-attività in \textit{Issue} atomiche, piccole e indipendenti, fin dalla fase di pianificazione. àstato inoltre integrato l'uso dei \textit{Burndown Chart} per un monitoraggio \textit{data-driven} dell'andamento.
-    \item \textbf{Flessibilità operativa (\textit{Issue} non assegnate):} Per ottimizzare i tempi e assorbire eventuali variazioni di carico, sono state introdotte le "\textit{Issue} non assegnate". I membri che terminano in anticipo i propri compiti \textbf{[RO5]} possono ora assegnarsi autonomamente nuove attività, aumentando la produttività globale.
-    \item \textbf{Miglioramento dei protocolli di comunicazione esterna:} A fronte del rischio \textbf{[RO3]}, il team ha standardizzato le interazioni con il \textbf{Proponente}: le richieste critiche vengono ora formulate sempre per iscritto, i referenti aziendali vengono taggati esplicitamente su \textit{Slack} per garantire visibilità, e le richieste di incontro vengono inoltrate con largo anticipo.
-    \item \textbf{Riduzione della durata degli \textit{Sprint}:} Per contrastare i rischi \textbf{[RO4]} e \textbf{[RO5]} e mantenere alta la concentrazione, a partire dallo \textit{Sprint} 8 la durata degli sprint è stata ridotta a circa una settimana ma con ampia flessibilità nelle durate in base alle necessità del momento, questo anche per contrastare il rischio \textbf{[RO1]} avendo maggiore capacità a reagire in modo tempestivo ad errori di pianificazione.
-\end{itemize}
-
-\subsection{Valutazione sui ruoli}
-Questa sezione valuta l'aderenza dei membri del team ai doveri prescritti dal ruolo ricoperto, l'efficacia della rotazione, la capacità di collaborazione inter-ruolo e la gestione delle disponibilità individuali. L'obiettivo è garantire che il carico di lavoro sia distribuito equamente e che le competenze vengano sfruttate e condivise in modo ottimale.
-
-\subsubsection{Criticità}
-L'interazione tra i vari ruoli ha fatto emergere alcune difficoltà pratiche e imprevisti legati al fattore umano e alle competenze, mappati come segue:
-
-\begin{itemize}
-    \item \textbf{[RO2] - Comunicazione Interna Inefficace (\textit{Sprint} 2, 8 e 10):} L'introduzione di \textit{Issue} più fini e granulari ha generato, inizialmente nello \textit{Sprint} 2, una difficoltà di coordinamento sincrono tra i ruoli, evidenziando una latenza nei passaggi di consegna. Nello \textit{Sprint} 8, durante le attività di verifica in parallelo, la mancanza di una registrazione puntuale ha causato incertezze sulla copertura dei controlli, rischiando di generare sovrapposizioni o di lasciare sezioni non verificate. Nello \textit{Sprint} 10, infine, questa inefficacia comunicativa ha aggravato le mancanze di pianificazione, impedendo al gruppo di ridistribuire tempestivamente i carichi di lavoro tra i ruoli.
-    \item \textbf{[RR1] - \textbf{Analisi dei Requisiti} Incompleta o Errata (\textit{Sprint} 5):} A causa di un disallineamento informativo con il \textbf{Proponente} (l'assenza di un \textit{orchestratore} agentico preesistente), è nata la necessità di modificare in parte l'\textbf{Analisi dei Requisiti} e la progettazione fatta su quel aspetto architetturale.
-    \item \textbf{[RI1] - Indisponibilità e Vincoli di Tempo (\textit{Sprint} 6):} La concomitanza con la sessione estiva di esami ha comportato una drastica, seppur prevista, riduzione della disponibilità oraria di tutti i componenti del team. Questo vincolo ha rallentato temporaneamente il ritmo delle attività di sviluppo e stesura, rendendo difficile per i ruoli operativi mantenere il passo precedente.
-\end{itemize}
-
-\subsubsection{Soluzioni}
-Le azioni intraprese per migliorare le dinamiche di ruolo e il bilanciamento delle risorse sono state le seguenti:
-
-\begin{itemize}
-    \item \textbf{Comunicazione inter-ruolo:} Per mitigare il rischio \textbf{[RO2]}, i membri del gruppo si sono impegnati a mantenere una comunicazione reciproca costante tramite canali a bassa latenza (\textbf{WhatsApp} e canali \textbf{Discord}). Questo ha portato a buoni risultati, come dimostrato nello \textit{Sprint} 7, dove i ruoli di \textbf{Analista} e \textbf{Verificatore} hanno iniziato a collaborare in parallelo, implementando correzioni e verifiche in modo continuo e senza tempi morti.
-    \item \textbf{Revisione documentale e riprogettazione sinergica tra ruoli:} Per far fronte alla criticità \textbf{[RR1]}, il lavoro degli \textit{Analisti} è stato intensificato per correggere i \textit{casi d'uso} e i requisiti definiti, aggiornare il tracciamento e riallineare il documento di \textbf{Analisi dei Requisiti} alla nuova realtà di progetto. Parallelamente, il focus del \textit{Progettista} è stato reindirizzato: anziché studiare l'integrazione di un sistema di terze parti, il carico di lavoro è stato spostato verso la progettazione ex novo di un \textit{orchestratore} deterministico interno e basilare.
-    \item \textbf{Pianificazione di mantenimento e recupero intensivo:} In risposta all'indisponibilità per gli esami (\textbf{[RI1]}), si è deciso di non forzare il lavoro, adottando per lo \textit{Sprint} 6 una pianificazione di "mantenimento" volta a preservare l'integrità dei requisiti base senza generare codice di bassa qualità. Conclusa la sessione, il ruolo di \textit{Programmatore} è stato potenziato nello \textit{Sprint} 7 tramite una rimodulazione intensiva delle ore, parallelizzando lo sviluppo per recuperare il disavanzo accumulato.
-    \item \textbf{Trasparenza e tempestività:} àstata inserita come regola ferrea nel \textit{Way of Working} la comunicazione tempestiva (e non a ridosso delle scadenze) di eventuali indisponibilità personali, dubbi sulle proprie competenze riguardo a un \textit{task}, o blocchi tecnici. Questo permette al \textit{Responsabile} di riassegnare i ruoli o affiancare membri più esperti (\textit{Peer Review}) prima che il ritardo diventi critico. Inoltre sono stati adottati \textit{sprint} di durata breve e flessibile garantendo maggiore comunicazione nel team, mitigando il rischio [\textbf{RO2}].
-\end{itemize}
 
 \end{document}
