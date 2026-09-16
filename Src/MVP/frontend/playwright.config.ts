@@ -38,14 +38,18 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
-  // RV.5 — compatibilita' cross-browser. Con un solo project dichiarato il
-  // requisito era inverificabile per costruzione: la suite girava tre volte
-  // sullo stesso motore.
+  // RV.2 — compatibilita' cross-browser, verificata da TNF_01. Con un solo
+  // project dichiarato il requisito era inverificabile per costruzione: la
+  // suite girava tre volte sullo stesso motore.
+  //
+  // RV.2 e non RV.5: RV.5 riguarda il linguaggio del servizio agenti (Python),
+  // e con il browser non c'entra nulla. I tre project qui sotto sono
+  // esattamente i tre browser che TNF_01 nomina.
   //
   // I casi marcati @agent girano solo su Chromium. Non e' una scorciatoia:
   // avviano un agente vero, con chiamate reali a GitHub e all'LLM, e ripeterli
   // su tre browser costa tre analisi complete per verificare una cosa che con
-  // il browser non c'entra. Quello che RV.5 chiede — che l'interfaccia si
+  // il browser non c'entra. Quello che RV.2 chiede — che l'interfaccia si
   // comporti allo stesso modo altrove — lo verificano gli altri casi, che sono
   // anche quelli che toccano moduli, form, redirect e WebSocket.
   projects: [
