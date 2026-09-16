@@ -1272,7 +1272,7 @@ Prima del rilascio dei documenti nella loro versione 1.0.0, il team effettua un 
 \end{itemize}
 
 \subsection{MP\_12: Copertura del Codice (Code Coverage)}
-La Copertura del Codice misura la percentuale di linee di codice sorgente effettivamente eseguite dai test automatici, individuando le porzioni di logica applicativa prive di verifica. Come indicato in apertura del capitolo, questa metrica di prodotto era stata dichiarata "da popolare progressivamente a partire dalla Product Baseline": la prima misurazione utile è riportata di seguito, ottenuta rieseguendo dal vivo l'intera suite (comandi \texttt{npm run test:cov} per \textit{backend} e \textit{frontend}, \texttt{pytest --cov=src --cov-branch} per gli \textit{agents}) il 2026/08/20.
+La Copertura del Codice misura la percentuale di linee di codice sorgente effettivamente eseguite dai test automatici, individuando le porzioni di logica applicativa prive di verifica. Come indicato in apertura del capitolo, questa metrica di prodotto era stata dichiarata "da popolare progressivamente a partire dalla Product Baseline": la misurazione riportata di seguito è stata ottenuta rieseguendo dal vivo l'intera suite (comandi \texttt{pnpm test:cov} per \textit{backend} e \textit{frontend}, \texttt{pytest} per gli \textit{agents}) il 2026/09/16.
 
 \begin{table}[htbp]
     \centering
@@ -1280,38 +1280,39 @@ La Copertura del Codice misura la percentuale di linee di codice sorgente effett
     \begin{tabular}{|l|c|c|c|c|}
         \hline
         \textbf{Componente} & \textbf{\% Istruzioni} & \textbf{\% Rami} & \textbf{\% Funzioni} & \textbf{Soglia accettabile} \\ \hline
-        Backend (\textit{NestJS}) & 94,16\% & 85,11\% & 95,28\% & 75\% \\ \hline
-        Agents (\textit{Python}) & 94\% & 94\% & n/d & 75\% \\ \hline
-        Frontend (\textit{React}) & 100\% & 100\% & 100\% & 75\% \\ \hline
+        Backend (\textit{NestJS}) & 91,93\% & 83,23\% & 93,51\% & 75\% \\ \hline
+        Agents (\textit{Python}) & 87,56\% & 75,58\% & n/d & 75\% \\ \hline
+        Frontend (\textit{React}) & 82,91\% & 76,67\% & 83,94\% & 75\% \\ \hline
     \end{tabular}
     \caption{Copertura del codice per componente (MP\_12)}
     \label{tab:mp12_coverage}
 \end{table}
 
 \paragraph*{Valutazione dell'andamento}
-Le tre componenti del sistema superano ampiamente sia la soglia di accettazione (75\%) sia quella ottimale (90\%) definite per questa metrica. Nel \textit{backend} le uniche righe non coperte appartengono a tre schemi \textit{Mongoose} puramente dichiarativi (\texttt{user.schema.ts}, \texttt{access-log.schema.ts}, \texttt{service-credential.schema.ts}), non ancora collegati all'applicazione in questo PoC (registrazione/multi-utente reale fuori perimetro, si veda il README) e privi quindi di logica da verificare. Negli \textit{agents}, il modulo meno coperto è \texttt{graph.py} (89\%), che gestisce percorsi d'errore rari del motore \textit{LangGraph}. Il \textit{frontend} raggiunge la copertura totale su tutti i file applicativi sostanziali (sono esclusi solo i file di puro \textit{wiring}: \texttt{main.tsx}, \texttt{App.tsx}, \texttt{router.tsx}, \texttt{routeTree.gen.ts}).
+Le tre componenti superano la soglia di accettazione (75\%) su istruzioni e rami; la soglia ottimale (90\%) è raggiunta dalle sole istruzioni del \textit{backend}. La misura non è presa sull'intero albero dei sorgenti: il \textit{backend} esclude dal calcolo gli schemi \textit{Mongoose} (\texttt{src/**/schemas/**}) e i \textit{DTO} (\texttt{src/**/dto/**}), entrambi dichiarativi e privi di logica da verificare; il \textit{frontend} esclude i file di puro \textit{wiring} (\texttt{main.tsx}, \texttt{App.tsx}, \texttt{router.tsx}, \texttt{routeTree.gen.ts}), le definizioni di rotta (\texttt{src/routes/**}) e le dichiarazioni di tipo (\texttt{src/types/**}); gli \textit{agents} escludono \texttt{src/main.py}, che è il solo punto di avvio del servizio. Le esclusioni sono dichiarate nei rispettivi file di configurazione (\texttt{vitest.config.mts}, \texttt{vitest.config.ts}, \texttt{pyproject.toml}), dove sono anche fissate le soglie minime di MP\_12 e MPD\_8, così che una regressione della copertura faccia fallire la \textit{build}.
 
 \paragraph*{MP\_12 - Copertura del Codice (Code Coverage)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 75\%$):} Il vincolo è ampiamente rispettato su tutti e tre i componenti.
-    \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è rispettato su tutti e tre i componenti (94,16\% backend, 94\% agents, 100\% frontend).
+    \item \textbf{Valore di accettazione ($\ge 75\%$):} Il vincolo è rispettato su tutti e tre i componenti, sia sulle istruzioni sia sui rami.
+    \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è rispettato dalle sole istruzioni del \textit{backend} (91,93\%); \textit{agents} (87,56\%) e \textit{frontend} (82,91\%) restano fra la soglia di accettazione e quella ottimale.
 \end{itemize}
 
 \subsection{MP\_13: Superamento dei Test (Test Success Rate)}
-Il Superamento dei Test misura la percentuale di test automatici che ottengono esito positivo, a garanzia della stabilità del software e dell'assenza di regressioni. Anche questa metrica viene popolata per la prima volta con la misurazione riportata di seguito, ottenuta rieseguendo dal vivo, in data 2026/08/20, l'intera suite automatica su tutti i livelli (unità, integrazione, end-to-end verso un vero \textit{MongoDB}/\textit{Redis} in \textit{Docker}, e i test di sistema/accettazione \textit{Playwright} contro lo stack applicativo reale).
+Il Superamento dei Test misura la percentuale di test automatici che ottengono esito positivo, a garanzia della stabilità del software e dell'assenza di regressioni. La misurazione riportata di seguito è stata ottenuta rieseguendo dal vivo, in data 2026/09/16, l'intera suite automatica su tutti i livelli (unità, integrazione \textit{end-to-end} verso un vero \textit{MongoDB} e un vero \textit{Redis}, e test di sistema \textit{Playwright} contro lo stack applicativo reale).
 
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|l|c|c|c|}
+    \begin{tabular}{|l|c|c|c|c|}
         \hline
-        \textbf{Livello} & \textbf{Test eseguiti} & \textbf{Test superati} & \textbf{TSR} \\ \hline
-        Backend (\textit{Jest}) & 153 & 153 & 100\% \\ \hline
-        Backend end-to-end (\textit{Jest}, \textit{Docker}) & 4 & 4 & 100\% \\ \hline
-        Agents (\textit{pytest}) & 113 & 113* & 100\%* \\ \hline
-        Frontend (\textit{Vitest}) & 90 & 90 & 100\% \\ \hline
-        Sistema/Accettazione (\textit{Playwright}, reali) & 12 & 12 & 100\% \\ \hline
-        \textbf{Totale} & \textbf{372} & \textbf{372} & \textbf{100\%} \\ \hline
+        \textbf{Livello} & \textbf{Eseguiti} & \textbf{Superati} & \textbf{Difetti aperti} & \textbf{TSR} \\ \hline
+        Backend, unità (\textit{Vitest}) & 624 & 622 & 2 & 99,7\% \\ \hline
+        Backend, integrazione (\textit{Vitest}) & 58 & 55 & 3 & 94,8\% \\ \hline
+        Agents (\textit{pytest}) & 261 & 258* & 3 & 98,9\%* \\ \hline
+        Frontend (\textit{Vitest}) & 274 & 274 & --- & 100\% \\ \hline
+        Infrastruttura (\textit{Vitest}, \textit{CDK}) & 3 & 3 & --- & 100\% \\ \hline
+        Sistema (\textit{Playwright}) & 50 & 50 & --- & 100\% \\ \hline
+        \textbf{Totale} & \textbf{1270} & \textbf{1262} & \textbf{8} & \textbf{99,4\%} \\ \hline
     \end{tabular}
     \caption{Superamento dei test per livello (MP\_13)}
     \label{tab:mp13_pass_rate}
@@ -1320,12 +1321,14 @@ Il Superamento dei Test misura la percentuale di test automatici che ottengono e
 *Il test del Golden Set (TI\_04, RQ.5) richiede per definizione una vera \texttt{LLM\_API\_KEY} e viene per questo saltato (\textit{skip}) di norma, non fallito; il 2026/08/20 è stato eseguito per la prima volta con una chiave reale. Il tentativo fuori da \textit{Docker} falliva per un motivo puramente ambientale (l'hostname interno \texttt{redis} usato da \texttt{REDIS\_URL} non è risolvibile sull'host); eseguendolo dentro la rete \textit{Docker} quell'errore spariva, ma emergeva un secondo problema, questa volta un difetto reale del test: il contesto fittizio impostava \texttt{scopeType="FILES"} senza il corrispondente \texttt{paths}, per cui \texttt{SecurityLoader} scartava sistematicamente l'unico file fornito prima ancora di interpellare l'LLM. Corretto il fixture (\texttt{scopeType="FULL\_REPOSITORY"}), il test è risultato \textbf{superato}: il modello ha identificato correttamente la SQL Injection nel file di prova.
 
 \paragraph*{Valutazione dell'andamento}
-Il tasso di superamento è del 100\% su tutti i 372 test eseguiti dal vivo in data odierna, su tutti i livelli della piramide di test (unità, integrazione, \textit{end-to-end} di \textit{backend} e test di sistema/accettazione reali in \textit{Playwright}), incluso il caso limite del Golden Set che richiede una vera chiamata \textit{LLM}. Il numero di test \textit{Agents} include anche 3 test di unità nuovi, aggiunti insieme alle relative funzionalità implementate lo stesso giorno (lo scarto dei \textit{finding} fuori ambito e il riordinamento per gravità dei riscontri dell'Agente Security): due sono le nuove voci tracciate TU\_10 e TU\_11, il terzo è un test di supporto sul comportamento "\textit{fail open}" (nessun filtro applicato quando l'informazione di ambito non è disponibile al parser). Non risultano test disabilitati, marcati come \textit{todo} o con asserzioni puramente segnaposto (verifica campionaria di dettaglio su entrambi i lati del sistema, si veda anche \texttt{TESTING.md} nel \textit{repository} del codice).
+Il tasso di superamento è del 99,4\% sui 1270 test eseguiti, su tutti i livelli della piramide (unità, integrazione \textit{end-to-end} di \textit{backend}, infrastruttura e test di sistema in \textit{Playwright}). Nessuna suite è rossa: gli 8 test non superati sono difetti noti, marcati nel sorgente con \texttt{it.fails} (\textit{Vitest}) o \texttt{@pytest.mark.xfail} (\textit{pytest}) proprio perché l'esito negativo è atteso e documentato, e per questo non interrompono la \textit{build}. Riguardano l'avviso sui linguaggi non supportati (RF.24, 2 casi), il mancato instradamento a FAILED quando GitHub rifiuta l'apertura della \textit{Pull Request} (TI\_13, RF.72), la completezza degli schemi nel documento \textit{OpenAPI} (2 casi), il limite di frequenza verso il modello (TI\_14) e 2 casi dell'Agente Docs.
+
+Alla cifra dei test eseguiti non concorrono 10 casi di integrazione saltati (\texttt{contexts-github-live} e \texttt{ti16-repository-privato}): sono condizionati alla presenza di una credenziale \textit{GitHub} reale e vengono saltati, non falliti, quando non è configurata. Sul livello di sistema la cifra si riferisce ai casi che non richiedono un'esecuzione reale del modello linguistico; quelli marcati \texttt{@agent} sono esclusi da questo conteggio perché dipendono da una chiave \textit{LLM} attiva e da un costo per esecuzione.
 
 \paragraph*{MP\_13 - Superamento dei Test (Test Success Rate)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($= 100\%$):} Il vincolo è rispettato: 372/372 test superati.
-    \item \textbf{Valore ottimale ($= 100\%$):} Il vincolo è rispettato, coincidendo con il valore di accettazione.
+    \item \textbf{Valore di accettazione ($= 100\%$):} Il vincolo non è rispettato: 1262 test superati su 1270 eseguiti, pari al 99,4\%. Gli 8 mancanti corrispondono ad altrettanti difetti noti e tracciati, non a regressioni: nessuna suite risulta rossa.
+    \item \textbf{Valore ottimale ($= 100\%$):} Non raggiunto, coincidendo con il valore di accettazione.
 \end{itemize}
 
 \subsection{MP\_14: Rischi non Preventivati}
