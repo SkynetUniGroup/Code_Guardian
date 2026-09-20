@@ -100,7 +100,8 @@
 \begin{xltabular}{\textwidth}{|c|c|X|p{2.2cm}|p{2.2cm}|}
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
-    
+
+    1.4.0 & 2026/09/20 & Aggiornamento sezione "Strategie di Testing" & \makecell[l]{Samuele \\Bertin} & \makecell[l]{Dario\\ Pirrone} \\ \hline
     1.3.1 & 2026/09/08 & Rimossa sezione “valutazioni per il miglioramento” & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
     1.3.0 & 2026/09/02 & Modifiche ai test per allinearli agli ultimi cambiamenti del AdR & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
     1.2.0 & 2026/08/31 & Estensione esaustiva della copertura di test ai requisiti qualitativi & \makecell[l]{Edoardo \\Granziero} & \makecell[l]{Marco\\ Barbiero}\\ \hline
@@ -464,9 +465,11 @@ Per ogni test viene riportato il codice identificativo, una descrizione, il requ
     \item \textbf{NS — Non Superato}: il test è stato eseguito e ha ottenuto esito negativo;
 \end{itemize}
 
-Lo stato di ciascun test nelle tabelle seguenti è stato ricavato dalla suite di test reale del PoC (\texttt{TESTING.md} nel repository di codice), rieseguita dal vivo il 2026-08-20.
+Lo stato di ciascun test nelle tabelle seguenti è stato ricavato rieseguendo dal vivo, il 2026/09/16, l'intera suite di test dell'MVP, su tutti i livelli: sistema (TS), accettazione (TA), unità (TU) e integrazione (TI).
 
-A partire dalla versione 1.2.0, la copertura è stata estesa in modo esaustivo ai requisiti qualitativi (RQ), di vincolo (RV) e di sicurezza (RS), finora rappresentati nella matrice di tracciamento (\S~6.7) solo in modo occasionale (RQ.5, RV.1, RS.2). I nuovi casi di test riportati nelle \S~6.3--6.5 sono stati progettati a partire dall'\textbf{Analisi dei Requisiti} e dalla Progettazione \textit{MVP}, ma non sono stati ancora implementati né eseguiti: il loro stato è per costruzione \textbf{NI}, ad eccezione di TU\_17 che formalizza un test già presente nel codice del PoC. Restano invariati lo stato e la formulazione di tutti i casi di test preesistenti (TS, TA, TU\_01--TU\_11, TI\_01--TI\_05).
+A partire dalla versione 1.2.0, la copertura è stata estesa in modo esaustivo ai requisiti qualitativi (RQ), di vincolo (RV) e di sicurezza (RS). A livello di unità e integrazione tale estensione è ormai completa: tutti i casi TU e TI definiti risultano implementati ed eseguiti con esito positivo (\textbf{S}).
+
+A livello di sistema e accettazione, invece, lo stato riflette l'attuale avanzamento implementativo dell'MVP. Tra i test di accettazione, risultano superati (\textbf{S}) TA\_03, TA\_08, TA\_09, TA\_10 e TA\_12, mentre restano non implementati (\textbf{NI}) TA\_01, TA\_02, TA\_04, TA\_05, TA\_06, TA\_07, TA\_11, TA\_13 e TA\_14, in quanto dipendenti dal completamento dei relativi flussi end-to-end (registrazione e autenticazione, configurazione dei token, dashboard e avvio delle operazioni, gestione del template del README, notifiche via email, esportazione e storicizzazione dei report, ciclo completo dell'Agente Changelog di Business).
 
 \subsection{Test di sistema (TS)}
 I test di sistema controllano il comportamento dell'intera applicazione considerata nel suo complesso, verificando che l'esecuzione \textit{\glo{end-to-end}{end-to-end}} soddisfi i requisiti funzionali descritti nell'\textbf{Analisi dei Requisiti}, è stato definito un test per ciascun requisito funzionale per garantire una copertura completa dei requisiti.
