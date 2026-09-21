@@ -117,7 +117,7 @@
 \hline
 \textbf{Redattori} & \textit{Samuele Bertin} \\
 \hline
-\textbf{Verifica} & \textit{Nome Cognome} \\
+\textbf{Verifica} & \textit{Dario Pirrone} \\
 \hline
 \textbf{Approvazione} & \textit{Dario Pirrone} \\
 \hline
@@ -137,7 +137,8 @@
 \hline
 \textbf{Versione} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore}\\
 \hline
-0.1 & 2026/09/03 & Prima stesura del Manuale Utente: Introduzione, Installazione e Avvio, Guida all'interfaccia, Funzionalità AI, Risoluzione dei problemi ed errori, Glossario. & Samuele Bertin & Nome Cognome \\
+0.2 & 2026/09/20 & Allineamento del Manuale alle modalità operative effettive. Controllo ortografico e di presentazione del documento. & Andrea Fistarol & ? \\ \hline
+0.1 & 2026/09/03 & Prima stesura del Manuale Utente: Introduzione, Installazione e Avvio, Guida all'interfaccia, Funzionalità AI, Risoluzione dei problemi ed errori, Glossario. & Samuele Bertin & Dario Pirrone \\
 \hline
 \end{tabularx}
 
@@ -269,6 +270,7 @@ Se l'indirizzo email è già registrato, compare un messaggio non bloccante con 
 diretto alla pagina di accesso. La registrazione non effettua l'accesso automatico: una volta
 creato l'account occorre accedere separatamente da \route{/login}.
 
+\newpage
 \begin{nota}
 Il ruolo scelto in fase di registrazione resta fisso per tutta la vita dell'account: non
 esiste, in questa versione dell'applicazione, una funzione per cambiarlo in un secondo
@@ -382,14 +384,8 @@ Una volta validato il repository, si sceglie \emph{quanto} del repository analiz
 
 \begin{itemize}
   \item \textbf{Intero repository} --- comando rapido che seleziona tutto il contenuto;
-  \item \textbf{File e cartelle specifici} --- tramite un albero di selezione a tre stati
-        (non selezionato, selezionato, parzialmente selezionato): selezionare una cartella
-        ne marca automaticamente tutto il contenuto, in modo ricorsivo.
+  \item \textbf{File o cartelle specifici} --- si deve poi inserire nella casella di testo sottostante l'indirizzo o gli indirizzi dei file o delle cartelle da esaminare.
 \end{itemize}
-
-Un contatore in tempo reale mostra il numero di file coinvolti nella selezione. Confermando
-con \textbf{Conferma contesto}, il contesto viene salvato e reso disponibile a tutte le
-operazioni successive.
 
 \begin{nota}
 Solo i file scritti in un linguaggio supportato (TypeScript, JavaScript o Python) vengono
@@ -400,7 +396,7 @@ un avviso non bloccante: l'analisi prosegue comunque sui file supportati.
 \subsection{Avvio operazioni --- \texttt{/run}}
 
 Mostra l'elenco delle operazioni disponibili per il proprio ruolo (si veda la
-Tabella~\ref{tab:ruoli}), ciascuna con nome, breve descrizione e casella di selezione. È
+Tabella~\ref{tab:ruoli}), ciascuna con nome e breve descrizione. È
 possibile selezionare più operazioni contemporaneamente e avviarle in un'unica conferma con
 il pulsante \textbf{Avvia}: ciascuna diventerà un elemento indipendente nella Dashboard. Il
 pulsante resta disabilitato finché non è selezionata almeno un'operazione.
@@ -641,7 +637,7 @@ Code Guardian distingue due tipi di errore, gestiti in modo diverso dall'interfa
 La Tabella~\ref{tab:errori} elenca le cause più comuni di fallimento di un'operazione, il
 messaggio che ci si può aspettare di vedere e l'azione consigliata.
 
-\begin{longtable}{p{4.3cm}p{5.0cm}p{4.2cm}}
+\begin{longtable}{p{4.3cm}p{5.0cm}p{5.0cm}}
 \toprule
 \textbf{Causa} & \textbf{Messaggio tipico} & \textbf{Cosa fare} \\
 \midrule
@@ -779,7 +775,7 @@ l'applicazione per un eventuale innalzamento del limite.
   \item[Pull Request (PR)] Una richiesta di modifica al repository, aperta automaticamente
     da Code Guardian al termine di un'operazione dell'Agente Docs; la sua revisione e
     approvazione avvengono su GitHub.
-  \item[Repository] Il progetto software ospitato su GitHub su cui vengono eseguite le
+  \item[Repository] Archivio remoto, ospitato su GitHub, contenente il progetto software su cui vengono eseguite le
     analisi.
   \item[Report] Il risultato strutturato di un'operazione, consultabile nell'interfaccia
     ed esportabile in PDF.
