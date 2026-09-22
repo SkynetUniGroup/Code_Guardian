@@ -20,6 +20,8 @@
 \usepackage{float}
 \usepackage{xltabular}
 \usepackage[skip=10pt plus 2pt, indent=5pt]{parskip}
+\newcommand{\urlglossario}{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v2.0.0.pdf}
+\newcommand{\glo}[2]{\href{\urlglossario\#nameddest=#2}{#1\textsubscript{G}}}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -211,7 +213,7 @@ Questa sezione elenca le tecnologie adottate per la release MVP, organizzate per
     React & 19.2.8 & Frontend & Libreria per la costruzione dell'interfaccia utente. \\ \hline
     Python & $\geq$3.12 & Agenti & Linguaggio del servizio Agenti. \\ \hline
     FastAPI & $\geq$0.111.0 & Agenti & Framework web su cui è esposta l'API interna del servizio Agenti. \\ \hline
-    Uvicorn & $\geq$0.30.0 & Agenti & Server ASGI su cui gira FastAPI. \\ \hline
+    Uvicorn & $\geq$0.30.0 & Agenti & Server \textit{\glo{ASGI}{asgi}} su cui gira FastAPI. \\ \hline
     LangGraph & $\geq$0.2.20 & Agenti & Framework di orchestrazione del grafo agente. \\ \hline
 \end{xltabular}
 
@@ -265,11 +267,11 @@ Librerie applicative usate dal Backend oltre al framework NestJS.
     \endfoot
     \hline
     \endlastfoot
-    \texttt{mongoose} / \texttt{@nestjs/mongoose} & 9.9.4 / 11.0.4 & ODM per l'accesso a MongoDB, con il relativo modulo di integrazione NestJS. \\ \hline
-    \texttt{@nestjs/jwt} & 11.0.2 & Emissione e verifica dei token JWT di sessione. \\ \hline
+    \texttt{mongoose} / \texttt{@nestjs/mongoose} & 9.9.4 / 11.0.4 & \textit{\glo{ODM}{odm}} per l'accesso a MongoDB, con il relativo modulo di integrazione NestJS. \\ \hline
+    \texttt{@nestjs/jwt} & 11.0.2 & Emissione e verifica dei token \textit{\glo{JWT}{jwt}} di sessione. \\ \hline
     Passport / \texttt{passport-jwt} & 0.7.0 / 4.0.1 & Strategia di autenticazione basata su JWT. \\ \hline
     argon2 & 0.45.1 & Hashing delle password (Argon2id). \\ \hline
-    class-validator / class-transformer & 0.15.1 / 0.5.1 & Validazione e trasformazione dei DTO in ingresso. \\ \hline
+    class-validator / class-transformer & 0.15.1 / 0.5.1 & Validazione e trasformazione dei \textit{\glo{DTO}{dto}} in ingresso. \\ \hline
     Joi & 18.2.5 & Validazione delle variabili di configurazione/ambiente. \\ \hline
     \texttt{@nestjs/swagger} & 11.4.7 & Generazione della documentazione OpenAPI degli endpoint pubblici. \\ \hline
     \texttt{socket.io} / \texttt{@nestjs/platform-socket.io} & 4.8.3 / 11.2.3 & Canale realtime verso il Frontend, con il relativo adapter NestJS. \\ \hline
@@ -361,9 +363,9 @@ Servizi gestiti su cui è ospitato il modello linguistico e l'infrastruttura di 
     Application Load Balancer (ALB) & --- & Bilanciamento del traffico verso il Backend. \\ \hline
     AWS Cloud Map & --- & Service discovery interno tra Backend e Agenti. \\ \hline
     Amazon S3 / CloudFront & --- & Storage degli artefatti applicativi, hosting statico e distribuzione del Frontend. \\ \hline
-    AWS Secrets Manager / Parameter Store / KMS & --- & Gestione di segreti, configurazione e cifratura a riposo. \\ \hline
+    AWS Secrets Manager / Parameter Store / \textit{\glo{KMS}{kms}} & --- & Gestione di segreti, configurazione e cifratura a riposo. \\ \hline
     \texttt{aws-cdk-lib} & 2.266.0 & Strumento di Infrastructure-as-Code con cui è provisionata l'infrastruttura AWS. \\ \hline
-    GitHub Actions & --- & Automazione di build, test e deploy dell'infrastruttura, federata verso AWS via OIDC (nessuna chiave IAM statica). \\ \hline
+    GitHub Actions & --- & Automazione di build, test e deploy dell'infrastruttura, federata verso AWS via \textit{\glo{OIDC}{oidc}} (nessuna chiave \textit{\glo{IAM}{iam}} statica). \\ \hline
 \end{xltabular}
 \newpage
 \subsection{Testing}
@@ -405,7 +407,7 @@ L'architettura di Code Guardian è un client-server esteso, articolato non in du
     \label{fig:vista-insieme}
 \end{figure}
 
-Dal punto di vista dell'utente il sistema espone un'unica origine web. Il browser scarica il Frontend, un'applicazione React compilata in file statici, e da quel momento parla solo con il Backend: chiamate REST da un lato, un canale WebSocket dedicato agli aggiornamenti in tempo reale delle operazioni in corso dall'altro. Frontend e Backend restano comunque due unità distinte, e aggiornare l'una non richiede di ridistribuire l'altra: il loro unico punto di contatto è il contratto REST/WebSocket.
+Dal punto di vista dell'utente il sistema espone un'unica origine web. Il browser scarica il Frontend, un'applicazione React compilata in file statici, e da quel momento parla solo con il Backend: chiamate REST da un lato, un canale \textit{\glo{WebSocket}{websocket}} dedicato agli aggiornamenti in tempo reale delle operazioni in corso dall'altro. Frontend e Backend restano comunque due unità distinte, e aggiornare l'una non richiede di ridistribuire l'altra: il loro unico punto di contatto è il contratto REST/WebSocket.
 
 Il Backend è il fulcro del sistema. È l'unico componente che detiene le credenziali dell'utente, inclusa quella verso GitHub, che resta cifrata; l'unico che persiste i dati applicativi, cioè utenti, credenziali, contesti di analisi, Task e Report; e l'unico autorizzato a modificare i repository sorvegliati, tramite l'apertura automatica di Pull Request. Riceve le richieste dal Frontend, le traduce in unità di lavoro (le Task) e ne affida l'esecuzione al servizio Agenti. Resta poi suo il compito di raccogliere l'esito, persisterlo e notificarlo all'utente.
 
@@ -421,7 +423,7 @@ L'esecuzione di un'operazione è disaccoppiata dalla richiesta dell'utente. Il B
 \subsection{Architettura di Deployment}
 \label{subsec:deployment}
 
-La vista d'insieme descrive chi parla con chi; qui si vede dove ciascun componente gira fisicamente e attraverso quali confini di rete passa ogni collegamento. L'infrastruttura di produzione è ospitata su AWS, all'interno di un'unica rete privata virtuale (VPC) distribuita su due \textit{Availability Zone}, il minimo tecnico richiesto per poter attivare un Application Load Balancer. Come emerge più avanti in questa stessa sezione, i singoli servizi restano a istanza unica: la topologia multi-AZ è più una predisposizione di rete che una protezione attiva contro un guasto.
+La vista d'insieme descrive chi parla con chi; qui si vede dove ciascun componente gira fisicamente e attraverso quali confini di rete passa ogni collegamento. L'infrastruttura di produzione è ospitata su AWS, all'interno di un'unica rete privata virtuale (\textit{\glo{VPC}{vpc}}) distribuita su due \textit{Availability Zone}, il minimo tecnico richiesto per poter attivare un Application Load Balancer. Come emerge più avanti in questa stessa sezione, i singoli servizi restano a istanza unica: la topologia multi-AZ è più una predisposizione di rete che una protezione attiva contro un guasto.
 
 \begin{figure}[H]
     \centering
@@ -430,9 +432,9 @@ La vista d'insieme descrive chi parla con chi; qui si vede dove ciascun componen
     \label{fig:deployment}
 \end{figure}
 
-La VPC è divisa in subnet pubbliche e private. Solo le prime raggiungono direttamente Internet; le subnet private instradano il traffico in uscita attraverso un unico NAT Gateway. Backend e Agenti girano entrambi in subnet private dello stesso tipo, quindi a limitare concretamente l'accesso a Internet del servizio Agenti non è la subnet in cui si trova, ma il suo Security Group, configurato secondo un principio di \emph{default deny}: il traffico in uscita è permesso solo verso destinazioni esplicitamente elencate. Ogni componente ha un proprio Security Group dedicato, e ciascuno nega per difetto tutto il traffico non concesso.
+La VPC è divisa in subnet pubbliche e private. Solo le prime raggiungono direttamente Internet; le subnet private instradano il traffico in uscita attraverso un unico \textit{\glo{NAT Gateway}{nat-gateway}}. Backend e Agenti girano entrambi in subnet private dello stesso tipo, quindi a limitare concretamente l'accesso a Internet del servizio Agenti non è la subnet in cui si trova, ma il suo Security Group, configurato secondo un principio di \emph{default deny}: il traffico in uscita è permesso solo verso destinazioni esplicitamente elencate. Ogni componente ha un proprio Security Group dedicato, e ciascuno nega per difetto tutto il traffico non concesso.
 
-Il percorso pubblico non cambia rispetto alla vista d'insieme: un'unica distribuzione CloudFront riceve tutto il traffico del browser e lo instrada verso due origini diverse a seconda del percorso richiesto, i file statici del Frontend, letti da un bucket S3 privato, oppure il Backend, raggiunto attraverso un Application Load Balancer (ALB). L'ALB non possiede un proprio certificato TLS. È CloudFront a terminare HTTPS verso il browser, mentre il collegamento tra CloudFront e l'ALB resta in HTTP semplice, comunque confinato all'interno della rete di AWS. Il bucket del Frontend resta privato, leggibile solo da CloudFront tramite un meccanismo dedicato (\textit{Origin Access Control}). CloudFront restituisce inoltre la pagina applicativa sui percorsi non gestiti dal bucket, così che il routing lato client funzioni anche dopo un ricaricamento diretto della pagina.
+Il percorso pubblico non cambia rispetto alla vista d'insieme: un'unica distribuzione CloudFront riceve tutto il traffico del browser e lo instrada verso due origini diverse a seconda del percorso richiesto, i file statici del Frontend, letti da un bucket S3 privato, oppure il Backend, raggiunto attraverso un Application Load Balancer (ALB). L'ALB non possiede un proprio certificato \textit{\glo{TLS}{tls}}. È CloudFront a terminare HTTPS verso il browser, mentre il collegamento tra CloudFront e l'ALB resta in HTTP semplice, comunque confinato all'interno della rete di AWS. Il bucket del Frontend resta privato, leggibile solo da CloudFront tramite un meccanismo dedicato (\textit{Origin Access Control}). CloudFront restituisce inoltre la pagina applicativa sui percorsi non gestiti dal bucket, così che il routing lato client funzioni anche dopo un ricaricamento diretto della pagina.
 
 Backend e Agenti sono due servizi ECS su Fargate distinti, ciascuno con il proprio dimensionamento di CPU e memoria, proporzionato al carico atteso: il servizio Agenti riceve più risorse, essendo quello che dialoga con il modello linguistico. Entrambi girano oggi con una singola replica: una semplificazione che abbiamo accettato per l'MVP. Per compensare l'assenza di ridondanza, ogni distribuzione richiede che la nuova versione sia effettivamente in salute prima di terminare quella precedente, e viene annullata automaticamente se la nuova versione non ci arriva mai.
 
@@ -490,7 +492,7 @@ Nessun componente diverso dal Backend detiene il token GitHub dell'utente, né l
     \label{fig:backend-github}
 \end{figure}
 
-Il percorso di lettura è \texttt{InternalGithubController}: un endpoint interno, non documentato pubblicamente e raggiungibile solo dalla rete privata, protetto da una firma HMAC verificata da \texttt{InternalAuthGuard} anziché da un token utente, poiché il chiamante è un servizio e non una persona. Ogni chiamata attraversa tre controlli prima di raggiungere GitHub. Viene innanzitutto verificata contro un elenco chiuso di operazioni permesse, costruito sugli stessi identificativi di rotta usati dal client GitHub reale, in modo che quell'elenco e le chiamate effettive non possano divergere. Il contesto (repository, commit, token dell'utente) viene poi risolto a partire dal solo identificativo della Task. L'accesso viene infine registrato come riga di \texttt{AccessLog}, così il vincolo di sola lettura resta verificabile a posteriori. Le chiamate effettive verso GitHub passano tutte da \texttt{GithubClientService}, che rifiuta per costruzione qualunque richiesta che non sia una \texttt{GET}.
+Il percorso di lettura è \texttt{InternalGithubController}: un endpoint interno, non documentato pubblicamente e raggiungibile solo dalla rete privata, protetto da una firma \textit{\glo{HMAC}{hmac}} verificata da \texttt{InternalAuthGuard} anziché da un token utente, poiché il chiamante è un servizio e non una persona. Ogni chiamata attraversa tre controlli prima di raggiungere GitHub. Viene innanzitutto verificata contro un elenco chiuso di operazioni permesse, costruito sugli stessi identificativi di rotta usati dal client GitHub reale, in modo che quell'elenco e le chiamate effettive non possano divergere. Il contesto (repository, commit, token dell'utente) viene poi risolto a partire dal solo identificativo della Task. L'accesso viene infine registrato come riga di \texttt{AccessLog}, così il vincolo di sola lettura resta verificabile a posteriori. Le chiamate effettive verso GitHub passano tutte da \texttt{GithubClientService}, che rifiuta per costruzione qualunque richiesta che non sia una \texttt{GET}.
 
 Redis, oltre a fare da coda per l'esecuzione asincrona, compare qui anche come cache delle letture più ripetute nel corso di un'analisi: la struttura del repository, il contenuto dei singoli file e il README. La cache è indicizzata per repository e per commit; poiché il contenuto di un repository a un commit specifico è per definizione immutabile, un dato già in cache non può risultare obsoleto. Si riduce così la pressione sulla quota dell'API di GitHub, condivisa da tutte le richieste del sistema.
 

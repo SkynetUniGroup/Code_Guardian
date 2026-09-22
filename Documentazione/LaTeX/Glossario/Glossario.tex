@@ -98,6 +98,7 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead
 
+    1.2.0 & 2026/09/22 & Aggiunta di altri termini da Specifiche Tecniche & \makecell[l]{Samuele \\Bertin} & \makecell[l]{Sara \\Ristovic} \\ \hline
     1.1.0 & 2026/09/05 & Aggiunta di altri termini da NdP e PdP & \makecell[l]{Samuele \\Bertin} & \makecell[l]{Dario \\Pirrone} \\ \hline
     1.0.1 & 2026/08/21 & Rimossa la numerazione dall'indice, come suggerito dal Prof. Vardanega & \makecell[l]{Marco \\Barbiero} & \makecell[l]{Dario \\Pirrone} \\ \hline
     1.0.0 & 2026/08/13 & Approvazione del documento per revisione RTB & \makecell[l]{Andrea \\Fistarol} & -- \\ \hline
@@ -204,6 +205,10 @@ Insieme di definizioni, protocolli e strumenti che consentono la comunicazione e
 Documentazione tecnica che illustra le interfacce di programmazione (API) del sistema, fornendo guide pratiche per gli sviluppatori o i client che devono interagire con gli Endpoint esposti dall'applicazione. Include informazioni essenziali come i metodi HTTP, le rotte e i payload richiesti; nel progetto viene generata automaticamente dall'Agente Docs.
 \vspace{0.5cm}
 \newpage
+
+\noindent\hypertarget{asgi}{\textbf{ASGI}} \\[0.1em]
+Specifica standard per server e applicazioni Python che supportano l'elaborazione di richieste in modo asincrono.
+\vspace{0.5cm}
 
 \noindent\hypertarget{asset}{\textbf{Asset}} \\[0.1em]
 Risorsa digitale, componente software, credenziale o ambiente (come un'infrastruttura cloud esterna) messa a disposizione del gruppo di lavoro. Nel contesto del progetto, si riferisce agli elementi forniti dal Proponente da integrare per lo sviluppo e il collaudo del software.
@@ -395,9 +400,13 @@ Applicazione di comunicazione organizzata in comunità o canali tematici, utiliz
 Strumento che permette di definire e gestire applicazioni composte da più container tramite un file di configurazione dichiarativo. Nel progetto viene utilizzato durante i \textit{Test di Integrazione} per avviare rapidamente servizi esterni (come un'istanza di MongoDB) in un ambiente isolato e riproducibile.
 \vspace{0.5cm}
 
+\noindent\hypertarget{dto}{\textbf{DTO}} \\[0.1em]
+Oggetto utilizzato per trasferire dati tra sottosistemi o attraverso un confine di rete, tipicamente validato in ingresso e privo di logica di business propria.
+\vspace{0.5cm}
+
 \noindent\hypertarget{downtime}{\textbf{Downtime}} \\[0.1em]
 Periodo di tempo durante il quale un sistema informatico, un server o un servizio di terze parti (come le API degli LLM esterni) non è operativo, raggiungibile o disponibile per il normale utilizzo a causa di guasti, manutenzione o disservizi.
-\vspace{0.5cm}
+\vspace{0.1cm}
 
 \newpage
 \subsection*{E}
@@ -518,7 +527,11 @@ Valore o stringa alfanumerica univoca. Nel contesto di Git e del progetto, viene
 
 \noindent\hypertarget{header}{\textbf{Header}} \\[0.1em]
 Intestazione di una richiesta o risposta HTTP che contiene informazioni operative aggiuntive per la comunicazione di rete. Viene estratta dall'Agente Docs per la generazione tecnica e documentale delle API.
-\vspace{0.5cm}  
+\vspace{0.5cm}
+
+\noindent\hypertarget{hmac}{\textbf{HMAC}} \\[0.1em]
+Meccanismo crittografico che genera un codice di autenticazione a partire da un messaggio e una chiave condivisa, usato per verificare che una richiesta provenga da un chiamante autorizzato e non sia stata alterata in transito.
+\vspace{0.5cm}
 
 \noindent\hypertarget{hosting}{\textbf{Hosting}} \\[0.1em]
 Servizio di archiviazione e messa a disposizione di file, applicazioni o siti su un server connesso in rete. Nel progetto è menzionato principalmente per i servizi offerti da GitHub, che funge da hosting per il \textit{Repository} di codice e da hosting gratuito per il sito statico documentale.
@@ -534,6 +547,10 @@ Condizione architetturale nella quale è affidata ad un operatore umano la prero
 \phantomsection
 \addcontentsline{toc}{subsection}{I}
 \vspace{0.2cm}
+
+\noindent\hypertarget{iam}{\textbf{IAM}} \\[0.1em]
+Servizio o insieme di funzionalità che gestisce identità, permessi e credenziali di accesso alle risorse di un'infrastruttura cloud.
+\vspace{0.5cm}
 
 \noindent\hypertarget{injection}{\textbf{Injection}} \\[0.1em]
 Categoria di vulnerabilità di sicurezza informatica che si verifica quando un'applicazione accetta dati non attendibili dall'utente e li elabora all'interno di un comando o di una query senza le dovute sanificazioni. Questo permette a un utente malintenzionato di ``iniettare'' codice ostile per forzare il sistema a eseguire comandi imprevisti o accedere a dati privati.
@@ -571,6 +588,10 @@ Standard diffuso per l'annotazione e la documentazione del codice sorgente scrit
 
 \noindent\hypertarget{json}{\textbf{JSON}} \\[0.1em]
 Acronimo di JavaScript Object Notation. È un formato di scambio dati basato su testo strutturato, estremamente leggero e semplice da leggere sia per le macchine che per gli esseri umani. Essendo indipendente dal linguaggio di programmazione, è lo standard più diffuso per rappresentare dati strutturati e trasmettere informazioni tra applicazioni web e server.
+\vspace{0.5cm}
+
+\noindent\hypertarget{jwt}{\textbf{JWT}} \\[0.1em]
+Standard aperto per la rappresentazione di informazioni (claim) in forma compatta e verificabile tramite firma digitale, utilizzato per autenticare sessioni utente senza che il server debba mantenerne lo stato.
 \vspace{0.1cm}
 
 \newpage
@@ -581,6 +602,10 @@ Acronimo di JavaScript Object Notation. È un formato di scambio dati basato su 
 
 \noindent\hypertarget{kanban}{\textbf{Kanban}} \\[0.1em]
 Metodologia agile per la gestione del flusso di lavoro, focalizzata sulla visualizzazione chiara dei compiti da svolgere. Utilizza tipicamente una lavagna suddivisa in colonne che rappresentano i diversi stati di avanzamento, permettendo al team di tracciare in modo trasparente i compiti dall'inizio fino al completamento.
+\vspace{0.5cm}
+
+\noindent\hypertarget{kms}{\textbf{KMS}} \\[0.1em]
+Servizio gestito per la creazione, la conservazione e la rotazione delle chiavi crittografiche usate per cifrare dati e segreti.
 \vspace{0.1cm}
 
 \newpage
@@ -669,6 +694,10 @@ La versione iniziale ed essenziale di un prodotto software. Include esclusivamen
 \addcontentsline{toc}{subsection}{N}
 \vspace{0.2cm}
 
+\noindent\hypertarget{nat-gateway}{\textbf{NAT Gateway}} \\[0.1em]
+Componente di rete che permette a risorse prive di indirizzo pubblico, situate in una subnet privata, di raggiungere Internet in uscita senza essere direttamente raggiungibili dall'esterno.
+\vspace{0.5cm}
+
 \noindent\hypertarget{nestjs}{\textbf{NestJS}} \\[0.1em]
 Framework basato sul linguaggio TypeScript utilizzato dal gruppo per lo sviluppo dell'architettura e della logica di backend dell'applicazione.
 \vspace{0.5cm}  
@@ -686,6 +715,14 @@ Documento fondamentale per un team di sviluppo che raccoglie l'insieme delle reg
 \phantomsection
 \addcontentsline{toc}{subsection}{O}
 \vspace{0.2cm}
+
+\noindent\hypertarget{odm}{\textbf{ODM}} \\[0.1em]
+Libreria che mappa oggetti del linguaggio di programmazione su documenti di un database non relazionale, semplificandone la lettura e la scrittura senza dover comporre query native.
+\vspace{0.5cm}
+
+\noindent\hypertarget{oidc}{\textbf{OIDC}} \\[0.1em]
+Protocollo di autenticazione basato su OAuth 2.0 che consente a un sistema di verificare l'identità di un chiamante tramite un provider di identità esterno, senza scambiare credenziali statiche di lunga durata.
+\vspace{0.5cm}
 
 \noindent\hypertarget{open-source}{\textbf{Open source}} \\[0.1em]
 Modello di sviluppo software in cui il codice sorgente è aperto, accessibile al pubblico e liberamente modificabile. Nel documento viene citato specificamente per definire \textit{Git}, il sistema di controllo di versione distribuito scelto dal gruppo per gestire le modifiche ai file.
@@ -979,6 +1016,10 @@ Metrica organizzativa (Efficienza Temporale) che esprime il rapporto percentuale
 Stima aggiornata del tempo complessivo necessario per completare l'intero progetto, ricalcolata e adeguata in base all'andamento reale e alle eventuali deviazioni cronologiche riscontrate (ritardi o anticipi).
 \vspace{0.5cm}
 
+\noindent\hypertarget{tls}{\textbf{TLS}} \\[0.1em]
+Protocollo crittografico che garantisce riservatezza e integrità delle comunicazioni di rete, alla base dello scambio dati cifrato via HTTPS.
+\vspace{0.5cm}
+
 \noindent\hypertarget{token}{\textbf{Token}} \\[0.1em]
 Il termine assume diversi significati a seconda del contesto di utilizzo:
 \begin{itemize}
@@ -1040,6 +1081,10 @@ Strumento di build e ambiente di sviluppo per applicazioni JavaScript/TypeScript
 Framework di test per applicativi JavaScript/TypeScript, integrato nativamente con l'ecosistema \textit{Vite}. Nel progetto viene utilizzato per i \textit{Test di Unità} e i \textit{Test di Integrazione} della componente TypeScript, con copertura del codice misurata tramite il motore V8.
 \vspace{0.5cm}
 
+\noindent\hypertarget{vpc}{\textbf{VPC}} \\[0.1em]
+Rete virtuale isolata all'interno di un provider cloud, che consente di definire in modo controllato subnet, instradamento e regole di accesso per le risorse che vi risiedono.
+\vspace{0.5cm}
+
 \noindent\hypertarget{vulnerabilita}{\textbf{Vulnerabilità}} \\[0.1em]
 Una debolezza, una falla o un difetto presente nel codice sorgente o nella configurazione di un sistema informatico. Se sfruttata da un utente malintenzionato, può compromettere la sicurezza, il funzionamento del software o l'integrità dei dati gestiti (come descritto nelle categorie critiche OWASP).
 \vspace{0.1cm}
@@ -1049,6 +1094,10 @@ Una debolezza, una falla o un difetto presente nel codice sorgente o nella confi
 \phantomsection
 \addcontentsline{toc}{subsection}{W}
 \vspace{0.2cm}
+
+\noindent\hypertarget{websocket}{\textbf{WebSocket}} \\[0.1em]
+Protocollo di comunicazione che stabilisce un canale bidirezionale e persistente tra client e server, utilizzato per inviare aggiornamenti in tempo reale senza che il client debba interrogare ripetutamente il server.
+\vspace{0.5cm}
 
 \noindent\hypertarget{workflow}{\textbf{Workflow}} \\[0.1em]
 Flusso di lavoro o sequenza organizzata e ripetibile di processi aziendali o informatici. Viene descritto in relazione al processo automatizzato di \textit{Continuous Deployment} configurato su GitHub Actions per garantire il costante allineamento della documentazione sul web.
