@@ -19,6 +19,30 @@ export class OperationsController {
   constructor(private readonly agentRegistry: AgentRegistry) {}
 
   @Get()
+/**
+ * @swagger
+ * /operations:
+ *   get:
+ *     summary: Le operazioni consentite al ruolo di chi chiama
+ *     description: Gia' filtrate dal backend: e' la fonte di verita' su quali operazioni esistono e chi puo' lanciarle.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of OperationDescriptorResponse objects.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/OperationDescriptorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
+ */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
