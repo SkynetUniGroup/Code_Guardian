@@ -101,6 +101,7 @@
     \hline
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
 
+    1.5.0 & 2026/09/22 & Aggiornamento sezione "Cruscotto di valutazione" & \makecell[l]{Samuele \\Bertin} & \makecell[l]{Dario\\ Pirrone} \\ \hline
     1.4.0 & 2026/09/20 & Aggiornamento sezione "Strategie di Testing" & \makecell[l]{Samuele \\Bertin} & \makecell[l]{Dario\\ Pirrone} \\ \hline
     1.3.1 & 2026/09/08 & Rimossa sezione “valutazioni per il miglioramento” & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
     1.3.0 & 2026/09/02 & Modifiche ai test per allinearli agli ultimi cambiamenti del AdR & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco\\ Barbiero} \\ \hline
@@ -989,7 +990,7 @@ Al fine di garantire misurazioni affidabili e non soggettive, i dati vengono est
     \item \textbf{Metriche di Supporto e di Prodotto}: misurate in modo automatizzato tramite \textit{ script Python} dedicati o attraverso l'integrazione di \textit{tool} di analisi statica, le metriche che richiedono codice sorgente verranno attivate a partire dalla \textit{Product Baseline} (PB) e popolate progressivamente.
 \end{itemize}
 
-\subsection{MP\_1 e MP\_2 - Earned Value (EV) e Planned Value (PV)}
+\subsection{MP\_1 e MP\_2 - Earned Value (EV) e Planned Value (PV) RTB}
 L'Earned Value (EV) valuta in modo oggettivo il valore economico del lavoro effettivamente completato all’interno del periodo di riferimento, mentre il Planned Value (PV) rappresenta il costo totale preventivato e pianificato per le attività da svolgere nel periodo di riferimento.
 
 \begin{table}[htbp]
@@ -1025,7 +1026,7 @@ Il confronto tra \textit{Planned Value} e \textit{Earned Value} mostra un andame
 
 \paragraph*{MP\_1 - Earned Value (EV)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 80\%$ del PV):} Il vincolo è sempre rispettato, in nessuno \textit{Sprint} il valore dell'EV è sceso sotto la soglia minima dell'80\% rispetto al PV di periodo.
+    \item \textbf{Valore di accettazione ($\ge 80\%$ del PV):} Il vincolo non è sempre rispettato: negli \textit{Sprint} 2 e 9 l'EV di periodo scende sotto la soglia dell'80\% del PV, attestandosi rispettivamente al 77\% e al 46\%.
     \item \textbf{Valore ottimale ($\ge$ PV):} Il vincolo è rispettato negli \textit{Sprint} 1, 4, 5, 6, 7, 8 e 10. Il parametro non è soddisfatto negli \textit{Sprint} 2, 3 e 9, nei quali l'EV si è attestato rispettivamente al 77\%, 82\% e 46\% del PV.
 \end{itemize}
 
@@ -1035,7 +1036,60 @@ Il confronto tra \textit{Planned Value} e \textit{Earned Value} mostra un andame
     \item \textbf{Valore ottimale ($<$ \textit{Budget At Completion}):} Il vincolo è rispettato. Il PV cumulato cresce in maniera coerente e progressiva, raggiungendo i \EUR{6.250,00} al termine dello \textit{Sprint} 10. Tale cifra rimane ampiamente inferiore al BAC (\textit{Budget At Completion}) di \EUR{11.250,00}.
 \end{itemize}
 
-\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Completion (EAC) e Estimate To Complete (ETC)}
+\subsection{MP\_1 e MP\_2 - Earned Value (EV) e Planned Value (PV) PB}
+Questa sottosezione riporta l'andamento dell'Earned Value (EV) e del Planned Value (PV) sull'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint} & \textbf{Planned Value} & \textbf{Earned Value} & \textbf{PV accumulato} & \textbf{EV accumulato} \\ \hline
+        1  & \EUR{400,00} & \EUR{400,00} & \EUR{400,00} & \EUR{400,00} \\ \hline
+        2  & \EUR{415,00} & \EUR{322,78} & \EUR{815,00} & \EUR{722,78} \\ \hline
+        3  & \EUR{650,00} & \EUR{533,93} & \EUR{1.465,00} & \EUR{1.256,71} \\ \hline
+        4  & \EUR{640,00} & \EUR{640,00} & \EUR{2.105,00} & \EUR{1.896,71} \\ \hline
+        5  & \EUR{795,00} & \EUR{795,00} & \EUR{2.900,00} & \EUR{2.691,71} \\ \hline
+        6  & \EUR{195,00} & \EUR{195,00} & \EUR{3.095,00} & \EUR{2.886,71} \\ \hline
+        7  & \EUR{1.025,00} & \EUR{1.025,00} & \EUR{4.120,00} & \EUR{3.911,71} \\ \hline
+        8  & \EUR{710,00} & \EUR{710,00} & \EUR{4.830,00} & \EUR{4.621,71} \\ \hline
+        9  & \EUR{470,00} & \EUR{218,21} & \EUR{5.300,00} & \EUR{4.839,92} \\ \hline
+        10 & \EUR{950,00} & \EUR{950,00} & \EUR{6.250,00} & \EUR{5.789,92} \\ \hline
+        11 & \EUR{375,00} & \EUR{375,00} & \EUR{6.625,00} & \EUR{6.164,92} \\ \hline
+        12 & \EUR{1.045,00} & \EUR{824,87} & \EUR{7.670,00} & \EUR{6.989,79} \\ \hline
+        13 & \EUR{855,00} & \EUR{513,00} & \EUR{8.525,00} & \EUR{7.502,79} \\ \hline
+        14 & \EUR{1.230,00} & \EUR{1.047,16} & \EUR{9.755,00} & \EUR{8.549,95} \\ \hline
+        15 & \EUR{890,00} & \EUR{537,07} & \EUR{10.645,00} & \EUR{9.087,02} \\ \hline
+        16 & \EUR{575,00} & \EUR{419,59} & \EUR{11.220,00} & \EUR{9.506,61} \\ \hline
+        17 & \EUR{390,00} & \EUR{390,00} & \EUR{11.610,00} & \EUR{9.896,61} \\ \hline
+    \end{tabular}
+    \caption{Andamento Planned Value (PV) ed Earned Value (EV) -- panoramica generale}
+    \label{tab:valori_sprint_pb}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/PV_EC_PB.png}
+    \captionof{figure}{Grafico dell'andamento del Planned Value ed Earned Value (panoramica generale)}
+    \label{fig:PV_EC_PB}
+\end{center}
+
+\subsubsection*{Valutazione dell'andamento}
+Sull'intera durata del progetto, il PV cumulato cresce con regolarità fino a \EUR{11.610,00} allo \textit{Sprint} 17, mentre l'EV cumulato si attesta a \EUR{9.896,61}, pari all'85,2\% del PV totale. Per lo \textit{Sprint} 14, in assenza di un grafico Burndown che ne attestasse il tasso di completamento reale delle \textit{issue}, l'EV è stato stimato in via approssimata a partire dal rapporto tra ore completate e ore pianificate (63/74), ottenendo un valore di \EUR{1.047,16}, pari all'85,1\% del PV di periodo.
+
+\paragraph*{MP\_1 - Earned Value (EV)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 80\%$ del PV):} Il vincolo non è sempre rispettato: negli \textit{Sprint} 2 (77,8\%), 9 (46,4\%), 12 (78,9\%), 13 (60\%), 15 (60,3\%) e 16 (73,0\%) l'EV di periodo scende sotto la soglia dell'80\% del PV.
+    \item \textbf{Valore ottimale ($\ge$ PV):} Il vincolo è rispettato negli \textit{Sprint} 1, 4, 5, 6, 7, 8, 10, 11 e 17. Non è soddisfatto negli \textit{Sprint} 2, 3, 9, 12, 13, 14, 15 e 16.
+\end{itemize}
+
+\paragraph*{MP\_2 - Planned Value (PV)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo risulta rispettato in tutte le iterazioni, dallo \textit{Sprint} 1 allo \textit{Sprint} 17.
+    \item \textbf{Valore ottimale ($<$ \textit{Budget At Completion}):} Il vincolo è rispettato dallo \textit{Sprint} 1 allo \textit{Sprint} 16. Allo \textit{Sprint} 17 il PV cumulato raggiunge \EUR{11.610,00}, superando il BAC di \EUR{360,00}: il vincolo ottimale non è più soddisfatto nell'ultima iterazione.
+\end{itemize}
+
+\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Completion (EAC) e Estimate To Complete (ETC) RTB}
 L'Actual Cost (AC) quantifica il costo effettivo e documentato sostenuto per le ore di lavoro realmente impiegate nel progetto, mentre l'Estimate To Complete (ETC) stima il budget residuo necessario per completare le attività del progetto a partire dallo stato attuale, infine l'Estimate At Completion (EAC) fornisce una stima aggiornata del costo totale finale del progetto proiettando l’efficienza di costo corrente (CPI).
 
 \begin{table}[htbp]
@@ -1088,7 +1142,66 @@ Di conseguenza, l'\textit{Estimate To Complete} (ETC), calcolato come differenza
     \item \textbf{Valore ottimale ($<$ BAC - AC):} La soglia di ottimalità dell'ETC ricalca esattamente quella dell'EAC: è rispettata nelle fasi iniziali per poi assestarsi su valori coerenti con il completamento progressivo dei task.
 \end{itemize}
 
-\subsection{MP\_6: Time Estimate At Completion (TEAC)}
+\subsection{MP\_3, MP\_4 e MP\_5:  Actual Cost (AC), Estimate At Completion (EAC) e Estimate To Complete (ETC) PB}
+Questa sottosezione estende l'analisi di \textit{Actual Cost}, \textit{Estimate At Completion} ed \textit{Estimate To Complete} all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+        \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint} & \textbf{Actual Cost} & \textbf{AC accumulato} & \textbf{ETC} & \textbf{EAC} & \textbf{BAC} \\ \hline
+        1  & \EUR{355,00} & \EUR{355,00} & \EUR{9.629,38} & \EUR{9.984,38} & \EUR{11.250,00} \\ \hline
+        2  & \EUR{435,00} & \EUR{790,00} & \EUR{11.506,27} & \EUR{12.296,27} & \EUR{11.250,00} \\ \hline
+        3  & \EUR{650,00} & \EUR{1.440,00} & \EUR{11.450,80} & \EUR{12.890,80} & \EUR{11.250,00} \\ \hline
+        4  & \EUR{685,00} & \EUR{2.125,00} & \EUR{10.479,06} & \EUR{12.604,06} & \EUR{11.250,00} \\ \hline
+        5  & \EUR{815,00} & \EUR{2.940,00} & \EUR{9.347,73} & \EUR{12.287,73} & \EUR{11.250,00} \\ \hline
+        6  & \EUR{195,00} & \EUR{3.135,00} & \EUR{9.082,63} & \EUR{12.217,63} & \EUR{11.250,00} \\ \hline
+        7  & \EUR{1.055,00} & \EUR{4.190,00} & \EUR{7.860,36} & \EUR{12.050,36} & \EUR{11.250,00} \\ \hline
+        8  & \EUR{730,00} & \EUR{4.920,00} & \EUR{7.056,09} & \EUR{11.976,09} & \EUR{11.250,00} \\ \hline
+        9  & \EUR{280,00} & \EUR{5.200,00} & \EUR{6.886,98} & \EUR{12.086,98} & \EUR{11.250,00} \\ \hline
+        10 & \EUR{915,00} & \EUR{6.115,00} & \EUR{5.766,64} & \EUR{11.881,64} & \EUR{11.250,00} \\ \hline
+        11 & \EUR{390,00} & \EUR{6.505,00} & \EUR{5.365,59} & \EUR{11.870,59} & \EUR{11.250,00} \\ \hline
+        12 & \EUR{795,00} & \EUR{7.300,00} & \EUR{4.449,28} & \EUR{11.749,28} & \EUR{11.250,00} \\ \hline
+        13 & \EUR{1.000,00} & \EUR{8.300,00} & \EUR{4.145,37} & \EUR{12.445,37} & \EUR{11.250,00} \\ \hline
+        14 & \EUR{1.030,00} & \EUR{9.330,00} & \EUR{2.946,38} & \EUR{12.276,38} & \EUR{11.250,00} \\ \hline
+        15 & \EUR{740,00} & \EUR{10.070,00} & \EUR{2.396,96} & \EUR{12.466,96} & \EUR{11.250,00} \\ \hline
+        16 & \EUR{560,00} & \EUR{10.630,00} & \EUR{1.949,40} & \EUR{12.579,40} & \EUR{11.250,00} \\ \hline
+        17 & \EUR{390,00} & \EUR{11.020,00} & \EUR{1.507,01} & \EUR{12.527,01} & \EUR{11.250,00} \\ \hline
+        \end{tabular}
+    \caption{Andamento Actual Cost (AC), Estimate To Complete (ETC) ed Estimate At Completion (EAC) -- panoramica generale}
+    \label{tab:costi_sprint_pb}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/AC_ETC_EAC_PB.png}
+    \captionof{figure}{Grafico dell'andamento dell'Actual Cost, Estimate To Complete ed Estimate At Completion (panoramica generale)}
+    \label{fig:AC_ETC_EAC_PB}
+\end{center}
+
+\subsubsection*{Valutazione dell'andamento}
+Sull'intera durata del progetto, l'\textit{Actual Cost} raggiunge \EUR{11.020,00} accumulati allo \textit{Sprint} 17, a fronte di un BAC di \EUR{11.250,00}: il margine residuo si riduce a soli \EUR{230,00}. L'\textit{Estimate At Completion} si mantiene costantemente superiore al BAC dallo \textit{Sprint} 2 in poi, stabilizzandosi tra \EUR{11.700,00} e \EUR{12.600,00} per il resto del progetto, fino a \EUR{12.527,01} allo \textit{Sprint} 17. L'\textit{Estimate To Complete} scende invece in modo pressoché monotono, riducendosi a \EUR{1.507,01} nell'ultima iterazione nota.
+
+\paragraph*{MP\_3 - Actual Cost (AC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo è sempre rispettato in tutte le 17 iterazioni.
+    \item \textbf{Valore ottimale ($\le$ EV):} Il vincolo è rispettato negli \textit{Sprint} 1, 6, 10, 12, 14 e 17. Non è rispettato negli \textit{Sprint} 2, 3, 4, 5, 7, 8, 9, 11, 13, 15 e 16.
+\end{itemize}
+
+\paragraph*{MP\_4 - Estimate At Completion (EAC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($<$ BAC $+ 5\%$, ossia \EUR{11.812,50}):} Il vincolo è rispettato solo negli \textit{Sprint} 1 e 12. In tutte le altre iterazioni l'EAC supera la soglia di tolleranza, con il valore massimo registrato allo \textit{Sprint} 3 (\EUR{12.890,80}).
+    \item \textbf{Valore ottimale ($<$ BAC):} Il vincolo è rispettato limitatamente allo \textit{Sprint} 1. In tutti gli \textit{Sprint} successivi l'EAC resta stabilmente superiore ai \EUR{11.250,00} di budget.
+\end{itemize}
+
+\paragraph*{MP\_5 - Estimate To Complete (ETC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo risulta sempre rispettato in tutte le 17 iterazioni.
+    \item \textbf{Valore ottimale ($<$ BAC - AC):} La soglia di ottimalità dell'ETC ricalca quella dell'EAC: non rispettata dallo \textit{Sprint} 2 in poi (fatta eccezione per lo \textit{Sprint} 12), pur con un trend di riduzione costante fino a \EUR{1.507,01} allo \textit{Sprint} 17, coerente con l'avvicinarsi alla conclusione del progetto.
+\end{itemize}
+
+\subsection{MP\_6: Time Estimate At Completion (TEAC) RTB}
 Il Time Estimate At Completion (TEAC) proietta la durata complessiva finale del progetto basandosi sulla performance di avanzamento temporale finora registrata.
 
 \begin{table}[htbp]
@@ -1129,7 +1242,54 @@ Va precisato che la durata massima consentita per il progetto è di 26 settimane
     \item \textbf{Valore ottimale ($\le$ Durata pianificata):} Il vincolo risulta strettamente rispettato limitatamente al primo \textit{Sprint} (24 settimane). Negli \textit{Sprint} successivi il valore si fissa tra 25 e 26 settimane, denotando uno scostamento minimo e del tutto sotto controllo rispetto alle 24 settimane pianificate.
 \end{itemize}
 
-\subsection{MP\_7 e MP\_8: \textbf{ Cost Performance Index (CPI)}, Schedule Performance Index (SPI)}
+\subsection{MP\_6: Time Estimate At Completion (TEAC) PB}
+Questa sottosezione estende la proiezione del \textit{Time Estimate At Completion} all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Sprint} & \textbf{TEAC (settimane)} \\ \hline
+        1  & 24 \\ \hline
+        2  & 27 \\ \hline
+        3  & 28 \\ \hline
+        4  & 27 \\ \hline
+        5  & 26 \\ \hline
+        6  & 26 \\ \hline
+        7  & 25 \\ \hline
+        8  & 25 \\ \hline
+        9  & 26  \\ \hline
+        10 & 26  \\ \hline
+        11 & 26  \\ \hline
+        12 & 26  \\ \hline
+        13 & 27  \\ \hline
+        14 & 27  \\ \hline
+        15 & 28  \\ \hline
+        16 & 28  \\ \hline
+        17 & 28  \\ \hline
+    \end{tabular}
+    \caption{Andamento Time Estimate At Completion (TEAC) (panoramica generale)}
+    \label{tab:teac_sprint_pb}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/TEAC_PB.png}
+    \captionof{figure}{Grafico dell'andamento del Time Estimate At Completion (panoramica generale)}
+    \label{fig:TEAC_PB}
+\end{center}
+
+\subsubsection*{Valutazione dell'andamento}
+Sull'intera durata del progetto, il TEAC si stabilizza tra le 26 e le 28 settimane a partire dallo \textit{Sprint} 13, raggiungendo il proprio massimo (28 settimane) dallo \textit{Sprint} 15 in poi e mantenendolo fino alla conclusione allo \textit{Sprint} 17. Va sottolineato che, a partire dallo \textit{Sprint} 13, il valore proiettato supera le 26 settimane precedentemente indicate come limite invalicabile per la conclusione del progetto: la proiezione stimata eccede quindi il vincolo temporale assoluto.
+
+\paragraph*{MP\_6 - Time Estimate At Completion (TEAC)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0$):} Il vincolo è sempre rispettato in tutte le 17 iterazioni.
+    \item \textbf{Valore ottimale ($\le$ Durata pianificata):} Il vincolo risulta strettamente rispettato limitatamente al primo \textit{Sprint} (24 settimane). Negli \textit{Sprint} successivi il valore si assesta tra 25 e 28 settimane, superando costantemente le 24 settimane pianificate; dallo \textit{Sprint} 13 in poi viene superato anche il limite invalicabile di 26 settimane definito in fase RTB.
+\end{itemize}
+
+\subsection{MP\_7 e MP\_8: \textbf{ Cost Performance Index (CPI)}, Schedule Performance Index (SPI) RTB}
 Il Cost Performance Index (CPI) misura l’efficienza economica del progetto indicando se il valore prodotto è in linea con i costi sostenuti, mentre lo Schedule Performance Index (SPI) misura l’efficienza temporale del progetto segnalando la presenza di eventuali anticipi o ritardi sulla pianificazione.
 
 \begin{table}[htbp]
@@ -1175,7 +1335,60 @@ Gli indici di prestazione mostrano una progressiva e costante convergenza verso 
     \item \textbf{Valore ottimale ($= 1$):} Il vincolo è rispettato nello \textit{Sprint} 1 (1,00). Negli \textit{Sprint} finali la metrica si stabilizza attorno allo 0,93-0,96, confermando uno scostamento temporale del tutto trascurabile rispetto alla pianificazione.
 \end{itemize}
 
-\subsection{MP\_9: Requirements Stability Index (RSI)}
+\subsection{MP\_7 e MP\_8: \textbf{ Cost Performance Index (CPI)}, Schedule Performance Index (SPI) PB}
+Questa sottosezione estende l'analisi di CPI e SPI all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Sprint} & \textbf{SPI} & \textbf{CPI} & \textbf{Soglia accettabile} \\ \hline
+        1  & 1,00 & 1,13 & 0,9 \\ \hline
+        2  & 0,89 & 0,91 & 0,9 \\ \hline
+        3  & 0,86 & 0,87 & 0,9 \\ \hline
+        4  & 0,90 & 0,89 & 0,9 \\ \hline
+        5  & 0,93 & 0,92 & 0,9 \\ \hline
+        6  & 0,93 & 0,92 & 0,9 \\ \hline
+        7  & 0,95 & 0,93 & 0,9 \\ \hline
+        8  & 0,96 & 0,94 & 0,9 \\ \hline
+        9  & 0,91 & 0,93 & 0,9 \\ \hline
+        10 & 0,93 & 0,95 & 0,9 \\ \hline
+        11 & 0,93 & 0,95 & 0,9 \\ \hline
+        12 & 0,91 & 0,96 & 0,9 \\ \hline
+        13 & 0,88 & 0,90 & 0,9 \\ \hline
+        14 & 0,88 & 0,92 & 0,9 \\ \hline
+        15 & 0,85 & 0,90 & 0,9 \\ \hline
+        16 & 0,85 & 0,89 & 0,9 \\ \hline
+        17 & 0,85 & 0,90 & 0,9 \\ \hline
+    \end{tabular}
+    \caption{Andamento Schedule Performance Index (SPI) e Cost Performance Index (CPI) (panoramica generale)}
+    \label{tab:spi_cpi_sprint_pb}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/SPI_CPI_PB.png}
+    \captionof{figure}{Grafico dell'andamento del Schedule Performance Index e Cost Performance Index (panoramica generale)}
+    \label{fig:SPI_CPI_PB}
+\end{center}
+
+\subsubsection*{Valutazione dell'andamento}
+Sull'intera durata del progetto, SPI e CPI proseguono il trend di recupero osservato nella fase RTB fino allo \textit{Sprint} 12, per poi flettere gradualmente nella seconda metà del progetto: lo SPI scende a 0,85 dallo \textit{Sprint} 15 in poi, mentre il CPI si stabilizza tra 0,89 e 0,92, chiudendo a 0,90 allo \textit{Sprint} 17.
+
+\paragraph*{MP\_7 - Cost Performance Index (CPI)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è rispettato in tutti gli \textit{Sprint} tranne il 3, il 4 e il 16.
+    \item \textbf{Valore ottimale ($= 1$):} Il vincolo è soddisfatto solo nello \textit{Sprint} 1 (1,13). Nelle iterazioni successive la metrica si mantiene su valori prossimi all'unità, tra 0,87 e 0,96.
+\end{itemize}
+
+\paragraph*{MP\_8 - Schedule Performance Index (SPI)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 0,9$):} Il vincolo è rispettato negli \textit{Sprint} 1 e dal 4 al 12. Non è rispettato negli \textit{Sprint} 2, 3 e dal 13 al 17.
+    \item \textbf{Valore ottimale ($= 1$):} Il vincolo è rispettato solo nello \textit{Sprint} 1 (1,00). Nelle iterazioni successive la metrica si stabilizza tra 0,85 e 0,96, senza mai tornare a toccare l'unità.
+\end{itemize}
+
+\subsection{MP\_9: Requirements Stability Index (RSI) RTB}
 Il Requirements Stability Index (RSI) misura la maturità e la stabilità dei requisiti nel tempo, evidenziando l’entità delle variazioni.
 
 \begin{table}[htbp]
@@ -1217,6 +1430,58 @@ Osservando i dati, emerge un incremento significativo e costante del numero tota
     \item \textbf{Valore ottimale ($= 100\%$):} Il vincolo risulta soddisfatto pienamente negli \textit{Sprint} 2, 5, 9 e 10. Nelle restanti iterazioni (3, 4, 6, 7 e 8) si registrano flessioni comprese tra il 91\% e il 97\%.
 \end{itemize}
 
+\subsection{MP\_9: Requirements Stability Index (RSI) PB}
+Questa sottosezione estende l'analisi del \textit{Requirements Stability Index} all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17, a partire dalla versione aggiornata dell'\textbf{Analisi dei Requisiti} (AdR v2.0.0, approvata il 2026/09/16 per la revisione PB).
+
+\begin{table}[htbp]
+    \centering
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint} & \textbf{Requisiti totali} & \textbf{Requisiti modificati} & \textbf{RSI} & \textbf{Soglia accettabile} \\ \hline
+        1  & N/A & N/A & N/A & 80\%\\ \hline
+        2  & 15  & 0  & 100\% & 80\% \\ \hline
+        3  & 62  & 3  & 95\% & 80\% \\ \hline
+        4  & 76  & 2  & 97\% & 80\% \\ \hline
+        5  & 84  & 0  & 100\% & 80\% \\ \hline
+        6  & 97  & 4  & 96\% & 80\% \\ \hline
+        7  & 121 & 11 & 91\% & 80\% \\ \hline
+        8  & 142 & 8  & 94\% & 80\% \\ \hline
+        9  & 142  & 0  & 100\%  & 80\% \\ \hline
+        10 & 142  & 0  & 100\%  & 80\% \\ \hline
+        11 & 105  & 0  & 100\%  & 80\% \\ \hline
+        12 & 105  & 0  & 100\%  & 80\% \\ \hline
+        13 & 105  & 0  & 100\%  & 80\% \\ \hline
+        14 & 105  & 0  & 100\%  & 80\% \\ \hline
+        15 & 141  & 36  & 74,5\%  & 80\% \\ \hline
+        16 & 141  & 0  & 100\%  & 80\% \\ \hline
+        17 & 141  & 0  & 100\%  & 80\% \\ \hline
+    \end{tabular}
+    \caption{Andamento del Requirements Stability Index (RSI) (panoramica generale)}
+    \label{RSI_pb}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/RSI_PB.png}
+    \captionof{figure}{Grafico dell'andamento del Requirements Stability Index (panoramica generale)}
+    \label{fig:RSI_PB}
+\end{center}
+
+\subsubsection*{Valutazione dell'andamento}
+L'analisi del \textit{Requirements Stability Index} (RSI) evidenzia un andamento complessivamente adeguato sull'intera durata del progetto, seppur con alcune dinamiche che meritano contestualizzazione. Nello \textit{Sprint} 1 la metrica non è calcolabile (N/A) in quanto il periodo è stato dedicato a uno studio generale del dominio, rimandando la definizione concreta dei requisiti allo \textit{Sprint} 2. Osservando i dati, emerge un incremento significativo e costante del numero totale di requisiti iterazione dopo iterazione, passando da 15 nello \textit{Sprint} 2 a 142 nello \textit{Sprint} 8, per poi consolidarsi definitivamente negli \textit{Sprint} 9 e 10, dove non vengono più né aggiunti né modificati requisiti.
+
+A partire dallo \textit{Sprint} 11, il conteggio dei requisiti totali viene ricalcolato utilizzando il numero di identificativi di requisito (RF, RQ, RV, RS) distinti presenti nel testo dell'\textbf{Analisi dei Requisiti}, anziché il conteggio adottato fino allo \textit{Sprint} 10. Questo cambio di metodologia spiega l'apparente calo del totale da 142 a 105 requisiti tra lo \textit{Sprint} 10 e lo \textit{Sprint} 11: non si tratta di una rimozione di requisiti, ma del passaggio a una fonte di conteggio diversa.
+
+Nessuna revisione dell'AdR durante gli \textit{Sprint} 11-14, che mantengono pertanto un RSI del 100\% rispetto al totale di baseline di 105 requisiti. Nello \textit{Sprint} 15 i requisiti arrivano a un totale di 141 a causa delle modifiche post-RTB, con un conseguente calo del RSI al 74,5\%, unico caso sotto la soglia di accettazione dell'80\% nell'intera durata del progetto. Gli \textit{Sprint} 16 e 17 mantengono invariato il nuovo totale di 141 requisiti (l'ultimo, la revisione v2.0.0 del 2026/09/16, integra le correzioni richieste dal Prof. Cardin senza modificarne il conteggio), riportando la metrica al valore ottimale del 100\% per il resto del progetto.
+
+\paragraph*{MP\_9 - Requirements Stability Index (RSI)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 80\%$):} Il vincolo è rispettato per tutti gli \textit{Sprint} noti, ad eccezione dello \textit{Sprint} 15 (74,5\%), unico caso sotto soglia.
+    \item \textbf{Valore ottimale ($= 100\%$):} Il vincolo è soddisfatto negli \textit{Sprint} 2, 5, 9, 10, 11, 12, 13, 14, 16 e 17. Non è soddisfatto negli \textit{Sprint} 3, 4, 6, 7, 8 e 15.
+\end{itemize}
+
 \subsection{MP\_10: Indice di Gulpease (IG)}
 L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di leggibilità dei documenti testuali scritti in lingua italiana.
 
@@ -1256,8 +1521,8 @@ La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al 
     \renewcommand{\arraystretch}{1.3}
     \begin{tabular}{|c|c|c|c|}
         \hline
-        \textbf{Documento} & \textbf{Errori versioni prec.} & \textbf{Errori v1.0.0} & \textbf{Soglia accettabile} \\ \hline
-        AdR & 9 & 0 & $\leq 5$ \\ \hline
+        \textbf{Documento} & \textbf{Errori versioni prec.} & \textbf{Errori v2.0.0} & \textbf{Soglia accettabile} \\ \hline
+        AdR & 7 & 0 & $\leq 5$ \\ \hline
         PdP & 5 & 0 & $\leq 5$ \\ \hline
         PdQ & 4 & 0 & $\leq 5$ \\ \hline
         NdP & 6 & 0 & $\leq 5$ \\ \hline
@@ -1266,12 +1531,12 @@ La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al 
     \label{tab:errori_documento}
 \end{table}
 
-Prima del rilascio dei documenti nella loro versione 1.0.0, il team effettua un controllo semi-automatico volto a individuare eventuali errori ortografici. Le imperfezioni riscontrate nelle versioni in lavorazione vengono così corrette in modo sistematico prima dell'approvazione finale, garantendo la correttezza linguistica dei documenti.
+Prima del rilascio dei documenti nella loro versione 2.0.0, il team effettua un controllo semi-automatico volto a individuare eventuali errori ortografici. Le imperfezioni riscontrate nelle versioni in lavorazione vengono così corrette in modo sistematico prima dell'approvazione finale, garantendo la correttezza linguistica dei documenti.
 
 \paragraph*{MP\_11 - Correttezza Ortografica}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\le 5$ errori):} Il vincolo risulta sempre rispettato nella versione 1.0.0. Nelle versioni precedenti la soglia di tolleranza era stata superata in due documenti (\textbf{Analisi dei Requisiti} con 9 errori e \textbf{Norme di Progetto} con 6 errori).
-    \item \textbf{Valore ottimale ($= 0$ errori):} Il vincolo è pienamente soddisfatto per tutti i documenti. A seguito delle correzioni applicate, nessun documento in versione 1.0.0 presenta errori ortografici.
+    \item \textbf{Valore di accettazione ($\le 5$ errori):} Il vincolo risulta sempre rispettato nella versione 2.0.0. Nelle versioni precedenti la soglia di tolleranza era stata superata in due documenti (\textbf{Analisi dei Requisiti} con 7 errori e \textbf{Norme di Progetto} con 6 errori).
+    \item \textbf{Valore ottimale ($= 0$ errori):} Il vincolo è pienamente soddisfatto per tutti i documenti. A seguito delle correzioni applicate, nessun documento in versione 2.0.0 presenta errori ortografici.
 \end{itemize}
 
 \subsection{MP\_12: Copertura del Codice (Code Coverage)}
@@ -1334,7 +1599,7 @@ Alla cifra dei test eseguiti non concorrono 10 casi di integrazione saltati (\te
     \item \textbf{Valore ottimale ($= 100\%$):} Non raggiunto, coincidendo con il valore di accettazione.
 \end{itemize}
 
-\subsection{MP\_14: Rischi non Preventivati}
+\subsection{MP\_14: Rischi non Preventivati RTB}
 L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiva dei rischi misurando la percentuale di criticità verificatesi ma non identificate nel registro presente nel \textbf{Piano di Progetto}.
 
 \renewcommand{\arraystretch}{1.5}
@@ -1362,15 +1627,58 @@ L'indice dei Rischi non Preventivati valuta la qualità dell’analisi preventiv
 \label{tab:rischi_sprint}
 \end{xltabular}
 
-L'analisi delle criticità evidenzia che la quasi totalità dei problemi occorsi durante i vari \textit{sprint} può essere ricondotta direttamente ai rischi già identificati e preventivati all'interno del \textbf{Piano di Progetto}, ad eccezione di una singola criticità. Durante lo \textit{sprint} 9, infatti, il mancato superamento della revisione \textbf{RTB} per un \textbf{PoC} inadatto, ha rappresentato un rischio inatteso e non direttamente riconducibile ai rischi preventivati. Di conseguenza, l'indice dei Rischi non Preventivati si attesta al 12.5\% (1 evento non preventivato su 8). Questo dimostra comunque una solida analisi preventiva di base, sebbene le strategie di mitigazione non siano sempre state applicate con rigorosità, portando al ripetersi ricorrente di alcuni rischi organizzativi (in particolare RO1 negli \textit{sprint} 3, 7 e 10, e RO2 negli \textit{sprint} 2, 8 e 10), mostrando la necessità di cambiamenti effettivi nell'organizzazione del gruppo.
+L'analisi delle criticità evidenzia che la quasi totalità dei problemi occorsi durante i vari \textit{sprint} può essere ricondotta direttamente ai rischi già identificati e preventivati all'interno del \textbf{Piano di Progetto}, ad eccezione di una singola criticità. Durante lo \textit{sprint} 9, infatti, il mancato superamento della revisione \textbf{RTB} per un \textbf{PoC} inadatto, ha rappresentato un rischio inatteso e non direttamente riconducibile ai rischi preventivati. Di conseguenza, l'indice dei Rischi non Preventivati si attesta al 10\% (1 evento non preventivato su 10). Questo dimostra comunque una solida analisi preventiva di base, sebbene le strategie di mitigazione non siano sempre state applicate con rigorosità, portando al ripetersi ricorrente di alcuni rischi organizzativi (in particolare RO1 negli \textit{sprint} 3, 7 e 10, e RO2 negli \textit{sprint} 2, 8 e 10), mostrando la necessità di cambiamenti effettivi nell'organizzazione del gruppo.
 
 \paragraph*{MP\_14 - Rischi non Preventivati}
 \begin{itemize}
-\item \textbf{Valore di accettazione ($\le 20\%$):} Il vincolo è rispettato, attestandosi al 12.5\%.
+\item \textbf{Valore di accettazione ($\le 20\%$):} Il vincolo è rispettato, attestandosi al 10\%.
 \item \textbf{Valore ottimale ($= 0\%$):} Il vincolo non è pienamente soddisfatto a causa dell'imprevisto occorso nello \textit{sprint} 9, pur mantenendosi all'interno della soglia di accettabilità.
 \end{itemize}
 
-\subsection{MP\_15: Time Efficiency (TE)}
+\subsection{MP\_14: Rischi non Preventivati PB}
+Questa sottosezione estende l'analisi dei Rischi non Preventivati all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17.
+
+\renewcommand{\arraystretch}{1.5}
+\begin{xltabular}{\textwidth}{|c|X|c|}
+    \hline
+    \textbf{Sprint} & \textbf{Rischio Occorso} & \textbf{Rischio preventivato?} \\ \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Sprint} & \textbf{Rischio Occorso} & \textbf{Rischio preventivato?} \\ \hline
+    \endhead
+
+1 & Scarsa pianificazione dovuta a una definizione eccessivamente generica delle attività, che ha ostacolato il monitoraggio e la gestione del tempo. & Sì, (RO1) \\ \hline
+2 & Comunicazione interna inefficace nel coordinare i ruoli e il lavoro sincrono, sorta a seguito dell'introduzione di \textit{Issue} più fini. & Sì, (RO2) \\ \hline
+3 & Nuova problematica di scarsa pianificazione, in quanto la divisione delle \textit{Issue} si è rivelata poco granulare, causando colli di bottiglia. & Sì, (RO1) \\ \hline
+4 & Comunicazione esterna inefficace che ha causato ritardi nel ricevere riscontri dal \textbf{Proponente} e nel fissare un incontro sui requisiti. & Sì, (RO3) \\ \hline
+5 & \textbf{Analisi dei Requisiti} incompleta o errata, emersa da un disallineamento con il \textbf{Proponente} riguardo all'assenza di un \textit{orchestratore} preesistente. & Sì, (RR1) \\ \hline
+6 & Indisponibilità e vincoli di tempo dovuti alla drastica riduzione delle ore lavorabili da parte dei membri per la concomitanza con la sessione d'esami. & Sì, (RI1) \\ \hline
+7 & Sottostima e sovrastima delle attività, manifestatesi con uno scostamento tra le ore preventivate e quelle effettivamente impiegate dai singoli, oltre ad una scarsa pianificazione dovuta all'accumulo del lavoro verso la fine dello \textit{sprint}. & Sì, (RO4, RO5, RO1) \\ \hline
+8 & Comunicazione interna inefficace durante le attività di verifica in parallelo, con conseguente mancanza di tracciamento delle sezioni revisionate e rischio di sovrapposizioni o mancati controlli. & Sì, (RO2) \\ \hline
+9 & Ritardo inatteso dovuto al mancato superamento della revisione \textbf{RTB}, che ha reso necessaria una ristrutturazione del \textbf{Proof of Concept (PoC)} per l'integrazione di ulteriori tecnologie. & No \\ \hline
+10 & Scarsa pianificazione e comunicazione interna inefficace nella distribuzione del carico di lavoro, con un impiego sbilanciato delle risorse che ha generato lievi ritardi a lungo termine. & Sì, (RO1, RO2) \\ \hline
+11 & Nessun rischio occorso: lo \textit{Sprint}, seppur breve (4 giorni), è stato gestito efficacemente senza criticità di rilievo. & --- \\ \hline
+12 & Comunicazione interna inefficace nell'emersione tardiva di alcune difficoltà, unita a una sottostima delle attività che ha richiesto più tempo del previsto. & Sì, (RO2, RO4) \\ \hline
+13 & Persistenza dei rischi di scarsa pianificazione e sottostima delle attività, aggravati dal ritardo accumulato; emerso inoltre un nuovo rischio legato all'inefficacia delle riunioni di pianificazione, non identificato in precedenza. & Parziale, (RO1, RO4; RO8 nuovo) \\ \hline
+14 & Persistenza dei rischi di scarsa organizzazione e sottostima delle attività, resi più complessi da mitigare per la ristrettezza dei tempi residui; le riunioni interne hanno inoltre superato la durata necessaria, causando stanchezza e perdita di focus nelle decisioni. & Sì, (RO1, RO4, RO8) \\ \hline
+15 & La sottostima delle attività si è manifestata con particolare forza sul costo di verifica e correzione dei difetti, non sulla scrittura del codice; l'aver collocato integrazione e test in coda allo \textit{Sprint} non ha lasciato margine di recupero. & Sì, (RO4, RO1) \\ \hline
+16 & Persistenza del rischio di errori nel codice ereditato dallo \textit{Sprint} precedente, questa volta correttamente stimato in fase di pianificazione; emersa inoltre un'incompatibilità tecnologica nell'uso di \textit{PrivateLink} tra le regioni AWS, risolta tramite connessione diretta via IP. & Sì, (RT3, RT5, RO4) \\ \hline
+17 & Nessun rischio occorso: lo \textit{Sprint} si è svolto interamente in linea con il piano, senza alcuno scostamento orario né economico. & --- \\ \hline
+
+\caption{Analisi dei rischi occorsi per \textit{Sprint} (panoramica generale)}
+\label{tab:rischi_sprint_pb}
+\end{xltabular}
+
+Estendendo l'analisi all'intera durata del progetto (\textit{Sprint} 1-17), si conferma che la quasi totalità dei problemi occorsi è riconducibile a rischi già identificati e preventivati. Gli \textit{Sprint} 11 e 17 non hanno fatto registrare alcuna criticità. Allo \textit{Sprint} 13 si aggiunge un caso di parziale non preventivazione: oltre alla persistenza dei già noti RO1 e RO4, emerge per la prima volta il rischio RO8 (Riunioni Inefficaci), non presente nel registro dei rischi fino a quel momento. Considerando come "eventi" le 15 iterazioni in cui si è verificata almeno una criticità (\textit{Sprint} 1-10, 12-16), gli eventi non pienamente preventivati restano 2 su 15 (uno riconducibile allo \textit{Sprint} 9, l'altro, parziale, allo \textit{Sprint} 13), per un indice pari al 13,3\%.
+
+\paragraph*{MP\_14 - Rischi non Preventivati}
+\begin{itemize}
+\item \textbf{Valore di accettazione ($\le 20\%$):} Il vincolo è rispettato, attestandosi al 13,3\% sull'intera durata del progetto.
+\item \textbf{Valore ottimale ($= 0\%$):} Il vincolo non è pienamente soddisfatto a causa degli imprevisti occorsi negli \textit{Sprint} 9 e 13, pur mantenendosi all'interno della soglia di accettabilità per l'intera durata del progetto.
+\end{itemize}
+
+\subsection{MP\_15: Time Efficiency (TE) RTB}
 Il Time Efficiency (TE) monitora l’efficienza organizzativa quantificando la percentuale di tempo dedicato ad attività direttamente utili all’avanzamento del progetto.
 
 \begin{table}[htbp]
@@ -1410,6 +1718,51 @@ L'analisi del \textit{Time Efficiency} (TE) mostra una fisiologica stabilizzazio
     \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è soddisfatto per la maggior parte della durata del progetto. Si sono registrati valori inferiori alla soglia ottimale del 90\% solamente durante gli \textit{Sprint} 3 (87,1\%) e 4 (89,0\%), prima di intraprendere un costante trend di risalita che ha riportato e mantenuto la metrica su valori adeguati fino allo \textit{Sprint} 10 (95,8\%).
 \end{itemize}
 
+\subsection{MP\_15: Time Efficiency (TE) PB}
+Questa sottosezione estende il monitoraggio del \textit{Time Efficiency} all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17. A differenza delle altre metriche di questa sezione, il TE è calcolabile per tutti gli \textit{Sprint} senza eccezioni, in quanto dipende esclusivamente dalle ore pianificate ed effettive, entrambe note per l'intero periodo.
 
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Sprint} & \textbf{Ore previste cum.} & \textbf{Ore effettive cum.} & \textbf{\% TE} & \textbf{Soglia accettabile} \\ \hline
+        1  & 17  & 15  & 113,3\% & 80\% \\ \hline
+        2  & 31  & 34  & 91,2\%  & 80\% \\ \hline
+        3  & 54  & 62  & 87,1\%  & 80\% \\ \hline
+        4  & 81  & 91  & 89,0\%  & 80\% \\ \hline
+        5  & 114 & 125 & 91,2\%  & 80\% \\ \hline
+        6  & 122 & 133 & 91,7\%  & 80\% \\ \hline
+        7  & 169 & 180 & 93,9\%  & 80\% \\ \hline
+        8  & 210 & 222 & 94,6\%  & 80\% \\ \hline
+        9  & 223 & 237 & 94,1\%  & 80\% \\ \hline
+        10 & 273 & 285 & 95,8\%  & 80\% \\ \hline
+        11 & 295 & 308 & 95,8\%  & 80\% \\ \hline
+        12 & 341 & 343 & 99,4\%  & 80\% \\ \hline
+        13 & 383 & 390 & 98,2\%  & 80\% \\ \hline
+        14 & 457 & 453 & 100,9\%  & 80\% \\ \hline
+        15 & 513 & 499 & 102,8\%  & 80\% \\ \hline
+        16 & 548 & 534 & 102,6\%  & 80\% \\ \hline
+        17 & 571 & 557 & 102,5\%  & 80\% \\ \hline
+    \end{tabular}
+    \caption{Andamento Time Efficiency (TE) (panoramica generale)}
+    \label{tab:ore_te_sprint_pb}
+\end{table}
+
+\begin{center}
+    \captionsetup{hypcap=false}
+    \includegraphics[width=0.9\linewidth]{grafici/TE_PB.png}
+    \captionof{figure}{Grafico dell'andamento del Time Efficiency (panoramica generale)}
+    \label{fig:TE_PB}
+\end{center}
+
+\subsubsection*{Valutazione dell'andamento}
+Sull'intera durata del progetto, il \textit{Time Efficiency} prosegue il trend di stabilizzazione già osservato nella fase RTB, superando quota 100\% a partire dallo \textit{Sprint} 14 (100,9\%) e mantenendosi su questi livelli fino allo \textit{Sprint} 17 (102,5\%): da questo punto in poi le ore complessivamente pianificate superano leggermente quelle effettivamente impiegate, segno di una stima cumulata ormai molto accurata nella fase finale del progetto. Il picco assoluto si registra allo \textit{Sprint} 15 (102,8\%). La discrepanza numerica tra ore previste ed effettive resta nel complesso contenuta anche a fine progetto (571 previste contro 557 effettive allo \textit{Sprint} 17).
+
+\paragraph*{MP\_15 - Time Efficiency (TE)}
+\begin{itemize}
+    \item \textbf{Valore di accettazione ($\ge 60\%$):} Il vincolo è sempre rispettato su tutti e 17 gli \textit{Sprint}. La percentuale minima registrata resta quella dello \textit{Sprint} 3 (87,1\%).
+    \item \textbf{Valore ottimale ($\ge 90\%$):} Il vincolo è soddisfatto con continuità dallo \textit{Sprint} 5 in poi, senza ulteriori flessioni sotto soglia, consolidandosi sopra quota 98\% dallo \textit{Sprint} 12 e superando il 100\% dallo \textit{Sprint} 14 fino alla conclusione del progetto allo \textit{Sprint} 17 (102,5\%).
+\end{itemize}
 
 \end{document}
