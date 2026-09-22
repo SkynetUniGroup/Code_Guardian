@@ -37,6 +37,21 @@ export class InternalGithubController {
   ) {}
 
   @Post("tree")
+/**
+ * @swagger
+ * /internal/github/tree:
+ *   post:
+ *     summary: Gets the file tree
+ *     responses:
+ *       200:
+ *         description: A list of TreeNode objects.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/TreeNode'
+ */
   async tree(@Body() dto: InternalTreeRequestDto): Promise<TreeNode[]> {
     this.assertWhitelisted(GET_TREE_ROUTE);
     const { taskId, owner, repo, resolvedSha, token } = await this.resolver.resolve(dto.taskId);
@@ -46,6 +61,19 @@ export class InternalGithubController {
   }
 
   @Post("file")
+/**
+ * @swagger
+ * /internal/github/file:
+ *   post:
+ *     summary: Gets the content of a file
+ *     responses:
+ *       200:
+ *         description: A FileContent object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/FileContent'
+ */
   async file(@Body() dto: InternalFileRequestDto): Promise<FileContent> {
     this.assertWhitelisted(GET_FILE_CONTENT_ROUTE);
     const { taskId, owner, repo, resolvedSha, token } = await this.resolver.resolve(dto.taskId);
@@ -55,6 +83,27 @@ export class InternalGithubController {
   }
 
   @Post("issues")
+/**
+ * @swagger
+ * /internal/github/issues:
+ *   post:
+ *     summary: Lists or gets details of issues
+ *     responses:
+ *       200:
+ *         description: A list of IssueSummary objects or an IssueDetail object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/IssueSummary'
+ *       200:
+ *         description: An IssueDetail object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/IssueDetail'
+ */
   async issues(@Body() dto: InternalIssuesRequestDto): Promise<IssueSummary[] | IssueDetail> {
     const { taskId, owner, repo, token } = await this.resolver.resolve(dto.taskId);
 
