@@ -67,11 +67,11 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.0.1} \\ \hline
+            \textbf{Versione} & \textit{2.0.0} \\ \hline
             \textbf{Uso} & \textit{Interno} \\ \hline
             \textbf{Redattori} & \textit{Sara Ristovic, Dario Pirrone, Andrea Fistarol, Marco Barbiero} \\ \hline
-            \textbf{Verifica} & \textit{Marco Barbiero, Samuele Bertin, Sara Ristovic, Edoardo Granziero} \\ \hline
-            \textbf{Approvazione} & \textit{Edoardo Granziero, Andrea Fistarol} \\ \hline
+            \textbf{Verifica} & \textit{Marco Barbiero, Samuele Bertin, Sara Ristovic, Edoardo Granziero, Andrea Fistarol} \\ \hline
+            \textbf{Approvazione} & \textit{Edoardo Granziero, Andrea Fistarol, Marco Barbiero} \\ \hline
 
         \end{tabularx}
     \end{table}
@@ -98,6 +98,8 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead
 
+    2.0.0 & 2026/09/23 & Approvazione per la revisione PB & \makecell[l]{Marco \\Barbiero} & \makecell[l]{-} \\ \hline
+    1.3.0 & 2026/09/22 & Verifica e correzione dell'ortografia e dell'impaginazione & \makecell[l]{Andrea \\Fistarol} & \makecell[l]{-} \\ \hline
     1.2.0 & 2026/09/22 & Aggiunta di altri termini da Specifiche Tecniche & \makecell[l]{Samuele \\Bertin} & \makecell[l]{Sara \\Ristovic} \\ \hline
     1.1.0 & 2026/09/05 & Aggiunta di altri termini da NdP e PdP & \makecell[l]{Samuele \\Bertin} & \makecell[l]{Dario \\Pirrone} \\ \hline
     1.0.1 & 2026/08/21 & Rimossa la numerazione dall'indice, come suggerito dal Prof. Vardanega & \makecell[l]{Marco \\Barbiero} & \makecell[l]{Dario \\Pirrone} \\ \hline
@@ -116,15 +118,7 @@
 % ==========================================
 
 \tableofcontents
-\iftotaltables  % Se sono presenti tabelle o figure appare l'indice
-    \vspace{1cm}
-    \listoftables
-\fi
 
-\iftotalfigures
-    \vspace{1cm}
-    \listoffigures
-\fi
 \newpage
 
 % ==========================================
@@ -174,7 +168,7 @@ Costo effettivo e documentato sostenuto dal gruppo per il lavoro completato in u
 \vspace{0.5cm}
 
 \noindent\hypertarget{agile}{\textbf{Agile}} \\[0.1em]
-Metodologia di sviluppo software basata su un approccio iterativo e incrementale, che promuove flessibilità, collaborazione e adattabilità. Non va confusa con il mero "sviluppo incrementale": non si limita a costruire il sistema pezzo per pezzo, ma enfatizza il feedback e l'adattamento continuo. Nel nostro progetto applichiamo Agile lavorando per Sprint: al termine di ogni iterazione effettuiamo un incontro a consuntivo e di verifica per analizzare il lavoro svolto e capire come migliorare nei cicli successivi.
+Metodologia di sviluppo software basata su un approccio iterativo e incrementale, che promuove flessibilità, collaborazione e adattabilità. Non va confusa con il mero "sviluppo incrementale": non si limita a costruire il sistema pezzo per pezzo, ma enfatizza il feedback e l'adattamento continuo. Nel nostro progetto applichiamo Agile lavorando per sprint: al termine di ogni iterazione effettuiamo un incontro a consuntivo e di verifica per analizzare il lavoro svolto e capire come migliorare nei cicli successivi.
 \vspace{0.5cm}
 
 \noindent\hypertarget{allucinazione}{\textbf{Allucinazione (AI)}} \\[0.1em]
@@ -189,12 +183,13 @@ Ruolo di progetto incaricato di definire, controllare e mantenere l'ambiente inf
 Documento formale che raccoglie e definisce tutti i Casi d'Uso e i relativi requisiti individuati dal gruppo, descrivendo in modo chiaro e completo le funzionalità da realizzare e i vincoli da rispettare.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{analisi-statica}{\textbf{Analisi statica}} \\[0.1em]
 Tipologia di analisi automatizzata effettuata sul codice sorgente per ispezionarne il contenuto senza eseguirlo. Ha lo scopo di garantire che il codice prodotto sia ispezionabile, leggibile, manutenibile e rispetti le convenzioni e lo stile di codifica definiti dal gruppo.
 \vspace{0.5cm}  
 
 \noindent\hypertarget{analista}{\textbf{Analista}} \\[0.1em]
-Figura del team che ha il compito di stabilire e tracciare i requisiti del progetto. Si occupa di studiare il dominio del problema e di definire formalmente i Casi d'Uso (Use Case) a partire dalle necessità espresse dal proponente.
+Figura del team che ha il compito di stabilire e tracciare i requisiti del progetto. Si occupa di studiare il dominio del problema e di definire formalmente i Casi d'Uso (Use Case) a partire dalle necessità espresse dal Proponente.
 \vspace{0.5cm}
 
 \noindent\hypertarget{api}{\textbf{API (Application Programming Interface)}} \\[0.1em]
@@ -204,7 +199,6 @@ Insieme di definizioni, protocolli e strumenti che consentono la comunicazione e
 \noindent\hypertarget{api-docs}{\textbf{API docs}} \\[0.1em]
 Documentazione tecnica che illustra le interfacce di programmazione (API) del sistema, fornendo guide pratiche per gli sviluppatori o i client che devono interagire con gli Endpoint esposti dall'applicazione. Include informazioni essenziali come i metodi HTTP, le rotte e i payload richiesti; nel progetto viene generata automaticamente dall'Agente Docs.
 \vspace{0.5cm}
-\newpage
 
 \noindent\hypertarget{asgi}{\textbf{ASGI}} \\[0.1em]
 Specifica standard per server e applicazioni Python che supportano l'elaborazione di richieste in modo asincrono.
@@ -222,6 +216,7 @@ Entità, che sia un utente umano, un'altra applicazione o un sistema esterno, ch
 Processo sistematico di revisione e ispezione del codice, spesso condotto per individuare vulnerabilità o difformità e garantire l'adesione a pratiche di sviluppo sicuro.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{aws}{\textbf{AWS (Amazon Web Services)}} \\[0.1em]
 Piattaforma di servizi cloud utilizzata per fornire l'infrastruttura e l'ambiente di esecuzione su cui operano gli agenti e il prodotto software sviluppato.
 \vspace{0.1cm}
@@ -264,12 +259,13 @@ Ramo di sviluppo all'interno di un repository Git. Consente di mantenere una lin
 Pratica nel controllo di versione che permette agli sviluppatori di creare una linea di sviluppo isolata e separata (ramo) per implementare modifiche senza intaccare il codice di riferimento principale su cui si lavora.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{budget-at-completion}{\textbf{Budget At Completion (BAC)}} \\[0.1em]
 Valore totale preventivato e allocato per la realizzazione dell'intero progetto. Rappresenta il tetto massimo del budget di riferimento calcolato a inizio lavori, utilizzato per valutare le stime di costo in corso d'opera.
 \vspace{0.5cm}
 
 \noindent\hypertarget{budget-variance}{\textbf{Budget Variance (BV)}} \\[0.1em]
-Indicatore economico utilizzato nell'Ingegneria del Software (e più in generale nell'Earned Value Management) per misurare lo scostamento tra il costo preventivato di un progetto e il costo effettivamente sostenuto in un determinato istante o Sprint. Un valore negativo indica un superamento del budget stabilito (Overbudget).
+Indicatore economico utilizzato nell'Ingegneria del Software (e più in generale nell'Earned Value Management) per misurare lo scostamento tra il costo preventivato di un progetto e il costo effettivamente sostenuto in un determinato istante o sprint. Un valore negativo indica un superamento del budget stabilito (Overbudget).
 \vspace{0.5cm}
 
 \noindent\hypertarget{bug}{\textbf{Bug}} \\[0.1em]
@@ -281,7 +277,7 @@ Processo automatizzato di compilazione, assemblaggio e verifica sintattica (tram
 \vspace{0.5cm}
 
 \noindent\hypertarget{build-success-rate}{\textbf{Build Success Rate}} \\[0.1em]
-Indice quantitativo utilizzato nell'ambito DevOps e dell'Ingegneria del Software per misurare l'efficacia e la stabilità del processo di \textit{Continuous Integration} (CI). Rappresenta la percentuale di build (ovvero i processi automatizzati di compilazione, verifica sintattica tramite linter ed esecuzione dei test) completate con successo rispetto al totale delle build avviate in un determinato intervallo temporale (es. uno Sprint). Viene calcolato mediante la seguente formula:
+Indice quantitativo utilizzato nell'ambito DevOps e dell'Ingegneria del Software per misurare l'efficacia e la stabilità del processo di \textit{Continuous Integration} (CI). Rappresenta la percentuale di build (ovvero i processi automatizzati di compilazione, verifica sintattica tramite linter ed esecuzione dei test) completate con successo rispetto al totale delle build avviate in un determinato intervallo temporale (es. uno sprint). Viene calcolato mediante la seguente formula:
 \begin{equation}
 \text{Build Success Rate} = \left( \frac{B_{\text{successo}}}{B_{\text{totali}}} \right) \times 100
 \end{equation}
@@ -289,7 +285,7 @@ Dove $B_{\text{successo}}$ indica il numero di build andate a buon fine (passant
 \vspace{0.5cm}
 
 \noindent\hypertarget{burndown-chart}{\textbf{Burndown Chart}} \\[0.1em]
-Strumento grafico impiegato nelle metodologie agili per tracciare la diminuzione progressiva del lavoro residuo (tramite le Github Issues nel progetto Code Guardian) rispetto al tempo disponibile nel corso di uno sprint.
+Strumento grafico impiegato nelle metodologie agili per tracciare la diminuzione progressiva del lavoro residuo (tramite le GitHub Issues nel progetto Code Guardian) rispetto al tempo disponibile nel corso di uno sprint.
 \vspace{0.1cm}
 \newpage
 
@@ -299,7 +295,7 @@ Strumento grafico impiegato nelle metodologie agili per tracciare la diminuzione
 \vspace{0.2cm}
 
 \noindent\hypertarget{ca}{\textbf{CA (Customer Acceptance)}} \\[0.1em]
-Terza e ultima milestone del progetto, nella quale il prodotto completato viene presentato al committente per la validazione, al fine di ottenerne l'accettazione formale finale.
+Terza e ultima milestone del progetto, nella quale il prodotto completato viene presentato al Committente per la validazione, al fine di ottenerne l'accettazione formale finale.
 \vspace{0.5cm}
 
 \noindent\hypertarget{capitolato}{\textbf{Capitolato}} \\[0.1em]
@@ -311,7 +307,7 @@ Registro dettagliato e cronologico delle modifiche apportate al software a segui
 \vspace{0.5cm}
 
 \noindent\hypertarget{ciclo-pdsa}{\textbf{Ciclo PDSA (Plan-Do-Study-Act)}} \\[0.1em]
-Metodologia iterativa utilizzata per il miglioramento continuo dei processi. Consiste nel valutare costantemente i risultati ottenuti rispetto alle aspettative, permettendo al team di decidere a fine Sprint se mantenere una modifica apportata al metodo di lavoro oppure abbandonarla, spesso sostituendola con un'altra modifica al metodo di lavoro allo scopo di migliorarlo.
+Metodologia iterativa utilizzata per il miglioramento continuo dei processi. Consiste nel valutare costantemente i risultati ottenuti rispetto alle aspettative, permettendo al team di decidere a fine \textit{sprint} se mantenere una modifica apportata al metodo di lavoro oppure abbandonarla, spesso sostituendola con un'altra modifica al metodo di lavoro allo scopo di migliorarlo.
 \vspace{0.5cm}
 
 \noindent\hypertarget{cloud}{\textbf{Cloud}} \\[0.1em]
@@ -330,7 +326,7 @@ Sintomo o indicatore a livello di codice sorgente che potrebbe segnalare un prob
 Operazione informatica che registra e salva una specifica versione delle modifiche apportate ai file sorgente all'interno di un repository.
 \vspace{0.5cm}
 
-\noindent\hypertarget{committente}{\textbf{Committente}} \\[0.1em]
+\noindent\hypertarget{Committente}{\textbf{Committente}} \\[0.1em]
 Soggetto che richiede e finanzia lo sviluppo del sistema, identificato nel progetto con i docenti universitari (Prof. Tullio Vardanega, Prof. Riccardo Cardin).
 \vspace{0.5cm}
 
@@ -339,7 +335,7 @@ Metrica di ingegneria del software utilizzata per misurare la complessità logic
 \vspace{0.5cm}
 
 \noindent\hypertarget{consuntivo}{\textbf{Consuntivo}} \\[0.1em]
-Bilancio redatto a fine sprint che rendiconta in modo trasparente le ore, le risorse e i costi effettivamente spesi confrontandoli con le stime previste.
+Bilancio redatto a fine \textit{sprint} che rendiconta in modo trasparente le ore, le risorse e i costi effettivamente spesi confrontandoli con le stime previste.
 \vspace{0.5cm}
 
 \noindent\hypertarget{continuous-deployment}{\textbf{Continuous Deployment (CD)}} \\[0.1em]
@@ -381,7 +377,7 @@ Approccio gestionale e decisionale guidato dall'analisi oggettiva di dati numeri
 \vspace{0.5cm}
 
 \noindent\hypertarget{demo}{\textbf{Demo}} \\[0.1em]
-Presentazione pratica e dal vivo ("live") di un prodotto o di una sua funzionalità. Nel contesto del progetto, consiste nella dimostrazione al Proponente degli incrementi software sviluppati dal team nel corso dello \textit{Sprint} corrente per favorirne la validazione.
+Presentazione pratica e dal vivo ("live") di un prodotto o di una sua funzionalità. Nel contesto del progetto, consiste nella dimostrazione al Proponente degli incrementi software sviluppati dal team nel corso dello \textit{sprint} corrente per favorirne la validazione.
 \vspace{0.5cm}  
 
 \noindent\hypertarget{deployment}{\textbf{Deployment}} \\[0.1em]
@@ -429,7 +425,6 @@ Qualsiasi artefatto prodotto durante il ciclo di vita del progetto (codice sorge
 \noindent\hypertarget{endpoint}{\textbf{Endpoint}} \\[0.1em]
 Un punto di accesso specifico a un'interfaccia di programmazione (API) attraverso il quale un'applicazione può interagire con un servizio esterno o un server. Generalmente corrisponde a un URL specifico a cui vengono inviate richieste (come GET o POST) per leggere, creare o modificare dati.
 \vspace{0.1cm}
-\newpage
 
 \noindent\hypertarget{end-to-end}{\textbf{End-to-end}} \\[0.1em]
 Tipologia di test o processo che verifica il funzionamento di un sistema nella sua interezza, dall'inizio alla fine del flusso operativo. Nel contesto del progetto, verifica che l'intera catena di elaborazione (es. analisi del repository e produzione degli output) funzioni correttamente integrando tutti i sottosistemi.
@@ -500,13 +495,14 @@ Utilità nativa di management visuale offerta in GitHub che, integrandosi al tra
 \vspace{0.5cm}
 
 \noindent\hypertarget{gmail}{\textbf{Gmail}} \\[0.1em]
-Storico servizio di posta elettronica in cloud, usato attivamente come piattaforma di comunicazione via email verso l'esterno con i committenti e il proponente dell'applicativo.
+Storico servizio di posta elettronica in cloud, usato attivamente come piattaforma di comunicazione via email verso l'esterno con i committenti e il Proponente dell'applicativo.
 \vspace{0.5cm}
 
 \noindent\hypertarget{google-sheets}{\textbf{Google Sheets}} \\[0.1em]
 Servizio per l'uso condiviso di fogli di calcolo, basato su tecnologie cloud, fornito da Google.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{gulpease}{\textbf{Gulpease}} \\[0.1em]
 Indice di leggibilità di un testo tarato specificamente per la lingua italiana. A differenza di altri indici, si basa sulla lunghezza delle parole in lettere anziché in sillabe, e sulla lunghezza delle frasi rispetto al numero totale delle parole. Restituisce un valore numerico compreso tra 0 (leggibilità minima) e 100 (leggibilità massima).
 \vspace{0.1cm}
@@ -763,7 +759,7 @@ Nel contesto delle comunicazioni di rete e delle interazioni tra interfacce soft
 \vspace{0.5cm}
 
 \noindent\hypertarget{pb}{\textbf{PB (Product Baseline)}} \\[0.1em]
-Rappresenta uno stadio di avanzamento fondamentale nel ciclo di vita del progetto, corrispondente al raggiungimento di una versione stabile e collaudata del prodotto software. Un PB è il Minimum Viable Product (MVP), rendendo il sistema pronto per un eventuale rilascio o per la validazione finale da parte del committente e proponente.
+Rappresenta uno stadio di avanzamento fondamentale nel ciclo di vita del progetto, corrispondente al raggiungimento di una versione stabile e collaudata del prodotto software. Un PB è il Minimum Viable Product (MVP), rendendo il sistema pronto per un eventuale rilascio o per la validazione finale da parte del Committente e Proponente.
 \vspace{0.5cm}
 
 \noindent\hypertarget{peer-review}{\textbf{Peer Review (Revisione incrociata)}} \\[0.1em]
@@ -774,6 +770,7 @@ Pratica di controllo della qualità in cui un documento, una porzione di codice 
 Documento formale e fondamentale per la gestione del progetto che delinea nel dettaglio gli obiettivi nello sviluppo del progetto, la pianificazione temporale, la stima dei costi e dei rischi e l'allocazione delle risorse necessarie per l'intera durata dei lavori. Integra inoltre l'analisi di retrospettiva, essenziale in quanto aiuta il miglioramento continuo del metodo di lavoro (WoW). Fornisce una guida chiara per monitorare l'avanzamento delle attività, identificare e mitigare preventivamente i potenziali rischi (motivo per cui il documento include un'apposita sezione dedicata a questa analisi) e garantire il coordinamento dei ruoli nel progetto per il rispetto degli obiettivi e delle scadenze prefissate.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{piano-di-qualifica}{\textbf{Piano di Qualifica}} \\[0.1em]
 Documento ufficiale che stabilisce e descrive le strategie, le metriche e gli standard qualitativi adottati dal team di sviluppo. Ha lo scopo di definire in modo rigoroso i processi di verifica e validazione necessari per assicurare che il prodotto finale soddisfi le aspettative, minimizzando difetti e incoerenze operative.
 \vspace{0.5cm}
@@ -787,7 +784,7 @@ Valore economico del lavoro la cui esecuzione era stata preventivata, stimata e 
 \vspace{0.5cm}
 
 \noindent\hypertarget{planning}{\textbf{Planning}} \\[0.1em]
-Fase organizzativa preliminare, tipica delle metodologie agili, in cui il team si riunisce prima dell'inizio di uno \textit{Sprint}. Serve ad analizzare, stimare, scomporre in \textit{Issue} atomiche e assegnare le attività da svolgere nel periodo di lavoro immediatamente successivo.
+Fase organizzativa preliminare, tipica delle metodologie agili, in cui il team si riunisce prima dell'inizio di uno \textit{sprint}. Serve ad analizzare, stimare, scomporre in \textit{Issue} atomiche e assegnare le attività da svolgere nel periodo di lavoro immediatamente successivo.
 \vspace{0.5cm}
 
 \noindent\hypertarget{poc}{\textbf{PoC (Proof of Concept)}} \\[0.1em]
@@ -802,6 +799,7 @@ Approccio metodologico che consiste nel definire, gestire e applicare le regole 
 Stima preliminare e quantitativa delle risorse, sia in termini di tempo (ore di lavoro) che di budget economico, necessarie per completare una specifica attività, un ciclo di sviluppo (sprint) o l'intero progetto. Viene utilizzato come parametro di riferimento primario per monitorare l'efficienza del team, confrontandolo in seguito con il costo effettivo (consuntivo) al termine del periodo.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{progettista}{\textbf{Progettista}} \\[0.1em]
 Ruolo di progetto responsabile della definizione dell'architettura del sistema e delle scelte tecnologiche fondamentali. Il progettista traduce i requisiti raccolti durante le fasi di analisi in una struttura software coerente e scalabile, creando un disegno logico e robusto su cui i programmatori andranno a implementare materialmente il prodotto.
 \vspace{0.5cm}
@@ -822,10 +820,11 @@ Insieme di istruzioni testuali e dati di contesto (come porzioni di codice o dir
 Pattern architetturale nell'ingegnerizzazione di sistemi basati su intelligenza artificiale che prevede la netta separazione tra le istruzioni testuali fornite ai modelli (i prompt di sistema o di contesto) e la logica computazionale applicativa (il codice di backend). Tale isolamento viene solitamente implementato archiviando i prompt in file di configurazione dedicati (es. JSON, YAML o file di testo esterni).
 \vspace{0.5cm}
 
-\noindent\hypertarget{proponente}{\textbf{Proponente}} \\[0.1em]
+\noindent\hypertarget{Proponente}{\textbf{Proponente}} \\[0.1em]
 L'azienda, l'ente o la persona fisica che presenta l'idea iniziale, redige il capitolato d'appalto e promuove ufficialmente la realizzazione del progetto. Definisce le esigenze di partenza, supporta il team di fornitura durante i lavori con chiarimenti tecnici e ne valuta alla fine la conformità operativa rispetto a quanto richiesto originariamente.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{pull-request}{\textbf{Pull Request (PR)}} \\[0.1em]
 Funzionalità fondamentale dei moderni sistemi di controllo di versione e hosting del codice (come GitHub), attraverso cui si richiede formalmente che un pacchetto di modifiche appena sviluppato venga esaminato. Prima che il nuovo codice venga unito in via definitiva al ramo principale del software, la Pull Request funge da spazio di discussione, revisione e validazione.
 \vspace{0.5cm}
@@ -865,11 +864,11 @@ Archivio spesso ospitato su piattaforme cloud (come GitHub), utilizzato per memo
 \vspace{0.5cm}
 
 \noindent\hypertarget{requirements-stability-index}{\textbf{Requirements Stability Index (RSI)}} \\[0.1em]
-Indice quantitativo utilizzato nell'Ingegneria del Software per misurare il grado di stabilità dei requisiti di un progetto durante un determinato intervallo temporale (es. uno Sprint). Monitorare questo indice permette di rilevare tempestivamente il fenomeno dello \textit{scope creep} (espansione incontrollata del perimetro del progetto) e di valutare la validità della fase di analisi iniziale. L'indice viene calcolato secondo la seguente formula:
+Indice quantitativo utilizzato nell'Ingegneria del Software per misurare il grado di stabilità dei requisiti di un progetto durante un determinato intervallo temporale (es. uno sprint). Monitorare questo indice permette di rilevare tempestivamente il fenomeno dello \textit{scope creep} (espansione incontrollata del perimetro del progetto) e di valutare la validità della fase di analisi iniziale. L'indice viene calcolato secondo la seguente formula:
 \begin{equation}
 RSI = \left( 1 - \frac{R_{\text{modificati}} + R_{\text{eliminati}}}{R_{\text{totali\_iniziali}}} \right) \times 100
 \end{equation}
-Dove $R_{\text{modificati}}$ e $R_{\text{eliminati}}$ rappresentano il numero di requisiti variati o scartati nel corso dello Sprint, mentre $R_{\text{totali\_iniziali}}$ indica il totale dei requisiti approvati a inizio iterazione. Un valore pari al 100\% indica una stabilità assoluta del perimetro software.
+Dove $R_{\text{modificati}}$ e $R_{\text{eliminati}}$ rappresentano il numero di requisiti variati o scartati nel corso dello sprint, mentre $R_{\text{totali\_iniziali}}$ indica il totale dei requisiti approvati a inizio iterazione. Un valore pari al 100\% indica una stabilità assoluta del perimetro software.
 \vspace{0.5cm}
 
 \noindent\hypertarget{responsabile}{\textbf{Responsabile}} \\[0.1em]
@@ -889,7 +888,7 @@ Processo architetturale e logico attraverso il quale l'\textbf{Orchestratore} sm
 \vspace{0.5cm}  
 
 \noindent\hypertarget{rtb}{\textbf{RTB (Requirements and Technology Baseline)}} \\[0.1em]
-Prima revisione e milestone fondamentale del progetto didattico. Rappresenta l'evento con i professori in cui i requisiti del sistema, le scelte tecnologiche e i framework vengono riesaminati, fissando una base concordata con il proponente su cui costruire il prodotto.
+Prima revisione e milestone fondamentale del progetto didattico. Rappresenta l'evento con i professori in cui i requisiti del sistema, le scelte tecnologiche e i framework vengono riesaminati, fissando una base concordata con il Proponente su cui costruire il prodotto.
 \vspace{0.1cm}
 
 \noindent\hypertarget{runtime}{\textbf{Runtime}} \\[0.1em]
@@ -907,7 +906,7 @@ Indice che misura l'efficienza temporale del progetto e l'aderenza alla pianific
 \vspace{0.5cm}
 
 \noindent\hypertarget{schedule-variance}{\textbf{Schedule Variance (SV)}} \\[0.1em]
-Indicatore temporale ed economico (derivato dall'EVM) utilizzato per quantificare lo scostamento tra il lavoro effettivamente completato in un determinato lasso di tempo (o Sprint) e il lavoro che era stato originariamente pianificato. Un valore negativo denota un ritardo rispetto alla tabella di marcia.
+Indicatore temporale ed economico (derivato dall'EVM) utilizzato per quantificare lo scostamento tra il lavoro effettivamente completato in un determinato lasso di tempo (o sprint) e il lavoro che era stato originariamente pianificato. Un valore negativo denota un ritardo rispetto alla tabella di marcia.
 \vspace{0.5cm}
 
 \noindent\hypertarget{script}{\textbf{Script}} \\[0.1em]
@@ -919,7 +918,7 @@ Diffuso framework della metodologia Agile utilizzato per la gestione dei progett
 \vspace{0.5cm}
 
 \noindent\hypertarget{scrumban}{\textbf{Scrumban}} \\[0.1em]
-Metodologia di lavoro ibrida che unisce il framework di Scrum (come gli sprint e le riunioni cicliche) con la flessibilità e la gestione visiva del flusso di lavoro tipiche del Kanban. È pensata per migliorare il flusso di lavoro riducendo gli overhead gestionali.
+Metodologia di lavoro ibrida che unisce il framework di Scrum (come gli \textit{sprint} e le riunioni cicliche) con la flessibilità e la gestione visiva del flusso di lavoro tipiche del Kanban. È pensata per migliorare il flusso di lavoro riducendo gli overhead gestionali.
 \vspace{0.5cm}
 
 \noindent\hypertarget{security-auditor}{\textbf{Security Auditor}} \\[0.1em]
@@ -930,8 +929,9 @@ Figura professionale responsabile del monitoraggio e della governance della sicu
 Servizio e protocollo di posta elettronica esterno (Simple Mail Transfer Protocol) delegato alla trasmissione dei messaggi. Viene contattato dal sistema per recapitare automaticamente le notifiche e i report PDF via email agli utenti.
 \vspace{0.5cm}  
 
+\newpage
 \noindent\hypertarget{slack}{\textbf{Slack}} \\[0.1em]
-Piattaforma di messaggistica aziendale basata sul cloud, progettata per facilitare la collaborazione rapida. Consente di organizzare le comunicazioni in canali tematici ed è spesso utilizzata per mantenere contatti diretti e veloci con soggetti esterni, come l'azienda proponente.
+Piattaforma di messaggistica aziendale basata sul cloud, progettata per facilitare la collaborazione rapida. Consente di organizzare le comunicazioni in canali tematici ed è spesso utilizzata per mantenere contatti diretti e veloci con soggetti esterni, come l'azienda Proponente.
 \vspace{0.5cm}
 
 \noindent\hypertarget{snippet}{\textbf{Snippet}} \\[0.1em]
@@ -939,7 +939,7 @@ Frammento di codice sorgente breve e isolato. All'interno del progetto, l'Agente
 \vspace{0.5cm}  
 
 \noindent\hypertarget{spillover}{\textbf{Spillover}} \\[0.1em]
-Fenomeno per cui un'attività o una \textit{Issue} pianificata per uno specifico \textit{Sprint} non viene completata entro la fine di tale periodo e "scivola", venendo di fatto posticipata al periodo di lavoro successivo.
+Fenomeno per cui un'attività o una \textit{Issue} pianificata per uno specifico \textit{sprint} non viene completata entro la fine di tale periodo e "scivola", venendo di fatto posticipata al periodo di lavoro successivo.
 \vspace{0.5cm}
 
 \noindent\hypertarget{sprint}{\textbf{Sprint}} \\[0.1em]
@@ -965,7 +965,7 @@ Processo che definisce l'architettura, le interfacce, i moduli e l'organizzazion
 \vspace{0.2cm}
 
 \noindent\hypertarget{task}{\textbf{Task}} \\[0.1em]
-Singola unità di lavoro o attività tracciata in un sistema gestionale esterno. L'Agente Changelog analizza i task contrassegnati come completati durante uno \textit{Sprint} per estrarne il contenuto ed elaborare i report.
+Singola unità di lavoro o attività tracciata in un sistema gestionale esterno. L'Agente Changelog analizza i task contrassegnati come completati durante uno \textit{sprint} per estrarne il contenuto ed elaborare i report.
 \vspace{0.5cm}  
 
 \noindent\hypertarget{team-lead}{\textbf{Team Lead}} \\[0.1em]
@@ -977,7 +977,7 @@ Modello o struttura preimpostata di un documento (ad esempio in formato \textit{
 \vspace{0.5cm}
 
 \noindent\hypertarget{test-di-accettazione}{\textbf{Test di Accettazione}} \\[0.1em]
-È l'ultima fase del processo di verifica del software, in cui il sistema viene valutato per determinare se soddisfa i criteri di accettazione definiti dal committente. L'obiettivo principale è confermare che il prodotto sia pronto per essere consegnato e utilizzato in un ambiente operativo reale.
+È l'ultima fase del processo di verifica del software, in cui il sistema viene valutato per determinare se soddisfa i criteri di accettazione definiti dal Committente. L'obiettivo principale è confermare che il prodotto sia pronto per essere consegnato e utilizzato in un ambiente operativo reale.
 \vspace{0.5cm}
 
 \noindent\hypertarget{test-di-integrazione}{\textbf{Test di Integrazione}} \\[0.1em]
@@ -1020,6 +1020,7 @@ Stima aggiornata del tempo complessivo necessario per completare l'intero proget
 Protocollo crittografico che garantisce riservatezza e integrità delle comunicazioni di rete, alla base dello scambio dati cifrato via HTTPS.
 \vspace{0.5cm}
 
+\newpage
 \noindent\hypertarget{token}{\textbf{Token}} \\[0.1em]
 Il termine assume diversi significati a seconda del contesto di utilizzo:
 \begin{itemize}
@@ -1034,7 +1035,7 @@ Strumento software, applicazione o piattaforma di supporto utilizzata dai membri
 \vspace{0.5cm}
 
 \noindent\hypertarget{trigger}{\textbf{Trigger}} \\[0.1em]
-Evento che avvia automaticamente l'esecuzione di un processo. Nel contesto dei \textit{Use Case}, identifica l'evento che dà inizio allo scenario descritto; nel contesto della \textit{Continuous Integration}, identifica l'evento (ad esempio una \textit{Pull Request}) che avvia automaticamente una pipeline di \textit{GitHub Actions}.
+Evento che avvia automaticamente l'esecuzione di un processo. Nel contesto degli \textit{Use Case}, identifica l'evento che dà inizio allo scenario descritto; nel contesto della \textit{Continuous Integration}, identifica l'evento (ad esempio una \textit{Pull Request}) che avvia automaticamente una pipeline di \textit{GitHub Actions}.
 \vspace{0.5cm}
 
 \noindent\hypertarget{typescript}{\textbf{TypeScript}} \\[0.1em]
