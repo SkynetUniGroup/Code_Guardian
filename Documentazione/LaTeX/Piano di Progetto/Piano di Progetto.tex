@@ -3480,6 +3480,7 @@ Il dato orario è in linea con il piano. Delle 23 ore preventivate ne sono state
 \end{figure}
 }{}
 
+\newpage
 \paragraph{Ore rimanenti} ~\par
 Il monte ore individuale preventivato è di 94 ore, entro un minimo di 80 e un massimo di 95. Poiché la \textbf{PB} è l'ultima \textit{milestone} del progetto, le ore rimanenti a fine \textbf{PB} coincidono con il residuo di fine progetto.
 
@@ -3560,9 +3561,64 @@ Il progetto si chiude con 557 ore impiegate e un costo complessivo di \EUR{11.02
     \caption{Riepilogo di tempi e costi del progetto}
 \end{table}
 
+\paragraph{Ore spese} ~\par
 Il carico si è distribuito in modo omogeneo fra i membri, con un impegno individuale compreso fra le 88 e le 95 ore, entro la forbice fissata fra un minimo di 80 e un massimo di 95. La distribuzione per ruolo riflette invece il cambio di baricentro fra le due \textit{milestone}: nella \textbf{RTB} il peso maggiore è stato dell'\textbf{Analista} e del \textbf{Verificatore}, nella \textbf{PB} del \textbf{Programmatore}, che da solo ha assorbito quasi la metà delle ore della fase.
 
-Il contenimento dei costi annunciato nel \textit{consuntivo} della \textbf{RTB} ha prodotto l'effetto atteso: la riduzione dello \textit{scope} dell'\textbf{MVP} e lo spostamento del lavoro sui ruoli a costo orario ridotto hanno fatto scendere il costo medio orario da \EUR{21,12} della \textbf{RTB} a \EUR{18,13} della \textbf{PB}, permettendo di chiudere in attivo. Il budget del \textbf{Programmatore} resta però in negativo di \EUR{330}, compensato dall'avanzo del \textbf{Verificatore}: lo sforamento si è formato nella fase di test e correzione dell'\textbf{MVP}, quando il costo della rimozione dei difetti si è rivelato superiore a quanto stimato.
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.95\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Progetto} & \multicolumn{6}{|c|}{\textbf{Ruolo}} & \\ \hline
+        \textbf{Membro} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+        Andrea Fistarol & 12 & 9 & 11 & 3 & 32 & 21 & \textbf{88} \\ \hline
+        Dario Pirrone & 8 & 9 & 26 & 9 & 24 & 17 & \textbf{93} \\ \hline
+        Edoardo Granziero & 6 & 12 & 3 & 3 & 34 & 35 & \textbf{93} \\ \hline
+        Marco Barbiero & 5 & 7 & 8 & 25 & 31 & 19 & \textbf{95} \\ \hline
+        Samuele Bertin & 14 & 9 & 4 & 30 & 22 & 15 & \textbf{94} \\ \hline
+        Sara Ristovic & 11 & 7 & 20 & 14 & 20 & 22 & \textbf{94} \\ \hline
+        \textbf{Ore totali per ruolo} & \textbf{56} & \textbf{53} & \textbf{72} & \textbf{84} & \textbf{163} & \textbf{129} & \textbf{557}\\ \hline
+    \end{tabularx}
+    \caption{\textit{Consuntivo} ore spese - progetto}
+\end{table}
+
+\IfFileExists{grafici/torta_membri_totale.png}{%
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.85\textwidth]{grafici/torta_membri_totale.png}
+    \caption{Ripartizione delle ore per membro sull'intero progetto}
+    \label{fig:membriConcl}
+\end{figure}
+}{}
+
+\IfFileExists{grafici/torta_ruoli_totale.png}{%
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.85\textwidth]{grafici/torta_ruoli_totale.png}
+    \caption{Ripartizione delle ore per ruolo sull'intero progetto}
+    \label{fig:ruoliConcl}
+\end{figure}
+}{}
+
+\newpage
+\paragraph{Costi sostenuti} ~\par
+\begin{table}[H]
+    \centerline{
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabularx}{1.09\textwidth}{|X|c|c|c|c|c|c|c|}
+            \hline
+            \textbf{Progetto} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+            \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{25} & \EUR{25} & \EUR{15} & \EUR{15} & / \\ \hline
+            \textbf{Ore totali} & 56 & 53 & 72 & 84 & 163 & 129 & \textbf{557} \\ \hline
+            \textbf{Costo totale} & \EUR{1.680} & \EUR{1.060} & \EUR{1.800} & \EUR{2.100} & \EUR{2.445} & \EUR{1.935} & \textbf{\EUR{11.020}} \\ \hline
+            \textbf{Saldo a fine progetto} & \EUR{30} & \EUR{80} & \EUR{0} & \EUR{25} & \EUR{-330} & \EUR{420} & \EUR{225}\\ \hline
+        \end{tabularx}
+    }
+    \caption{\textit{Consuntivo} economico - progetto}
+\end{table}
+
+Il contenimento dei costi annunciato nel \textit{consuntivo} della \textbf{RTB} ha prodotto l'effetto atteso: la riduzione dello \textit{scope} dell'\textbf{MVP} e lo spostamento del lavoro sui ruoli a costo orario ridotto hanno fatto scendere il costo medio orario da \EUR{21,12} della \textbf{RTB} a \EUR{18,13} della \textbf{PB}, permettendo di chiudere in attivo con un costo medio orario di \EUR{19,78}. Il budget del \textbf{Programmatore} resta però in negativo di \EUR{330}, compensato dall'avanzo del \textbf{Verificatore}: lo sforamento si è formato nella fase di test e correzione dell'\textbf{MVP}, quando il costo della rimozione dei difetti si è rivelato superiore a quanto stimato.
 
 \subsection{Bilancio}
 Gli obiettivi del progetto sono stati raggiunti: l'\textbf{MVP} è stato consegnato, approvato dal \textbf{proponente} e accompagnato dalla documentazione completa, entro la scadenza e entro il budget.
