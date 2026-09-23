@@ -75,13 +75,13 @@
         \renewcommand{\arraystretch}{1.5}
         \begin{tabularx}{\textwidth}{|l|X|}
             \hline
-            \textbf{Versione} & \textit{1.4.0} \\ \hline
+            \textbf{Versione} & \textit{1.7.0} \\ \hline
     
             \textbf{Uso} & \textit{Esterno} \\ \hline
             \textbf{Destinatari} & \textit{Prof. Tullio Vardanega, Prof. Riccardo Cardin} \\ \hline
             \textbf{Redattori} & \textit{Dario Pirrone, Sara Ristovic, Edoardo Granziero, Marco Barbiero, Samuele Bertin, Andrea Fistarol} \\ \hline
             \textbf{Verifica} & \textit{Marco Barbiero, Samuele Bertin, Edoardo Granziero, Dario Pirrone, Sara Ristovic, Andrea Fistarol} \\ \hline
-            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol} \\ \hline
+            \textbf{Approvazione} & \textit{Samuele Bertin, Dario Pirrone, Andrea Fistarol, Marco Barbiero} \\ \hline
 
         \end{tabularx}
     \end{table}
@@ -108,6 +108,8 @@
     \textbf{Ver.} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} & \textbf{Verificatore} \\ \hline
     \endhead
     
+    1.7.0 & 2026/09/23 & \textit{Consuntivo} \textit{sprint} 17 & \makecell[l]{Marco \\Barbiero} & \makecell[l]{Dario \\Pirrone} \\ \hline
+    1.6.0 & 2026/09/18 & \textit{Consuntivo} \textit{sprint} 16 e \textit{preventivo} \textit{sprint} 17 & \makecell[l]{Marco \\Barbiero} & \makecell[l]{Dario \\Pirrone} \\ \hline
     1.5.0 & 2026/09/14 & \textit{Consuntivo} \textit{sprint} 15 e \textit{preventivo} \textit{sprint} 16 & \makecell[l]{Edoardo \\Granziero} & \makecell[l]{Samuele \\Bertin} \\ \hline
     1.4.0 & 2026/09/06 & \textit{Consuntivo} \textit{sprint} 14 e \textit{preventivo} \textit{sprint} 15 & \makecell[l]{Dario \\Pirrone} & \makecell[l]{Marco \\Barbiero} \\ \hline
     1.3.0 & 2026/08/27 & \textit{Consuntivo} \textit{sprint} 13 e \textit{preventivo} \textit{sprint} 14 & \makecell[l]{Andrea \\Fistarol} & \makecell[l]{Edoardo \\Granziero} \\ \hline
@@ -3047,11 +3049,11 @@ Le risorse economiche previste per lo \textit{sprint} sono:
         365 & Implementazione ed esecuzione dei test di integrazione & Non completata \\ \hline
         366 & \textbf{PdQ}: aggiornamento della sezione Strategie di testing in base ai test eseguiti & Non completata \\ \hline
     \end{tabularx}
-    \caption{Attività svolte - \textit{sprint} 15}
+    \caption{Attività non completate - \textit{sprint} 15}
 \end{table}
 
 \subparagraph{Note sui mancati completamenti}
-Nessuna delle \textit{issue} pianificate è stata chiusa entro il termine dello \textit{sprint}. La causa è unica e comune a tutte: la campagna di test, avviata in questo \textit{sprint} per la prima volta sull'\textbf{MVP} completo, ha fatto emergere un numero di difetti molto superiore a quello previsto. Le attività di \textit{debug} dalla 354 alla 362 sono state aperte e portate avanti, ma nessuna ha raggiunto uno stato di correzione verificabile; di conseguenza sono rimasti bloccati anche i controlli di integrazione (349, 350, 351), che presuppongono componenti funzionanti, e le \textit{issue} documentali (327, 329, 335, 336, 366), su cui non è rimasto tempo. Tutte le attività elencate sono state riportate nello \textit{sprint} 16; di queste, la 288 e la 329 risultano concluse nei giorni immediatamente successivi al termine dello \textit{sprint}.
+Delle 58 \textit{issue} pianificate per lo \textit{sprint}, 23 non sono state chiuse entro il termine, quelle elencate in tabella. La causa è unica e comune a tutte: la campagna di test, avviata in questo \textit{sprint} per la prima volta sull'\textbf{MVP} completo, ha fatto emergere un numero di difetti molto superiore a quello previsto. Le attività di \textit{debug} dalla 354 alla 362 sono state aperte e portate avanti, ma nessuna ha raggiunto uno stato di correzione verificabile; di conseguenza sono rimasti bloccati anche i controlli di integrazione (349, 350, 351), che presuppongono componenti funzionanti, e le \textit{issue} documentali (327, 329, 335, 336, 366), su cui non è rimasto tempo. Tutte le attività elencate sono state riportate nello \textit{sprint} 16; di queste, la 288 e la 329 risultano concluse nei giorni immediatamente successivi al termine dello \textit{sprint}.
 
 \begin{table}[H]
     \hspace*{-0.7cm}
@@ -3165,4 +3167,405 @@ Le risorse economiche previste per lo \textit{sprint} sono:
     \end{tabularx}
     \caption{\textit{Preventivo} economico - \textit{sprint} 16}
 \end{table}
+
+\paragraph{\textit{Consuntivo}}~
+
+{\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|c|}
+    \hline
+        \textbf{\#} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
+    \endfirsthead
+
+    \hline
+        \textbf{\#} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
+    \endhead
+
+    \caption{Attività svolte - \textit{sprint} 16}
+    \endlastfoot
+
+        380 & Scrivere il verbale interno del 7 settembre & Completata \\ \hline
+        381 & \textbf{PdP}: \textit{preventivo} \textit{sprint} 16 e \textit{consuntivo} \textit{sprint} 15 & Completata \\ \hline
+        382 & Grafico \textit{burndown} dello \textit{sprint} 16 & Completata \\ \hline
+        327 & Sistemare retroattivamente le altre sezioni del \textbf{PdP} & Non completata \\ \hline
+        329 & Sistemare le valutazioni per il miglioramento del \textbf{PdQ}, o rimuoverle & Completata \\ \hline
+        288 & Testare e perfezionare i \textit{workflow} di \textit{CI/CD} & Completata \\ \hline
+        383 & Slide per l'incontro di monitoraggio del 9/9 & Completata \\ \hline
+        384 & Scrivere la lettera di presentazione per il Prof. Cardin & Non completata \\ \hline
+        385 & Preparazione delle slide per la \textbf{PB} con il Prof. Cardin & Non completata \\ \hline
+        386 & Slide del \textit{Diario di Bordo} dell'11/9 & Completata \\ \hline
+        387 & \textbf{ST}: sistemare i punti aperti dopo la chiusura dell'\textbf{MVP} & Non completata \\ \hline
+        388 & \textbf{ST}: ricontrollare che il documento rifletta il codice & Non completata \\ \hline
+        389 & \textbf{ST}: stesura del sottocapitolo su esecuzione asincrona e comunicazione \textit{realtime} & Completata \\ \hline
+        390 & \textbf{ST}: stesura del sottocapitolo sull'architettura del servizio agenti & Completata \\ \hline
+        335 & \textbf{ST}: stesura del sottocapitolo su architettura e \textit{design pattern} & Completata \\ \hline
+        336 & \textbf{ST}: stesura del capitolo sul flusso dei dati & Completata \\ \hline
+        391 & \textbf{ST}: stesura del capitolo sullo stato dei requisiti & Completata \\ \hline
+        349 & Controllo dell'integrazione \textit{backend} -- \textit{frontend} & Completata \\ \hline
+        350 & Controllo dell'integrazione \textit{backend} -- agenti & Completata \\ \hline
+        351 & Controllo dell'integrazione \textit{backend} -- \textit{AWS} & Completata \\ \hline
+        352 & Testing di sistema in preparazione all'incontro con il \textbf{proponente} & Completata \\ \hline
+        353 & Aggiornamento di \textit{README} e \textit{.env.example} per allinearli all'\textbf{MVP} & Non completata \\ \hline
+        354 & \textit{Debug} di registrazione e \textit{login} & Completata \\ \hline
+        355 & \textit{Debug} della configurazione e validazione del \textit{token} & Completata \\ \hline
+        356 & \textit{Debug} della selezione del \textit{repository} e dell'ambito di analisi & Completata \\ \hline
+        357 & \textit{Debug} della \textit{dashboard} orchestratore: selezione e avvio multiplo delle operazioni & Completata \\ \hline
+        358 & \textit{Debug} della generazione e visualizzazione dei \textit{report} & Completata \\ \hline
+        359 & \textit{Debug} \textit{end-to-end} dell'agente \textbf{Docs}: \textit{README}, \textit{inline}, \textit{API} via \textit{Pull Request} & Completata \\ \hline
+        360 & \textit{Debug} \textit{end-to-end} dell'agente \textbf{Security}: \textit{OWASP} e \textit{policy} & Completata \\ \hline
+        361 & \textit{Debug} \textit{end-to-end} dell'agente \textbf{Changelog}: tecnico e \textit{business}, pausa e ripresa & Completata \\ \hline
+        362 & \textit{Debug} della connessione all'infrastruttura di \textit{staging}: \textit{ECS}, \textit{ALB}, \textit{MongoDB Atlas}, \textit{Bedrock} & Completata \\ \hline
+        363 & Implementazione ed esecuzione dei test di sistema & Completata \\ \hline
+        364 & Implementazione ed esecuzione dei test di unità & Completata \\ \hline
+        365 & Implementazione ed esecuzione dei test di integrazione & Completata \\ \hline
+        366 & \textbf{PdQ}: aggiornamento della sezione Strategie di testing in base ai test eseguiti & Non completata \\ \hline
+        392 & Impostazione del documento di \textit{Bug Reporting} & Non completata \\ \hline
+        393 & Registrazione dei difetti riscontrati nel documento di \textit{Bug Reporting} & Non completata \\ \hline
+        394 & Aggiornamento del sito di progetto per la \textbf{PB} & Non completata \\ \hline
+\end{xltabular}
+}
+\subparagraph{Note sui mancati completamenti}
+Delle 38 \textit{issue} pianificate per lo \textit{sprint}, 10 non sono state chiuse entro il termine. Nessuna di esse riguarda l'\textbf{MVP}, il cui \textit{debug}, i cui test e la cui integrazione sono stati completati tutti entro la scadenza: si tratta unicamente di attività di documentazione e di preparazione della \textbf{PB}. Il motivo è comune a tutte: le ore dello \textit{sprint} sono state assorbite dal lavoro che condizionava la dimostrazione al \textbf{proponente}, e quello documentale è stato rinviato a valle dell'approvazione. Tutte e dieci sono state riaperte nello \textit{sprint} 17 e vi sono state portate a termine.
+
+\begin{table}[H]
+    \hspace*{-0.7cm}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|l
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |c c|}
+        \hline
+        \textbf{\textit{Sprint} 16} & \multicolumn{6}{|c|}{\textbf{Ruolo}} & \multicolumn{2}{|c|}{} \\ \hline
+        \textbf{Membro} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \multicolumn{2}{|c|}{\textbf{Totale}} \\ \hline
+        A. Fistarol & - & - & - & - & 13 & - & \textbf{13} & (0) \\ \hline
+        D. Pirrone & - & - & - & - & - & 4 & \textbf{4} & (0) \\ \hline
+        E. Granziero & 2 & - & - & - & 5 (+3) & 2 (-2) & \textbf{9} & (+1) \\ \hline
+        M. Barbiero & - & - & - & - & - & 2 & \textbf{2} & (0) \\ \hline
+        S. Bertin & - & - & - & - & - & 3 & \textbf{3} & (0) \\ \hline
+        S. Ristovic & - & 1 & - & - & 3 & - & \textbf{4} & (0) \\ \hline
+        \textbf{Ore totali} & \textbf{2 (0)} & \textbf{1 (0)} & \textbf{0} & \textbf{0} & \textbf{21 (+3)} & \textbf{11 (-2)} & \textbf{35} & (+1) \\ \hline
+    \end{tabular}
+    \caption{\textit{Consuntivo} orario - \textit{sprint} 16}
+\end{table}
+
+\begin{table}[H]
+    \centerline{
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabularx}{1.00\textwidth}{|X|c|c|c|c|c|c|c|}
+            \hline
+            \textbf{\textit{Sprint} 16} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+            \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{25} & \EUR{25} & \EUR{15} & \EUR{15} & / \\ \hline
+            \textbf{Costo totale} & \EUR{60} & \EUR{20} & \EUR{0} & \EUR{0} & \EUR{315} & \EUR{165} & \textbf{\EUR{560}} \\ \hline
+            \textbf{{\textDelta} preventivo} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{45} & \EUR{-30} & \textbf{\EUR{15}} \\ \hline
+            \textbf{Saldo a fine \textit{sprint}} & \textbf{\EUR{90}} & \textbf{\EUR{140}} & \textbf{\EUR{0}} & \textbf{\EUR{25}} & \textbf{\EUR{-330}} & \textbf{\EUR{690}} & \textbf{\EUR{615}}\\ \hline
+        \end{tabularx}
+    }
+    \caption{\textit{Consuntivo} economico - \textit{sprint} 16}
+\end{table}
+
+\paragraph{Retrospettiva}~\\
+Lo \textit{sprint} ha raggiunto il proprio obiettivo: recuperare quanto lo \textit{sprint} 15 non era riuscito a chiudere e presentare al \textbf{proponente} un prodotto integrato e funzionante. La presentazione si è però articolata su due incontri anziché su uno. Il 10 settembre, nella data di \textit{backup} prevista in pianificazione, il team ha mostrato lo stato dell'\textbf{MVP} dichiarandone apertamente i difetti ancora presenti, e ne ha ricavato indicazioni precise su cosa sistemare. Il 14 settembre la dimostrazione è stata ripetuta con l'\textbf{MVP} interamente in esecuzione sull'infrastruttura \textit{AWS}, e al termine l'azienda ha formalmente approvato il prodotto. La data di riserva ha quindi assorbito sia il ritardo ereditato dallo \textit{sprint} 15 sia il giro di correzioni richiesto dall'azienda.
+
+Il dato orario conferma il ritorno a una pianificazione attendibile. Delle 34 ore preventivate ne sono state impiegate 35, con uno scostamento complessivo di una sola ora, riconducibile a una redistribuzione interna fra i ruoli: tre ore in più sulla programmazione e due in meno sulla verifica, impiegate per chiudere le correzioni residue prima della dimostrazione. È lo scostamento più contenuto degli ultimi \textit{sprint} e, letto insieme al risultato raggiunto, indica che la stima ha finalmente incorporato il costo della correzione dei difetti, che nello \textit{sprint} 15 era stato ignorato.
+
+% La figura compare automaticamente non appena grafici/burndown_sprint16.png esiste.
+\IfFileExists{grafici/burndown_sprint16.png}{%
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.9\textwidth]{grafici/burndown_sprint16.png}
+    \caption{\textit{Grafico Burndown} - \textit{sprint} 16}
+    \label{fig:burndown-sprint16}
+\end{figure}
+}{}
+
+\paragraph{Misure Correttive}
+Lo \textit{sprint} ha raggiunto l'obiettivo pianificato con uno scostamento di una sola ora sulle 34 preventivate e non ha fatto emergere criticità nel modo di lavorare del gruppo: non sono state pertanto individuate misure correttive. Le misure introdotte al termine dello \textit{sprint} 15 hanno prodotto l'effetto atteso, come confermano il recupero delle attività rimaste aperte e l'approvazione dell'\textbf{MVP} da parte del \textbf{proponente}.
+
+\subparagraph{Analisi dei Rischi}
+\begin{itemize}
+    \item \textbf{RT3 - Errori nel Codice}: è il rischio che ha dominato lo \textit{sprint}, ereditato dal precedente. A differenza dello \textit{sprint} 15, però, il suo impatto era stato previsto in fase di stima e le ore destinate alla correzione sono risultate sufficienti.
+    \item \textbf{RT5 - Incompatibilità Tecnologica}: si è manifestato nella impossibilità di usare \textit{PrivateLink} tra la regione \textit{eu-south-1} e la regione \textit{eu-center-1}, che ha imposto il ripiego sulla connessione via indirizzo \textit{IP} diretto.
+    \item \textbf{RO4 - Sottostima delle Attività}: il rischio, che nello \textit{sprint} 15 si era manifestato con forza, in questo \textit{sprint} è rimasto sotto controllo; lo scostamento di una sola ora sulle 34 preventivate ne è la misura.
+\end{itemize}
+
+\subsection{\textit{Sprint} 17: 15/09/2026 - 23/09/2026}
+\paragraph{Obbiettivi e attività} Lo \textit{sprint} durerà 9 gg ed è l'ultimo del progetto: si apre subito dopo l'approvazione dell'\textbf{MVP} da parte del \textbf{proponente}, ottenuta il 14 settembre, e si chiude con il completamento della \textbf{Product Baseline}. Con il prodotto validato il baricentro del lavoro si sposta interamente sulla documentazione e sulla verifica, e il preventivo non destina alcuna ora al ruolo di \textbf{Programmatore}: il codice dell'\textbf{MVP} è congelato. Poiché non sono previsti \textit{sprint} successivi, ogni attività aperta va portata a termine entro il termine dello \textit{sprint}. Le attività programmate sono le seguenti.
+\begin{itemize}
+    \item Verifica dei documenti destinati alla \textbf{PB}: \textbf{Specifiche Tecniche}, \textbf{Piano di Qualifica}, \textbf{Piano di Progetto}, \textbf{Manuale Utente} e documento di \textit{Bug Reporting}.
+    \item Allineamento dei documenti all'esito dell'incontro del 14 settembre, con particolare riguardo alla modifica dell'infrastruttura di rete e allo stato dei difetti noti.
+    \item Preparazione del materiale per la revisione di \textbf{PB}, articolata in due parti: l'incontro con il Prof. Cardin e quello con il Prof. Vardanega.
+    \item Aggiornamento del sito di progetto e pubblicazione delle versioni definitive dei documenti in formato \textit{PDF}.
+    \item Consuntivazione dello \textit{sprint} 16 e chiusura del \textbf{Piano di Progetto}.
+\end{itemize}
+
+\paragraph{\textit{Preventivo} orario ed economico}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.9\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{\textit{Sprint} 17} & \multicolumn{6}{|c|}{\textbf{Ruolo}} & \\ \hline
+        \textbf{Membro} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+        Andrea Fistarol & - & - & - & - & - & 5  & \textbf{5} \\ \hline
+        Dario Pirrone & - & - & - & - & - & 5 & \textbf{5} \\ \hline
+        Edoardo Granziero & - & - & - & - & - & 4 & \textbf{4} \\ \hline
+        Marco Barbiero & 2 & - & - & - & - & - & \textbf{2} \\ \hline
+        Samuele Bertin & - & 3 & - & - & - & - & \textbf{3} \\ \hline
+        Sara Ristovic & - & - & - & - & - & 4 & \textbf{4} \\ \hline
+        \textbf{Ore totali per ruolo} & \textbf{2} & \textbf{3} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{18} & \textbf{23}\\ \hline
+    \end{tabularx}
+    \caption{\textit{Preventivo} orario - \textit{sprint} 17}
+\end{table}
+
+Le risorse economiche previste per lo \textit{sprint} sono:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.9\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{\textit{Sprint} 17} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+        \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{25} & \EUR{25} & \EUR{15} & \EUR{15} & / \\ \hline
+        \textbf{Costo totale} & \EUR{60} & \EUR{60} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{270} & \textbf{\EUR{390}} \\ \hline
+    \end{tabularx}
+    \caption{\textit{Preventivo} economico - \textit{sprint} 17}
+\end{table}
+
+
+\paragraph{\textit{Consuntivo}}~
+
+{\renewcommand{\arraystretch}{1.3}
+\begin{xltabular}{\textwidth}{|c|X|c|}
+    \hline
+        \textbf{\#} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
+    \endfirsthead
+
+    \hline
+        \textbf{\#} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
+    \endhead
+
+    \caption{Attività svolte - \textit{sprint} 17}
+    \endlastfoot
+
+        451 & Sistemare retroattivamente le sezioni del \textbf{PdP} & Completata \\ \hline
+        452 & Scrivere la lettera di presentazione per il Prof. Cardin & Completata \\ \hline
+        453 & Preparazione delle slide per il Prof. Cardin & Completata \\ \hline
+        454 & \textbf{ST}: sistemare i punti aperti dopo la chiusura dell'\textbf{MVP} & Completata \\ \hline
+        455 & \textbf{ST}: ricontrollare che il documento rifletta il codice & Completata \\ \hline
+        456 & Aggiornamento di \textit{README} per allinearlo all'\textbf{MVP} & Completata \\ \hline
+        458 & \textbf{PdQ}: aggiornamento della sezione Strategie di testing in base ai test eseguiti & Completata \\ \hline
+        459 & Impostazione del documento di \textit{Bug Reporting} & Completata \\ \hline
+        460 & Registrazione dei difetti riscontrati nel documento di \textit{Bug Reporting} & Completata \\ \hline
+        461 & Aggiornamento del sito di progetto per la \textbf{PB} con il Prof. Cardin & Completata \\ \hline
+        462 & Scrivere il verbale interno del 14/09 & Completata \\ \hline
+        463 & \textbf{PdP}: \textit{preventivo} \textit{sprint} 17 e \textit{consuntivo} \textit{sprint} 16 & Completata \\ \hline
+        464 & Grafico \textit{burndown} dello \textit{sprint} 17 & Completata \\ \hline
+        465 & Aggiornamento del sito di progetto per la \textbf{PB} con il Prof. Vardanega & Completata \\ \hline
+        466 & Preparazione delle slide per il Prof. Vardanega & Completata \\ \hline
+        467 & Preparazione della lettera di presentazione per il Prof. Vardanega & Completata \\ \hline
+        468 & \textbf{MU}: allineamento all'\textbf{MVP} & Completata \\ \hline
+        469 & Controllo ortografico del \textbf{MU} 1.0.0 & Completata \\ \hline
+        470 & Controllo ortografico del \textbf{PdP} 2.0.0 & Completata \\ \hline
+        471 & Controllo ortografico delle \textbf{NdP} 2.0.0 & Completata \\ \hline
+        472 & Controllo ortografico del \textbf{PdQ} 2.0.0 & Completata \\ \hline
+        473 & Controllo ortografico del \textbf{Glossario} 2.0.0 & Completata \\ \hline
+        474 & Aggiunta dei nuovi termini nel \textbf{Glossario} e collegamento dei documenti & Completata \\ \hline
+        475 & \textbf{PdQ}: aggiornamento della sezione Cruscotto di valutazione & Completata \\ \hline
+        476 & Controllo ortografico delle \textbf{ST} 1.0.0 & Completata \\ \hline
+        477 & \textbf{PdP}: \textit{consuntivo} di fine \textbf{PB} & Completata \\ \hline
+        478 & Scrivere al Prof. Vardanega per l'aggiornamento sull'\textbf{MVP} e il dubbio sulle ore minime & Completata \\ \hline
+\end{xltabular}
+}
+
+\begin{table}[H]
+    \hspace*{-0.7cm}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|l
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |>{\centering\arraybackslash}p{0.1\textwidth}
+            |c c|}
+        \hline
+        \textbf{\textit{Sprint} 17} & \multicolumn{6}{|c|}{\textbf{Ruolo}} & \multicolumn{2}{|c|}{} \\ \hline
+        \textbf{Membro} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \multicolumn{2}{|c|}{\textbf{Totale}} \\ \hline
+        A. Fistarol & - & - & - & - & - & 7 (+2) & \textbf{7} & (+2) \\ \hline
+        D. Pirrone & - & - & - & - & - & 4 (-1) & \textbf{4} & (-1) \\ \hline
+        E. Granziero & - & - & - & - & - & 4 & \textbf{4} & (0) \\ \hline
+        M. Barbiero & 2 & - & - & - & - & - & \textbf{2} & (0) \\ \hline
+        S. Bertin & - & 3 & - & - & - & - & \textbf{3} & (0) \\ \hline
+        S. Ristovic & - & - & - & - & - & 3 (-1) & \textbf{3} & (-1) \\ \hline
+        \textbf{Ore totali} & \textbf{2 (0)} & \textbf{3 (0)} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{18 (0)} & \textbf{23} & (0) \\ \hline
+    \end{tabular}
+    \caption{\textit{Consuntivo} orario - \textit{sprint} 17}
+\end{table}
+
+\begin{table}[H]
+    \centerline{
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabularx}{1.00\textwidth}{|X|c|c|c|c|c|c|c|}
+            \hline
+            \textbf{\textit{Sprint} 17} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+            \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{25} & \EUR{25} & \EUR{15} & \EUR{15} & / \\ \hline
+            \textbf{Costo totale} & \EUR{60} & \EUR{60} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{270} & \textbf{\EUR{390}} \\ \hline
+            \textbf{{\textDelta} preventivo} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{0} & \EUR{0} & \textbf{\EUR{0}} \\ \hline
+            \textbf{Saldo a fine \textit{sprint}} & \textbf{\EUR{30}} & \textbf{\EUR{80}} & \textbf{\EUR{0}} & \textbf{\EUR{25}} & \textbf{\EUR{-330}} & \textbf{\EUR{420}} & \textbf{\EUR{225}}\\ \hline
+        \end{tabularx}
+    }
+    \caption{\textit{Consuntivo} economico - \textit{sprint} 17}
+\end{table}
+
+\paragraph{Retrospettiva}~\\
+Lo \textit{sprint} 17 chiude il progetto. Nato come \textit{sprint} di sola documentazione e verifica dopo l'approvazione dell'\textbf{MVP}, aveva un unico obiettivo: portare a termine quanto restava della \textbf{Product Baseline}, senza lasciare nulla di aperto, non essendo previsto alcuno \textit{sprint} successivo in cui recuperare. L'obiettivo è stato raggiunto. I documenti destinati alla \textbf{PB} sono stati verificati, allineati allo stato effettivo del prodotto e pubblicati nelle versioni definitive, il sito di progetto è stato aggiornato e il \textbf{Piano di Progetto} è stato chiuso con il presente \textit{consuntivo}. Non restano lavorazioni in sospeso: svolta la prima parte della revisione di \textbf{PB}, quella con il Prof. Cardin, il gruppo è in attesa della seconda e conclusiva, con il Prof. Vardanega.
+
+Il dato orario è in linea con il piano. Delle 23 ore preventivate ne sono state impiegate 23, senza alcuno scostamento complessivo; l'unico movimento è una redistribuzione interna al ruolo di \textbf{Verificatore}, dove il carico si è spostato di poche ore tra i membri a seconda dei documenti da controllare. Il costo dello \textit{sprint} coincide con il preventivo, \EUR{390}, e il progetto si chiude con un saldo residuo di \EUR{225}.
+
+% La figura compare automaticamente non appena grafici/burndown_sprint17.png esiste.
+\IfFileExists{grafici/burndown_sprint17.png}{%
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.9\textwidth]{grafici/burndown_sprint17.png}
+    \caption{\textit{Grafico Burndown} - \textit{sprint} 17}
+    \label{fig:burndown-sprint17}
+\end{figure}
+}{}
+
+\subsection{\textit{Consuntivo} \textbf{PB}}
+\paragraph{Ore spese} ~\par
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.95\textwidth}{|X|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{PB} & \multicolumn{6}{|c|}{\textbf{Ruolo}} & \\ \hline
+        \textbf{Membro} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+        Andrea Fistarol & 11 & 4 & 0 & 0 & 24 & 8 & \textbf{47} \\ \hline
+        Dario Pirrone & 2 & 0 & 0 & 9 & 8 & 11 & \textbf{30} \\ \hline
+        Edoardo Granziero & 2 & 0 & 0 & 3 & 33 & 16 & \textbf{54} \\ \hline
+        Marco Barbiero & 2 & 1 & 0 & 1 & 16 & 15 & \textbf{35} \\ \hline
+        Samuele Bertin & 0 & 5 & 0 & 20 & 17 & 3 & \textbf{45} \\ \hline
+        Sara Ristovic & 0 & 1 & 0 & 14 & 20 & 3 & \textbf{38} \\ \hline
+        \textbf{Ore totali per ruolo} & \textbf{17} & \textbf{11} & \textbf{0} & \textbf{47} & \textbf{118} & \textbf{56} & \textbf{249}\\ \hline
+    \end{tabularx}
+    \caption{\textit{Consuntivo} ore spese - \textbf{PB}}
+\end{table}
+
+% Le figure compaiono automaticamente non appena i due grafici esistono.
+\IfFileExists{grafici/torta_membri_PB.png}{%
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.9\textwidth]{grafici/torta_membri_PB.png}
+    \caption{Suddivisione oraria per membro - \textbf{PB}}
+    \label{fig:membriPB}
+\end{figure}
+}{}
+
+\IfFileExists{grafici/torta_ruoli_PB.png}{%
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.9\textwidth]{grafici/torta_ruoli_PB.png}
+    \caption{Suddivisione oraria per ruolo - \textbf{PB}}
+    \label{fig:ruoliPB}
+\end{figure}
+}{}
+
+\paragraph{Ore rimanenti} ~\par
+Il monte ore individuale preventivato è di 94 ore, entro un minimo di 80 e un massimo di 95. Poiché la \textbf{PB} è l'ultima \textit{milestone} del progetto, le ore rimanenti a fine \textbf{PB} coincidono con il residuo di fine progetto.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.95\textwidth}{|X|c|c|c|c|c|}
+        \hline
+        \textbf{Membro} & \textbf{Ore \textbf{RTB}} & \textbf{Ore \textbf{PB}} & \textbf{Totale} & \textbf{Residuo su 94} & \textbf{Margine su 80} \\ \hline
+        Andrea Fistarol & 41 & 47 & \textbf{88} & 6 & +8 \\ \hline
+        Dario Pirrone & 63 & 30 & \textbf{93} & 1 & +13 \\ \hline
+        Edoardo Granziero & 39 & 54 & \textbf{93} & 1 & +13 \\ \hline
+        Marco Barbiero & 60 & 35 & \textbf{95} & -1 & +15 \\ \hline
+        Samuele Bertin & 49 & 45 & \textbf{94} & 0 & +14 \\ \hline
+        Sara Ristovic & 56 & 38 & \textbf{94} & 0 & +14 \\ \hline
+        \textbf{Totale} & \textbf{308} & \textbf{249} & \textbf{557} & \textbf{7} & \textbf{+77} \\ \hline
+    \end{tabularx}
+    \caption{\textit{Consuntivo} ore rimanenti - \textbf{PB}}
+\end{table}
+
+I vincoli sul monte ore individuale sono stati rispettati da tutti i membri: le ore vanno da un minimo di 88 a un massimo di 95, quindi entro la forbice fra 80 e 95 ore. Delle 564 ore preventivate complessivamente ne restano 7.
+
+\paragraph{Costi affrontati} ~\par
+\begin{table}[H]
+    \centerline{
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabularx}{1.09\textwidth}{|X|c|c|c|c|c|c|c|}
+            \hline
+            \textbf{PB} & \textbf{RE} & \textbf{AM} & \textbf{AN} & \textbf{PG} & \textbf{PR} & \textbf{VE} & \textbf{Totale} \\ \hline
+            \textbf{Costo orario} & \EUR{30} & \EUR{20} & \EUR{25} & \EUR{25} & \EUR{15} & \EUR{15} & / \\ \hline
+            \textbf{Costo totale} & \EUR{510} & \EUR{220} & \EUR{0} & \EUR{1.175} & \EUR{1.770} & \EUR{840} & \textbf{\EUR{4.515}} \\ \hline
+            \textbf{Saldo a fine \textbf{PB}} & \textbf{\EUR{30}} & \textbf{\EUR{80}} & \textbf{\EUR{0}} & \textbf{\EUR{25}} & \textbf{\EUR{-330}} & \textbf{\EUR{420}} & \textbf{\EUR{225}}\\ \hline
+        \end{tabularx}
+    }
+    \caption{\textit{Consuntivo} economico - \textbf{PB}}
+\end{table}
+
+\paragraph{Considerazioni} La \textbf{PB} si chiude in attivo. Delle 249 ore impiegate, 174 sono state spese nei ruoli di \textbf{Programmatore} e \textbf{Verificatore}, cioè il 70\% del totale nei due ruoli con costo orario ridotto (\EUR{15}); il costo medio orario della \textbf{PB} è così sceso a \EUR{18,13} contro i \EUR{21,12} della \textbf{RTB}. È esattamente la manovra annunciata nel \textit{consuntivo} della \textbf{RTB}, dove lo sbilanciamento dei costi era stato indicato come il problema principale: unita alla riduzione dello \textit{scope} dell'\textbf{MVP}, ha permesso di chiudere il progetto con un residuo di \EUR{225} anziché in perdita.
+
+La lettura per ruolo mostra però dove il piano ha ceduto. Il budget del \textbf{Programmatore} chiude in negativo di \EUR{330}, assorbito dal solo avanzo del \textbf{Verificatore} (\EUR{420}); lo sforamento si è formato negli \textit{sprint} 15 e 16, quando la campagna di test sull'\textbf{MVP} completo fece emergere un numero di difetti molto superiore al previsto e il tempo destinato alla verifica si trasformò in tempo di correzione. In altri termini, il progetto non ha sforato il budget complessivo, ma lo ha fatto sulla voce che era stata stimata con meno margine.
+
+Sul fronte dei tempi il quadro è analogo. Il \textit{consuntivo} della \textbf{RTB} segnalava, accanto all'eccesso di costi, un ritardo definito pericoloso, e indicava nell'aumento della produttività oraria la condizione per rientrare entro la scadenza finale del 25 settembre. Il recupero è avvenuto, ma senza margine: lo \textit{sprint} 15 ha mancato il proprio obiettivo e ha costretto a ricorrere alla data di riserva per la presentazione dell'\textbf{MVP}, ottenendo l'approvazione del \textbf{proponente} il 14 settembre. La \textbf{PB} si è chiusa il 23 settembre, due giorni prima della scadenza: il ritardo ereditato dalla \textbf{RTB} è stato riassorbito, ma il piano non aveva ormai alcuna riserva oltre a quella già prevista in pianificazione.
+
+Sull'intero arco del progetto le ore impiegate sono 557, 308 in \textbf{RTB} e 249 in \textbf{PB}, per un costo complessivo di \EUR{11.020}. Il rapporto tra le due \textit{milestone} conferma il cambio di baricentro: nella \textbf{RTB} il peso maggiore era sull'\textbf{Analista} e sul \textbf{Verificatore}, nella \textbf{PB} sul \textbf{Programmatore}, che da solo assorbe quasi la metà delle ore.
+
+\newpage
+\section{Conclusioni}
+Questa sezione chiude il documento con un quadro d'insieme del progetto: ciò che è stato prodotto, il tempo impiegato, le risorse consumate e il bilancio che il gruppo ne trae.
+
+\subsection{Il prodotto e la documentazione}
+Il progetto ha portato al rilascio di \textbf{Code Guardian} nella forma di \textbf{MVP}, dimostrato al \textbf{proponente} \textbf{Var Group} il 14 settembre 2026 interamente in esecuzione sull'infrastruttura \textit{AWS} e da questo formalmente approvato. Il prodotto realizza i tre agenti previsti dal capitolato: l'agente \textbf{Docs}, per la generazione di \textit{README}, commenti \textit{inline} e documentazione delle \textit{API}; l'agente \textbf{Security}, per l'analisi secondo \textit{OWASP} e le \textit{policy} configurate; l'agente \textbf{Changelog}, per la produzione di note di rilascio in forma tecnica e \textit{business}. Attorno ad essi sono stati sviluppati un \textit{frontend} di orchestrazione, un \textit{backend} con gestione di credenziali, code di esecuzione e \textit{report}, e l'infrastruttura \textit{cloud} su \textit{ECS}, \textit{ALB}, \textit{MongoDB Atlas} e \textit{Bedrock}.
+
+Il prodotto è stato sottoposto a test di unità, di integrazione e di sistema, la cui esecuzione è rendicontata nel \textbf{Piano di Qualifica}. I difetti ancora aperti al momento della consegna sono raccolti nel documento di \textit{Bug Reporting}, introdotto su richiesta del \textbf{proponente}: il gruppo ha scelto di dichiararli anziché ometterli, e sono stati mostrati all'azienda durante la dimostrazione.
+
+Sul piano documentale sono stati prodotti e portati a versione definitiva \textbf{Analisi dei Requisiti}, \textbf{Glossario}, \textbf{Norme di Progetto}, \textbf{Piano di Progetto}, \textbf{Piano di Qualifica}, \textbf{Specifiche Tecniche} e \textbf{Manuale Utente}, affiancati dai verbali interni ed esterni di tutti gli incontri.
+
+\subsection{Tempi}
+Il lavoro si è articolato in 17 \textit{sprint} distribuiti su poco meno di sei mesi, dal 1\textsuperscript{o} aprile al 23 settembre 2026.
+
+La \textbf{RTB} ha assorbito 11 \textit{sprint} e si è chiusa il 7 agosto, circa due mesi oltre la previsione iniziale di metà giugno. Il ritardo, analizzato nel \textit{consuntivo} della \textbf{RTB}, è stato attribuito a sotto-\textit{milestone} definite in modo inadeguato, a tempi lunghi nell'adozione delle metodologie fissate nelle \textbf{Norme di Progetto} e a lavoro che ha dovuto essere rifatto per qualità insufficiente.
+
+La \textbf{PB} si è svolta in 6 \textit{sprint}, dall'8 agosto al 23 settembre, e ha rispettato il proprio termine. Il ritardo ereditato non si è quindi propagato alla scadenza finale, ma è stato riassorbito senza alcun margine residuo. Più di uno \textit{sprint} non ha raggiunto gli obiettivi che si era dato, e la presentazione dell'\textbf{MVP} ha richiesto il ricorso alla data di riserva prevista in pianificazione proprio per questa eventualità: senza quel piano di riserva l'appuntamento con il \textbf{proponente} sarebbe stato mancato.
+
+\subsection{Costi e risorse}
+Il progetto si chiude con 557 ore impiegate e un costo complessivo di \EUR{11.020}, a fronte di un residuo di \EUR{225}.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.95\textwidth}{|X|c|c|c|c|}
+        \hline
+        \textbf{\textit{Milestone}} & \textbf{\textit{Sprint}} & \textbf{Periodo} & \textbf{Ore} & \textbf{Costo} \\ \hline
+        \textbf{RTB} & 1 -- 11 & 01/04 -- 07/08 & 308 & \EUR{6.505} \\ \hline
+        \textbf{PB} & 12 -- 17 & 08/08 -- 23/09 & 249 & \EUR{4.515} \\ \hline
+        \textbf{Totale} & \textbf{17} & \textbf{01/04 -- 23/09} & \textbf{557} & \textbf{\EUR{11.020}} \\ \hline
+    \end{tabularx}
+    \caption{Riepilogo di tempi e costi del progetto}
+\end{table}
+
+Il carico si è distribuito in modo omogeneo fra i membri, con un impegno individuale compreso fra le 88 e le 95 ore, entro la forbice fissata fra un minimo di 80 e un massimo di 95. La distribuzione per ruolo riflette invece il cambio di baricentro fra le due \textit{milestone}: nella \textbf{RTB} il peso maggiore è stato dell'\textbf{Analista} e del \textbf{Verificatore}, nella \textbf{PB} del \textbf{Programmatore}, che da solo ha assorbito quasi la metà delle ore della fase.
+
+Il contenimento dei costi annunciato nel \textit{consuntivo} della \textbf{RTB} ha prodotto l'effetto atteso: la riduzione dello \textit{scope} dell'\textbf{MVP} e lo spostamento del lavoro sui ruoli a costo orario ridotto hanno fatto scendere il costo medio orario da \EUR{21,12} della \textbf{RTB} a \EUR{18,13} della \textbf{PB}, permettendo di chiudere in attivo. Il budget del \textbf{Programmatore} resta però in negativo di \EUR{330}, compensato dall'avanzo del \textbf{Verificatore}: lo sforamento si è formato nella fase di test e correzione dell'\textbf{MVP}, quando il costo della rimozione dei difetti si è rivelato superiore a quanto stimato.
+
+\subsection{Bilancio}
+Gli obiettivi del progetto sono stati raggiunti: l'\textbf{MVP} è stato consegnato, approvato dal \textbf{proponente} e accompagnato dalla documentazione completa, entro la scadenza e entro il budget.
+
+Il percorso, però, non è stato lineare, e le difficoltà si sono concentrate tutte nella stessa area. La \textbf{RTB} ha accumulato due mesi di ritardo per una pianificazione a grana troppo grossa; nella \textbf{PB} più di uno \textit{sprint} ha mancato i propri obiettivi perché la verifica era stata collocata a valle della codifica anziché procedere in parallelo, e il costo della rimozione dei difetti non era stato preventivato. In entrambi i casi il problema non è stato la capacità tecnica del gruppo, ma la stima: il lavoro di costruzione è stato valutato con ragionevole precisione, quello di controllo e di correzione quasi sempre per difetto.
+
+Ciò che ha permesso di chiudere comunque in tempo sono state due scelte prese in anticipo: la riduzione dello \textit{scope} dell'\textbf{MVP} decisa all'inizio della \textbf{PB} e la predisposizione di una data di riserva per la presentazione al \textbf{proponente}. Entrambe sono state decise in anticipo, quando ancora non se ne vedeva la necessità, ed entrambe sono poi servite davvero: è questo che le ha rese disponibili nel momento in cui è stato necessario ricorrervi.
+
 \end{document}

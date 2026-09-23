@@ -1431,7 +1431,7 @@ Osservando i dati, emerge un incremento significativo e costante del numero tota
 \end{itemize}
 
 \subsection{MP\_9: Requirements Stability Index (RSI) PB}
-Questa sottosezione estende l'analisi del \textit{Requirements Stability Index} all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17, a partire dalla versione aggiornata dell'\textbf{Analisi dei Requisiti} (AdR v2.0.0, approvata il 2026/09/16 per la revisione PB).
+Questa sottosezione estende l'analisi del \textit{Requirements Stability Index} all'intera durata del progetto, dallo \textit{Sprint} 1 allo \textit{Sprint} 17, confermato dalla versione approvata dell'\textbf{Analisi dei Requisiti} (AdR v2.0.0, 2026/09/16).
 
 \begin{table}[htbp]
     \centering
@@ -1450,11 +1450,11 @@ Questa sottosezione estende l'analisi del \textit{Requirements Stability Index} 
         8  & 142 & 8  & 94\% & 80\% \\ \hline
         9  & 142  & 0  & 100\%  & 80\% \\ \hline
         10 & 142  & 0  & 100\%  & 80\% \\ \hline
-        11 & 105  & 0  & 100\%  & 80\% \\ \hline
-        12 & 105  & 0  & 100\%  & 80\% \\ \hline
-        13 & 105  & 0  & 100\%  & 80\% \\ \hline
-        14 & 105  & 0  & 100\%  & 80\% \\ \hline
-        15 & 141  & 36  & 74,5\%  & 80\% \\ \hline
+        11 & 142  & 0  & 100\%  & 80\% \\ \hline
+        12 & 142  & 0  & 100\%  & 80\% \\ \hline
+        13 & 142  & 0  & 100\%  & 80\% \\ \hline
+        14 & 142  & 0  & 100\%  & 80\% \\ \hline
+        15 & 141  & 1  & 99,3\%  & 80\% \\ \hline
         16 & 141  & 0  & 100\%  & 80\% \\ \hline
         17 & 141  & 0  & 100\%  & 80\% \\ \hline
     \end{tabular}
@@ -1470,16 +1470,14 @@ Questa sottosezione estende l'analisi del \textit{Requirements Stability Index} 
 \end{center}
 
 \subsubsection*{Valutazione dell'andamento}
-L'analisi del \textit{Requirements Stability Index} (RSI) evidenzia un andamento complessivamente adeguato sull'intera durata del progetto, seppur con alcune dinamiche che meritano contestualizzazione. Nello \textit{Sprint} 1 la metrica non è calcolabile (N/A) in quanto il periodo è stato dedicato a uno studio generale del dominio, rimandando la definizione concreta dei requisiti allo \textit{Sprint} 2. Osservando i dati, emerge un incremento significativo e costante del numero totale di requisiti iterazione dopo iterazione, passando da 15 nello \textit{Sprint} 2 a 142 nello \textit{Sprint} 8, per poi consolidarsi definitivamente negli \textit{Sprint} 9 e 10, dove non vengono più né aggiunti né modificati requisiti.
+L'analisi del \textit{Requirements Stability Index} (RSI) evidenzia un andamento complessivamente adeguato sull'intera durata del progetto, seppur con alcune dinamiche che meritano contestualizzazione. Nello \textit{Sprint} 1 la metrica non è calcolabile (N/A) in quanto il periodo è stato dedicato a uno studio generale del dominio, rimandando la definizione concreta dei requisiti allo \textit{Sprint} 2. Osservando i dati, emerge un incremento significativo e costante del numero totale di requisiti iterazione dopo iterazione, passando da 15 nello \textit{Sprint} 2 a 142 nello \textit{Sprint} 8, per poi consolidarsi negli \textit{Sprint} 9 e 10, dove non vengono più né aggiunti né modificati requisiti. Il totale di 142 requisiti resta stabile anche negli \textit{Sprint} 11-14, non essendo emerse modifiche di rilievo in questo intervallo.
 
-A partire dallo \textit{Sprint} 11, il conteggio dei requisiti totali viene ricalcolato utilizzando il numero di identificativi di requisito (RF, RQ, RV, RS) distinti presenti nel testo dell'\textbf{Analisi dei Requisiti}, anziché il conteggio adottato fino allo \textit{Sprint} 10. Questo cambio di metodologia spiega l'apparente calo del totale da 142 a 105 requisiti tra lo \textit{Sprint} 10 e lo \textit{Sprint} 11: non si tratta di una rimozione di requisiti, ma del passaggio a una fonte di conteggio diversa.
-
-Nessuna revisione dell'AdR durante gli \textit{Sprint} 11-14, che mantengono pertanto un RSI del 100\% rispetto al totale di baseline di 105 requisiti. Nello \textit{Sprint} 15 i requisiti arrivano a un totale di 141 a causa delle modifiche post-RTB, con un conseguente calo del RSI al 74,5\%, unico caso sotto la soglia di accettazione dell'80\% nell'intera durata del progetto. Gli \textit{Sprint} 16 e 17 mantengono invariato il nuovo totale di 141 requisiti (l'ultimo, la revisione v2.0.0 del 2026/09/16, integra le correzioni richieste dal Prof. Cardin senza modificarne il conteggio), riportando la metrica al valore ottimale del 100\% per il resto del progetto.
+Nello \textit{Sprint} 15 viene applicata al documento \textbf{Analisi dei Requisiti} una correzione richiesta dal Prof. Cardin, che comporta la rimozione di un requisito e porta il totale a 141: un cambiamento contenuto, che si riflette in un RSI del 99,3\%, l'unico \textit{Sprint} della fase PB in cui la metrica si discosta dal valore ottimale. Il nuovo totale di 141 requisiti resta invariato negli \textit{Sprint} 16 e 17, compresa la revisione finale dell'AdR (v2.0.0, 2026/09/16), che integra le correzioni del Prof. Cardin senza ulteriori variazioni al conteggio, riportando la metrica al 100\% per la chiusura del progetto.
 
 \paragraph*{MP\_9 - Requirements Stability Index (RSI)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 80\%$):} Il vincolo è rispettato per tutti gli \textit{Sprint} noti, ad eccezione dello \textit{Sprint} 15 (74,5\%), unico caso sotto soglia.
-    \item \textbf{Valore ottimale ($= 100\%$):} Il vincolo è soddisfatto negli \textit{Sprint} 2, 5, 9, 10, 11, 12, 13, 14, 16 e 17. Non è soddisfatto negli \textit{Sprint} 3, 4, 6, 7, 8 e 15.
+    \item \textbf{Valore di accettazione ($\ge 80\%$):} Il vincolo è sempre rispettato su tutti gli \textit{Sprint} noti, senza eccezioni.
+    \item \textbf{Valore ottimale ($= 100\%$):} Il vincolo è soddisfatto negli \textit{Sprint} 2, 5, 9, 10, 11, 12, 13, 14, 16 e 17. Non è soddisfatto negli \textit{Sprint} 3, 4, 6, 7, 8 e 15, quest'ultimo con uno scostamento minimo (99,3\%).
 \end{itemize}
 
 \subsection{MP\_10: Indice di Gulpease (IG)}
@@ -1495,6 +1493,8 @@ L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di
         PdP & 64.34 & 40 \\ \hline
         PdQ & 55.14 & 40 \\ \hline
         NdP & 60.52 & 40 \\ \hline
+        ST & 48.20 & 40 \\ \hline
+        MU & 68.45 & 40 \\ \hline
     \end{tabular}
     \caption{Indice di Gulpease (IG) per documento}
     \label{tab:ig_documento}
@@ -1509,34 +1509,36 @@ L'Indice di Gulpease (IG) valuta in modo oggettivo la complessità e il grado di
 
 \paragraph*{MP\_10 - Indice di Gulpease (IG)}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\ge 40$):} Il vincolo è sempre rispettato. Tutti i documenti prodotti superano la soglia di tolleranza minima (registrando valori tra 55 e 66).
-    \item \textbf{Valore ottimale ($\ge 60$):} Il vincolo risulta rispettato limitatamente al documento \textbf{Analisi dei Requisiti} (AdR), che raggiunge un indice pari a circa 66. Per i restanti documenti (\textbf{Piano di Progetto}, \textbf{Piano di Qualifica} e \textbf{Norme di Progetto}), l'indice si attesta su valori compresi tra 55 e 65. Sebbene al di sotto della soglia di ottimalità, tali risultati descrivono un grado di leggibilità accettabile tenendo in considerazione la natura tecnica e formale dei contenuti trattati.
+    \item \textbf{Valore di accettazione ($\ge 40$):} Il vincolo è sempre rispettato. Tutti i documenti prodotti superano la soglia di tolleranza minima (registrando valori tra 48 e 68).
+    \item \textbf{Valore ottimale ($\ge 60$):} Il vincolo risulta rispettato dal documento \textbf{Analisi dei Requisiti} (AdR, 66,01), dal \textbf{Piano di Progetto} (PdP, 64,34), dalle \textbf{Norme di Progetto} (NdP, 60,52) e, in particolare, dal \textbf{Manuale Utente} (MU, 68,45), che registra il valore più alto in assoluto, coerentemente con la sua natura di documento rivolto a un pubblico non tecnico. Restano sotto soglia il \textbf{Piano di Qualifica} (PdQ, 55,14) e le \textbf{Specifiche Tecniche} (ST, 48,20), quest'ultimo il più penalizzato a causa dell'elevata densità terminologica intrinseca al contenuto tecnico-architetturale trattato. Sebbene al di sotto della soglia di ottimalità, tali risultati descrivono comunque un grado di leggibilità accettabile tenendo in considerazione la natura tecnica e formale dei contenuti trattati.
 \end{itemize}
 
 \subsection{MP\_11: Correttezza Ortografica}
-La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al fine di garantire l’elevata qualità formale dei documenti rilasciati.
+La Correttezza Ortografica quantifica gli errori grammaticali e di battitura al fine di garantire l'elevata qualità formale dei documenti rilasciati.
 
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
     \begin{tabular}{|c|c|c|c|}
         \hline
-        \textbf{Documento} & \textbf{Errori versioni prec.} & \textbf{Errori v2.0.0} & \textbf{Soglia accettabile} \\ \hline
+        \textbf{Documento} & \textbf{Errori versioni prec.} & \textbf{Errori versione finale} & \textbf{Soglia accettabile} \\ \hline
         AdR & 7 & 0 & $\leq 5$ \\ \hline
         PdP & 5 & 0 & $\leq 5$ \\ \hline
         PdQ & 4 & 0 & $\leq 5$ \\ \hline
         NdP & 6 & 0 & $\leq 5$ \\ \hline
+        ST & 6 & 0 & $\leq 5$ \\ \hline
+        MU & 3 & 0 & $\leq 5$ \\ \hline
     \end{tabular}
     \caption{Correttezza Ortografica per documento}
     \label{tab:errori_documento}
 \end{table}
 
-Prima del rilascio dei documenti nella loro versione 2.0.0, il team effettua un controllo semi-automatico volto a individuare eventuali errori ortografici. Le imperfezioni riscontrate nelle versioni in lavorazione vengono così corrette in modo sistematico prima dell'approvazione finale, garantendo la correttezza linguistica dei documenti.
+Prima del rilascio dei documenti nella loro versione 2.0.0, e 1.0.0 per le Specifiche Tecniche e per il Manuale Utente, il team effettua un controllo semi-automatico volto a individuare eventuali errori ortografici. Le imperfezioni riscontrate nelle versioni in lavorazione vengono così corrette in modo sistematico prima dell'approvazione finale, garantendo la correttezza linguistica dei documenti.
 
 \paragraph*{MP\_11 - Correttezza Ortografica}
 \begin{itemize}
-    \item \textbf{Valore di accettazione ($\le 5$ errori):} Il vincolo risulta sempre rispettato nella versione 2.0.0. Nelle versioni precedenti la soglia di tolleranza era stata superata in due documenti (\textbf{Analisi dei Requisiti} con 7 errori e \textbf{Norme di Progetto} con 6 errori).
-    \item \textbf{Valore ottimale ($= 0$ errori):} Il vincolo è pienamente soddisfatto per tutti i documenti. A seguito delle correzioni applicate, nessun documento in versione 2.0.0 presenta errori ortografici.
+    \item \textbf{Valore di accettazione ($\le 5$ errori):} Il vincolo risulta sempre rispettato nella versione finale. Nelle versioni precedenti la soglia di tolleranza era stata superata in tre documenti (\textbf{Analisi dei Requisiti} con 7 errori, \textbf{Norme di Progetto} con 6 errori e \textbf{Specifiche Tecniche} con 6 errori).
+    \item \textbf{Valore ottimale ($= 0$ errori):} Il vincolo è pienamente soddisfatto per tutti i documenti. A seguito delle correzioni applicate, nessun documento in versione finale presenta errori ortografici.
 \end{itemize}
 
 \subsection{MP\_12: Copertura del Codice (Code Coverage)}
