@@ -171,7 +171,7 @@ Il prodotto risponde alle esigenze di diversi tipi di utente:
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Progetto/C2p.pdf}{Capitolato d'appalto C2 - \textbf{Code Guardian}} (\textit{Data ultimo accesso: 16/09/2026})
 \item
   \href{https://www.math.unipd.it/~tullio/IS-1/2025/Dispense/PD1.pdf}{Regolamento del Progetto Didattico} (\textit{Data ultimo accesso: 16/09/2026})
-  \item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/norme_di_progetto_v1.0.0.pdf}{\textbf{Norme di Progetto} v1.0.0}
+  \item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/PB/norme_di_progetto_v2.0.0.pdf}{\textbf{Norme di Progetto} v2.0.0}
 
 
 \end{itemize}
@@ -180,7 +180,7 @@ Il prodotto risponde alle esigenze di diversi tipi di utente:
 \subsubsection{Riferimenti informativi}
 \begin{itemize}
 \item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/PB/analisi_dei_requisiti_v2.0.0.pdf}{\textbf{Analisi dei Requisiti} v2.0.0}
-\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/glossario_v1.0.0.pdf}{Glossario v1.0.0}
+\item \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/PB/glossario_v2.0.0.pdf}{Glossario v2.0.0}
 \end{itemize}
 
 
@@ -736,12 +736,12 @@ L'ultimo scenario chiude il ciclo aperto dal primo: un Report completato può es
     \label{fig:flusso-export}
 \end{figure}
 
-Il PDF viene composto per intero in memoria prima che la risposta HTTP venga anche solo iniziata. Se la generazione fallisce a metà, nessun file parziale è già partito, perché nessuno stato \texttt{200} viene scritto finché non c'è un PDF completo da restituire. È anche l'unico scenario in cui il sistema tocca lo storage S3, dove l'artefatto generato viene caricato prima di essere restituito al Frontend. Un Report ancora in stato \texttt{FAILED} riceve invece un \texttt{409} a corpo vuoto, senza alcun tentativo di composizione: non esiste un PDF sensato da generare per un'analisi che non è mai arrivata a un risultato. Questo endpoint è poi l'unico a non seguire il contratto d'errore condiviso descritto altrove nel documento: un fallimento nella composizione o nel caricamento restituisce un corpo fisso \texttt{\{code: EXPORT\_FAILED, message\}}. Abbiamo tenuto questo caso raro separato dal catalogo \texttt{error.code} che governa l'esecuzione delle Task.
+Il PDF viene composto per intero in memoria prima che la risposta HTTP venga anche solo iniziata. Se la generazione fallisce a metà, nessun file parziale è già partito, perché nessuno stato \texttt{200} viene scritto finché non c'è un PDF completo da restituire. È anche l'unico scenario in cui il sistema tocca lo storage S3, dove l'artefatto generato viene caricato prima di essere restituito al Frontend. Un Report ancora in stato \texttt{FAILED} riceve invece un \texttt{409} a corpo vuoto, senza alcun tentativo di composizione: non esiste un PDF sensato da generare per un'analisi che non è mai arrivata a un risultato. Questo endpoint è poi l'unico a non seguire il contratto d'errore condiviso descritto altrove nel documento: un fallimento nella composizione o nel caricamento restituisce un corpo fisso \verb+{code: EXPORT\_FAILED, message}+. Abbiamo tenuto questo caso raro separato dal catalogo \texttt{error.code} che governa l'esecuzione delle Task.
 
 \newpage
 \section{Copertura dei requisiti}
 
-I requisiti riportati in questa sezione sono quelli definiti nel documento \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/RTB/analisi_dei_requisiti_v1.0.0.pdf}{Analisi dei Requisiti}, capitolo 7, e sono qui organizzati per sottosistema anziché nell'ordine in cui compaiono in quel documento. Per ciascun requisito le tabelle seguenti riportano il codice, la priorità e lo stato di soddisfacimento: \emph{Soddisfatto}, \emph{Parziale} se implementato solo in parte rispetto a quanto descritto, \emph{Non implementato} se non presente nell'MVP, oppure \emph{Fuori Perimetro} se abbiamo scelto di escluderlo dallo sviluppo, in accordo con il Proponente.
+I requisiti riportati in questa sezione sono quelli definiti nel documento \href{https://skynetunigroup.github.io/Code_Guardian/Documentazione/PB/analisi_dei_requisiti_v2.0.0.pdf}{Analisi dei Requisiti}, capitolo 7, e sono qui organizzati per sottosistema anziché nell'ordine in cui compaiono in quel documento. Per ciascun requisito le tabelle seguenti riportano il codice, la priorità e lo stato di soddisfacimento: \emph{Soddisfatto}, \emph{Parziale} se implementato solo in parte rispetto a quanto descritto, \emph{Non implementato} se non presente nell'MVP, oppure \emph{Fuori Perimetro} se abbiamo scelto di escluderlo dallo sviluppo, in accordo con il Proponente.
 
 \subsection{Stato per requisito}
 
